@@ -8,6 +8,7 @@ import { ChannelsActionTypes } from "./constants";
 const INIT_STATE = {
   channels: [],
   loading: false,
+  initialloading: false,
   error: null,
 };
 
@@ -49,6 +50,7 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
             ...state,
             channels: action.payload.data,
             loading: false,
+            initialloading: false,
           };
         }
         case ChannelsActionTypes.ADD_CHANNELS: {
@@ -56,6 +58,7 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
         case ChannelsActionTypes.UPDATE_CHANNELS: {
@@ -63,6 +66,7 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
         case ChannelsActionTypes.DELETE_CHANNELS: {
@@ -70,6 +74,7 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
         default:
@@ -83,6 +88,7 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
           };
         }
         case ChannelsActionTypes.ADD_CHANNELS: {
@@ -91,6 +97,7 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
           };
         }
         case ChannelsActionTypes.UPDATE_CHANNELS: {
@@ -99,6 +106,7 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
           };
         }
         case ChannelsActionTypes.DELETE_CHANNELS: {
@@ -107,6 +115,7 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
           };
         }
         default:
@@ -114,11 +123,11 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
       }
 
     case ChannelsActionTypes.GET_CHANNELS:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialloading: true };
     case ChannelsActionTypes.ADD_CHANNELS:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialloading: true };
     case ChannelsActionTypes.UPDATE_CHANNELS:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialloading: true };
     default:
       return { ...state };
   }

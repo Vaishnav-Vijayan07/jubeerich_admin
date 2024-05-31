@@ -8,6 +8,7 @@ import { SourceActionTypes } from "./constants";
 const INIT_STATE = {
   sources: [],
   loading: false,
+  initialloading: false,
   error: null,
 };
 
@@ -49,6 +50,7 @@ const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
             ...state,
             sources: action.payload.data,
             loading: false,
+            initialloading: false,
           };
         }
         case SourceActionTypes.ADD_SOURCES: {
@@ -56,6 +58,7 @@ const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
         case SourceActionTypes.UPDATE_SOURCES: {
@@ -63,6 +66,7 @@ const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
         case SourceActionTypes.DELETE_SOURCES: {
@@ -71,6 +75,7 @@ const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
             ...state,
             // sources: action.payload.data,
             loading: false,
+            initialloading: false,
           };
         }
         default:
@@ -84,6 +89,7 @@ const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
           };
         }
         case SourceActionTypes.ADD_SOURCES: {
@@ -92,22 +98,25 @@ const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
           };
         }
         case SourceActionTypes.UPDATE_SOURCES: {
-          showErrorAlert(action.payload.error)
+          showErrorAlert(action.payload.error);
           return {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
           };
         }
         case SourceActionTypes.DELETE_SOURCES: {
-          showErrorAlert(action.payload.error)
+          showErrorAlert(action.payload.error);
           return {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
           };
         }
         default:
@@ -115,11 +124,11 @@ const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
       }
 
     case SourceActionTypes.GET_SOURCES:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialloading: true };
     case SourceActionTypes.ADD_SOURCES:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialloading: true };
     case SourceActionTypes.UPDATE_SOURCES:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialloading: true };
     default:
       return { ...state };
   }

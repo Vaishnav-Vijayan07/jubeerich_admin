@@ -12,7 +12,9 @@ const Login2 = React.lazy(() => import("../pages/auth2/Login2"));
 const Logout2 = React.lazy(() => import("../pages/auth2/Logout2"));
 const Register2 = React.lazy(() => import("../pages/auth2/Register2"));
 const Confirm2 = React.lazy(() => import("../pages/auth2/Confirm2"));
-const ForgetPassword2 = React.lazy(() => import("../pages/auth2/ForgetPassword2"));
+const ForgetPassword2 = React.lazy(
+  () => import("../pages/auth2/ForgetPassword2")
+);
 const LockScreen2 = React.lazy(() => import("../pages/auth2/LockScreen2"));
 const SignInSignUp2 = React.lazy(() => import("../pages/auth2/SignInSignUp2"));
 
@@ -24,7 +26,9 @@ const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard4/"));
 const CRMLeads = React.lazy(() => import("../pages/apps/CRM/Leads/"));
 
 //Leads
-const CRMLeadsList = React.lazy(() => import("../pages/lead_management/Tickets/List"));
+const CRMLeadsList = React.lazy(
+  () => import("../pages/lead_management/Tickets/List")
+);
 const Tasks = React.lazy(() => import("../pages/lead_management/Tasks/List"));
 
 // uikit
@@ -35,16 +39,25 @@ const RangeSliders = React.lazy(() => import("../pages/uikit/RangeSliders"));
 const Animation = React.lazy(() => import("../pages/uikit/Animation"));
 const TourPage = React.lazy(() => import("../pages/uikit/TourPage"));
 const SweetAlerts = React.lazy(() => import("../pages/uikit/SweetAlerts"));
-const LoadingButtons = React.lazy(() => import("../pages/uikit/LoadingButtons"));
+const LoadingButtons = React.lazy(
+  () => import("../pages/uikit/LoadingButtons")
+);
 
 // forms
 const Category = React.lazy(() => import("../pages/forms/Category"));
 const Source = React.lazy(() => import("../pages/forms/Source"));
 const Channel = React.lazy(() => import("../pages/forms/Channel"));
 const Campaign = React.lazy(() => import("../pages/forms/Campaign"));
+const OfficeType = React.lazy(() => import("../pages/forms/OfficeType"));
+const Region = React.lazy(() => import("../pages/forms/Region"));
+const Flag = React.lazy(() => import("../pages/forms/Flag"));
+const MaritalStatus = React.lazy(() => import("../pages/forms/MaritalStatus"));
+const Country = React.lazy(() => import("../pages/forms/Country"));
 const Branches = React.lazy(() => import("../pages/forms/Branches"));
 const Status = React.lazy(() => import("../pages/status/Status"));
-const StatusConfig = React.lazy(() => import("../pages/status/StatusConfiguration"));
+const StatusConfig = React.lazy(
+  () => import("../pages/status/StatusConfiguration")
+);
 const SubStatus = React.lazy(() => import("../pages/status/SubStatus"));
 const CheckLists = React.lazy(() => import("../pages/forms/CheckLists"));
 
@@ -86,7 +99,12 @@ const dashboardRoutes: RoutesProps = {
       path: "/dashboard-4",
       name: "Dashboard 4",
       // element: <Dashboard4 />,
-      element: <PrivateRoute roles={["Add Leads", "View Task", "Monitor"]} component={Dashboard4} />,
+      element: (
+        <PrivateRoute
+          roles={["Add Leads", "View Task", "Monitor"]}
+          component={Dashboard4}
+        />
+      ),
       route: PrivateRoute,
     },
   ],
@@ -135,14 +153,21 @@ const leadRoutes = {
       path: "leads/leads_list",
       name: "Leads",
       // element: <CRMLeadsList />,
-      element: <PrivateRoute roles={["Add Leads", "View Task", "Monitor"]} component={CRMLeadsList} />,
+      element: (
+        <PrivateRoute
+          roles={["Add Leads", "View Task", "Monitor"]}
+          component={CRMLeadsList}
+        />
+      ),
       route: PrivateRoute,
     },
     {
       path: "leads/tasks",
       name: "Tasks",
       // element: <Tasks />,
-      element: <PrivateRoute roles={["View Task", "Monitor"]} component={Tasks} />,
+      element: (
+        <PrivateRoute roles={["View Task", "Monitor"]} component={Tasks} />
+      ),
       route: PrivateRoute,
     },
   ],
@@ -185,6 +210,43 @@ const settingsRoutes = {
           route: PrivateRoute,
         },
         {
+          path: "/settings/master/office_type",
+          name: "Channel",
+          // element: <Channel />,
+          element: <PrivateRoute roles={["Monitor"]} component={OfficeType} />,
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/region",
+          name: "Channel",
+          // element: <Channel />,
+          element: <PrivateRoute roles={["Monitor"]} component={Region} />,
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/flag",
+          name: "Channel",
+          // element: <Channel />,
+          element: <PrivateRoute roles={["Monitor"]} component={Flag} />,
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/marital_status",
+          name: "Channel",
+          // element: <Channel />,
+          element: (
+            <PrivateRoute roles={["Monitor"]} component={MaritalStatus} />
+          ),
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/country",
+          name: "Channel",
+          // element: <Channel />,
+          element: <PrivateRoute roles={["Monitor"]} component={Country} />,
+          route: PrivateRoute,
+        },
+        {
           path: "/settings/master/campaign",
           name: "Campaign",
           // element: <Campaign />,
@@ -217,7 +279,9 @@ const settingsRoutes = {
           path: "/settings/master/status_config",
           name: "Status Config",
           // element: <StatusConfig />,
-          element: <PrivateRoute roles={["Monitor"]} component={StatusConfig} />,
+          element: (
+            <PrivateRoute roles={["Monitor"]} component={StatusConfig} />
+          ),
           route: PrivateRoute,
         },
         {
@@ -238,7 +302,9 @@ const settingsRoutes = {
           path: "/extended-ui/nestable",
           name: "Nestable List",
           // element: <NestableList />,
-          element: <PrivateRoute roles={["Monitor"]} component={NestableList} />,
+          element: (
+            <PrivateRoute roles={["Monitor"]} component={NestableList} />
+          ),
           route: PrivateRoute,
         },
         {
@@ -397,9 +463,21 @@ const flattenRoutes = (routes: RoutesProps[]) => {
 };
 
 // All routes
-const authProtectedRoutes = [dashboardRoutes, ...appRoutes, settingsRoutes, UserRoutes, leadRoutes, reportsRoutes];
+const authProtectedRoutes = [
+  dashboardRoutes,
+  ...appRoutes,
+  settingsRoutes,
+  UserRoutes,
+  leadRoutes,
+  reportsRoutes,
+];
 const publicRoutes = [...authRoutes, ...otherPublicRoutes];
 
 const authProtectedFlattenRoutes = flattenRoutes([...authProtectedRoutes]);
 const publicProtectedFlattenRoutes = flattenRoutes([...publicRoutes]);
-export { publicRoutes, authProtectedRoutes, authProtectedFlattenRoutes, publicProtectedFlattenRoutes };
+export {
+  publicRoutes,
+  authProtectedRoutes,
+  authProtectedFlattenRoutes,
+  publicProtectedFlattenRoutes,
+};

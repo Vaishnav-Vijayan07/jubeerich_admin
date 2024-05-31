@@ -10,6 +10,7 @@ const api = new APICore();
 const INIT_STATE = {
   category: [],
   loading: false,
+  initialloading: false,
   error: null,
   success: false,
   message: false,
@@ -54,11 +55,11 @@ const Category = (
     case CategoryActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
         case CategoryActionTypes.GET_CATEGORY: {
-
           return {
             ...state,
             category: action.payload.data,
             loading: false,
+            initialloading: false,
           };
         }
         case CategoryActionTypes.ADD_CATEGORY: {
@@ -68,6 +69,7 @@ const Category = (
             ...state,
             success: true,
             loading: false,
+            initialloading: false,
             message: action.payload.data,
           };
         }
@@ -77,6 +79,7 @@ const Category = (
             ...state,
             success: true,
             loading: false,
+            initialloading: false,
             message: action.payload.data,
           };
         }
@@ -87,6 +90,7 @@ const Category = (
             ...state,
             success: true,
             loading: false,
+            initialloading: false,
             message: action.payload.data,
           };
         }
@@ -101,6 +105,7 @@ const Category = (
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
           };
         }
         case CategoryActionTypes.ADD_CATEGORY: {
@@ -110,6 +115,7 @@ const Category = (
             error: action.payload.error,
             success: false,
             loading: false,
+            initialloading: false,
           };
         }
         case CategoryActionTypes.UPDATE_CATEGORY: {
@@ -119,6 +125,7 @@ const Category = (
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
             success: false,
           };
         }
@@ -129,6 +136,7 @@ const Category = (
             ...state,
             error: action.payload.error,
             loading: false,
+            initialloading: false,
             success: false,
           };
         }
@@ -137,11 +145,11 @@ const Category = (
       }
 
     case CategoryActionTypes.GET_CATEGORY:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialloading: true };
     case CategoryActionTypes.ADD_CATEGORY:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialloading: true };
     case CategoryActionTypes.UPDATE_CATEGORY:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialloading: true };
     default:
       return { ...state };
   }

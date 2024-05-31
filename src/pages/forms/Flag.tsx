@@ -1,16 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Dropdown,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Dropdown, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -22,12 +13,7 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
-import {
-  addChannel,
-  deleteChannel,
-  getChannel,
-  updateChannel,
-} from "../../redux/actions";
+import { addChannel, deleteChannel, getChannel, updateChannel } from "../../redux/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
 
@@ -85,9 +71,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
     channel_name: yup
@@ -111,9 +95,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedSource: OptionType[] = sourceData?.filter(
-      (source: any) => source.value == item.source_id
-    );
+    const updatedSource: OptionType[] = sourceData?.filter((source: any) => source.value == item.source_id);
     setSelectedSource(updatedSource[0]);
     setFormData((prev) => ({
       ...prev,
@@ -174,25 +156,12 @@ const BasicInputElements = withSwal((props: any) => {
         if (isUpdate) {
           // Handle update logic
           dispatch(
-            updateChannel(
-              formData.id,
-              formData.source_id,
-              formData.channel_name,
-              formData.channel_description,
-              user_id
-            )
+            updateChannel(formData.id, formData.source_id, formData.channel_name, formData.channel_description, user_id)
           );
           setIsUpdate(false);
         } else {
           // Handle add logic
-          dispatch(
-            addChannel(
-              formData.source_id,
-              formData.channel_name,
-              formData.channel_description,
-              user_id
-            )
-          );
+          dispatch(addChannel(formData.source_id, formData.channel_name, formData.channel_description, user_id));
         }
       }
 
@@ -311,11 +280,7 @@ const BasicInputElements = withSwal((props: any) => {
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Channel Management</h4>
@@ -330,9 +295,7 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={handleInputChange}
                 />
                 {validationErrors.channel_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.channel_name}
-                  </Form.Text>
+                  <Form.Text className="text-danger">{validationErrors.channel_name}</Form.Text>
                 )}
               </Form.Group>
 
@@ -346,9 +309,7 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={handleInputChange}
                 />
                 {validationErrors.channel_description && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.channel_description}
-                  </Form.Text>
+                  <Form.Text className="text-danger">{validationErrors.channel_description}</Form.Text>
                 )}
               </Form.Group>
 
@@ -364,9 +325,7 @@ const BasicInputElements = withSwal((props: any) => {
                 />
 
                 {validationErrors.source_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.source_id}
-                  </Form.Text>
+                  <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>
                 )}
               </Form.Group>
             </Modal.Body>
@@ -376,20 +335,11 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 ms-2"
-                onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : toggleResponsiveModal()
-                }
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : toggleResponsiveModal())}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -400,10 +350,7 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Channel
               </Button>
               <h4 className="header-title mb-4">Manage Channels</h4>
@@ -424,23 +371,18 @@ const BasicInputElements = withSwal((props: any) => {
   );
 });
 
-const Channel = () => {
+const Flag = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [sourceData, setSourceData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialloading } = useSelector(
-    (state: RootState) => ({
-      state: state.Channels.channels.data,
-      error: state.Channels.error,
-      loading: state.Channels.loading,
-      initialloading: state.Channels.initialloading,
-    })
-  );
+  const { state, error, loading } = useSelector((state: RootState) => ({
+    state: state.Channels.channels.data,
+    error: state.Channels.error,
+    loading: state.Channels.loading,
+  }));
 
-  const Source = useSelector(
-    (state: RootState) => state?.Source?.sources?.data
-  );
+  const Source = useSelector((state: RootState) => state?.Source?.sources?.data);
 
   useEffect(() => {
     dispatch(getChannel());
@@ -457,15 +399,6 @@ const Channel = () => {
     }
   }, [Source]);
 
-  if (initialloading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      />
-    );
-  }
-
   return (
     <React.Fragment>
       <PageTitle
@@ -477,15 +410,10 @@ const Channel = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            sourceData={sourceData}
-            error={error}
-            loading={loading}
-          />
+          <BasicInputElements state={state} sourceData={sourceData} error={error} loading={loading} />
         </Col>
       </Row>
     </React.Fragment>
   );
 };
-export default Channel;
+export default Flag;
