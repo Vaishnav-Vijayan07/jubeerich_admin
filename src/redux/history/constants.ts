@@ -1,0 +1,10 @@
+export enum HistoryActionTypes {
+  API_RESPONSE_SUCCESS = "@@history/API_RESPONSE_SUCCESS",
+  API_RESPONSE_ERROR = "@@history/API_RESPONSE_ERROR",
+  GET_HISTORY = "@@history/GET_HISTORY",
+  GET_HISTORY_BY_LEAD_ID = "@@history/GET_HISTORY_BY_LEAD_ID",
+  GET_HISTORY_BY_ID = "@@history/GET_HISTORY_BY_ID",
+  ADD_HISTORY = "@@history/ADD_HISTORY",
+  UPDATE_HISTORY = "@@history/UPDATE_HISTORY",
+  DELETE_HISTORY = "@@history/DELETE_HISTORY",
+}

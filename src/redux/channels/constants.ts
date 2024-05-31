@@ -1,0 +1,9 @@
+export enum ChannelsActionTypes {
+  API_RESPONSE_SUCCESS = "@@channels/API_RESPONSE_SUCCESS",
+  API_RESPONSE_ERROR = "@@channels/API_RESPONSE_ERROR",
+
+  GET_CHANNELS = "@@channels/GET_CHANNELS",
+  ADD_CHANNELS = "@@channels/ADD_CHANNELS",
+  UPDATE_CHANNELS = "@@channels/UPDATE_CHANNELS",
+  DELETE_CHANNELS = "@@channels/DELETE_CHANNELS",
+}
