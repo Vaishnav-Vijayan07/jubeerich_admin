@@ -17,6 +17,8 @@ import HistorySaga from "./history/saga";
 import DashboardSaga from "./dashboard/saga";
 import OfficeTypeSaga from "./OfficeType/saga";
 import RegionSaga from "./regions/saga";
+import FlagSaga from "./flag/saga";
+import MaritalStatusSaga from "./marital_status/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -27,6 +29,8 @@ export default function* rootSaga() {
     channelSaga(),
     OfficeTypeSaga(),
     RegionSaga(),
+    FlagSaga(),
+    MaritalStatusSaga(),
     campaignSaga(),
     branchesSaga(),
     RoleSaga(),

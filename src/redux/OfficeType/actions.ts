@@ -65,6 +65,6 @@ export const updateOfficeTypeData = (
   office_type_description: string,
   updated_by: string
 ): OfficeTypesActionType => ({
-  type: OfficeTypesActionTypes.ADD_OFFICE_TYPE,
+  type: OfficeTypesActionTypes.UPDATE_OFFICE_TYPE,
   payload: { id, office_type_description, office_type_name, updated_by },
 });

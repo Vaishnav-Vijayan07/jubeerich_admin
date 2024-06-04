@@ -3,6 +3,7 @@ import { RegionActionTypes } from "./constants";
 
 const INIT_STATE = {
   regions: [],
+  regionById: null,
   loading: false,
   initialLoading: false,
   error: null,
@@ -47,7 +48,7 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
         case RegionActionTypes.GET_REGION_BY_ID: {
           return {
             ...state,
-            regions: action.payload.data,
+            regionById: action.payload.data,
             loading: false,
             initialLoading: false,
           };
@@ -58,7 +59,6 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
           return {
             ...state,
             loading: false,
-            initialLoading: false,
           };
         }
         case RegionActionTypes.UPDATE_REGION: {
@@ -66,7 +66,6 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
           return {
             ...state,
             loading: false,
-            initialLoading: false,
           };
         }
         case RegionActionTypes.DELETE_REGION: {
@@ -74,7 +73,6 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
           return {
             ...state,
             loading: false,
-            initialLoading: false,
           };
         }
         default:
@@ -106,7 +104,6 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
             ...state,
             error: action.payload.error,
             loading: false,
-            initialLoading: false,
           };
         }
         case RegionActionTypes.UPDATE_REGION: {
@@ -115,7 +112,6 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
             ...state,
             error: action.payload.error,
             loading: false,
-            initialLoading: false,
           };
         }
         case RegionActionTypes.DELETE_REGION: {
@@ -124,7 +120,6 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
             ...state,
             error: action.payload.error,
             loading: false,
-            initialLoading: false,
           };
         }
         default:
@@ -136,9 +131,9 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
     case RegionActionTypes.GET_REGION_BY_ID:
       return { ...state, loading: true, initialLoading: true };
     case RegionActionTypes.ADD_REGION:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true };
     case RegionActionTypes.UPDATE_REGION:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true };
     default:
       return { ...state };
   }

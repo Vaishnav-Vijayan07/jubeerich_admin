@@ -111,6 +111,7 @@ function* addOfficeTypeDataSaga({
         data
       )
     );
+    yield put(getOfficeTypeData());
   } catch (error: any) {
     console.log(error);
     yield put(
@@ -136,6 +137,7 @@ function* updateOfficeTypeDataSaga({
         data
       )
     );
+    yield put(getOfficeTypeData());
   } catch (error: any) {
     console.log(error);
     yield put(

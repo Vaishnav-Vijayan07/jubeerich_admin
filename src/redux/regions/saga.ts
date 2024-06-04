@@ -79,6 +79,7 @@ function* addRegionSaga({
     const data = response.message;
 
     yield put(regionApiResponseSuccess(RegionActionTypes.ADD_REGION, data));
+    yield put(getRegion());
   } catch (error: any) {
     console.log(error);
     yield put(regionApiResponseError(RegionActionTypes.ADD_REGION, error));
@@ -97,6 +98,7 @@ function* updateRegionSaga({
     const data = response.message;
 
     yield put(regionApiResponseSuccess(RegionActionTypes.UPDATE_REGION, data));
+    yield put(getRegion());
   } catch (error: any) {
     console.log(error);
     yield put(regionApiResponseError(RegionActionTypes.UPDATE_REGION, error));

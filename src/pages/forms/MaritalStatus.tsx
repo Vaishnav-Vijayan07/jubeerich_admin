@@ -1,7 +1,16 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Dropdown, Modal } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Dropdown,
+  Modal,
+  Spinner,
+} from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -13,9 +22,20 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
-import { addChannel, deleteChannel, getChannel, updateChannel } from "../../redux/actions";
+import {
+  addChannel,
+  deleteChannel,
+  getChannel,
+  updateChannel,
+} from "../../redux/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
+import {
+  addMaritalStatus,
+  deleteMaritalStatus,
+  getMaritalStatus,
+  updateMaritalStatus,
+} from "../../redux/marital_status/actions";
 
 interface OptionType {
   value: string;
@@ -40,15 +60,14 @@ const sizePerPageList = [
 
 const initialState = {
   id: "",
-  source_id: "",
-  channel_name: "",
-  channel_description: "",
+  marital_status_name: "",
+  marital_status_description: "",
   updated_by: "",
 };
 
 const initialValidationState = {
-  channel_name: "",
-  channel_description: "",
+  marital_status_name: "",
+  marital_status_description: "",
   source_id: "",
 };
 
@@ -71,18 +90,20 @@ const BasicInputElements = withSwal((props: any) => {
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(initialValidationState);
+  const [validationErrors, setValidationErrors] = useState(
+    initialValidationState
+  );
 
   const validationSchema = yup.object().shape({
-    channel_name: yup
+    marital_status_name: yup
       .string()
       .required("channel name is required")
       .min(3, "channel name must be at least 3 characters long"),
-    channel_description: yup
+    marital_status_description: yup
       .string()
       .required("channel description is required")
       .min(3, "channel description must be at least 3 characters long"),
-    source_id: yup.string().required("Please choose a source"),
+    // source_id: yup.string().required("Please choose a source"),
   });
 
   /*
@@ -95,14 +116,15 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedSource: OptionType[] = sourceData?.filter((source: any) => source.value == item.source_id);
+    const updatedSource: OptionType[] = sourceData?.filter(
+      (source: any) => source.value == item.source_id
+    );
     setSelectedSource(updatedSource[0]);
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
-      source_id: item?.source_id,
-      channel_name: item?.channel_name,
-      channel_description: item?.channel_description,
+      marital_status_name: item?.marital_status_name,
+      marital_status_description: item?.marital_status_description,
       updated_by: "",
     }));
 
@@ -123,7 +145,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteChannel(id));
+          dispatch(deleteMaritalStatus(id));
           if (isUpdate) {
             setFormData(initialState);
             setSelectedSource(null);
@@ -156,12 +178,23 @@ const BasicInputElements = withSwal((props: any) => {
         if (isUpdate) {
           // Handle update logic
           dispatch(
-            updateChannel(formData.id, formData.source_id, formData.channel_name, formData.channel_description, user_id)
+            updateMaritalStatus(
+              formData.id,
+              formData.marital_status_name,
+              formData.marital_status_description,
+              user_id
+            )
           );
           setIsUpdate(false);
         } else {
           // Handle add logic
-          dispatch(addChannel(formData.source_id, formData.channel_name, formData.channel_description, user_id));
+          dispatch(
+            addMaritalStatus(
+              formData.marital_status_name,
+              formData.marital_status_description,
+              user_id
+            )
+          );
         }
       }
 
@@ -188,20 +221,20 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Channel Name",
-      accessor: "channel_name",
+      Header: "Status Name",
+      accessor: "marital_status_name",
       sort: true,
     },
     {
-      Header: "Channel Description",
-      accessor: "channel_description",
+      Header: "Status Description",
+      accessor: "marital_status_description",
       sort: false,
     },
-    {
-      Header: "Source",
-      accessor: "source_name",
-      sort: false,
-    },
+    // {
+    //   Header: "Source",
+    //   accessor: "source_name",
+    //   sort: false,
+    // },
     {
       Header: "Updated By",
       accessor: "updated_by",
@@ -280,52 +313,44 @@ const BasicInputElements = withSwal((props: any) => {
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
+        <Modal
+          show={responsiveModal}
+          onHide={toggleResponsiveModal}
+          dialogClassName="modal-dialog-centered"
+        >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Channel Management</h4>
+              <h4 className="modal-title">Marital Status Management</h4>
             </Modal.Header>
             <Modal.Body>
               <Form.Group className="mb-3" controlId="channel_name">
-                <Form.Label>Channel Name</Form.Label>
+                <Form.Label>Status Name</Form.Label>
                 <Form.Control
                   type="text"
-                  name="channel_name"
-                  value={formData.channel_name}
+                  name="marital_status_name"
+                  value={formData.marital_status_name}
                   onChange={handleInputChange}
                 />
-                {validationErrors.channel_name && (
-                  <Form.Text className="text-danger">{validationErrors.channel_name}</Form.Text>
+                {validationErrors.marital_status_name && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.marital_status_name}
+                  </Form.Text>
                 )}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="channel_description">
-                <Form.Label>Channel Description</Form.Label>
+                <Form.Label>Status Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
-                  name="channel_description"
-                  value={formData.channel_description}
+                  name="marital_status_description"
+                  value={formData.marital_status_description}
                   onChange={handleInputChange}
                 />
-                {validationErrors.channel_description && (
-                  <Form.Text className="text-danger">{validationErrors.channel_description}</Form.Text>
-                )}
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="source_id">
-                <Form.Label>Source</Form.Label>
-                <Select
-                  className="react-select react-select-container"
-                  classNamePrefix="react-select"
-                  name="source_id"
-                  options={sourceData}
-                  value={selectedSource}
-                  onChange={handleSourceChange}
-                />
-
-                {validationErrors.source_id && (
-                  <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>
+                {validationErrors.marital_status_description && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.marital_status_description}
+                  </Form.Text>
                 )}
               </Form.Group>
             </Modal.Body>
@@ -335,11 +360,20 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 ms-2"
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : toggleResponsiveModal())}
+                onClick={() =>
+                  isUpdate
+                    ? [handleCancelUpdate(), toggleResponsiveModal()]
+                    : toggleResponsiveModal()
+                }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
+              <Button
+                type="submit"
+                variant="success"
+                id="button-addon2"
+                className="mt-1"
+              >
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -350,10 +384,13 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
-                <i className="mdi mdi-plus-circle"></i> Add Channel
+              <Button
+                className="btn-sm btn-blue waves-effect waves-light float-end"
+                onClick={toggleResponsiveModal}
+              >
+                <i className="mdi mdi-plus-circle"></i> Add Status
               </Button>
-              <h4 className="header-title mb-4">Manage Channels</h4>
+              <h4 className="header-title mb-4">Manage Marital Status</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -376,41 +413,63 @@ const MaritalStatus = () => {
   const [sourceData, setSourceData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading } = useSelector((state: RootState) => ({
-    state: state.Channels.channels.data,
-    error: state.Channels.error,
-    loading: state.Channels.loading,
-  }));
+  const { state, error, loading, initialLoading } = useSelector(
+    (state: RootState) => ({
+      state: state.MaritalStatus.maritalStatus,
+      error: state.MaritalStatus.error,
+      loading: state.MaritalStatus.loading,
+      initialLoading: state.MaritalStatus.initialLoading,
+    })
+  );
 
-  const Source = useSelector((state: RootState) => state?.Source?.sources?.data);
+  const Source = useSelector(
+    (state: RootState) => state?.Source?.sources?.data
+  );
 
   useEffect(() => {
-    dispatch(getChannel());
-    dispatch(getSource());
+    dispatch(getMaritalStatus());
   }, []);
 
-  useEffect(() => {
-    if (Source) {
-      const SourceArray = Source?.map((source: any) => ({
-        value: source.id.toString(),
-        label: source.source_name, // Replace with the appropriate field from the lead data
-      }));
-      setSourceData(SourceArray);
-    }
-  }, [Source]);
+  // useEffect(() => {
+  //   if (Source) {
+  //     const SourceArray = Source?.map((source: any) => ({
+  //       value: source.id.toString(),
+  //       label: source.source_name, // Replace with the appropriate field from the lead data
+  //     }));
+  //     setSourceData(SourceArray);
+  //   }
+  // }, [Source]);
+
+  if (initialLoading) {
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "50%", left: "50%" }}
+      />
+    );
+  }
 
   return (
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/channels" },
-          { label: "Channels", path: "/master/channels", active: true },
+          { label: "Master", path: "/master/marital_status" },
+          {
+            label: "Marital Status",
+            path: "/master/marital_status",
+            active: true,
+          },
         ]}
-        title={"Channels"}
+        title={"Marital Status"}
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} sourceData={sourceData} error={error} loading={loading} />
+          <BasicInputElements
+            state={state}
+            sourceData={sourceData}
+            error={error}
+            loading={loading}
+          />
         </Col>
       </Row>
     </React.Fragment>

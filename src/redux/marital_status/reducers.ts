@@ -1,77 +1,74 @@
 import { showErrorAlert, showSuccessAlert } from "../../constants";
-import { OfficeTypesActionTypes } from "./constants";
+import { MaritalStatusActionTypes } from "./constants";
 
 const INIT_STATE = {
-  officeTypes: [],
-  officeById: null,
+  maritalStatus: [],
+  maritalStatusById: null,
   loading: false,
   initialLoading: false,
   error: null,
 };
 
-interface OfficeData {
+interface MaritalStatusData {
   id: string;
-  office_type_name: string;
-  office_type_description: string;
+  marital_status_name: string;
+  marital_status_description: string;
   updated_by: string;
 }
 
-interface OfficeTypesActionType {
+interface MaritalStatusActionType {
   type:
-    | OfficeTypesActionTypes.API_RESPONSE_SUCCESS
-    | OfficeTypesActionTypes.API_RESPONSE_ERROR
-    | OfficeTypesActionTypes.GET_OFFICE_TYPE
-    | OfficeTypesActionTypes.GET_OFFICE_TYPE_BY_ID
-    | OfficeTypesActionTypes.ADD_OFFICE_TYPE
-    | OfficeTypesActionTypes.UPDATE_OFFICE_TYPE
-    | OfficeTypesActionTypes.DELETE_OFFICE_TYPE;
+    | MaritalStatusActionTypes.API_RESPONSE_SUCCESS
+    | MaritalStatusActionTypes.API_RESPONSE_ERROR
+    | MaritalStatusActionTypes.GET_MARITAL_STATUS
+    | MaritalStatusActionTypes.GET_MARITAL_STATUS_BY_ID
+    | MaritalStatusActionTypes.ADD_MARITAL_STATUS
+    | MaritalStatusActionTypes.UPDATE_MARITAL_STATUS
+    | MaritalStatusActionTypes.DELETE_MARITAL_STATUS;
   payload: {
     actionType?: string;
-    data?: OfficeData | {};
+    data?: MaritalStatusData | {};
     error?: string;
   };
 }
 
-const OfficeTypes = (
-  state: any = INIT_STATE,
-  action: OfficeTypesActionType
-) => {
+const MaritalStatus = (state: any = INIT_STATE, action: MaritalStatusActionType) => {
   switch (action.type) {
-    case OfficeTypesActionTypes.API_RESPONSE_SUCCESS:
+    case MaritalStatusActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
-        case OfficeTypesActionTypes.GET_OFFICE_TYPE: {
+        case MaritalStatusActionTypes.GET_MARITAL_STATUS: {
           return {
             ...state,
-            officeTypes: action.payload.data,
+            maritalStatus: action.payload.data,
             loading: false,
             initialLoading: false,
           };
         }
 
-        case OfficeTypesActionTypes.GET_OFFICE_TYPE_BY_ID: {
+        case MaritalStatusActionTypes.GET_MARITAL_STATUS_BY_ID: {
           return {
             ...state,
-            officeById: action.payload.data,
+            maritalStatusById: action.payload.data,
             loading: false,
             initialLoading: false,
           };
         }
 
-        case OfficeTypesActionTypes.ADD_OFFICE_TYPE: {
+        case MaritalStatusActionTypes.ADD_MARITAL_STATUS: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
           };
         }
-        case OfficeTypesActionTypes.UPDATE_OFFICE_TYPE: {
+        case MaritalStatusActionTypes.UPDATE_MARITAL_STATUS: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
           };
         }
-        case OfficeTypesActionTypes.DELETE_OFFICE_TYPE: {
+        case MaritalStatusActionTypes.DELETE_MARITAL_STATUS: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
@@ -82,9 +79,9 @@ const OfficeTypes = (
           return { ...state };
       }
 
-    case OfficeTypesActionTypes.API_RESPONSE_ERROR:
+    case MaritalStatusActionTypes.API_RESPONSE_ERROR:
       switch (action.payload.actionType) {
-        case OfficeTypesActionTypes.GET_OFFICE_TYPE: {
+        case MaritalStatusActionTypes.GET_MARITAL_STATUS: {
           return {
             ...state,
             error: action.payload.error,
@@ -92,7 +89,7 @@ const OfficeTypes = (
             initialLoading: false,
           };
         }
-        case OfficeTypesActionTypes.GET_OFFICE_TYPE_BY_ID: {
+        case MaritalStatusActionTypes.GET_MARITAL_STATUS_BY_ID: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -101,7 +98,7 @@ const OfficeTypes = (
             initialLoading: false,
           };
         }
-        case OfficeTypesActionTypes.ADD_OFFICE_TYPE: {
+        case MaritalStatusActionTypes.ADD_MARITAL_STATUS: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -109,7 +106,7 @@ const OfficeTypes = (
             loading: false,
           };
         }
-        case OfficeTypesActionTypes.UPDATE_OFFICE_TYPE: {
+        case MaritalStatusActionTypes.UPDATE_MARITAL_STATUS: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -117,7 +114,7 @@ const OfficeTypes = (
             loading: false,
           };
         }
-        case OfficeTypesActionTypes.DELETE_OFFICE_TYPE: {
+        case MaritalStatusActionTypes.DELETE_MARITAL_STATUS: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -129,17 +126,17 @@ const OfficeTypes = (
           return { ...state };
       }
 
-    case OfficeTypesActionTypes.GET_OFFICE_TYPE:
+    case MaritalStatusActionTypes.GET_MARITAL_STATUS:
       return { ...state, loading: true, initialLoading: true };
-    case OfficeTypesActionTypes.GET_OFFICE_TYPE_BY_ID:
+    case MaritalStatusActionTypes.GET_MARITAL_STATUS_BY_ID:
       return { ...state, loading: true, initialLoading: true };
-    case OfficeTypesActionTypes.ADD_OFFICE_TYPE:
+    case MaritalStatusActionTypes.ADD_MARITAL_STATUS:
       return { ...state, loading: true };
-    case OfficeTypesActionTypes.UPDATE_OFFICE_TYPE:
+    case MaritalStatusActionTypes.UPDATE_MARITAL_STATUS:
       return { ...state, loading: true };
     default:
       return { ...state };
   }
 };
 
-export default OfficeTypes;
+export default MaritalStatus;

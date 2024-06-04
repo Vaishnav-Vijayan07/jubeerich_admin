@@ -30,7 +30,12 @@ import {
 } from "../../redux/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
-import { deleteOfficeTypeData, getOfficeTypeData } from "../../redux/OfficeType/actions";
+import {
+  addOfficeTypeData,
+  deleteOfficeTypeData,
+  getOfficeTypeData,
+  updateOfficeTypeData,
+} from "../../redux/OfficeType/actions";
 
 interface OptionType {
   value: string;
@@ -55,16 +60,15 @@ const sizePerPageList = [
 
 const initialState = {
   id: "",
-  source_id: "",
-  channel_name: "",
-  channel_description: "",
+  office_type_name: "",
+  office_type_description: "",
   updated_by: "",
 };
 
 const initialValidationState = {
-  channel_name: "",
-  channel_description: "",
-  source_id: "",
+  office_type_name: "",
+  office_type_description: "",
+  updated_by: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -91,15 +95,15 @@ const BasicInputElements = withSwal((props: any) => {
   );
 
   const validationSchema = yup.object().shape({
-    channel_name: yup
+    office_type_name: yup
       .string()
-      .required("channel name is required")
-      .min(3, "channel name must be at least 3 characters long"),
-    channel_description: yup
+      .required("Office name is required")
+      .min(3, "Office name must be at least 3 characters long"),
+    office_type_description: yup
       .string()
-      .required("channel description is required")
-      .min(3, "channel description must be at least 3 characters long"),
-    source_id: yup.string().required("Please choose a source"),
+      .required("Office description is required")
+      .min(3, "Office description must be at least 3 characters long"),
+    // source_id: yup.string().required("Please choose a source"),
   });
 
   /*
@@ -112,16 +116,15 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedSource: OptionType[] = sourceData?.filter(
-      (source: any) => source.value == item.source_id
-    );
-    setSelectedSource(updatedSource[0]);
+    // const updatedSource: OptionType[] = sourceData?.filter(
+    //   (source: any) => source.value == item.source_id
+    // );
+    // setSelectedSource(updatedSource[0]);
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
-      source_id: item?.source_id,
-      channel_name: item?.channel_name,
-      channel_description: item?.channel_description,
+      office_type_name: item?.office_type_name,
+      office_type_description: item?.office_type_description,
       updated_by: "",
     }));
 
@@ -174,23 +177,23 @@ const BasicInputElements = withSwal((props: any) => {
         const { user_id } = JSON.parse(userInfo);
         if (isUpdate) {
           // Handle update logic
+
           dispatch(
-            updateChannel(
+            updateOfficeTypeData(
               formData.id,
-              formData.source_id,
-              formData.channel_name,
-              formData.channel_description,
+              formData.office_type_name,
+              formData.office_type_description,
               user_id
             )
           );
           setIsUpdate(false);
         } else {
           // Handle add logic
+
           dispatch(
-            addChannel(
-              formData.source_id,
-              formData.channel_name,
-              formData.channel_description,
+            addOfficeTypeData(
+              formData.office_type_name,
+              formData.office_type_description,
               user_id
             )
           );
@@ -319,41 +322,41 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Channel Management</h4>
+              <h4 className="modal-title">Office Management</h4>
             </Modal.Header>
             <Modal.Body>
               <Form.Group className="mb-3" controlId="channel_name">
-                <Form.Label>Channel Name</Form.Label>
+                <Form.Label>Office Name</Form.Label>
                 <Form.Control
                   type="text"
-                  name="channel_name"
-                  value={formData.channel_name}
+                  name="office_type_name"
+                  value={formData.office_type_name}
                   onChange={handleInputChange}
                 />
-                {validationErrors.channel_name && (
+                {validationErrors.office_type_name && (
                   <Form.Text className="text-danger">
-                    {validationErrors.channel_name}
+                    {validationErrors.office_type_name}
                   </Form.Text>
                 )}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="channel_description">
-                <Form.Label>Channel Description</Form.Label>
+                <Form.Label>Office Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
-                  name="channel_description"
-                  value={formData.channel_description}
+                  name="office_type_description"
+                  value={formData.office_type_description}
                   onChange={handleInputChange}
                 />
-                {validationErrors.channel_description && (
+                {validationErrors.office_type_description && (
                   <Form.Text className="text-danger">
-                    {validationErrors.channel_description}
+                    {validationErrors.office_type_description}
                   </Form.Text>
                 )}
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="source_id">
+              {/* <Form.Group className="mb-3" controlId="source_id">
                 <Form.Label>Source</Form.Label>
                 <Select
                   className="react-select react-select-container"
@@ -369,7 +372,7 @@ const BasicInputElements = withSwal((props: any) => {
                     {validationErrors.source_id}
                   </Form.Text>
                 )}
-              </Form.Group>
+              </Form.Group> */}
             </Modal.Body>
 
             <Modal.Footer>
@@ -471,7 +474,11 @@ const OfficeType = () => {
       <PageTitle
         breadCrumbItems={[
           { label: "Master", path: "/master/channels" },
-          { label: "Office Types ", path: "/master/office_types", active: true },
+          {
+            label: "Office Types ",
+            path: "/master/office_types",
+            active: true,
+          },
         ]}
         title={"Office Types"}
       />

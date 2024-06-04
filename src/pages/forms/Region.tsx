@@ -30,7 +30,12 @@ import {
 } from "../../redux/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
-import { deleteRegion, getRegion } from "../../redux/regions/actions";
+import {
+  addRegion,
+  deleteRegion,
+  getRegion,
+  updateRegion,
+} from "../../redux/regions/actions";
 
 interface OptionType {
   value: string;
@@ -55,16 +60,15 @@ const sizePerPageList = [
 
 const initialState = {
   id: "",
-  source_id: "",
-  channel_name: "",
-  channel_description: "",
+  region_name: "",
+  region_description: "",
   updated_by: "",
 };
 
 const initialValidationState = {
-  channel_name: "",
-  channel_description: "",
-  source_id: "",
+  region_name: "",
+  region_description: "",
+  updated_by: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -91,15 +95,15 @@ const BasicInputElements = withSwal((props: any) => {
   );
 
   const validationSchema = yup.object().shape({
-    channel_name: yup
+    region_name: yup
       .string()
       .required("channel name is required")
       .min(3, "channel name must be at least 3 characters long"),
-    channel_description: yup
+    region_description: yup
       .string()
       .required("channel description is required")
       .min(3, "channel description must be at least 3 characters long"),
-    source_id: yup.string().required("Please choose a source"),
+    // source_id: yup.string().required("Please choose a source"),
   });
 
   /*
@@ -112,16 +116,15 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedSource: OptionType[] = sourceData?.filter(
-      (source: any) => source.value == item.source_id
-    );
-    setSelectedSource(updatedSource[0]);
+    // const updatedSource: OptionType[] = sourceData?.filter(
+    //   (source: any) => source.value == item.source_id
+    // );
+    // setSelectedSource(updatedSource[0]);
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
-      source_id: item?.source_id,
-      channel_name: item?.channel_name,
-      channel_description: item?.channel_description,
+      region_name: item?.region_name,
+      region_description: item?.region_description,
       updated_by: "",
     }));
 
@@ -145,7 +148,6 @@ const BasicInputElements = withSwal((props: any) => {
           dispatch(deleteRegion(id));
           if (isUpdate) {
             setFormData(initialState);
-            setSelectedSource(null);
           }
         }
       });
@@ -175,11 +177,10 @@ const BasicInputElements = withSwal((props: any) => {
         if (isUpdate) {
           // Handle update logic
           dispatch(
-            updateChannel(
+            updateRegion(
               formData.id,
-              formData.source_id,
-              formData.channel_name,
-              formData.channel_description,
+              formData.region_name,
+              formData.region_description,
               user_id
             )
           );
@@ -187,10 +188,9 @@ const BasicInputElements = withSwal((props: any) => {
         } else {
           // Handle add logic
           dispatch(
-            addChannel(
-              formData.source_id,
-              formData.channel_name,
-              formData.channel_description,
+            addRegion(
+              formData.region_name,
+              formData.region_description,
               user_id
             )
           );
@@ -319,54 +319,36 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Channel Management</h4>
+              <h4 className="modal-title">Region Management</h4>
             </Modal.Header>
             <Modal.Body>
               <Form.Group className="mb-3" controlId="channel_name">
-                <Form.Label>Channel Name</Form.Label>
+                <Form.Label>Region Name</Form.Label>
                 <Form.Control
                   type="text"
-                  name="channel_name"
-                  value={formData.channel_name}
+                  name="region_name"
+                  value={formData.region_name}
                   onChange={handleInputChange}
                 />
-                {validationErrors.channel_name && (
+                {validationErrors.region_name && (
                   <Form.Text className="text-danger">
-                    {validationErrors.channel_name}
+                    {validationErrors.region_name}
                   </Form.Text>
                 )}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="channel_description">
-                <Form.Label>Channel Description</Form.Label>
+                <Form.Label>Region Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
-                  name="channel_description"
-                  value={formData.channel_description}
+                  name="region_description"
+                  value={formData.region_description}
                   onChange={handleInputChange}
                 />
-                {validationErrors.channel_description && (
+                {validationErrors.region_description && (
                   <Form.Text className="text-danger">
-                    {validationErrors.channel_description}
-                  </Form.Text>
-                )}
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="source_id">
-                <Form.Label>Source</Form.Label>
-                <Select
-                  className="react-select react-select-container"
-                  classNamePrefix="react-select"
-                  name="source_id"
-                  options={sourceData}
-                  value={selectedSource}
-                  onChange={handleSourceChange}
-                />
-
-                {validationErrors.source_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.source_id}
+                    {validationErrors.region_description}
                   </Form.Text>
                 )}
               </Form.Group>
@@ -407,7 +389,7 @@ const BasicInputElements = withSwal((props: any) => {
               >
                 <i className="mdi mdi-plus-circle"></i> Add Region
               </Button>
-              <h4 className="header-title mb-4">Manage Channels</h4>
+              <h4 className="header-title mb-4">Manage Regions</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}

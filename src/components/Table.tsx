@@ -273,6 +273,11 @@ const Table = (props: TableProps) => {
             })}
           </tbody>
         </table>
+      {rows.length === 0 && (
+        <div className="text-center">
+          <p>No data found...</p>
+        </div>
+      )}
       </div>
       {pagination && (
         <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />

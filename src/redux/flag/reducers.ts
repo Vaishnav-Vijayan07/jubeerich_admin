@@ -1,77 +1,74 @@
 import { showErrorAlert, showSuccessAlert } from "../../constants";
-import { OfficeTypesActionTypes } from "./constants";
+import { FlagActionTypes } from "./constants";
 
 const INIT_STATE = {
-  officeTypes: [],
-  officeById: null,
+  flags: [],
+  flagById: null,
   loading: false,
   initialLoading: false,
   error: null,
 };
 
-interface OfficeData {
+interface FlagData {
   id: string;
-  office_type_name: string;
-  office_type_description: string;
+  flag_name: string;
+  flag_description: string;
   updated_by: string;
 }
 
-interface OfficeTypesActionType {
+interface FlagActionType {
   type:
-    | OfficeTypesActionTypes.API_RESPONSE_SUCCESS
-    | OfficeTypesActionTypes.API_RESPONSE_ERROR
-    | OfficeTypesActionTypes.GET_OFFICE_TYPE
-    | OfficeTypesActionTypes.GET_OFFICE_TYPE_BY_ID
-    | OfficeTypesActionTypes.ADD_OFFICE_TYPE
-    | OfficeTypesActionTypes.UPDATE_OFFICE_TYPE
-    | OfficeTypesActionTypes.DELETE_OFFICE_TYPE;
+    | FlagActionTypes.API_RESPONSE_SUCCESS
+    | FlagActionTypes.API_RESPONSE_ERROR
+    | FlagActionTypes.GET_FLAG
+    | FlagActionTypes.GET_FLAG_BY_ID
+    | FlagActionTypes.ADD_FLAG
+    | FlagActionTypes.UPDATE_FLAG
+    | FlagActionTypes.DELETE_FLAG;
   payload: {
     actionType?: string;
-    data?: OfficeData | {};
+    data?: FlagData | {};
     error?: string;
   };
 }
 
-const OfficeTypes = (
-  state: any = INIT_STATE,
-  action: OfficeTypesActionType
-) => {
+const Flag = (state: any = INIT_STATE, action: FlagActionType) => {
   switch (action.type) {
-    case OfficeTypesActionTypes.API_RESPONSE_SUCCESS:
+    case FlagActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
-        case OfficeTypesActionTypes.GET_OFFICE_TYPE: {
+        case FlagActionTypes.GET_FLAG: {
           return {
             ...state,
-            officeTypes: action.payload.data,
+            flags: action.payload.data,
             loading: false,
             initialLoading: false,
           };
         }
 
-        case OfficeTypesActionTypes.GET_OFFICE_TYPE_BY_ID: {
+        case FlagActionTypes.GET_FLAG_BY_ID: {
           return {
             ...state,
-            officeById: action.payload.data,
+            flagById: action.payload.data,
             loading: false,
             initialLoading: false,
           };
         }
 
-        case OfficeTypesActionTypes.ADD_OFFICE_TYPE: {
+        case FlagActionTypes.ADD_FLAG: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
           };
         }
-        case OfficeTypesActionTypes.UPDATE_OFFICE_TYPE: {
+        case FlagActionTypes.UPDATE_FLAG: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
           };
         }
-        case OfficeTypesActionTypes.DELETE_OFFICE_TYPE: {
+        case FlagActionTypes.DELETE_FLAG: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
@@ -82,9 +79,9 @@ const OfficeTypes = (
           return { ...state };
       }
 
-    case OfficeTypesActionTypes.API_RESPONSE_ERROR:
+    case FlagActionTypes.API_RESPONSE_ERROR:
       switch (action.payload.actionType) {
-        case OfficeTypesActionTypes.GET_OFFICE_TYPE: {
+        case FlagActionTypes.GET_FLAG: {
           return {
             ...state,
             error: action.payload.error,
@@ -92,7 +89,7 @@ const OfficeTypes = (
             initialLoading: false,
           };
         }
-        case OfficeTypesActionTypes.GET_OFFICE_TYPE_BY_ID: {
+        case FlagActionTypes.GET_FLAG_BY_ID: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -101,7 +98,7 @@ const OfficeTypes = (
             initialLoading: false,
           };
         }
-        case OfficeTypesActionTypes.ADD_OFFICE_TYPE: {
+        case FlagActionTypes.ADD_FLAG: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -109,7 +106,7 @@ const OfficeTypes = (
             loading: false,
           };
         }
-        case OfficeTypesActionTypes.UPDATE_OFFICE_TYPE: {
+        case FlagActionTypes.UPDATE_FLAG: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -117,7 +114,7 @@ const OfficeTypes = (
             loading: false,
           };
         }
-        case OfficeTypesActionTypes.DELETE_OFFICE_TYPE: {
+        case FlagActionTypes.DELETE_FLAG: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -129,17 +126,17 @@ const OfficeTypes = (
           return { ...state };
       }
 
-    case OfficeTypesActionTypes.GET_OFFICE_TYPE:
+    case FlagActionTypes.GET_FLAG:
       return { ...state, loading: true, initialLoading: true };
-    case OfficeTypesActionTypes.GET_OFFICE_TYPE_BY_ID:
+    case FlagActionTypes.GET_FLAG_BY_ID:
       return { ...state, loading: true, initialLoading: true };
-    case OfficeTypesActionTypes.ADD_OFFICE_TYPE:
+    case FlagActionTypes.ADD_FLAG:
       return { ...state, loading: true };
-    case OfficeTypesActionTypes.UPDATE_OFFICE_TYPE:
+    case FlagActionTypes.UPDATE_FLAG:
       return { ...state, loading: true };
     default:
       return { ...state };
   }
 };
 
-export default OfficeTypes;
+export default Flag;
