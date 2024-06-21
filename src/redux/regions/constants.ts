@@ -1,0 +1,9 @@
+export enum RegionActionTypes {
+  API_RESPONSE_SUCCESS = "@@region/API_RESPONSE_SUCCESS",
+  API_RESPONSE_ERROR = "@@region/API_RESPONSE_ERROR",
+  GET_REGION = "@@region/GET_REGION",
+  GET_REGION_BY_ID = "@@region/GET_REGION_BY_ID",
+  ADD_REGION = "@@region/ADD_REGION",
+  UPDATE_REGION = "@@region/UPDATE_REGION",
+  DELETE_REGION = "@@region/DELETE_REGION",
+}

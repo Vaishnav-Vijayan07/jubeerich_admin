@@ -15,14 +15,22 @@ import Checklist from "./checklist/reducers";
 import SubStatus from "./subStatus/reducers";
 import History from "./history/reducers";
 import Dashboard from "./dashboard/reducer";
+import OfficeTypes from "./OfficeType/reducers";
+import Region from "./regions/reducers";
+import Flag from "./flag/reducers";
+import MaritalStatus from "./marital_status/reducers";
 export default combineReducers({
   Auth,
   Layout,
   Category,
   Source,
   Channels,
+  OfficeTypes,
+  Region,
   Campaign,
   Branches,
+  Flag,
+  MaritalStatus,
   Roles,
   Users,
   Leads,

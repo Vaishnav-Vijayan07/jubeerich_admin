@@ -15,7 +15,12 @@ export interface MenuItemTypes {
 }
 
 const MENU_ITEMS: MenuItemTypes[] = [
-  { key: "home", label: "Home", isTitle: true, roles: ["Monitor", "Add Leads", "View Task"] },
+  {
+    key: "home",
+    label: "Home",
+    isTitle: true,
+    roles: ["Monitor", "Add Leads", "View Task"],
+  },
   {
     key: "dashboard",
     label: "Dashboard",
@@ -26,7 +31,6 @@ const MENU_ITEMS: MenuItemTypes[] = [
   },
 
   // { key: "apps", label: "Apps", isTitle: true },
-
 
   // { key: "leads", label: "Leads Management", isTitle: true, roles: ["Add Leads", "View Task"] },
 
@@ -72,6 +76,36 @@ const MENU_ITEMS: MenuItemTypes[] = [
         key: "channel",
         label: "Channel",
         url: "/settings/master/channel",
+        parentKey: "master",
+      },
+      {
+        key: "office_type",
+        label: "Office Type",
+        url: "/settings/master/office_type",
+        parentKey: "master",
+      },
+      {
+        key: "region",
+        label: "Region",
+        url: "/settings/master/region",
+        parentKey: "master",
+      },
+      {
+        key: "flag",
+        label: "Flag",
+        url: "/settings/master/flag",
+        parentKey: "master",
+      },
+      {
+        key: "marital_status",
+        label: "Marital Status",
+        url: "/settings/master/marital_status",
+        parentKey: "master",
+      },
+      {
+        key: "country",
+        label: "Country",
+        url: "/settings/master/country",
         parentKey: "master",
       },
       // {
@@ -129,7 +163,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
   //   roles: ["Add Leads", "View Task"],
   // },
 
-  { key: "user_management", label: "User Management", isTitle: true, roles: ["Monitor"] },
+  {
+    key: "user_management",
+    label: "User Management",
+    isTitle: true,
+    roles: ["Monitor"],
+  },
 
   {
     key: "user_management",

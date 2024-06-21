@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -317,15 +317,25 @@ const Sources = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   //Fetch data from redux store
-  const { state, error, loading } = useSelector((state: RootState) => ({
+  const { state, error, loading,initialloading } = useSelector((state: RootState) => ({
     state: state.Source.sources.data,
     error: state.Source.error,
     loading: state.Source.loading,
+    initialloading:state.Source.initialloading,
   }));
 
   useEffect(() => {
     dispatch(getSource());
   }, []);
+
+  if (initialloading) {
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "50%", left: "50%" }}
+      />
+    );
+  }
 
   return (
     <React.Fragment>

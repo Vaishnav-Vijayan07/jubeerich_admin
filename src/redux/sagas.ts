@@ -15,6 +15,10 @@ import ChecklistSaga from "./checklist/saga";
 import SubStatusSaga from "./subStatus/saga";
 import HistorySaga from "./history/saga";
 import DashboardSaga from "./dashboard/saga";
+import OfficeTypeSaga from "./OfficeType/saga";
+import RegionSaga from "./regions/saga";
+import FlagSaga from "./flag/saga";
+import MaritalStatusSaga from "./marital_status/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -23,6 +27,10 @@ export default function* rootSaga() {
     categorySaga(),
     sourceSaga(),
     channelSaga(),
+    OfficeTypeSaga(),
+    RegionSaga(),
+    FlagSaga(),
+    MaritalStatusSaga(),
     campaignSaga(),
     branchesSaga(),
     RoleSaga(),

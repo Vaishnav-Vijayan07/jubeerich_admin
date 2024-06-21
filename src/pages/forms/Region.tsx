@@ -1,7 +1,16 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Dropdown,
+  Modal,
+  Spinner,
+} from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -12,20 +21,34 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
+import { getSource } from "../../redux/sources/actions";
 import {
-  addCategory,
-  deleteCategory,
-  getCategory,
-  updateCategory,
+  addChannel,
+  deleteChannel,
+  getChannel,
+  updateChannel,
 } from "../../redux/actions";
+import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
-import { error } from "console";
+import {
+  addRegion,
+  deleteRegion,
+  getRegion,
+  updateRegion,
+} from "../../redux/regions/actions";
+
+interface OptionType {
+  value: string;
+  label: string;
+}
 
 interface TableRecords {
-  id: number;
-  category_name: string;
-  category_description: string;
-  status: boolean;
+  id: string;
+  source_id: string;
+  channel_name: string;
+  channel_description: string;
+  updated_by: string;
+  status: string;
 }
 
 const sizePerPageList = [
@@ -35,50 +58,52 @@ const sizePerPageList = [
   },
 ];
 
-const initialFormData = {
+const initialState = {
   id: "",
-  category_name: "",
-  category_description: "",
-  parent_category_id: "1",
-  status: true,
+  region_name: "",
+  region_description: "",
   updated_by: "",
 };
 
 const initialValidationState = {
-  category_name: "",
-  category_description: "",
+  region_name: "",
+  region_description: "",
+  updated_by: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
-  const { swal, state, loading, error } = props;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const { swal, state, sourceData, error, loading } = props;
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
+  //Table data
+  const records: TableRecords[] = state;
+
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
-  //Input data
-  const [formData, setFormData] = useState(initialFormData);
-
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [selectedSource, setSelectedSource] = useState<OptionType | null>(null);
+  const [formData, setFormData] = useState(initialState);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
-  const records: TableRecords[] = state;
+  //validation errors
+  const [validationErrors, setValidationErrors] = useState(
+    initialValidationState
+  );
 
   const validationSchema = yup.object().shape({
-    category_name: yup
+    region_name: yup
       .string()
-      .required("Category name is required")
-      .min(3, "Category name must be at least 3 characters long"),
-    category_description: yup
+      .required("channel name is required")
+      .min(3, "channel name must be at least 3 characters long"),
+    region_description: yup
       .string()
-      .required("Category description is required")
-      .min(3, "Category description must be at least 3 characters long"),
+      .required("channel description is required")
+      .min(3, "channel description must be at least 3 characters long"),
+    // source_id: yup.string().required("Please choose a source"),
   });
 
   /*
@@ -86,26 +111,28 @@ const BasicInputElements = withSwal((props: any) => {
    */
   const methods = useForm({
     resolver: yupResolver(validationSchema), // Integrate yup with react-hook-form
-    defaultValues: initialFormData,
+    defaultValues: initialState,
   });
 
-  const {
-    formState: { errors },
-  } = methods;
-
   const handleUpdate = (item: any) => {
-    setFormData({
+    //update source dropdown
+    // const updatedSource: OptionType[] = sourceData?.filter(
+    //   (source: any) => source.value == item.source_id
+    // );
+    // setSelectedSource(updatedSource[0]);
+    setFormData((prev) => ({
+      ...prev,
       id: item?.id,
-      category_name: item?.category_name,
-      category_description: item?.category_description,
-      parent_category_id: item.parent_category_id,
-      status: item?.status,
-      updated_by: item.updated_by,
-    });
+      region_name: item?.region_name,
+      region_description: item?.region_description,
+      updated_by: "",
+    }));
+
     setIsUpdate(true);
   };
 
-  const handleDelete = (category_id: number, updated_by: number) => {
+  //handle delete function
+  const handleDelete = (id: string) => {
     swal
       .fire({
         title: "Are you sure?",
@@ -118,59 +145,61 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteCategory(category_id, updated_by));
-          //clear form data
+          dispatch(deleteRegion(id));
           if (isUpdate) {
-            setFormData(initialFormData);
+            setFormData(initialState);
           }
         }
       });
   };
 
   //handle onchange function
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked, type } = e.target;
-    const checkboxValue = checked ? true : false;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checkboxValue : value,
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
     }));
   };
 
+  //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate the form using yup
     try {
       await validationSchema.validate(formData, { abortEarly: false });
 
+      // Validation passed, handle form submission
+
       if (userInfo) {
         const { user_id } = JSON.parse(userInfo);
-        // Validation passed, handle form submission
         if (isUpdate) {
+          // Handle update logic
           dispatch(
-            updateCategory(
+            updateRegion(
               formData.id,
-              formData.category_name,
-              formData.category_description,
-              // formData.parent_category_id,
-              formData.status,
+              formData.region_name,
+              formData.region_description,
               user_id
             )
           );
+          setIsUpdate(false);
         } else {
-          await dispatch(
-            addCategory(
-              formData.category_name,
-              formData.category_description,
-              // formData.parent_category_id,
-              formData.status,
+          // Handle add logic
+          dispatch(
+            addRegion(
+              formData.region_name,
+              formData.region_description,
               user_id
             )
           );
         }
       }
+
+      // ... Rest of the form submission logic ...
     } catch (validationError) {
+      // Handle validation errors
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
         validationError.inner.forEach((error) => {
@@ -191,22 +220,24 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Category Name",
-      accessor: "category_name",
+      Header: "Region Name",
+      accessor: "region_name",
       sort: true,
     },
     {
-      Header: "Category Description",
-      accessor: "category_description",
+      Header: "Region Description",
+      accessor: "region_description",
       sort: false,
     },
+    // {
+    //   Header: "Source",
+    //   accessor: "source_name",
+    //   sort: false,
+    // },
     {
-      Header: "Status",
-      accessor: "status",
+      Header: "Updated By",
+      accessor: "updated_by",
       sort: true,
-      Cell: ({ row }: any) => (
-        <span>{row.original.status ? "active" : "disabled"}</span>
-      ),
     },
     {
       Header: "Actions",
@@ -220,7 +251,6 @@ const BasicInputElements = withSwal((props: any) => {
             size="15"
             className="cursor-pointer text-secondary"
             onClick={() => {
-              setIsUpdate(true);
               handleUpdate(row.original);
               toggleResponsiveModal();
             }}
@@ -231,19 +261,32 @@ const BasicInputElements = withSwal((props: any) => {
             icon="trash-2"
             size="15"
             className="cursor-pointer text-secondary"
-            onClick={() =>
-              handleDelete(row.original.id, row.original.updated_by)
-            }
+            onClick={() => handleDelete(row.original.id)}
           />
         </div>
       ),
     },
   ];
 
+  //handle cancel update section
   const handleCancelUpdate = () => {
     setIsUpdate(false);
-    setFormData(initialFormData);
-    setValidationErrors(initialValidationState);
+    handleResetValues();
+  };
+
+  //source
+  const handleSourceChange = (selected: any) => {
+    setSelectedSource(selected);
+    setFormData((prev) => ({
+      ...prev,
+      source_id: selected.value,
+    }));
+  };
+
+  const handleResetValues = () => {
+    setValidationErrors(initialValidationState); // Clear validation errors
+    setFormData(initialState); //clear form data
+    setSelectedSource(null);
   };
 
   const toggleResponsiveModal = () => {
@@ -258,11 +301,10 @@ const BasicInputElements = withSwal((props: any) => {
     // Check for errors and clear the form
     if (!loading && !error) {
       setResponsiveModal(false);
+      setValidationErrors(initialValidationState); // Clear validation errors
+      setFormData(initialState); //clear form data
+      setSelectedSource(null);
       // Clear validation errors
-      setValidationErrors(initialValidationState);
-      //clear form data
-      setFormData(initialFormData);
-      setIsUpdate(false);
     }
   }, [loading, error]);
 
@@ -277,58 +319,46 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Category Management</h4>
+              <h4 className="modal-title">Region Management</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="validationCustom01">
-                <Form.Label>Category Name</Form.Label>
+              <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Label>Region Name</Form.Label>
                 <Form.Control
                   type="text"
-                  name="category_name"
-                  value={formData.category_name}
+                  name="region_name"
+                  value={formData.region_name}
                   onChange={handleInputChange}
                 />
-                {validationErrors.category_name && (
+                {validationErrors.region_name && (
                   <Form.Text className="text-danger">
-                    {validationErrors.category_name}
+                    {validationErrors.region_name}
                   </Form.Text>
                 )}
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="validationCustom01">
-                <Form.Label>Category Description</Form.Label>
+              <Form.Group className="mb-3" controlId="channel_description">
+                <Form.Label>Region Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
-                  name="category_description"
-                  value={formData.category_description}
+                  name="region_description"
+                  value={formData.region_description}
                   onChange={handleInputChange}
                 />
-                {validationErrors.category_description && (
+                {validationErrors.region_description && (
                   <Form.Text className="text-danger">
-                    {validationErrors.category_description}
+                    {validationErrors.region_description}
                   </Form.Text>
                 )}
               </Form.Group>
-
-              <Form.Group>
-                <Form.Label>Status</Form.Label>
-                <Form.Check
-                  type="switch"
-                  id="active-switch"
-                  label={formData.status === true ? "Active" : "Inactive"}
-                  name="status"
-                  onChange={handleInputChange}
-                  // value={inputs.status}
-                  checked={formData.status}
-                />
-              </Form.Group>
             </Modal.Body>
+
             <Modal.Footer>
               <Button
                 variant="danger"
                 id="button-addon2"
-                className="mt-3 ms-2"
+                className="mt-1 ms-2"
                 onClick={() =>
                   isUpdate
                     ? [handleCancelUpdate(), toggleResponsiveModal()]
@@ -341,7 +371,7 @@ const BasicInputElements = withSwal((props: any) => {
                 type="submit"
                 variant="success"
                 id="button-addon2"
-                className="mt-3"
+                className="mt-1"
               >
                 {isUpdate ? "Update" : "Submit"}
               </Button>
@@ -357,9 +387,9 @@ const BasicInputElements = withSwal((props: any) => {
                 className="btn-sm btn-blue waves-effect waves-light float-end"
                 onClick={toggleResponsiveModal}
               >
-                <i className="mdi mdi-plus-circle"></i> Add Category
+                <i className="mdi mdi-plus-circle"></i> Add Region
               </Button>
-              <h4 className="header-title mb-4">Manage Categories</h4>
+              <h4 className="header-title mb-4">Manage Regions</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -377,24 +407,39 @@ const BasicInputElements = withSwal((props: any) => {
   );
 });
 
-const Category = () => {
+const Region = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const [sourceData, setSourceData] = useState([]);
+
   //Fetch data from redux store
-  const { state, loading, success, error, initialloading } = useSelector(
+  const { state, error, loading, initialLoading } = useSelector(
     (state: RootState) => ({
-      state: state.Category.category.data,
-      loading: state.Category.loading,
-      success: state.Category.success,
-      error: state.Category.error,
-      initialloading: state.Category.initialloading,
+      state: state.Region.regions,
+      error: state.Region.error,
+      loading: state.Region.loading,
+      initialLoading: state.Region.initialLoading,
     })
   );
 
+  // const Source = useSelector(
+  //   (state: RootState) => state?.Source?.sources?.data
+  // );
+
   useEffect(() => {
-    dispatch(getCategory());
+    dispatch(getRegion());
   }, []);
 
-  if (initialloading) {
+  // useEffect(() => {
+  //   if (Source) {
+  //     const SourceArray = Source?.map((source: any) => ({
+  //       value: source.id.toString(),
+  //       label: source.source_name, // Replace with the appropriate field from the lead data
+  //     }));
+  //     setSourceData(SourceArray);
+  //   }
+  // }, [Source]);
+
+  if (initialLoading) {
     return (
       <Spinner
         animation="border"
@@ -407,22 +452,22 @@ const Category = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/category" },
-          { label: "Category", path: "/master/category", active: true },
+          { label: "Master", path: "/master/regions" },
+          { label: "Regions", path: "/master/regions", active: true },
         ]}
-        title={"Category"}
+        title={"Regions"}
       />
       <Row>
         <Col>
           <BasicInputElements
             state={state}
-            loading={loading}
-            success={success}
+            sourceData={sourceData}
             error={error}
+            loading={loading}
           />
         </Col>
       </Row>
     </React.Fragment>
   );
 };
-export default Category;
+export default Region;
