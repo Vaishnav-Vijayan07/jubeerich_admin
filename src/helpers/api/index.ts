@@ -1,5 +1,6 @@
 import { login, logout, signup, forgotPassword } from "./auth";
 import { getCategory, addCategory, deleteCategory, updateCategory } from "./master/category";
+import { addPrograms, deletePrograms, getPrograms, updatePrograms } from "./master/programs";
 import { getSources, updateSources, addSources, deleteSources } from "./master/source";
 import { getChannels, addChannels, updateChannels, deleteChannels } from "./master/channels";
 import { addCampaigns, getCampaigns, updateCampaigns, deleteCampaigns } from "./master/campaigns";
@@ -10,7 +11,14 @@ import { getLeads, addLeads, updateLeads, deleteLeads, getLeadUser } from "./lea
 import { addStatus, deleteStatus, getAllStatus, updateStatus } from "./status";
 import { getAllChecklists, getChecklistById, addChecklist, updateChecklist, deleteChecklist } from "./checklist";
 import { addSubStatus, deleteSubStatus, getAllSubStatus, updateSubStatus } from "./subStatus";
-import { addHistory, getAllHistories, getHistoriesById, updateHistory, deleteHistory, getHistoriesByLeadId } from "./history";
+import {
+  addHistory,
+  getAllHistories,
+  getHistoriesById,
+  updateHistory,
+  deleteHistory,
+  getHistoriesByLeadId,
+} from "./history";
 import { getDashboard } from "./dashboard";
 
 export {
@@ -71,4 +79,8 @@ export {
   deleteHistory,
   getHistoriesByLeadId,
   getDashboard,
+  addPrograms,
+  deletePrograms,
+  getPrograms,
+  updatePrograms,
 };

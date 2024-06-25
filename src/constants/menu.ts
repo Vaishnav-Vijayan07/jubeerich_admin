@@ -108,6 +108,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         url: "/settings/master/country",
         parentKey: "master",
       },
+      {
+        key: "programs",
+        label: "Programs",
+        url: "/settings/master/programs",
+        parentKey: "master",
+      },
       // {
       //   key: "campaign",
       //   label: "Campaign",

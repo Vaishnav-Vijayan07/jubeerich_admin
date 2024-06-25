@@ -12,6 +12,7 @@ const Login2 = React.lazy(() => import("../pages/auth2/Login2"));
 const Logout2 = React.lazy(() => import("../pages/auth2/Logout2"));
 const Register2 = React.lazy(() => import("../pages/auth2/Register2"));
 const Confirm2 = React.lazy(() => import("../pages/auth2/Confirm2"));
+const Programs = React.lazy(() => import("../pages/forms/Programs"));
 const ForgetPassword2 = React.lazy(
   () => import("../pages/auth2/ForgetPassword2")
 );
@@ -211,28 +212,28 @@ const settingsRoutes = {
         },
         {
           path: "/settings/master/office_type",
-          name: "Channel",
+          name: "ooficetype",
           // element: <Channel />,
           element: <PrivateRoute roles={["Monitor"]} component={OfficeType} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/region",
-          name: "Channel",
+          name: "region",
           // element: <Channel />,
           element: <PrivateRoute roles={["Monitor"]} component={Region} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/flag",
-          name: "Channel",
+          name: "flag",
           // element: <Channel />,
           element: <PrivateRoute roles={["Monitor"]} component={Flag} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/marital_status",
-          name: "Channel",
+          name: "maritial_status",
           // element: <Channel />,
           element: (
             <PrivateRoute roles={["Monitor"]} component={MaritalStatus} />
@@ -241,23 +242,30 @@ const settingsRoutes = {
         },
         {
           path: "/settings/master/country",
-          name: "Channel",
+          name: "country",
           // element: <Channel />,
           element: <PrivateRoute roles={["Monitor"]} component={Country} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/campaign",
-          name: "Campaign",
+          name: "campaign",
           // element: <Campaign />,
           element: <PrivateRoute roles={["Monitor"]} component={Campaign} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/branches",
-          name: "Branches",
+          name: "branches",
           // element: <Branches />,
           element: <PrivateRoute roles={["Monitor"]} component={Branches} />,
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/programs",
+          name: "programs",
+          // element: <Branches />,
+          element: <PrivateRoute roles={["Monitor"]} component={Programs} />,
           route: PrivateRoute,
         },
         {
