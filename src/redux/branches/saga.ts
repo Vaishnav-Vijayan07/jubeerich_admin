@@ -33,7 +33,7 @@ interface BranchData {
 function* getBranch(): SagaIterator {
   try {
     const response = yield call(getBranchesApi);
-    const data = response.data;
+    const data = response.data.data;
 
     // NOTE - You can change this according to response format from your api
     yield put(BranchApiResponseSuccess(BranchActionTypes.GET_BRANCHES, { data }));

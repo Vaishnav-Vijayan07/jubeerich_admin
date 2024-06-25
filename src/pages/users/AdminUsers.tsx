@@ -653,6 +653,9 @@ const AdminUsers = () => {
     dispatch(getRoles());
   }, []);
 
+  console.log("Branch===>", Branch);
+  
+
   useEffect(() => {
     if (Branch) {
       const branchArray = Branch?.map((branch: any) => ({
