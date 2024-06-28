@@ -14,58 +14,54 @@ function getLeadUser() {
 }
 
 function addLeads(params: {
-  name: string;
+  full_name: string;
   email: string;
   phone: string;
-  alternate_phone: string;
-  enquiry: string;
-  status: string;
   category_id: string;
   source_id: string;
   channel_id: string;
-  user_id: string;
-  branch: string;
-  proposal_no: string;
-  proposal_amount: string;
-  proposal: string;
-  company_name: string;
-  country: string;
-  flag_id: string;
-  branch_id: string;
+  city: string;
+  preferred_country: string;
+  office_type: string;
+  region_id: string | null;
+  counsiler_id: string | null;
+  branch_id: string | null;
+  updated_by: string;
+  remarks: string;
   lead_received_date: string;
+  IELTS: boolean;
 }) {
+  console.log(params);
+
   return api.create(`${baseUrl}`, params);
 }
 
 function updateLeads(
   id: string,
   params: {
-    name: string;
+    full_name: string;
     email: string;
     phone: string;
-    alternate_phone: string;
-    enquiry: string;
-    status: string;
     category_id: string;
     source_id: string;
     channel_id: string;
-    user_id: string;
-    branch: string;
-    proposal_no: string;
-    proposal_amount: string;
-    proposal: string;
-    company_name: string;
-    country: string;
-    flag_id: string;
-    branch_id: string;
+    city: string;
+    preferred_country: string;
+    office_type: string;
+    region_id: string | null;
+    counsiler_id: string | null;
+    branch_id: string | null;
+    updated_by: string;
+    remarks: string;
     lead_received_date: string;
+    IELTS: boolean;
   }
 ) {
   return api.update(`${baseUrl}/${id}`, params);
 }
 
 function deleteLeads(id: string) {
-  return api.update(`${baseUrl}/disable-leads/${id}`, {});
+  return api.delete(`${baseUrl}/${id}`, {});
 }
 
 export { getLeads, getLeadUser, addLeads, updateLeads, deleteLeads };

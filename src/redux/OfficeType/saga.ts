@@ -27,7 +27,6 @@ interface OfficeData {
 function* getOfficeTypeDataSaga(): SagaIterator {
   try {
     const response = yield call(getOfficeTypeApi);
-    console.log(response);
     const data = response.data.data;
 
     yield put(

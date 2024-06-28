@@ -1,7 +1,16 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Dropdown, Modal, Spinner } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Dropdown,
+  Modal,
+  Spinner,
+} from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -13,9 +22,21 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
-import { addChannel, deleteChannel, getChannel, updateChannel } from "../../redux/actions";
+import {
+  addChannel,
+  deleteChannel,
+  getChannel,
+  updateChannel,
+} from "../../redux/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
+import { getUniversity } from "../../redux/University/actions";
+import {
+  addProgram,
+  deleteProgram,
+  getProgram,
+  updateProgram,
+} from "../../redux/programs/actions";
 
 interface OptionType {
   value: string;
@@ -40,16 +61,21 @@ const sizePerPageList = [
 
 const initialState = {
   id: "",
-  source_id: "",
-  channel_name: "",
-  channel_description: "",
-  updated_by: "",
+  program_name: "",
+  university_id: "",
+  degree_level: "",
+  duration: "",
+  tuition_fees: "",
+  currency: "",
 };
 
 const initialValidationState = {
-  channel_name: "",
-  channel_description: "",
-  source_id: "",
+  program_name: "",
+  university_id: "",
+  degree_level: "",
+  duration: "",
+  tuition_fees: "",
+  currency: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -71,18 +97,23 @@ const BasicInputElements = withSwal((props: any) => {
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(initialValidationState);
+  const [validationErrors, setValidationErrors] = useState(
+    initialValidationState
+  );
 
   const validationSchema = yup.object().shape({
-    channel_name: yup
+    program_name: yup
       .string()
-      .required("channel name is required")
-      .min(3, "channel name must be at least 3 characters long"),
-    channel_description: yup
-      .string()
-      .required("channel description is required")
-      .min(3, "channel description must be at least 3 characters long"),
-    source_id: yup.string().required("Please choose a source"),
+      .required("Program name is required")
+      .min(3, "Program name must be at least 3 characters long"),
+    university_id: yup.string().required("University ID is required"),
+    degree_level: yup.string().required("Degree level is required"),
+    duration: yup.string().required("Duration is required"),
+    tuition_fees: yup
+      .number()
+      .required("Tuition fees are required")
+      .positive("Tuition fees must be a positive number"),
+    currency: yup.string().required("Currency is required"),
   });
 
   /*
@@ -95,15 +126,19 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedSource: OptionType[] = sourceData?.filter((source: any) => source.value == item.source_id);
+    const updatedSource: OptionType[] = sourceData?.filter(
+      (source: any) => source.value == item.university_id
+    );
     setSelectedSource(updatedSource[0]);
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
-      source_id: item?.source_id,
-      channel_name: item?.channel_name,
-      channel_description: item?.channel_description,
-      updated_by: "",
+      university_id: item?.university_id,
+      program_name: item?.program_name,
+      degree_level: item?.degree_level,
+      duration: item?.duration,
+      tuition_fees: item?.tuition_fees,
+      currency: item?.currency,
     }));
 
     setIsUpdate(true);
@@ -123,7 +158,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteChannel(id));
+          dispatch(deleteProgram(id));
           if (isUpdate) {
             setFormData(initialState);
             setSelectedSource(null);
@@ -151,18 +186,32 @@ const BasicInputElements = withSwal((props: any) => {
 
       // Validation passed, handle form submission
 
-      if (userInfo) {
-        const { user_id } = JSON.parse(userInfo);
-        if (isUpdate) {
-          // Handle update logic
-          dispatch(
-            updateChannel(formData.id, formData.source_id, formData.channel_name, formData.channel_description, user_id)
-          );
-          setIsUpdate(false);
-        } else {
-          // Handle add logic
-          dispatch(addChannel(formData.source_id, formData.channel_name, formData.channel_description, user_id));
-        }
+      if (isUpdate) {
+        // Handle update logic
+        dispatch(
+          updateProgram(
+            formData.id,
+            formData.program_name,
+            formData.university_id,
+            formData.degree_level,
+            formData.duration,
+            formData.tuition_fees,
+            formData.currency
+          )
+        );
+        setIsUpdate(false);
+      } else {
+        // Handle add logic
+        dispatch(
+          addProgram(
+            formData.program_name,
+            formData.university_id,
+            formData.degree_level,
+            formData.duration,
+            formData.tuition_fees,
+            formData.currency
+          )
+        );
       }
 
       // ... Rest of the form submission logic ...
@@ -188,23 +237,33 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Channel Name",
-      accessor: "channel_name",
+      Header: "Program Name",
+      accessor: "program_name",
       sort: true,
     },
     {
-      Header: "Channel Description",
-      accessor: "channel_description",
+      Header: "Degree level",
+      accessor: "degree_level",
+      sort: true,
+    },
+    {
+      Header: "University",
+      accessor: "university_id",
       sort: false,
     },
     {
-      Header: "Source",
-      accessor: "source_name",
+      Header: "Duration",
+      accessor: "duration",
       sort: false,
     },
     {
-      Header: "Updated By",
-      accessor: "updated_by",
+      Header: "Fee",
+      accessor: "tuition_fees",
+      sort: true,
+    },
+    {
+      Header: "Currency",
+      accessor: "currency",
       sort: true,
     },
     {
@@ -247,7 +306,7 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedSource(selected);
     setFormData((prev) => ({
       ...prev,
-      source_id: selected.value,
+      university_id: selected.value,
     }));
   };
 
@@ -280,52 +339,105 @@ const BasicInputElements = withSwal((props: any) => {
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
+        <Modal
+          show={responsiveModal}
+          onHide={toggleResponsiveModal}
+          dialogClassName="modal-dialog-centered"
+        >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Program Management</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="channel_name">
-                <Form.Label>Programs Name</Form.Label>
+              <Form.Group className="mb-3" controlId="program_name">
+                <Form.Label>Program Name</Form.Label>
                 <Form.Control
                   type="text"
-                  name="channel_name"
-                  value={formData.channel_name}
+                  name="program_name"
+                  value={formData.program_name}
                   onChange={handleInputChange}
                 />
-                {validationErrors.channel_name && (
-                  <Form.Text className="text-danger">{validationErrors.channel_name}</Form.Text>
+                {validationErrors.program_name && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.program_name}
+                  </Form.Text>
                 )}
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="channel_description">
-                <Form.Label>Channel Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  name="channel_description"
-                  value={formData.channel_description}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.channel_description && (
-                  <Form.Text className="text-danger">{validationErrors.channel_description}</Form.Text>
-                )}
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="source_id">
-                <Form.Label>Program</Form.Label>
+              <Form.Group className="mb-3" controlId="university_id">
+                <Form.Label>University</Form.Label>
                 <Select
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
-                  name="source_id"
+                  name="university_id"
                   options={sourceData}
                   value={selectedSource}
                   onChange={handleSourceChange}
                 />
+                {validationErrors.university_id && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.university_id}
+                  </Form.Text>
+                )}
+              </Form.Group>
 
-                {validationErrors.source_id && (
-                  <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>
+              <Form.Group className="mb-3" controlId="degree_level">
+                <Form.Label>Degree Level</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="degree_level"
+                  value={formData.degree_level}
+                  onChange={handleInputChange}
+                />
+                {validationErrors.degree_level && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.degree_level}
+                  </Form.Text>
+                )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="duration">
+                <Form.Label>Duration</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="duration"
+                  value={formData.duration}
+                  onChange={handleInputChange}
+                />
+                {validationErrors.duration && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.duration}
+                  </Form.Text>
+                )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="tuition_fees">
+                <Form.Label>Tuition Fees</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="tuition_fees"
+                  value={formData.tuition_fees}
+                  onChange={handleInputChange}
+                />
+                {validationErrors.tuition_fees && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.tuition_fees}
+                  </Form.Text>
+                )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="currency">
+                <Form.Label>Currency</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="currency"
+                  value={formData.currency}
+                  onChange={handleInputChange}
+                />
+                {validationErrors.currency && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.currency}
+                  </Form.Text>
                 )}
               </Form.Group>
             </Modal.Body>
@@ -335,11 +447,20 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 ms-2"
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : toggleResponsiveModal())}
+                onClick={() =>
+                  isUpdate
+                    ? [handleCancelUpdate(), toggleResponsiveModal()]
+                    : toggleResponsiveModal()
+                }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
+              <Button
+                type="submit"
+                variant="success"
+                id="button-addon2"
+                className="mt-1"
+              >
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -350,7 +471,10 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
+              <Button
+                className="btn-sm btn-blue waves-effect waves-light float-end"
+                onClick={toggleResponsiveModal}
+              >
                 <i className="mdi mdi-plus-circle"></i> Add Program{" "}
               </Button>
               <h4 className="header-title mb-4">Manage Programs</h4>
@@ -376,32 +500,38 @@ const Programs = () => {
   const [sourceData, setSourceData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialloading } = useSelector((state: RootState) => ({
-    state: state.Channels.channels.data,
-    error: state.Channels.error,
-    loading: state.Channels.loading,
-    initialloading: state.Channels.initialloading,
-  }));
-
-  const Source = useSelector((state: RootState) => state?.Source?.sources?.data);
+  const { state, error, loading, initialloading, university } = useSelector(
+    (state: RootState) => ({
+      state: state.Program.programs.data,
+      error: state.Program.error,
+      loading: state.Program.loading,
+      initialloading: state.Program.initialloading,
+      university: state.University.universities.data,
+    })
+  );
 
   useEffect(() => {
-    dispatch(getChannel());
-    dispatch(getSource());
+    dispatch(getProgram());
+    dispatch(getUniversity());
   }, []);
 
   useEffect(() => {
-    if (Source) {
-      const SourceArray = Source?.map((source: any) => ({
+    if (university) {
+      const SourceArray = university?.map((source: any) => ({
         value: source.id.toString(),
-        label: source.source_name, // Replace with the appropriate field from the lead data
+        label: source.university_name, // Replace with the appropriate field from the lead data
       }));
       setSourceData(SourceArray);
     }
-  }, [Source]);
+  }, [university]);
 
   if (initialloading) {
-    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "50%", left: "50%" }}
+      />
+    );
   }
 
   return (
@@ -415,7 +545,12 @@ const Programs = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} sourceData={sourceData} error={error} loading={loading} />
+          <BasicInputElements
+            state={state}
+            sourceData={sourceData}
+            error={error}
+            loading={loading}
+          />
         </Col>
       </Row>
     </React.Fragment>

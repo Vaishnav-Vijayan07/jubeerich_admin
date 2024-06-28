@@ -9,7 +9,28 @@ function getBranches() {
   return api.get(`${baseUrl}`, {});
 }
 
-function addBranches(params: { branch_name: string; branch_address: string; branch_city: string; branch_country: string; currency: string; updated_by: string }) {
+function addBranches(params: {
+  branch_name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+  contact_person_email: string;
+  contact_person_name: string;
+  contact_person_mobile: string;
+  contact_person_designation: string;
+  website: string;
+  social_media: string;
+  account_mail: string;
+  support_mail: string;
+  office_type: string;
+  region_id: string;
+  status: boolean;
+  updated_by: string;
+}) {
   return api.create(`${baseUrl}`, params);
 }
 
@@ -17,10 +38,24 @@ function updateBranches(
   id: string,
   params: {
     branch_name: string;
-    branch_address: string;
-    branch_city: string;
-    branch_country: string;
-    currency: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    pincode: string;
+    contact_person_email: string;
+    contact_person_name: string;
+    contact_person_mobile: string;
+    contact_person_designation: string;
+    website: string;
+    social_media: string;
+    account_mail: string;
+    support_mail: string;
+    office_type: string;
+    region_id: string;
+    status: boolean;
     updated_by: string;
   }
 ) {

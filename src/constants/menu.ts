@@ -51,6 +51,26 @@ const MENU_ITEMS: MenuItemTypes[] = [
   //   roles: ["View Task"],
   // },
 
+  { key: "leads", label: "Leads", isTitle: true, roles: ["Monitor"] },
+
+  {
+    key: "leads",
+    label: "Leads",
+    isTitle: false,
+    icon: "award",
+    url: "/leads/manage",
+    roles: ["Monitor", "Add Leads", "View Task"],
+  },
+
+  {
+    key: "leads",
+    label: "Tasks",
+    isTitle: false,
+    icon: "list",
+    url: "/leads/tasks",
+    roles: ["Monitor", "Add Leads", "View Task"],
+  },
+
   { key: "settings", label: "Settings", isTitle: true, roles: ["Monitor"] },
 
   {
@@ -109,6 +129,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         parentKey: "master",
       },
       {
+        key: "university",
+        label: "University",
+        url: "/settings/master/university",
+        parentKey: "master",
+      },
+      {
         key: "programs",
         label: "Programs",
         url: "/settings/master/programs",
@@ -120,12 +146,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
       //   url: "/settings/master/campaign",
       //   parentKey: "master",
       // },
-      // {
-      //   key: "branches",
-      //   label: "Branches",
-      //   url: "/settings/master/branches",
-      //   parentKey: "master",
-      // },
+      {
+        key: "branches",
+        label: "Branches",
+        url: "/settings/master/branches",
+        parentKey: "master",
+      },
     ],
   },
 

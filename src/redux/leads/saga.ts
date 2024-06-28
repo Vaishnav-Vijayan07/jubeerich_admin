@@ -5,10 +5,21 @@ import { SagaIterator } from "@redux-saga/core";
 import { APICore } from "../../helpers/api/apiCore";
 
 // helpers
-import { getLeads as getLeadsApi, addLeads as addLeadsApi, updateLeads as updateLeadsApi, deleteLeads as deleteSourcesApi, getLeadUser as getLeadUserApi } from "../../helpers/";
+import {
+  getLeads as getLeadsApi,
+  addLeads as addLeadsApi,
+  updateLeads as updateLeadsApi,
+  deleteLeads as deleteSourcesApi,
+  getLeadUser as getLeadUserApi,
+} from "../../helpers/";
 
 // actions
-import { LeadsApiResponseSuccess, LeadsApiResponseError, getLead, getLeadUser } from "./actions";
+import {
+  LeadsApiResponseSuccess,
+  LeadsApiResponseError,
+  getLead,
+  getLeadUser,
+} from "./actions";
 
 // constants
 import { LeadsActionTypes } from "./constants";
@@ -17,25 +28,22 @@ import { AUTH_SESSION_KEY } from "../../constants";
 interface LeadsData {
   payload: {
     id: string;
-    name: string;
+    full_name: string;
     email: string;
     phone: string;
-    alternate_phone: string;
-    enquiry: string;
-    status: string;
     category_id: string;
     source_id: string;
     channel_id: string;
-    user_id: string;
-    branch: string;
-    proposal_no: string;
-    proposal_amount: string;
-    proposal: string;
-    company_name: string;
-    country: string;
-    flag_id: string;
-    branch_id: string;
-    lead_received_date: string
+    city: string;
+    preferred_country: string;
+    office_type: string;
+    region_id: string | null;
+    counsiler_id: string | null;
+    branch_id: string | null;
+    updated_by: string;
+    remarks: string;
+    lead_received_date: string;
+    IELTS: boolean;
   };
   type: string;
 }
@@ -66,7 +74,9 @@ function* getLeadUsers(): SagaIterator {
     const data = response.data;
 
     // NOTE - You can change this according to response format from your api
-    yield put(LeadsApiResponseSuccess(LeadsActionTypes.GET_LEAD_USER, { data }));
+    yield put(
+      LeadsApiResponseSuccess(LeadsActionTypes.GET_LEAD_USER, { data })
+    );
   } catch (error: any) {
     console.log("Error", error);
     yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEAD_USER, error));
@@ -76,62 +86,57 @@ function* getLeadUsers(): SagaIterator {
 
 function* addLeads({
   payload: {
-    name,
+    full_name,
     email,
     phone,
-    alternate_phone,
-    enquiry,
-    status,
     category_id,
     source_id,
     channel_id,
-    user_id,
-    branch,
-    proposal_no,
-    proposal_amount,
-    proposal,
-    company_name,
-    country,
-    flag_id,
+    city,
+    preferred_country,
+    office_type,
+    region_id,
+    counsiler_id,
     branch_id,
-    lead_received_date
+    updated_by,
+    remarks,
+    lead_received_date,
+    IELTS,
   },
 }: LeadsData): SagaIterator {
   try {
     const response = yield call(addLeadsApi, {
-      name,
+      full_name,
       email,
       phone,
-      alternate_phone,
-      enquiry,
-      status,
       category_id,
       source_id,
       channel_id,
-      user_id,
-      branch,
-      proposal_no,
-      proposal_amount,
-      proposal,
-      company_name,
-      country,
-      flag_id,
+      city,
+      preferred_country,
+      office_type,
+      region_id,
+      counsiler_id,
       branch_id,
-      lead_received_date
+      updated_by,
+      remarks,
+      lead_received_date,
+      IELTS,
     });
     const data = response.data.message;
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));
-    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-    if (userInfo) {
-      const { user_id } = JSON.parse(userInfo);
+    // let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+    // if (userInfo) {
+    //   const { user_id } = JSON.parse(userInfo);
 
-      if (user_id == 1) {
-        yield put(getLead());
-      } else {
-        yield put(getLeadUser());
-      }
-    }
+    //   if (user_id == 1) {
+    //     yield put(getLead());
+    //   } else {
+    //     yield put(getLeadUser());
+    //   }
+    // }
+    yield put(getLead());
   } catch (error: any) {
     console.log("err", error);
 
@@ -143,62 +148,57 @@ function* addLeads({
 function* updateLeads({
   payload: {
     id,
-    name,
+    full_name,
     email,
     phone,
-    alternate_phone,
-    enquiry,
-    status,
     category_id,
     source_id,
     channel_id,
-    user_id,
-    branch,
-    proposal_no,
-    proposal_amount,
-    proposal,
-    company_name,
-    country,
-    flag_id,
+    city,
+    preferred_country,
+    office_type,
+    region_id,
+    counsiler_id,
     branch_id,
-    lead_received_date
+    updated_by,
+    remarks,
+    lead_received_date,
+    IELTS,
   },
 }: LeadsData): SagaIterator {
   try {
     const response = yield call(updateLeadsApi, id, {
-      name,
+      full_name,
       email,
       phone,
-      alternate_phone,
-      enquiry,
-      status,
       category_id,
       source_id,
       channel_id,
-      user_id,
-      branch,
-      proposal_no,
-      proposal_amount,
-      proposal,
-      company_name,
-      country,
-      flag_id,
+      city,
+      preferred_country,
+      office_type,
+      region_id,
+      counsiler_id,
       branch_id,
-      lead_received_date
+      updated_by,
+      remarks,
+      lead_received_date,
+      IELTS,
     });
     const data = response.data.message;
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.UPDATE_LEADS, data));
-    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-    if (userInfo) {
-      const { user_id } = JSON.parse(userInfo);
+    // let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+    // if (userInfo) {
+    //   const { user_id } = JSON.parse(userInfo);
 
-      if (user_id == 1) {
-        yield put(getLead());
-      } else {
-        yield put(getLeadUser());
-      }
-    }
+    //   if (user_id == 1) {
+    //     yield put(getLead());
+    //   } else {
+    //     yield put(getLeadUser());
+    //   }
+    // }
+    yield put(getLead());
   } catch (error: any) {
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.UPDATE_LEADS, error));
     throw error;
@@ -211,17 +211,18 @@ function* deleteLeads({ payload: { id } }: LeadsData): SagaIterator {
     const data = response.data.message;
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.DELETE_LEADS, data));
-    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+    // let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
-    if (userInfo) {
-      const { user_id } = JSON.parse(userInfo);
+    // if (userInfo) {
+    //   const { user_id } = JSON.parse(userInfo);
 
-      if (user_id == 1) {
-        yield put(getLead());
-      } else {
-        yield put(getLeadUser());
-      }
-    }
+    //   if (user_id == 1) {
+    //     yield put(getLead());
+    //   } else {
+    //     yield put(getLeadUser());
+    //   }
+    // }
+    yield put(getLead());
   } catch (error: any) {
     yield put(LeadsApiResponseError(LeadsActionTypes.DELETE_LEADS, error));
     throw error;
@@ -249,7 +250,13 @@ export function* watchDeleteLeads(): any {
 }
 
 function* LeadsSaga() {
-  yield all([fork(watchGetLeads), fork(watchaddLeads), fork(watchUpdateLeads), fork(watchDeleteLeads), fork(watchGetLeadUser)]);
+  yield all([
+    fork(watchGetLeads),
+    fork(watchaddLeads),
+    fork(watchUpdateLeads),
+    fork(watchDeleteLeads),
+    fork(watchGetLeadUser),
+  ]);
 }
 
 export default LeadsSaga;

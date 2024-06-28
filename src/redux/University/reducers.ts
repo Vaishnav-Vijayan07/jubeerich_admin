@@ -3,106 +3,89 @@ import { showErrorAlert, showSuccessAlert } from "../../constants";
 import { APICore } from "../../helpers/api/apiCore";
 
 // constants
-import { LeadsActionTypes } from "./constants";
+import { UniversityActionTypes } from "./constants";
 
 const INIT_STATE = {
-  leads: [],
-  initialloading: false,
+  universities: [],
   loading: false,
-  error: {},
+  initialloading: false,
+  error: null,
 };
 
-interface LeadsData {
+interface UniversityData {
   id: string;
-  name: string;
-  email: string;
-  phone: string;
-  enquiry: string;
-  status: string;
-  category_id: string;
-  source_id: string;
-  channel_id: string;
-  user_id: string;
-  branch: string;
-  proposal_no: string;
-  proposal_amount: string;
-  proposal: string;
-  company_name: string;
-  country: string;
-  branch_id: string;
+  university_name: string,
+  location: string,
+  country_id: string,
+  website_url: string,
+  image_url: string,
+  updated_by: string
 }
 
-export interface LeadsActionType {
+export interface UniversityActionType {
   type:
-    | LeadsActionTypes.API_RESPONSE_SUCCESS
-    | LeadsActionTypes.API_RESPONSE_ERROR
-    | LeadsActionTypes.GET_LEADS
-    | LeadsActionTypes.GET_LEAD_USER
-    | LeadsActionTypes.ADD_LEADS
-    | LeadsActionTypes.UPDATE_LEADS
-    | LeadsActionTypes.DELETE_LEADS;
+    | UniversityActionTypes.API_RESPONSE_SUCCESS
+    | UniversityActionTypes.API_RESPONSE_ERROR
+    | UniversityActionTypes.GET_UNIVERSITY
+    | UniversityActionTypes.ADD_UNIVERSITY
+    | UniversityActionTypes.UPDATE_UNIVERSITY
+    | UniversityActionTypes.DELETE_UNIVERSITY;
   payload: {
     actionType?: string;
-    data?: LeadsData | {};
+    data?: UniversityData | {};
     error?: string;
   };
 }
 
 interface State {
-  l?: LeadsData | {};
+  sources?: UniversityData | {};
   loading?: boolean;
   value?: boolean;
 }
 
-const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
+const University = (state: State = INIT_STATE, action: UniversityActionType): any => {
   switch (action.type) {
-    case LeadsActionTypes.API_RESPONSE_SUCCESS:
+    case UniversityActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
-        case LeadsActionTypes.GET_LEADS: {
+        case UniversityActionTypes.GET_UNIVERSITY: {
           return {
             ...state,
-            leads: action.payload.data,
+            universities: action.payload.data,
             loading: false,
             initialloading: false,
           };
         }
-
-        case LeadsActionTypes.GET_LEAD_USER: {
-          return {
-            ...state,
-            leads: action.payload.data,
-            loading: false,
-          };
-        }
-
-        case LeadsActionTypes.ADD_LEADS: {
+        case UniversityActionTypes.ADD_UNIVERSITY: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
-        case LeadsActionTypes.UPDATE_LEADS: {
+        case UniversityActionTypes.UPDATE_UNIVERSITY: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
-        case LeadsActionTypes.DELETE_LEADS: {
+        case UniversityActionTypes.DELETE_UNIVERSITY: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
         default:
           return { ...state };
       }
 
-    case LeadsActionTypes.API_RESPONSE_ERROR:
+    case UniversityActionTypes.API_RESPONSE_ERROR:
       switch (action.payload.actionType) {
-        case LeadsActionTypes.GET_LEADS: {
+        case UniversityActionTypes.GET_UNIVERSITY: {
           return {
             ...state,
             error: action.payload.error,
@@ -110,7 +93,7 @@ const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
             initialloading: false,
           };
         }
-        case LeadsActionTypes.ADD_LEADS: {
+        case UniversityActionTypes.ADD_UNIVERSITY: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -119,7 +102,7 @@ const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
             initialloading: false,
           };
         }
-        case LeadsActionTypes.UPDATE_LEADS: {
+        case UniversityActionTypes.UPDATE_UNIVERSITY: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -128,7 +111,7 @@ const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
             initialloading: false,
           };
         }
-        case LeadsActionTypes.DELETE_LEADS: {
+        case UniversityActionTypes.DELETE_UNIVERSITY: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -141,15 +124,15 @@ const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
           return { ...state };
       }
 
-    case LeadsActionTypes.GET_LEADS:
+    case UniversityActionTypes.GET_UNIVERSITY:
       return { ...state, loading: true, initialloading: true };
-    case LeadsActionTypes.ADD_LEADS:
-      return { ...state, loading: true };
-    case LeadsActionTypes.UPDATE_LEADS:
-      return { ...state, loading: true };
+    case UniversityActionTypes.ADD_UNIVERSITY:
+      return { ...state, loading: true, initialloading: true };
+    case UniversityActionTypes.UPDATE_UNIVERSITY:
+      return { ...state, loading: true, initialloading: true };
     default:
       return { ...state };
   }
 };
 
-export default Leads;
+export default University;

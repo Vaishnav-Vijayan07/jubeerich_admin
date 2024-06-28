@@ -1,7 +1,16 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Dropdown, Modal, Spinner } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Dropdown,
+  Modal,
+  Spinner,
+} from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -22,11 +31,18 @@ import {
 import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
 import {
-  addCountry,
-  deleteCountry,
-  getCountry,
-  updateCountry,
-} from "../../redux/country/actions";
+  addRegion,
+  deleteRegion,
+  getRegion,
+  updateRegion,
+} from "../../redux/regions/actions";
+import { getCountry } from "../../redux/country/actions";
+import {
+  addUniversity,
+  deleteUniversity,
+  getUniversity,
+  updateUniversity,
+} from "../../redux/University/actions";
 
 interface OptionType {
   value: string;
@@ -35,7 +51,11 @@ interface OptionType {
 
 interface TableRecords {
   id: string;
-  country_name: string;
+  source_id: string;
+  channel_name: string;
+  channel_description: string;
+  updated_by: string;
+  status: string;
 }
 
 const sizePerPageList = [
@@ -47,16 +67,26 @@ const sizePerPageList = [
 
 const initialState = {
   id: "",
-  country_name: "",
+  university_name: "",
+  location: "",
+  country_id: "",
+  website_url: "",
+  image_url: "",
+  updated_by: "",
 };
 
 const initialValidationState = {
-  country_name: "",
+  university_name: "",
+  location: "",
+  country_id: "",
+  website_url: "",
+  image_url: "",
+  updated_by: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, error, loading } = props;
+  const { swal, state, country, error, loading } = props;
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -66,6 +96,9 @@ const BasicInputElements = withSwal((props: any) => {
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<OptionType | null>(
+    null
+  );
   const [formData, setFormData] = useState(initialState);
 
   // Modal states
@@ -77,10 +110,24 @@ const BasicInputElements = withSwal((props: any) => {
   );
 
   const validationSchema = yup.object().shape({
-    country_name: yup
+    university_name: yup
       .string()
-      .required("Country name is required")
-      .min(3, "Country name must be at least 3 characters long"),
+      .required("University name is required")
+      .min(3, "University name must be at least 3 characters long"),
+    location: yup
+      .string()
+      .required("Location is required")
+      .min(3, "Location must be at least 3 characters long"),
+    country_id: yup.string().required("Country ID is required"),
+    // website_url: yup
+    //   .string()
+    //   .required("Website URL is required")
+    //   .url("Website URL must be a valid URL"),
+    // image_url: yup
+    //   .string()
+    //   .required("Image URL is required")
+    //   .url("Image URL must be a valid URL"),
+    // updated_by: yup.string().required("Updated by is required"),
   });
 
   /*
@@ -92,10 +139,20 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
+    //update source dropdown
+    // const updatedSource: OptionType[] = sourceData?.filter(
+    //   (source: any) => source.value == item.source_id
+    // );
+    // setSelectedSource(updatedSource[0]);
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
-      country_name: item?.country_name,
+      university_name: item?.university_name,
+      location: item?.location,
+      website_url: item?.website_url,
+      image_url: item?.image_url,
+      country_id: item?.country_id,
+      updated_by: "",
     }));
 
     setIsUpdate(true);
@@ -115,7 +172,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteCountry(id));
+          dispatch(deleteUniversity(id));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -138,7 +195,7 @@ const BasicInputElements = withSwal((props: any) => {
 
     // Validate the form using yup
     try {
-      await validationSchema.validate(formData, { abortEarly: false });
+      // await validationSchema.validate(formData, { abortEarly: false });
 
       // Validation passed, handle form submission
 
@@ -146,11 +203,32 @@ const BasicInputElements = withSwal((props: any) => {
         const { user_id } = JSON.parse(userInfo);
         if (isUpdate) {
           // Handle update logic
-          dispatch(updateCountry(formData.id, formData.country_name));
+          dispatch(
+            updateUniversity(
+              formData?.id,
+              formData.university_name,
+              formData.location,
+              formData.country_id,
+              formData.website_url,
+              formData.image_url,
+              user_id
+            )
+          );
           setIsUpdate(false);
         } else {
           // Handle add logic
-          dispatch(addCountry(formData.country_name));
+          console.log("Here");
+
+          dispatch(
+            addUniversity(
+              formData.university_name,
+              formData.location,
+              formData.country_id,
+              formData.website_url,
+              formData.image_url,
+              user_id
+            )
+          );
         }
       }
 
@@ -177,11 +255,35 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Country Name",
-      accessor: "country_name",
+      Header: "University Name",
+      accessor: "university_name",
       sort: true,
     },
-
+    {
+      Header: "Locaton",
+      accessor: "location",
+      sort: false,
+    },
+    {
+      Header: "Country",
+      accessor: "country_id",
+      sort: false,
+    },
+    {
+      Header: "Website",
+      accessor: "website_url",
+      sort: false,
+    },
+    {
+      Header: "Image",
+      accessor: "image_url",
+      sort: false,
+    },
+    {
+      Header: "Updated By",
+      accessor: "updated_by",
+      sort: true,
+    },
     {
       Header: "Actions",
       accessor: "",
@@ -217,9 +319,19 @@ const BasicInputElements = withSwal((props: any) => {
     handleResetValues();
   };
 
+  //source
+  const handleSourceChange = (selected: any) => {
+    setSelectedCountry(selected);
+    setFormData((prev) => ({
+      ...prev,
+      country_id: selected.value,
+    }));
+  };
+
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
     setFormData(initialState); //clear form data
+    setSelectedCountry(null);
   };
 
   const toggleResponsiveModal = () => {
@@ -236,6 +348,7 @@ const BasicInputElements = withSwal((props: any) => {
       setResponsiveModal(false);
       setValidationErrors(initialValidationState); // Clear validation errors
       setFormData(initialState); //clear form data
+      setSelectedCountry(null);
       // Clear validation errors
     }
   }, [loading, error]);
@@ -251,20 +364,83 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Country Management</h4>
+              <h4 className="modal-title">University Management</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="country_name">
-                <Form.Label>Country Name</Form.Label>
+              <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Label>University Name</Form.Label>
                 <Form.Control
                   type="text"
-                  name="country_name"
-                  value={formData.country_name}
+                  name="university_name"
+                  value={formData.university_name}
                   onChange={handleInputChange}
                 />
-                {validationErrors.country_name && (
+                {validationErrors.university_name && (
                   <Form.Text className="text-danger">
-                    {validationErrors.country_name}
+                    {validationErrors.university_name}
+                  </Form.Text>
+                )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="channel_description">
+                <Form.Label>University Location</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={5}
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                />
+                {validationErrors.location && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.location}
+                  </Form.Text>
+                )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="source_id">
+                <Form.Label>Country</Form.Label>
+                <Select
+                  className="react-select react-select-container"
+                  classNamePrefix="react-select"
+                  name="country_id"
+                  options={country}
+                  value={selectedCountry}
+                  onChange={handleSourceChange}
+                />
+
+                {validationErrors.country_id && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.country_id}
+                  </Form.Text>
+                )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Label>Website URL</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="website_url"
+                  value={formData.website_url}
+                  onChange={handleInputChange}
+                />
+                {validationErrors.website_url && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.website_url}
+                  </Form.Text>
+                )}
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Label>Image</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="image_url"
+                  value={formData.image_url}
+                  onChange={handleInputChange}
+                />
+                {validationErrors.image_url && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.image_url}
                   </Form.Text>
                 )}
               </Form.Group>
@@ -303,9 +479,9 @@ const BasicInputElements = withSwal((props: any) => {
                 className="btn-sm btn-blue waves-effect waves-light float-end"
                 onClick={toggleResponsiveModal}
               >
-                <i className="mdi mdi-plus-circle"></i> Add Country
+                <i className="mdi mdi-plus-circle"></i> Add University
               </Button>
-              <h4 className="header-title mb-4">Manage Countries</h4>
+              <h4 className="header-title mb-4">Manage University</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -323,26 +499,39 @@ const BasicInputElements = withSwal((props: any) => {
   );
 });
 
-const Country = () => {
+const University = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const [sourceData, setSourceData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector(
+  const { state, error, loading, initialLoading, country } = useSelector(
     (state: RootState) => ({
-      state: state.Country.countries,
-      error: state.Country.error,
-      loading: state.Country.loading,
-      initialLoading: state.Country.initialLoading,
+      state: state.University.universities.data,
+      error: state.University.error,
+      loading: state.University.loading,
+      initialLoading: state.University.initialloading,
+      country: state.Country.countries,
     })
   );
 
-  const Source = useSelector(
-    (state: RootState) => state?.Source?.sources?.data
-  );
+  // const Source = useSelector(
+  //   (state: RootState) => state?.Source?.sources?.data
+  // );
 
   useEffect(() => {
+    dispatch(getUniversity());
     dispatch(getCountry());
   }, []);
+
+  useEffect(() => {
+    if (country) {
+      const CountryArray = country?.map((source: any) => ({
+        value: source.id.toString(),
+        label: source.country_name, // Replace with the appropriate field from the lead data
+      }));
+      setSourceData(CountryArray);
+    }
+  }, [country]);
 
   if (initialLoading) {
     return (
@@ -357,17 +546,22 @@ const Country = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/country" },
-          { label: "Countries", path: "/master/country", active: true },
+          { label: "Master", path: "/master/university" },
+          { label: "University", path: "/master/university", active: true },
         ]}
-        title={"Countries"}
+        title={"University"}
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} error={error} loading={loading} />
+          <BasicInputElements
+            state={state}
+            country={sourceData}
+            error={error}
+            loading={loading}
+          />
         </Col>
       </Row>
     </React.Fragment>
   );
 };
-export default Country;
+export default University;
