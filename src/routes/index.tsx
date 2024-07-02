@@ -12,7 +12,6 @@ const Login2 = React.lazy(() => import("../pages/auth2/Login2"));
 const Logout2 = React.lazy(() => import("../pages/auth2/Logout2"));
 const Register2 = React.lazy(() => import("../pages/auth2/Register2"));
 const Confirm2 = React.lazy(() => import("../pages/auth2/Confirm2"));
-const Programs = React.lazy(() => import("../pages/forms/Programs"));
 const ForgetPassword2 = React.lazy(
   () => import("../pages/auth2/ForgetPassword2")
 );
@@ -53,8 +52,11 @@ const OfficeType = React.lazy(() => import("../pages/forms/OfficeType"));
 const Region = React.lazy(() => import("../pages/forms/Region"));
 const Flag = React.lazy(() => import("../pages/forms/Flag"));
 const MaritalStatus = React.lazy(() => import("../pages/forms/MaritalStatus"));
+const Leads = React.lazy(() => import("../pages/forms/Leads"));
 const Country = React.lazy(() => import("../pages/forms/Country"));
 const Branches = React.lazy(() => import("../pages/forms/Branches"));
+const University = React.lazy(() => import("../pages/forms/University"));
+const Programs = React.lazy(() => import("../pages/forms/Programs"));
 const Status = React.lazy(() => import("../pages/status/Status"));
 const StatusConfig = React.lazy(
   () => import("../pages/status/StatusConfiguration")
@@ -151,13 +153,13 @@ const leadRoutes = {
   icon: "users",
   children: [
     {
-      path: "leads/leads_list",
+      path: "leads/manage",
       name: "Leads",
       // element: <CRMLeadsList />,
       element: (
         <PrivateRoute
           roles={["Add Leads", "View Task", "Monitor"]}
-          component={CRMLeadsList}
+          component={Leads}
         />
       ),
       route: PrivateRoute,
@@ -259,6 +261,13 @@ const settingsRoutes = {
           name: "branches",
           // element: <Branches />,
           element: <PrivateRoute roles={["Monitor"]} component={Branches} />,
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/university",
+          name: "university",
+          // element: <Branches />,
+          element: <PrivateRoute roles={["Monitor"]} component={University} />,
           route: PrivateRoute,
         },
         {

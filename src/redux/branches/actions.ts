@@ -17,10 +17,24 @@ export interface BranchActionType {
 interface BranchData {
   id: string;
   branch_name: string;
-  branch_address: string;
-  branch_city: string;
-  branch_country: string;
-  currency: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+  contact_person_email: string;
+  contact_person_name: string;
+  contact_person_mobile: string;
+  contact_person_designation: string;
+  website: string;
+  social_media: string;
+  account_mail: string;
+  support_mail: string;
+  office_type: string;
+  region_id: string;
+  status: boolean;
   updated_by: string;
 }
 
@@ -48,19 +62,47 @@ export const getBranches = (): BranchActionType => ({
 
 export const addBranches = (
   branch_name: string,
-  branch_address: string,
-  branch_country: string,
-  branch_city: string,
-  currency: string,
+  email: string,
+  phone: string,
+  address: string,
+  city: string,
+  state: string,
+  country: string,
+  pincode: string,
+  contact_person_email: string,
+  contact_person_name: string,
+  contact_person_mobile: string,
+  contact_person_designation: string,
+  website: string,
+  social_media: string,
+  account_mail: string,
+  support_mail: string,
+  office_type: string,
+  region_id: string,
+  status: boolean,
   updated_by: string
 ): BranchActionType => ({
   type: BranchActionTypes.ADD_BRANCHES,
   payload: {
     branch_name,
-    branch_address,
-    branch_country,
-    branch_city,
-    currency,
+    email,
+    phone,
+    address,
+    city,
+    state,
+    country,
+    pincode,
+    contact_person_email,
+    contact_person_name,
+    contact_person_mobile,
+    contact_person_designation,
+    website,
+    social_media,
+    account_mail,
+    support_mail,
+    office_type,
+    region_id,
+    status,
     updated_by,
   },
 });
@@ -68,20 +110,48 @@ export const addBranches = (
 export const updateBranches = (
   id: string,
   branch_name: string,
-  branch_address: string,
-  branch_country: string,
-  branch_city: string,
-  currency: string,
+  email: string,
+  phone: string,
+  address: string,
+  city: string,
+  state: string,
+  country: string,
+  pincode: string,
+  contact_person_email: string,
+  contact_person_name: string,
+  contact_person_mobile: string,
+  contact_person_designation: string,
+  website: string,
+  social_media: string,
+  account_mail: string,
+  support_mail: string,
+  office_type: string,
+  region_id: string,
+  status: boolean,
   updated_by: string
 ): BranchActionType => ({
   type: BranchActionTypes.UPDATE_BRANCHES,
   payload: {
     id,
     branch_name,
-    branch_address,
-    branch_country,
-    branch_city,
-    currency,
+    email,
+    phone,
+    address,
+    city,
+    state,
+    country,
+    pincode,
+    contact_person_email,
+    contact_person_name,
+    contact_person_mobile,
+    contact_person_designation,
+    website,
+    social_media,
+    account_mail,
+    support_mail,
+    office_type,
+    region_id,
+    status,
     updated_by,
   },
 });
@@ -91,7 +161,7 @@ export const deleteBranches = (id: string): BranchActionType => ({
   payload: { id },
 });
 
-export const setSessionStorageItem = (key: string, value:string) => ({
+export const setSessionStorageItem = (key: string, value: string) => ({
   type: BranchActionTypes.SET_BRANCH_ID,
   payload: { key, value },
 });

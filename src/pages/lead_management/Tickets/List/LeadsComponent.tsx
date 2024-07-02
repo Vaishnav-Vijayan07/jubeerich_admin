@@ -216,86 +216,86 @@ const LeadCompontents = withSwal((props: any) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      await validationSchema.validate(formData, { abortEarly: false });
-      await phoneValidationSchema.validate(phoneNumber);
+    // try {
+    //   await validationSchema.validate(formData, { abortEarly: false });
+    //   await phoneValidationSchema.validate(phoneNumber);
 
-      // Validation passed, handle form submission
-      if (isUpdate) {
-        // Handle update logic
-        dispatch(
-          updateLeads(
-            formData.id,
-            formData.name,
-            formData.email,
-            formData.phone,
-            formData.alternate_phone,
-            formData.enquiry,
-            formData.status,
-            formData.category_id,
-            formData.source_id,
-            formData.channel_id,
-            formData.user_id,
-            // formData.branch,
-            branchId,
-            formData.proposal_no,
-            formData.proposal_amount,
-            formData.proposal,
-            formData.company_name,
-            formData.country,
-            formData.flag_id,
-            branch_id,
-            formData.lead_received_date
-          )
-        );
-        setIsUpdate(false);
-      } else {
-        // Handle add logic
-        dispatch(
-          addLeads(
-            formData.name,
-            formData.email,
-            formData.phone,
-            formData.alternate_phone,
-            formData.enquiry,
-            formData.status,
-            formData.category_id,
-            formData.source_id,
-            formData.channel_id,
-            formData.user_id,
-            // formData.branch,
-            branchId,
-            formData.proposal_no,
-            formData.proposal_amount,
-            formData.proposal,
-            formData.company_name,
-            formData.country,
-            formData.flag_id,
-            branch_id,
-            formData.lead_received_date
-          )
-        );
-      }
+    //   // Validation passed, handle form submission
+    //   if (isUpdate) {
+    //     // Handle update logic
+    //     dispatch(
+    //       updateLeads(
+    //         formData.id,
+    //         formData.name,
+    //         formData.email,
+    //         formData.phone,
+    //         formData.alternate_phone,
+    //         formData.enquiry,
+    //         formData.status,
+    //         formData.category_id,
+    //         formData.source_id,
+    //         formData.channel_id,
+    //         formData.user_id,
+    //         // formData.branch,
+    //         branchId,
+    //         formData.proposal_no,
+    //         formData.proposal_amount,
+    //         formData.proposal,
+    //         formData.company_name,
+    //         formData.country,
+    //         formData.flag_id,
+    //         branch_id,
+    //         formData.lead_received_date
+    //       )
+    //     );
+    //     setIsUpdate(false);
+    //   } else {
+    //     // Handle add logic
+    //     dispatch(
+    //       addLeads(
+    //         formData.name,
+    //         formData.email,
+    //         formData.phone,
+    //         formData.alternate_phone,
+    //         formData.enquiry,
+    //         formData.status,
+    //         formData.category_id,
+    //         formData.source_id,
+    //         formData.channel_id,
+    //         formData.user_id,
+    //         // formData.branch,
+    //         branchId,
+    //         formData.proposal_no,
+    //         formData.proposal_amount,
+    //         formData.proposal,
+    //         formData.company_name,
+    //         formData.country,
+    //         formData.flag_id,
+    //         branch_id,
+    //         formData.lead_received_date
+    //       )
+    //     );
+    //   }
 
-      handleClearForm();
+    //   handleClearForm();
 
-      //close modal
-      toggle();
+    //   //close modal
+    //   toggle();
 
-      // ... Rest of the form submission logic ...
-    } catch (validationError) {
-      // Handle validation errors
-      console.log("validationError", validationError);
-      if (validationError instanceof yup.ValidationError) {
-        const errors: any = {};
-        validationError.inner.forEach((error) => {
-          if (error.path) {
-            errors[error.path] = error.message;
-          }
-        });
-        setValidationErrors(errors);
-      }
-    }
+    //   // ... Rest of the form submission logic ...
+    // } catch (validationError) {
+    //   // Handle validation errors
+    //   console.log("validationError", validationError);
+    //   if (validationError instanceof yup.ValidationError) {
+    //     const errors: any = {};
+    //     validationError.inner.forEach((error) => {
+    //       if (error.path) {
+    //         errors[error.path] = error.message;
+    //       }
+    //     });
+    //     setValidationErrors(errors);
+    //   }
+    // }
   };
 
   const validatePhoneNumber = async (numberType: any, phone: any) => {

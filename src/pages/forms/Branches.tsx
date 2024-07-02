@@ -1,26 +1,34 @@
 import * as yup from "yup";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Country, City, ICity } from "country-state-city";
+import { Country, City, ICity, State } from "country-state-city";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { addBranches, deleteBranches, getBranches, updateBranches } from "../../redux/branches/actions";
+import {
+  addBranches,
+  deleteBranches,
+  getBranches,
+  updateBranches,
+} from "../../redux/branches/actions";
 import { AUTH_SESSION_KEY } from "../../constants";
+import { getRegion } from "../../redux/regions/actions";
+import Select from "react-select";
+import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 
 interface TableRecords {
   id: string;
   branch_name: string;
-  branch_address: string;
-  branch_city: string;
-  branch_country: string;
+  address: string;
+  city: string;
+  country: string;
   currency: string;
   updated_by: string;
 }
@@ -35,24 +43,50 @@ const sizePerPageList = [
 const initialState = {
   id: "",
   branch_name: "",
-  branch_address: "",
-  branch_city: "",
-  branch_country: "",
-  currency: "",
-  updated_by: "",
+  email: "",
+  phone: "",
+  address: "",
+  city: "",
+  state: "",
+  country: "",
+  pincode: "",
+  contact_person_email: "",
+  contact_person_name: "",
+  contact_person_mobile: "",
+  contact_person_designation: "",
+  website: "",
+  social_media: "",
+  account_mail: "",
+  support_mail: "",
+  office_type: "",
+  region_id: "",
+  status: false,
 };
 
 const initialValidationState = {
   branch_name: "",
-  branch_address: "",
-  branch_city: "",
-  branch_country: "",
-  currency: "",
+  email: "",
+  phone: "",
+  address: "",
+  city: "",
+  state: "",
+  country: "",
+  pincode: "",
+  contact_person_email: "",
+  contact_person_name: "",
+  contact_person_mobile: "",
+  contact_person_designation: "",
+  website: "",
+  social_media: "",
+  account_mail: "",
+  support_mail: "",
+  office_type: "",
+  region_id: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state } = props;
+  const { swal, state, regions, office } = props;
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -63,22 +97,85 @@ const BasicInputElements = withSwal((props: any) => {
   //Input data
   const [formData, setFormData] = useState(initialState);
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(initialValidationState);
+  const [validationErrors, setValidationErrors] = useState<any>(
+    initialValidationState
+  );
+  const [selectedOffice, setSelectedOffice] = useState<any>(null);
+  const [selectedRegion, setSelectedRegion] = useState<any>(null);
   // Country and city
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [cities, setCities] = useState<ICity[] | undefined>(undefined);
+  const [selectedState, setSelectedState] = useState<any>(null);
+  const [cities, setCities] = useState<any>([]);
+  const [states, setStates] = useState<any>([]);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
-  
+
   const options = useMemo(() => Country.getAllCountries(), []);
 
   const validationSchema = yup.object().shape({
-    branch_name: yup.string().required("branch name is required").min(3, "branch name must be at least 3 characters long"),
-    branch_address: yup.string().required("branch description is required").min(3, "branch description must be at least 3 characters long"),
-    branch_city: yup.string().required("branch city is required"),
-    branch_country: yup.string().required("branch country is required"),
-    currency: yup.string().required("branch country is required"),
+    branch_name: yup
+      .string()
+      .required("Branch name is required")
+      .min(3, "Branch name must be at least 3 characters long"),
+    email: yup
+      .string()
+      .email("Must be a valid email")
+      .required("Email is required"),
+    phone: yup
+      .string()
+      .required("Phone number is required")
+      .matches(/^[0-9]+$/, "Phone number must be digits only")
+      .min(10, "Phone number must be at least 10 digits long"),
+    address: yup
+      .string()
+      .required("Address is required")
+      .min(3, "Address must be at least 3 characters long"),
+    city: yup.string().required("City is required"),
+    state: yup.string().required("State is required"),
+    country: yup.string().required("Country is required"),
+    pincode: yup
+      .string()
+      .required("Pincode is required")
+      .matches(/^[0-9]+$/, "Pincode must be digits only")
+      .min(5, "Pincode must be at least 5 digits long"),
+    contact_person_email: yup
+      .string()
+      .email("Must be a valid email")
+      .required("Contact person email is required"),
+    contact_person_name: yup
+      .string()
+      .required("Contact person name is required")
+      .min(3, "Contact person name must be at least 3 characters long"),
+    contact_person_mobile: yup
+      .string()
+      .required("Contact person mobile number is required")
+      .matches(/^[0-9]+$/, "Mobile number must be digits only")
+      .min(10, "Mobile number must be at least 10 digits long"),
+    contact_person_designation: yup
+      .string()
+      .required("Contact person designation is required")
+      .min(3, "Designation must be at least 3 characters long"),
+    website: yup
+      .string()
+      .url("Must be a valid URL")
+      .required("Website URL is required"),
+    social_media: yup
+      .string()
+      .url("Must be a valid URL")
+      .required("Social media URL is required"),
+    account_mail: yup
+      .string()
+      .email("Must be a valid email")
+      .required("Account email is required"),
+    support_mail: yup
+      .string()
+      .email("Must be a valid email")
+      .required("Support email is required"),
+    office_type: yup.string().required("Office type is required"),
+    region_id: yup.string().required("Region ID is required"),
+    updated_by: yup.string().required("Updated by is required"),
+    status: yup.string().required("Status is required"),
   });
 
   const methods = useForm({
@@ -88,22 +185,48 @@ const BasicInputElements = withSwal((props: any) => {
 
   //handling update logic
   const handleUpdate = (item: any) => {
-    const selected = options?.find((country) => country.name === item?.branch_country);
+    const selected = options?.find(
+      (country) => country?.name === item?.country
+    );
     if (selected) {
-      setSelectedCountry(selected.isoCode);
+      setSelectedCountry(selected?.isoCode);
     } else {
       setSelectedCountry("");
     }
 
-    setFormData({
+    const updatedOffice = office?.filter(
+      (office: any) => office?.value == item.office_type
+    );
+    setSelectedOffice(updatedOffice[0]);
+
+    const updatedRegion = regions?.filter(
+      (region: any) => region?.value == item.region_id
+    );
+    setSelectedRegion(updatedRegion[0]);
+
+    setFormData((prev) => ({
+      ...prev,
       id: item?.id,
-      branch_name: item.branch_name,
-      branch_address: item.branch_address,
-      branch_city: item.branch_city,
-      branch_country: item.branch_country,
-      currency: item.currency,
-      updated_by: item.updated_by,
-    });
+      branch_name: item?.branch_name,
+      email: item?.email,
+      phone: item?.phone,
+      address: item?.address,
+      city: item?.city,
+      state: item?.state,
+      country: item?.country,
+      pincode: item?.pincode,
+      contact_person_email: item?.contact_person_email,
+      contact_person_name: item?.contact_person_name,
+      contact_person_mobile: item?.contact_person_mobile,
+      contact_person_designation: item?.contact_person_designation,
+      website: item?.website,
+      social_media: item?.social_media,
+      account_mail: item?.account_mail,
+      support_mail: item?.support_mail,
+      office_type: item?.office_type,
+      region_id: item?.region_id,
+      status: item?.status,
+    }));
 
     setIsUpdate(true);
   };
@@ -130,7 +253,14 @@ const BasicInputElements = withSwal((props: any) => {
 
   //handle onchange function
   const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
+    const { name, value, checked } = e.target;
+    if (name == "status") {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: checked,
+      }));
+      return;
+    }
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -140,10 +270,9 @@ const BasicInputElements = withSwal((props: any) => {
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     // Validate the form using yup
     try {
-      await validationSchema.validate(formData, { abortEarly: false });
+      // await validationSchema.validate(formData, { abortEarly: false });
       // Validation passed, handle form submission
 
       if (userInfo) {
@@ -151,21 +280,67 @@ const BasicInputElements = withSwal((props: any) => {
 
         if (isUpdate) {
           // Handle update logic
-          dispatch(updateBranches(formData.id, formData.branch_name, formData.branch_address, formData.branch_country, formData.branch_city, formData.currency, user_id));
+          dispatch(
+            updateBranches(
+              formData.id,
+              formData.branch_name,
+              formData.email,
+              formData.phone,
+              formData.address,
+              formData.city,
+              formData.state,
+              formData.country,
+              formData.pincode,
+              formData.contact_person_email,
+              formData.contact_person_name,
+              formData.contact_person_mobile,
+              formData.contact_person_designation,
+              formData.website,
+              formData.social_media,
+              formData.account_mail,
+              formData.support_mail,
+              formData.office_type,
+              formData.region_id,
+              formData.status,
+              user_id
+            )
+          );
           setIsUpdate(false);
         } else {
           // Handle add logic
-          dispatch(addBranches(formData.branch_name, formData.branch_address, formData.branch_country, formData.branch_city, formData.currency, user_id));
+          dispatch(
+            addBranches(
+              formData.branch_name,
+              formData.email,
+              formData.phone,
+              formData.address,
+              formData.city,
+              formData.state,
+              formData.country,
+              formData.pincode,
+              formData.contact_person_email,
+              formData.contact_person_name,
+              formData.contact_person_mobile,
+              formData.contact_person_designation,
+              formData.website,
+              formData.social_media,
+              formData.account_mail,
+              formData.support_mail,
+              formData.office_type,
+              formData.region_id,
+              formData.status,
+              user_id
+            )
+          );
         }
       }
 
       // Clear validation errors
       setValidationErrors({
         branch_name: "",
-        branch_address: "",
-        branch_city: "",
-        branch_country: "",
-        currency: "",
+        address: "",
+        city: "",
+        country: "",
       });
 
       //clear form data
@@ -196,27 +371,100 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Branch Name",
       accessor: "branch_name",
-      sort: true,
+      sort: false,
+    },
+    {
+      Header: "Email",
+      accessor: "email",
+      sort: false,
+    },
+    {
+      Header: "Phone",
+      accessor: "phone",
+      sort: false,
     },
     {
       Header: "Address",
-      accessor: "branch_address",
+      accessor: "address",
       sort: false,
     },
     {
       Header: "City",
-      accessor: "branch_city",
+      accessor: "city",
+      sort: false,
+    },
+    {
+      Header: "State",
+      accessor: "state",
       sort: false,
     },
     {
       Header: "Country",
-      accessor: "branch_country",
+      accessor: "country",
+      sort: false,
+    },
+    // {
+    //   Header: "Pincode",
+    //   accessor: "pincode",
+    //   sort: false,
+    // },
+    // {
+    //   Header: "Contact Person Email",
+    //   accessor: "contact_person_email",
+    //   sort: false,
+    // },
+    // {
+    //   Header: "Contact Person Name",
+    //   accessor: "contact_person_name",
+    //   sort: false,
+    // },
+    // {
+    //   Header: "Contact Person Mobile",
+    //   accessor: "contact_person_mobile",
+    //   sort: false,
+    // },
+    // {
+    //   Header: "Contact Person Designation",
+    //   accessor: "contact_person_designation",
+    //   sort: false,
+    // },
+    // {
+    //   Header: "Website",
+    //   accessor: "website",
+    //   sort: false,
+    // },
+    // {
+    //   Header: "Social Media",
+    //   accessor: "social_media",
+    //   sort: false,
+    // },
+    // {
+    //   Header: "Account Mail",
+    //   accessor: "account_mail",
+    //   sort: false,
+    // },
+    // {
+    //   Header: "Support Mail",
+    //   accessor: "support_mail",
+    //   sort: false,
+    // },
+    {
+      Header: "Office",
+      accessor: "office_name",
       sort: false,
     },
     {
-      Header: "Currency",
-      accessor: "currency",
+      Header: "Region",
+      accessor: "region_name",
       sort: false,
+    },
+    {
+      Header: "Status",
+      accessor: "status",
+      sort: false,
+      Cell: ({ row }: any) => {
+        return <>{row.original.status ? "Active" : "Not active"}</>;
+      },
     },
     {
       Header: "Updated By",
@@ -241,7 +489,12 @@ const BasicInputElements = withSwal((props: any) => {
           />
 
           {/* Delete Icon */}
-          <FeatherIcons icon="trash-2" size="15" className="cursor-pointer text-secondary" onClick={() => handleDelete(row.original.id)} />
+          <FeatherIcons
+            icon="trash-2"
+            size="15"
+            className="cursor-pointer text-secondary"
+            onClick={() => handleDelete(row.original.id)}
+          />
         </div>
       ),
     },
@@ -253,46 +506,90 @@ const BasicInputElements = withSwal((props: any) => {
     setFormData(initialState);
   };
 
+  const handleOfficeChanges = (selected: any) => {
+    setSelectedOffice(selected);
+    setFormData((prev) => ({
+      ...prev,
+      office_type: selected.value,
+    }));
+  };
+  const handleRegionChanges = (selected: any) => {
+    setSelectedRegion(selected);
+    setFormData((prev) => ({
+      ...prev,
+      region_id: selected.value,
+    }));
+  };
+
   const handleCountryChange = (event: any) => {
     const selectedCountryName = event.target.value;
-    const selectedCountry = options.find((country) => country.name === selectedCountryName);
+    const selectedCountry = options.find(
+      (country) => country.name === selectedCountryName
+    );
 
     if (selectedCountry) {
-      setSelectedCountry(selectedCountry.isoCode); // Update selectedCountry with isoCode
+      setSelectedCountry(selectedCountry.isoCode);
+      setStates(State?.getStatesOfCountry(selectedCountry.isoCode));
+      setCities([]); // Update selectedCountry with isoCode
       setFormData({
         ...formData,
-        branch_country: selectedCountryName,
-        branch_city: "", // Reset the city when country changes
-        currency: selectedCountry.currency,
+        country: selectedCountryName,
+        city: "", // Reset the city when country changes
       });
     } else {
       // Handle the case when no matching country is found
       setSelectedCountry(""); // Reset selectedCountry
+      setStates(""), setCities([]);
       setFormData({
         ...formData,
-        branch_country: selectedCountryName,
-        branch_city: "", // Reset the city when country changes
-        currency: "",
+        country: selectedCountryName,
+        city: "", // Reset the city when country changes
+      });
+    }
+  };
+  const handleStateChange = (event: any) => {
+    const selectedCountryName = event.target.value;
+    const selectedCountry = states.find(
+      (country: any) => country.name === selectedCountryName
+    );
+
+    if (selectedCountry) {
+      setSelectedState(selectedCountry.isoCode); // Update selectedCountry with isoCode
+      setFormData({
+        ...formData,
+        state: selectedCountryName,
+        city: "", // Reset the city when country changes
+      });
+    } else {
+      // Handle the case when no matching country is found
+      setSelectedState(""); // Reset selectedCountry
+      setFormData({
+        ...formData,
+        state: selectedCountryName,
+        city: "", // Reset the city when country changes
       });
     }
   };
 
   useEffect(() => {
-    if (selectedCountry !== null) {
+    if (selectedCountry !== null && selectedState !== null) {
       const fetchCities = async () => {
-        const updatedCities = await City.getCitiesOfCountry(selectedCountry);
+        const updatedCities = City.getCitiesOfState(
+          selectedCountry,
+          selectedState
+        );
         setCities(updatedCities);
       };
 
       fetchCities();
     }
-  }, [selectedCountry, isUpdate]);
+  }, [selectedState, isUpdate]);
 
   const toggleResponsiveModal = () => {
     setResponsiveModal(!responsiveModal);
     setValidationErrors(initialValidationState);
-    if(isUpdate){
-      handleCancelUpdate()
+    if (isUpdate) {
+      handleCancelUpdate();
     }
   };
 
@@ -300,71 +597,427 @@ const BasicInputElements = withSwal((props: any) => {
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
+        <Modal
+          show={responsiveModal}
+          onHide={toggleResponsiveModal}
+          size="lg"
+          dialogClassName="modal-right"
+        >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Role Management</h4>
+              <h4 className="modal-title">Branch Management</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="branch_name">
-                <Form.Label className="">Branch Name</Form.Label>
-                <Form.Control type="text" name="branch_name" value={formData.branch_name} onChange={handleInputChange} />
-                {validationErrors.branch_name && <Form.Text className="text-danger">{validationErrors.branch_name}</Form.Text>}
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="branch_address">
-                <Form.Label>Branch Address</Form.Label>
-                <Form.Control as="textarea" rows={5} name="branch_address" value={formData.branch_address} onChange={handleInputChange} />
-                {validationErrors.branch_address && <Form.Text className="text-danger">{validationErrors.branch_address}</Form.Text>}
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="branch_country">
-                <Form.Label>Branch Country</Form.Label>
-                <Form.Select aria-label="Default select example" name="branch_country" value={formData.branch_country} onChange={handleCountryChange}>
-                  <option value="" disabled>
-                    Choose..
-                  </option>
-                  {options?.map((item: any) => (
-                    <option
-                      value={item?.name}
-                      key={item?.name}
-                      onClick={() => setSelectedCountry(item.isoCode)}
-                      defaultValue={item.name === formData.branch_country ? item.name : undefined}
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="branch_name">
+                    <Form.Label className="">Branch Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="branch_name"
+                      value={formData.branch_name}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.branch_name && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.branch_name}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3" controlId="branch_name">
+                    <Form.Label className="">Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.email && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.email}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="branch_name">
+                    <Form.Label className="">Phone</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.phone && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.phone}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3" controlId="branch_name">
+                    <Form.Label className="">Pincode</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="pincode"
+                      value={formData.pincode}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.pincode && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.pincode}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="country">
+                    <Form.Label>Branch Country</Form.Label>
+                    <Form.Select
+                      aria-label="Default select example"
+                      name="country"
+                      value={formData.country}
+                      onChange={handleCountryChange}
                     >
-                      {item.name}
-                    </option>
-                  ))}
-                </Form.Select>
+                      <option value="" disabled>
+                        Choose..
+                      </option>
+                      {options?.map((item: any) => (
+                        <option
+                          value={item?.name}
+                          key={item?.name}
+                          onClick={() => setSelectedCountry(item.isoCode)}
+                          defaultValue={
+                            item.name === formData.country
+                              ? item.name
+                              : undefined
+                          }
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                    </Form.Select>
 
-                {validationErrors.branch_country && <Form.Text className="text-danger">{validationErrors.branch_country}</Form.Text>}
-              </Form.Group>
+                    {validationErrors.country && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.country}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3" controlId="country">
+                    <Form.Label>Branch State</Form.Label>
+                    <Form.Select
+                      aria-label="Default select example"
+                      name="country"
+                      value={formData.state}
+                      onChange={handleStateChange}
+                    >
+                      <option value="" disabled>
+                        Choose..
+                      </option>
+                      {states?.map((item: any) => (
+                        <option
+                          value={item?.name}
+                          key={item?.name}
+                          defaultValue={
+                            item.name === formData.country
+                              ? item.name
+                              : undefined
+                          }
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                    </Form.Select>
 
-              <Form.Group className="mb-3" controlId="branch_city">
-                <Form.Label>Branch City</Form.Label>
-                <Form.Select aria-label="Default select example" name="branch_city" value={formData.branch_city} onChange={handleInputChange}>
-                  <option value="" disabled>
-                    Choose..
-                  </option>
-                  {cities?.map((item: any, index: number) => (
-                    <option value={item?.name} key={index} defaultValue={item.name === formData.branch_country ? item.name : ""}>
-                      {item.name}
-                    </option>
-                  ))}
-                </Form.Select>
+                    {validationErrors.country && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.country}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3" controlId="city">
+                    <Form.Label>Branch City</Form.Label>
+                    <Form.Select
+                      aria-label="Default select example"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                    >
+                      <option value="" disabled>
+                        Choose..
+                      </option>
+                      {cities?.map((item: any, index: number) => (
+                        <option
+                          value={item?.name}
+                          key={index}
+                          defaultValue={
+                            item.name === formData.country ? item.name : ""
+                          }
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                    </Form.Select>
 
-                {validationErrors.branch_city && <Form.Text className="text-danger">{validationErrors.branch_city}</Form.Text>}
-              </Form.Group>
+                    {validationErrors.city && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.city}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="source_id">
+                    <Form.Label>Office</Form.Label>
+                    <Select
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="office_type"
+                      options={office}
+                      value={selectedOffice}
+                      onChange={handleOfficeChanges}
+                    />
+
+                    {validationErrors.office_type && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.office_type}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3" controlId="source_id">
+                    <Form.Label>Region</Form.Label>
+                    <Select
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="region_id"
+                      options={regions}
+                      value={selectedRegion}
+                      onChange={handleRegionChanges}
+                    />
+
+                    {validationErrors.region_id && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.region_id}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col className="text-center">
+                  <Form.Group className="mb-3" controlId="source_id">
+                    <Form.Label>Status</Form.Label>
+                    <Form.Check
+                      type="switch"
+                      id="active-switch"
+                      name="status"
+                      onChange={handleInputChange}
+                      checked={formData.status}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="address">
+                    <Form.Label>Branch Address</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={5}
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.address && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.address}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="contact_person_email">
+                    <Form.Label>Contact Person Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="contact_person_email"
+                      value={formData.contact_person_email}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.contact_person_email && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.contact_person_email}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3" controlId="contact_person_name">
+                    <Form.Label>Contact Person Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="contact_person_name"
+                      value={formData.contact_person_name}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.contact_person_name && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.contact_person_name}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <Form.Group
+                    className="mb-3"
+                    controlId="contact_person_mobile"
+                  >
+                    <Form.Label>Contact Person Mobile</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="contact_person_mobile"
+                      value={formData.contact_person_mobile}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.contact_person_mobile && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.contact_person_mobile}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group
+                    className="mb-3"
+                    controlId="contact_person_designation"
+                  >
+                    <Form.Label>Contact Person Designation</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="contact_person_designation"
+                      value={formData.contact_person_designation}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.contact_person_designation && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.contact_person_designation}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="website">
+                    <Form.Label>Website</Form.Label>
+                    <Form.Control
+                      type="url"
+                      name="website"
+                      value={formData.website}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.website && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.website}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3" controlId="social_media">
+                    <Form.Label>Social Media</Form.Label>
+                    <Form.Control
+                      type="url"
+                      name="social_media"
+                      value={formData.social_media}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.social_media && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.social_media}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="account_mail">
+                    <Form.Label>Account Mail</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="account_mail"
+                      value={formData.account_mail}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.account_mail && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.account_mail}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3" controlId="support_mail">
+                    <Form.Label>Support Mail</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="support_mail"
+                      value={formData.support_mail}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.support_mail && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.support_mail}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
             </Modal.Body>
             <Modal.Footer>
               <Button
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 ms-2"
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : toggleResponsiveModal())}
+                onClick={() =>
+                  isUpdate
+                    ? [handleCancelUpdate(), toggleResponsiveModal()]
+                    : toggleResponsiveModal()
+                }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
+              <Button
+                type="submit"
+                variant="success"
+                id="button-addon2"
+                className="mt-1"
+              >
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -375,11 +1028,22 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
+              <Button
+                className="btn-sm btn-blue waves-effect waves-light float-end"
+                onClick={toggleResponsiveModal}
+              >
                 <i className="mdi mdi-plus-circle"></i> Add Branch
               </Button>
               <h4 className="header-title mb-4">Manage Branch Details</h4>
-              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true} />
+              <Table
+                columns={columns}
+                data={records ? records : []}
+                pageSize={5}
+                sizePerPageList={sizePerPageList}
+                isSortable={true}
+                pagination={true}
+                isSearchable={true}
+              />
             </Card.Body>
           </Card>
         </Col>
@@ -390,15 +1054,53 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Branches = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const [regionsData, setRegionsData] = useState([]);
+  const [officeData, setOfficeData] = useState([]);
 
   //Fetch data from redux store
-  const { state } = useSelector((state: RootState) => ({
-    state: state.Branches.branches.data,
-  }));
+  const { state, regions, office, initialLoading } = useSelector(
+    (state: RootState) => ({
+      state: state.Branches.branches.data,
+      initialLoading: state.Branches.initialLoading,
+      regions: state.Region.regions,
+      office: state.OfficeTypes.officeTypes,
+    })
+  );
 
   useEffect(() => {
     dispatch(getBranches());
+    dispatch(getRegion());
+    dispatch(getOfficeTypeData());
   }, []);
+
+  useEffect(() => {
+    if (regions) {
+      const data = regions.map((region: any) => ({
+        value: region.id,
+        label: region.region_name,
+      }));
+      setRegionsData(data);
+    }
+  }, [regions]);
+
+  useEffect(() => {
+    if (office) {
+      const data = office.map((office: any) => ({
+        value: office.id,
+        label: office.office_type_name,
+      }));
+      setOfficeData(data);
+    }
+  }, [office]);
+
+  if (initialLoading) {
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "50%", left: "50%" }}
+      />
+    );
+  }
 
   return (
     <React.Fragment>
@@ -411,7 +1113,11 @@ const Branches = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} />
+          <BasicInputElements
+            state={state}
+            regions={regionsData}
+            office={officeData}
+          />
         </Col>
       </Row>
     </React.Fragment>

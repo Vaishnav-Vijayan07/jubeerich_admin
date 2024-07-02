@@ -34,6 +34,8 @@ function* getChannels(): SagaIterator {
   try {
     const response = yield call(getChannelsApi);
     const data = response.data;
+    console.log(data);
+    
 
     // NOTE - You can change this according to response format from your api
     yield put(ChannelApiResponseSuccess(ChannelsActionTypes.GET_CHANNELS, { data }));

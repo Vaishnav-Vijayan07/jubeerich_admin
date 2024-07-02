@@ -1,0 +1,9 @@
+export enum CountryActionTypes {
+  API_RESPONSE_SUCCESS = "@@country/API_RESPONSE_SUCCESS",
+  API_RESPONSE_ERROR = "@@country/API_RESPONSE_ERROR",
+  GET_COUNTRY = "@@country/GET_COUNTRY",
+  GET_COUNTRY_BY_ID = "@@country/GET_COUNTRY_BY_ID",
+  ADD_COUNTRY = "@@country/ADD_COUNTRY",
+  UPDATE_COUNTRY = "@@country/UPDATE_COUNTRY",
+  DELETE_COUNTRY = "@@country/DELETE_COUNTRY",
+}

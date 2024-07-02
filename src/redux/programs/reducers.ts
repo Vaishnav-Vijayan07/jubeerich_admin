@@ -1,108 +1,93 @@
 // apicore
 import { showErrorAlert, showSuccessAlert } from "../../constants";
-import { APICore } from "../../helpers/api/apiCore";
 
 // constants
-import { LeadsActionTypes } from "./constants";
+import { ProgramsActionTypes } from "./constants";
 
 const INIT_STATE = {
-  leads: [],
-  initialloading: false,
+  programs: [],
   loading: false,
-  error: {},
+  initialloading: false,
+  error: null,
 };
 
-interface LeadsData {
+interface ProgramData {
   id: string;
-  name: string;
-  email: string;
-  phone: string;
-  enquiry: string;
-  status: string;
-  category_id: string;
-  source_id: string;
-  channel_id: string;
-  user_id: string;
-  branch: string;
-  proposal_no: string;
-  proposal_amount: string;
-  proposal: string;
-  company_name: string;
-  country: string;
-  branch_id: string;
+  program_name: string;
+  university_id: string;
+  degree_level: string;
+  duration: string;
+  tuition_fees: string;
+  currency: string;
 }
 
-export interface LeadsActionType {
+export interface ProgramActionType {
   type:
-    | LeadsActionTypes.API_RESPONSE_SUCCESS
-    | LeadsActionTypes.API_RESPONSE_ERROR
-    | LeadsActionTypes.GET_LEADS
-    | LeadsActionTypes.GET_LEAD_USER
-    | LeadsActionTypes.ADD_LEADS
-    | LeadsActionTypes.UPDATE_LEADS
-    | LeadsActionTypes.DELETE_LEADS;
+    | ProgramsActionTypes.API_RESPONSE_SUCCESS
+    | ProgramsActionTypes.API_RESPONSE_ERROR
+    | ProgramsActionTypes.GET_PROGRAM
+    | ProgramsActionTypes.ADD_PROGRAM
+    | ProgramsActionTypes.UPDATE_PROGRAM
+    | ProgramsActionTypes.DELETE_PROGRAM;
   payload: {
     actionType?: string;
-    data?: LeadsData | {};
+    data?: ProgramData | {};
     error?: string;
   };
 }
 
 interface State {
-  l?: LeadsData | {};
+  sources?: ProgramData | {};
   loading?: boolean;
   value?: boolean;
 }
 
-const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
+const Program = (
+  state: State = INIT_STATE,
+  action: ProgramActionType
+): any => {
   switch (action.type) {
-    case LeadsActionTypes.API_RESPONSE_SUCCESS:
+    case ProgramsActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
-        case LeadsActionTypes.GET_LEADS: {
+        case ProgramsActionTypes.GET_PROGRAM: {
           return {
             ...state,
-            leads: action.payload.data,
+            programs: action.payload.data,
             loading: false,
             initialloading: false,
           };
         }
-
-        case LeadsActionTypes.GET_LEAD_USER: {
-          return {
-            ...state,
-            leads: action.payload.data,
-            loading: false,
-          };
-        }
-
-        case LeadsActionTypes.ADD_LEADS: {
+        case ProgramsActionTypes.ADD_PROGRAM: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
-        case LeadsActionTypes.UPDATE_LEADS: {
+        case ProgramsActionTypes.UPDATE_PROGRAM: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
-        case LeadsActionTypes.DELETE_LEADS: {
+        case ProgramsActionTypes.DELETE_PROGRAM: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
+            initialloading: false,
           };
         }
         default:
           return { ...state };
       }
 
-    case LeadsActionTypes.API_RESPONSE_ERROR:
+    case ProgramsActionTypes.API_RESPONSE_ERROR:
       switch (action.payload.actionType) {
-        case LeadsActionTypes.GET_LEADS: {
+        case ProgramsActionTypes.GET_PROGRAM: {
           return {
             ...state,
             error: action.payload.error,
@@ -110,7 +95,7 @@ const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
             initialloading: false,
           };
         }
-        case LeadsActionTypes.ADD_LEADS: {
+        case ProgramsActionTypes.ADD_PROGRAM: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -119,7 +104,7 @@ const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
             initialloading: false,
           };
         }
-        case LeadsActionTypes.UPDATE_LEADS: {
+        case ProgramsActionTypes.UPDATE_PROGRAM: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -128,7 +113,7 @@ const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
             initialloading: false,
           };
         }
-        case LeadsActionTypes.DELETE_LEADS: {
+        case ProgramsActionTypes.DELETE_PROGRAM: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -141,15 +126,15 @@ const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
           return { ...state };
       }
 
-    case LeadsActionTypes.GET_LEADS:
+    case ProgramsActionTypes.GET_PROGRAM:
       return { ...state, loading: true, initialloading: true };
-    case LeadsActionTypes.ADD_LEADS:
-      return { ...state, loading: true };
-    case LeadsActionTypes.UPDATE_LEADS:
-      return { ...state, loading: true };
+    case ProgramsActionTypes.ADD_PROGRAM:
+      return { ...state, loading: true, initialloading: true };
+    case ProgramsActionTypes.UPDATE_PROGRAM:
+      return { ...state, loading: true, initialloading: true };
     default:
       return { ...state };
   }
 };
 
-export default Leads;
+export default Program;

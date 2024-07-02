@@ -6,6 +6,7 @@ const INIT_STATE = {
   branches: [],
   branch_id: null,
   loading: false,
+  initialLoading: false,
   error: {},
 };
 
@@ -21,14 +22,14 @@ interface BranchData {
 
 export interface BranchActionType {
   type:
-  | BranchActionTypes.API_RESPONSE_SUCCESS
-  | BranchActionTypes.API_RESPONSE_ERROR
-  | BranchActionTypes.GET_BRANCHES
-  | BranchActionTypes.ADD_BRANCHES
-  | BranchActionTypes.UPDATE_BRANCHES
-  | BranchActionTypes.DELETE_BRANCHES
-  | BranchActionTypes.SET_BRANCH_ID
-  | BranchActionTypes.FETCH_BRANCH_ID_FROM_SESSION_STORAGE;
+    | BranchActionTypes.API_RESPONSE_SUCCESS
+    | BranchActionTypes.API_RESPONSE_ERROR
+    | BranchActionTypes.GET_BRANCHES
+    | BranchActionTypes.ADD_BRANCHES
+    | BranchActionTypes.UPDATE_BRANCHES
+    | BranchActionTypes.DELETE_BRANCHES
+    | BranchActionTypes.SET_BRANCH_ID
+    | BranchActionTypes.FETCH_BRANCH_ID_FROM_SESSION_STORAGE;
   payload: {
     actionType?: string;
     key: string;
@@ -41,6 +42,7 @@ export interface BranchActionType {
 interface State {
   branches?: BranchData | {};
   loading?: boolean;
+  initialLoading?: boolean;
   value?: boolean;
 }
 
@@ -53,6 +55,7 @@ const Branch = (state: State = INIT_STATE, action: BranchActionType): any => {
             ...state,
             branches: action.payload.data,
             loading: false,
+            initialLoading: false,
           };
         }
         case BranchActionTypes.ADD_BRANCHES: {
@@ -60,6 +63,7 @@ const Branch = (state: State = INIT_STATE, action: BranchActionType): any => {
           return {
             ...state,
             loading: false,
+            initialLoading: false,
           };
         }
         case BranchActionTypes.UPDATE_BRANCHES: {
@@ -67,6 +71,7 @@ const Branch = (state: State = INIT_STATE, action: BranchActionType): any => {
           return {
             ...state,
             loading: false,
+            initialLoading: false,
           };
         }
         case BranchActionTypes.DELETE_BRANCHES: {
@@ -74,6 +79,7 @@ const Branch = (state: State = INIT_STATE, action: BranchActionType): any => {
           return {
             ...state,
             loading: false,
+            initialLoading: false,
           };
         }
         default:
@@ -122,22 +128,22 @@ const Branch = (state: State = INIT_STATE, action: BranchActionType): any => {
 
       sessionStorage.setItem(key, JSON.stringify(value));
       return {
-        ...state
+        ...state,
       };
 
     case BranchActionTypes.FETCH_BRANCH_ID_FROM_SESSION_STORAGE:
-      const branch_id = sessionStorage.getItem('branch_id');
+      const branch_id = sessionStorage.getItem("branch_id");
       return {
         ...state,
         branch_id,
       };
 
     case BranchActionTypes.GET_BRANCHES:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialLoading: true };
     case BranchActionTypes.ADD_BRANCHES:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialLoading: true };
     case BranchActionTypes.UPDATE_BRANCHES:
-      return { ...state, loading: true };
+      return { ...state, loading: true, initialLoading: true };
     default:
       return { ...state };
   }

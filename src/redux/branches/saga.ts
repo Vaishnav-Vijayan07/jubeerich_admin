@@ -5,10 +5,19 @@ import { SagaIterator } from "@redux-saga/core";
 import { APICore } from "../../helpers/api/apiCore";
 
 // helpers
-import { getBranches as getBranchesApi, addBranches as addBranchesApi, updateBranches as updateBranchesApi, deleteBranches as deleteBranchesApi } from "../../helpers/";
+import {
+  getBranches as getBranchesApi,
+  addBranches as addBranchesApi,
+  updateBranches as updateBranchesApi,
+  deleteBranches as deleteBranchesApi,
+} from "../../helpers/";
 
 // actions
-import { BranchApiResponseSuccess, BranchApiResponseError, getBranches } from "./actions";
+import {
+  BranchApiResponseSuccess,
+  BranchApiResponseError,
+  getBranches,
+} from "./actions";
 
 // constants
 import { BranchActionTypes } from "./constants";
@@ -17,10 +26,24 @@ interface BranchData {
   payload: {
     id: string;
     branch_name: string;
-    branch_address: string;
-    branch_city: string;
-    branch_country: string;
-    currency: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    pincode: string;
+    contact_person_email: string;
+    contact_person_name: string;
+    contact_person_mobile: string;
+    contact_person_designation: string;
+    website: string;
+    social_media: string;
+    account_mail: string;
+    support_mail: string;
+    office_type: string;
+    region_id: string;
+    status: boolean;
     updated_by: string;
   };
   type: string;
@@ -36,24 +59,62 @@ function* getBranch(): SagaIterator {
     const data = response.data.data;
 
     // NOTE - You can change this according to response format from your api
-    yield put(BranchApiResponseSuccess(BranchActionTypes.GET_BRANCHES, { data }));
+    yield put(
+      BranchApiResponseSuccess(BranchActionTypes.GET_BRANCHES, { data })
+    );
   } catch (error: any) {
     yield put(BranchApiResponseError(BranchActionTypes.GET_BRANCHES, error));
   }
 }
 
-function* addBranches({ payload: { branch_name, branch_address, branch_city, branch_country, currency, updated_by } }: BranchData): SagaIterator {
+function* addBranches({
+  payload: {
+    branch_name,
+    email,
+    phone,
+    address,
+    city,
+    state,
+    country,
+    pincode,
+    contact_person_email,
+    contact_person_name,
+    contact_person_mobile,
+    contact_person_designation,
+    website,
+    social_media,
+    account_mail,
+    support_mail,
+    office_type,
+    region_id,
+    status,
+    updated_by,
+  },
+}: BranchData): SagaIterator {
   try {
     const response = yield call(addBranchesApi, {
       branch_name,
-      branch_address,
-      branch_city,
-      branch_country,
-      currency,
+      email,
+      phone,
+      address,
+      city,
+      state,
+      country,
+      pincode,
+      contact_person_email,
+      contact_person_name,
+      contact_person_mobile,
+      contact_person_designation,
+      website,
+      social_media,
+      account_mail,
+      support_mail,
+      office_type,
+      region_id,
+      status,
       updated_by,
     });
     const data = response.data.message;
-
 
     yield put(BranchApiResponseSuccess(BranchActionTypes.ADD_BRANCHES, data));
 
@@ -64,23 +125,64 @@ function* addBranches({ payload: { branch_name, branch_address, branch_city, bra
   }
 }
 
-function* updateBranches({ payload: { id, branch_name, branch_address, branch_city, branch_country, currency, updated_by } }: BranchData): SagaIterator {
+function* updateBranches({
+  payload: {
+    id,
+    branch_name,
+    email,
+    phone,
+    address,
+    city,
+    state,
+    country,
+    pincode,
+    contact_person_email,
+    contact_person_name,
+    contact_person_mobile,
+    contact_person_designation,
+    website,
+    social_media,
+    account_mail,
+    support_mail,
+    office_type,
+    region_id,
+    status,
+    updated_by,
+  },
+}: BranchData): SagaIterator {
   try {
     const response = yield call(updateBranchesApi, id, {
       branch_name,
-      branch_address,
-      branch_city,
-      branch_country,
-      currency,
+      email,
+      phone,
+      address,
+      city,
+      state,
+      country,
+      pincode,
+      contact_person_email,
+      contact_person_name,
+      contact_person_mobile,
+      contact_person_designation,
+      website,
+      social_media,
+      account_mail,
+      support_mail,
+      office_type,
+      region_id,
+      status,
       updated_by,
     });
     const data = response.data.message;
 
-
-    yield put(BranchApiResponseSuccess(BranchActionTypes.UPDATE_BRANCHES, data));
+    yield put(
+      BranchApiResponseSuccess(BranchActionTypes.UPDATE_BRANCHES, data)
+    );
     yield put(getBranches());
   } catch (error: any) {
-    yield put(BranchApiResponseSuccess(BranchActionTypes.UPDATE_BRANCHES, error));
+    yield put(
+      BranchApiResponseSuccess(BranchActionTypes.UPDATE_BRANCHES, error)
+    );
     throw error;
   }
 }
@@ -90,7 +192,9 @@ function* deleteBranches({ payload: { id } }: BranchData): SagaIterator {
     const response = yield call(deleteBranchesApi, id);
     const data = response.data.message;
 
-    yield put(BranchApiResponseSuccess(BranchActionTypes.DELETE_BRANCHES, data));
+    yield put(
+      BranchApiResponseSuccess(BranchActionTypes.DELETE_BRANCHES, data)
+    );
     yield put(getBranches());
   } catch (error: any) {
     yield put(BranchApiResponseError(BranchActionTypes.DELETE_BRANCHES, error));
@@ -115,7 +219,12 @@ export function* watchDeleteCampaign(): any {
 }
 
 function* ChannelSaga() {
-  yield all([fork(watchGetCampaign), fork(watchaddBranches), fork(watchUpdateCampaign), fork(watchDeleteCampaign)]);
+  yield all([
+    fork(watchGetCampaign),
+    fork(watchaddBranches),
+    fork(watchUpdateCampaign),
+    fork(watchDeleteCampaign),
+  ]);
 }
 
 export default ChannelSaga;

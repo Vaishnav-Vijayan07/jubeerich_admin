@@ -19,6 +19,9 @@ import OfficeTypes from "./OfficeType/reducers";
 import Region from "./regions/reducers";
 import Flag from "./flag/reducers";
 import MaritalStatus from "./marital_status/reducers";
+import Country from "./country/reducers";
+import University from "./University/reducers";
+import Program from "./programs/reducers";
 export default combineReducers({
   Auth,
   Layout,
@@ -30,6 +33,9 @@ export default combineReducers({
   Campaign,
   Branches,
   Flag,
+  Country,
+  University,
+  Program,
   MaritalStatus,
   Roles,
   Users,
