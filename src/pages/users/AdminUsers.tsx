@@ -31,7 +31,7 @@ import { error } from "console";
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const { swal, state, BranchesData, RolesData, error, loading } = props;
-  const animatedComponents = makeAnimated();
+
   const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
 
@@ -45,8 +45,6 @@ const BasicInputElements = withSwal((props: any) => {
   const [formData, setFormData] = useState<MyInitialState>(initialState);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [selectedBranch, setSelectedBranch] = useState<OptionType[]>([]);
-
-  console.log("formData===>", formData);
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -652,8 +650,6 @@ const AdminUsers = () => {
     dispatch(getBranches());
     dispatch(getRoles());
   }, []);
-
-  console.log("Branch===>", Branch);
   
 
   useEffect(() => {
