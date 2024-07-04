@@ -78,7 +78,7 @@ const AllRoutes = (props: IRoutesProps) => {
                   api.isUserAuthenticated() === false ? (
                     <Navigate
                       to={{
-                        pathname: "/auth/login2/",
+                        pathname: "/auth/login/",
                         // hash:route.path,
                         search: "next=" + route.path,
                       }}

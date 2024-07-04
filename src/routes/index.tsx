@@ -8,15 +8,15 @@ import PrivateRoute from "./PrivateRoute";
 // lazy load all the views
 
 // auth2
-const Login2 = React.lazy(() => import("../pages/auth2/Login2"));
-const Logout2 = React.lazy(() => import("../pages/auth2/Logout2"));
-const Register2 = React.lazy(() => import("../pages/auth2/Register2"));
-const Confirm2 = React.lazy(() => import("../pages/auth2/Confirm2"));
+const Login2 = React.lazy(() => import("../pages/auth/Login"));
+const Logout2 = React.lazy(() => import("../pages/auth/Logout"));
+const Register2 = React.lazy(() => import("../pages/auth/Register"));
+const Confirm2 = React.lazy(() => import("../pages/auth/Confirm"));
 const ForgetPassword2 = React.lazy(
   () => import("../pages/auth2/ForgetPassword2")
 );
-const LockScreen2 = React.lazy(() => import("../pages/auth2/LockScreen2"));
-const SignInSignUp2 = React.lazy(() => import("../pages/auth2/SignInSignUp2"));
+const LockScreen2 = React.lazy(() => import("../pages/auth/LockScreen"));
+const SignInSignUp2 = React.lazy(() => import("../pages/auth/SignInSignUp"));
 
 // dashboard
 const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard4/"));
@@ -411,43 +411,43 @@ const UserRoutes = {
 // auth
 const authRoutes: RoutesProps[] = [
   {
-    path: "/auth/login2",
+    path: "/auth/login",
     name: "Login2",
     element: <Login2 />,
     route: Route,
   },
   {
-    path: "/auth/logout2",
+    path: "/auth/logout",
     name: "Logout2",
     element: <Logout2 />,
     route: Route,
   },
   {
-    path: "/auth/register2",
+    path: "/auth/register",
     name: "Register2",
     element: <Register2 />,
     route: Route,
   },
   {
-    path: "/auth/confirm2",
+    path: "/auth/confirm",
     name: "Confirm2",
     element: <Confirm2 />,
     route: Route,
   },
   {
-    path: "/auth/forget-password2",
+    path: "/auth/forget-password",
     name: "Forget Password2",
     element: <ForgetPassword2 />,
     route: Route,
   },
   {
-    path: "/auth/signin-signup2",
+    path: "/auth/signin-signup",
     name: "SignIn-SignUp2",
     element: <SignInSignUp2 />,
     route: Route,
   },
   {
-    path: "/auth/lock-screen2",
+    path: "/auth/lock-screen",
     name: "Lock Screen2",
     element: <LockScreen2 />,
     route: Route,

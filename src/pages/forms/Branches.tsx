@@ -12,12 +12,7 @@ import { Country, City, ICity, State } from "country-state-city";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import {
-  addBranches,
-  deleteBranches,
-  getBranches,
-  updateBranches,
-} from "../../redux/branches/actions";
+import { addBranches, deleteBranches, getBranches, updateBranches } from "../../redux/branches/actions";
 import { AUTH_SESSION_KEY } from "../../constants";
 import { getRegion } from "../../redux/regions/actions";
 import Select from "react-select";
@@ -97,9 +92,7 @@ const BasicInputElements = withSwal((props: any) => {
   //Input data
   const [formData, setFormData] = useState(initialState);
   //validation errors
-  const [validationErrors, setValidationErrors] = useState<any>(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState<any>(initialValidationState);
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
   const [selectedRegion, setSelectedRegion] = useState<any>(null);
   // Country and city
@@ -118,19 +111,13 @@ const BasicInputElements = withSwal((props: any) => {
       .string()
       .required("Branch name is required")
       .min(3, "Branch name must be at least 3 characters long"),
-    email: yup
-      .string()
-      .email("Must be a valid email")
-      .required("Email is required"),
+    email: yup.string().email("Must be a valid email").required("Email is required"),
     phone: yup
       .string()
       .required("Phone number is required")
       .matches(/^[0-9]+$/, "Phone number must be digits only")
       .min(10, "Phone number must be at least 10 digits long"),
-    address: yup
-      .string()
-      .required("Address is required")
-      .min(3, "Address must be at least 3 characters long"),
+    address: yup.string().required("Address is required").min(3, "Address must be at least 3 characters long"),
     city: yup.string().required("City is required"),
     state: yup.string().required("State is required"),
     country: yup.string().required("Country is required"),
@@ -139,10 +126,7 @@ const BasicInputElements = withSwal((props: any) => {
       .required("Pincode is required")
       .matches(/^[0-9]+$/, "Pincode must be digits only")
       .min(5, "Pincode must be at least 5 digits long"),
-    contact_person_email: yup
-      .string()
-      .email("Must be a valid email")
-      .required("Contact person email is required"),
+    contact_person_email: yup.string().email("Must be a valid email").required("Contact person email is required"),
     contact_person_name: yup
       .string()
       .required("Contact person name is required")
@@ -156,22 +140,10 @@ const BasicInputElements = withSwal((props: any) => {
       .string()
       .required("Contact person designation is required")
       .min(3, "Designation must be at least 3 characters long"),
-    website: yup
-      .string()
-      .url("Must be a valid URL")
-      .required("Website URL is required"),
-    social_media: yup
-      .string()
-      .url("Must be a valid URL")
-      .required("Social media URL is required"),
-    account_mail: yup
-      .string()
-      .email("Must be a valid email")
-      .required("Account email is required"),
-    support_mail: yup
-      .string()
-      .email("Must be a valid email")
-      .required("Support email is required"),
+    website: yup.string().url("Must be a valid URL").required("Website URL is required"),
+    social_media: yup.string().url("Must be a valid URL").required("Social media URL is required"),
+    account_mail: yup.string().email("Must be a valid email").required("Account email is required"),
+    support_mail: yup.string().email("Must be a valid email").required("Support email is required"),
     office_type: yup.string().required("Office type is required"),
     region_id: yup.string().required("Region ID is required"),
     updated_by: yup.string().required("Updated by is required"),
@@ -185,23 +157,17 @@ const BasicInputElements = withSwal((props: any) => {
 
   //handling update logic
   const handleUpdate = (item: any) => {
-    const selected = options?.find(
-      (country) => country?.name === item?.country
-    );
+    const selected = options?.find((country) => country?.name === item?.country);
     if (selected) {
       setSelectedCountry(selected?.isoCode);
     } else {
       setSelectedCountry("");
     }
 
-    const updatedOffice = office?.filter(
-      (office: any) => office?.value == item.office_type
-    );
+    const updatedOffice = office?.filter((office: any) => office?.value == item.office_type);
     setSelectedOffice(updatedOffice[0]);
 
-    const updatedRegion = regions?.filter(
-      (region: any) => region?.value == item.region_id
-    );
+    const updatedRegion = regions?.filter((region: any) => region?.value == item.region_id);
     setSelectedRegion(updatedRegion[0]);
 
     setFormData((prev) => ({
@@ -523,9 +489,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleCountryChange = (event: any) => {
     const selectedCountryName = event.target.value;
-    const selectedCountry = options.find(
-      (country) => country.name === selectedCountryName
-    );
+    const selectedCountry = options.find((country) => country.name === selectedCountryName);
 
     if (selectedCountry) {
       setSelectedCountry(selectedCountry.isoCode);
@@ -539,7 +503,8 @@ const BasicInputElements = withSwal((props: any) => {
     } else {
       // Handle the case when no matching country is found
       setSelectedCountry(""); // Reset selectedCountry
-      setStates(""), setCities([]);
+      setStates("");
+      setCities([]);
       setFormData({
         ...formData,
         country: selectedCountryName,
@@ -549,9 +514,7 @@ const BasicInputElements = withSwal((props: any) => {
   };
   const handleStateChange = (event: any) => {
     const selectedCountryName = event.target.value;
-    const selectedCountry = states.find(
-      (country: any) => country.name === selectedCountryName
-    );
+    const selectedCountry = states.find((country: any) => country.name === selectedCountryName);
 
     if (selectedCountry) {
       setSelectedState(selectedCountry.isoCode); // Update selectedCountry with isoCode
@@ -574,10 +537,7 @@ const BasicInputElements = withSwal((props: any) => {
   useEffect(() => {
     if (selectedCountry !== null && selectedState !== null) {
       const fetchCities = async () => {
-        const updatedCities = City.getCitiesOfState(
-          selectedCountry,
-          selectedState
-        );
+        const updatedCities = City.getCitiesOfState(selectedCountry, selectedState);
         setCities(updatedCities);
       };
 
@@ -597,12 +557,7 @@ const BasicInputElements = withSwal((props: any) => {
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          size="lg"
-          dialogClassName="modal-right"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} size="lg" dialogClassName="modal-right">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Branch Management</h4>
@@ -619,26 +574,15 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleInputChange}
                     />
                     {validationErrors.branch_name && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.branch_name}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.branch_name}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
                 <Col>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Email</Form.Label>
-                    <Form.Control
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.email && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.email}
-                      </Form.Text>
-                    )}
+                    <Form.Control type="email" name="email" value={formData.email} onChange={handleInputChange} />
+                    {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                   </Form.Group>
                 </Col>
               </Row>
@@ -646,32 +590,16 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Phone</Form.Label>
-                    <Form.Control
-                      type="number"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.phone && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.phone}
-                      </Form.Text>
-                    )}
+                    <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
+                    {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                   </Form.Group>
                 </Col>
                 <Col>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Pincode</Form.Label>
-                    <Form.Control
-                      type="number"
-                      name="pincode"
-                      value={formData.pincode}
-                      onChange={handleInputChange}
-                    />
+                    <Form.Control type="number" name="pincode" value={formData.pincode} onChange={handleInputChange} />
                     {validationErrors.pincode && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.pincode}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.pincode}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -694,11 +622,7 @@ const BasicInputElements = withSwal((props: any) => {
                           value={item?.name}
                           key={item?.name}
                           onClick={() => setSelectedCountry(item.isoCode)}
-                          defaultValue={
-                            item.name === formData.country
-                              ? item.name
-                              : undefined
-                          }
+                          defaultValue={item.name === formData.country ? item.name : undefined}
                         >
                           {item.name}
                         </option>
@@ -706,9 +630,7 @@ const BasicInputElements = withSwal((props: any) => {
                     </Form.Select>
 
                     {validationErrors.country && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.country}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.country}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -728,11 +650,7 @@ const BasicInputElements = withSwal((props: any) => {
                         <option
                           value={item?.name}
                           key={item?.name}
-                          defaultValue={
-                            item.name === formData.country
-                              ? item.name
-                              : undefined
-                          }
+                          defaultValue={item.name === formData.country ? item.name : undefined}
                         >
                           {item.name}
                         </option>
@@ -740,9 +658,7 @@ const BasicInputElements = withSwal((props: any) => {
                     </Form.Select>
 
                     {validationErrors.country && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.country}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.country}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -762,20 +678,14 @@ const BasicInputElements = withSwal((props: any) => {
                         <option
                           value={item?.name}
                           key={index}
-                          defaultValue={
-                            item.name === formData.country ? item.name : ""
-                          }
+                          defaultValue={item.name === formData.country ? item.name : ""}
                         >
                           {item.name}
                         </option>
                       ))}
                     </Form.Select>
 
-                    {validationErrors.city && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.city}
-                      </Form.Text>
-                    )}
+                    {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
                   </Form.Group>
                 </Col>
               </Row>
@@ -794,9 +704,7 @@ const BasicInputElements = withSwal((props: any) => {
                     />
 
                     {validationErrors.office_type && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.office_type}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.office_type}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -813,9 +721,7 @@ const BasicInputElements = withSwal((props: any) => {
                     />
 
                     {validationErrors.region_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.region_id}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -845,9 +751,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleInputChange}
                     />
                     {validationErrors.address && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.address}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.address}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -864,9 +768,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleInputChange}
                     />
                     {validationErrors.contact_person_email && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.contact_person_email}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.contact_person_email}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -880,9 +782,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleInputChange}
                     />
                     {validationErrors.contact_person_name && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.contact_person_name}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.contact_person_name}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -890,10 +790,7 @@ const BasicInputElements = withSwal((props: any) => {
 
               <Row>
                 <Col>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="contact_person_mobile"
-                  >
+                  <Form.Group className="mb-3" controlId="contact_person_mobile">
                     <Form.Label>Contact Person Mobile</Form.Label>
                     <Form.Control
                       type="text"
@@ -902,17 +799,12 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleInputChange}
                     />
                     {validationErrors.contact_person_mobile && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.contact_person_mobile}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.contact_person_mobile}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
                 <Col>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="contact_person_designation"
-                  >
+                  <Form.Group className="mb-3" controlId="contact_person_designation">
                     <Form.Label>Contact Person Designation</Form.Label>
                     <Form.Control
                       type="text"
@@ -921,9 +813,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleInputChange}
                     />
                     {validationErrors.contact_person_designation && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.contact_person_designation}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.contact_person_designation}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -933,16 +823,9 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col>
                   <Form.Group className="mb-3" controlId="website">
                     <Form.Label>Website</Form.Label>
-                    <Form.Control
-                      type="url"
-                      name="website"
-                      value={formData.website}
-                      onChange={handleInputChange}
-                    />
+                    <Form.Control type="url" name="website" value={formData.website} onChange={handleInputChange} />
                     {validationErrors.website && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.website}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.website}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -956,9 +839,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleInputChange}
                     />
                     {validationErrors.social_media && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.social_media}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.social_media}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -975,9 +856,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleInputChange}
                     />
                     {validationErrors.account_mail && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.account_mail}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.account_mail}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -991,9 +870,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleInputChange}
                     />
                     {validationErrors.support_mail && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.support_mail}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.support_mail}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -1004,20 +881,11 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 ms-2"
-                onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : toggleResponsiveModal()
-                }
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : toggleResponsiveModal())}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -1028,10 +896,7 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Branch
               </Button>
               <h4 className="header-title mb-4">Manage Branch Details</h4>
@@ -1058,14 +923,12 @@ const Branches = () => {
   const [officeData, setOfficeData] = useState([]);
 
   //Fetch data from redux store
-  const { state, regions, office, initialLoading } = useSelector(
-    (state: RootState) => ({
-      state: state.Branches.branches.data,
-      initialLoading: state.Branches.initialLoading,
-      regions: state.Region.regions,
-      office: state.OfficeTypes.officeTypes,
-    })
-  );
+  const { state, regions, office, initialLoading } = useSelector((state: RootState) => ({
+    state: state.Branches.branches.data,
+    initialLoading: state.Branches.initialLoading,
+    regions: state.Region.regions,
+    office: state.OfficeTypes.officeTypes,
+  }));
 
   useEffect(() => {
     dispatch(getBranches());
@@ -1094,12 +957,7 @@ const Branches = () => {
   }, [office]);
 
   if (initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      />
-    );
+    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
   }
 
   return (
@@ -1113,11 +971,7 @@ const Branches = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            regions={regionsData}
-            office={officeData}
-          />
+          <BasicInputElements state={state} regions={regionsData} office={officeData} />
         </Col>
       </Row>
     </React.Fragment>

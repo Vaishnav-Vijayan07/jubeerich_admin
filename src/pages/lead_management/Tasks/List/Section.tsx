@@ -34,9 +34,9 @@ const Task = ({
             <label className="form-check-label fs-5 truncate-text" htmlFor={`task-${task.id}`}>
               <span className="text-primary" style={{ fontSize: "14px", fontWeight: "700" }}>{`INTR${task.id}`}</span>
               &nbsp; &nbsp;
-              <b>{task.lead_title}</b>
+              <b>{task.title}</b>
             </label>
-            <small
+            {/* <small
               className={classNames("badge rounded-pill", "p-1 px-2 me-1")}
               // style={{ height: "max-content", fontSize: "9px", color }}
               style={{
@@ -47,11 +47,11 @@ const Task = ({
               }}
             >
               {task.next_status_name}
-            </small>
+            </small> */}
           </div>
 
           <div className="d-flex flex-wrapvgap-2">
-            <small
+            {/* <small
               className={classNames(
                 "badge border",
                 {
@@ -66,7 +66,7 @@ const Task = ({
               style={{ fontSize: "8px", padding: "3px", paddingTop: "4px" }}
             >
               {task.flag_name}
-            </small>
+            </small> */}
           </div>
         </Col>
       </Row>

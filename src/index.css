@@ -1,6 +1,9 @@
 .cursor-pointer {
   cursor: pointer;
 }
+.react-datepicker-wrapper input{
+  width: 100px;
+}
 .swal2-popup .swal2-html-container,
 .swal2-popup .swal2-content {
   font-weight: normal;

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import LogoDark from "../../assets/images/logo-dark.png";
 import LogoLight from "../../assets/images/logo-light.png";
-import Banner from '../../assets/images/auth/banner.png'
+import Banner from '../../assets/images/auth/authbg.png'
 
 interface AccountLayoutProps {
   helpText?: string;

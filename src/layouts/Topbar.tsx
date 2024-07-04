@@ -92,7 +92,7 @@ const ProfileMenus = [
   {
     label: "Logout",
     icon: "fe-log-out",
-    redirectTo: "/auth/logout2",
+    redirectTo: "/auth/logout",
   },
 ];
 
@@ -221,7 +221,6 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
     dispatch(showRightSidebar());
   };
 
-
   const branch_id = useSelector((state: RootState) => state?.Branches?.branch_id);
 
   const BranchName = () => {
@@ -280,34 +279,33 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
               <i className="mdi mdi-menu" />
             </button>
 
-            <div className="dropdown d-none d-xl-block">
+            {/* <div className="dropdown d-none d-xl-block">
               <CreateNew otherOptions={otherOptions} />
-            </div>
-
-            {/* <div className="dropdown dropdown-mega d-none d-xl-block">
-              <MegaMenu subMenus={MegaMenuOptions} />
             </div> */}
           </div>
 
           <ul className="topbar-menu d-flex align-items-center">
-            <li className="app-search dropdown d-none d-sm-block">
-              <TopbarSearch items={SearchResults} />
-            </li>
             <li className="dropdown d-none d-lg-inline-block">
               <MaximizeScreen />
+            </li>
+            <li className="app-search dropdown d-none d-sm-block">
+              <TopbarSearch items={SearchResults} />
             </li>
             <li className="dropdown notification-list">
               <NotificationDropdown notifications={Notifications} />
             </li>
+            <li className="dropdown">
+              <ProfileDropdown profilePic={profilePic} menuItems={ProfileMenus} username={name} userTitle={name} />
+            </li>
             <li className="dropdown d-none d-sm-block">
               <BranchDropDown profilePic={avatar} menuItems={branchData} branchname={branchName} userTitle={"branch"} />
             </li>
-            <li className="dropdown">
-              <ProfileDropdown profilePic={avatar} menuItems={ProfileMenus} username={name} userTitle={name} />
-            </li>
             <li>
-              <button className="nav-link dropdown-toggle right-bar-toggle waves-effect waves-light btn btn-link shadow-none my-dropdown-toggle" onClick={handleRightSideBar}>
-                <i className="fe-settings noti-icon font-22"></i>
+              <button
+                className="nav-link dropdown-toggle right-bar-toggle waves-effect waves-light btn btn-link shadow-none my-dropdown-toggle font-weight-light"
+                onClick={handleRightSideBar}
+              >
+                <i className="fe-settings noti-icon font-20 font-weight-light"></i>
               </button>
             </li>
           </ul>

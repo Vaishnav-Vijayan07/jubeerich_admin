@@ -17,7 +17,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, roles
       <Navigate
         // state={from: props['path']}
         to={{
-          pathname: "/auth/login2/",
+          pathname: "/auth/login/",
           // state: { from: props['path'] },
         }}
       />

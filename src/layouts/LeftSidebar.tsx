@@ -15,7 +15,7 @@ import { LayoutTypes } from "../constants/layout";
 // components
 import AppMenu from "./Menu";
 
-import logoSm from "../assets/images/logo-sm.png";
+import logoSm from "../assets/images/jb_logo.png";
 import logoDark from "../assets/images/logo-dark.png";
 import logoDark2 from "../assets/images/logo-dark-2.png";
 import logoLight from "../assets/images/logo-light.png";
@@ -75,15 +75,15 @@ const LeftSidebar = ({ isCondensed, hideLogo }: LeftSidebarProps) => {
           <div className="logo-box">
             <Link to="/" className="logo logo-dark text-center">
               <span className="logo-sm">
-                <img src={logoSm} alt="" height="22" />
+                <img src={logoSm} alt="" height="35" />
               </span>
               <span className="logo-lg">
-                <img src={layoutType === LayoutTypes.LAYOUT_TWO_COLUMN ? logoDark2 : logoDark} alt="" height="26" />
+                <img src={layoutType === LayoutTypes.LAYOUT_TWO_COLUMN ? logoDark2 : logoDark} alt="" height="40" />
               </span>
             </Link>
             <Link to="/" className="logo logo-light text-center">
               <span className="logo-sm">
-                <img src={logoSm} alt="" height="22" />
+                <img src={logoSm} alt="" height="35" />
               </span>
               <span className="logo-lg">
                 <img src={layoutType === LayoutTypes.LAYOUT_TWO_COLUMN ? logoLight2 : logoLight} alt="" height="20" />

@@ -36,7 +36,7 @@ const ProfileDropdown = (props: ProfileDropdownProps) => {
         onClick={toggleDropdown}
         className={classNames("nav-link nav-user me-0 waves-effect waves-light my-dropdown-toggle", { show: dropdownOpen })}
       >
-        <img src={`${baseUrl}/${profilePic}`!} className="rounded-circle" alt="" />
+        <img src={profilePic !} className="rounded-circle" alt="" />
         <span className="pro-user-name ms-1">
           {props["username"].split(" ")[0]} <i className="mdi mdi-chevron-down"></i>
         </span>

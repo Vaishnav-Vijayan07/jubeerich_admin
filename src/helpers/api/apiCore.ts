@@ -60,8 +60,8 @@ const AUTH_SESSION_KEY = "jb_user";
  * @param {*} token
  */
 const setAuthorization = (token: string | null) => {
-  if (token) axios.defaults.headers.common["Authorization"] = token;
-  else delete axios.defaults.headers.common["Authorization"];
+  if (token) axios.defaults.headers.common["X-Access-Token"] = token;
+  else delete axios.defaults.headers.common["X-Access-Token"];
 };
 
 const getUserFromCookie = () => {

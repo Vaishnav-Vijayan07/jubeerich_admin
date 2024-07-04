@@ -6,6 +6,7 @@ import email from "./email.svg";
 import information from "./information.svg";
 import calender_time from "./calender_time.svg";
 import business from "./business.svg";
+import user from "./user.svg";
 
 export default {
   Layer,
@@ -16,4 +17,5 @@ export default {
   information,
   calender_time,
   business,
+  user
 };
