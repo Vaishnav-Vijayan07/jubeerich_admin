@@ -19,6 +19,7 @@ const StudyPreference = ({ studentId, Countries }: any) => {
 
   // apis
   const getBasicInfo = () => {
+    setformData(initialState)
     axios
       .get(`getStudentStudyPrferenceInfo/${studentId}`)
       .then((res) => {

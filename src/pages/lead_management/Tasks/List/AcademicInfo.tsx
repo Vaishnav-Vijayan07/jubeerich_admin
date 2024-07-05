@@ -20,6 +20,7 @@ const AcademicInfo = ({ studentId }: any) => {
 
   // apis
   const getAcademicInfo = () => {
+    setformData(initialState)
     axios
       .get(`getStudentAcademicInfo/${studentId}`)
       .then((res) => {

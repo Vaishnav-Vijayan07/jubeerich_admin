@@ -26,6 +26,7 @@ const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData
 
   // apis
   const getBasicInfo = () => {
+    setformData(initialState);
     axios
       .get(`getStudentBasicInfo/${studentId}`)
       .then((res) => {
@@ -74,7 +75,7 @@ const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData
         console.log("res: =>", res);
         setLoading(false);
         showSuccessAlert(res.data.message);
-        getBasicInfoApi()
+        getBasicInfoApi();
       })
       .catch((err) => {
         console.log(err);
