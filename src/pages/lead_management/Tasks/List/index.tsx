@@ -14,14 +14,14 @@ import { AUTH_SESSION_KEY, DateReverse, handleDateFormat } from "../../../../con
 import ReactDatePicker from "react-datepicker";
 import calender from "../../../../assets/images/icons/calendar.svg";
 import StudentDetails from "./StudentDetails";
+import { useDispatch } from "react-redux";
 
 // Task List
 const TaskList = () => {
+  const dispatch = useDispatch();
   const [TaskArray, setTaskArray] = useState<TaskItemTypes[]>([]);
   // const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(TaskList[0]);
-  const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(
-    TaskArray.filter((item) => item.is_completed == false)[0]
-  );
+  const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(TaskArray[0]);
   const [selectedDate, setSelectedDate] = useState(handleDateFormat(new Date()));
   const [pickedDate, setPickedDate] = useState(new Date()); // Replace with your selected date
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -74,7 +74,6 @@ const TaskList = () => {
     axios
       .get(`/tasks`)
       .then((res) => {
-        console.log("res--->", res.data);
         setpendingTasks(res.data.data);
         setTaskArray(res.data.data);
       })
@@ -90,6 +89,8 @@ const TaskList = () => {
     const convertedDate = handleDateFormat(newDate);
     setSelectedDate(convertedDate);
   };
+
+  console.log("selectedTask========>", selectedTask);
 
   return (
     <>
@@ -140,7 +141,9 @@ const TaskList = () => {
         </Col>
 
         <Col xl={8}>
-          <StudentDetails />
+          {selectedTask && (
+            <StudentDetails studentId={selectedTask?.studentId} taskDetails={selectedTask} />
+          )}
         </Col>
       </Row>
     </>

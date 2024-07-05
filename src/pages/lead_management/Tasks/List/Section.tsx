@@ -32,7 +32,7 @@ const Task = ({
         <Col className="py-1 px-2 d-flex flex-column gap-2 cursor-pointer" md={12}>
           <div className="d-flex justify-content-between gap-3">
             <label className="form-check-label fs-5 truncate-text" htmlFor={`task-${task.id}`}>
-              <span className="text-primary" style={{ fontSize: "14px", fontWeight: "700" }}>{`INTR${task.id}`}</span>
+              <span className="text-primary" style={{ fontSize: "14px", fontWeight: "700" }}>{`JBR${task.id}`}</span>
               &nbsp; &nbsp;
               <b>{task.title}</b>
             </label>

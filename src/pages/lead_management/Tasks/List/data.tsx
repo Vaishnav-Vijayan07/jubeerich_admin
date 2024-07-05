@@ -62,6 +62,7 @@ export interface TaskItemTypes {
   id: number;
   title: string;
   name: string;
+  studentId: number;
   assigned_to: string;
   assignee_avatar: string;
   due_date: string;

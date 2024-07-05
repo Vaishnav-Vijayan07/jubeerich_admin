@@ -1,8 +1,88 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
+import axios from "axios";
+import moment from "moment";
+import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 
-const BasicInfo = () => {
+const initialState = {
+  full_name: "",
+  email: "",
+  phone: "",
+  city: "",
+  preferred_country: "",
+  office_type: "",
+  remarks: "",
+  lead_received_date: "",
+  passport_no: "",
+  dob: "",
+  gender: "",
+  marital_status: "",
+};
+
+const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData, getBasicInfoApi }: any) => {
+  const [formData, setformData] = useState(initialState);
+  const [loading, setLoading] = useState(false);
+
+  // apis
+  const getBasicInfo = () => {
+    axios
+      .get(`getStudentBasicInfo/${studentId}`)
+      .then((res) => {
+        console.log("res =>", res.data);
+        setformData(res.data.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  useEffect(() => {
+    if (studentId) {
+      getBasicInfo();
+    }
+  }, []);
+
+  // handling input data
+  const handleInputChange = (e: any) => {
+    setformData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  // save details api
+  const saveStudentBasicInfo = () => {
+    setLoading(true);
+    axios
+      .post("saveStudentBasicInfo", {
+        passport_no: formData?.passport_no,
+        dob: formData?.dob,
+        gender: formData?.gender,
+        marital_status: formData?.marital_status,
+        user_id: studentId,
+        full_name: formData?.full_name,
+        email: formData?.email,
+        phone: formData?.phone,
+        preferred_country: formData?.preferred_country,
+        office_type: formData?.office_type,
+        remarks: formData?.remarks,
+        // counsiler_id: null,
+        // branch_id: formData?.,
+      })
+      .then((res) => {
+        console.log("res: =>", res);
+        setLoading(false);
+        showSuccessAlert(res.data.message);
+        getBasicInfoApi()
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+        showErrorAlert("Error occured");
+      });
+  };
+
   return (
     <>
       <>
@@ -18,12 +98,9 @@ const BasicInfo = () => {
                 name="full_name"
                 placeholder="Enter full name"
                 key="full_name"
-                // register={register}
-                // errors={errors}
-                // value={formData.name}
-                // onChange={handleInputChange}
-                // control={control}
-                // defaultValue={preliminaryDetails?.name}
+                defaultValue={formData?.full_name}
+                value={formData?.full_name}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>} */}
             </Form.Group>
@@ -36,12 +113,9 @@ const BasicInfo = () => {
                 type="email"
                 name="email"
                 placeholder="Enter email id"
-                // register={register}
-                // key="email"
-                // value={formData.email}
-                // onChange={handleInputChange}
-                // errors={errors}
-                // control={control}
+                value={formData.email}
+                key="email"
+                onChange={handleInputChange}
               />
               {/* {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>} */}
             </Form.Group>
@@ -55,11 +129,8 @@ const BasicInfo = () => {
                 name="phone"
                 placeholder="Enter phone number"
                 key="phone"
-                // register={register}
-                // value={formData.whatsapp_number}
-                // onChange={handleInputChange}
-                // errors={errors}
-                // control={control}
+                value={formData.phone}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.whatsapp_number && (
                 <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
@@ -75,11 +146,8 @@ const BasicInfo = () => {
                 name="city"
                 placeholder="Enter city"
                 key="city"
-                // register={register}
-                // value={formData.destination_country}
-                // onChange={handleInputChange}
-                // errors={errors}
-                // control={control}
+                value={formData.city}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.destination_country && (
                 <Form.Text className="text-danger">{validationErrors.destination_country}</Form.Text>
@@ -94,15 +162,15 @@ const BasicInfo = () => {
                 className="mb-3"
                 name="preferred_country"
                 aria-label="Default select example"
-                // value={applicationStatus}
-                // onChange={(e: any) => setApplicationStatus(e.target.value)}
+                value={formData.preferred_country}
+                onChange={handleInputChange}
               >
                 <option value="" disabled>
                   Open this select menu
                 </option>
-                <option value="Not Yet Decided">Canada</option>
-                <option value="Started Applying">Germany</option>
-                <option value="Received Offer Letter">Italy</option>
+                {Countries?.map((country: any) => (
+                  <option value={country.id}>{country.country_name}</option>
+                ))}
               </Form.Select>
             </Form.Group>
           </Col>
@@ -114,23 +182,22 @@ const BasicInfo = () => {
                 name="office_type"
                 className="mb-3"
                 aria-label="Default select example"
-                // value={programType}
-                // onChange={(e: any) => setProgramType(e.target.value)}
+                value={formData?.office_type}
+                onChange={handleInputChange}
               >
                 <option value="" disabled>
                   Open this select menu
                 </option>
-                <option value="PG">Main Branch</option>
-                <option value="UG">Head Office</option>
+                {OfficeTypes?.map((officeType: any) => (
+                  <option value={officeType?.id}>{officeType?.office_type_name}</option>
+                ))}
               </Form.Select>
             </Form.Group>
           </Col>
           {/* </Row>
             <Row> */}
         </Row>
-        {/* <h5 className="mb-3 text-uppercase bg-light p-2 mt-3">
-          <i className="mdi mdi-office-building me-1"></i> Basic Info
-        </h5> */}
+
         <Row>
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="passport_no">
@@ -140,12 +207,9 @@ const BasicInfo = () => {
                 name="passport_no"
                 placeholder="Enter passport number"
                 key="passport_no"
-                // register={register}
-                // errors={errors}
-                // value={formData.name}
-                // onChange={handleInputChange}
-                // control={control}
-                // defaultValue={preliminaryDetails?.name}
+                value={formData?.passport_no}
+                defaultValue={formData?.passport_no}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>} */}
             </Form.Group>
@@ -158,15 +222,15 @@ const BasicInfo = () => {
                 name="gender"
                 className="mb-3"
                 aria-label="Default select example"
-                // value={programType}
-                // onChange={(e: any) => setProgramType(e.target.value)}
+                value={formData?.gender}
+                onChange={handleInputChange}
               >
                 <option value="" disabled>
                   Open this select menu
                 </option>
-                <option value="PG">Male</option>
-                <option value="UG">Female</option>
-                <option value="UG">Others</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Others</option>
               </Form.Select>
             </Form.Group>
           </Col>
@@ -178,15 +242,15 @@ const BasicInfo = () => {
                 name="marital_status"
                 className="mb-3"
                 aria-label="Default select example"
-                // value={programType}
-                // onChange={(e: any) => setProgramType(e.target.value)}
+                value={formData?.marital_status}
+                onChange={handleInputChange}
               >
                 <option value="" disabled>
                   Open this select menu
                 </option>
-                <option value="PG">Single</option>
-                <option value="UG">Married</option>
-                <option value="UG">Others</option>
+                {MaritalStatus?.map((marital_status: any) => (
+                  <option value={marital_status?.id}>{marital_status?.marital_status_name}</option>
+                ))}
               </Form.Select>
             </Form.Group>
           </Col>
@@ -199,12 +263,9 @@ const BasicInfo = () => {
                 name="dob"
                 placeholder="Select date of birth"
                 key="dob"
-                // register={register}
-                // errors={errors}
-                // value={formData.date_of_birth}
-                // onChange={handleInputChange}
-                // control={control}
-                // defaultValue={preliminaryDetails?.date_of_birth}
+                defaultValue={moment(formData?.dob).format("YYYY-MM-DD")}
+                value={moment(formData?.dob).format("YYYY-MM-DD")}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.date_of_birth && <Form.Text className="text-danger">{validationErrors.date_of_birth}</Form.Text>} */}
             </Form.Group>
@@ -217,18 +278,15 @@ const BasicInfo = () => {
               name="remarks"
               placeholder="Enter remarks"
               key="remarks"
-              // register={register}
-              // value={formData.remarks}
-              // onChange={handleInputChange}
-              // errors={errors}
-              // control={control}
+              value={formData.remarks}
+              onChange={handleInputChange}
             />
             {/* {validationErrors.remarks && (
     <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>
   )} */}
           </Form.Group>
 
-          <Button variant="primary" className="mt-4" type="submit">
+          <Button variant="primary" className="mt-4" type="submit" onClick={saveStudentBasicInfo} disabled={loading}>
             Save Details
           </Button>
         </Row>

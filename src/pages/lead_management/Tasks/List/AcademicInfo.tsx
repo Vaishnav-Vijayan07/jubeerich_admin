@@ -1,8 +1,78 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
+import axios from "axios";
+import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 
-const AcademicInfo = () => {
+const initialState = {
+  qualification: "",
+  place: "",
+  percentage: "",
+  year_of_passing: "",
+  backlogs: 0,
+  work_experience: 0,
+  designation: "",
+};
+
+const AcademicInfo = ({ studentId }: any) => {
+  const [formData, setformData] = useState(initialState);
+  const [loading, setLoading] = useState(false);
+
+  // apis
+  const getAcademicInfo = () => {
+    axios
+      .get(`getStudentAcademicInfo/${studentId}`)
+      .then((res) => {
+        console.log("res =>", res.data);
+        setformData(res.data.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  useEffect(() => {
+    if (studentId) {
+      getAcademicInfo();
+    }
+  }, []);
+
+  // handling input data
+  const handleInputChange = (e: any) => {
+    setformData((prev: any) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const saveStudentAcademicInfo = () => {
+    setLoading(true);
+    axios
+      .post("saveStudentAcademicInfo", {
+        user_id: studentId,
+        qualification: formData?.qualification,
+        place: formData?.place,
+        percentage: formData?.percentage,
+        year_of_passing: formData?.year_of_passing,
+        backlogs: formData?.backlogs,
+        work_experience: formData?.work_experience,
+        designation: formData?.designation,
+      })
+      .then((res) => {
+        console.log("res: =>", res);
+        setLoading(false);
+        showSuccessAlert(res.data.message);
+        // getBasicInfoApi()
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+        showErrorAlert("Error occured");
+      });
+  };
+
+  console.log("formData", formData);
+
   return (
     <>
       <>
@@ -18,12 +88,9 @@ const AcademicInfo = () => {
                 name="qualification"
                 placeholder="qualification"
                 key="qualification"
-                // register={register}
-                // errors={errors}
-                // value={formData.name}
-                // onChange={handleInputChange}
-                // control={control}
-                // defaultValue={preliminaryDetails?.name}
+                defaultValue={formData?.qualification}
+                value={formData?.qualification}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>} */}
             </Form.Group>
@@ -36,12 +103,9 @@ const AcademicInfo = () => {
                 type="text"
                 name="place"
                 placeholder="Enter place"
-                // register={register}
-                // key="email"
-                // value={formData.email}
-                // onChange={handleInputChange}
-                // errors={errors}
-                // control={control}
+                key="place"
+                value={formData.place}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>} */}
             </Form.Group>
@@ -55,11 +119,8 @@ const AcademicInfo = () => {
                 name="percentage"
                 placeholder="Enter percentage"
                 key="percentage"
-                // register={register}
-                // value={formData.whatsapp_number}
-                // onChange={handleInputChange}
-                // errors={errors}
-                // control={control}
+                value={formData?.percentage}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.whatsapp_number && (
               <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
@@ -75,11 +136,8 @@ const AcademicInfo = () => {
                 name="year_of_passing"
                 placeholder="Enter year of passing"
                 key="year_of_passing"
-                // register={register}
-                // value={formData.whatsapp_number}
-                // onChange={handleInputChange}
-                // errors={errors}
-                // control={control}
+                value={formData?.year_of_passing}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.whatsapp_number && (
               <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
@@ -93,13 +151,10 @@ const AcademicInfo = () => {
               <FormInput
                 type="number"
                 name="backlogs"
-                placeholder="Enter year of passing"
+                placeholder="Enter backlogs"
                 key="backlogs"
-                // register={register}
-                // value={formData.whatsapp_number}
-                // onChange={handleInputChange}
-                // errors={errors}
-                // control={control}
+                value={formData.backlogs}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.whatsapp_number && (
               <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
@@ -115,11 +170,8 @@ const AcademicInfo = () => {
                 name="designation"
                 placeholder="Enter designation"
                 key="designation"
-                // register={register}
-                // value={formData.whatsapp_number}
-                // onChange={handleInputChange}
-                // errors={errors}
-                // control={control}
+                value={formData?.designation}
+                onChange={handleInputChange}
               />
               {/* {validationErrors.whatsapp_number && (
               <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
@@ -127,7 +179,7 @@ const AcademicInfo = () => {
             </Form.Group>
           </Col>
 
-          <Button variant="primary" className="mt-4" type="submit">
+          <Button variant="primary" className="mt-4" type="submit" onClick={saveStudentAcademicInfo} disabled={loading}>
             Save Details
           </Button>
         </Row>
