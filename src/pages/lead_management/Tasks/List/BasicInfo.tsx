@@ -42,7 +42,7 @@ const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData
     if (studentId) {
       getBasicInfo();
     }
-  }, []);
+  }, [studentId]);
 
   // handling input data
   const handleInputChange = (e: any) => {

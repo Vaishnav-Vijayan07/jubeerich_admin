@@ -18,7 +18,7 @@ const StudyPreference = ({ studentId, Countries }: any) => {
   const [loading, setLoading] = useState(false);
 
   // apis
-  const getBasicInfo = () => {
+  const getStudyPreferenceInfo = () => {
     setformData(initialState)
     axios
       .get(`getStudentStudyPrferenceInfo/${studentId}`)
@@ -33,9 +33,9 @@ const StudyPreference = ({ studentId, Countries }: any) => {
 
   useEffect(() => {
     if (studentId) {
-      getBasicInfo();
+      getStudyPreferenceInfo();
     }
-  }, []);
+  }, [studentId]);
 
   // handling input data
   const handleInputChange = (e: any) => {

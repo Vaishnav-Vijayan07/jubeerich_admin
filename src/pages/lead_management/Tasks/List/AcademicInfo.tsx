@@ -36,7 +36,7 @@ const AcademicInfo = ({ studentId }: any) => {
     if (studentId) {
       getAcademicInfo();
     }
-  }, []);
+  }, [studentId]);
 
   // handling input data
   const handleInputChange = (e: any) => {
