@@ -37,7 +37,7 @@ const StudentDetails = ({ studentId, taskDetails }: any) => {
     if (studentId) {
       getBasicInfo();
     }
-  }, []);
+  }, [studentId]);
 
   useEffect(() => {
     dispatch(getCountry());

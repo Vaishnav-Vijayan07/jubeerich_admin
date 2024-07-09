@@ -19,7 +19,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "home",
     label: "Home",
     isTitle: true,
-    roles: ["Monitor", "Add Leads", "View Task"],
+    roles: ["Monitor", "Add Lead", "View Task"],
   },
   {
     key: "dashboard",
@@ -27,12 +27,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "airplay",
     url: "/dashboard-4",
-    roles: ["Monitor", "Add Leads", "View Task"],
+    roles: ["Monitor", "Add Lead", "View Task"],
   },
 
   // { key: "apps", label: "Apps", isTitle: true },
 
-  // { key: "leads", label: "Leads Management", isTitle: true, roles: ["Add Leads", "View Task"] },
+  // { key: "leads", label: "Leads Management", isTitle: true, roles: ["Add Lead", "View Task"] },
 
   // {
   //   key: "crm-leads_list",
@@ -40,7 +40,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
   //   isTitle: false,
   //   icon: "activity",
   //   url: "/leads/leads_list",
-  //   roles: ["Add Leads", "View Task"],
+  //   roles: ["Add Lead", "View Task"],
   // },
   // {
   //   key: "crm-tasks",
@@ -51,7 +51,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
   //   roles: ["View Task"],
   // },
 
-  { key: "leads", label: "Leads", isTitle: true, roles: ["Monitor"] },
+  { key: "leads", label: "Leads", isTitle: true, roles: ["Add Lead", "View Task"] },
 
   {
     key: "leads",
@@ -59,16 +59,16 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "award",
     url: "/leads/manage",
-    roles: ["Monitor", "Add Leads", "View Task"],
+    roles: ["Add Lead"],
   },
 
   {
-    key: "leads",
+    key: "tasks",
     label: "Tasks",
     isTitle: false,
     icon: "list",
     url: "/leads/tasks",
-    roles: ["Monitor", "Add Leads", "View Task"],
+    roles: ["View Task"],
   },
 
   { key: "settings", label: "Settings", isTitle: true, roles: ["Monitor"] },
@@ -184,7 +184,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
   //     },
   //   ],
   // },
-  // { key: "reports", label: "Reports", isTitle: true, roles: ["Add Leads", "View Task"] },
+  // { key: "reports", label: "Reports", isTitle: true, roles: ["Add Lead", "View Task"] },
 
   // {
   //   key: "lead-reports",
@@ -192,7 +192,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
   //   isTitle: false,
   //   icon: "file-minus",
   //   url: "/reports",
-  //   roles: ["Add Leads", "View Task"],
+  //   roles: ["Add Lead", "View Task"],
   // },
 
   {
@@ -231,7 +231,7 @@ const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [
     icon: "home",
     label: "Home",
     isTitle: true,
-    roles: ["Monitor", "Add Leads", "View Task"],
+    roles: ["Monitor", "Add Lead", "View Task"],
     children: [
       {
         key: "ds-dashboard-4",
@@ -246,7 +246,7 @@ const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [
     label: "Leads",
     isTitle: false,
     icon: "activity",
-    roles: ["Add Leads"],
+    roles: ["Add Lead"],
     children: [
       {
         key: "crm-leads_list",
@@ -349,7 +349,7 @@ const TWO_COl_MENU_ITEMS: MenuItemTypes[] = [
     icon: "home",
     label: "Home",
     isTitle: true,
-    roles: ["Monitor", "Add Leads", "View Task"],
+    roles: ["Monitor", "Add Lead", "View Task"],
     children: [
       {
         key: "ds-dashboard-4",
@@ -364,7 +364,7 @@ const TWO_COl_MENU_ITEMS: MenuItemTypes[] = [
     label: "Leads",
     isTitle: true,
     icon: "activity",
-    roles: ["Add Leads"],
+    roles: ["Add Lead"],
     children: [
       {
         key: "crm-leads_list",
