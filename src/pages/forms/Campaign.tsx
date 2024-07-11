@@ -226,11 +226,6 @@ const BasicInputElements = withSwal((props: any) => {
       },
     },
     {
-      Header: "Updated By",
-      accessor: "updated_by",
-      sort: true,
-    },
-    {
       Header: "Actions",
       accessor: "",
       sort: false,

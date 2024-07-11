@@ -216,14 +216,6 @@ const BasicInputElements = withSwal((props: any) => {
       ),
     },
     {
-      Header: "Updated By",
-      accessor: "updatedByUser",
-      sort: false,
-      Cell: ({ row }: any) => (
-        <div>{row.original?.updatedByUser?.name}</div> // Display array values as comma-separated
-      ),
-    },
-    {
       Header: "Actions",
       accessor: "",
       sort: false,
