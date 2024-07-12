@@ -82,19 +82,19 @@ const MENU_ITEMS: MenuItemTypes[] = [
     children: [
       {
         key: "category",
-        label: "Category",
+        label: "Lead Category",
         url: "/settings/master/category",
         parentKey: "master",
       },
       {
         key: "Source",
-        label: "Source",
+        label: "Lead Source",
         url: "/settings/master/source",
         parentKey: "master",
       },
       {
         key: "channel",
-        label: "Channel",
+        label: "Lead Channel",
         url: "/settings/master/channel",
         parentKey: "master",
       },

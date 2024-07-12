@@ -19,6 +19,8 @@ interface CountryData {
   payload: {
     id: string;
     country_name: string;
+    country_code: string;
+    isd: string;
   };
   type: string;
 }
@@ -26,7 +28,6 @@ interface CountryData {
 function* getCountrySaga(): SagaIterator {
   try {
     const response = yield call(getCountrysApi);
-    console.log(response);
     const data = response.data.data;
 
     yield put(countryApiResponseSuccess(CountryActionTypes.GET_COUNTRY, data));
@@ -70,11 +71,13 @@ function* deleteCountrySaga({ payload: { id } }: CountryData): SagaIterator {
   }
 }
 function* addCountrySaga({
-  payload: { country_name },
+  payload: { country_name, country_code, isd },
 }: CountryData): SagaIterator {
   try {
     const response = yield call(addCountrysApi, {
       country_name,
+      country_code,
+      isd,
     });
     console.log(response);
     const data = response.message;
@@ -87,20 +90,26 @@ function* addCountrySaga({
   }
 }
 function* updateCountrySaga({
-  payload: { id, country_name },
+  payload: { id, country_name, country_code, isd },
 }: CountryData): SagaIterator {
   try {
     const response = yield call(updateCountrysApi, id, {
       country_name,
+      country_code,
+      isd,
     });
     console.log(response);
     const data = response.message;
 
-    yield put(countryApiResponseSuccess(CountryActionTypes.UPDATE_COUNTRY, data));
+    yield put(
+      countryApiResponseSuccess(CountryActionTypes.UPDATE_COUNTRY, data)
+    );
     yield put(getCountry());
   } catch (error: any) {
     console.log(error);
-    yield put(countryApiResponseError(CountryActionTypes.UPDATE_COUNTRY, error));
+    yield put(
+      countryApiResponseError(CountryActionTypes.UPDATE_COUNTRY, error)
+    );
   }
 }
 

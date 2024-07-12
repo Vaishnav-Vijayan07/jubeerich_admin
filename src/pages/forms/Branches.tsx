@@ -359,16 +359,6 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "city",
       sort: false,
     },
-    {
-      Header: "State",
-      accessor: "state",
-      sort: false,
-    },
-    {
-      Header: "Country",
-      accessor: "country",
-      sort: false,
-    },
     // {
     //   Header: "Pincode",
     //   accessor: "pincode",
@@ -414,11 +404,6 @@ const BasicInputElements = withSwal((props: any) => {
     //   accessor: "support_mail",
     //   sort: false,
     // },
-    {
-      Header: "Office",
-      accessor: "office_name",
-      sort: false,
-    },
     {
       Header: "Region",
       accessor: "region_name",

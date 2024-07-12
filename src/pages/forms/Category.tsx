@@ -191,12 +191,12 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Category Name",
+      Header: "Lead Category Name",
       accessor: "category_name",
       sort: true,
     },
     {
-      Header: "Category Description",
+      Header: "Lead Category Description",
       accessor: "category_description",
       sort: false,
     },
@@ -277,11 +277,11 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Category Management</h4>
+              <h4 className="modal-title">Lead Category Management</h4>
             </Modal.Header>
             <Modal.Body>
               <Form.Group className="mb-3" controlId="validationCustom01">
-                <Form.Label>Category Name</Form.Label>
+                <Form.Label>Lead Category Name</Form.Label>
                 <Form.Control
                   type="text"
                   name="category_name"
@@ -296,7 +296,7 @@ const BasicInputElements = withSwal((props: any) => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="validationCustom01">
-                <Form.Label>Category Description</Form.Label>
+                <Form.Label>Lead Category Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
@@ -357,9 +357,9 @@ const BasicInputElements = withSwal((props: any) => {
                 className="btn-sm btn-blue waves-effect waves-light float-end"
                 onClick={toggleResponsiveModal}
               >
-                <i className="mdi mdi-plus-circle"></i> Add Category
+                <i className="mdi mdi-plus-circle"></i> Add Lead Category
               </Button>
-              <h4 className="header-title mb-4">Manage Categories</h4>
+              <h4 className="header-title mb-4">Manage Lead Categories</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -408,9 +408,9 @@ const Category = () => {
       <PageTitle
         breadCrumbItems={[
           { label: "Master", path: "/master/category" },
-          { label: "Category", path: "/master/category", active: true },
+          { label: "Lead Category", path: "/master/category", active: true },
         ]}
-        title={"Category"}
+        title={"Lead Category"}
       />
       <Row>
         <Col>
