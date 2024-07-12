@@ -50,6 +50,7 @@ import {
 } from "../../redux/University/actions";
 import { channel } from "redux-saga";
 import { getOfficeTypeData } from "../../redux/OfficeType/actions";
+import FileUploader from "../../components/FileUploader";
 
 interface OptionType {
   value: string;
@@ -142,6 +143,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [formData, setFormData] = useState(initialState);
+  const [uploadModal, setUploadModal] = useState<boolean>(false);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -478,6 +480,10 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const toggleUploadModal = () => {
+    setUploadModal(!uploadModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -731,15 +737,57 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal
+          show={uploadModal}
+          onHide={toggleUploadModal}
+          dialogClassName="modal-dialog-centered"
+        >
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body>
+            <p className="text-muted mb-1 font-small">
+              *Please upload the Excel file following the example format.
+            </p>
+            <FileUploader
+              // onFileUpload={handleOnFileUpload}
+              showPreview={true}
+              // selectedFile={selectedFile}
+              // setSelectedFile={setSelectedFile}
+            />
+            <div className="d-flex gap-2 justify-content-end mt-2">
+              <Button
+                className="btn-sm btn-blue waves-effect waves-light"
+              // onClick={handleDownloadClick}
+              >
+                <i className="mdi mdi-download-circle"></i> Download Sample
+              </Button>
+              <Button
+                className="btn-sm btn-success waves-effect waves-light"
+              // onClick={handleFileUpload}
+              // disabled={isLoading}
+              >
+                <i className="mdi mdi-upload"></i> Upload File
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
-                <i className="mdi mdi-plus-circle"></i> Add lead
-              </Button>
+              <div className="d-flex flex-wrap gap-2 justify-content-center justify-content-md-end">
+                <Button
+                  className="btn-sm btn-blue waves-effect waves-light"
+                  onClick={toggleUploadModal}
+                >
+                  <i className="mdi mdi-upload"></i>  Import Leads
+                </Button>
+                <Button
+                  className="btn-sm btn-blue waves-effect waves-light float-end"
+                  onClick={toggleResponsiveModal}
+                >
+                  <i className="mdi mdi-plus-circle"></i> Add lead
+                </Button>
+              </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
               <Table
                 columns={columns}

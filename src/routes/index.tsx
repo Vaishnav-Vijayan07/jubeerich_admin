@@ -104,7 +104,7 @@ const dashboardRoutes: RoutesProps = {
       // element: <Dashboard4 />,
       element: (
         <PrivateRoute
-          roles={["Add Leads", "View Task", "Monitor"]}
+          roles={["Add Lead", "View Task", "Monitor"]}
           component={Dashboard4}
         />
       ),
@@ -117,7 +117,7 @@ const crmAppRoutes = {
   path: "/apps/crm",
   name: "CRM",
   route: PrivateRoute,
-  roles: ["Add Leads", "View Task"],
+  roles: ["Add Lead", "View Task"],
   icon: "users",
   children: [
     {
@@ -133,7 +133,7 @@ const reportsRoutes = {
   path: "/",
   name: "CRM",
   route: PrivateRoute,
-  roles: ["Add Leads", "View Task"],
+  roles: ["Add Lead", "View Task"],
   icon: "file-minus",
   children: [
     {
@@ -149,7 +149,7 @@ const leadRoutes = {
   path: "/apps/lead_management",
   name: "Lead",
   route: PrivateRoute,
-  roles: ["Add Leads", "View Task", "Monitor"],
+  roles: ["Add Lead", "View Task", "Monitor"],
   icon: "users",
   children: [
     {
@@ -158,7 +158,7 @@ const leadRoutes = {
       // element: <CRMLeadsList />,
       element: (
         <PrivateRoute
-          roles={["Add Leads", "View Task", "Monitor"]}
+          roles={["Add Lead", "View Task", "Monitor"]}
           component={Leads}
         />
       ),

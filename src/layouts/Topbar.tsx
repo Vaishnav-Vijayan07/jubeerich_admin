@@ -297,9 +297,9 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
             <li className="dropdown">
               <ProfileDropdown profilePic={profilePic} menuItems={ProfileMenus} username={name} userTitle={name} />
             </li>
-            <li className="dropdown d-none d-sm-block">
+            {/* <li className="dropdown d-none d-sm-block">
               <BranchDropDown profilePic={avatar} menuItems={branchData} branchname={branchName} userTitle={"branch"} />
-            </li>
+            </li> */}
             <li>
               <button
                 className="nav-link dropdown-toggle right-bar-toggle waves-effect waves-light btn btn-link shadow-none my-dropdown-toggle font-weight-light"

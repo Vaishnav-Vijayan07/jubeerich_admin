@@ -155,23 +155,7 @@ const FileUploader = (props: FileUploaderProps) => {
               </Card>
             );
           })}
-          <div className="d-flex gap-2 align-items-center">
-            <Form.Select
-              aria-label="Default select example"
-              required
-              onChange={(e) => setFileType(e.currentTarget.value)} // Use e.currentTarget.value
-              value={fileType ? fileType : ""} // Make sure to set the selected value using the state variable
-              className="px-2 max-height"
-            >
-              <option>Choose Document Category...</option>
-              <option value="Proposal">Proposal</option>
-              <option value="Required documents">Required documents</option>
-            </Form.Select>
 
-            <Button className="max-content" type="submit" disabled={isLoading}>
-              Upload
-            </Button>
-          </div>
         </form>
       )}
     </>
