@@ -767,6 +767,7 @@ const BasicInputElements = withSwal((props: any) => {
               >
                 <i className="mdi mdi-upload"></i> Upload File
               </Button>
+              
             </div>
           </Modal.Body>
         </Modal>
