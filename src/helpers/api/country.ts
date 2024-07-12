@@ -14,7 +14,11 @@ function getCountryByidApi(id: string) {
 }
 
 //Add data
-function addCountrysApi(params: { country_name: string }) {
+function addCountrysApi(params: {
+  country_name: string;
+  country_code: string;
+  isd: string;
+}) {
   return api.create(`${url}`, params);
 }
 
@@ -23,6 +27,8 @@ function updateCountrysApi(
   id: string,
   params: {
     country_name: string;
+    country_code: string;
+    isd: string;
   }
 ) {
   return api.update(`${url}/${id}`, params);

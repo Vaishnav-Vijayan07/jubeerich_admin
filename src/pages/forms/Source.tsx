@@ -170,12 +170,12 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Source Name",
+      Header: "Lead Source Name",
       accessor: "source_name",
       sort: true,
     },
     {
-      Header: "Source Description",
+      Header: "Lead Source Description",
       accessor: "source_description",
       sort: false,
     },
@@ -240,11 +240,11 @@ const BasicInputElements = withSwal((props: any) => {
         <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Source Management</h4>
+              <h4 className="modal-title">Lead Source Management</h4>
             </Modal.Header>
             <Modal.Body>
               <Form.Group className="mb-3" controlId="source_name">
-                <Form.Label>Source Name</Form.Label>
+                <Form.Label>Lead Source Name</Form.Label>
                 <Form.Control
                   type="text"
                   name="source_name"
@@ -257,7 +257,7 @@ const BasicInputElements = withSwal((props: any) => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="source_description">
-                <Form.Label>Source Description</Form.Label>
+                <Form.Label>Lead Source Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
@@ -293,9 +293,9 @@ const BasicInputElements = withSwal((props: any) => {
           <Card className="bg-white">
             <Card.Body>
               <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
-                <i className="mdi mdi-plus-circle"></i> Add Source
+                <i className="mdi mdi-plus-circle"></i> Add Lead Source
               </Button>
-              <h4 className="header-title mb-4">Manage Source</h4>
+              <h4 className="header-title mb-4">Manage Lead Source</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -342,9 +342,9 @@ const Sources = () => {
       <PageTitle
         breadCrumbItems={[
           { label: "Master", path: "/master/sources" },
-          { label: "Sources", path: "/master/sources", active: true },
+          { label: "Lead Sources", path: "/master/sources", active: true },
         ]}
-        title={"Sources"}
+        title={"Lead Sources"}
       />
       <Row>
         <Col>

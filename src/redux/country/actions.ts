@@ -35,18 +35,31 @@ export const getCountryById = (id: string) => ({
   payload: { id },
 });
 
-export const addCountry = (country_name: string) => ({
+export const addCountry = (
+  country_name: string,
+  country_code: string,
+  isd: string
+) => ({
   type: CountryActionTypes.ADD_COUNTRY,
   payload: {
     country_name,
+    country_code,
+    isd,
   },
 });
 
-export const updateCountry = (id: string, country_name: string) => ({
+export const updateCountry = (
+  id: string,
+  country_name: string,
+  country_code: string,
+  isd: string
+) => ({
   type: CountryActionTypes.UPDATE_COUNTRY,
   payload: {
     id,
     country_name,
+    country_code,
+    isd,
   },
 });
 

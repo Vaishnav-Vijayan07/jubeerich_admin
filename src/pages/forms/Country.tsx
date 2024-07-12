@@ -1,7 +1,16 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Dropdown, Modal, Spinner } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Dropdown,
+  Modal,
+  Spinner,
+} from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -36,6 +45,8 @@ interface OptionType {
 interface TableRecords {
   id: string;
   country_name: string;
+  country_code: string;
+  isd: string;
 }
 
 const sizePerPageList = [
@@ -48,10 +59,14 @@ const sizePerPageList = [
 const initialState = {
   id: "",
   country_name: "",
+  country_code: "",
+  isd: "",
 };
 
 const initialValidationState = {
   country_name: "",
+  country_code: "",
+  isd: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -81,6 +96,8 @@ const BasicInputElements = withSwal((props: any) => {
       .string()
       .required("Country name is required")
       .min(3, "Country name must be at least 3 characters long"),
+    country_code: yup.string().required("Country code is required"),
+    isd: yup.string().required("ISD code is required"),
   });
 
   /*
@@ -96,6 +113,8 @@ const BasicInputElements = withSwal((props: any) => {
       ...prev,
       id: item?.id,
       country_name: item?.country_name,
+      country_code: item?.country_code,
+      isd: item?.isd,
     }));
 
     setIsUpdate(true);
@@ -146,11 +165,24 @@ const BasicInputElements = withSwal((props: any) => {
         const { user_id } = JSON.parse(userInfo);
         if (isUpdate) {
           // Handle update logic
-          dispatch(updateCountry(formData.id, formData.country_name));
+          dispatch(
+            updateCountry(
+              formData.id,
+              formData.country_name,
+              formData.country_code,
+              formData.isd
+            )
+          );
           setIsUpdate(false);
         } else {
           // Handle add logic
-          dispatch(addCountry(formData.country_name));
+          dispatch(
+            addCountry(
+              formData.country_name,
+              formData.country_code,
+              formData.isd
+            )
+          );
         }
       }
 
@@ -181,7 +213,16 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "country_name",
       sort: true,
     },
-
+    {
+      Header: "Country Code",
+      accessor: "country_code",
+      sort: true,
+    },
+    {
+      Header: "ISD Code",
+      accessor: "isd",
+      sort: true,
+    },
     {
       Header: "Actions",
       accessor: "",
@@ -230,6 +271,13 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  const handleKeyPress = (event: any) => {
+    const charCode = event.charCode;
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  };
+
   useEffect(() => {
     // Check for errors and clear the form
     if (!loading && !error) {
@@ -254,20 +302,51 @@ const BasicInputElements = withSwal((props: any) => {
               <h4 className="modal-title">Country Management</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="country_name">
-                <Form.Label>Country Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="country_name"
-                  value={formData.country_name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.country_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.country_name}
-                  </Form.Text>
-                )}
-              </Form.Group>
+              <>
+                <Form.Group className="mb-3" controlId="country_name">
+                  <Form.Label>Country Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="country_name"
+                    value={formData.country_name}
+                    onChange={handleInputChange}
+                  />
+                  {validationErrors.country_name && (
+                    <Form.Text className="text-danger">
+                      {validationErrors.country_name}
+                    </Form.Text>
+                  )}
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="country_code">
+                  <Form.Label>Country Code</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="country_code"
+                    value={formData.country_code}
+                    onChange={handleInputChange}
+                  />
+                  {validationErrors.country_code && (
+                    <Form.Text className="text-danger">
+                      {validationErrors.country_code}
+                    </Form.Text>
+                  )}
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="isd">
+                  <Form.Label>ISD Code</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="isd"
+                    value={formData.isd}
+                    onKeyPress={handleKeyPress}
+                    onChange={handleInputChange}
+                  />
+                  {validationErrors.isd && (
+                    <Form.Text className="text-danger">
+                      {validationErrors.isd}
+                    </Form.Text>
+                  )}
+                </Form.Group>
+              </>
             </Modal.Body>
 
             <Modal.Footer>
@@ -285,11 +364,12 @@ const BasicInputElements = withSwal((props: any) => {
               </Button>
               <Button
                 type="submit"
+                disabled={loading}
                 variant="success"
                 id="button-addon2"
                 className="mt-1"
               >
-                {isUpdate ? "Update" : "Submit"}
+                {isUpdate ? "Update" : loading ? "Loading" : "Submit"}
               </Button>
             </Modal.Footer>
           </Form>

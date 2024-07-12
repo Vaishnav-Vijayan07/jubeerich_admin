@@ -130,6 +130,8 @@ const Country = (state: any = INIT_STATE, action: CountryActionType) => {
       return { ...state, loading: true, initialLoading: true };
     case CountryActionTypes.ADD_COUNTRY:
       return { ...state, loading: true };
+    case CountryActionTypes.DELETE_COUNTRY:
+      return { ...state, loading: true };
     case CountryActionTypes.UPDATE_COUNTRY:
       return { ...state, loading: true };
     default:

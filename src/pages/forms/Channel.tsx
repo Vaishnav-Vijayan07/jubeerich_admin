@@ -219,17 +219,17 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Channel Name",
+      Header: "Lead Channel Name",
       accessor: "channel_name",
       sort: true,
     },
     {
-      Header: "Channel Description",
+      Header: "Lead Channel Description",
       accessor: "channel_description",
       sort: false,
     },
     {
-      Header: "Source",
+      Header: "Lead Source",
       accessor: "source_name",
       sort: false,
     },
@@ -318,11 +318,11 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Channel Management</h4>
+              <h4 className="modal-title">Lead Channel Management</h4>
             </Modal.Header>
             <Modal.Body>
               <Form.Group className="mb-3" controlId="channel_name">
-                <Form.Label>Channel Name</Form.Label>
+                <Form.Label>Lead Channel Name</Form.Label>
                 <Form.Control
                   type="text"
                   name="channel_name"
@@ -337,7 +337,7 @@ const BasicInputElements = withSwal((props: any) => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="channel_description">
-                <Form.Label>Channel Description</Form.Label>
+                <Form.Label>Lead Channel Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
@@ -353,7 +353,7 @@ const BasicInputElements = withSwal((props: any) => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="source_id">
-                <Form.Label>Source</Form.Label>
+                <Form.Label>Lead Source</Form.Label>
                 <Select
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
@@ -404,9 +404,9 @@ const BasicInputElements = withSwal((props: any) => {
                 className="btn-sm btn-blue waves-effect waves-light float-end"
                 onClick={toggleResponsiveModal}
               >
-                <i className="mdi mdi-plus-circle"></i> Add Channel
+                <i className="mdi mdi-plus-circle"></i> Add Lead Channel
               </Button>
-              <h4 className="header-title mb-4">Manage Channels</h4>
+              <h4 className="header-title mb-4">Manage Lead Channels</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -471,9 +471,9 @@ const Channel = () => {
       <PageTitle
         breadCrumbItems={[
           { label: "Master", path: "/master/channels" },
-          { label: "Channels", path: "/master/channels", active: true },
+          { label: "Lead Channels", path: "/master/channels", active: true },
         ]}
-        title={"Channels"}
+        title={"Lead Channels"}
       />
       <Row>
         <Col>

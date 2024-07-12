@@ -15,6 +15,7 @@ import { projectsDetails, reportData } from "./data";
 import { useDispatch, useSelector } from "react-redux";
 import { getDashboard } from "../../../redux/actions";
 import { RootState } from "../../../redux/store";
+import DashBoardCards from "../../../components/DashBoardCards";
 
 const Dashboard4 = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,10 @@ const Dashboard4 = () => {
     loading: state?.Dashboard?.loading,
     DashboardData: state?.Dashboard.dashboard.data?.data,
     error: state?.Dashboard?.error,
+  }));
+
+  const { userRole } = useSelector((state: RootState) => ({
+    userRole: state?.Auth.user.name,
   }));
 
   useEffect(() => {
@@ -43,7 +48,7 @@ const Dashboard4 = () => {
         title={"Dashboard"}
       />
 
-      <Row>
+      {/* <Row>
         <Col xl={4} md={6}>
           <SalesChart data={DashboardData?.leads_statistics} />
         </Col>
@@ -61,7 +66,17 @@ const Dashboard4 = () => {
         <Col>
           <ProjectsDetails projectsDetails={DashboardData?.recently_closed} />
         </Col>
-      </Row>
+      </Row> */}
+      {userRole == "CRE 1" && (
+        <>
+          <DashBoardCards />
+          <Row>
+            <Col>
+              <ProjectsDetails />
+            </Col>
+          </Row>
+        </>
+      )}
     </>
   );
 };

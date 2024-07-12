@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Image } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
@@ -13,7 +13,13 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getRoles } from "../../redux/users/roles/actions";
-import { addAdminUsers, deleteAdminUsers, getAdminUsers, getBranches, updateAdminUsers } from "../../redux/actions";
+import {
+  addAdminUsers,
+  deleteAdminUsers,
+  getAdminUsers,
+  getBranches,
+  updateAdminUsers,
+} from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
 import makeAnimated from "react-select/animated";
 import { AUTH_SESSION_KEY, baseUrl } from "../../constants";
@@ -50,19 +56,33 @@ const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(initialValidationState);
+  const [validationErrors, setValidationErrors] = useState(
+    initialValidationState
+  );
 
   const validationSchema = yup.object().shape({
     employee_id: yup.string().required("Employee id is required"),
-    name: yup.string().required("Name is required").min(2, "Name must be at least 3 characters long"),
-    email: yup.string().required("Email is required").email("Invalid email format"),
+    name: yup
+      .string()
+      .required("Name is required")
+      .min(2, "Name must be at least 3 characters long"),
+    email: yup
+      .string()
+      .required("Email is required")
+      .email("Invalid email format"),
     phone: yup
       .string()
       .required("Phone number is required")
       .matches(/^\d{10}$/, "Phone number must be a valid 10-digit number"),
     address: yup.string().required("Address is required"),
-    username: yup.string().required("Username is required").min(4, "Username must be at least 4 characters long"),
-    password: yup.string().required("Password is required").min(8, "Password must be at least 8 characters long"),
+    username: yup
+      .string()
+      .required("Username is required")
+      .min(4, "Username must be at least 4 characters long"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters long"),
     role_id: yup.string().nullable().required("Role is required"),
     // branch_ids: yup.string().nullable().required("Branch is required").min(1, "At least one branch must be selected"),
   });
@@ -135,7 +155,9 @@ const BasicInputElements = withSwal((props: any) => {
   ) => {
     if (Array.isArray(selectedOptions)) {
       setSelectedBranch(selectedOptions);
-      const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
+      const selectedIdsString = selectedOptions
+        ?.map((option) => option.value)
+        .join(", ");
       setFormData((prev) => ({
         ...prev,
         branch_ids: selectedIdsString,
@@ -227,6 +249,27 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Employee ID",
       accessor: "employee_id",
       sort: true,
+      Cell: ({ row }: any) => {
+        const isImage = row.original.profile_image_path ? true : false;
+        return (
+          <>
+            <Col className="d-flex flex-column text-enter align-items-center ">
+              <Image
+                src={
+                  isImage
+                    ? `${baseUrl}/${row.original.profile_image_path}`
+                    : profilePic
+                }
+                width={50}
+                height={50}
+                roundedCircle
+                className="object-fit-contain"
+              />
+              <h6 className="text-muted">{row.original.employee_id}</h6>
+            </Col>
+          </>
+        );
+      },
     },
     {
       Header: "Name",
@@ -249,11 +292,6 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
     },
     {
-      Header: "Adress",
-      accessor: "address",
-      sort: false,
-    },
-    {
       Header: "Role",
       accessor: "role",
       sort: false,
@@ -270,25 +308,31 @@ const BasicInputElements = withSwal((props: any) => {
     //     </ul>
     //   ),
     // },
-    {
-      Header: "Image",
-      accessor: "profile_image_path",
-      Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
-          {row.original.profile_image_path ? (
-            <img
-              src={`${baseUrl}/${row.original.profile_image_path}`}
-              alt="Profile Image"
-              width={100}
-              height={100}
-              className="object-fit-contain"
-            />
-          ) : (
-            <img src={profilePic} alt="Profile Image" width={100} height={100} className="object-fit-contain" />
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   Header: "Image",
+    //   accessor: "profile_image_path",
+    //   Cell: ({ row }: any) => (
+    //     <div className="d-flex justify-content-center align-items-center gap-2">
+    //       {row.original.profile_image_path ? (
+    //         <img
+    //           src={`${baseUrl}/${row.original.profile_image_path}`}
+    //           alt="Profile Image"
+    //           width={100}
+    //           height={100}
+    //           className="object-fit-contain"
+    //         />
+    //       ) : (
+    //         <img
+    //           src={profilePic}
+    //           alt="Profile Image"
+    //           width={100}
+    //           height={100}
+    //           className="object-fit-contain"
+    //         />
+    //       )}
+    //     </div>
+    //   ),
+    // },
     // {
     //   Header: "Status",
     //   accessor: "status",
@@ -398,7 +442,9 @@ const BasicInputElements = withSwal((props: any) => {
                           onChange={handleInputChange}
                         />
                         {validationErrors.employee_id && (
-                          <Form.Text className="text-danger">{validationErrors.employee_id}</Form.Text>
+                          <Form.Text className="text-danger">
+                            {validationErrors.employee_id}
+                          </Form.Text>
                         )}
                       </Form.Group>
                     </Col>
@@ -413,7 +459,9 @@ const BasicInputElements = withSwal((props: any) => {
                           onChange={handleInputChange}
                         />
                         {validationErrors.name && (
-                          <Form.Text className="text-danger">{validationErrors.name}</Form.Text>
+                          <Form.Text className="text-danger">
+                            {validationErrors.name}
+                          </Form.Text>
                         )}
                       </Form.Group>
                     </Col>
@@ -431,7 +479,9 @@ const BasicInputElements = withSwal((props: any) => {
                           onChange={handleInputChange}
                         />
                         {validationErrors.email && (
-                          <Form.Text className="text-danger">{validationErrors.email}</Form.Text>
+                          <Form.Text className="text-danger">
+                            {validationErrors.email}
+                          </Form.Text>
                         )}
                       </Form.Group>
                     </Col>
@@ -446,7 +496,9 @@ const BasicInputElements = withSwal((props: any) => {
                           onChange={handleInputChange}
                         />
                         {validationErrors.phone && (
-                          <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>
+                          <Form.Text className="text-danger">
+                            {validationErrors.phone}
+                          </Form.Text>
                         )}
                       </Form.Group>
                     </Col>
@@ -465,7 +517,9 @@ const BasicInputElements = withSwal((props: any) => {
                             onChange={handleInputChange}
                           />
                           {validationErrors.username && (
-                            <Form.Text className="text-danger">{validationErrors.username}</Form.Text>
+                            <Form.Text className="text-danger">
+                              {validationErrors.username}
+                            </Form.Text>
                           )}
                         </Form.Group>
                       </Row>
@@ -481,7 +535,9 @@ const BasicInputElements = withSwal((props: any) => {
                             onChange={handleInputChange}
                           />
                           {validationErrors.password && (
-                            <Form.Text className="text-danger">{validationErrors.password}</Form.Text>
+                            <Form.Text className="text-danger">
+                              {validationErrors.password}
+                            </Form.Text>
                           )}
                         </Form.Group>
                       </Row>
@@ -500,7 +556,9 @@ const BasicInputElements = withSwal((props: any) => {
                           onChange={handleInputChange}
                         />
                         {validationErrors.address && (
-                          <Form.Text className="text-danger">{validationErrors.address}</Form.Text>
+                          <Form.Text className="text-danger">
+                            {validationErrors.address}
+                          </Form.Text>
                         )}
                       </Form.Group>
                     </Col>
@@ -542,7 +600,9 @@ const BasicInputElements = withSwal((props: any) => {
                         </Form.Select>
 
                         {validationErrors.role_id && (
-                          <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>
+                          <Form.Text className="text-danger">
+                            {validationErrors.role_id}
+                          </Form.Text>
                         )}
                       </Form.Group>
                     </Col>
@@ -639,7 +699,9 @@ const AdminUsers = () => {
     loading: state.Users.loading,
   }));
 
-  const Branch = useSelector((state: RootState) => state?.Branches?.branches?.data);
+  const Branch = useSelector(
+    (state: RootState) => state?.Branches?.branches?.data
+  );
 
   const RolesData = useSelector((state: RootState) => ({
     state: state.Roles.roles,
@@ -650,7 +712,6 @@ const AdminUsers = () => {
     dispatch(getBranches());
     dispatch(getRoles());
   }, []);
-  
 
   useEffect(() => {
     if (Branch) {
