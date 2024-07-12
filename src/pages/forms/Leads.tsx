@@ -771,6 +771,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Modal.Body>
         </Modal>
 
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
