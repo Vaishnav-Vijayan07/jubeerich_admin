@@ -76,6 +76,7 @@ const TaskList = () => {
       .then((res) => {
         setpendingTasks(res.data.data);
         setTaskArray(res.data.data);
+        setSelectedTask(res.data.data[0])
       })
       .catch((err) => console.error(err));
   };
@@ -110,7 +111,7 @@ const TaskList = () => {
                   <Row>
                     <Col className="p-0 m-0">
                       {/* className="d-flex align-items-center justify-content-end" */}
-                      <div
+                      {/* <div
                         className="btn btn-outline"
                         style={{ position: "absolute", right: "10px", top: "30px", background: "rgba(0,0,0,0.1)" }}
                       >
@@ -121,10 +122,11 @@ const TaskList = () => {
                           dateFormat={"dd-MM-yyyy"}
                           className="custom-react-date-picker"
                         />
-                      </div>
-                      <div className="mt-2">
+                      </div> */}
+                      <div className="mt-0">
                         <TaskSection
-                          title={formattedDate}
+                          // title={formattedDate}
+                          title={"Pending Tasks"}
                           initialTaskId={selectedTask?.id}
                           tasks={pendingTasks}
                           selectTask={selectTask}

@@ -264,20 +264,26 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "location",
       sort: false,
     },
-    {
-      Header: "Country",
-      accessor: "country_id",
-      sort: false,
-    },
+    // {
+    //   Header: "Country",
+    //   accessor: "country_id",
+    //   sort: false,
+    // },
     {
       Header: "Website",
       accessor: "website_url",
       sort: false,
+      Cell: ({ row }: any) => <>
+        <a href={row.original.website_url} target="_next" style={{ cursor: "pointer" }}>{row.original.website_url}</a>
+      </>,
     },
     {
       Header: "Image",
       accessor: "image_url",
       sort: false,
+      Cell: ({ row }: any) => <>
+        <img src={row.original.image_url} alt="" style={{ width: "80px", objectFit: "contain" }} />
+      </>,
     },
     {
       Header: "Actions",

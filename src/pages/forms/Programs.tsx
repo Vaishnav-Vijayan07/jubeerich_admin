@@ -93,6 +93,9 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedSource, setSelectedSource] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
 
+  console.log("formData", formData);
+  
+
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
@@ -248,7 +251,7 @@ const BasicInputElements = withSwal((props: any) => {
     },
     {
       Header: "University",
-      accessor: "university_id",
+      accessor: "university_name",
       sort: false,
     },
     {
@@ -381,7 +384,7 @@ const BasicInputElements = withSwal((props: any) => {
                 )}
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="degree_level">
+              {/* <Form.Group className="mb-3" controlId="degree_level">
                 <Form.Label>Degree Level</Form.Label>
                 <Form.Control
                   type="text"
@@ -394,6 +397,30 @@ const BasicInputElements = withSwal((props: any) => {
                     {validationErrors.degree_level}
                   </Form.Text>
                 )}
+              </Form.Group> */}
+
+              <Form.Group className="mb-3" controlId="degree_level">
+                <Form.Label>Degree Level</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  name="degree_level"
+                  value={formData.degree_level}
+                  onChange={handleInputChange}
+                >
+                  <option value="" disabled>
+                    Choose..
+                  </option>
+                  <option
+                    value="UG"
+                    key="ug">
+                    UG
+                  </option>
+                  <option
+                    value="PG"
+                    key="pg">
+                    PG
+                  </option>
+                </Form.Select>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="duration">

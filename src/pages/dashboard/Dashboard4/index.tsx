@@ -67,7 +67,6 @@ const Dashboard4 = () => {
           <ProjectsDetails projectsDetails={DashboardData?.recently_closed} />
         </Col>
       </Row> */}
-      {userRole == "CRE 1" && (
         <>
           <DashBoardCards />
           <Row>
@@ -76,7 +75,6 @@ const Dashboard4 = () => {
             </Col>
           </Row>
         </>
-      )}
     </>
   );
 };
