@@ -73,6 +73,11 @@ const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData
         preferred_country: formData?.preferred_country,
         office_type: formData?.office_type,
         remarks: formData?.remarks,
+        nationality: formData?.nationality,
+        secondary_number: formData?.secondary_number,
+        state: formData?.state,
+        country: formData?.country,
+        address: formData?.address
         // counsiler_id: null,
         // branch_id: formData?.,
       })

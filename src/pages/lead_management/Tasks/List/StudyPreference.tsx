@@ -11,6 +11,12 @@ const initialState = {
   intake_month: "",
   estimated_budget: "",
   course_field_of_intrest: "",
+  university: "",
+  campus: "",
+  stream: "",
+  course: "",
+  duration: "",
+  course_fee: ""
 };
 
 const StudyPreference = ({ studentId, Countries }: any) => {
@@ -57,6 +63,12 @@ const StudyPreference = ({ studentId, Countries }: any) => {
         estimated_budget: formData?.estimated_budget,
         course_field_of_intrest: formData?.course_field_of_intrest,
         user_id: studentId,
+        course_fee: formData?.course_fee,
+        university: formData?.university,
+        campus: formData?.campus,
+        stream: formData?.stream,
+        course: formData?.course,
+        duration: formData?.duration,
       })
       .then((res) => {
         console.log("res: =>", res);
@@ -77,21 +89,6 @@ const StudyPreference = ({ studentId, Countries }: any) => {
           <i className="mdi mdi-account-circle me-1"></i> Study Preference Info
         </h5>
         <Row>
-          {/* <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="intersted_country">
-              <Form.Label>Intersted country</Form.Label>
-              <FormInput
-                type="text"
-                name="intersted_country"
-                placeholder="Enter interested country"
-                key="intersted_country"
-                defaultValue={formData?.intersted_country}
-                value={formData?.intersted_country}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-          </Col> */}
-
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="intersted_country">
               <Form.Label>Preferred Country</Form.Label>
@@ -199,6 +196,108 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 placeholder="Enter interested course field"
                 key="course_field_of_intrest"
                 value={formData.course_field_of_intrest}
+                onChange={handleInputChange}
+              />
+              {/* {validationErrors.whatsapp_number && (
+            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
+          )} */}
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="university">
+              <Form.Label>University</Form.Label>
+              <FormInput
+                type="text"
+                name="university"
+                placeholder="Enter university"
+                key="university"
+                value={formData.university}
+                onChange={handleInputChange}
+              />
+              {/* {validationErrors.whatsapp_number && (
+            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
+          )} */}
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="campus">
+              <Form.Label>Campus</Form.Label>
+              <FormInput
+                type="text"
+                name="campus"
+                placeholder="Enter campus name"
+                key="campus"
+                value={formData.campus}
+                onChange={handleInputChange}
+              />
+              {/* {validationErrors.whatsapp_number && (
+            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
+          )} */}
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="stream">
+              <Form.Label>Stream</Form.Label>
+              <FormInput
+                type="text"
+                name="stream"
+                placeholder="Enter stream name"
+                key="stream"
+                value={formData.stream}
+                onChange={handleInputChange}
+              />
+              {/* {validationErrors.whatsapp_number && (
+            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
+          )} */}
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="course">
+              <Form.Label>Course</Form.Label>
+              <FormInput
+                type="text"
+                name="course"
+                placeholder="Enter course name"
+                key="course"
+                value={formData.course}
+                onChange={handleInputChange}
+              />
+              {/* {validationErrors.whatsapp_number && (
+            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
+          )} */}
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="duration">
+              <Form.Label>Duration</Form.Label>
+              <FormInput
+                type="number"
+                name="duration"
+                placeholder="Enter duration"
+                key="duration"
+                value={formData.duration}
+                onChange={handleInputChange}
+              />
+              {/* {validationErrors.whatsapp_number && (
+            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
+          )} */}
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="course_fee">
+              <Form.Label>Course fee</Form.Label>
+              <FormInput
+                type="number"
+                name="course_fee"
+                placeholder="Enter course fee"
+                key="course_fee"
+                value={formData.course_fee}
                 onChange={handleInputChange}
               />
               {/* {validationErrors.whatsapp_number && (
