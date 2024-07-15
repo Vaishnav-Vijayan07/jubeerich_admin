@@ -130,6 +130,11 @@ const BasicInputElements = withSwal((props: any) => {
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
+  if (userInfo) {
+    console.log("userInfo", JSON.parse(userInfo)?.role);
+  }
+
+
   //Table data
   const records: TableRecords[] = state;
 
@@ -737,7 +742,7 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
-        <Modal
+        {userInfo && (JSON.parse(userInfo).role == 2) && <Modal
           show={uploadModal}
           onHide={toggleUploadModal}
           dialogClassName="modal-dialog-centered"
@@ -750,8 +755,8 @@ const BasicInputElements = withSwal((props: any) => {
             <FileUploader
               // onFileUpload={handleOnFileUpload}
               showPreview={true}
-              // selectedFile={selectedFile}
-              // setSelectedFile={setSelectedFile}
+            // selectedFile={selectedFile}
+            // setSelectedFile={setSelectedFile}
             />
             <div className="d-flex gap-2 justify-content-end mt-2">
               <Button
@@ -767,22 +772,22 @@ const BasicInputElements = withSwal((props: any) => {
               >
                 <i className="mdi mdi-upload"></i> Upload File
               </Button>
-              
+
             </div>
           </Modal.Body>
-        </Modal>
+        </Modal>}
 
 
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <div className="d-flex flex-wrap gap-2 justify-content-center justify-content-md-end">
-                <Button
+              <div className="d-flex flex-wrap gap-2 justify-content-end">
+                {userInfo && (JSON.parse(userInfo).role == 2) && <Button
                   className="btn-sm btn-blue waves-effect waves-light"
                   onClick={toggleUploadModal}
                 >
                   <i className="mdi mdi-upload"></i>  Import Leads
-                </Button>
+                </Button>}
                 <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
                   onClick={toggleResponsiveModal}

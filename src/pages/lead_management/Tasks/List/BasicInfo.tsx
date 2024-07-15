@@ -18,6 +18,11 @@ const initialState = {
   dob: "",
   gender: "",
   marital_status: "",
+  nationality: "",
+  secondary_number: "",
+  state: "",
+  country: "",
+  address: ""
 };
 
 const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData, getBasicInfoApi }: any) => {
@@ -286,6 +291,96 @@ const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData
     <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>
   )} */}
           </Form.Group>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="nationality">
+              <Form.Label>Nationality</Form.Label>
+              <FormInput
+                type="text"
+                name="nationality"
+                placeholder="Enter nationality"
+                key="nationality"
+                defaultValue={formData?.nationality}
+                value={formData?.nationality}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="secondary_number">
+              <Form.Label>Secondary number</Form.Label>
+              <FormInput
+                type="tel"
+                name="secondary_number"
+                placeholder="Enter secondary number"
+                key="secondary_number"
+                defaultValue={formData?.secondary_number}
+                value={formData?.secondary_number}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="state">
+              <Form.Label>State</Form.Label>
+              <FormInput
+                type="tel"
+                name="state"
+                placeholder="Enter secondary number"
+                key="state"
+                defaultValue={formData?.state}
+                value={formData?.state}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="country">
+              <Form.Label>Country</Form.Label>
+              <FormInput
+                type="text"
+                name="country"
+                placeholder="Enter country"
+                key="country"
+                defaultValue={formData?.country}
+                value={formData?.country}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="address">
+              <Form.Label>Address</Form.Label>
+
+              <Form.Control
+                as="textarea"
+                name="address"
+                placeholder="Enter address"
+                key="address"
+                value={formData.address}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="remarks">
+              <Form.Label>Remarks</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="remarks"
+                placeholder="Enter remarks"
+                key="remarks"
+                value={formData.remarks}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+
 
           <Button variant="primary" className="mt-4" type="submit" onClick={saveStudentBasicInfo} disabled={loading}>
             Save Details
