@@ -12,6 +12,8 @@ const initialState = {
   backlogs: 0,
   work_experience: 0,
   designation: "",
+  company: "",
+  years: 0
 };
 
 const AcademicInfo = ({ studentId }: any) => {
@@ -163,6 +165,44 @@ const AcademicInfo = ({ studentId }: any) => {
             </Form.Group>
           </Col>
 
+          <h5 className="mb-4 text-uppercase">
+          <i className="mdi mdi-account-circle me-1"></i> Work Experience
+        </h5>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="work_experience">
+              <Form.Label>Work Experience</Form.Label>
+              <FormInput
+                type="number"
+                name="work_experience"
+                placeholder="Enter work experience"
+                key="work_experience"
+                value={formData?.work_experience}
+                onChange={handleInputChange}
+              />
+              {/* {validationErrors.whatsapp_number && (
+              <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
+            )} */}
+            </Form.Group>
+          </Col>
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="company">
+              <Form.Label>Company</Form.Label>
+              <FormInput
+                type="text"
+                name="company"
+                placeholder="Enter company"
+                key="company"
+                value={formData?.company}
+                onChange={handleInputChange}
+              />
+              {/* {validationErrors.whatsapp_number && (
+              <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
+            )} */}
+            </Form.Group>
+          </Col>
+
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="designation">
               <Form.Label>Designation</Form.Label>
@@ -179,6 +219,20 @@ const AcademicInfo = ({ studentId }: any) => {
             )} */}
             </Form.Group>
           </Col>
+
+          {/* <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="years">
+              <Form.Label>Years</Form.Label>
+              <FormInput
+                type="text"
+                name="years"
+                placeholder="Enter years"
+                key="years"
+                value={formData?.years}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+          </Col> */}
 
           <Button variant="primary" className="mt-4" type="submit" onClick={saveStudentAcademicInfo} disabled={loading}>
             Save Details

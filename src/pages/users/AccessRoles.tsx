@@ -91,7 +91,7 @@ const BasicInputElements = withSwal((props: any) => {
       label: powersData?.find((power: any) => power.value == parseInt(id))?.label,
     }));
 
-    setSelectedOptions(selectedPowerIds);
+    // setSelectedOptions(selectedPowerIds);
 
     setFormData((prev) => ({
       ...prev,

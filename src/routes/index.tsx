@@ -19,7 +19,7 @@ const LockScreen2 = React.lazy(() => import("../pages/auth/LockScreen"));
 const SignInSignUp2 = React.lazy(() => import("../pages/auth/SignInSignUp"));
 
 // dashboard
-const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard4/"));
+const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard3/"));
 
 // - crm pages
 
