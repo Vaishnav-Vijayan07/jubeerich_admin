@@ -40,7 +40,6 @@ function* getSources(): SagaIterator {
     yield put(sourceApiResponseSuccess(SourceActionTypes.GET_SOURCES, { data }));
   } catch (error: any) {
     yield put(sourceApiResponseError(SourceActionTypes.GET_SOURCES, error));
-    throw error;
   }
 }
 
@@ -62,7 +61,6 @@ function* addSource({ payload: { source_name, source_description, updated_by } }
     yield put(getSource());
   } catch (error: any) {
     yield put(sourceApiResponseError(SourceActionTypes.ADD_SOURCES, error));
-    throw error;
   }
 }
 
@@ -81,7 +79,6 @@ function* updateSource({ payload: { id, source_name, source_description, updated
     yield put(getSource());
   } catch (error: any) {
     yield put(sourceApiResponseSuccess(SourceActionTypes.UPDATE_SOURCES, error));
-    throw error;
   }
 }
 
@@ -94,7 +91,6 @@ function* deleteSource({ payload: { id } }: SourceData): SagaIterator {
     yield put(getSource());
   } catch (error: any) {
     yield put(sourceApiResponseError(SourceActionTypes.DELETE_SOURCES, error));
-    throw error;
   }
 }
 export function* watchGetSource() {

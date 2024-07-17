@@ -7,6 +7,7 @@ import { RolesActionTypes } from "./constants";
 const INIT_STATE = {
   roles: [],
   loading: false,
+  initialLoading: false,
   error: null,
 };
 
@@ -19,12 +20,12 @@ interface RolesData {
 
 export interface SourceActionType {
   type:
-    | RolesActionTypes.API_RESPONSE_SUCCESS
-    | RolesActionTypes.API_RESPONSE_ERROR
-    | RolesActionTypes.GET_ROLES
-    | RolesActionTypes.ADD_ROLES
-    | RolesActionTypes.UPDATE_ROLES
-    | RolesActionTypes.DELETE_ROLES;
+  | RolesActionTypes.API_RESPONSE_SUCCESS
+  | RolesActionTypes.API_RESPONSE_ERROR
+  | RolesActionTypes.GET_ROLES
+  | RolesActionTypes.ADD_ROLES
+  | RolesActionTypes.UPDATE_ROLES
+  | RolesActionTypes.DELETE_ROLES;
   payload: {
     actionType?: string;
     data?: RolesData | {};
@@ -47,14 +48,17 @@ const Roles = (state: State = INIT_STATE, action: SourceActionType): any => {
             ...state,
             roles: action.payload.data,
             loading: false,
+            initialLoading: false,
           };
         }
         case RolesActionTypes.ADD_ROLES: {
-          
+
           showSuccessAlert(action.payload.data);
           return {
             ...state,
             loading: false,
+            initialLoading: false,
+
           };
         }
         case RolesActionTypes.UPDATE_ROLES: {
@@ -62,6 +66,8 @@ const Roles = (state: State = INIT_STATE, action: SourceActionType): any => {
           return {
             ...state,
             loading: false,
+            initialLoading: false,
+
           };
         }
         case RolesActionTypes.DELETE_ROLES: {
@@ -70,6 +76,8 @@ const Roles = (state: State = INIT_STATE, action: SourceActionType): any => {
             ...state,
             // sources: action.payload.data,
             loading: false,
+            initialLoading: false,
+
           };
         }
         default:
@@ -84,6 +92,8 @@ const Roles = (state: State = INIT_STATE, action: SourceActionType): any => {
             roles: action.payload.data,
             error: action.payload.error,
             loading: false,
+            initialLoading: false,
+
           };
         }
         case RolesActionTypes.ADD_ROLES: {
@@ -92,6 +102,8 @@ const Roles = (state: State = INIT_STATE, action: SourceActionType): any => {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialLoading: false,
+
           };
         }
         case RolesActionTypes.UPDATE_ROLES: {
@@ -100,6 +112,8 @@ const Roles = (state: State = INIT_STATE, action: SourceActionType): any => {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialLoading: false,
+
           };
         }
         case RolesActionTypes.DELETE_ROLES: {
@@ -108,6 +122,8 @@ const Roles = (state: State = INIT_STATE, action: SourceActionType): any => {
             ...state,
             error: action.payload.error,
             loading: false,
+            initialLoading: false,
+
           };
         }
         default:
@@ -115,7 +131,8 @@ const Roles = (state: State = INIT_STATE, action: SourceActionType): any => {
       }
 
     case RolesActionTypes.GET_ROLES:
-      return { ...state, loading: true };
+
+      return { ...state, loading: true, initialLoading: true, };
     case RolesActionTypes.ADD_ROLES:
       return { ...state, loading: true };
     case RolesActionTypes.UPDATE_ROLES:

@@ -86,7 +86,7 @@ const initialState = {
   //   branch_id: "",
   updated_by: null,
   remarks: "",
-  lead_received_date: null,
+  lead_received_date: new Date().toISOString().split('T')[0],
   ielts: false,
 };
 
@@ -700,7 +700,7 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Control
                       type="date"
                       name="lead_received_date"
-                      value={formData?.lead_received_date || ""}
+                      value={formData?.lead_received_date}
                       onChange={handleInputChange}
                     />
                     {validationErrors.lead_received_date && (

@@ -41,7 +41,6 @@ function* getCampaigns(): SagaIterator {
     yield put(CampaignApiResponseSuccess(CampaignActionTypes.GET_CAMPAIGNS, { data }));
   } catch (error: any) {
     yield put(CampaignApiResponseError(CampaignActionTypes.GET_CAMPAIGNS, error));
-    throw error;
   }
 }
 
@@ -62,7 +61,6 @@ function* addCampaign({ payload: { channel_id, campaign_name, campaign_descripti
     yield put(getCampaign());
   } catch (error: any) {
     yield put(CampaignApiResponseError(CampaignActionTypes.ADD_CAMPAIGNS, error));
-    throw error;
   }
 }
 
@@ -82,7 +80,6 @@ function* updateCampaign({ payload: { id, channel_id, campaign_name, campaign_de
     yield put(getCampaign());
   } catch (error: any) {
     yield put(CampaignApiResponseSuccess(CampaignActionTypes.UPDATE_CAMPAIGNS, error));
-    throw error;
   }
 }
 
@@ -95,7 +92,6 @@ function* deleteCampaign({ payload: { id } }: CampaignData): SagaIterator {
     yield put(getCampaign());
   } catch (error: any) {
     yield put(CampaignApiResponseError(CampaignActionTypes.DELETE_CAMPAIGNS, error));
-    throw error;
   }
 }
 

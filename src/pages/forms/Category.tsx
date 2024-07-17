@@ -219,7 +219,6 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "status",
       sort: true,
       Cell: ({ row }: any) => (
-
         <React.Fragment>
           <span
             className={classNames("badge", {

@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
@@ -377,10 +377,11 @@ const AccessRoles = () => {
   const [powers, setPowers] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading } = useSelector((state: RootState) => ({
+  const { state, error, loading, initialLoading } = useSelector((state: RootState) => ({
     state: state.Roles.roles,
     error: state.Roles.error,
     loading: state.Roles.loading,
+    initialLoading: state.Roles.initialLoading,
   }));
 
   useEffect(() => {
@@ -396,6 +397,15 @@ const AccessRoles = () => {
       setPowers(Array);
     });
   }, []);
+
+  if (initialLoading) {
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "50%", left: "50%" }}
+      />
+    );
+  }
 
   return (
     <React.Fragment>

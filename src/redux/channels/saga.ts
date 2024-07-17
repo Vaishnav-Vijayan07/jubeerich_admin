@@ -41,7 +41,6 @@ function* getChannels(): SagaIterator {
     yield put(ChannelApiResponseSuccess(ChannelsActionTypes.GET_CHANNELS, { data }));
   } catch (error: any) {
     yield put(ChannelApiResponseError(ChannelsActionTypes.GET_CHANNELS, error));
-    throw error;
   }
 }
 
@@ -60,7 +59,6 @@ function* addChannel({ payload: { source_id, channel_name, channel_description, 
     yield put(getChannel());
   } catch (error: any) {
     yield put(ChannelApiResponseError(ChannelsActionTypes.ADD_CHANNELS, error));
-    throw error;
   }
 }
 
@@ -78,7 +76,6 @@ function* updateChannel({ payload: { id, source_id, channel_name, channel_descri
     yield put(getChannel());
   } catch (error: any) {
     yield put(ChannelApiResponseSuccess(ChannelsActionTypes.UPDATE_CHANNELS, error));
-    throw error;
   }
 }
 
@@ -91,7 +88,6 @@ function* deleteChannel({ payload: { id } }: ChannelData): SagaIterator {
     yield put(getChannel());
   } catch (error: any) {
     yield put(ChannelApiResponseError(ChannelsActionTypes.DELETE_CHANNELS, error));
-    throw error;
   }
 }
 

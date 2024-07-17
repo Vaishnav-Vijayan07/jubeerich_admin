@@ -44,7 +44,6 @@ function* getRole(): SagaIterator {
     yield put(rolesApiResponseSuccess(RolesActionTypes.GET_ROLES, data));
   } catch (error: any) {
     yield put(rolesApiResponseError(RolesActionTypes.GET_ROLES, error));
-    throw error;
   }
 }
 
@@ -64,7 +63,6 @@ function* addRoles({ payload: { role_name, power_ids, updated_by } }: ChannelDat
     console.log("error", error);
 
     yield put(rolesApiResponseError(RolesActionTypes.ADD_ROLES, error));
-    throw error;
   }
 }
 
@@ -81,7 +79,6 @@ function* updateRoles({ payload: { id, role_name, power_ids, updated_by } }: Cha
     yield put(getRoles());
   } catch (error: any) {
     yield put(rolesApiResponseSuccess(RolesActionTypes.UPDATE_ROLES, error));
-    throw error;
   }
 }
 
@@ -94,7 +91,6 @@ function* deleteRoles({ payload: { id } }: ChannelData): SagaIterator {
     yield put(getRoles());
   } catch (error: any) {
     yield put(rolesApiResponseError(RolesActionTypes.DELETE_ROLES, error));
-    throw error;
   }
 }
 

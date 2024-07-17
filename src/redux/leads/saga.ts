@@ -64,7 +64,6 @@ function* getLeads(): SagaIterator {
   } catch (error: any) {
     console.log("Error", error);
     yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS, error));
-    throw error;
   }
 }
 
@@ -80,7 +79,6 @@ function* getLeadUsers(): SagaIterator {
   } catch (error: any) {
     console.log("Error", error);
     yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEAD_USER, error));
-    throw error;
   }
 }
 
@@ -143,7 +141,6 @@ function* addLeads({
     console.log("err", error);
 
     yield put(LeadsApiResponseError(LeadsActionTypes.ADD_LEADS, error));
-    throw error;
   }
 }
 
@@ -203,7 +200,6 @@ function* updateLeads({
     yield put(getLead());
   } catch (error: any) {
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.UPDATE_LEADS, error));
-    throw error;
   }
 }
 
@@ -227,7 +223,6 @@ function* deleteLeads({ payload: { id } }: LeadsData): SagaIterator {
     yield put(getLead());
   } catch (error: any) {
     yield put(LeadsApiResponseError(LeadsActionTypes.DELETE_LEADS, error));
-    throw error;
   }
 }
 

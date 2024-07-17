@@ -96,7 +96,7 @@ function* addHistory({ payload: { lead_id, status_id, action_id, executive_id, d
     console.log("err", error);
 
     yield put(HistoryApiResponseError(HistoryActionTypes.ADD_HISTORY, error));
-    throw error;
+
   }
 }
 
@@ -124,7 +124,7 @@ function* updateHistory({
     yield put(getAllHistories());
   } catch (error: any) {
     yield put(HistoryApiResponseSuccess(HistoryActionTypes.UPDATE_HISTORY, error));
-    throw error;
+
   }
 }
 
@@ -137,7 +137,7 @@ function* deleteHistory({ payload: { id } }: HistoryData): SagaIterator {
     // yield put(getStatus());
   } catch (error: any) {
     yield put(HistoryApiResponseError(HistoryActionTypes.DELETE_HISTORY, error));
-    throw error;
+
   }
 }
 

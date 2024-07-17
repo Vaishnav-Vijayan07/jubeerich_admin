@@ -9,6 +9,7 @@ const INIT_STATE = {
   adminUsers: [],
   loading: false,
   error: null,
+  initialLoading: false,
 };
 
 interface AdminUsersData {
@@ -55,6 +56,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             ...state,
             adminUsers: action.payload.data,
             loading: false,
+            initialLoading: false,
           };
         }
         case AdminUserActionTypes.ADD_ADMIN_USERS: {
@@ -63,6 +65,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             ...state,
             loading: false,
             error: null,
+            initialLoading: false,
           };
         }
         case AdminUserActionTypes.UPDATE_ADMIN_USERS: {
@@ -71,6 +74,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             ...state,
             loading: false,
             error: null,
+            initialLoading: false,
           };
         }
         case AdminUserActionTypes.DELETE_ADMIN_USERS: {
@@ -79,6 +83,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             ...state,
             loading: false,
             error: null,
+            initialLoading: false,
           };
         }
         default:
@@ -93,6 +98,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             roles: action.payload.data,
             error: action.payload.error,
             loading: false,
+            initialLoading: false,
           };
         }
         case AdminUserActionTypes.ADD_ADMIN_USERS: {
@@ -101,6 +107,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             ...state,
             error: action.payload.error,
             loading: false,
+            initialLoading: false,
           };
         }
         case AdminUserActionTypes.UPDATE_ADMIN_USERS: {
@@ -109,6 +116,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             ...state,
             error: action.payload.error,
             loading: false,
+            initialLoading: false,
           };
         }
         case AdminUserActionTypes.DELETE_ADMIN_USERS: {
@@ -117,6 +125,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             ...state,
             error: action.payload.error,
             loading: false,
+            initialLoading: false,
           };
         }
         default:
@@ -124,7 +133,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
       }
 
     case AdminUserActionTypes.GET_ADMIN_USERS:
-      return { ...state, loading: true };
+      return { ...state, loading: true , initialLoading: true,};
     case AdminUserActionTypes.ADD_ADMIN_USERS:
       return { ...state, loading: true, error: null };
     case AdminUserActionTypes.UPDATE_ADMIN_USERS:

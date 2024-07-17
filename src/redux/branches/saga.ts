@@ -121,7 +121,6 @@ function* addBranches({
     yield put(getBranches());
   } catch (error: any) {
     yield put(BranchApiResponseError(BranchActionTypes.ADD_BRANCHES, error));
-    throw error;
   }
 }
 
@@ -183,7 +182,6 @@ function* updateBranches({
     yield put(
       BranchApiResponseSuccess(BranchActionTypes.UPDATE_BRANCHES, error)
     );
-    throw error;
   }
 }
 
@@ -198,7 +196,6 @@ function* deleteBranches({ payload: { id } }: BranchData): SagaIterator {
     yield put(getBranches());
   } catch (error: any) {
     yield put(BranchApiResponseError(BranchActionTypes.DELETE_BRANCHES, error));
-    throw error;
   }
 }
 

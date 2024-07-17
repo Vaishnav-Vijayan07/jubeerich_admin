@@ -55,7 +55,6 @@ function* getChecklists(): SagaIterator {
   } catch (error: any) {
     console.log("Error", error);
     yield put(ChecklistApiResponseError(ChecklistActionTypes.GET_CHECKLIST, error));
-    throw error;
   }
 }
 
@@ -70,7 +69,6 @@ function* getChecklistsById({ payload: { id } }: StatusData): SagaIterator {
   } catch (error: any) {
     console.log("Error", error);
     yield put(ChecklistApiResponseError(ChecklistActionTypes.GET_CHECKLIST_BY_ID, error));
-    throw error;
   }
 }
 
@@ -95,7 +93,6 @@ function* addChecklist({ payload: { checklist_title, checklist_description, prio
     console.log("err", error);
 
     yield put(ChecklistApiResponseError(ChecklistActionTypes.ADD_CHECKLIST, error));
-    throw error;
   }
 }
 
@@ -117,7 +114,6 @@ function* updateChecklist({ payload: { id, checklist_title, checklist_descriptio
     yield put(getChecklistById(status_id));
   } catch (error: any) {
     yield put(ChecklistApiResponseSuccess(ChecklistActionTypes.UPDATE_CHECKLIST, error));
-    throw error;
   }
 }
 
@@ -130,7 +126,6 @@ function* deleteChecklist({ payload: { itemId, status_id } }: StatusData): SagaI
     yield put(getChecklistById(status_id));
   } catch (error: any) {
     yield put(ChecklistApiResponseError(ChecklistActionTypes.DELETE_CHECKLIST, error));
-    throw error;
   }
 }
 

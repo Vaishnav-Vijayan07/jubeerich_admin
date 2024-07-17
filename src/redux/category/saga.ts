@@ -40,7 +40,6 @@ function* getCategories(): SagaIterator {
     yield put(categoryApiResponseSuccess(CategoryActionTypes.GET_CATEGORY, { data }));
   } catch (error: any) {
     yield put(categoryApiResponseError(CategoryActionTypes.GET_CATEGORY, error));
-    throw error;
   }
 }
 
@@ -63,7 +62,6 @@ function* addCategory({ payload: { category_name, category_description, status, 
     console.log("Error", error);
 
     yield put(categoryApiResponseError(CategoryActionTypes.ADD_CATEGORY, error));
-    throw error;
   }
 }
 
@@ -82,7 +80,6 @@ function* updateCategory({ payload: { id, category_name, category_description, s
     yield put(getCategory());
   } catch (error: any) {
     yield put(categoryApiResponseSuccess(CategoryActionTypes.UPDATE_CATEGORY, error));
-    throw error;
   }
 }
 
@@ -95,7 +92,6 @@ function* deleteCategory({ payload: { id, updated_by } }: CategoryData): SagaIte
     yield put(getCategory());
   } catch (error: any) {
     yield put(categoryApiResponseError(CategoryActionTypes.DELETE_CATEGORY, error));
-    throw error;
   }
 }
 export function* watchGetCategory() {

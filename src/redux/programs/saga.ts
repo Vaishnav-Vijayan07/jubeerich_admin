@@ -50,7 +50,6 @@ function* getPrograms(): SagaIterator {
     );
   } catch (error: any) {
     yield put(programApiResponseError(ProgramsActionTypes.GET_PROGRAM, error));
-    throw error;
   }
 }
 
@@ -80,7 +79,6 @@ function* addProgram({
     yield put(getProgram());
   } catch (error: any) {
     yield put(programApiResponseError(ProgramsActionTypes.ADD_PROGRAM, error));
-    throw error;
   }
 }
 
@@ -114,7 +112,6 @@ function* updateProgram({
     yield put(
       programApiResponseSuccess(ProgramsActionTypes.UPDATE_PROGRAM, error)
     );
-    throw error;
   }
 }
 
@@ -131,7 +128,6 @@ function* deleteProgram({ payload: { id } }: ProgramData): SagaIterator {
     yield put(
       programApiResponseError(ProgramsActionTypes.DELETE_PROGRAM, error)
     );
-    throw error;
   }
 }
 

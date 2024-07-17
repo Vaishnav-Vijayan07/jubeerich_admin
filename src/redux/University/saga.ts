@@ -54,7 +54,6 @@ function* getUniversitys(): SagaIterator {
     yield put(
       UniversityApiResponseError(UniversityActionTypes.GET_UNIVERSITY, error)
     );
-    throw error;
   }
 }
 
@@ -88,7 +87,6 @@ function* addUniversity({
     yield put(
       UniversityApiResponseError(UniversityActionTypes.ADD_UNIVERSITY, error)
     );
-    throw error;
   }
 }
 
@@ -128,7 +126,6 @@ function* updateUniversity({
         error
       )
     );
-    throw error;
   }
 }
 
@@ -148,7 +145,6 @@ function* deleteUniversity({ payload: { id } }: UniversityData): SagaIterator {
     yield put(
       UniversityApiResponseError(UniversityActionTypes.DELETE_UNIVERSITY, error)
     );
-    throw error;
   }
 }
 

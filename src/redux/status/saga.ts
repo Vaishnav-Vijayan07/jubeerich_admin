@@ -50,7 +50,6 @@ function* getStatuses(): SagaIterator {
   } catch (error: any) {
     console.log("Error", error);
     yield put(StatusApiResponseError(StatusActionTypes.GET_STATUS, error));
-    throw error;
   }
 }
 
@@ -74,7 +73,6 @@ function* addStatus({ payload: { status_name, status_description, color, updated
     console.log("err", error);
 
     yield put(StatusApiResponseError(StatusActionTypes.ADD_STATUS, error));
-    throw error;
   }
 }
 
@@ -95,7 +93,6 @@ function* updateStatus({ payload: { id, status_name, status_description, color, 
     yield put(getStatus());
   } catch (error: any) {
     yield put(StatusApiResponseSuccess(StatusActionTypes.UPDATE_STATUS, error));
-    throw error;
   }
 }
 
@@ -108,7 +105,6 @@ function* deleteStatus({ payload: { id } }: StatusData): SagaIterator {
     yield put(getStatus());
   } catch (error: any) {
     yield put(StatusApiResponseError(StatusActionTypes.DELETE_STATUS, error));
-    throw error;
   }
 }
 

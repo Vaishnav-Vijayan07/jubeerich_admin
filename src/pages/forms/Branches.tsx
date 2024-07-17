@@ -18,6 +18,7 @@ import { getRegion } from "../../redux/regions/actions";
 import Select from "react-select";
 import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import { Link } from "react-router-dom";
+import classNames from "classnames";
 
 interface TableRecords {
   id: string;
@@ -362,11 +363,11 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "phone",
       sort: false,
     },
-    {
-      Header: "Address",
-      accessor: "address",
-      sort: false,
-    },
+    // {
+    //   Header: "Address",
+    //   accessor: "address",
+    //   sort: false,
+    // },
     {
       Header: "City",
       accessor: "city",
@@ -426,9 +427,18 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Status",
       accessor: "status",
       sort: false,
-      Cell: ({ row }: any) => {
-        return <>{row.original.status ? "Active" : "Not active"}</>;
-      },
+      Cell: ({ row }: any) => (
+        <React.Fragment>
+          <span
+            className={classNames("badge", {
+              "badge-soft-success": row.original.status === true,
+              "badge-soft-danger": row.original.status === false,
+            })}
+          >
+            {row.original.status ? "active" : "disabled"}
+          </span>
+        </React.Fragment>
+      )
     },
     {
       Header: "Actions",

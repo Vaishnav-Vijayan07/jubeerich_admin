@@ -45,7 +45,6 @@ function* getSubStatuses(): SagaIterator {
   } catch (error: any) {
     console.log("Error", error);
     yield put(SubStatusApiResponseError(SubStatusActionTypes.GET_SUB_STATUS, error));
-    throw error;
   }
 }
 
@@ -66,7 +65,6 @@ function* addSubStatus({ payload: { status_id, next_status, updated_by } }: Stat
     console.log("err", error);
 
     yield put(SubStatusApiResponseError(SubStatusActionTypes.ADD_SUB_STATUS, error));
-    throw error;
   }
 }
 
@@ -84,7 +82,6 @@ function* updateSubStatus({ payload: { id, status_id, next_status, updated_by } 
     yield put(getSubStatus());
   } catch (error: any) {
     yield put(SubStatusApiResponseSuccess(SubStatusActionTypes.UPDATE_SUB_STATUS, error));
-    throw error;
   }
 }
 
@@ -97,7 +94,6 @@ function* deleteSubStatus({ payload: { id } }: StatusData): SagaIterator {
     yield put(getSubStatus());
   } catch (error: any) {
     yield put(SubStatusApiResponseError(SubStatusActionTypes.DELETE_SUB_STATUS, error));
-    throw error;
   }
 }
 

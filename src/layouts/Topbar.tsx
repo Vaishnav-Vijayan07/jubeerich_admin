@@ -21,7 +21,7 @@ import CreateNew from "../components/CreateNew";
 
 import profilePic from "../assets/images/users/user_circle_icon.png";
 import avatar4 from "../assets/images/users/user-4.jpg";
-import logoSm from "../assets/images/logo-sm.png";
+import logoSm from "../assets/images/jb_logo.png";
 import logoDark from "../assets/images/logo-dark.png";
 import logoDark2 from "../assets/images/logo-dark-2.png";
 import { useViewport } from "../hooks/useViewPort";
