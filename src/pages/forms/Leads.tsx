@@ -87,7 +87,7 @@ const initialState = {
   updated_by: null,
   remarks: "",
   lead_received_date: null,
-  IELTS: false,
+  ielts: false,
 };
 
 const initialValidationState = {
@@ -106,7 +106,7 @@ const initialValidationState = {
   updated_by: "",
   remarks: "",
   lead_received_date: "",
-  IELTS: "",
+  ielts: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -175,7 +175,7 @@ const BasicInputElements = withSwal((props: any) => {
     preferred_country: yup.string().required("Preferred country is required"),
     office_type: yup.string().required("Office type is required"),
     lead_received_date: yup.date().required("Date is required"),
-    IELTS: yup.boolean(),
+    ielts: yup.boolean(),
     remarks: yup.string(),
   });
 
@@ -196,7 +196,7 @@ const BasicInputElements = withSwal((props: any) => {
       (office: any) => office.value == item.office_type
     );
     const updatedCountry = country?.filter(
-      (country: any) => country.value == item.country_id
+      (country: any) => country.value == item.preferred_country
     );
     const updatedCtegory = categories?.filter(
       (category: any) => category.value == item.category_id
@@ -228,7 +228,7 @@ const BasicInputElements = withSwal((props: any) => {
       updated_by: item?.updated_by || "",
       remarks: item?.remarks || "",
       lead_received_date: item?.lead_received_date || "",
-      IELTS: item?.IELTS || "",
+      ielts: item?.ielts || "",
     }));
 
     setIsUpdate(true);
@@ -259,10 +259,10 @@ const BasicInputElements = withSwal((props: any) => {
   //handle onchange function
   const handleInputChange = (e: any) => {
     const { name, value, checked } = e.target;
-    if (name == "IELTS") {
+    if (name == "ielts") {
       setFormData((prevData) => ({
         ...prevData,
-        IELTS: checked,
+        ielts: checked,
       }));
       return;
     }
@@ -333,7 +333,7 @@ const BasicInputElements = withSwal((props: any) => {
               user_id,
               formData.remarks,
               formData.lead_received_date,
-              formData.IELTS
+              formData.ielts
             )
           );
           setIsUpdate(false);
@@ -358,7 +358,7 @@ const BasicInputElements = withSwal((props: any) => {
               user_id,
               formData.remarks,
               formData.lead_received_date,
-              formData.IELTS
+              formData.ielts
             )
           );
         }
@@ -427,7 +427,7 @@ const BasicInputElements = withSwal((props: any) => {
           {/* Edit Icon */}
           <Link to="#" className="action-icon" onClick={() => {
             handleUpdate(row.original);
-            toggleResponsiveModal();
+            openModalWithClass("modal-full-width")
           }}>
             <i className="mdi mdi-square-edit-outline"></i>
           </Link>
@@ -462,6 +462,10 @@ const BasicInputElements = withSwal((props: any) => {
     setValidationErrors(initialValidationState); // Clear validation errors
     setFormData(initialState); //clear form data
     setSelectedCountry(null);
+    setSelectedCategory(null);
+    setSelectedChannel(null);
+    setSelectedOffice(null);
+    setSelectedSource(null);
   };
 
   const toggleResponsiveModal = () => {
@@ -713,9 +717,9 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Check
                       type="switch"
                       id="active-switch"
-                      name="IELTS"
+                      name="ielts"
                       onChange={handleInputChange}
-                      checked={formData.IELTS}
+                      checked={formData.ielts}
                     />
                   </Form.Group>
                 </Col>
@@ -796,7 +800,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Button>}
                 <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
-                  onClick={() => openModalWithClass("modal-full-width")}
+                  onClick={() => [openModalWithClass("modal-full-width"), handleResetValues()]}
                 >
                   <i className="mdi mdi-plus-circle"></i> Add lead
                 </Button>

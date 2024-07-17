@@ -31,7 +31,7 @@ interface LeadsData {
   updated_by: string;
   remarks: string;
   lead_received_date: string;
-  IELTS: boolean;
+  ielts: boolean;
 }
 
 // common success
@@ -77,7 +77,7 @@ export const addLeads = (
   updated_by: string | null,
   remarks: string | null,
   lead_received_date: string | null,
-  IELTS: boolean
+  ielts: boolean
 ): LeadsActionType => ({
   type: LeadsActionTypes.ADD_LEADS,
   payload: {
@@ -96,7 +96,7 @@ export const addLeads = (
     updated_by,
     remarks,
     lead_received_date,
-    IELTS,
+    ielts,
   },
 });
 
@@ -117,7 +117,7 @@ export const updateLeads = (
   updated_by: string | null,
   remarks: string | null,
   lead_received_date: string | null,
-  IELTS: boolean
+  ielts: boolean
 ): LeadsActionType => ({
   type: LeadsActionTypes.UPDATE_LEADS,
   payload: {
@@ -137,7 +137,7 @@ export const updateLeads = (
     updated_by,
     remarks,
     lead_received_date,
-    IELTS,
+    ielts,
   },
 });
 

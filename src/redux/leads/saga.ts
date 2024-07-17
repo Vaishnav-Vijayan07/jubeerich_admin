@@ -43,7 +43,7 @@ interface LeadsData {
     updated_by: string;
     remarks: string;
     lead_received_date: string;
-    IELTS: boolean;
+    ielts: boolean;
   };
   type: string;
 }
@@ -101,7 +101,7 @@ function* addLeads({
     updated_by,
     remarks,
     lead_received_date,
-    IELTS,
+    ielts,
   },
 }: LeadsData): SagaIterator {
   console.log("add leads");
@@ -123,7 +123,7 @@ function* addLeads({
       updated_by,
       remarks,
       lead_received_date,
-      IELTS,
+      ielts,
     });
     const data = response.data.message;
 
@@ -165,7 +165,7 @@ function* updateLeads({
     updated_by,
     remarks,
     lead_received_date,
-    IELTS,
+    ielts,
   },
 }: LeadsData): SagaIterator {
   try {
@@ -185,7 +185,7 @@ function* updateLeads({
       updated_by,
       remarks,
       lead_received_date,
-      IELTS,
+      ielts,
     });
     const data = response.data.message;
 

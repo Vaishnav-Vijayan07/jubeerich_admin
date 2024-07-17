@@ -29,7 +29,7 @@ function addLeads(params: {
   updated_by: string;
   remarks: string;
   lead_received_date: string;
-  IELTS: boolean;
+  ielts: boolean;
 }) {
   console.log(params);
 
@@ -54,7 +54,7 @@ function updateLeads(
     updated_by: string;
     remarks: string;
     lead_received_date: string;
-    IELTS: boolean;
+    ielts: boolean;
   }
 ) {
   return api.update(`${baseUrl}/${id}`, params);

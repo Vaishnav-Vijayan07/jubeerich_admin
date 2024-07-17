@@ -147,10 +147,10 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    // const updatedSource: OptionType[] = sourceData?.filter(
-    //   (source: any) => source.value == item.source_id
-    // );
-    // setSelectedSource(updatedSource[0]);
+    const updatedCountry: OptionType[] = country?.filter(
+      (country: any) => country.value == item.country_id
+    );
+    setSelectedCountry(updatedCountry[0]);
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
@@ -265,17 +265,23 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "University Name",
       accessor: "university_name",
       sort: true,
+      Cell: ({ row }: any) => <div className="table-user">
+        <img src={row.original.image_url} alt="university image" className="me-2 rounded-circle" />
+        <Link to="#" className="text-body fw-semibold">
+          {row.original.university_name}
+        </Link>
+      </div>,
+    },
+    {
+      Header: "Country",
+      accessor: "country_name",
+      sort: false,
     },
     {
       Header: "Locaton",
       accessor: "location",
       sort: false,
     },
-    // {
-    //   Header: "Country",
-    //   accessor: "country_id",
-    //   sort: false,
-    // },
     {
       Header: "Website",
       accessor: "website_url",
@@ -284,14 +290,14 @@ const BasicInputElements = withSwal((props: any) => {
         <a href={row.original.website_url} target="_next" style={{ cursor: "pointer" }}>{row.original.website_url}</a>
       </>,
     },
-    {
-      Header: "Image",
-      accessor: "image_url",
-      sort: false,
-      Cell: ({ row }: any) => <>
-        <img src={row.original.image_url} alt="" style={{ width: "80px", objectFit: "contain" }} />
-      </>,
-    },
+    // {
+    //   Header: "Image",
+    //   accessor: "image_url",
+    //   sort: false,
+    //   Cell: ({ row }: any) => <div className="table-user">
+    //     <img src={row.original.image_url} alt="university image" className="me-2 rounded-circle" />
+    //   </div>,
+    // },
     {
       Header: "Actions",
       accessor: "",
