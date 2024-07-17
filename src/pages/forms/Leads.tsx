@@ -110,6 +110,7 @@ const initialValidationState = {
 };
 
 const BasicInputElements = withSwal((props: any) => {
+
   const dispatch = useDispatch<AppDispatch>();
   const {
     swal,
@@ -146,6 +147,11 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [formData, setFormData] = useState(initialState);
   const [uploadModal, setUploadModal] = useState<boolean>(false);
+
+  const [className, setClassName] = useState<string>("");
+  const [scroll, setScroll] = useState<boolean>(false);
+  const [modal, setModal] = useState<boolean>(false);
+
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -418,21 +424,21 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
-        {/* Edit Icon */}
-        <Link to="#" className="action-icon" onClick={() => {
-          handleUpdate(row.original);
-          toggleResponsiveModal();
-        }}>
-          <i className="mdi mdi-square-edit-outline"></i>
-        </Link>
+          {/* Edit Icon */}
+          <Link to="#" className="action-icon" onClick={() => {
+            handleUpdate(row.original);
+            toggleResponsiveModal();
+          }}>
+            <i className="mdi mdi-square-edit-outline"></i>
+          </Link>
 
-        {/* Delete Icon */}
-        <Link to="#" className="action-icon" onClick={() =>
-          handleDelete(row.original.id)
-        }>
-          <i className="mdi mdi-delete"></i>
-        </Link>
-      </div>
+          {/* Delete Icon */}
+          <Link to="#" className="action-icon" onClick={() =>
+            handleDelete(row.original.id)
+          }>
+            <i className="mdi mdi-delete"></i>
+          </Link>
+        </div>
       ),
     },
   ];
@@ -481,15 +487,27 @@ const BasicInputElements = withSwal((props: any) => {
     setUploadModal(!uploadModal);
   };
 
+  const toggle = () => {
+    setModal(!modal);
+  };
+
+  const openModalWithClass = (className: string) => {
+    setClassName(className);
+    setScroll(false);
+    toggle();
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
 
         <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-right"
+          show={modal}
+          onHide={toggle}
+          dialogClassName={className}
+          // size={size}
+          scrollable={scroll}
         >
           <Form onSubmit={onSubmit} key={"lead-form"}>
             <Modal.Header closeButton>
@@ -497,7 +515,7 @@ const BasicInputElements = withSwal((props: any) => {
             </Modal.Header>
             <Modal.Body>
               <Row>
-                <Col>
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Full Name</Form.Label>
                     <Form.Control
@@ -513,7 +531,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
@@ -529,9 +547,8 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-              </Row>
-              <Row>
-                <Col>
+
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Phone</Form.Label>
                     <Form.Control
@@ -547,21 +564,8 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col>
-                  <Form.Group className="mb-3" controlId="source_id">
-                    <Form.Label>IELTS</Form.Label>
-                    <Form.Check
-                      type="switch"
-                      id="active-switch"
-                      name="IELTS"
-                      onChange={handleInputChange}
-                      checked={formData.IELTS}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
+
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Source</Form.Label>
                     <Select
@@ -579,7 +583,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Category</Form.Label>
                     <Select
@@ -597,9 +601,8 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-              </Row>
-              <Row>
-                <Col>
+
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Channel</Form.Label>
                     <Select
@@ -617,7 +620,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Office</Form.Label>
                     <Select
@@ -635,25 +638,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Date</Form.Label>
-                    <Form.Control
-                      type="date"
-                      name="lead_received_date"
-                      value={formData?.lead_received_date || ""}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.lead_received_date && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.lead_received_date}
-                      </Form.Text>
-                    )}
-                  </Form.Group>
-                </Col>
-                <Col>
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Country</Form.Label>
                     <Select
@@ -671,9 +656,8 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-              </Row>
-              <Row>
-                <Col>
+
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Remarks</Form.Label>
                     <Form.Control
@@ -689,7 +673,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>City</Form.Label>
                     <Form.Control
@@ -705,6 +689,36 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
+
+                <Col md={6} lg={4}>
+                  <Form.Group className="mb-3" controlId="lead_received_date">
+                    <Form.Label>Lead Received Date</Form.Label>
+                    <Form.Control
+                      type="date"
+                      name="lead_received_date"
+                      value={formData?.lead_received_date || ""}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.lead_received_date && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.lead_received_date}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+
+                <Col md={6} lg={4}>
+                  <Form.Group className="mb-3" controlId="source_id">
+                    <Form.Label>IELTS</Form.Label>
+                    <Form.Check
+                      type="switch"
+                      id="active-switch"
+                      name="IELTS"
+                      onChange={handleInputChange}
+                      checked={formData.IELTS}
+                    />
+                  </Form.Group>
+                </Col>
               </Row>
             </Modal.Body>
 
@@ -715,8 +729,8 @@ const BasicInputElements = withSwal((props: any) => {
                 className="mt-1 ms-2"
                 onClick={() =>
                   isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : toggleResponsiveModal()
+                    ? [handleCancelUpdate(), toggle()]
+                    : toggle()
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
@@ -782,7 +796,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Button>}
                 <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
-                  onClick={toggleResponsiveModal}
+                  onClick={() => openModalWithClass("modal-full-width")}
                 >
                   <i className="mdi mdi-plus-circle"></i> Add lead
                 </Button>

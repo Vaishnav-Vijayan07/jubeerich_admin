@@ -21,7 +21,6 @@ import {
   updateAdminUsers,
 } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
-import makeAnimated from "react-select/animated";
 import { AUTH_SESSION_KEY, baseUrl } from "../../constants";
 import {
   MyInitialState,
@@ -32,7 +31,6 @@ import {
   sizePerPageList,
 } from "./data";
 import { APICore } from "../../helpers/api/apiCore";
-import { error } from "console";
 import { Link } from "react-router-dom";
 
 const BasicInputElements = withSwal((props: any) => {
