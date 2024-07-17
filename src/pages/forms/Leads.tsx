@@ -23,34 +23,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
 import {
-  addChannel,
   addLeads,
-  deleteChannel,
   deleteLeads,
   getCategory,
   getChannel,
   getLead,
-  updateChannel,
   updateLeads,
 } from "../../redux/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
-import {
-  addRegion,
-  deleteRegion,
-  getRegion,
-  updateRegion,
-} from "../../redux/regions/actions";
 import { getCountry } from "../../redux/country/actions";
-import {
-  addUniversity,
-  deleteUniversity,
-  getUniversity,
-  updateUniversity,
-} from "../../redux/University/actions";
-import { channel } from "redux-saga";
 import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import FileUploader from "../../components/FileUploader";
+import { Link } from "react-router-dom";
 
 interface OptionType {
   value: string;
@@ -68,8 +53,20 @@ interface TableRecords {
 
 const sizePerPageList = [
   {
-    text: "5",
-    value: 5,
+    text: "10",
+    value: 10,
+  },
+  {
+    text: "25",
+    value: 25,
+  },
+  {
+    text: "50",
+    value: 50,
+  },
+  {
+    text: "100",
+    value: 100,
   },
 ];
 
@@ -78,18 +75,18 @@ const initialState = {
   full_name: "",
   email: "",
   phone: "",
-  category_id: "",
-  source_id: "",
-  channel_id: "",
+  category_id: null,
+  source_id: null,
+  channel_id: null,
   city: "",
-  preferred_country: "",
-  office_type: "",
+  preferred_country: null,
+  office_type: null,
   //   region_id: "",
   //   counsiler_id: "",
   //   branch_id: "",
-  updated_by: "",
+  updated_by: null,
   remarks: "",
-  lead_received_date: "",
+  lead_received_date: null,
   IELTS: false,
 };
 
@@ -159,24 +156,21 @@ const BasicInputElements = withSwal((props: any) => {
   );
 
   const validationSchema = yup.object().shape({
-    university_name: yup
+    full_name: yup
       .string()
-      .required("University name is required")
-      .min(3, "University name must be at least 3 characters long"),
-    location: yup
-      .string()
-      .required("Location is required")
-      .min(3, "Location must be at least 3 characters long"),
-    country_id: yup.string().required("Country ID is required"),
-    // website_url: yup
-    //   .string()
-    //   .required("Website URL is required")
-    //   .url("Website URL must be a valid URL"),
-    // image_url: yup
-    //   .string()
-    //   .required("Image URL is required")
-    //   .url("Image URL must be a valid URL"),
-    // updated_by: yup.string().required("Updated by is required"),
+      .required("Full name is required")
+      .min(3, "Full name must be at least 3 characters long"),
+    email: yup.string().required("Email is required").email("Invalid email"),
+    phone: yup.string().required("Phone is required"),
+    category_id: yup.string().required("Category is required"),
+    source_id: yup.string().required("Source is required"),
+    channel_id: yup.string().required("Channel is required"),
+    city: yup.string().required("City is required"),
+    preferred_country: yup.string().required("Preferred country is required"),
+    office_type: yup.string().required("Office type is required"),
+    lead_received_date: yup.date().required("Date is required"),
+    IELTS: yup.boolean(),
+    remarks: yup.string(),
   });
 
   /*
@@ -339,7 +333,7 @@ const BasicInputElements = withSwal((props: any) => {
           setIsUpdate(false);
         } else {
           // Handle add logic
-          console.log("here");
+          console.log("here leads");
 
           dispatch(
             addLeads(
@@ -367,6 +361,8 @@ const BasicInputElements = withSwal((props: any) => {
       //   // ... Rest of the form submission logic ...
     } catch (validationError) {
       // Handle validation errors
+      console.log("throw");
+
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
         validationError.inner.forEach((error) => {
@@ -422,25 +418,21 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
-          {/* Edit Icon */}
-          <FeatherIcons
-            icon="edit"
-            size="15"
-            className="cursor-pointer text-secondary"
-            onClick={() => {
-              handleUpdate(row.original);
-              toggleResponsiveModal();
-            }}
-          />
+        {/* Edit Icon */}
+        <Link to="#" className="action-icon" onClick={() => {
+          handleUpdate(row.original);
+          toggleResponsiveModal();
+        }}>
+          <i className="mdi mdi-square-edit-outline"></i>
+        </Link>
 
-          {/* Delete Icon */}
-          <FeatherIcons
-            icon="trash-2"
-            size="15"
-            className="cursor-pointer text-secondary"
-            onClick={() => handleDelete(row.original.id)}
-          />
-        </div>
+        {/* Delete Icon */}
+        <Link to="#" className="action-icon" onClick={() =>
+          handleDelete(row.original.id)
+        }>
+          <i className="mdi mdi-delete"></i>
+        </Link>
+      </div>
       ),
     },
   ];
@@ -499,7 +491,7 @@ const BasicInputElements = withSwal((props: any) => {
           onHide={toggleResponsiveModal}
           dialogClassName="modal-right"
         >
-          <Form onSubmit={onSubmit}>
+          <Form onSubmit={onSubmit} key={"lead-form"}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Lead Management</h4>
             </Modal.Header>
@@ -651,7 +643,7 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Control
                       type="date"
                       name="lead_received_date"
-                      value={formData.lead_received_date}
+                      value={formData?.lead_received_date || ""}
                       onChange={handleInputChange}
                     />
                     {validationErrors.lead_received_date && (
@@ -804,6 +796,8 @@ const BasicInputElements = withSwal((props: any) => {
                 isSortable={true}
                 pagination={true}
                 isSearchable={true}
+                tableClass="table-striped dt-responsive nowrap w-100"
+
               />
             </Card.Body>
           </Card>
@@ -815,13 +809,6 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Leads = () => {
   const dispatch = useDispatch<AppDispatch>();
-  //   const [countryData, setCountryData] = useState([]);
-  //   const [sourceData, setSourceData] = useState([]);
-  //   const [categoriesData, setCategoriesData] = useState([]);
-  //   const [regionsData, setRegionsData] = useState([]);
-  //   const [channelsData, setChannelsData] = useState([]);
-
-  //Fetch data from redux store
   const {
     state,
     error,
@@ -880,14 +867,6 @@ const Leads = () => {
       label: item.category_name,
     }));
   }, [categories]);
-
-  //   const regionsData = useMemo(() => {
-  //     if (!regions) return [];
-  //     return regions.map((item: any) => ({
-  //       value: item.id.toString(),
-  //       label: item.region_name,
-  //     }));
-  //   }, [regions]);
 
   const channelsData = useMemo(() => {
     if (!channels) return [];

@@ -26,7 +26,6 @@ interface CategoryData {
 }
 
 const api = new APICore();
-
 /**
  * Login the user
  * @param {*} payload - username and password

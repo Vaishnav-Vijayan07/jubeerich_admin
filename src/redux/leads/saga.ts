@@ -104,6 +104,8 @@ function* addLeads({
     IELTS,
   },
 }: LeadsData): SagaIterator {
+  console.log("add leads");
+  
   try {
     const response = yield call(addLeadsApi, {
       full_name,

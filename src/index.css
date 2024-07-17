@@ -107,10 +107,14 @@ ul {
   margin-top: 30px;
 }
 
-.custom-table th,
-.custom-table td {
+.custom-table th{
   border: 1px solid rgba(0, 0, 0, 0.1); /* Add a border to the right of each column */
   padding: 14px 8px; /* Adjust the padding as needed */
+}
+
+.custom-table td {
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Add a border to the right of each column */
+  padding: 6px 8px; /* Adjust the padding as needed */
 }
 td,
 th {

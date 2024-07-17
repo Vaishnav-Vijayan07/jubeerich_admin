@@ -20,6 +20,8 @@ import {
 } from "../../redux/actions";
 import { AUTH_SESSION_KEY } from "../../constants";
 import { error } from "console";
+import { Link } from "react-router-dom";
+import classNames from "classnames";
 
 interface TableRecords {
   id: number;
@@ -30,8 +32,20 @@ interface TableRecords {
 
 const sizePerPageList = [
   {
-    text: "5",
-    value: 5,
+    text: "10",
+    value: 10,
+  },
+  {
+    text: "25",
+    value: 25,
+  },
+  {
+    text: "50",
+    value: 50,
+  },
+  {
+    text: "100",
+    value: 100,
   },
 ];
 
@@ -105,7 +119,7 @@ const BasicInputElements = withSwal((props: any) => {
     setIsUpdate(true);
   };
 
-  const handleDelete = (category_id: number, updated_by: number) => {
+  const handleDelete = (category_id: number) => {
     swal
       .fire({
         title: "Are you sure?",
@@ -118,7 +132,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteCategory(category_id, updated_by));
+          dispatch(deleteCategory(category_id));
           //clear form data
           if (isUpdate) {
             setFormData(initialFormData);
@@ -205,9 +219,17 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "status",
       sort: true,
       Cell: ({ row }: any) => (
-      <>
-        <span className={`badge bg-${row.original.status ? "success": "danger"} rounded-pill p-1`}>{row.original.status ? "active" : "disabled"}</span>
-      </>
+
+        <React.Fragment>
+          <span
+            className={classNames("badge", {
+              "badge-soft-success": row.original.status === true,
+              "badge-soft-danger": row.original.status === false,
+            })}
+          >
+            {row.original.status ? "active" : "disabled"}
+          </span>
+        </React.Fragment>
       ),
     },
     {
@@ -217,26 +239,20 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <FeatherIcons
-            icon="edit"
-            size="15"
-            className="cursor-pointer text-secondary"
-            onClick={() => {
-              setIsUpdate(true);
-              handleUpdate(row.original);
-              toggleResponsiveModal();
-            }}
-          />
+          <Link to="#" className="action-icon" onClick={() => {
+            setIsUpdate(true);
+            handleUpdate(row.original);
+            toggleResponsiveModal();
+          }}>
+            <i className="mdi mdi-square-edit-outline"></i>
+          </Link>
 
           {/* Delete Icon */}
-          <FeatherIcons
-            icon="trash-2"
-            size="15"
-            className="cursor-pointer text-secondary"
-            onClick={() =>
-              handleDelete(row.original.id, row.original.updated_by)
-            }
-          />
+          <Link to="#" className="action-icon" onClick={() =>
+            handleDelete(row.original.id)
+          }>
+            <i className="mdi mdi-delete"></i>
+          </Link>
         </div>
       ),
     },
@@ -365,11 +381,13 @@ const BasicInputElements = withSwal((props: any) => {
               <Table
                 columns={columns}
                 data={records ? records : []}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
+                // isSelectable={true}
                 isSearchable={true}
+                tableClass="table-striped dt-responsive nowrap w-100"
               />
             </Card.Body>
           </Card>

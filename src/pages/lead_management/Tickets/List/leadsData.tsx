@@ -62,4 +62,8 @@ export const sizePerPageList = [
     text: "50",
     value: 50,
   },
+  {
+    text: "100",
+    value: 100,
+  },
 ];

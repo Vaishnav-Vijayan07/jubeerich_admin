@@ -81,9 +81,8 @@ export const updateCategory = (
 });
 
 export const deleteCategory = (
-  id: number,
-  updated_by: number
+  id: number
 ): CategoryActionType => ({
   type: CategoryActionTypes.DELETE_CATEGORY,
-  payload: { id, updated_by },
+  payload: { id },
 });

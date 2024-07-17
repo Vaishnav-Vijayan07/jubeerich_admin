@@ -33,6 +33,7 @@ import {
 } from "./data";
 import { APICore } from "../../helpers/api/apiCore";
 import { error } from "console";
+import { Link } from "react-router-dom";
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -253,20 +254,14 @@ const BasicInputElements = withSwal((props: any) => {
         const isImage = row.original.profile_image_path ? true : false;
         return (
           <>
-            <Col className="d-flex flex-column text-enter align-items-center ">
-              <Image
-                src={
-                  isImage
-                    ? `${baseUrl}/${row.original.profile_image_path}`
-                    : profilePic
-                }
-                width={50}
-                height={50}
-                roundedCircle
-                className="object-fit-contain"
-              />
-              <h6 className="text-muted">{row.original.employee_id}</h6>
-            </Col>
+            <div className="table-user">
+              <img src={isImage
+                ? `${baseUrl}/${row.original.profile_image_path}`
+                : profilePic} alt="" className="me-2 rounded-circle" />
+              <Link to="#" className="text-body fw-semibold">
+                {row.original.employee_id}
+              </Link>
+            </div>
           </>
         );
       },
@@ -425,7 +420,7 @@ const BasicInputElements = withSwal((props: any) => {
           </h6>
           <Modal.Body>
             <div className="alert alert-warning" role="alert">
-              <strong>Hi {loggedInUser?.name}, </strong> Enter user details .
+              <strong>Hi {loggedInUser?.name}, </strong> Enter user details.
             </div>
             <Row>
               <Col className="bg-white">
@@ -679,6 +674,7 @@ const BasicInputElements = withSwal((props: any) => {
                 isSortable={true}
                 pagination={true}
                 isSearchable={true}
+                tableClass="table-striped dt-responsive nowrap w-100"
               />
             </Card.Body>
           </Card>

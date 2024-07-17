@@ -30,6 +30,7 @@ import {
 } from "../../redux/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
+import { Link } from "react-router-dom";
 
 interface OptionType {
   value: string;
@@ -47,8 +48,20 @@ interface TableRecords {
 
 const sizePerPageList = [
   {
-    text: "5",
-    value: 5,
+    text: "10",
+    value: 10,
+  },
+  {
+    text: "25",
+    value: 25,
+  },
+  {
+    text: "50",
+    value: 50,
+  },
+  {
+    text: "100",
+    value: 100,
   },
 ];
 
@@ -240,23 +253,20 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <FeatherIcons
-            icon="edit"
-            size="15"
-            className="cursor-pointer text-secondary"
-            onClick={() => {
-              handleUpdate(row.original);
-              toggleResponsiveModal();
-            }}
-          />
+          <Link to="#" className="action-icon" onClick={() => {
+            setIsUpdate(true);
+            handleUpdate(row.original);
+            toggleResponsiveModal();
+          }}>
+            <i className="mdi mdi-square-edit-outline"></i>
+          </Link>
 
           {/* Delete Icon */}
-          <FeatherIcons
-            icon="trash-2"
-            size="15"
-            className="cursor-pointer text-secondary"
-            onClick={() => handleDelete(row.original.id)}
-          />
+          <Link to="#" className="action-icon" onClick={() =>
+            handleDelete(row.original.id)
+          }>
+            <i className="mdi mdi-delete"></i>
+          </Link>
         </div>
       ),
     },
@@ -410,6 +420,7 @@ const BasicInputElements = withSwal((props: any) => {
                 isSortable={true}
                 pagination={true}
                 isSearchable={true}
+                tableClass="table-striped dt-responsive nowrap w-100"
               />
             </Card.Body>
           </Card>

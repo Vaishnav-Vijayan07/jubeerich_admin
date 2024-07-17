@@ -34,8 +34,20 @@ interface OptionType {
 
 const sizePerPageList = [
   {
-    text: "5",
-    value: 5,
+    text: "10",
+    value: 10,
+  },
+  {
+    text: "25",
+    value: 25,
+  },
+  {
+    text: "50",
+    value: 50,
+  },
+  {
+    text: "100",
+    value: 100,
   },
 ];
 
@@ -349,6 +361,7 @@ const BasicInputElements = withSwal((props: any) => {
                 isSortable={true}
                 pagination={true}
                 isSearchable={true}
+                tableClass="table-striped dt-responsive nowrap w-100"
               />
             </Card.Body>
           </Card>

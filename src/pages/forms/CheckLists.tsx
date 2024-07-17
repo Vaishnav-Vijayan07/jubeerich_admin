@@ -12,7 +12,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { addChecklist, deleteChecklist, getChecklistById, updateCheklist } from "../../redux/actions";
 import Select from "react-select";
 
@@ -38,8 +38,20 @@ interface DataTypes {
 
 const sizePerPageList = [
   {
-    text: "5",
-    value: 5,
+    text: "10",
+    value: 10,
+  },
+  {
+    text: "25",
+    value: 25,
+  },
+  {
+    text: "50",
+    value: 50,
+  },
+  {
+    text: "100",
+    value: 100,
   },
 ];
 
@@ -237,19 +249,20 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
-        <div className="d-flex gap-2">
+        <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <FeatherIcons
-            icon="edit"
-            size="15"
-            className="cursor-pointer text-secondary"
-            onClick={() => {
-              handleUpdate(row.original);
-            }}
-          />
+          <Link to="#" className="action-icon" onClick={() => {
+            handleUpdate(row.original);
+          }}>
+            <i className="mdi mdi-square-edit-outline"></i>
+          </Link>
 
           {/* Delete Icon */}
-          <FeatherIcons icon="trash-2" size="15" className="cursor-pointer text-secondary" onClick={() => handleDelete(row.original.id)} />
+          <Link to="#" className="action-icon" onClick={() =>
+            handleDelete(row.original.id)
+          }>
+            <i className="mdi mdi-delete"></i>
+          </Link>
         </div>
       ),
     },
@@ -321,7 +334,9 @@ const BasicInputElements = withSwal((props: any) => {
         <Col lg={7} className="p-0 form__card">
           <Card className="bg-white mt-md-3 m-lg-0 ms-lg-3">
             <Card.Body>
-              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true} />
+              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
+                tableClass="table-striped dt-responsive nowrap w-100"
+              />
             </Card.Body>
           </Card>
         </Col>
