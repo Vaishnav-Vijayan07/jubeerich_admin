@@ -8,9 +8,9 @@ import { addBranches, deleteBranches, getBranches, updateBranches } from "./mast
 import { addAccessRole, deleteAccessRoles, getAccessRoles, updateAccessRole } from "./users/accessRoles";
 import { addAdminUsers, deleteAdminUsers, getAdminUsers, updateAdminUsers } from "./users/adminUsers";
 import { getLeads, addLeads, updateLeads, deleteLeads, getLeadUser } from "./leads";
-import { addStatus, deleteStatus, getAllStatus, updateStatus } from "./status";
 import { getAllChecklists, getChecklistById, addChecklist, updateChecklist, deleteChecklist } from "./checklist";
 import { addSubStatus, deleteSubStatus, getAllSubStatus, updateSubStatus } from "./subStatus";
+import { addStatus, deleteStatus, getStatus, updateStatus, getStatusConfig } from "./master/status";
 import {
   addHistory,
   getAllHistories,
@@ -61,7 +61,7 @@ export {
   updateAdminUsers,
   addStatus,
   deleteStatus,
-  getAllStatus,
+  getStatus,
   updateStatus,
   getAllChecklists,
   getChecklistById,
@@ -83,4 +83,5 @@ export {
   deletePrograms,
   getPrograms,
   updatePrograms,
+  getStatusConfig
 };

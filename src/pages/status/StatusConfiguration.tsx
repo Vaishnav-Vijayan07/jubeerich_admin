@@ -10,7 +10,7 @@ import FeatherIcons from "feather-icons-react";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getStatus, getSubStatus, updateSubStatus } from "../../redux/actions";
+import { getStatus, getStatusConfig, getSubStatus, updateSubStatus } from "../../redux/actions";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import makeAnimated from "react-select/animated";
@@ -47,23 +47,22 @@ const sizePerPageList = [
     value: 100,
   },
 ];
+
 const initialValidationState = {
-  status_id: "",
-  next_status: "",
+  status_ids: "",
+  access_role_id: "",
 };
 
 const initialState = {
-  id: "",
-  status_id: "",
-  updated_by: "",
-  next_status: "",
+  status_ids: [],
+  access_role_id: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
 
   //destructured all items from props
-  const { statusData, swal, SubStatus, state } = props;
+  const { statusData, state, Status, loading, success, error, initialConfigloading } = props;
 
   //Table data
   const records: TableRecords[] = state;
@@ -77,12 +76,11 @@ const BasicInputElements = withSwal((props: any) => {
 
   //validation errors
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
-  const [selectedOptions, setSelectedOptions] = useState<OptionType | null>(null);
-  const [selectedSubStatus, setSelectedSubStatus] = useState<OptionType[] | null>([]);
+  const [selectedStatus, setSelectedStatus] = useState<OptionType[] | null>([]);
 
   const validationSchema = yup.object().shape({
-    status_id: yup.string().nullable().required("status is required"),
-    next_status: yup.string().nullable().required("sub status is required"),
+    status_ids: yup.array().nullable().required("status is required"),
+    access_role_id: yup.string().nullable().required("access role id is required"),
   });
 
   /*
@@ -94,24 +92,25 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
-    const updatedStatus: OptionType[] = statusData?.filter((status: any) => status.value == item.id);
-    setSelectedOptions(updatedStatus[0]);
 
-    const selectedNextStatus = item?.next_actions?.map((next_action: any) => ({
-      value: next_action.id,
-      label: next_action.status_name,
+    const selectedStatus = item?.statuses?.map((status: any) => ({
+      value: status.id,
+      label: status.status_name,
     }));
 
-    setSelectedSubStatus(selectedNextStatus);
+    const statusIds = item?.statuses?.map((item: any) => item.id)
+
+    setSelectedStatus(selectedStatus);
     setFormData({
-      id: item?.id,
-      status_id: item?.id,
-      updated_by: item?.updated_by,
-      next_status: item?.next_status,
+      status_ids: statusIds,
+      access_role_id: item?.id,
     });
 
     setIsUpdate(true);
   };
+
+  console.log("form data ==>", formData);
+
 
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
@@ -120,29 +119,29 @@ const BasicInputElements = withSwal((props: any) => {
     // Validate the form using yup
     try {
       await validationSchema.validate(formData, { abortEarly: false });
+      console.log("here");
 
       axios
-        .put(`/status/${formData.status_id}`, {
-          next_actions: formData.next_status,
-          status_name: selectedOptions?.label,
+        .put(`/status_config`, {
+          access_role_id: formData.access_role_id,
+          status_ids: formData?.status_ids
         })
         .then((res) => {
           showSuccessAlert(res.data.message);
-          dispatch(getStatus());
+          dispatch(getStatusConfig());
+
+          // Clear validation errors
+          setValidationErrors(initialValidationState);
+
+          //clear form data
+          setFormData(initialState);
+          setSelectedStatus(null);
+          toggleResponsiveModal()
         })
         .catch((err) => {
           console.error(err);
           showErrorAlert(err.message);
         });
-
-      // Clear validation errors
-      setValidationErrors(initialValidationState);
-
-      //clear form data
-      setFormData(initialState);
-      setSelectedOptions(null);
-      setSelectedSubStatus(null);
-      // ... Rest of the form submission logic ...
     } catch (validationError) {
       // Handle validation errors
       if (validationError instanceof yup.ValidationError) {
@@ -164,17 +163,17 @@ const BasicInputElements = withSwal((props: any) => {
       sort: true,
     },
     {
-      Header: "Status Name",
-      accessor: "status_name",
+      Header: "Role Name",
+      accessor: "role_name",
       sort: true,
     },
     {
-      Header: "Next Actions",
+      Header: "Statuses",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
         <ul style={{ listStyleType: "none" }}>
-          {row.original.next_actions?.map((item: any) => (
+          {row.original.statuses?.map((item: any) => (
             <li>{item.status_name}</li>
           ))}
         </ul>
@@ -205,25 +204,16 @@ const BasicInputElements = withSwal((props: any) => {
   const handleCancelUpdate = () => {
     setIsUpdate(false);
     setFormData(initialState);
-    setSelectedOptions(null);
-    setSelectedSubStatus(null);
+    setSelectedStatus(null);
   };
 
-  const handleOptionsChange = (selected: any) => {
-    setSelectedOptions(selected);
-    setFormData((prev) => ({
-      ...prev,
-      status_id: selected.value,
-    }));
-  };
-
-  const handleSubStatusChange = (selectedOptions: OptionType[] | OptionsType<OptionType> | null) => {
+  const handleStatusChange = (selectedOptions: OptionType[] | OptionsType<OptionType> | null) => {
     if (Array.isArray(selectedOptions)) {
-      setSelectedSubStatus(selectedOptions);
-      const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
-      setFormData((prev) => ({
+      setSelectedStatus(selectedOptions);
+      const selectedIdsArray = selectedOptions?.map((option) => option.value);
+      setFormData((prev: any) => ({
         ...prev,
-        next_status: selectedIdsString,
+        status_ids: selectedIdsArray,
       }));
     }
   };
@@ -231,7 +221,7 @@ const BasicInputElements = withSwal((props: any) => {
   const toggleResponsiveModal = () => {
     setResponsiveModal(!responsiveModal);
     setValidationErrors(initialValidationState);
-    if(isUpdate){
+    if (isUpdate) {
       handleCancelUpdate()
     }
   };
@@ -246,35 +236,21 @@ const BasicInputElements = withSwal((props: any) => {
               <h4 className="modal-title">Status Configuration</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="status_id">
+              <Form.Group className="mb-3" controlId="status_ids">
                 <Form.Label>Status</Form.Label>
-                <Select
-                  className="react-select react-select-container"
-                  name="status_id"
-                  classNamePrefix="react-select"
-                  options={statusData}
-                  value={selectedOptions}
-                  onChange={handleOptionsChange}
-                />
-
-                {validationErrors.status_id && <Form.Text className="text-danger">{validationErrors.status_id}</Form.Text>}
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="next_status">
-                <Form.Label>Sub Status</Form.Label>
                 <Select
                   closeMenuOnSelect={false}
                   components={animatedComponents}
                   isMulti
                   className="react-select react-select-container"
-                  name="next_status"
+                  name="status_ids"
                   classNamePrefix="react-select"
                   options={statusData}
-                  value={selectedSubStatus}
-                  onChange={handleSubStatusChange as any}
+                  value={selectedStatus}
+                  onChange={handleStatusChange as any}
                 />
 
-                {validationErrors.next_status && <Form.Text className="text-danger">{validationErrors.next_status}</Form.Text>}
+                {validationErrors.status_ids && <Form.Text className="text-danger">{validationErrors.status_ids}</Form.Text>}
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
@@ -315,11 +291,22 @@ const StatusConfiguration = () => {
   const [statusData, setStatusData] = useState([]);
 
   //Fetch data from redux store
-  const Status = useSelector((state: RootState) => state.Status.status.data);
+  // const Status = useSelector((state: RootState) => state.Status.status.data);
+
+  const { StatusConfig, Status, loading, success, error, initialConfigloading } = useSelector(
+    (state: RootState) => ({
+      StatusConfig: state.Status.statusConfig?.data,
+      Status: state.Status.status.data,
+      loading: state.Status.loading,
+      success: state.Status.success,
+      error: state.Status.error,
+      initialConfigloading: state.Status.initialConfigloading,
+    })
+  );
   const SubStatus = useSelector((state: RootState) => state.SubStatus.subStatus.data);
   useEffect(() => {
+    dispatch(getStatusConfig());
     dispatch(getStatus());
-    dispatch(getSubStatus());
   }, []);
   useEffect(() => {
     if (Status) {
@@ -346,7 +333,7 @@ const StatusConfiguration = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={Status} statusData={statusData} SubStatus={SubStatus} />
+          <BasicInputElements state={StatusConfig} statusData={statusData} loading={loading} success={success} error={error} initialConfigloading={initialConfigloading} />
         </Col>
       </Row>
     </React.Fragment>

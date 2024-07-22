@@ -6,6 +6,7 @@ export interface StatusActionType {
   | StatusActionTypes.API_RESPONSE_SUCCESS
   | StatusActionTypes.API_RESPONSE_ERROR
   | StatusActionTypes.GET_STATUS
+  | StatusActionTypes.GET_STATUS_CONFIG
   | StatusActionTypes.ADD_STATUS
   | StatusActionTypes.UPDATE_STATUS
   | StatusActionTypes.DELETE_STATUS;
@@ -18,8 +19,6 @@ interface StatusData {
   status_description: string,
   color: string,
   updated_by: string,
-  status_type: number,
-  tasks: string[]
 }
 
 // common success
@@ -44,22 +43,23 @@ export const getStatus = (): StatusActionType => ({
   payload: {},
 });
 
+export const getStatusConfig = (): StatusActionType => ({
+  type: StatusActionTypes.GET_STATUS_CONFIG,
+  payload: {},
+});
+
 export const addStatus = (
   status_name: string,
   status_description: string,
   color: string,
   updated_by: string,
-  status_type: number | null,
-  is_substatus: number | null
 ): StatusActionType => ({
   type: StatusActionTypes.ADD_STATUS,
   payload: {
     status_name,
     status_description,
     color,
-    updated_by,
-    status_type,
-    is_substatus
+    updated_by
   },
 });
 
@@ -69,8 +69,6 @@ export const updateStatus = (
   status_description: string,
   color: string,
   updated_by: string,
-  status_type: number | null,
-  is_substatus: number | null
 ): StatusActionType => ({
   type: StatusActionTypes.UPDATE_STATUS,
   payload: {
@@ -78,9 +76,7 @@ export const updateStatus = (
     status_name,
     status_description,
     color,
-    updated_by,
-    status_type,
-    is_substatus
+    updated_by
   },
 });
 

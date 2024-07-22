@@ -155,7 +155,24 @@ const MENU_ITEMS: MenuItemTypes[] = [
     ],
   },
 
-  // { key: "status_management", label: "Status Management", isTitle: true, roles: ["Monitor"] },
+  { key: "status_management", label: "Status Management", isTitle: true, roles: ["Monitor"] },
+
+  {
+    key: "status",
+    label: "Status",
+    isTitle: false,
+    icon: "bar-chart-2",
+    url: "/settings/master/status",
+    roles: ["Monitor"],
+  },
+  {
+    key: "status_config",
+    label: "Status Config",
+    isTitle: false,
+    icon: "file-text",
+    url: "/settings/master/status_config",
+    roles: ["Monitor"],
+  },
 
   // {
   //   key: "status_management",
@@ -170,18 +187,18 @@ const MENU_ITEMS: MenuItemTypes[] = [
   //       url: "/settings/master/status",
   //       parentKey: "status_management",
   //     },
-  //     {
-  //       key: "status_config",
-  //       label: "Status Configuration",
-  //       url: "/settings/master/status_config",
-  //       parentKey: "status_management",
-  //     },
-  //     {
-  //       key: "sub_status",
-  //       label: "Sub Status",
-  //       url: "/settings/master/sub_status",
-  //       parentKey: "status_management",
-  //     },
+  //     // {
+  //     //   key: "status_config",
+  //     //   label: "Status Configuration",
+  //     //   url: "/settings/master/status_config",
+  //     //   parentKey: "status_management",
+  //     // },
+  //     // {
+  //     //   key: "sub_status",
+  //     //   label: "Sub Status",
+  //     //   url: "/settings/master/sub_status",
+  //     //   parentKey: "status_management",
+  //     // },
   //   ],
   // },
   // { key: "reports", label: "Reports", isTitle: true, roles: ["Add Lead", "View Task"] },
@@ -203,25 +220,20 @@ const MENU_ITEMS: MenuItemTypes[] = [
   },
 
   {
-    key: "user_management",
-    label: "User Management",
+    key: "roles",
+    label: "Access Roles",
     isTitle: false,
     icon: "user",
+    url: "/user_management/access_roles",
     roles: ["Monitor"],
-    children: [
-      {
-        key: "roles",
-        label: "Access Roles",
-        url: "/user_management/access_roles",
-        parentKey: "user_management",
-      },
-      {
-        key: "user_creation",
-        label: "User Creation",
-        url: "/user_management/user_creation",
-        parentKey: "user_management",
-      },
-    ],
+  },
+  {
+    key: "user_creation",
+    label: "User Creation",
+    url: "/user_management/user_creation",
+    isTitle: false,
+    icon: "users",
+    roles: ["Monitor"],
   },
 ];
 

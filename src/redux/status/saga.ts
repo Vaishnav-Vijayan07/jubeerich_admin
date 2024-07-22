@@ -5,14 +5,14 @@ import { SagaIterator } from "@redux-saga/core";
 import { APICore } from "../../helpers/api/apiCore";
 
 // helpers
-import { getAllStatus as getAllStatusApi, addStatus as addStatusApi, updateStatus as updateStatusApi, deleteStatus as deleteSourcedeleteStatusApi } from "../../helpers/";
+import { getStatus as getAllStatusApi, addStatus as addStatusApi, updateStatus as updateStatusApi, deleteStatus as deleteStatusApi, getStatusConfig as getStatusConfigApi } from "../../helpers/";
 
 // actions
 import { StatusApiResponseSuccess, StatusApiResponseError, getStatus } from "./actions";
 
 // constants
 import { StatusActionTypes } from "./constants";
-import axios from "axios";
+
 interface Task {
   checklist_title: string;
   checklist_description: string;
@@ -27,9 +27,6 @@ interface StatusData {
     status_description: string;
     color: string;
     updated_by: string;
-    status_type: number;
-    is_substatus: number;
-    tasks: Task[];
   };
   type: string;
 }
@@ -43,7 +40,7 @@ const api = new APICore();
 function* getStatuses(): SagaIterator {
   try {
     const response = yield call(getAllStatusApi);
-    const data = response.data;
+    const data = response.data?.data;
 
     // NOTE - You can change this according to response format from your api
     yield put(StatusApiResponseSuccess(StatusActionTypes.GET_STATUS, { data }));
@@ -53,15 +50,26 @@ function* getStatuses(): SagaIterator {
   }
 }
 
-function* addStatus({ payload: { status_name, status_description, color, updated_by, status_type, is_substatus } }: StatusData): SagaIterator {
+function* getStatusConfig(): SagaIterator {
+  try {
+    const response = yield call(getStatusConfigApi);
+    const data = response.data?.data;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(StatusApiResponseSuccess(StatusActionTypes.GET_STATUS_CONFIG, { data }));
+  } catch (error: any) {
+    console.log("Error", error);
+    yield put(StatusApiResponseError(StatusActionTypes.GET_STATUS_CONFIG, error));
+  }
+}
+
+function* addStatus({ payload: { status_name, status_description, color, updated_by } }: StatusData): SagaIterator {
   try {
     const response = yield call(addStatusApi, {
       status_name,
       status_description,
       color,
       updated_by,
-      status_type,
-      is_substatus,
     });
     const data = response.data;
 
@@ -76,15 +84,13 @@ function* addStatus({ payload: { status_name, status_description, color, updated
   }
 }
 
-function* updateStatus({ payload: { id, status_name, status_description, color, updated_by, status_type, is_substatus } }: StatusData): SagaIterator {
+function* updateStatus({ payload: { id, status_name, status_description, color, updated_by } }: StatusData): SagaIterator {
   try {
     const response = yield call(updateStatusApi, id, {
       status_name,
       status_description,
       color,
       updated_by,
-      status_type,
-      is_substatus,
     });
     const data = response.data.message;
 
@@ -98,7 +104,7 @@ function* updateStatus({ payload: { id, status_name, status_description, color, 
 
 function* deleteStatus({ payload: { id } }: StatusData): SagaIterator {
   try {
-    const response = yield call(deleteSourcedeleteStatusApi, id);
+    const response = yield call(deleteStatusApi, id);
     const data = response.data.message;
 
     yield put(StatusApiResponseSuccess(StatusActionTypes.DELETE_STATUS, data));
@@ -110,6 +116,10 @@ function* deleteStatus({ payload: { id } }: StatusData): SagaIterator {
 
 export function* watchGetStatus() {
   yield takeEvery(StatusActionTypes.GET_STATUS, getStatuses);
+}
+
+export function* watchGetStatusConfig() {
+  yield takeEvery(StatusActionTypes.GET_STATUS_CONFIG, getStatusConfig);
 }
 
 export function* watchaddLeads() {
@@ -125,7 +135,7 @@ export function* watchDeleteLeads(): any {
 }
 
 function* LeadsSaga() {
-  yield all([fork(watchGetStatus), fork(watchaddLeads), fork(watchUpdateLeads), fork(watchDeleteLeads)]);
+  yield all([fork(watchGetStatus), fork(watchaddLeads), fork(watchUpdateLeads), fork(watchDeleteLeads), fork(watchGetStatusConfig)]);
 }
 
 export default LeadsSaga;

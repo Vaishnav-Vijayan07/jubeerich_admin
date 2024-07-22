@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 import InputColor from "react-input-color";
 
@@ -61,23 +61,23 @@ const initialState = {
   status_name: "",
   status_description: "",
   color: "",
-  updated_by: "",
-  status_type: null,
-  is_substatus: null,
+  updated_by: ""
 };
 
 const initialValidationState = {
   status_name: "",
   status_description: "",
-  color: "",
-  status_type: "",
-  is_substatus: "",
+  color: ""
 };
 
 const BasicInputElements = withSwal((props: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state } = props;
+  const { swal, state, loading, success, error, initialloading } = props;
+
+  console.log("loading ===>", loading);
+  console.log("error ===>", error);
+
   const [selectedOptions, setSelectedOptions] = useState<OptionType | null>(null);
   const [subStatusType, setSubStatusType] = useState<OptionType | null>(null);
   const [updateColor, setupdateColor] = useState<string | null>(null);
@@ -102,9 +102,10 @@ const BasicInputElements = withSwal((props: any) => {
   const validationSchema = yup.object().shape({
     status_name: yup.string().required("status name is required").min(3, "status name must be at least 3 characters long"),
     status_description: yup.string().required("status description is required").min(3, "status description must be at least 3 characters long"),
-    status_type: yup.string().nullable().required("choose atleast one status type"),
-    is_substatus: yup.string().nullable().required("choose atleast one status type"),
   });
+
+  console.log("formData ==>", formData);
+
 
   /*
    * form methods
@@ -114,30 +115,6 @@ const BasicInputElements = withSwal((props: any) => {
     defaultValues: initialState,
   });
 
-  const setDefaultColor = (color: string) => {
-    // RGBA color value
-    const rgbaColor: string = color;
-
-    // Extract RGB values
-    const rgbValues: RegExpMatchArray | null = rgbaColor.match(/\d+/g);
-    let hexColor: string;
-    if (rgbValues !== null) {
-      const red: number = parseInt(rgbValues[0]);
-      const green: number = parseInt(rgbValues[1]);
-      const blue: number = parseInt(rgbValues[2]);
-
-      // Convert RGB to hex
-      const redHex: string = red.toString(16).padStart(2, "0");
-      const greenHex: string = green.toString(16).padStart(2, "0");
-      const blueHex: string = blue.toString(16).padStart(2, "0");
-
-      // Combine to form hex color code
-      hexColor = `#${redHex}${greenHex}${blueHex}`;
-
-      setupdateColor(hexColor);
-    }
-  };
-
   const handleUpdate = (item: any) => {
     const updatedOptions: OptionType[] = statusTypes?.filter((option: any) => option.value == item.status_type);
     setSelectedOptions(updatedOptions[0]);
@@ -145,15 +122,13 @@ const BasicInputElements = withSwal((props: any) => {
     const updatedStatusType: OptionType[] = isSubStatus?.filter((option: any) => option.value == item.is_substatus);
     setSubStatusType(updatedStatusType[0]);
 
-    setDefaultColor(item.color);
+    setupdateColor(item.color)
     setFormData({
       id: item?.id,
       status_name: item?.status_name,
       status_description: item?.status_description,
       color: item?.color ? item.color : "",
-      updated_by: item?.updated_by,
-      status_type: item?.status_type,
-      is_substatus: item?.is_substatus,
+      updated_by: item?.updated_by
     });
 
     setIsUpdate(true);
@@ -202,22 +177,16 @@ const BasicInputElements = withSwal((props: any) => {
         if (isUpdate) {
           // Handle update logic
 
-          dispatch(updateStatus(formData.id, formData.status_name, formData.status_description, formData.color, user_id, formData.status_type, formData.is_substatus));
+          dispatch(updateStatus(formData.id, formData.status_name, formData.status_description, formData.color, user_id));
           setIsUpdate(false);
         } else {
           // Handle add logic
-          dispatch(addStatus(formData.status_name, formData.status_description, formData.color, user_id, formData.status_type, formData.is_substatus));
+          dispatch(addStatus(formData.status_name, formData.status_description, formData.color, user_id));
         }
       }
 
       // Clear validation errors
       setValidationErrors(initialValidationState);
-
-      //clear form data
-      setFormData(initialState);
-      setSelectedOptions(null);
-      setSubStatusType(null);
-      setupdateColor(null);
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {
@@ -233,6 +202,20 @@ const BasicInputElements = withSwal((props: any) => {
       }
     }
   };
+  useEffect(() => {
+    // Check for errors and clear the form
+    if (!loading && !error) {
+      console.log("here ======>");
+
+      setResponsiveModal(false);
+      // Clear validation errors
+      setValidationErrors(initialValidationState);
+      setFormData(initialState);
+      setSelectedOptions(null);
+      setSubStatusType(null);
+      setupdateColor(null);
+    }
+  }, [loading, error]);
 
   const columns = [
     {
@@ -251,18 +234,6 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
     },
     {
-      Header: "Status Priority",
-      accessor: "status_type",
-      sort: false,
-      Cell: ({ row }: any) => <span>{row.original.status_type === 0 ? "Potential" : "Spam"}</span>,
-    },
-    {
-      Header: "Status Type",
-      accessor: "is_substatus",
-      sort: false,
-      Cell: ({ row }: any) => <span>{row.original.is_substatus === 0 ? "Status" : row.original.is_substatus === 1 ? "Sub Status" : ""}</span>,
-    },
-    {
       Header: "Color",
       accessor: "color",
       sort: false,
@@ -273,25 +244,6 @@ const BasicInputElements = withSwal((props: any) => {
               width: "40px",
               height: "15px",
               backgroundColor: `${row.original.color}`,
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      Header: "View Checklist",
-      accessor: "view_checklist",
-      sort: false,
-      Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-1">
-          <FeatherIcons
-            icon="eye"
-            size={15}
-            className="cursor-pointer text-secondary"
-            onClick={() => {
-              navigate(`/settings/master/status/checklist/${row.original.id}`, {
-                state: { data: row.original.status_name },
-              });
             }}
           />
         </div>
@@ -329,26 +281,11 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedOptions(null);
     setSubStatusType(null);
   };
-  const handleOptionsChange = (selected: any) => {
-    setSelectedOptions(selected);
-    setFormData((prev) => ({
-      ...prev,
-      status_type: selected.value,
-    }));
-  };
-
-  const handleSubStatusChange = (selected: any) => {
-    setSubStatusType(selected);
-    setFormData((prev) => ({
-      ...prev,
-      is_substatus: selected.value,
-    }));
-  };
 
   const toggleResponsiveModal = () => {
     setResponsiveModal(!responsiveModal);
     setValidationErrors(initialValidationState);
-    if(isUpdate){
+    if (isUpdate) {
       handleCancelUpdate()
     }
   };
@@ -382,44 +319,17 @@ const BasicInputElements = withSwal((props: any) => {
                 {validationErrors.status_description && <Form.Text className="text-danger">{validationErrors.status_description}</Form.Text>}
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="status_type">
-                <Form.Label>Status Priority</Form.Label>
-                <Select
-                  className="react-select react-select-container"
-                  name="status_type"
-                  classNamePrefix="react-select"
-                  options={statusTypes}
-                  value={selectedOptions}
-                  onChange={handleOptionsChange}
-                />
-
-                {validationErrors.status_type && <Form.Text className="text-danger">{validationErrors.status_type}</Form.Text>}
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="is_substatus">
-                <Form.Label>Status Type</Form.Label>
-                <Select
-                  className="react-select react-select-container"
-                  name="is_substatus"
-                  classNamePrefix="react-select"
-                  options={isSubStatus}
-                  value={subStatusType}
-                  onChange={handleSubStatusChange}
-                />
-
-                {validationErrors.is_substatus && <Form.Text className="text-danger">{validationErrors.is_substatus}</Form.Text>}
-              </Form.Group>
-
               <Form.Group className="mb-3" controlId="color">
                 <Form.Label>Color</Form.Label>
                 <br />
                 <InputColor
                   initialValue={updateColor ? updateColor : "#5e72e4"}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setFormData((prevData: any) => ({
                       ...prevData,
-                      color: e.rgba,
+                      color: e.hex,
                     }))
+                  }
                   }
                   placement="right"
                 />
@@ -435,7 +345,7 @@ const BasicInputElements = withSwal((props: any) => {
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1" disabled={loading}>
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -450,7 +360,9 @@ const BasicInputElements = withSwal((props: any) => {
                 <i className="mdi mdi-plus-circle"></i> Add Status
               </Button>
               <h4 className="header-title mb-4">Manage Status</h4>
-              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true} />
+              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
+                tableClass="table-striped dt-responsive nowrap w-100"
+              />
             </Card.Body>
           </Card>
         </Col>
@@ -462,11 +374,30 @@ const BasicInputElements = withSwal((props: any) => {
 const Status = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  //Fetch data from redux store
-  const Status = useSelector((state: RootState) => state.Status.status.data);
+  const { Status, loading, success, error, initialloading } = useSelector(
+    (state: RootState) => ({
+      Status: state.Status.status.data,
+      loading: state.Status.loading,
+      success: state.Status.success,
+      error: state.Status.error,
+      initialloading: state.Status.initialloading,
+    })
+  );
   useEffect(() => {
     dispatch(getStatus());
   }, []);
+
+  console.log("initil oadin", initialloading);
+  
+
+  if (initialloading) {
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "50%", left: "50%" }}
+      />
+    );
+  }
 
   return (
     <React.Fragment>
@@ -479,7 +410,7 @@ const Status = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={Status} />
+          <BasicInputElements state={Status} loading={loading} success={success} error={error} initialloading={initialloading} />
         </Col>
       </Row>
     </React.Fragment>

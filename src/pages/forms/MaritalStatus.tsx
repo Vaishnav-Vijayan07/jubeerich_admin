@@ -104,12 +104,12 @@ const BasicInputElements = withSwal((props: any) => {
   const validationSchema = yup.object().shape({
     marital_status_name: yup
       .string()
-      .required("channel name is required")
-      .min(3, "channel name must be at least 3 characters long"),
+      .required("status status name is required")
+      .min(3, "status name must be at least 3 characters long"),
     marital_status_description: yup
       .string()
-      .required("channel description is required")
-      .min(3, "channel description must be at least 3 characters long"),
+      .required("status description is required")
+      .min(3, "status description must be at least 3 characters long"),
     // source_id: yup.string().required("Please choose a source"),
   });
 

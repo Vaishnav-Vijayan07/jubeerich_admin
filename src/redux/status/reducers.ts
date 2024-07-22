@@ -7,8 +7,11 @@ import { StatusActionTypes } from "./constants";
 
 const INIT_STATE = {
     status: [],
+    statusConfig: [],
     loading: false,
-    error: {},
+    error: null,
+    initialloading: false,
+    initialConfigloading: false
 };
 
 interface StatusData {
@@ -26,6 +29,7 @@ export interface StatusActionType {
     | StatusActionTypes.API_RESPONSE_ERROR
     | StatusActionTypes.GET_STATUS
     | StatusActionTypes.ADD_STATUS
+    | StatusActionTypes.GET_STATUS_CONFIG
     | StatusActionTypes.UPDATE_STATUS
     | StatusActionTypes.DELETE_STATUS;
     payload: {
@@ -51,6 +55,18 @@ const Status = (state: State = INIT_STATE, action: StatusActionType): any => {
                         ...state,
                         status: action.payload.data,
                         loading: false,
+                        initialloading: false
+                    };
+                }
+
+                case StatusActionTypes.GET_STATUS_CONFIG: {
+
+                    return {
+                        ...state,
+                        statusConfig: action.payload.data,
+                        initialConfigloading: false,
+                        loading: false,
+                        initialloading: false
                     };
                 }
 
@@ -59,6 +75,7 @@ const Status = (state: State = INIT_STATE, action: StatusActionType): any => {
                     return {
                         ...state,
                         loading: false,
+                        initialloading: false
                     };
                 }
                 case StatusActionTypes.UPDATE_STATUS: {
@@ -66,6 +83,7 @@ const Status = (state: State = INIT_STATE, action: StatusActionType): any => {
                     return {
                         ...state,
                         loading: false,
+                        initialloading: false
                     };
                 }
                 case StatusActionTypes.DELETE_STATUS: {
@@ -73,6 +91,7 @@ const Status = (state: State = INIT_STATE, action: StatusActionType): any => {
                     return {
                         ...state,
                         loading: false,
+                        initialloading: false
                     };
                 }
                 default:
@@ -86,6 +105,18 @@ const Status = (state: State = INIT_STATE, action: StatusActionType): any => {
                         ...state,
                         error: action.payload.error,
                         loading: false,
+                        initialloading: false
+                    };
+                }
+
+
+                case StatusActionTypes.GET_STATUS_CONFIG: {
+                    return {
+                        ...state,
+                        error: action.payload.error,
+                        initialConfigloading: false,
+                        loading: false,
+                        initialloading: false
                     };
                 }
                 case StatusActionTypes.ADD_STATUS: {
@@ -94,6 +125,7 @@ const Status = (state: State = INIT_STATE, action: StatusActionType): any => {
                         ...state,
                         error: action.payload.error,
                         loading: false,
+                        initialloading: false
                     };
                 }
                 case StatusActionTypes.UPDATE_STATUS: {
@@ -102,6 +134,7 @@ const Status = (state: State = INIT_STATE, action: StatusActionType): any => {
                         ...state,
                         error: action.payload.error,
                         loading: false,
+                        initialloading: false
                     };
                 }
                 case StatusActionTypes.DELETE_STATUS: {
@@ -110,6 +143,7 @@ const Status = (state: State = INIT_STATE, action: StatusActionType): any => {
                         ...state,
                         error: action.payload.error,
                         loading: false,
+                        initialloading: false
                     };
                 }
                 default:
@@ -117,7 +151,9 @@ const Status = (state: State = INIT_STATE, action: StatusActionType): any => {
             }
 
         case StatusActionTypes.GET_STATUS:
-            return { ...state, loading: true };
+            return { ...state, loading: true, initialloading: true };
+        case StatusActionTypes.GET_STATUS_CONFIG:
+            return { ...state, loading: true, initialConfigloading: true };
         case StatusActionTypes.ADD_STATUS:
             return { ...state, loading: true };
         case StatusActionTypes.UPDATE_STATUS:

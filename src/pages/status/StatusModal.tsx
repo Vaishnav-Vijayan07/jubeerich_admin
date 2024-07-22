@@ -205,8 +205,6 @@ const StatusModal = ({ modal, setModal }: modalType) => {
               formData.color,
               // formData.updated_by,
               user_id,
-              formData.status_type,
-              formData.is_substatus
             )
           );
           setIsUpdate(false);
@@ -218,9 +216,7 @@ const StatusModal = ({ modal, setModal }: modalType) => {
               formData.status_description,
               formData.color,
               // formData.updated_by,
-              user_id,
-              formData.status_type,
-              formData.is_substatus
+              user_id
             )
           );
         }
