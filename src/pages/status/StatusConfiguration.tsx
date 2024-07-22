@@ -172,7 +172,7 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
-        <ul style={{ listStyleType: "none" }}>
+        <ul style={{ listStyleType: "none", padding: "0", margin: "0" }}>
           {row.original.statuses?.map((item: any) => (
             <li>{item.status_name}</li>
           ))}
@@ -277,7 +277,9 @@ const BasicInputElements = withSwal((props: any) => {
                 <i className="mdi mdi-plus-circle"></i> Configure Status
               </Button>
               <h4 className="header-title mb-4">Manage Status Configuration</h4>
-              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true} />
+              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
+                tableClass="table-striped dt-responsive nowrap w-100"
+              />
             </Card.Body>
           </Card>
         </Col>
