@@ -214,6 +214,11 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "category_description",
       sort: false,
     },
+    // {
+    //   Header: "Slug",
+    //   accessor: "slug",
+    //   sort: false,
+    // },
     {
       Header: "Status",
       accessor: "status",

@@ -7,7 +7,6 @@ import {
   Card,
   Form,
   Button,
-  Dropdown,
   Modal,
   Spinner,
 } from "react-bootstrap";
@@ -245,11 +244,11 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "office_type_description",
       sort: false,
     },
-    // {
-    //   Header: "Source",
-    //   accessor: "source_name",
-    //   sort: false,
-    // },
+    {
+      Header: "Slug",
+      accessor: "slug",
+      sort: false,
+    },
     {
       Header: "Actions",
       accessor: "",

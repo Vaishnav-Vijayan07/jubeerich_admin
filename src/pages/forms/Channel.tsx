@@ -242,6 +242,11 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
     },
     {
+      Header: "Slug",
+      accessor: "slug",
+      sort: false,
+    },
+    {
       Header: "Lead Source",
       accessor: "source_name",
       sort: false,
