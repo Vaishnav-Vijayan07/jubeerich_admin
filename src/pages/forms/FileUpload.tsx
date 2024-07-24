@@ -28,7 +28,7 @@ const FileUpload = () => {
               </p>
 
               <FileUploader
-                onFileUpload={(files) => {
+                onFileUpload={(files:any) => {
                 }}
               />
             </Card.Body>

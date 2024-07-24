@@ -17,7 +17,7 @@ interface FileUploaderProps {
   getAttachedFiles?: () => void;
 }
 
-const FileUploader = (props: FileUploaderProps) => {
+const FileUploader = (props:any) => {
   const [selectedFiles, setSelectedFiles] = useState<FileType[]>([]);
   const [fileType, setFileType] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
