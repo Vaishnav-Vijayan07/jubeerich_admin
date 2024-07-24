@@ -4,6 +4,8 @@ import { FormInput } from "../../../../components";
 import axios from "axios";
 import moment from "moment";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 
 const initialState = {
   full_name: "",
@@ -22,14 +24,20 @@ const initialState = {
   secondary_number: "",
   state: "",
   country: "",
-  address: ""
+  address: "",
 };
 
-const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData, getBasicInfoApi }: any) => {
+const BasicInfo = ({
+  studentId,
+  Countries,
+  OfficeTypes,
+  MaritalStatus,
+  basicData,
+  getBasicInfoApi,
+}: any) => {
   const [formData, setformData] = useState(initialState);
   const [loading, setLoading] = useState(false);
 
-  // apis
   const getBasicInfo = () => {
     setformData(initialState);
     axios
@@ -42,7 +50,6 @@ const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData
         console.error(err);
       });
   };
-
   useEffect(() => {
     if (studentId) {
       getBasicInfo();
@@ -77,7 +84,7 @@ const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData
         secondary_number: formData?.secondary_number,
         state: formData?.state,
         country: formData?.country,
-        address: formData?.address
+        address: formData?.address,
         // counsiler_id: null,
         // branch_id: formData?.,
       })
@@ -200,7 +207,9 @@ const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData
                   Open this select menu
                 </option>
                 {OfficeTypes?.map((officeType: any) => (
-                  <option value={officeType?.id}>{officeType?.office_type_name}</option>
+                  <option value={officeType?.id}>
+                    {officeType?.office_type_name}
+                  </option>
                 ))}
               </Form.Select>
             </Form.Group>
@@ -260,7 +269,9 @@ const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData
                   Open this select menu
                 </option>
                 {MaritalStatus?.map((marital_status: any) => (
-                  <option value={marital_status?.id}>{marital_status?.marital_status_name}</option>
+                  <option value={marital_status?.id}>
+                    {marital_status?.marital_status_name}
+                  </option>
                 ))}
               </Form.Select>
             </Form.Group>
@@ -386,8 +397,13 @@ const BasicInfo = ({ studentId, Countries, OfficeTypes, MaritalStatus, basicData
             </Form.Group>
           </Col>
 
-
-          <Button variant="primary" className="mt-4" type="submit" onClick={saveStudentBasicInfo} disabled={loading}>
+          <Button
+            variant="primary"
+            className="mt-4"
+            type="submit"
+            onClick={saveStudentBasicInfo}
+            disabled={loading}
+          >
             Save Details
           </Button>
         </Row>

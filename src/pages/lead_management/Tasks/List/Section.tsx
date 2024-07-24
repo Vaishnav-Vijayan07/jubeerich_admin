@@ -83,7 +83,7 @@ interface TaskSectionState {
   setSelectedDate: Dispatch<SetStateAction<string>>;
 }
 
-const TaskSection = ({ title, tasks, selectTask, initialTaskId, date, setSelectedDate }: TaskSectionState) => {
+const TaskSection = ({ title, tasks, selectTask, initialTaskId }: TaskSectionState) => {
   const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
   const [selectedTaskId, setSelectedTaskId] = useState<number>(initialTaskId); // Track selected task's ID
   useEffect(() => {
