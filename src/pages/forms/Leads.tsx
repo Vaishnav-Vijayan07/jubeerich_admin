@@ -31,11 +31,16 @@ import {
   updateLeads,
 } from "../../redux/actions";
 import Select from "react-select";
-import { AUTH_SESSION_KEY } from "../../constants";
+import {
+  AUTH_SESSION_KEY,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../../constants";
 import { getCountry } from "../../redux/country/actions";
 import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 interface OptionType {
   value: string;
@@ -86,7 +91,7 @@ const initialState = {
   //   branch_id: "",
   updated_by: null,
   remarks: "",
-  lead_received_date: new Date().toISOString().split('T')[0],
+  lead_received_date: new Date().toISOString().split("T")[0],
   ielts: false,
 };
 
@@ -110,7 +115,6 @@ const initialValidationState = {
 };
 
 const BasicInputElements = withSwal((props: any) => {
-
   const dispatch = useDispatch<AppDispatch>();
   const {
     swal,
@@ -132,7 +136,6 @@ const BasicInputElements = withSwal((props: any) => {
     console.log("userInfo", JSON.parse(userInfo)?.role);
   }
 
-
   //Table data
   const records: TableRecords[] = state;
 
@@ -142,16 +145,17 @@ const BasicInputElements = withSwal((props: any) => {
     null
   );
   const [selectedSource, setSelectedSource] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [formData, setFormData] = useState(initialState);
   const [uploadModal, setUploadModal] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState<any>([]);
 
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
-
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -425,17 +429,23 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <Link to="#" className="action-icon" onClick={() => {
-            handleUpdate(row.original);
-            openModalWithClass("modal-full-width")
-          }}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => {
+              handleUpdate(row.original);
+              openModalWithClass("modal-full-width");
+            }}
+          >
             <i className="mdi mdi-square-edit-outline"></i>
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => handleDelete(row.original.id)}
+          >
             <i className="mdi mdi-delete"></i>
           </Link>
         </div>
@@ -473,6 +483,76 @@ const BasicInputElements = withSwal((props: any) => {
     setValidationErrors(initialValidationState);
     if (isUpdate) {
       handleCancelUpdate();
+    }
+  };
+
+  console.log(process.env);
+  
+
+  const handleDownloadClick = () => {
+    const filePath = "/excel/jubeerich.xlsx";
+    const link = document.createElement("a");
+    link.download = "Student.xlsx";
+    link.href = process.env.REACT_APP_CLIENT_URL + filePath;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const downloadRjectedData = (file: any) => {
+    const filePath = file;
+    const link = document.createElement("a");
+    link.download = "rejected.xlsx";
+    link.href = process.env.REACT_APP_API_URL + filePath;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleOnFileUpload = (files: any) => {
+    setSelectedFile(files);
+  };
+
+  const handleFileUpload = async () => {
+    if (!selectedFile || selectedFile.length < 1 || !selectedFile[0]) {
+      showErrorAlert("Please select a file.");
+      return;
+    }
+
+    // Get the file extension
+    const fileExtension = selectedFile[0].name.split(".").pop()?.toLowerCase();
+
+    // Check if the file extension is '.xlsx'
+    if (fileExtension !== "xlsx") {
+      showErrorAlert("Please select a valid .xlsx file.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", selectedFile[0]);
+    setIsLoading(true);
+
+    try {
+      const { data } = await axios.post(`/excel_import`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log(data);
+      if (data.success) {
+        showSuccessAlert(data.message);
+        setIsLoading(false);
+        setSelectedFile([]);
+        toggleUploadModal();
+      } else {
+        showErrorAlert(data.message);
+        downloadRjectedData(data.invalidFileLink);
+      }
+    } catch (err) {
+      showErrorAlert(err);
+      setSelectedFile([]);
+      setIsLoading(false);
     }
   };
 
@@ -732,9 +812,7 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1 ms-2"
                 onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggle()]
-                    : toggle()
+                  isUpdate ? [handleCancelUpdate(), toggle()] : toggle()
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
@@ -752,55 +830,60 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
-        {userInfo && (JSON.parse(userInfo).role == 2) && <Modal
-          show={uploadModal}
-          onHide={toggleUploadModal}
-          dialogClassName="modal-dialog-centered"
-        >
-          <Modal.Header closeButton></Modal.Header>
-          <Modal.Body>
-            <p className="text-muted mb-1 font-small">
-              *Please upload the Excel file following the example format.
-            </p>
-            <FileUploader
-              // onFileUpload={handleOnFileUpload}
-              showPreview={true}
-            // selectedFile={selectedFile}
-            // setSelectedFile={setSelectedFile}
-            />
-            <div className="d-flex gap-2 justify-content-end mt-2">
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light"
-              // onClick={handleDownloadClick}
-              >
-                <i className="mdi mdi-download-circle"></i> Download Sample
-              </Button>
-              <Button
-                className="btn-sm btn-success waves-effect waves-light"
-              // onClick={handleFileUpload}
-              // disabled={isLoading}
-              >
-                <i className="mdi mdi-upload"></i> Upload File
-              </Button>
-
-            </div>
-          </Modal.Body>
-        </Modal>}
-
+        {userInfo && JSON.parse(userInfo).role == 2 && (
+          <Modal
+            show={uploadModal}
+            onHide={toggleUploadModal}
+            dialogClassName="modal-dialog-centered"
+          >
+            <Modal.Header closeButton></Modal.Header>
+            <Modal.Body>
+              <p className="text-muted mb-1 font-small">
+                *Please upload the Excel file following the example format.
+              </p>
+              <FileUploader
+                onFileUpload={handleOnFileUpload}
+                showPreview={true}
+                selectedFile={selectedFile}
+                setSelectedFile={setSelectedFile}
+              />
+              <div className="d-flex gap-2 justify-content-end mt-2">
+                <Button
+                  className="btn-sm btn-blue waves-effect waves-light"
+                  onClick={handleDownloadClick}
+                >
+                  <i className="mdi mdi-download-circle"></i> Download Sample
+                </Button>
+                <Button
+                  className="btn-sm btn-success waves-effect waves-light"
+                  onClick={handleFileUpload}
+                  disabled={isLoading}
+                >
+                  <i className="mdi mdi-upload"></i> Upload File
+                </Button>
+              </div>
+            </Modal.Body>
+          </Modal>
+        )}
 
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
               <div className="d-flex flex-wrap gap-2 justify-content-end">
-                {userInfo && (JSON.parse(userInfo).role == 2) && <Button
-                  className="btn-sm btn-blue waves-effect waves-light"
-                  onClick={toggleUploadModal}
-                >
-                  <i className="mdi mdi-upload"></i>  Import Leads
-                </Button>}
+                {userInfo && JSON.parse(userInfo).role == 2 && (
+                  <Button
+                    className="btn-sm btn-blue waves-effect waves-light"
+                    onClick={toggleUploadModal}
+                  >
+                    <i className="mdi mdi-upload"></i> Import Leads
+                  </Button>
+                )}
                 <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
-                  onClick={() => [openModalWithClass("modal-full-width"), handleResetValues()]}
+                  onClick={() => [
+                    openModalWithClass("modal-full-width"),
+                    handleResetValues(),
+                  ]}
                 >
                   <i className="mdi mdi-plus-circle"></i> Add lead
                 </Button>
@@ -815,7 +898,6 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
-
               />
             </Card.Body>
           </Card>
