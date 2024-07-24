@@ -13,7 +13,12 @@ import makeAnimated from "react-select/animated";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getRoles, addRoles, updateRoles, deleteRoles } from "../../redux/users/roles/actions";
+import {
+  getRoles,
+  addRoles,
+  updateRoles,
+  deleteRoles,
+} from "../../redux/users/roles/actions";
 import axios from "axios";
 import { AUTH_SESSION_KEY } from "../../constants";
 
@@ -83,7 +88,10 @@ const BasicInputElements = withSwal((props: any) => {
   console.log("formData ====>", formData);
 
   const validationSchema = yup.object().shape({
-    role_name: yup.string().required("Role name is required").min(2, "Role name must be at least 3 characters long"),
+    role_name: yup
+      .string()
+      .required("Role name is required")
+      .min(2, "Role name must be at least 3 characters long"),
     power_ids: yup
       .array()
       .of(yup.number().required())
@@ -100,10 +108,11 @@ const BasicInputElements = withSwal((props: any) => {
   const handleUpdate = (item: any) => {
     const selectedPowerIds = item?.power_ids.split(",").map((id: string) => ({
       value: id.replace(/\s/g, ""),
-      label: powersData?.find((power: any) => power.value == parseInt(id))?.label,
+      label: powersData?.find((power: any) => power.value == parseInt(id))
+        ?.label,
     }));
 
-    // setSelectedOptions(selectedPowerIds);
+    setSelectedOptions(selectedPowerIds);
 
     setFormData((prev) => ({
       ...prev,
@@ -173,7 +182,14 @@ const BasicInputElements = withSwal((props: any) => {
         // Handle update logic
         if (userInfo) {
           const { user_id } = JSON.parse(userInfo);
-          dispatch(updateRoles(formData.id, formData.role_name, formData.power_ids, user_id));
+          dispatch(
+            updateRoles(
+              formData.id,
+              formData.role_name,
+              formData.power_ids,
+              user_id
+            )
+          );
           setIsUpdate(false);
         }
       } else {
@@ -298,7 +314,11 @@ const BasicInputElements = withSwal((props: any) => {
   return (
     <>
       <Row className="justify-content-between px-2">
-        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
+        <Modal
+          show={responsiveModal}
+          onHide={toggleResponsiveModal}
+          dialogClassName="modal-dialog-centered"
+        >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Role Management</h4>
@@ -307,9 +327,16 @@ const BasicInputElements = withSwal((props: any) => {
               {/* <Col lg={4} className="bg-white p-3 max-height"> */}
               <Form.Group className="mb-3" controlId="role_name">
                 <Form.Label for="role_name">Role Name</Form.Label>
-                <Form.Control type="text" name="role_name" value={formData.role_name} onChange={handleInputChange} />
+                <Form.Control
+                  type="text"
+                  name="role_name"
+                  value={formData.role_name}
+                  onChange={handleInputChange}
+                />
                 {validationErrors.role_name && (
-                  <Form.Text className="text-danger">{validationErrors.role_name}</Form.Text>
+                  <Form.Text className="text-danger">
+                    {validationErrors.role_name}
+                  </Form.Text>
                 )}
               </Form.Group>
 
@@ -325,7 +352,9 @@ const BasicInputElements = withSwal((props: any) => {
                   error={validationErrors.power_ids}
                 />
                 {validationErrors.power_ids && (
-                  <Form.Text className="text-danger">{validationErrors.power_ids}</Form.Text>
+                  <Form.Text className="text-danger">
+                    {validationErrors.power_ids}
+                  </Form.Text>
                 )}
               </Form.Group>
               {/* </Col> */}
@@ -335,11 +364,20 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 ms-2"
-                onClick={() => (isUpdate ? [toggleResponsiveModal(), handleCancelUpdate()] : toggleResponsiveModal())}
+                onClick={() =>
+                  isUpdate
+                    ? [toggleResponsiveModal(), handleCancelUpdate()]
+                    : toggleResponsiveModal()
+                }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button type="submit" variant="success" id="button-addon2" className="mt-1 waves-effect waves-light">
+              <Button
+                type="submit"
+                variant="success"
+                id="button-addon2"
+                className="mt-1 waves-effect waves-light"
+              >
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -349,7 +387,10 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
+              <Button
+                className="btn-sm btn-blue waves-effect waves-light float-end"
+                onClick={toggleResponsiveModal}
+              >
                 <i className="mdi mdi-plus-circle"></i> Add Access Roles
               </Button>
               <h4 className="header-title mb-4">Manage Acces Roles</h4>
@@ -377,12 +418,14 @@ const AccessRoles = () => {
   const [powers, setPowers] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector((state: RootState) => ({
-    state: state.Roles.roles,
-    error: state.Roles.error,
-    loading: state.Roles.loading,
-    initialLoading: state.Roles.initialLoading,
-  }));
+  const { state, error, loading, initialLoading } = useSelector(
+    (state: RootState) => ({
+      state: state.Roles.roles,
+      error: state.Roles.error,
+      loading: state.Roles.loading,
+      initialLoading: state.Roles.initialLoading,
+    })
+  );
 
   useEffect(() => {
     dispatch(getRoles());
@@ -422,7 +465,12 @@ const AccessRoles = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} powersData={powers} error={error} loading={loading} />
+          <BasicInputElements
+            state={state}
+            powersData={powers}
+            error={error}
+            loading={loading}
+          />
         </Col>
       </Row>
     </React.Fragment>
