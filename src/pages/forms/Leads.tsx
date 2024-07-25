@@ -540,16 +540,22 @@ const BasicInputElements = withSwal((props: any) => {
       });
 
       console.log(data);
-      if (data.success) {
+      if (data.status) {
         showSuccessAlert(data.message);
+        dispatch(getLead());
         setIsLoading(false);
         setSelectedFile([]);
         toggleUploadModal();
       } else {
         showErrorAlert(data.message);
+        console.log("data.invalidFileLink", data.invalidFileLink);
+        
         downloadRjectedData(data.invalidFileLink);
+        setIsLoading(false);
       }
     } catch (err) {
+      console.log("error ==>", err);
+      
       showErrorAlert(err);
       setSelectedFile([]);
       setIsLoading(false);
