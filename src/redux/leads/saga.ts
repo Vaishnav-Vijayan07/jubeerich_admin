@@ -24,7 +24,7 @@ import {
 // constants
 import { LeadsActionTypes } from "./constants";
 import { AUTH_SESSION_KEY } from "../../constants";
-import { getLeadsByCreTl } from "../../helpers/api/leads";
+import { getAssignedLeadsByCreTl, getLeadsByCreTl } from "../../helpers/api/leads";
 
 interface LeadsData {
   payload: {
@@ -70,7 +70,6 @@ function* getLeads(): SagaIterator {
     if (userRole == 4) {
       response = yield call(getLeadsByCreTl);
     } else {
-      console.log("THIS");
       response = yield call(getLeadsApi);
     }
     data = response.data;
@@ -80,6 +79,23 @@ function* getLeads(): SagaIterator {
   } catch (error: any) {
     console.log("Error", error);
     yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS, error));
+  }
+}
+
+function* getAssignedLeads(): SagaIterator {
+  try {
+    let response = yield call(getAssignedLeadsByCreTl);
+    let data = response.data;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(
+      LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_ASSIGNED, { data })
+    );
+  } catch (error: any) {
+    console.log("Error", error);
+    yield put(
+      LeadsApiResponseError(LeadsActionTypes.GET_LEADS_ASSIGNED, error)
+    );
   }
 }
 
@@ -246,6 +262,10 @@ export function* watchGetLeads() {
   yield takeEvery(LeadsActionTypes.GET_LEADS, getLeads);
 }
 
+export function* watchGetAssignedLeads() {
+  yield takeEvery(LeadsActionTypes.GET_LEADS_ASSIGNED, getAssignedLeads);
+}
+
 export function* watchGetLeadUser() {
   yield takeEvery(LeadsActionTypes.GET_LEAD_USER, getLeadUsers);
 }
@@ -265,6 +285,7 @@ export function* watchDeleteLeads(): any {
 function* LeadsSaga() {
   yield all([
     fork(watchGetLeads),
+    fork(watchGetAssignedLeads),
     fork(watchaddLeads),
     fork(watchUpdateLeads),
     fork(watchDeleteLeads),

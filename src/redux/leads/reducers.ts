@@ -7,7 +7,7 @@ import { LeadsActionTypes } from "./constants";
 
 const INIT_STATE = {
   leads: [],
-  allCres : [],
+  allCres: [],
   initialloading: false,
   loading: false,
   error: {},
@@ -38,6 +38,7 @@ export interface LeadsActionType {
     | LeadsActionTypes.API_RESPONSE_SUCCESS
     | LeadsActionTypes.API_RESPONSE_ERROR
     | LeadsActionTypes.GET_LEADS
+    | LeadsActionTypes.GET_LEADS_ASSIGNED
     | LeadsActionTypes.GET_LEAD_USER
     | LeadsActionTypes.ADD_LEADS
     | LeadsActionTypes.UPDATE_LEADS
@@ -58,14 +59,22 @@ interface State {
 const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
   switch (action.type) {
     case LeadsActionTypes.API_RESPONSE_SUCCESS:
-      console.log(action.payload.data);
       switch (action.payload.actionType) {
-        
         case LeadsActionTypes.GET_LEADS: {
           return {
             ...state,
             leads: action.payload.data.data.formattedUserPrimaryInfos,
-            allCres:action.payload.data.data.allCres,
+            allCres: action.payload.data.data.allCres,
+            loading: false,
+            initialloading: false,
+          };
+        }
+
+        case LeadsActionTypes.GET_LEADS_ASSIGNED: {
+          return {
+            ...state,
+            leads: action.payload.data.data.formattedUserPrimaryInfos,
+            allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
           };
@@ -114,6 +123,14 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             initialloading: false,
           };
         }
+        case LeadsActionTypes.GET_LEADS_ASSIGNED: {
+          return {
+            ...state,
+            error: action.payload.error,
+            loading: false,
+            initialloading: false,
+          };
+        }
         case LeadsActionTypes.ADD_LEADS: {
           showErrorAlert(action.payload.error);
           return {
@@ -146,6 +163,8 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
       }
 
     case LeadsActionTypes.GET_LEADS:
+      return { ...state, loading: true, initialloading: true };
+    case LeadsActionTypes.GET_LEADS_ASSIGNED:
       return { ...state, loading: true, initialloading: true };
     case LeadsActionTypes.ADD_LEADS:
       return { ...state, loading: true };

@@ -13,6 +13,10 @@ function getLeadsByCreTl() {
   return api.get("/leads_cre_tl", {});
 }
 
+function getAssignedLeadsByCreTl() {
+  return api.get("/assigned_leads_cre_tl", {});
+}
+
 function getLeadUser() {
   return api.get("/leads_user", {});
 }
@@ -68,4 +72,4 @@ function deleteLeads(id: string) {
   return api.delete(`${baseUrl}/${id}`, {});
 }
 
-export { getLeads, getLeadUser, addLeads, updateLeads, deleteLeads, getLeadsByCreTl };
+export { getLeads, getLeadUser, addLeads, updateLeads, deleteLeads, getLeadsByCreTl,getAssignedLeadsByCreTl };

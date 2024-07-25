@@ -3,7 +3,7 @@ import { Route, Navigate, RouteProps } from "react-router-dom";
 
 // components
 import PrivateRoute from "./PrivateRoute";
-// import Root from './Root';
+import { AUTH_SESSION_KEY } from "../constants";
 
 // lazy load all the views
 
@@ -53,6 +53,7 @@ const Region = React.lazy(() => import("../pages/forms/Region"));
 const Flag = React.lazy(() => import("../pages/forms/Flag"));
 const MaritalStatus = React.lazy(() => import("../pages/forms/MaritalStatus"));
 const Leads = React.lazy(() => import("../pages/forms/Leads"));
+const AssignedLeads = React.lazy(() => import("../pages/forms/AssignedLeads"));
 const Country = React.lazy(() => import("../pages/forms/Country"));
 const Branches = React.lazy(() => import("../pages/forms/Branches"));
 const University = React.lazy(() => import("../pages/forms/University"));
@@ -73,6 +74,8 @@ const AdvancedTables = React.lazy(() => import("../pages/tables/Advanced"));
 const ForbiddenPage = React.lazy(() => import("../pages/errors/ForbiddenPage"));
 
 const ReportsPage = React.lazy(() => import("../pages/reports"));
+
+
 
 export interface RoutesProps {
   path: RouteProps["path"];
@@ -160,6 +163,18 @@ const leadRoutes = {
         <PrivateRoute
           roles={["Add Lead", "View Task", "Monitor"]}
           component={Leads}
+        />
+      ),
+      route: PrivateRoute,
+    },
+    {
+      path: "leads/assigned/manage",
+      name: "Leads",
+      // element: <CRMLeadsList />,
+      element: (
+        <PrivateRoute
+          roles={["Add Lead"]}
+          component={AssignedLeads}
         />
       ),
       route: PrivateRoute,

@@ -61,6 +61,14 @@ const MENU_ITEMS: MenuItemTypes[] = [
     url: "/leads/manage",
     roles: ["Add Lead"],
   },
+  {
+    key: "leads",
+    label: "Assigned Leads",
+    isTitle: false,
+    icon: "award",
+    url: "/leads/assigned/manage",
+    roles: ["Add Lead"],
+  },
 
   {
     key: "tasks",
