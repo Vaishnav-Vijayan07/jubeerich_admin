@@ -24,6 +24,7 @@ import {
 // constants
 import { LeadsActionTypes } from "./constants";
 import { AUTH_SESSION_KEY } from "../../constants";
+import { getLeadsByCreTl } from "../../helpers/api/leads";
 
 interface LeadsData {
   payload: {
@@ -54,10 +55,25 @@ const api = new APICore();
  * Login the user
  * @param {*} payload - username and password
  */
+
+let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+let userRole: any;
+if (userInfo) {
+  userRole = JSON.parse(userInfo)?.role;
+}
+
 function* getLeads(): SagaIterator {
   try {
-    const response = yield call(getLeadsApi);
-    const data = response.data;
+    let response;
+    let data;
+
+    if (userRole == 4) {
+      response = yield call(getLeadsByCreTl);
+    } else {
+      console.log("THIS");
+      response = yield call(getLeadsApi);
+    }
+    data = response.data;
 
     // NOTE - You can change this according to response format from your api
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS, { data }));
@@ -103,7 +119,7 @@ function* addLeads({
   },
 }: LeadsData): SagaIterator {
   console.log("add leads");
-  
+
   try {
     const response = yield call(addLeadsApi, {
       full_name,

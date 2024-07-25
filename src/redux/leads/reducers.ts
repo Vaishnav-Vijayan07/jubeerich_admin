@@ -7,6 +7,7 @@ import { LeadsActionTypes } from "./constants";
 
 const INIT_STATE = {
   leads: [],
+  allCres : [],
   initialloading: false,
   loading: false,
   error: {},
@@ -43,7 +44,7 @@ export interface LeadsActionType {
     | LeadsActionTypes.DELETE_LEADS;
   payload: {
     actionType?: string;
-    data?: LeadsData | {};
+    data?: any;
     error?: string;
   };
 }
@@ -54,14 +55,17 @@ interface State {
   value?: boolean;
 }
 
-const Leads = (state: State = INIT_STATE, action: LeadsActionType): any => {
+const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
   switch (action.type) {
     case LeadsActionTypes.API_RESPONSE_SUCCESS:
+      console.log(action.payload.data);
       switch (action.payload.actionType) {
+        
         case LeadsActionTypes.GET_LEADS: {
           return {
             ...state,
-            leads: action.payload.data,
+            leads: action.payload.data.data.formattedUserPrimaryInfos,
+            allCres:action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
           };

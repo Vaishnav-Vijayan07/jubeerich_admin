@@ -9,6 +9,10 @@ function getLeads() {
   return api.get(`${baseUrl}`, {});
 }
 
+function getLeadsByCreTl() {
+  return api.get("/leads_cre_tl", {});
+}
+
 function getLeadUser() {
   return api.get("/leads_user", {});
 }
@@ -64,4 +68,4 @@ function deleteLeads(id: string) {
   return api.delete(`${baseUrl}/${id}`, {});
 }
 
-export { getLeads, getLeadUser, addLeads, updateLeads, deleteLeads };
+export { getLeads, getLeadUser, addLeads, updateLeads, deleteLeads, getLeadsByCreTl };

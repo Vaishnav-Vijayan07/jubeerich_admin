@@ -41,6 +41,7 @@ import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { getLeads } from "../../helpers";
 
 interface OptionType {
   value: string;
@@ -122,6 +123,8 @@ const BasicInputElements = withSwal((props: any) => {
     country,
     source,
     categories,
+    user,
+    cres,
     // regions,
     office,
     channels,
@@ -130,11 +133,6 @@ const BasicInputElements = withSwal((props: any) => {
   } = props;
 
   //fetch token from session storage
-  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-
-  if (userInfo) {
-    console.log("userInfo", JSON.parse(userInfo)?.role);
-  }
 
   //Table data
   const records: TableRecords[] = state;
@@ -145,6 +143,7 @@ const BasicInputElements = withSwal((props: any) => {
     null
   );
   const [selectedSource, setSelectedSource] = useState<any>(null);
+  const [selectedValues, setSelectedValues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
@@ -315,8 +314,8 @@ const BasicInputElements = withSwal((props: any) => {
 
       //   // Validation passed, handle form submission
 
-      if (userInfo) {
-        const { user_id } = JSON.parse(userInfo);
+      if (user) {
+        const { user_id } = user;
         if (isUpdate) {
           // Handle update logic
           dispatch(
@@ -422,6 +421,15 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "source_name",
       sort: false,
     },
+    ...(user?.role == 4
+      ? [
+          {
+            Header: "Assigned CRE",
+            accessor: "cre_name",
+            sort: false,
+          },
+        ]
+      : []),
     {
       Header: "Actions",
       accessor: "",
@@ -486,8 +494,24 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  console.log(process.env);
-  
+  const handleSelectedValues = (values: any) => {
+    setSelectedValues(values);
+  };
+
+  const handleAssignBulk = async (user_ids: any, cre_id: any) => {
+    if (user_ids.length > 0) {
+      try {
+        const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
+
+        if (data.status) {
+          dispatch(getLead());
+          showSuccessAlert("Bulk assignment successful.");
+        }
+      } catch (error) {
+        showErrorAlert(error);
+      }
+    }
+  };
 
   const handleDownloadClick = () => {
     const filePath = "/excel/jubeerich.xlsx";
@@ -830,7 +854,7 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
-        {userInfo && JSON.parse(userInfo).role == 2 && (
+        {user?.role == 2 && (
           <Modal
             show={uploadModal}
             onHide={toggleUploadModal}
@@ -870,7 +894,7 @@ const BasicInputElements = withSwal((props: any) => {
           <Card className="bg-white">
             <Card.Body>
               <div className="d-flex flex-wrap gap-2 justify-content-end">
-                {userInfo && JSON.parse(userInfo).role == 2 && (
+                {user.role == 2 && (
                   <Button
                     className="btn-sm btn-blue waves-effect waves-light"
                     onClick={toggleUploadModal}
@@ -878,6 +902,33 @@ const BasicInputElements = withSwal((props: any) => {
                     <i className="mdi mdi-upload"></i> Import Leads
                   </Button>
                 )}
+
+                {user?.role == 4 && (
+                  <Dropdown className="btn-group">
+                    <Dropdown.Toggle
+                      disabled={selectedValues?.length > 0 ? false : true}
+                      variant="light"
+                      className="table-action-btn btn-sm btn-blue"
+                    >
+                      <i className="mdi mdi-account-plus"></i> Assign CRE's
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu
+                      style={{ maxHeight: "150px", overflow: "auto" }}
+                    >
+                      {cres?.map((item: any) => (
+                        <Dropdown.Item
+                          key={item.id}
+                          onClick={() =>
+                            handleAssignBulk(selectedValues, item.id)
+                          }
+                        >
+                          {item.name}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                )}
+
                 <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
                   onClick={() => [
@@ -896,8 +947,10 @@ const BasicInputElements = withSwal((props: any) => {
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
+                isSelectable={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
+                onSelect={handleSelectedValues}
               />
             </Card.Body>
           </Card>
@@ -910,7 +963,9 @@ const BasicInputElements = withSwal((props: any) => {
 const Leads = () => {
   const dispatch = useDispatch<AppDispatch>();
   const {
+    user,
     state,
+    cres,
     error,
     loading,
     initialLoading,
@@ -921,19 +976,18 @@ const Leads = () => {
     channels,
     office,
   } = useSelector((state: RootState) => ({
-    state: state.Leads.leads.data?.data,
+    user: state.Auth.user,
+    state: state.Leads.leads,
+    cres: state.Leads.allCres,
     error: state.Leads.error,
     loading: state.Leads.loading,
     initialLoading: state.Leads.initialloading,
     country: state.Country.countries,
     source: state.Source.sources.data,
     categories: state.Category.category.data,
-    // regions: state.Region.regions,
     channels: state.Channels.channels.data,
     office: state.OfficeTypes.officeTypes,
   }));
-
-  console.log(state);
 
   useEffect(() => {
     dispatch(getCountry());
@@ -1009,6 +1063,8 @@ const Leads = () => {
             country={countryData || []}
             source={sourceData || []}
             categories={categoriesData || []}
+            user={user || null}
+            cres={cres || []}
             // regions={regionsData || []}
             channels={channelsData || []}
             office={officeData || []}
