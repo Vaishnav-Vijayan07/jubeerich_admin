@@ -4,6 +4,7 @@ export interface MenuItemTypes {
   isTitle?: boolean;
   icon?: string;
   url?: string;
+  only?: any,
   roles?: Array<string>;
   badge?: {
     variant: string;
@@ -67,7 +68,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "award",
     url: "/leads/assigned/manage",
-    roles: ["Add Lead"],
+    roles: ["Add Lead","assigned_lead"],
   },
 
   {

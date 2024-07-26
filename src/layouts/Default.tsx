@@ -6,8 +6,16 @@ import { RootState } from "../redux/store";
 
 // utils
 import { changeHTMLAttribute } from "../utils";
+import { Spinner } from "react-bootstrap";
 
-const loading = () => <div className="">Loading...</div>;
+const loading = () => {
+  return (
+    <Spinner
+      animation="border"
+      style={{ position: "absolute", top: "50%", left: "50%" }}
+    />
+  );
+};
 
 interface DefaultLayoutProps {
   layout: {

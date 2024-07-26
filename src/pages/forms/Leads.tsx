@@ -590,7 +590,7 @@ const BasicInputElements = withSwal((props: any) => {
     if (selectedValues.length > 0) {
       try {
         const { data } = await axios.post("/auto_assign", {
-          user_ids: selectedValues,
+          leads_ids: selectedValues,
         });
         if (data.status) {
           dispatch(getLead());
