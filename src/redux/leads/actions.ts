@@ -6,6 +6,7 @@ export interface LeadsActionType {
     | LeadsActionTypes.API_RESPONSE_SUCCESS
     | LeadsActionTypes.API_RESPONSE_ERROR
     | LeadsActionTypes.GET_LEADS
+    | LeadsActionTypes.GET_LEADS_ASSIGNED
     | LeadsActionTypes.GET_LEAD_USER
     | LeadsActionTypes.ADD_LEADS
     | LeadsActionTypes.UPDATE_LEADS
@@ -53,6 +54,11 @@ export const LeadsApiResponseError = (
 
 export const getLead = (): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS,
+  payload: {},
+});
+
+export const getLeadAssigned = (): LeadsActionType => ({
+  type: LeadsActionTypes.GET_LEADS_ASSIGNED,
   payload: {},
 });
 

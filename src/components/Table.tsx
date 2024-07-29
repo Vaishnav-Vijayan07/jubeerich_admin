@@ -105,6 +105,7 @@ interface TableProps {
   searchBoxClass?: string;
   tableClass?: string;
   theadClass?: string;
+  onSelect?: any;
 }
 
 const Table = (props: TableProps) => {
@@ -114,7 +115,6 @@ const Table = (props: TableProps) => {
   const isSelectable = props["isSelectable"] || false;
   const isExpandable = props["isExpandable"] || false;
   const sizePerPageList = props["sizePerPageList"] || [];
-  
 
   let otherProps: any = {};
 
@@ -211,6 +211,16 @@ const Table = (props: TableProps) => {
 
   let rows = pagination ? dataTable.page : dataTable.rows;
 
+  const getSelectedValues = () => {
+    return dataTable?.selectedFlatRows.map((d: any) => d.original.id);
+  };
+
+  useEffect(() => {
+    if (props.onSelect) {
+      props.onSelect(getSelectedValues());
+    }
+  }, [dataTable?.state?.selectedRowIds]);
+
   return (
     <>
       {isSearchable && (
@@ -238,7 +248,7 @@ const Table = (props: TableProps) => {
                     {...column.getHeaderProps(
                       column.sort && column.getSortByToggleProps()
                     )}
-                    className={classNames("text-secondary",{
+                    className={classNames("text-secondary", {
                       sorting_desc: column.isSortedDesc === true,
                       sorting_asc: column.isSortedDesc === false,
                       sortable: column.sort === true,
@@ -273,11 +283,11 @@ const Table = (props: TableProps) => {
             })}
           </tbody>
         </table>
-      {rows.length === 0 && (
-        <div className="text-center">
-          <p>No data found...</p>
-        </div>
-      )}
+        {rows.length === 0 && (
+          <div className="text-center">
+            <p>No data found...</p>
+          </div>
+        )}
       </div>
       {pagination && (
         <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />

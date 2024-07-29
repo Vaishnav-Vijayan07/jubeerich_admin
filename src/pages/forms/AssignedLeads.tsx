@@ -28,6 +28,7 @@ import {
   getCategory,
   getChannel,
   getLead,
+  getLeadAssigned,
   updateLeads,
 } from "../../redux/actions";
 import Select from "react-select";
@@ -39,7 +40,7 @@ import {
 import { getCountry } from "../../redux/country/actions";
 import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import FileUploader from "../../components/FileUploader";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { getLeads } from "../../helpers";
 
@@ -163,6 +164,8 @@ const BasicInputElements = withSwal((props: any) => {
   const [validationErrors, setValidationErrors] = useState(
     initialValidationState
   );
+
+  const { pathname } = useLocation();
 
   const validationSchema = yup.object().shape({
     full_name: yup
@@ -498,6 +501,21 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedValues(values);
   };
 
+  const handleAssignBulk = async (user_ids: any, cre_id: any) => {
+    if (user_ids.length > 0) {
+      try {
+        const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
+
+        if (data.status) {
+          dispatch(getLeadAssigned());
+          showSuccessAlert("Bulk assignment successful.");
+        }
+      } catch (error) {
+        showErrorAlert(error);
+      }
+    }
+  };
+
   const handleDownloadClick = () => {
     const filePath = "/excel/jubeerich.xlsx";
     const link = document.createElement("a");
@@ -568,37 +586,6 @@ const BasicInputElements = withSwal((props: any) => {
       showErrorAlert(err);
       setSelectedFile([]);
       setIsLoading(false);
-    }
-  };
-
-  const handleAssignBulk = async (user_ids: any, cre_id: any) => {
-    if (user_ids.length > 0) {
-      try {
-        const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
-
-        if (data.status) {
-          dispatch(getLead());
-          showSuccessAlert("Bulk assignment successful.");
-        }
-      } catch (error) {
-        showErrorAlert(error);
-      }
-    }
-  };
-
-  const handleAutoAssign = async () => {
-    if (selectedValues.length > 0) {
-      try {
-        const { data } = await axios.post("/auto_assign", {
-          leads_ids: selectedValues,
-        });
-        if (data.status) {
-          dispatch(getLead());
-          showSuccessAlert("Bulk assignment successful.");
-        }
-      } catch (error) {
-        showErrorAlert(error);
-      }
     }
   };
 
@@ -926,41 +913,32 @@ const BasicInputElements = withSwal((props: any) => {
                 )}
 
                 {user?.role == 4 && (
-                  <>
-                    <Dropdown className="btn-group">
-                      <Dropdown.Toggle
-                        disabled={selectedValues?.length > 0 ? false : true}
-                        variant="light"
-                        className="table-action-btn btn-sm btn-blue"
-                      >
-                        <i className="mdi mdi-account-plus"></i> Assign CRE's
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu
-                        style={{ maxHeight: "150px", overflow: "auto" }}
-                      >
-                        {cres?.map((item: any) => (
-                          <Dropdown.Item
-                            key={item.id}
-                            onClick={() =>
-                              handleAssignBulk(selectedValues, item.id)
-                            }
-                          >
-                            {item.name}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
-
-                    <Button
-                      className="btn-sm btn-blue waves-effect waves-light float-end"
-                      onClick={handleAutoAssign}
+                  <Dropdown className="btn-group">
+                    <Dropdown.Toggle
+                      disabled={selectedValues?.length > 0 ? false : true}
+                      variant="light"
+                      className="table-action-btn btn-sm btn-blue"
                     >
-                      <i className="mdi mdi-plus-circle"></i> Auto Assign
-                    </Button>
-                  </>
+                      <i className="mdi mdi-account-plus"></i> Assign CRE's
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu
+                      style={{ maxHeight: "150px", overflow: "auto" }}
+                    >
+                      {cres?.map((item: any) => (
+                        <Dropdown.Item
+                          key={item.id}
+                          onClick={() =>
+                            handleAssignBulk(selectedValues, item.id)
+                          }
+                        >
+                          {item.name}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
                 )}
 
-                <Button
+                {/* <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
                   onClick={() => [
                     openModalWithClass("modal-full-width"),
@@ -968,7 +946,7 @@ const BasicInputElements = withSwal((props: any) => {
                   ]}
                 >
                   <i className="mdi mdi-plus-circle"></i> Add lead
-                </Button>
+                </Button> */}
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
               <Table
@@ -991,7 +969,7 @@ const BasicInputElements = withSwal((props: any) => {
   );
 });
 
-const Leads = () => {
+const AssignedLeads = () => {
   const dispatch = useDispatch<AppDispatch>();
   const {
     user,
@@ -1024,7 +1002,7 @@ const Leads = () => {
     dispatch(getCountry());
     dispatch(getCategory());
     dispatch(getChannel());
-    dispatch(getLead());
+    dispatch(getLeadAssigned());
     dispatch(getSource());
     dispatch(getOfficeTypeData());
   }, [dispatch]);
@@ -1083,7 +1061,7 @@ const Leads = () => {
       <PageTitle
         breadCrumbItems={[
           { label: "Master", path: "/master/university" },
-          { label: "Leads", path: "/master/university", active: true },
+          { label: "Assigned Leads", path: "/master/university", active: true },
         ]}
         title={"Leads"}
       />
@@ -1107,4 +1085,4 @@ const Leads = () => {
     </React.Fragment>
   );
 };
-export default Leads;
+export default AssignedLeads;

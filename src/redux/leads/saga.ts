@@ -24,6 +24,7 @@ import {
 // constants
 import { LeadsActionTypes } from "./constants";
 import { AUTH_SESSION_KEY } from "../../constants";
+import { getAssignedLeadsByCreTl, getLeadsByCreTl } from "../../helpers/api/leads";
 
 interface LeadsData {
   payload: {
@@ -54,16 +55,47 @@ const api = new APICore();
  * Login the user
  * @param {*} payload - username and password
  */
+
+let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+let userRole: any;
+if (userInfo) {
+  userRole = JSON.parse(userInfo)?.role;
+}
+
 function* getLeads(): SagaIterator {
   try {
-    const response = yield call(getLeadsApi);
-    const data = response.data;
+    let response;
+    let data;
+
+    if (userRole == 4) {
+      response = yield call(getLeadsByCreTl);
+    } else {
+      response = yield call(getLeadsApi);
+    }
+    data = response.data;
 
     // NOTE - You can change this according to response format from your api
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS, { data }));
   } catch (error: any) {
     console.log("Error", error);
     yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS, error));
+  }
+}
+
+function* getAssignedLeads(): SagaIterator {
+  try {
+    let response = yield call(getAssignedLeadsByCreTl);
+    let data = response.data;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(
+      LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_ASSIGNED, { data })
+    );
+  } catch (error: any) {
+    console.log("Error", error);
+    yield put(
+      LeadsApiResponseError(LeadsActionTypes.GET_LEADS_ASSIGNED, error)
+    );
   }
 }
 
@@ -103,7 +135,7 @@ function* addLeads({
   },
 }: LeadsData): SagaIterator {
   console.log("add leads");
-  
+
   try {
     const response = yield call(addLeadsApi, {
       full_name,
@@ -230,6 +262,10 @@ export function* watchGetLeads() {
   yield takeEvery(LeadsActionTypes.GET_LEADS, getLeads);
 }
 
+export function* watchGetAssignedLeads() {
+  yield takeEvery(LeadsActionTypes.GET_LEADS_ASSIGNED, getAssignedLeads);
+}
+
 export function* watchGetLeadUser() {
   yield takeEvery(LeadsActionTypes.GET_LEAD_USER, getLeadUsers);
 }
@@ -249,6 +285,7 @@ export function* watchDeleteLeads(): any {
 function* LeadsSaga() {
   yield all([
     fork(watchGetLeads),
+    fork(watchGetAssignedLeads),
     fork(watchaddLeads),
     fork(watchUpdateLeads),
     fork(watchDeleteLeads),
