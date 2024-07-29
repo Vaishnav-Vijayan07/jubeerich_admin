@@ -499,9 +499,9 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleDownloadClick = () => {
-    const filePath = "/excel/jubeerich.xlsx";
+    const filePath = "/excel/sample.xlsx";
     const link = document.createElement("a");
-    link.download = "Student.xlsx";
+    link.download = "sample.xlsx";
     link.href = process.env.REACT_APP_CLIENT_URL + filePath;
     document.body.appendChild(link);
     link.click();
