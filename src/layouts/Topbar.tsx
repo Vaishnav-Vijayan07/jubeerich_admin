@@ -149,7 +149,7 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
   const api = new APICore();
   const loggedInUser = api.getLoggedInUser();
 
-  const { user_name, avatar, name, branches } = loggedInUser;
+  const { user_name, avatar, name, branches, role_name } = loggedInUser;
 
   const navbarCssClasses: string = navCssClasses || "";
   const containerCssClasses: string = !hideLogo ? "container-fluid" : "";
@@ -278,6 +278,7 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
             <button className="button-toggle-menu" onClick={handleLeftMenuCallBack}>
               <i className="mdi mdi-menu" />
             </button>
+            <span>{role_name}</span>
 
             {/* <div className="dropdown d-none d-xl-block">
               <CreateNew otherOptions={otherOptions} />
