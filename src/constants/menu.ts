@@ -68,7 +68,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "award",
     url: "/leads/assigned/manage",
-    roles: ["Add Lead","assigned_lead"],
+    roles: ["Assigned Leads"],
   },
 
   {

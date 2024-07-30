@@ -173,7 +173,7 @@ const leadRoutes = {
       // element: <CRMLeadsList />,
       element: (
         <PrivateRoute
-          roles={["Add Lead"]}
+          roles={["Assigned Leads"]}
           component={AssignedLeads}
         />
       ),
