@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Button,
   Card,
   Col,
   Dropdown,
@@ -22,11 +23,15 @@ import { getMaritalStatus } from "../../../../redux/marital_status/actions";
 import axios from "axios";
 import { showSuccessAlert } from "../../../../constants";
 
-const StudentDetails = ({ studentId, taskDetails }: any) => {
+const StudentDetails = ({ studentId, taskId, }: any) => {
   const [basicData, setBasicData] = useState<any>([]);
   const [status, setStatus] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
+
+
+  const [taskDetails, setTaskDetails] = useState<any>({})
+
   const dispatch = useDispatch();
   const { Countries, OfficeTypes, MaritalStatus, user } = useSelector(
     (state: RootState) => ({
@@ -68,6 +73,20 @@ const StudentDetails = ({ studentId, taskDetails }: any) => {
     setRefresh(!refresh);
   };
 
+  const getTaskDetails = () => {
+    axios.get(`tasks/${taskId}`).then((res) => {
+      console.log("taskId =>", res.data);
+      setTaskDetails(res.data.data)
+    }).catch((err) => {
+      console.log("err", err);
+    })
+  }
+
+  useEffect(() => {
+    getTaskDetails()
+  }, [])
+
+
   useEffect(() => {
     if (user) {
       getRoleBasedStatus(user.role);
@@ -85,6 +104,23 @@ const StudentDetails = ({ studentId, taskDetails }: any) => {
     dispatch(getOfficeTypeData());
     dispatch(getMaritalStatus());
   }, []);
+
+  // Finish Task
+  const handleFinishTask = () => {
+
+    axios.put("finish_task", {
+      isCompleted: true,
+      id: taskId
+    }).then((res) => {
+      console.log("res ==>", res.data);
+      
+      getTaskDetails()
+      showSuccessAlert(res.data.message)
+    }).catch((err => {
+      console.log(err);
+
+    }))
+  }
 
   if (loading) {
     return (
@@ -104,7 +140,16 @@ const StudentDetails = ({ studentId, taskDetails }: any) => {
               <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
                 <span>{"JBR" + taskDetails?.id}</span>
               </div>
-              <Col className="d-flex gap-2 float-end"></Col>
+              <Col className="d-flex gap-2 float-end">
+                {/* <i className="mdi mdi-close font-18 cursor-pointer" onClick={handleClose}></i> */}
+
+                <Button className="d-flex align-items-center btn-light" disabled={taskDetails?.isCompleted ? true : false} onClick={handleFinishTask}>
+                  <div className="round-circle" />
+                  {taskDetails?.isCompleted ? "Finished" : "Finish"}
+
+                  {console.log("taskDetails?.isCompleted ======>", taskDetails)}
+                </Button>
+              </Col>
 
               <div className="clearfix"></div>
 
@@ -301,7 +346,7 @@ const StudentDetails = ({ studentId, taskDetails }: any) => {
                 <Dropdown.Toggle
                   className="cursor-pointer"
                   variant="light"
-                  // disabled={!StudentData?.status}
+                // disabled={!StudentData?.status}
                 >
                   {basicData?.status?.status_name
                     ? basicData?.status?.status_name

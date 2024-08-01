@@ -98,7 +98,7 @@ const TaskList = () => {
           {selectedTask && (
             <StudentDetails
               studentId={selectedTask?.studentId}
-              taskDetails={selectedTask}
+              taskId={selectedTask?.id}
             />
           )}
         </Col>

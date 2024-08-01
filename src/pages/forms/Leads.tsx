@@ -28,6 +28,7 @@ import {
   getCategory,
   getChannel,
   getLead,
+  getLeadsTL,
   updateLeads,
 } from "../../redux/actions";
 import Select from "react-select";
@@ -116,6 +117,11 @@ const initialValidationState = {
 };
 
 const BasicInputElements = withSwal((props: any) => {
+  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  let userRole: any;
+  if (userInfo) {
+    userRole = JSON.parse(userInfo)?.role;
+  }
   const dispatch = useDispatch<AppDispatch>();
   const {
     swal,
@@ -423,12 +429,12 @@ const BasicInputElements = withSwal((props: any) => {
     },
     ...(user?.role == 4
       ? [
-          {
-            Header: "Assigned CRE",
-            accessor: "cre_name",
-            sort: false,
-          },
-        ]
+        {
+          Header: "Assigned CRE",
+          accessor: "cre_name",
+          sort: false,
+        },
+      ]
       : []),
     {
       Header: "Actions",
@@ -558,13 +564,12 @@ const BasicInputElements = withSwal((props: any) => {
       } else {
         showErrorAlert(data.message);
         console.log("data.invalidFileLink", data.invalidFileLink);
-
+        setSelectedFile([]);
         downloadRjectedData(data.invalidFileLink);
         setIsLoading(false);
       }
     } catch (err) {
       console.log("error ==>", err);
-
       showErrorAlert(err);
       setSelectedFile([]);
       setIsLoading(false);
@@ -577,6 +582,11 @@ const BasicInputElements = withSwal((props: any) => {
         const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
 
         if (data.status) {
+          if (userRole == 4) {
+            dispatch(getLeadsTL());
+          } else {
+            dispatch(getLead());
+          }
           dispatch(getLead());
           showSuccessAlert("Bulk assignment successful.");
         }
@@ -593,7 +603,11 @@ const BasicInputElements = withSwal((props: any) => {
           leads_ids: selectedValues,
         });
         if (data.status) {
-          dispatch(getLead());
+          if (userRole == 4) {
+            dispatch(getLeadsTL());
+          } else {
+            dispatch(getLead());
+          }
           showSuccessAlert("Bulk assignment successful.");
         }
       } catch (error) {
@@ -971,7 +985,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Button>
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
-              <Table
+              {userRole == 4 ? <Table
                 columns={columns}
                 data={records ? records : []}
                 pageSize={5}
@@ -982,7 +996,16 @@ const BasicInputElements = withSwal((props: any) => {
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
                 onSelect={handleSelectedValues}
-              />
+              /> : <Table
+                columns={columns}
+                data={records ? records : []}
+                pageSize={5}
+                sizePerPageList={sizePerPageList}
+                isSortable={true}
+                pagination={true}
+                isSearchable={true}
+                tableClass="table-striped dt-responsive nowrap w-100"
+              />}
             </Card.Body>
           </Card>
         </Col>
@@ -992,6 +1015,11 @@ const BasicInputElements = withSwal((props: any) => {
 });
 
 const Leads = () => {
+  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  let userRole: any;
+  if (userInfo) {
+    userRole = JSON.parse(userInfo)?.role;
+  }
   const dispatch = useDispatch<AppDispatch>();
   const {
     user,
@@ -1024,10 +1052,18 @@ const Leads = () => {
     dispatch(getCountry());
     dispatch(getCategory());
     dispatch(getChannel());
-    dispatch(getLead());
     dispatch(getSource());
     dispatch(getOfficeTypeData());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (userRole == 4) {
+      dispatch(getLeadsTL());
+    } else {
+      dispatch(getLead());
+    }
+  }, [dispatch, userRole])
+
 
   const countryData = useMemo(() => {
     if (!country) return [];

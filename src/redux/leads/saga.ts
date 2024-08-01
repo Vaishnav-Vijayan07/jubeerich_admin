@@ -19,6 +19,7 @@ import {
   LeadsApiResponseError,
   getLead,
   getLeadUser,
+  getLeadsTL,
 } from "./actions";
 
 // constants
@@ -66,12 +67,7 @@ function* getLeads(): SagaIterator {
   try {
     let response;
     let data;
-
-    if (userRole == 4) {
-      response = yield call(getLeadsByCreTl);
-    } else {
-      response = yield call(getLeadsApi);
-    }
+    response = yield call(getLeadsApi);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -79,6 +75,22 @@ function* getLeads(): SagaIterator {
   } catch (error: any) {
     console.log("Error", error);
     yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS, error));
+  }
+}
+
+function* getLeadsForTL(): SagaIterator {
+  try {
+    let response;
+    let data;
+    console.log("cre_tl");
+    response = yield call(getLeadsByCreTl);
+    data = response.data;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_TL, { data }));
+  } catch (error: any) {
+    console.log("Error", error);
+    yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS_TL, error));
   }
 }
 
@@ -158,17 +170,19 @@ function* addLeads({
     const data = response.data.message;
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));
-    // let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-    // if (userInfo) {
-    //   const { user_id } = JSON.parse(userInfo);
 
-    //   if (user_id == 1) {
-    //     yield put(getLead());
-    //   } else {
-    //     yield put(getLeadUser());
-    //   }
-    // }
-    yield put(getLead());
+    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+    console.log("userInfo ===>", userInfo);
+
+    if (userInfo) {
+      const { role } = JSON.parse(userInfo);
+
+      if (role == 4) {
+        yield put(getLeadsTL());
+      } else {
+        yield put(getLead());
+      }
+    }
   } catch (error: any) {
     console.log("err", error);
 
@@ -219,17 +233,21 @@ function* updateLeads({
     const data = response.data.message;
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.UPDATE_LEADS, data));
-    // let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-    // if (userInfo) {
-    //   const { user_id } = JSON.parse(userInfo);
 
-    //   if (user_id == 1) {
-    //     yield put(getLead());
-    //   } else {
-    //     yield put(getLeadUser());
-    //   }
-    // }
-    yield put(getLead());
+    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+
+    console.log("userInfo ===>", userInfo);
+
+    if (userInfo) {
+      const { role } = JSON.parse(userInfo);
+
+      if (role == 4) {
+        yield put(getLeadsTL());
+      } else {
+        yield put(getLead());
+      }
+    }
+
   } catch (error: any) {
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.UPDATE_LEADS, error));
   }
@@ -241,18 +259,19 @@ function* deleteLeads({ payload: { id } }: LeadsData): SagaIterator {
     const data = response.data.message;
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.DELETE_LEADS, data));
-    // let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
-    // if (userInfo) {
-    //   const { user_id } = JSON.parse(userInfo);
+    console.log("userInfo ===>", userInfo);
 
-    //   if (user_id == 1) {
-    //     yield put(getLead());
-    //   } else {
-    //     yield put(getLeadUser());
-    //   }
-    // }
-    yield put(getLead());
+    if (userInfo) {
+      const { role } = JSON.parse(userInfo);
+
+      if (role == 4) {
+        yield put(getLeadsTL());
+      } else {
+        yield put(getLead());
+      }
+    }
   } catch (error: any) {
     yield put(LeadsApiResponseError(LeadsActionTypes.DELETE_LEADS, error));
   }
@@ -260,6 +279,10 @@ function* deleteLeads({ payload: { id } }: LeadsData): SagaIterator {
 
 export function* watchGetLeads() {
   yield takeEvery(LeadsActionTypes.GET_LEADS, getLeads);
+}
+
+export function* watchGetLeadsForTL() {
+  yield takeEvery(LeadsActionTypes.GET_LEADS_TL, getLeadsForTL);
 }
 
 export function* watchGetAssignedLeads() {
@@ -285,6 +308,7 @@ export function* watchDeleteLeads(): any {
 function* LeadsSaga() {
   yield all([
     fork(watchGetLeads),
+    fork(watchGetLeadsForTL),
     fork(watchGetAssignedLeads),
     fork(watchaddLeads),
     fork(watchUpdateLeads),

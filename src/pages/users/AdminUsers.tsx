@@ -109,7 +109,7 @@ const BasicInputElements = withSwal((props: any) => {
       phone: item.phone,
       address: item.address,
       username: item.username,
-      password: item.password,
+      // password: item.password,
       updated_by: item.updated_by,
       branch_ids: item?.branch_ids,
       role_id: item?.role_id,

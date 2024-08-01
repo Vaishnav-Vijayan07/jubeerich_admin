@@ -986,7 +986,7 @@ const AssignedLeads = () => {
     office,
   } = useSelector((state: RootState) => ({
     user: state.Auth.user,
-    state: state.Leads.leads,
+    state: state.Leads.assignedLeads,
     cres: state.Leads.allCres,
     error: state.Leads.error,
     loading: state.Leads.loading,
