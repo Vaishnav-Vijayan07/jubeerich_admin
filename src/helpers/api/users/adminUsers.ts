@@ -21,7 +21,12 @@ function addAdminUsers(params: {
   role_id: string;
   profileImage: File;
   branch_ids: string;
+  country_id: any;
 }) {
+  if (params.country_id == undefined) {
+    params.country_id = null;
+  }
+
   return api.create(`${baseUrl}`, params);
 }
 
@@ -39,8 +44,14 @@ function updateAdminUsers(
     role_id: string;
     profileImage: File;
     branch_ids: string;
+    country_id: any;
   }
 ) {
+  console.log(params.country_id);
+  if (params.country_id == undefined) {
+    params.country_id = null;
+  }
+
   return api.update(`${baseUrl}/${id}`, params);
 }
 
@@ -53,4 +64,10 @@ function updateBranch(id: string, params: { branchIds: string[] }) {
   return api.update(`${baseUrl}/${id}`, params);
 }
 
-export { getAdminUsers, addAdminUsers, updateAdminUsers, deleteAdminUsers, updateBranch };
+export {
+  getAdminUsers,
+  addAdminUsers,
+  updateAdminUsers,
+  deleteAdminUsers,
+  updateBranch,
+};

@@ -1,7 +1,16 @@
 import * as yup from "yup";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal, Image, Spinner } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Modal,
+  Image,
+  Spinner,
+} from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
@@ -32,10 +41,19 @@ import {
 } from "./data";
 import { APICore } from "../../helpers/api/apiCore";
 import { Link } from "react-router-dom";
+import { getCountry } from "../../redux/country/actions";
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, BranchesData, RolesData, error, loading } = props;
+  const {
+    swal,
+    state,
+    BranchesData,
+    CountriesData,
+    RolesData,
+    error,
+    loading,
+  } = props;
 
   const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
@@ -93,6 +111,13 @@ const BasicInputElements = withSwal((props: any) => {
 
   //handling update logic
   const handleUpdate = (item: any) => {
+    if (item?.country_id) {
+      setFormData((prev) => ({
+        ...prev,
+        country_id: item.country_id,
+      }));
+    }
+
     const selectedPowerIds = item?.branches?.map((item: any) => ({
       value: item.id?.toString(),
       label: item.branch_name,
@@ -142,6 +167,14 @@ const BasicInputElements = withSwal((props: any) => {
   //handle onchange function
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
+
+    if (name == "role_id" && value !== "7") {
+      setFormData((prevData) => ({
+        ...prevData,
+        country_id: undefined,
+      }));
+    }
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -167,9 +200,12 @@ const BasicInputElements = withSwal((props: any) => {
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    console.log(formData.country_id);
+
     // Validate the form using yup
     try {
-      await validationSchema.validate(formData, { abortEarly: false });
+      // await validationSchema.validate(formData, { abortEarly: false });
       // Validation passed, handle form submission
       if (isUpdate) {
         // Handle update logic
@@ -190,7 +226,8 @@ const BasicInputElements = withSwal((props: any) => {
                 user_id,
                 formData.role_id,
                 selectedImage,
-                formData.branch_ids
+                formData.branch_ids,
+                formData?.country_id
               )
             );
           } catch (err) {
@@ -215,7 +252,8 @@ const BasicInputElements = withSwal((props: any) => {
                 user_id,
                 formData.role_id,
                 selectedImage,
-                formData.branch_ids
+                formData.branch_ids,
+                formData?.country_id
               )
             );
           } catch (err) {
@@ -253,9 +291,15 @@ const BasicInputElements = withSwal((props: any) => {
         return (
           <>
             <div className="table-user">
-              <img src={isImage
-                ? `${baseUrl}/${row.original.profile_image_path}`
-                : profilePic} alt="" className="me-2 rounded-circle" />
+              <img
+                src={
+                  isImage
+                    ? `${baseUrl}/${row.original.profile_image_path}`
+                    : profilePic
+                }
+                alt=""
+                className="me-2 rounded-circle"
+              />
               <Link to="#" className="text-body fw-semibold">
                 {row.original.employee_id}
               </Link>
@@ -409,12 +453,14 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  console.log(CountriesData);
+
   return (
     <>
       <Row className="justify-content-between px-2">
         <Modal show={modal} onHide={toggle} dialogClassName={className}>
           <h6 className="fw-medium px-3 m-0 py-2 font-13 text-uppercase bg-light">
-            <span className="d-block py-1">User Manaement</span>
+            <span className="d-block py-1">User Management</span>
           </h6>
           <Modal.Body>
             <div className="alert alert-warning" role="alert">
@@ -599,6 +645,34 @@ const BasicInputElements = withSwal((props: any) => {
                         )}
                       </Form.Group>
                     </Col>
+                    {formData?.role_id == "7" && (
+                      <Col md={6}>
+                        <Form.Group className="mb-3" controlId="role_id">
+                          <Form.Label>Country</Form.Label>
+                          <Form.Select
+                            aria-label="Default select example"
+                            name="country_id"
+                            value={formData.country_id}
+                            onChange={handleInputChange}
+                          >
+                            <option value="" disabled selected>
+                              Choose..
+                            </option>
+                            {CountriesData?.map((item: any) => (
+                              <option value={item?.value} key={item?.value}>
+                                {item.label}
+                              </option>
+                            ))}
+                          </Form.Select>
+
+                          {validationErrors.role_id && (
+                            <Form.Text className="text-danger">
+                              {validationErrors.role_id}
+                            </Form.Text>
+                          )}
+                        </Form.Group>
+                      </Col>
+                    )}
                   </Row>
 
                   {/* <Row>
@@ -685,19 +759,23 @@ const BasicInputElements = withSwal((props: any) => {
 const AdminUsers = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [branchData, setBranchData] = useState([]);
+  const [countryData, setCountryData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector((state: RootState) => ({
-    state: state.Users.adminUsers,
-    error: state.Users.error,
-    loading: state.Users.loading,
-    initialLoading: state.Users.initialLoading,
-    
-  }));
+  const { state, error, loading, initialLoading } = useSelector(
+    (state: RootState) => ({
+      state: state.Users.adminUsers,
+      error: state.Users.error,
+      loading: state.Users.loading,
+      initialLoading: state.Users.initialLoading,
+    })
+  );
 
   const Branch = useSelector(
     (state: RootState) => state?.Branches?.branches?.data
   );
+
+  const Countries = useSelector((state: RootState) => state?.Country.countries);
 
   const RolesData = useSelector((state: RootState) => ({
     state: state.Roles.roles,
@@ -706,6 +784,7 @@ const AdminUsers = () => {
   useEffect(() => {
     dispatch(getAdminUsers());
     dispatch(getBranches());
+    dispatch(getCountry());
     dispatch(getRoles());
   }, []);
 
@@ -718,6 +797,16 @@ const AdminUsers = () => {
       setBranchData(branchArray);
     }
   }, [Branch]);
+
+  useEffect(() => {
+    if (Countries) {
+      const countryArray = Countries?.map((country: any) => ({
+        value: country.id.toString(),
+        label: country.country_name,
+      }));
+      setCountryData(countryArray);
+    }
+  }, [Countries]);
 
   if (initialLoading) {
     return (
@@ -747,6 +836,7 @@ const AdminUsers = () => {
             state={state}
             error={error}
             BranchesData={branchData}
+            CountriesData={countryData}
             loading={loading}
             RolesData={RolesData?.state}
           />

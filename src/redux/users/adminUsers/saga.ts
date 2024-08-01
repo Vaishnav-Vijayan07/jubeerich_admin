@@ -14,7 +14,11 @@ import {
 } from "../../../helpers/";
 
 // actions
-import { adminUsersApiResponseSuccess, adminUsersApiResponseError, getAdminUsers } from "./actions";
+import {
+  adminUsersApiResponseSuccess,
+  adminUsersApiResponseError,
+  getAdminUsers,
+} from "./actions";
 
 // constants
 import { AdminUserActionTypes } from "./constants";
@@ -34,6 +38,7 @@ interface UsersData {
     role_id: string;
     profileImage: File;
     branch_ids: string;
+    country_id: any;
   };
   type: string;
 }
@@ -50,13 +55,32 @@ function* getAllAdminUsers(): SagaIterator {
     const data = response.data.data;
 
     // NOTE - You can change this according to response format from your api
-    yield put(adminUsersApiResponseSuccess(AdminUserActionTypes.GET_ADMIN_USERS, data));
+    yield put(
+      adminUsersApiResponseSuccess(AdminUserActionTypes.GET_ADMIN_USERS, data)
+    );
   } catch (error: any) {
-    yield put(adminUsersApiResponseError(AdminUserActionTypes.GET_ADMIN_USERS, error));
+    yield put(
+      adminUsersApiResponseError(AdminUserActionTypes.GET_ADMIN_USERS, error)
+    );
   }
 }
 
-function* addAdminUser({ payload: { employee_id, name, email, phone, address, username, password, updated_by, role_id, profileImage, branch_ids } }: UsersData): SagaIterator {
+function* addAdminUser({
+  payload: {
+    employee_id,
+    name,
+    email,
+    phone,
+    address,
+    username,
+    password,
+    updated_by,
+    role_id,
+    profileImage,
+    branch_ids,
+    country_id,
+  },
+}: UsersData): SagaIterator {
   try {
     const response = yield call(addAdminUsersApi, {
       employee_id,
@@ -70,6 +94,7 @@ function* addAdminUser({ payload: { employee_id, name, email, phone, address, us
       role_id,
       profileImage,
       branch_ids,
+      country_id,
     });
     const data = response.data;
 
@@ -82,16 +107,37 @@ function* addAdminUser({ payload: { employee_id, name, email, phone, address, us
     //     console.error(err);
     //   });
 
-    yield put(adminUsersApiResponseSuccess(AdminUserActionTypes.ADD_ADMIN_USERS, data.message));
+    yield put(
+      adminUsersApiResponseSuccess(
+        AdminUserActionTypes.ADD_ADMIN_USERS,
+        data.message
+      )
+    );
 
     yield put(getAdminUsers());
   } catch (error: any) {
-    yield put(adminUsersApiResponseError(AdminUserActionTypes.ADD_ADMIN_USERS, error));
+    yield put(
+      adminUsersApiResponseError(AdminUserActionTypes.ADD_ADMIN_USERS, error)
+    );
   }
 }
 
 function* updateAdminUser({
-  payload: { id, employee_id, name, email, phone, address, username, password, updated_by, role_id, profileImage, branch_ids },
+  payload: {
+    id,
+    employee_id,
+    name,
+    email,
+    phone,
+    address,
+    username,
+    password,
+    updated_by,
+    role_id,
+    profileImage,
+    branch_ids,
+    country_id,
+  },
 }: UsersData): SagaIterator {
   try {
     const response = yield call(updateAdminUsersApi, id, {
@@ -106,6 +152,7 @@ function* updateAdminUser({
       role_id,
       profileImage,
       branch_ids,
+      country_id,
     });
     const data = response.data.message;
 
@@ -118,10 +165,20 @@ function* updateAdminUser({
     //     console.error(err);
     //   });
 
-    yield put(adminUsersApiResponseSuccess(AdminUserActionTypes.UPDATE_ADMIN_USERS, data));
+    yield put(
+      adminUsersApiResponseSuccess(
+        AdminUserActionTypes.UPDATE_ADMIN_USERS,
+        data
+      )
+    );
     yield put(getAdminUsers());
   } catch (error: any) {
-    yield put(adminUsersApiResponseSuccess(AdminUserActionTypes.UPDATE_ADMIN_USERS, error));
+    yield put(
+      adminUsersApiResponseSuccess(
+        AdminUserActionTypes.UPDATE_ADMIN_USERS,
+        error
+      )
+    );
   }
 }
 
@@ -130,10 +187,17 @@ function* deleteAdminUser({ payload: { id } }: UsersData): SagaIterator {
     const response = yield call(deleteAdminUsersApi, id);
     const data = response.data.message;
 
-    yield put(adminUsersApiResponseSuccess(AdminUserActionTypes.DELETE_ADMIN_USERS, data));
+    yield put(
+      adminUsersApiResponseSuccess(
+        AdminUserActionTypes.DELETE_ADMIN_USERS,
+        data
+      )
+    );
     yield put(getAdminUsers());
   } catch (error: any) {
-    yield put(adminUsersApiResponseError(AdminUserActionTypes.DELETE_ADMIN_USERS, error));
+    yield put(
+      adminUsersApiResponseError(AdminUserActionTypes.DELETE_ADMIN_USERS, error)
+    );
   }
 }
 
@@ -154,7 +218,12 @@ export function* watchDeleteAdminUser(): any {
 }
 
 function* AdminUserSaga() {
-  yield all([fork(watchGetAdminUsers), fork(watchAddAdminUser), fork(watchUpdateAdminUser), fork(watchDeleteAdminUser)]);
+  yield all([
+    fork(watchGetAdminUsers),
+    fork(watchAddAdminUser),
+    fork(watchUpdateAdminUser),
+    fork(watchDeleteAdminUser),
+  ]);
 }
 
 export default AdminUserSaga;

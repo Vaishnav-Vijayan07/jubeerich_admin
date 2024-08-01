@@ -28,12 +28,18 @@ interface UsersData {
 }
 
 // common success
-export const adminUsersApiResponseSuccess = (actionType: string, data: UsersData | {}): AdminUsersActionType => ({
+export const adminUsersApiResponseSuccess = (
+  actionType: string,
+  data: UsersData | {}
+): AdminUsersActionType => ({
   type: AdminUserActionTypes.API_RESPONSE_SUCCESS,
   payload: { actionType, data },
 });
 // common error
-export const adminUsersApiResponseError = (actionType: string, error: string): AdminUsersActionType => ({
+export const adminUsersApiResponseError = (
+  actionType: string,
+  error: string
+): AdminUsersActionType => ({
   type: AdminUserActionTypes.API_RESPONSE_ERROR,
   payload: { actionType, error },
 });
@@ -54,7 +60,8 @@ export const addAdminUsers = (
   updated_by: string,
   role_id: string,
   profileImage: File | null,
-  branch_ids: string
+  branch_ids: string,
+  country_id: any
 ): AdminUsersActionType => ({
   type: AdminUserActionTypes.ADD_ADMIN_USERS,
   payload: {
@@ -69,6 +76,7 @@ export const addAdminUsers = (
     role_id,
     profileImage,
     branch_ids,
+    country_id,
   },
 });
 
@@ -84,7 +92,8 @@ export const updateAdminUsers = (
   updated_by: string,
   role_id: string,
   profileImage: File | null,
-  branch_ids: string
+  branch_ids: string,
+  country_id: any
 ): AdminUsersActionType => ({
   type: AdminUserActionTypes.UPDATE_ADMIN_USERS,
   payload: {
@@ -100,6 +109,7 @@ export const updateAdminUsers = (
     role_id,
     profileImage,
     branch_ids,
+    country_id
   },
 });
 
