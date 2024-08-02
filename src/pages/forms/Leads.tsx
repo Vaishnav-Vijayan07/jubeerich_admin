@@ -123,6 +123,8 @@ const BasicInputElements = withSwal((props: any) => {
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
   }
+  console.log("user role ==>", userRole);
+
   const dispatch = useDispatch<AppDispatch>();
   const {
     swal,
@@ -430,7 +432,7 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Country",
       accessor: "preferredCountries",
       sort: false,
-      Cell: ({ row }: any) => <ul style={{listStyle:"none"}}>{row.original.preferredCountries.map((item: any) => (
+      Cell: ({ row }: any) => <ul style={{ listStyle: "none" }}>{row.original.preferredCountries.map((item: any) => (
         <li>{item?.country_name}</li>
       ))}</ul>,
 
@@ -595,11 +597,14 @@ const BasicInputElements = withSwal((props: any) => {
 
         if (data.status) {
           if (userRole == 4) {
+            console.log("getLeadsTL called bulk====>");
+
             dispatch(getLeadsTL());
           } else {
+            console.log("getLead called bulk==>");
+
             dispatch(getLead());
           }
-          dispatch(getLead());
           showSuccessAlert("Bulk assignment successful.");
         }
       } catch (error) {

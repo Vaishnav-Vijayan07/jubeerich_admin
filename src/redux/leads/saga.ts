@@ -177,9 +177,14 @@ function* addLeads({
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
 
+      console.log("role ==>", role);
       if (role == 4) {
+        console.log("getLeadsTL called");
+        
         yield put(getLeadsTL());
       } else {
+        console.log("getLead called");
+
         yield put(getLead());
       }
     }
