@@ -24,11 +24,12 @@ import axios from "axios";
 import { showSuccessAlert } from "../../../../constants";
 
 const StudentDetails = ({ studentId, taskId, }: any) => {
+  console.log("taskId", taskId);
+
   const [basicData, setBasicData] = useState<any>([]);
   const [status, setStatus] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
-
 
   const [taskDetails, setTaskDetails] = useState<any>({})
 
@@ -84,7 +85,7 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
 
   useEffect(() => {
     getTaskDetails()
-  }, [])
+  }, [taskId])
 
 
   useEffect(() => {
@@ -113,7 +114,7 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
       id: taskId
     }).then((res) => {
       console.log("res ==>", res.data);
-      
+
       getTaskDetails()
       showSuccessAlert(res.data.message)
     }).catch((err => {
@@ -121,6 +122,9 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
 
     }))
   }
+
+  console.log("basicData ==>", basicData);
+
 
   if (loading) {
     return (
@@ -163,10 +167,10 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
           >
             <Col>
               <h3>{taskDetails?.title}</h3>
-              <p className="mt-1" style={{ color: "#4D4D4D" }}>
+              {/* <p className="mt-1" style={{ color: "#4D4D4D" }}>
                 MBBS Admission for Russia, 2024 August intake, Mr. Austin
                 Stephen from Aluva,Kochi
-              </p>
+              </p> */}
 
               <div className="d-flex">
                 {/* <small
@@ -181,18 +185,22 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
                 >
                   High Priority
                 </small> */}
-                <small
-                  style={{
-                    backgroundColor: "#9dd3f5",
-                    color: "#122d3d",
-                    border: `1px solid #122d3d`,
-                    borderRadius: "5px",
-                    padding: "4px 10px",
-                  }}
-                  className={classNames("rounded-pill fs-6 me-1")}
-                >
-                  {basicData?.country_name}
-                </small>
+                {
+                  basicData?.country_names?.map((country: any) => (
+                    <small
+                      style={{
+                        backgroundColor: "#9dd3f5",
+                        color: "#122d3d",
+                        border: `1px solid #122d3d`,
+                        borderRadius: "5px",
+                        padding: "4px 10px",
+                      }}
+                      className={classNames("rounded-pill fs-6 me-1")}
+                    >{country}
+                    </small>
+                  ))
+
+                }
 
                 {/* <small
                   style={{

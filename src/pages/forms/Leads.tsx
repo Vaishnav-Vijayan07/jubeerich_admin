@@ -14,8 +14,8 @@ import {
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import makeAnimated from "react-select/animated";
 
 // components
 import PageTitle from "../../components/PageTitle";
@@ -31,7 +31,7 @@ import {
   getLeadsTL,
   updateLeads,
 } from "../../redux/actions";
-import Select from "react-select";
+import Select, { ActionMeta, OptionsType } from "react-select";
 import {
   AUTH_SESSION_KEY,
   showErrorAlert,
@@ -86,7 +86,7 @@ const initialState = {
   source_id: null,
   channel_id: null,
   city: "",
-  preferred_country: null,
+  preferred_country: [],
   office_type: null,
   //   region_id: "",
   //   counsiler_id: "",
@@ -118,6 +118,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  const animatedComponents = makeAnimated();
   let userRole: any;
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
@@ -145,9 +146,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState<OptionType | null>(
-    null
-  );
+  const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);
   const [selectedSource, setSelectedSource] = useState<any>(null);
   const [selectedValues, setSelectedValues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -161,6 +160,9 @@ const BasicInputElements = withSwal((props: any) => {
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
+
+  console.log("selected Country ==>", selectedCountry);
+
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -197,6 +199,9 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
+
+    console.log("item:", item);
+
     //update source dropdown
     const updatedSource = source?.filter(
       (source: any) => source.value == item.source_id
@@ -204,18 +209,27 @@ const BasicInputElements = withSwal((props: any) => {
     const updatedOffice = office?.filter(
       (office: any) => office.value == item.office_type
     );
-    const updatedCountry = country?.filter(
-      (country: any) => country.value == item.preferred_country
-    );
+    // const updatedCountry = country?.filter(
+    //   (country: any) => country.value == item.preferred_country
+    // );
     const updatedCtegory = categories?.filter(
       (category: any) => category.value == item.category_id
     );
     const updatedChannels = channels?.filter(
       (channel: any) => channel.value == item.channel_id
     );
+
+    const updatedCountry = item?.preferredCountries?.map((country: any) => ({
+      value: country?.id,
+      label: country?.country_name
+    }));
+
+    const countryArray = item?.preferredCountries?.map((country: any) => (country?.id));
+
+    // const prefferedCountryIds = item?.preffered_country?.map
     setSelectedSource(updatedSource[0]);
     setSelectedOffice(updatedOffice[0]);
-    setSelectedCountry(updatedCountry[0]);
+    setSelectedCountry(updatedCountry);
     setSelectedCategory(updatedCtegory[0]);
     setSelectedChannel(updatedChannels[0]);
 
@@ -229,7 +243,7 @@ const BasicInputElements = withSwal((props: any) => {
       source_id: item?.source_id || "",
       channel_id: item?.channel_id || "",
       city: item?.city || "",
-      preferred_country: item?.preferred_country || "",
+      preferred_country: countryArray,
       office_type: item?.office_type || "",
       // region_id: item?.region_id || "",
       // counsiler_id: item?.counsiler_id || "",
@@ -414,8 +428,12 @@ const BasicInputElements = withSwal((props: any) => {
     },
     {
       Header: "Country",
-      accessor: "country_name",
+      accessor: "preferredCountries",
       sort: false,
+      Cell: ({ row }: any) => <ul style={{listStyle:"none"}}>{row.original.preferredCountries.map((item: any) => (
+        <li>{item?.country_name}</li>
+      ))}</ul>,
+
     },
     {
       Header: "Office",
@@ -473,19 +491,13 @@ const BasicInputElements = withSwal((props: any) => {
     handleResetValues();
   };
 
-  //source
-  const handleSourceChange = (selected: any) => {
-    setSelectedCountry(selected);
-    setFormData((prev) => ({
-      ...prev,
-      country_id: selected.value,
-    }));
-  };
+  console.log("form data:", formData);
+
 
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
     setFormData(initialState); //clear form data
-    setSelectedCountry(null);
+    setSelectedCountry([]);
     setSelectedCategory(null);
     setSelectedChannel(null);
     setSelectedOffice(null);
@@ -622,7 +634,7 @@ const BasicInputElements = withSwal((props: any) => {
       setResponsiveModal(false);
       setValidationErrors(initialValidationState); // Clear validation errors
       setFormData(initialState); //clear form data
-      setSelectedCountry(null);
+      setSelectedCountry([]);
       // Clear validation errors
     }
   }, [loading, error]);
@@ -640,6 +652,22 @@ const BasicInputElements = withSwal((props: any) => {
     setScroll(false);
     toggle();
   };
+
+  const handleSelectChange = (
+    selectedOptions: OptionType[] | OptionsType<OptionType> | null,
+    actionMeta: ActionMeta<OptionType>
+  ) => {
+    if (Array.isArray(selectedOptions)) {
+      setSelectedCountry(selectedOptions);
+      // const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
+      const selectedIdsArray = selectedOptions?.map((option) => option.value);
+      setFormData((prev: any) => ({
+        ...prev,
+        preferred_country: selectedIdsArray,
+      }));
+    }
+  };
+
 
   return (
     <>
@@ -788,10 +816,12 @@ const BasicInputElements = withSwal((props: any) => {
                     <Select
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
+                      components={animatedComponents}
+                      isMulti
                       name="preferred_country"
                       options={country}
                       value={selectedCountry}
-                      onChange={handleDropDowns}
+                      onChange={handleSelectChange as any}
                     />
                     {validationErrors.preferred_country && (
                       <Form.Text className="text-danger">
