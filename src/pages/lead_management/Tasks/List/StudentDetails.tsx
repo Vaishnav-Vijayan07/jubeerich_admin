@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -23,7 +23,7 @@ import { getMaritalStatus } from "../../../../redux/marital_status/actions";
 import axios from "axios";
 import { showSuccessAlert } from "../../../../constants";
 
-const StudentDetails = ({ studentId, taskId, }: any) => {
+const StudentDetails = ({ studentId, taskId }: any) => {
   console.log("taskId", taskId);
 
   const [basicData, setBasicData] = useState<any>([]);
@@ -31,7 +31,7 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [taskDetails, setTaskDetails] = useState<any>({})
+  const [taskDetails, setTaskDetails] = useState<any>({});
 
   const dispatch = useDispatch();
   const { Countries, OfficeTypes, MaritalStatus, user } = useSelector(
@@ -75,18 +75,20 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
   };
 
   const getTaskDetails = () => {
-    axios.get(`tasks/${taskId}`).then((res) => {
-      console.log("taskId =>", res.data);
-      setTaskDetails(res.data.data)
-    }).catch((err) => {
-      console.log("err", err);
-    })
-  }
+    axios
+      .get(`tasks/${taskId}`)
+      .then((res) => {
+        console.log("taskId =>", res.data);
+        setTaskDetails(res.data.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
 
   useEffect(() => {
-    getTaskDetails()
-  }, [taskId])
-
+    getTaskDetails();
+  }, [taskId]);
 
   useEffect(() => {
     if (user) {
@@ -106,25 +108,33 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
     dispatch(getMaritalStatus());
   }, []);
 
+  const countryData = useMemo(() => {
+    if (!Countries) return [];
+    return Countries.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.country_name,
+    }));
+  }, [Countries]);
+
   // Finish Task
   const handleFinishTask = () => {
+    axios
+      .put("finish_task", {
+        isCompleted: true,
+        id: taskId,
+      })
+      .then((res) => {
+        console.log("res ==>", res.data);
 
-    axios.put("finish_task", {
-      isCompleted: true,
-      id: taskId
-    }).then((res) => {
-      console.log("res ==>", res.data);
-
-      getTaskDetails()
-      showSuccessAlert(res.data.message)
-    }).catch((err => {
-      console.log(err);
-
-    }))
-  }
+        getTaskDetails();
+        showSuccessAlert(res.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   console.log("basicData ==>", basicData);
-
 
   if (loading) {
     return (
@@ -147,7 +157,11 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
               <Col className="d-flex gap-2 float-end">
                 {/* <i className="mdi mdi-close font-18 cursor-pointer" onClick={handleClose}></i> */}
 
-                <Button className="d-flex align-items-center btn-light" disabled={taskDetails?.isCompleted ? true : false} onClick={handleFinishTask}>
+                <Button
+                  className="d-flex align-items-center btn-light"
+                  disabled={taskDetails?.isCompleted ? true : false}
+                  onClick={handleFinishTask}
+                >
                   <div className="round-circle" />
                   {taskDetails?.isCompleted ? "Finished" : "Finish"}
 
@@ -185,22 +199,20 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
                 >
                   High Priority
                 </small> */}
-                {
-                  basicData?.country_names?.map((country: any) => (
-                    <small
-                      style={{
-                        backgroundColor: "#9dd3f5",
-                        color: "#122d3d",
-                        border: `1px solid #122d3d`,
-                        borderRadius: "5px",
-                        padding: "4px 10px",
-                      }}
-                      className={classNames("rounded-pill fs-6 me-1")}
-                    >{country}
-                    </small>
-                  ))
-
-                }
+                {basicData?.country_names?.map((country: any) => (
+                  <small
+                    style={{
+                      backgroundColor: "#9dd3f5",
+                      color: "#122d3d",
+                      border: `1px solid #122d3d`,
+                      borderRadius: "5px",
+                      padding: "4px 10px",
+                    }}
+                    className={classNames("rounded-pill fs-6 me-1")}
+                  >
+                    {country}
+                  </small>
+                ))}
 
                 {/* <small
                   style={{
@@ -354,7 +366,7 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
                 <Dropdown.Toggle
                   className="cursor-pointer"
                   variant="light"
-                // disabled={!StudentData?.status}
+                  // disabled={!StudentData?.status}
                 >
                   {basicData?.status?.status_name
                     ? basicData?.status?.status_name
@@ -453,6 +465,7 @@ const StudentDetails = ({ studentId, taskId, }: any) => {
                           studentId={studentId}
                           Countries={Countries}
                           OfficeTypes={OfficeTypes}
+                          country={countryData || []}
                           MaritalStatus={MaritalStatus}
                           basicData={basicData}
                           getBasicInfoApi={getBasicInfo}

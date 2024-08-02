@@ -6,6 +6,8 @@ import moment from "moment";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import Select, { ActionMeta, OptionsType } from "react-select";
+import makeAnimated from "react-select/animated";
 
 const initialState = {
   full_name: "",
@@ -29,6 +31,7 @@ const initialState = {
 
 const BasicInfo = ({
   studentId,
+  country,
   Countries,
   OfficeTypes,
   MaritalStatus,
@@ -37,6 +40,8 @@ const BasicInfo = ({
 }: any) => {
   const [formData, setformData] = useState(initialState);
   const [loading, setLoading] = useState(false);
+  const animatedComponents = makeAnimated();
+  const [selectedCountry, setSelectedCountry] = useState<any>([]);
 
   const getBasicInfo = () => {
     setformData(initialState);
@@ -99,6 +104,18 @@ const BasicInfo = ({
         setLoading(false);
         showErrorAlert("Error occured");
       });
+  };
+
+  const handleSelectChange = (selectedOptions: any, actionMeta: any) => {
+    if (Array.isArray(selectedOptions)) {
+      setSelectedCountry(selectedOptions);
+      // const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
+      const selectedIdsArray = selectedOptions?.map((option) => option.value);
+      setformData((prev: any) => ({
+        ...prev,
+        preferred_country: selectedIdsArray,
+      }));
+    }
   };
 
   return (
@@ -173,7 +190,7 @@ const BasicInfo = ({
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          {/* <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="preferred_country">
               <Form.Label>Preferred Country</Form.Label>
               <Form.Select
@@ -190,6 +207,22 @@ const BasicInfo = ({
                   <option value={country.id}>{country.country_name}</option>
                 ))}
               </Form.Select>
+            </Form.Group>
+          </Col> */}
+
+          <Col xl={6} xxl={4}>
+            <Form.Group className="mb-3" controlId="channel_name">
+              <Form.Label>Preffered Country</Form.Label>
+              <Select
+                className="react-select react-select-container"
+                classNamePrefix="react-select"
+                components={animatedComponents}
+                isMulti
+                name="preferred_country"
+                options={country}
+                value={selectedCountry}
+                onChange={handleSelectChange as any}
+              />
             </Form.Group>
           </Col>
 
