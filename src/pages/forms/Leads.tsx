@@ -192,6 +192,9 @@ const BasicInputElements = withSwal((props: any) => {
     remarks: yup.string(),
   });
 
+  console.log("isUpdate ======>", isUpdate);
+  
+
   /*
    * form methods
    */
@@ -241,7 +244,7 @@ const BasicInputElements = withSwal((props: any) => {
       full_name: item?.full_name || "",
       email: item?.email || "",
       phone: item?.phone || "",
-      category_id: item?.category_id || "",
+      category_id: item?.category_id || null,
       source_id: item?.source_id || "",
       channel_id: item?.channel_id || "",
       city: item?.city || "",
@@ -252,7 +255,7 @@ const BasicInputElements = withSwal((props: any) => {
       // branch_id: item?.branch_id || "",
       updated_by: item?.updated_by || "",
       remarks: item?.remarks || "",
-      lead_received_date: item?.lead_received_date || "",
+      lead_received_date: item?.lead_received_date || new Date()?.toISOString().split("T")[0],
       ielts: item?.ielts || "",
     }));
 
@@ -361,7 +364,6 @@ const BasicInputElements = withSwal((props: any) => {
               formData.ielts
             )
           );
-          setIsUpdate(false);
         } else {
           // Handle add logic
           console.log("here leads");
@@ -1021,8 +1023,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
                   onClick={() => [
-                    openModalWithClass("modal-full-width"),
-                    handleResetValues(),
+                    openModalWithClass("modal-full-width")
                   ]}
                 >
                   <i className="mdi mdi-plus-circle"></i> Add lead
