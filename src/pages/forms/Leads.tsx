@@ -94,7 +94,7 @@ const initialState = {
   updated_by: null,
   remarks: "",
   lead_received_date: new Date().toISOString().split("T")[0],
-  ielts: false,
+  ielts: true,
 };
 
 const initialValidationState = {
@@ -113,7 +113,7 @@ const initialValidationState = {
   updated_by: "",
   remarks: "",
   lead_received_date: "",
-  ielts: "",
+  ielts: true,
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -256,7 +256,7 @@ const BasicInputElements = withSwal((props: any) => {
       updated_by: item?.updated_by || "",
       remarks: item?.remarks || "",
       lead_received_date: item?.lead_received_date || new Date()?.toISOString().split("T")[0],
-      ielts: item?.ielts || "",
+      ielts: item?.ielts || false,
     }));
 
     setIsUpdate(true);
