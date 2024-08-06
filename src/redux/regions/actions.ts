@@ -5,6 +5,7 @@ interface RegionActionType {
     | RegionActionTypes.API_RESPONSE_SUCCESS
     | RegionActionTypes.API_RESPONSE_ERROR
     | RegionActionTypes.GET_REGION
+    | RegionActionTypes.GET_REGION_MANAGERS
     | RegionActionTypes.GET_REGION_BY_ID
     | RegionActionTypes.ADD_REGION
     | RegionActionTypes.UPDATE_REGION
@@ -16,6 +17,7 @@ interface RegionData {
   id: string;
   region_name: string;
   region_description: string;
+  regional_manager_id: string;
   updated_by: string;
 }
 
@@ -34,6 +36,11 @@ export const getRegion = () => ({
   payload: {},
 });
 
+export const getRegionManagers = () => ({
+  type: RegionActionTypes.GET_REGION_MANAGERS,
+  payload: {},
+});
+
 export const getRegionById = (id: string) => ({
   type: RegionActionTypes.GET_REGION_BY_ID,
   payload: { id },
@@ -42,10 +49,12 @@ export const getRegionById = (id: string) => ({
 export const addRegion = (
   region_name: string,
   region_description: string,
+  regional_manager_id: string,
   updated_by: string
 ) => ({
   type: RegionActionTypes.ADD_REGION,
   payload: {
+    regional_manager_id,
     region_name,
     region_description,
     updated_by,
@@ -56,10 +65,12 @@ export const updateRegion = (
   id: string,
   region_name: string,
   region_description: string,
+  regional_manager_id: string,
   updated_by: string
 ) => ({
   type: RegionActionTypes.UPDATE_REGION,
   payload: {
+    regional_manager_id,
     id,
     region_name,
     region_description,

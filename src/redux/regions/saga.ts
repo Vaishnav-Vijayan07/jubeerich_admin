@@ -11,6 +11,7 @@ import {
   deleteRegionsApi,
   getRegionByidApi,
   getRegionsApi,
+  getRegionsManagerApi,
   updateRegionsApi,
 } from "../../helpers/api/region";
 
@@ -19,6 +20,7 @@ interface RegionData {
     id: string;
     region_name: string;
     region_description: string;
+    regional_manager_id: string;
     updated_by: string;
   };
   type: string;
@@ -34,6 +36,20 @@ function* getRegionSaga(): SagaIterator {
   } catch (error: any) {
     console.log(error);
     yield put(regionApiResponseError(RegionActionTypes.GET_REGION, error));
+  }
+}
+
+
+function* getRegionMangerSaga(): SagaIterator {
+  try {
+    const response = yield call(getRegionsManagerApi);
+    console.log(response);
+    const data = response.data.data;
+
+    yield put(regionApiResponseSuccess(RegionActionTypes.GET_REGION_MANAGERS, data));
+  } catch (error: any) {
+    console.log(error);
+    yield put(regionApiResponseError(RegionActionTypes.GET_REGION_MANAGERS, error));
   }
 }
 
@@ -67,13 +83,14 @@ function* deleteRegionSaga({ payload: { id } }: RegionData): SagaIterator {
   }
 }
 function* addRegionSaga({
-  payload: { region_name, updated_by, region_description },
+  payload: { region_name, updated_by, region_description,regional_manager_id },
 }: RegionData): SagaIterator {
   try {
     const response = yield call(addRegionsApi, {
       region_name,
       updated_by,
       region_description,
+      regional_manager_id
     });
     console.log(response);
     const data = response.message;
@@ -86,13 +103,14 @@ function* addRegionSaga({
   }
 }
 function* updateRegionSaga({
-  payload: { id, region_description, region_name, updated_by },
+  payload: { id, region_description, region_name, updated_by,regional_manager_id },
 }: RegionData): SagaIterator {
   try {
     const response = yield call(updateRegionsApi, id, {
       updated_by,
       region_description,
       region_name,
+      regional_manager_id
     });
     console.log(response);
     const data = response.message;
@@ -103,6 +121,10 @@ function* updateRegionSaga({
     console.log(error);
     yield put(regionApiResponseError(RegionActionTypes.UPDATE_REGION, error));
   }
+}
+
+export function* watchGetRegionManager() {
+  yield takeEvery(RegionActionTypes.GET_REGION_MANAGERS, getRegionMangerSaga);
 }
 
 export function* watchGetRegion() {
@@ -128,6 +150,7 @@ export function* watchDeleteRegion(): any {
 function* RegionSaga() {
   yield all([
     fork(watchGetRegion),
+    fork(watchGetRegionManager),
     fork(watchaddRegionTypes),
     fork(watchUpdateRegion),
     fork(watchDeleteRegion),
