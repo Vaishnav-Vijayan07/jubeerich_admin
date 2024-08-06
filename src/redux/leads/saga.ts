@@ -254,7 +254,7 @@ function* updateLeads({
     }
 
   } catch (error: any) {
-    yield put(LeadsApiResponseSuccess(LeadsActionTypes.UPDATE_LEADS, error));
+    yield put(LeadsApiResponseError(LeadsActionTypes.UPDATE_LEADS, error));
   }
 }
 
