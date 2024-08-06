@@ -411,8 +411,12 @@ const BasicInputElements = withSwal((props: any) => {
     },
     {
       Header: "Country",
-      accessor: "country_name",
+      accessor: "preferredCountries",
       sort: false,
+      Cell: ({ row }: any) => <ul style={{ listStyle: "none" }}>{row.original.preferredCountries.map((item: any) => (
+        <li>{item?.country_name}</li>
+      ))}</ul>,
+
     },
     {
       Header: "Office",
@@ -426,12 +430,12 @@ const BasicInputElements = withSwal((props: any) => {
     },
     ...(user?.role == 4
       ? [
-          {
-            Header: "Assigned CRE",
-            accessor: "cre_name",
-            sort: false,
-          },
-        ]
+        {
+          Header: "Assigned CRE",
+          accessor: "cre_name",
+          sort: false,
+        },
+      ]
       : []),
     {
       Header: "Actions",

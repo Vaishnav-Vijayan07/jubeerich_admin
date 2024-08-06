@@ -19,7 +19,7 @@ const initialState = {
   remarks: "",
   lead_received_date: "",
   passport_no: "",
-  dob: "",
+  dob: new Date().toString(),
   gender: "",
   marital_status: "",
   nationality: "",
@@ -43,13 +43,26 @@ const BasicInfo = ({
   const animatedComponents = makeAnimated();
   const [selectedCountry, setSelectedCountry] = useState<any>([]);
 
+  console.log("form data =>", formData);
+  
   const getBasicInfo = () => {
     setformData(initialState);
     axios
       .get(`getStudentBasicInfo/${studentId}`)
       .then((res) => {
         console.log("res =>", res.data);
-        setformData(res.data.data);
+        const countries = res?.data?.data?.preferredCountries?.map((item: any) => {
+          return {
+            label: item?.country_name,
+            value: item?.id
+          }
+        })
+        setSelectedCountry(countries)
+        const modifiedData = {
+          ...res.data.data,
+          preferred_country: res?.data?.data?.country_ids
+        }
+        setformData(modifiedData);
       })
       .catch((err) => {
         console.error(err);
@@ -270,7 +283,7 @@ const BasicInfo = ({
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="gender">
-              <Form.Label>Gender</Form.Label>
+              <Form.Label><span className="text-danger">*</span> Gender</Form.Label>
               <Form.Select
                 name="gender"
                 className="mb-3"
@@ -312,7 +325,7 @@ const BasicInfo = ({
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="dob">
-              <Form.Label>Date of Birth</Form.Label>
+              <Form.Label><span className="text-danger">*</span> Date of Birth</Form.Label>
               <FormInput
                 type="date"
                 name="dob"

@@ -65,6 +65,8 @@ function updateLeads(
     ielts: boolean;
   }
 ) {
+  console.log("params ==>", params);
+  
   return api.update(`${baseUrl}/${id}`, params);
 }
 

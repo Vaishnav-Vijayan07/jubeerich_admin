@@ -177,9 +177,14 @@ function* addLeads({
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
 
+      console.log("role ==>", role);
       if (role == 4) {
+        console.log("getLeadsTL called");
+        
         yield put(getLeadsTL());
       } else {
+        console.log("getLead called");
+
         yield put(getLead());
       }
     }
@@ -249,7 +254,7 @@ function* updateLeads({
     }
 
   } catch (error: any) {
-    yield put(LeadsApiResponseSuccess(LeadsActionTypes.UPDATE_LEADS, error));
+    yield put(LeadsApiResponseError(LeadsActionTypes.UPDATE_LEADS, error));
   }
 }
 

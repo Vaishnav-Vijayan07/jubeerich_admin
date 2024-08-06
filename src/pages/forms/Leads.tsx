@@ -123,6 +123,8 @@ const BasicInputElements = withSwal((props: any) => {
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
   }
+  console.log("user role ==>", userRole);
+
   const dispatch = useDispatch<AppDispatch>();
   const {
     swal,
@@ -190,6 +192,9 @@ const BasicInputElements = withSwal((props: any) => {
     remarks: yup.string(),
   });
 
+  console.log("isUpdate ======>", isUpdate);
+  
+
   /*
    * form methods
    */
@@ -239,7 +244,7 @@ const BasicInputElements = withSwal((props: any) => {
       full_name: item?.full_name || "",
       email: item?.email || "",
       phone: item?.phone || "",
-      category_id: item?.category_id || "",
+      category_id: item?.category_id || null,
       source_id: item?.source_id || "",
       channel_id: item?.channel_id || "",
       city: item?.city || "",
@@ -250,7 +255,7 @@ const BasicInputElements = withSwal((props: any) => {
       // branch_id: item?.branch_id || "",
       updated_by: item?.updated_by || "",
       remarks: item?.remarks || "",
-      lead_received_date: item?.lead_received_date || "",
+      lead_received_date: item?.lead_received_date || new Date()?.toISOString().split("T")[0],
       ielts: item?.ielts || "",
     }));
 
@@ -359,7 +364,6 @@ const BasicInputElements = withSwal((props: any) => {
               formData.ielts
             )
           );
-          setIsUpdate(false);
         } else {
           // Handle add logic
           console.log("here leads");
@@ -430,7 +434,7 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Country",
       accessor: "preferredCountries",
       sort: false,
-      Cell: ({ row }: any) => <ul style={{listStyle:"none"}}>{row.original.preferredCountries.map((item: any) => (
+      Cell: ({ row }: any) => <ul style={{ listStyle: "none" }}>{row.original.preferredCountries.map((item: any) => (
         <li>{item?.country_name}</li>
       ))}</ul>,
 
@@ -454,6 +458,15 @@ const BasicInputElements = withSwal((props: any) => {
         },
       ]
       : []),
+      ...(user?.role == 3
+        ? [
+          {
+            Header: "Assigned by",
+            accessor: "updated_by_user",
+            sort: false,
+          },
+        ]
+        : []),
     {
       Header: "Actions",
       accessor: "",
@@ -595,11 +608,14 @@ const BasicInputElements = withSwal((props: any) => {
 
         if (data.status) {
           if (userRole == 4) {
+            console.log("getLeadsTL called bulk====>");
+
             dispatch(getLeadsTL());
           } else {
+            console.log("getLead called bulk==>");
+
             dispatch(getLead());
           }
-          dispatch(getLead());
           showSuccessAlert("Bulk assignment successful.");
         }
       } catch (error) {
@@ -660,7 +676,7 @@ const BasicInputElements = withSwal((props: any) => {
     if (Array.isArray(selectedOptions)) {
       setSelectedCountry(selectedOptions);
       // const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
-      const selectedIdsArray = selectedOptions?.map((option) => option.value);
+      const selectedIdsArray = selectedOptions?.map((option) => parseInt(option.value));
       setFormData((prev: any) => ({
         ...prev,
         preferred_country: selectedIdsArray,
@@ -1007,8 +1023,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
                   onClick={() => [
-                    openModalWithClass("modal-full-width"),
-                    handleResetValues(),
+                    openModalWithClass("modal-full-width")
                   ]}
                 >
                   <i className="mdi mdi-plus-circle"></i> Add lead
@@ -1148,8 +1163,8 @@ const Leads = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/university" },
-          { label: "Leads", path: "/master/university", active: true },
+          { label: "Master", path: "/master/leads" },
+          { label: "Leads", path: "/master/leads", active: true },
         ]}
         title={"Leads"}
       />
