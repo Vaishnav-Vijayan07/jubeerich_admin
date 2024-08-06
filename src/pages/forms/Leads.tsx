@@ -1043,7 +1043,7 @@ const BasicInputElements = withSwal((props: any) => {
                 onSelect={handleSelectedValues}
               /> : <Table
                 columns={columns}
-                data={records ? records : []}
+                  data={records ? records : []}
                 pageSize={5}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
