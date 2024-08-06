@@ -52,10 +52,6 @@ interface TableRecords {
 
 const sizePerPageList = [
   {
-    text: "10",
-    value: 10,
-  },
-  {
     text: "25",
     value: 25,
   },
@@ -398,7 +394,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Table
                 columns={columns}
                 data={records ? records : []}
-                pageSize={5}
+                pageSize={25}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}

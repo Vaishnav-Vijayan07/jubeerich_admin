@@ -456,6 +456,15 @@ const BasicInputElements = withSwal((props: any) => {
         },
       ]
       : []),
+      ...(user?.role == 3
+        ? [
+          {
+            Header: "Assigned by",
+            accessor: "updated_by_user",
+            sort: false,
+          },
+        ]
+        : []),
     {
       Header: "Actions",
       accessor: "",
@@ -665,7 +674,7 @@ const BasicInputElements = withSwal((props: any) => {
     if (Array.isArray(selectedOptions)) {
       setSelectedCountry(selectedOptions);
       // const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
-      const selectedIdsArray = selectedOptions?.map((option) => option.value);
+      const selectedIdsArray = selectedOptions?.map((option) => parseInt(option.value));
       setFormData((prev: any) => ({
         ...prev,
         preferred_country: selectedIdsArray,
@@ -1153,8 +1162,8 @@ const Leads = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/university" },
-          { label: "Leads", path: "/master/university", active: true },
+          { label: "Master", path: "/master/leads" },
+          { label: "Leads", path: "/master/leads", active: true },
         ]}
         title={"Leads"}
       />
