@@ -34,6 +34,7 @@ import {
   addRegion,
   deleteRegion,
   getRegion,
+  getRegionManagers,
   updateRegion,
 } from "../../redux/regions/actions";
 import { Link } from "react-router-dom";
@@ -75,18 +76,20 @@ const initialState = {
   id: "",
   region_name: "",
   region_description: "",
+  regional_manager_id: "",
   updated_by: "",
 };
 
 const initialValidationState = {
   region_name: "",
   region_description: "",
+  regional_manager_id: "",
   updated_by: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, sourceData, error, loading } = props;
+  const { swal, state, mangersData, error, loading } = props;
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -96,7 +99,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
-  const [selectedSource, setSelectedSource] = useState<OptionType | null>(null);
+  const [selectedManager, setSelectedManager] = useState<any>(null);
   const [formData, setFormData] = useState(initialState);
 
   // Modal states
@@ -116,7 +119,9 @@ const BasicInputElements = withSwal((props: any) => {
       .string()
       .required("channel description is required")
       .min(3, "channel description must be at least 3 characters long"),
-    // source_id: yup.string().required("Please choose a source"),
+    regional_manager_id: yup
+      .string()
+      .required("Please choose a regional manger"),
   });
 
   /*
@@ -128,16 +133,16 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
-    //update source dropdown
-    // const updatedSource: OptionType[] = sourceData?.filter(
-    //   (source: any) => source.value == item.source_id
-    // );
-    // setSelectedSource(updatedSource[0]);
+    const updatedManager: OptionType[] = mangersData?.filter(
+      (manager: any) => manager.value == item.regional_manager_id
+    );
+    setSelectedManager(updatedManager[0]);
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
       region_name: item?.region_name,
       region_description: item?.region_description,
+      regional_manager_id: item?.regional_manager_id,
       updated_by: "",
     }));
 
@@ -179,6 +184,8 @@ const BasicInputElements = withSwal((props: any) => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log(formData);
+
     // Validate the form using yup
     try {
       await validationSchema.validate(formData, { abortEarly: false });
@@ -194,6 +201,7 @@ const BasicInputElements = withSwal((props: any) => {
               formData.id,
               formData.region_name,
               formData.region_description,
+              formData.regional_manager_id,
               user_id
             )
           );
@@ -204,6 +212,7 @@ const BasicInputElements = withSwal((props: any) => {
             addRegion(
               formData.region_name,
               formData.region_description,
+              formData.regional_manager_id,
               user_id
             )
           );
@@ -238,6 +247,11 @@ const BasicInputElements = withSwal((props: any) => {
       sort: true,
     },
     {
+      Header: "Regional Manager",
+      accessor: "regional_manager",
+      sort: true,
+    },
+    {
       Header: "Region Description",
       accessor: "region_description",
       sort: false,
@@ -254,18 +268,24 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <Link to="#" className="action-icon" onClick={() => {
-            setIsUpdate(true);
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => {
+              setIsUpdate(true);
+              handleUpdate(row.original);
+              toggleResponsiveModal();
+            }}
+          >
             <i className="mdi mdi-square-edit-outline"></i>
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => handleDelete(row.original.id)}
+          >
             <i className="mdi mdi-delete"></i>
           </Link>
         </div>
@@ -280,18 +300,18 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   //source
-  const handleSourceChange = (selected: any) => {
-    setSelectedSource(selected);
+  const handleManagerChange = (selected: any) => {
+    setSelectedManager(selected);
     setFormData((prev) => ({
       ...prev,
-      source_id: selected.value,
+      regional_manager_id: selected.value,
     }));
   };
 
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
     setFormData(initialState); //clear form data
-    setSelectedSource(null);
+    setSelectedManager(null);
   };
 
   const toggleResponsiveModal = () => {
@@ -308,7 +328,7 @@ const BasicInputElements = withSwal((props: any) => {
       setResponsiveModal(false);
       setValidationErrors(initialValidationState); // Clear validation errors
       setFormData(initialState); //clear form data
-      setSelectedSource(null);
+      setSelectedManager(null);
       // Clear validation errors
     }
   }, [loading, error]);
@@ -354,6 +374,24 @@ const BasicInputElements = withSwal((props: any) => {
                 {validationErrors.region_description && (
                   <Form.Text className="text-danger">
                     {validationErrors.region_description}
+                  </Form.Text>
+                )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="source_id">
+                <Form.Label>Regional Manger</Form.Label>
+                <Select
+                  className="react-select react-select-container"
+                  classNamePrefix="react-select"
+                  name="regional_manager_id"
+                  options={mangersData}
+                  value={selectedManager}
+                  onChange={handleManagerChange}
+                />
+
+                {validationErrors.regional_manager_id && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.regional_manager_id}
                   </Form.Text>
                 )}
               </Form.Group>
@@ -404,7 +442,6 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
-
               />
             </Card.Body>
           </Card>
@@ -416,17 +453,17 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Region = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [sourceData, setSourceData] = useState([]);
+  const [mangersData, setMangersData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector(
-    (state: RootState) => ({
+  const { state, error, loading, initialLoading, regional_managers } =
+    useSelector((state: RootState) => ({
       state: state.Region.regions,
+      regional_managers: state.Region.regional_managers,
       error: state.Region.error,
       loading: state.Region.loading,
       initialLoading: state.Region.initialLoading,
-    })
-  );
+    }));
 
   // const Source = useSelector(
   //   (state: RootState) => state?.Source?.sources?.data
@@ -434,17 +471,18 @@ const Region = () => {
 
   useEffect(() => {
     dispatch(getRegion());
+    dispatch(getRegionManagers());
   }, []);
 
-  // useEffect(() => {
-  //   if (Source) {
-  //     const SourceArray = Source?.map((source: any) => ({
-  //       value: source.id.toString(),
-  //       label: source.source_name, // Replace with the appropriate field from the lead data
-  //     }));
-  //     setSourceData(SourceArray);
-  //   }
-  // }, [Source]);
+  useEffect(() => {
+    if (regional_managers) {
+      const managersArray = regional_managers?.map((manager: any) => ({
+        value: manager.id.toString(),
+        label: manager.name, // Replace with the appropriate field from the lead data
+      }));
+      setMangersData(managersArray);
+    }
+  }, [regional_managers]);
 
   if (initialLoading) {
     return (
@@ -468,7 +506,7 @@ const Region = () => {
         <Col>
           <BasicInputElements
             state={state}
-            sourceData={sourceData}
+            mangersData={mangersData}
             error={error}
             loading={loading}
           />

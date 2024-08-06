@@ -8,6 +8,10 @@ function getRegionsApi() {
   return api.get(`${url}`, {});
 }
 
+function getRegionsManagerApi() {
+  return api.get("/regional_managers", {});
+}
+
 //Get all by Id
 function getRegionByidApi(id: string) {
   return api.get(`${url}/${id}`, {});
@@ -17,6 +21,7 @@ function getRegionByidApi(id: string) {
 function addRegionsApi(params: {
   region_name: string;
   region_description: string;
+  regional_manager_id: string;
   updated_by: string;
 }) {
   return api.create(`${url}`, params);
@@ -28,6 +33,7 @@ function updateRegionsApi(
   params: {
     region_name: string;
     region_description: string;
+    regional_manager_id: string;
     updated_by: string;
   }
 ) {
@@ -44,4 +50,5 @@ export {
   updateRegionsApi,
   deleteRegionsApi,
   addRegionsApi,
+  getRegionsManagerApi,
 };

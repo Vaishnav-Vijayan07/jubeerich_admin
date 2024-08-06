@@ -3,6 +3,7 @@ import { RegionActionTypes } from "./constants";
 
 const INIT_STATE = {
   regions: [],
+  regional_managers: [],
   regionById: null,
   loading: false,
   initialLoading: false,
@@ -21,6 +22,7 @@ interface RegionActionType {
     | RegionActionTypes.API_RESPONSE_SUCCESS
     | RegionActionTypes.API_RESPONSE_ERROR
     | RegionActionTypes.GET_REGION
+    | RegionActionTypes.GET_REGION_MANAGERS
     | RegionActionTypes.GET_REGION_BY_ID
     | RegionActionTypes.ADD_REGION
     | RegionActionTypes.UPDATE_REGION
@@ -40,6 +42,14 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
           return {
             ...state,
             regions: action.payload.data,
+            loading: false,
+            initialLoading: false,
+          };
+        }
+        case RegionActionTypes.GET_REGION_MANAGERS: {
+          return {
+            ...state,
+            regional_managers: action.payload.data,
             loading: false,
             initialLoading: false,
           };
@@ -89,6 +99,14 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
             initialLoading: false,
           };
         }
+        case RegionActionTypes.GET_REGION_MANAGERS: {
+          return {
+            ...state,
+            error: action.payload.error,
+            loading: false,
+            initialLoading: false,
+          };
+        }
         case RegionActionTypes.GET_REGION_BY_ID: {
           showErrorAlert(action.payload.error);
           return {
@@ -127,6 +145,8 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
       }
 
     case RegionActionTypes.GET_REGION:
+      return { ...state, loading: true, initialLoading: true };
+    case RegionActionTypes.GET_REGION_MANAGERS:
       return { ...state, loading: true, initialLoading: true };
     case RegionActionTypes.GET_REGION_BY_ID:
       return { ...state, loading: true, initialLoading: true };
