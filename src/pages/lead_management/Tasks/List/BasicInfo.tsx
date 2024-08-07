@@ -19,7 +19,7 @@ const initialState = {
   remarks: "",
   lead_received_date: "",
   passport_no: "",
-  dob: new Date().toString(),
+  dob: new Date().toISOString().split("T")[0],
   gender: "",
   marital_status: "",
   nationality: "",
