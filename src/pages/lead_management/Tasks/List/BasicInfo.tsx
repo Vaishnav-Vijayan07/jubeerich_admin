@@ -44,7 +44,7 @@ const BasicInfo = ({
   const [selectedCountry, setSelectedCountry] = useState<any>([]);
 
   console.log("form data =>", formData);
-  
+
   const getBasicInfo = () => {
     setformData(initialState);
     axios
@@ -60,7 +60,8 @@ const BasicInfo = ({
         setSelectedCountry(countries)
         const modifiedData = {
           ...res.data.data,
-          preferred_country: res?.data?.data?.country_ids
+          preferred_country: res?.data?.data?.country_ids,
+          dob: moment(res?.data?.dob).format("YYYY-MM-DD")
         }
         setformData(modifiedData);
       })
