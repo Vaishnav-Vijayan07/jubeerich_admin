@@ -1,7 +1,6 @@
-export const baseUrl = "https://crm.intersmarthosting.in/jubeerich/";
-// export const baseUrl = "http://localhost:7700";
-// export const baseUrl = "http://localhost:7700";
-// export const baseUrl = "http://localhost:3000";
+// export const baseUrl = "https://crm.intersmarthosting.in/jubeerich/";
+export const baseUrl = "http://localhost:7700";
+
 
 //change status_id values
 export const follow_up_id = "46";

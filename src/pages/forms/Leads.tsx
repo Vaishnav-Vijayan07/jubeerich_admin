@@ -193,7 +193,7 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   console.log("isUpdate ======>", isUpdate);
-  
+
 
   /*
    * form methods
@@ -458,15 +458,40 @@ const BasicInputElements = withSwal((props: any) => {
         },
       ]
       : []),
-      ...(user?.role == 3
-        ? [
-          {
-            Header: "Assigned by",
-            accessor: "updated_by_user",
-            sort: false,
+    ...(user?.role == 3
+      ? [
+        {
+          Header: "Assigned by",
+          accessor: "updated_by_user",
+          sort: false,
+        },
+      ]
+      : []),
+    ...(user?.role == 3 || user?.role == 5
+      ? [
+        {
+          Header: "Assigned counsellor",
+          accessor: "counselors",
+          sort: false,
+          Cell: ({ row }: any) => {
+            const counselors = row?.original.counselors;
+            return (
+              <ul style={{ listStyle: "none", padding: 0 }}>
+                {counselors && counselors.length > 0 ? (
+                  counselors.map((item: any) => (
+                    <li key={item?.counselor_name}>{item?.counselor_name}</li>
+                  ))
+                ) : (
+                  <li>Not assigned</li>
+                )}
+              </ul>
+            );
           },
-        ]
-        : []),
+        },
+      ]
+      : []),
+
+
     {
       Header: "Actions",
       accessor: "",
@@ -1043,7 +1068,7 @@ const BasicInputElements = withSwal((props: any) => {
                 onSelect={handleSelectedValues}
               /> : <Table
                 columns={columns}
-                  data={records ? records : []}
+                data={records ? records : []}
                 pageSize={5}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}

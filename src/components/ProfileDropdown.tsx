@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 import classNames from "classnames";
-import { baseUrl } from "../constants";
 
 interface ProfileMenuItem {
   label: string;
