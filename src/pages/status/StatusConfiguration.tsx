@@ -180,7 +180,7 @@ const BasicInputElements = withSwal((props: any) => {
       ),
     },
     {
-      Header: "Actions",
+      Header: " ",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (

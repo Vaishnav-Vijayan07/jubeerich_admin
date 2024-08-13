@@ -1,9 +1,11 @@
 .cursor-pointer {
   cursor: pointer;
 }
-.react-datepicker-wrapper input{
+
+.react-datepicker-wrapper input {
   width: 100px;
 }
+
 .swal2-popup .swal2-html-container,
 .swal2-popup .swal2-content {
   font-weight: normal;
@@ -11,14 +13,17 @@
   margin-top: 0.5rem;
   color: var(--ct-gray-800);
 }
+
 button.react-datepicker__close-icon {
   display: none;
 }
+
 .react-datepicker__input-container input {
   border: 1px solid rgba(0, 0, 0, 0.2);
   padding: 4px 10px;
   border-radius: 5px;
 }
+
 .react-datepicker__day--selected {
   border-radius: 50% !important;
 }
@@ -26,29 +31,37 @@ button.react-datepicker__close-icon {
 .react-datepicker__header {
   background-color: #fff !important;
 }
+
 .react-datepicker__day-names {
   background-color: #efeeee !important;
 }
+
 .react-datepicker__navigation {
   top: 7px !important;
 }
+
 .react-datepicker__day-name {
   width: 2rem !important;
   line-height: 2rem !important;
 }
+
 .react-datepicker__current-month {
   margin-bottom: 0.5rem !important;
 }
+
 .react-datepicker__day {
   width: 2rem !important;
   line-height: 2rem !important;
 }
+
 .custom-modal .modal-dialog.modal-dialog-centered {
   max-width: max-content;
 }
+
 .custom-modal .modal-body {
   padding: 0rem !important;
 }
+
 .custom-modal .modal-footer {
   border-top: none !important;
   padding-top: 0rem;
@@ -68,25 +81,32 @@ button.react-datepicker__close-icon {
 }
 
 .custom-select option {
-  padding: 10px; /* Add padding to create space between options */
+  padding: 10px;
+  /* Add padding to create space between options */
 }
 
 .hex-background {
-  background-color: rgba(255, 87, 51, 0.5); /* Default RGBA color with 50% opacity */
+  background-color: rgba(255, 87, 51, 0.5);
+  /* Default RGBA color with 50% opacity */
 }
+
 .task__list {
   padding: 10px 5px;
 }
+
 .unselected-task {
   border-left: 3px solid #ffffff;
 }
+
 .selected-task {
   background-color: rgb(237, 237, 237);
   border-left: 3px solid #6558dc;
 }
+
 .table-responsive {
   min-height: 310px;
 }
+
 .status__btn {
   border: none;
   padding: 5px 15px;
@@ -95,31 +115,41 @@ button.react-datepicker__close-icon {
 ul {
   padding: 0;
 }
+
 .max-content {
   width: max-content;
 }
+
 .max-height {
   height: fit-content;
 }
+
 .custom-table {
   border-collapse: collapse;
-  border-spacing: 8px; /* Adjust the spacing between columns as needed */
+  border-spacing: 8px;
+  /* Adjust the spacing between columns as needed */
   margin-top: 30px;
 }
 
-.custom-table th{
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Add a border to the right of each column */
-  padding: 14px 8px; /* Adjust the padding as needed */
+.custom-table th {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  /* Add a border to the right of each column */
+  padding: 14px 8px;
+  /* Adjust the padding as needed */
 }
 
 .custom-table td {
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Add a border to the right of each column */
-  padding: 6px 8px; /* Adjust the padding as needed */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  /* Add a border to the right of each column */
+  padding: 6px 8px;
+  /* Adjust the padding as needed */
 }
+
 td,
 th {
-  text-align: center; /* Center-align the content horizontally */
-  vertical-align: middle; /* Center-align the content vertically */
+  /* text-align: center; Center-align the content horizontally */
+  vertical-align: middle;
+  /* Center-align the content vertically */
 }
 
 .truncate-text {
@@ -148,21 +178,28 @@ th {
 .my-dropdown-toggle::after {
   content: none;
 }
+
 .dotted-border-bottom {
   border-bottom: 1.4px dashed #81818196;
 }
+
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Adjust the number of columns */
-  gap: 10px; /* Adjust the gap between grid items */
+  grid-template-columns: repeat(4, 1fr);
+  /* Adjust the number of columns */
+  gap: 10px;
+  /* Adjust the gap between grid items */
   row-gap: 25px;
 }
 
 @media screen and (max-width: 1600px) {
   .grid-container {
-    grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns */
-    gap: 10px; /* Adjust the gap between grid items */
+    grid-template-columns: repeat(3, 1fr);
+    /* Adjust the number of columns */
+    gap: 10px;
+    /* Adjust the gap between grid items */
   }
+
   .grid-br {
     display: none;
   }
@@ -170,8 +207,10 @@ th {
 
 @media screen and (max-width: 650px) {
   .grid-container {
-    grid-template-columns: repeat(2, 1fr); /* Adjust the number of columns */
-    gap: 10px; /* Adjust the gap between grid items */
+    grid-template-columns: repeat(2, 1fr);
+    /* Adjust the number of columns */
+    gap: 10px;
+    /* Adjust the gap between grid items */
   }
 }
 
@@ -183,11 +222,13 @@ th {
   display: block;
   position: relative;
 }
+
 .history-tl-container ul.tl {
   margin: 20px 0;
   padding: 0;
   display: inline-block;
 }
+
 .history-tl-container ul.tl li {
   list-style: none;
   margin: auto;
@@ -198,10 +239,12 @@ th {
   padding: 0 0 50px 30px;
   position: relative;
 }
+
 .history-tl-container ul.tl li:last-child {
   border-left: 0;
   margin-left: 21px;
 }
+
 .history-tl-container ul.tl li::before {
   position: absolute;
   left: -7px;
@@ -213,6 +256,7 @@ th {
   width: 10px;
   transition: all 500ms ease-in-out;
 }
+
 .history-tl-container ul.tl li:first-child::before {
   border-color: #00ce64;
 }
@@ -221,15 +265,18 @@ th {
   border-color: #0771ae;
   transition: all 1000ms ease-in-out;
 }
+
 .history-tl-container ul.tl li:first-child:hover::before {
   border-color: #00ce64;
 }
-ul.tl li .item-title {
-}
+
+ul.tl li .item-title {}
+
 ul.tl li .item-detail {
   color: rgba(0, 0, 0, 0.5);
   font-size: 12px;
 }
+
 ul.tl li .timestamp {
   color: #8d8d8d;
   width: 100px;
@@ -252,6 +299,7 @@ ul.tl li .timestamp {
   /* position: fixed; */
   /* margin-right: 500px !important; */
 }
+
 .react-datepicker-wrapper input {
   cursor: pointer;
 }
@@ -298,4 +346,20 @@ ul.tl li .timestamp {
 
 .lead-date-picker .react-datepicker__input-container input {
   padding: 8px;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+  --ct-table-accent-bg: rgb(51 100 241 / 9%);
+  color: var(--ct-table-striped-color);
+}
+
+.custom-table th {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 14px 8px;
+  background: #3457aead !important;
+  color: #fff !important;
+}
+
+.menu .menu-item .sub-menu .menu-text {
+  font-size: calc(var(--ct-menu-item-font-size)* 1);
 }
