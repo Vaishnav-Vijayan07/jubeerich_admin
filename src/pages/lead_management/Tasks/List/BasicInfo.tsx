@@ -101,10 +101,12 @@ const BasicInfo = ({
           }
         })
         setSelectedCountry(countries)
+        
         const modifiedData = {
           ...res.data.data,
           preferred_country: res?.data?.data?.country_ids,
-          dob: moment(res?.data?.dob).format("YYYY-MM-DD")
+          // dob: moment(res?.data?.dob).format("YYYY-MM-DD")
+          dob: moment(res?.data?.data?.dob).format("YYYY-MM-DD")
         }
         console.log('MODIFIED DATE',modifiedData.dob);
         
@@ -400,8 +402,7 @@ const BasicInfo = ({
                 placeholder="Select date of birth"
                 key="dob"
                 defaultValue={moment(formData?.dob).format("YYYY-MM-DD")}
-                // value={moment(formData?.dob).format("YYYY-MM-DD")}
-                value={formData?.dob}
+                value={moment(formData?.dob).format("YYYY-MM-DD")}
                 onChange={handleInputChange}
               />
               {validationErrors.dob && <Form.Text className="text-danger">{validationErrors.dob}</Form.Text>}
