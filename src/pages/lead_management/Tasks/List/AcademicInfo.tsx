@@ -3,6 +3,19 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
+import * as yup from 'yup';
+
+
+const validationErrorsInitialState = {
+  qualification: "",
+  place: "",
+  percentage: "",
+  year_of_passing: "",
+  backlogs: "",
+  work_experience: "",
+  company: "",
+  designation: "",
+}
 
 const initialState = {
   qualification: "",
@@ -19,6 +32,18 @@ const initialState = {
 const AcademicInfo = ({ studentId }: any) => {
   const [formData, setformData] = useState(initialState);
   const [loading, setLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
+
+  const ValidationSchema = yup.object().shape({
+    qualification: yup.string().nullable(),
+    place: yup.string().required("Place cannot be empty"),
+    percentage: yup.string().required("Percentage cannot be empty"),
+    year_of_passing: yup.string().required("Year of passing cannot be empty"),
+    backlogs: yup.string().nullable(),
+    work_experience: yup.string().nullable(),
+    company: yup.string().nullable(),
+    designation: yup.string().nullable(),
+  })
 
   // apis
   const getAcademicInfo = () => {
@@ -48,30 +73,48 @@ const AcademicInfo = ({ studentId }: any) => {
     }));
   };
 
-  const saveStudentAcademicInfo = () => {
-    setLoading(true);
-    axios
-      .post("saveStudentAcademicInfo", {
-        user_id: studentId,
-        qualification: formData?.qualification,
-        place: formData?.place,
-        percentage: formData?.percentage,
-        year_of_passing: formData?.year_of_passing,
-        backlogs: formData?.backlogs,
-        work_experience: formData?.work_experience,
-        designation: formData?.designation,
-      })
-      .then((res) => {
-        console.log("res: =>", res);
-        setLoading(false);
-        showSuccessAlert(res.data.message);
-        // getBasicInfoApi()
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        showErrorAlert("Error occured");
-      });
+  const saveStudentAcademicInfo = async() => {
+    try {
+
+      await ValidationSchema.validate(formData, { abortEarly: false})
+      
+      setLoading(true);
+      
+      axios
+        .post("saveStudentAcademicInfo", {
+          user_id: studentId,
+          qualification: formData?.qualification,
+          place: formData?.place,
+          percentage: formData?.percentage,
+          year_of_passing: formData?.year_of_passing,
+          backlogs: formData?.backlogs,
+          work_experience: formData?.work_experience,
+          designation: formData?.designation,
+        })
+        .then((res) => {
+          console.log("res: =>", res);
+          setLoading(false);
+          showSuccessAlert(res.data.message);
+          setValidationErrors(validationErrorsInitialState);
+
+          // getBasicInfoApi()
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+          showErrorAlert("Error occured");
+        });
+    } catch (validationError) {
+      if (validationError instanceof yup.ValidationError) {
+        const errors: any = {};
+        validationError.inner.forEach((error) => {
+          if (error.path) {
+            errors[error.path] = error.message;
+          }
+        });
+        setValidationErrors(errors);
+      }
+    }
   };
 
   console.log("formData", formData);
@@ -85,23 +128,23 @@ const AcademicInfo = ({ studentId }: any) => {
         <Row>
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="qualification">
-              <Form.Label>Qualification</Form.Label>
+              <Form.Label><span className="text-danger">* </span>Qualification</Form.Label>
               <FormInput
                 type="text"
                 name="qualification"
-                placeholder="qualification"
+                placeholder="Enter qualification"
                 key="qualification"
                 defaultValue={formData?.qualification}
                 value={formData?.qualification}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>} */}
+              {validationErrors.qualification && <Form.Text className="text-danger">{validationErrors.qualification}</Form.Text>}
             </Form.Group>
           </Col>
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="place">
-              <Form.Label>Place</Form.Label>
+              <Form.Label><span className="text-danger">* </span>Place</Form.Label>
               <FormInput
                 type="text"
                 name="place"
@@ -110,13 +153,13 @@ const AcademicInfo = ({ studentId }: any) => {
                 value={formData.place}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>} */}
+              {validationErrors.place && <Form.Text className="text-danger">{validationErrors.place}</Form.Text>}
             </Form.Group>
           </Col>
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="percentage">
-              <Form.Label>Percentage</Form.Label>
+              <Form.Label><span className="text-danger">* </span>Percentage</Form.Label>
               <FormInput
                 type="number"
                 name="percentage"
@@ -124,16 +167,17 @@ const AcademicInfo = ({ studentId }: any) => {
                 key="percentage"
                 value={formData?.percentage}
                 onChange={handleInputChange}
+                min={0}
               />
-              {/* {validationErrors.whatsapp_number && (
-              <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-            )} */}
+              {validationErrors.percentage && (
+              <Form.Text className="text-danger">{validationErrors.percentage}</Form.Text>
+            )}
             </Form.Group>
           </Col>
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="year_of_passing">
-              <Form.Label>Year of passing</Form.Label>
+              <Form.Label><span className="text-danger">* </span>Year of passing</Form.Label>
               <FormInput
                 type="number"
                 name="year_of_passing"
@@ -141,10 +185,11 @@ const AcademicInfo = ({ studentId }: any) => {
                 key="year_of_passing"
                 value={formData?.year_of_passing}
                 onChange={handleInputChange}
+                min={0}
               />
-              {/* {validationErrors.whatsapp_number && (
-              <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-            )} */}
+              {validationErrors.year_of_passing && (
+              <Form.Text className="text-danger">{validationErrors.year_of_passing}</Form.Text>
+            )}
             </Form.Group>
           </Col>
 
@@ -159,9 +204,9 @@ const AcademicInfo = ({ studentId }: any) => {
                 value={formData.backlogs}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-              <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-            )} */}
+              {validationErrors.backlogs && (
+              <Form.Text className="text-danger">{validationErrors.backlogs}</Form.Text>
+            )}
             </Form.Group>
           </Col>
 
@@ -179,10 +224,11 @@ const AcademicInfo = ({ studentId }: any) => {
                 key="work_experience"
                 value={formData?.work_experience}
                 onChange={handleInputChange}
+                min={0}
               />
-              {/* {validationErrors.whatsapp_number && (
-              <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-            )} */}
+              {validationErrors.work_experience && (
+              <Form.Text className="text-danger">{validationErrors.work_experience}</Form.Text>
+            )}
             </Form.Group>
           </Col>
 
@@ -197,9 +243,9 @@ const AcademicInfo = ({ studentId }: any) => {
                 value={formData?.company}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-              <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-            )} */}
+              {validationErrors.company && (
+              <Form.Text className="text-danger">{validationErrors.company}</Form.Text>
+            )}
             </Form.Group>
           </Col>
 
@@ -214,9 +260,9 @@ const AcademicInfo = ({ studentId }: any) => {
                 value={formData?.designation}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-              <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-            )} */}
+              {validationErrors.designation && (
+              <Form.Text className="text-danger">{validationErrors.designation}</Form.Text>
+            )}
             </Form.Group>
           </Col>
 

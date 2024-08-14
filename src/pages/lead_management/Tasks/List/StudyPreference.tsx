@@ -8,6 +8,22 @@ import makeAnimated from "react-select/animated";
 import { getUniversity } from "../../../../redux/University/actions";
 import { RootState } from "../../../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
+import * as yup from 'yup';
+
+const validationErrorsInitialState = {
+  intersted_country: "",
+  intrested_institution: "",
+  intake_year: "",
+  intake_month: "",
+  estimated_budget: "",
+  course_field_of_intrest: "",
+  universities: "",
+  campus: "",
+  stream: "",
+  course: "",
+  duration: "",
+  course_fee: ""
+}
 
 const initialState = {
   intersted_country: "",
@@ -30,6 +46,36 @@ const StudyPreference = ({ studentId, Countries }: any) => {
   const [universityData, setUniversityData] = useState([]);
   const [selectedUniversities, setSelectedUniversities] = useState<any>([]);
   const [selectedUniversities1, setSelectedUniversities1] = useState<any>(null);
+  const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
+
+  const ValidationSchema = yup.object().shape({
+    intersted_country: yup.string().required("Prefered Country cannot be empty"),
+    intrested_institution: yup.string().nullable(),
+    intake_year: yup.string().required("Intake Year cannot be empty"),
+    intake_month: yup.string().required("Intake Month cannot be empty"),
+    estimated_budget: yup.string().nullable(),
+    course_field_of_intrest: yup.string().nullable(),
+    universities: yup.array().of(yup.string()).nullable(),
+    campus: yup.string().nullable(),
+    stream: yup.string().nullable(),
+    course: yup.string().nullable(),
+    duration: yup.string().nullable(),
+    course_fee: yup.string().nullable(),
+
+    // intersted_country: formData?.intersted_country,
+    // intrested_institution: formData?.intrested_institution,
+    // intake_year: formData?.intake_year,
+    // intake_month: formData?.intake_month,
+    // estimated_budget: formData?.estimated_budget,
+    // course_field_of_intrest: formData?.course_field_of_intrest,
+    // user_id: studentId,
+    // course_fee: formData?.course_fee,
+    // universities: formData?.universities,
+    // campus: formData?.campus,
+    // stream: formData?.stream,
+    // course: formData?.course,
+    // duration: formData?.duration,
+  })
 
   console.log("selectedUniversities =====>", selectedUniversities);
 
@@ -87,35 +133,53 @@ const StudyPreference = ({ studentId, Countries }: any) => {
   };
 
   // save details api
-  const saveStudentStudyPreferenceInfo = () => {
-    setLoading(true);
-    axios
-      .post("saveStudentStudyPreferenceInfo", {
-        intersted_country: formData?.intersted_country,
-        intrested_institution: formData?.intrested_institution,
-        intake_year: formData?.intake_year,
-        intake_month: formData?.intake_month,
-        estimated_budget: formData?.estimated_budget,
-        course_field_of_intrest: formData?.course_field_of_intrest,
-        user_id: studentId,
-        course_fee: formData?.course_fee,
-        universities: formData?.universities,
-        campus: formData?.campus,
-        stream: formData?.stream,
-        course: formData?.course,
-        duration: formData?.duration,
-      })
-      .then((res) => {
-        console.log("res: =>", res);
-        setLoading(false);
-        showSuccessAlert(res.data.message);
-        // getBasicInfoApi();
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        showErrorAlert("Error occured");
+  const saveStudentStudyPreferenceInfo = async() => {
+
+    try {
+      await ValidationSchema.validate(formData, { abortEarly: false})
+      
+      setLoading(true);
+      
+      axios
+        .post("saveStudentStudyPreferenceInfo", {
+          intersted_country: formData?.intersted_country,
+          intrested_institution: formData?.intrested_institution,
+          intake_year: formData?.intake_year,
+          intake_month: formData?.intake_month,
+          estimated_budget: formData?.estimated_budget,
+          course_field_of_intrest: formData?.course_field_of_intrest,
+          user_id: studentId,
+          course_fee: formData?.course_fee,
+          universities: formData?.universities,
+          campus: formData?.campus,
+          stream: formData?.stream,
+          course: formData?.course,
+          duration: formData?.duration,
+        })
+        .then((res) => {
+          console.log("res: =>", res);
+          setLoading(false);
+          showSuccessAlert(res.data.message);
+          setValidationErrors(validationErrorsInitialState);
+          // getBasicInfoApi();
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+          showErrorAlert("Error occured");
+        });
+    } catch (validationError) {
+      if (validationError instanceof yup.ValidationError) {
+      const errors: any = {};
+      validationError.inner.forEach((error) => {
+        if (error.path) {
+          errors[error.path] = error.message;
+        }
       });
+      setValidationErrors(errors);
+      }
+    }
+
   };
 
   useEffect(() => {
@@ -170,6 +234,7 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                   <option value={country.id}>{country.country_name}</option>
                 ))}
               </Form.Select>
+              {validationErrors.intersted_country && <Form.Text className="text-danger">{validationErrors.intersted_country}</Form.Text>}
             </Form.Group>
           </Col>
 
@@ -184,13 +249,13 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 value={formData.intrested_institution}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>} */}
+              {validationErrors.intrested_institution && <Form.Text className="text-danger">{validationErrors.intrested_institution}</Form.Text>}
             </Form.Group>
           </Col>
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="intake_year">
-              <Form.Label>Intake year</Form.Label>
+              <Form.Label><span className="text-danger">* </span> Intake year</Form.Label>
               <FormInput
                 type="number"
                 name="intake_year"
@@ -199,15 +264,14 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 value={formData.intake_year}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-          )} */}
+              {validationErrors.intake_year && (
+            <Form.Text className="text-danger">{validationErrors.intake_year}</Form.Text>)}
             </Form.Group>
           </Col>
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="intake_month">
-              <Form.Label>intake Month</Form.Label>
+              <Form.Label><span className="text-danger">* </span> Intake Month</Form.Label>
               <Form.Select
                 name="intake_month"
                 className="mb-3"
@@ -231,6 +295,8 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 <option value="11">November</option>
                 <option value="12">December</option>
               </Form.Select>
+              {validationErrors.intake_month && (
+            <Form.Text className="text-danger">{validationErrors.intake_month}</Form.Text>)}
             </Form.Group>
           </Col>
 
@@ -245,9 +311,9 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 value={formData.estimated_budget}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-          )} */}
+              {validationErrors.estimated_budget && (
+            <Form.Text className="text-danger">{validationErrors.estimated_budget}</Form.Text>
+          )}
             </Form.Group>
           </Col>
 
@@ -262,9 +328,9 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 value={formData.course_field_of_intrest}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-          )} */}
+              {validationErrors.course_field_of_intrest && (
+            <Form.Text className="text-danger">{validationErrors.course_field_of_intrest}</Form.Text>
+          )}
             </Form.Group>
           </Col>
           <Form.Group className="mb-3" controlId="universities">
@@ -280,6 +346,9 @@ const StudyPreference = ({ studentId, Countries }: any) => {
               value={selectedUniversities}
               onChange={handleUniversityChange as any}
             />
+            {/* {validationErrors.course_field_of_intrest && (
+            <Form.Text className="text-danger">{validationErrors.course_field_of_intrest}</Form.Text>
+          )} */}
           </Form.Group>
 
           <Col xl={6} xxl={4}>
@@ -293,9 +362,9 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 value={formData.campus}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-          )} */}
+              {validationErrors.campus && (
+            <Form.Text className="text-danger">{validationErrors.campus}</Form.Text>
+          )}
             </Form.Group>
           </Col>
 
@@ -310,9 +379,9 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 value={formData.stream}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-          )} */}
+              {validationErrors.stream && (
+            <Form.Text className="text-danger">{validationErrors.stream}</Form.Text>
+          )}
             </Form.Group>
           </Col>
 
@@ -327,9 +396,9 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 value={formData.course}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-          )} */}
+              {validationErrors.course && (
+            <Form.Text className="text-danger">{validationErrors.course}</Form.Text>
+          )}
             </Form.Group>
           </Col>
 
@@ -344,9 +413,9 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 value={formData.duration}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-          )} */}
+              {validationErrors.duration && (
+            <Form.Text className="text-danger">{validationErrors.duration}</Form.Text>
+          )}
             </Form.Group>
           </Col>
 
@@ -361,9 +430,9 @@ const StudyPreference = ({ studentId, Countries }: any) => {
                 value={formData.course_fee}
                 onChange={handleInputChange}
               />
-              {/* {validationErrors.whatsapp_number && (
-            <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
-          )} */}
+              {validationErrors.course_fee && (
+            <Form.Text className="text-danger">{validationErrors.course_fee}</Form.Text>
+          )}
             </Form.Group>
           </Col>
 
