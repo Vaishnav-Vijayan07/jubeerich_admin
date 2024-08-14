@@ -160,6 +160,7 @@ const StudyPreference = ({ studentId, Countries }: any) => {
           console.log("res: =>", res);
           setLoading(false);
           showSuccessAlert(res.data.message);
+          setValidationErrors(validationErrorsInitialState);
           // getBasicInfoApi();
         })
         .catch((err) => {
