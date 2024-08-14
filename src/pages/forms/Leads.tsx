@@ -180,12 +180,13 @@ const BasicInputElements = withSwal((props: any) => {
       .required("Full name is required")
       .min(3, "Full name must be at least 3 characters long"),
     email: yup.string().required("Email is required").email("Invalid email"),
-    phone: yup.string().required("Phone is required"),
+    phone: yup.string().required("Phone is required").matches(/^[0-9]+$/, "Phone number must be digits only").max(10, "Enter a valid phone number"),
     category_id: yup.string().required("Category is required"),
     source_id: yup.string().required("Source is required"),
     channel_id: yup.string().required("Channel is required"),
     city: yup.string().required("City is required"),
-    preferred_country: yup.string().required("Preferred country is required"),
+    // preferred_country: yup.string().required("Preferred country is required"),
+    preferred_country: yup.array().of(yup.string()).required("Preferred country is required"),
     office_type: yup.string().required("Office type is required"),
     lead_received_date: yup.date().required("Date is required"),
     ielts: yup.boolean(),
@@ -335,7 +336,7 @@ const BasicInputElements = withSwal((props: any) => {
 
     // Validate the form using yup
     try {
-      // await validationSchema.validate(formData, { abortEarly: false });
+      await validationSchema.validate(formData, { abortEarly: false });
 
       //   // Validation passed, handle form submission
 
@@ -939,11 +940,20 @@ const BasicInputElements = withSwal((props: any) => {
 
             <Modal.Footer>
               <Button
+                variant="primary"
+                id="button-addon2"
+                className="mt-1 ms-2"
+                onClick={() => [handleResetValues()]
+                }
+              >
+                Clear
+              </Button>
+              <Button
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 ms-2"
                 onClick={() =>
-                  isUpdate ? [handleCancelUpdate(), toggle()] : toggle()
+                  isUpdate ? [handleCancelUpdate(), toggle()] : [toggle(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
