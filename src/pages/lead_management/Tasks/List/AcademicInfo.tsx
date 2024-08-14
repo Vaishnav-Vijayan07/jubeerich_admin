@@ -124,6 +124,7 @@ const AcademicInfo = ({ studentId }: any) => {
                 key="percentage"
                 value={formData?.percentage}
                 onChange={handleInputChange}
+                min={0}
               />
               {/* {validationErrors.whatsapp_number && (
               <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
@@ -141,6 +142,7 @@ const AcademicInfo = ({ studentId }: any) => {
                 key="year_of_passing"
                 value={formData?.year_of_passing}
                 onChange={handleInputChange}
+                min={0}
               />
               {/* {validationErrors.whatsapp_number && (
               <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
@@ -179,6 +181,7 @@ const AcademicInfo = ({ studentId }: any) => {
                 key="work_experience"
                 value={formData?.work_experience}
                 onChange={handleInputChange}
+                min={0}
               />
               {/* {validationErrors.whatsapp_number && (
               <Form.Text className="text-danger">{validationErrors.whatsapp_number}</Form.Text>
