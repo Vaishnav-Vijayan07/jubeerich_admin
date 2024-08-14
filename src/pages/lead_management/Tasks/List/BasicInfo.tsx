@@ -72,20 +72,20 @@ const BasicInfo = ({
     full_name: yup.string().required("Name cannot be empty"),
     email: yup.string().required("Email cannot be empty").email("Enter a valid email"),
     phone: yup.string().required("Password cannot be empty").matches(/^[0-9]+$/, "Phone number must be digits only").max(10, "Enter a valid phone number"),
-    // city: yup.string(),
-    // preferred_country: yup.array().of(yup.string()),
-    // office_type: yup.string(),
-    // remarks: yup.string(),
+    city: yup.string().nullable(),
+    preferred_country: yup.array().of(yup.string()).nullable(),
+    office_type: yup.string().required("Office Type cannot be empty"),
+    remarks: yup.string().nullable(),
     lead_received_date: yup.string().required("Date required"),
-    // passport_no: yup.string().nullable(),
+    passport_no: yup.string().nullable(),
     dob: yup.string().required("DOB is required"),
     gender: yup.string().required("Gender is required"),
-    // marital_status: yup.string(),
-    // nationality: yup.string(),
-    // secondary_number: yup.string().matches(/^[0-9]+$/, "Phone number must be digits only").max(10, "Enter a valid phone number"),
-    // state: yup.string(),
-    // country: yup.string(),
-    // address: yup.string(),
+    marital_status: yup.string().nullable(),
+    nationality: yup.string().nullable(),
+    secondary_number: yup.string().matches(/^[0-9]+$/, "Phone number must be digits only").max(10, "Enter a valid phone number").nullable(),
+    state: yup.string().nullable(),
+    country: yup.string().nullable(),
+    address: yup.string().nullable(),
   })
 
   const getBasicInfo = () => {
@@ -106,6 +106,8 @@ const BasicInfo = ({
           preferred_country: res?.data?.data?.country_ids,
           dob: moment(res?.data?.dob).format("YYYY-MM-DD")
         }
+        console.log('MODIFIED DATE',modifiedData.dob);
+        
         setformData(modifiedData);
       })
       .catch((err) => {
@@ -160,6 +162,7 @@ const BasicInfo = ({
           setLoading(false);
           showSuccessAlert(res.data.message);
           getBasicInfoApi();
+          setValidationErrors(validationErrorsInitialState)
         })
         .catch((err) => {
           console.log(err);
@@ -201,7 +204,7 @@ const BasicInfo = ({
         <Row>
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="full_name">
-              <Form.Label>Full Name</Form.Label>
+              <Form.Label><span className="text-danger">* </span>Full Name</Form.Label>
               <FormInput
                 type="text"
                 name="full_name"
@@ -217,7 +220,7 @@ const BasicInfo = ({
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="email">
-              <Form.Label>Email Id</Form.Label>
+              <Form.Label><span className="text-danger">* </span>Email Id</Form.Label>
               <FormInput
                 type="email"
                 name="email"
@@ -232,7 +235,7 @@ const BasicInfo = ({
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="phone">
-              <Form.Label>Phone Number</Form.Label>
+              <Form.Label><span className="text-danger">* </span>Phone Number</Form.Label>
               <FormInput
                 type="phone"
                 name="phone"
@@ -297,11 +300,12 @@ const BasicInfo = ({
                 value={selectedCountry}
                 onChange={handleSelectChange as any}
               />
+              {validationErrors.preferred_country && <Form.Text className="text-danger">{validationErrors.preferred_country}</Form.Text>}
             </Form.Group>
           </Col>
 
           <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="office_type">
+            <Form.Group className="mb-3" controlId="office_type"><span className="text-danger">* </span>
               Office Type <Form.Label></Form.Label>
               <Form.Select
                 name="office_type"
@@ -319,6 +323,7 @@ const BasicInfo = ({
                   </option>
                 ))}
               </Form.Select>
+              {validationErrors.office_type && <Form.Text className="text-danger">{validationErrors.office_type}</Form.Text>}
             </Form.Group>
           </Col>
           {/* </Row>
@@ -382,6 +387,7 @@ const BasicInfo = ({
                   </option>
                 ))}
               </Form.Select>
+              {validationErrors.marital_status && <Form.Text className="text-danger">{validationErrors.marital_status}</Form.Text>}
             </Form.Group>
           </Col>
 
@@ -394,7 +400,8 @@ const BasicInfo = ({
                 placeholder="Select date of birth"
                 key="dob"
                 defaultValue={moment(formData?.dob).format("YYYY-MM-DD")}
-                value={moment(formData?.dob).format("YYYY-MM-DD")}
+                // value={moment(formData?.dob).format("YYYY-MM-DD")}
+                value={formData?.dob}
                 onChange={handleInputChange}
               />
               {validationErrors.dob && <Form.Text className="text-danger">{validationErrors.dob}</Form.Text>}
@@ -428,6 +435,7 @@ const BasicInfo = ({
                 value={formData?.nationality}
                 onChange={handleInputChange}
               />
+              {validationErrors.nationality && <Form.Text className="text-danger">{validationErrors.nationality}</Form.Text>}
             </Form.Group>
           </Col>
 
@@ -443,6 +451,7 @@ const BasicInfo = ({
                 value={formData?.secondary_number}
                 onChange={handleInputChange}
               />
+              {validationErrors.secondary_number && <Form.Text className="text-danger">{validationErrors.secondary_number}</Form.Text>}
             </Form.Group>
           </Col>
 
@@ -452,12 +461,13 @@ const BasicInfo = ({
               <FormInput
                 type="tel"
                 name="state"
-                placeholder="Enter secondary number"
+                placeholder="Enter state"
                 key="state"
                 defaultValue={formData?.state}
                 value={formData?.state}
                 onChange={handleInputChange}
               />
+              {validationErrors.state && <Form.Text className="text-danger">{validationErrors.state}</Form.Text>}
             </Form.Group>
           </Col>
 
@@ -473,6 +483,7 @@ const BasicInfo = ({
                 value={formData?.country}
                 onChange={handleInputChange}
               />
+              {validationErrors.country && <Form.Text className="text-danger">{validationErrors.country}</Form.Text>}
             </Form.Group>
           </Col>
 
@@ -488,6 +499,7 @@ const BasicInfo = ({
                 value={formData.address}
                 onChange={handleInputChange}
               />
+              {validationErrors.address && <Form.Text className="text-danger">{validationErrors.address}</Form.Text>}
             </Form.Group>
           </Col>
 
@@ -502,6 +514,7 @@ const BasicInfo = ({
                 value={formData.remarks}
                 onChange={handleInputChange}
               />
+              {validationErrors.remarks && <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>}
             </Form.Group>
           </Col>
 
