@@ -226,6 +226,12 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  const handleResetValues = () => {
+    setFormData(initialState);
+    setValidationErrors(initialValidationState);
+    setSelectedStatus(null);
+  }
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -255,10 +261,19 @@ const BasicInputElements = withSwal((props: any) => {
             </Modal.Body>
             <Modal.Footer>
               <Button
-                variant="danger"
+                variant="primary"
                 id="button-addon2"
                 className="mt-1 ms-2"
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : toggleResponsiveModal())}
+                onClick={() => [handleResetValues()]
+                }
+              >
+                Clear
+              </Button>
+              <Button
+                variant="danger"
+                id="button-addon2"
+                className="mt-1 "
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>

@@ -383,13 +383,21 @@ const BasicInputElements = withSwal((props: any) => {
 
             <Modal.Footer>
               <Button
-                variant="danger"
+                variant="primary"
                 id="button-addon2"
                 className="mt-1 ms-2"
+                onClick={() => ([handleResetValues()])}
+              >
+                Clear
+              </Button>
+              <Button
+                variant="danger"
+                id="button-addon2"
+                className="mt-1"
                 onClick={() =>
                   isUpdate
                     ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : toggleResponsiveModal()
+                    : [toggleResponsiveModal(),handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}

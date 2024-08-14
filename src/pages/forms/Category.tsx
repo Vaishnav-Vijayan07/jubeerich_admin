@@ -276,6 +276,11 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  const handleResetValues = () => {
+    setValidationErrors(initialValidationState); // Clear validation errors
+    setFormData(initialFormData); //clear form data
+  };
+
   useEffect(() => {
     // Check for errors and clear the form
     if (!loading && !error) {
@@ -347,14 +352,23 @@ const BasicInputElements = withSwal((props: any) => {
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
+            <Button
+                variant="primary"
+                id="button-addon2"
+                className="mt-3 ms-2"
+                onClick={() =>[setFormData(initialFormData)]
+                }
+              >
+                Clear
+              </Button>
               <Button
                 variant="danger"
                 id="button-addon2"
-                className="mt-3 ms-2"
+                className="mt-3 "
                 onClick={() =>
                   isUpdate
                     ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : toggleResponsiveModal()
+                    : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}

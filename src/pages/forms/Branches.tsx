@@ -252,7 +252,7 @@ const BasicInputElements = withSwal((props: any) => {
     e.preventDefault();
     // Validate the form using yup
     try {
-      // await validationSchema.validate(formData, { abortEarly: false });
+      await validationSchema.validate(formData, { abortEarly: false });
       // Validation passed, handle form submission
 
       if (userInfo) {
@@ -533,6 +533,20 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  const handleResetValues = () => {
+    setValidationErrors({
+      branch_name: "",
+      address: "",
+      city: "",
+      country: "",
+    });
+
+    setFormData(initialState)
+    setSelectedRegion('')
+    setSelectedOffice('')
+    setValidationErrors(initialValidationState);
+  }
+
   useEffect(() => {
     if (selectedCountry !== null && selectedState !== null) {
       const fetchCities = async () => {
@@ -580,7 +594,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Email</Form.Label>
-                    <Form.Control type="email" name="email" value={formData.email} onChange={handleInputChange} />
+                    <Form.Control type="text" name="email" value={formData.email} onChange={handleInputChange} />
                     {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                   </Form.Group>
                 </Col>
@@ -876,11 +890,20 @@ const BasicInputElements = withSwal((props: any) => {
               </Row>
             </Modal.Body>
             <Modal.Footer>
+            <Button
+                variant="primary"
+                id="button-addon2"
+                className="mt-1 ms-2"
+                onClick={() => [handleResetValues()]
+                }
+              >
+                Clear
+              </Button>
               <Button
                 variant="danger"
                 id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : toggleResponsiveModal())}
+                className="mt-1 "
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(),handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>

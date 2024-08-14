@@ -205,7 +205,7 @@ const BasicInputElements = withSwal((props: any) => {
 
     // Validate the form using yup
     try {
-      // await validationSchema.validate(formData, { abortEarly: false });
+      await validationSchema.validate(formData, { abortEarly: false });
       // Validation passed, handle form submission
       if (isUpdate) {
         // Handle update logic
@@ -446,6 +446,13 @@ const BasicInputElements = withSwal((props: any) => {
     toggle();
   };
 
+  const handleResetValues = () => {
+    setFormData(initialState);
+    setValidationErrors(initialValidationState);
+    setSelectedBranch([]);
+    setSelectedImage(null);
+  }
+
   useEffect(() => {
     // Check for errors and clear the form
     if (!loading && !error) {
@@ -516,7 +523,7 @@ const BasicInputElements = withSwal((props: any) => {
                       <Form.Group className="mb-3" controlId="email">
                         <Form.Label>Email</Form.Label>
                         <Form.Control
-                          type="email"
+                          type="text"
                           name="email"
                           placeholder="Enter email"
                           value={formData.email}
@@ -700,6 +707,15 @@ const BasicInputElements = withSwal((props: any) => {
                   </Row> */}
                   <div className="text-end">
                     <Button
+                      variant="primary"
+                      id="button-addon2"
+                      className="mt-1 ms-2 me-2"
+                      onClick={() => [handleResetValues()]
+                      }
+                    >
+                      Clear
+                    </Button>
+                    <Button
                       variant="danger"
                       id="button-addon2"
                       disabled={loading}
@@ -710,10 +726,11 @@ const BasicInputElements = withSwal((props: any) => {
                           toggle();
                         } else {
                           toggle();
+                          handleResetValues();
                         }
                       }}
                     >
-                      {!isUpdate ? "close" : "Cancel"}
+                      {!isUpdate ? "Close" : "Cancel"}
                     </Button>
 
                     <Button
