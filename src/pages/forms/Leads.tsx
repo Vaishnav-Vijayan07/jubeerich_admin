@@ -43,6 +43,7 @@ import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { getLeads } from "../../helpers";
+import moment from "moment";
 
 interface OptionType {
   value: string;
@@ -180,14 +181,19 @@ const BasicInputElements = withSwal((props: any) => {
       .required("Full name is required")
       .min(3, "Full name must be at least 3 characters long"),
     email: yup.string().required("Email is required").email("Invalid email"),
-    phone: yup.string().required("Phone is required").matches(/^[0-9]+$/, "Phone number must be digits only").max(10, "Enter a valid phone number"),
-    category_id: yup.string().required("Category is required"),
-    source_id: yup.string().required("Source is required"),
-    channel_id: yup.string().required("Channel is required"),
+    phone: yup
+      .string()
+      .required("Phone is required")
+      .matches(/^[0-9]{10}$/, "Phone number must be a 10-digit number"),
+    category_id: yup.string().required("Category is required").nullable(),
+    source_id: yup.string().required("Source is required").nullable(),
+    channel_id: yup.string().required("Channel is required").nullable(),
     city: yup.string().required("City is required"),
-    // preferred_country: yup.string().required("Preferred country is required"),
-    preferred_country: yup.array().of(yup.string()).required("Preferred country is required"),
-    office_type: yup.string().required("Office type is required"),
+    preferred_country: yup
+      .array()
+      .min(1, "At least one preferred country is required")
+      .required("Preferred country is required"),
+    office_type: yup.string().required("Office type is required").nullable(),
     lead_received_date: yup.date().required("Date is required"),
     ielts: yup.boolean(),
     remarks: yup.string(),
@@ -256,7 +262,7 @@ const BasicInputElements = withSwal((props: any) => {
       // branch_id: item?.branch_id || "",
       updated_by: item?.updated_by || "",
       remarks: item?.remarks || "",
-      lead_received_date: item?.lead_received_date || new Date()?.toISOString().split("T")[0],
+      lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
       ielts: item?.ielts || false,
     }));
 
@@ -337,8 +343,6 @@ const BasicInputElements = withSwal((props: any) => {
     // Validate the form using yup
     try {
       await validationSchema.validate(formData, { abortEarly: false });
-
-      //   // Validation passed, handle form submission
 
       if (user) {
         const { user_id } = user;
@@ -450,6 +454,12 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "source_name",
       sort: false,
     },
+    {
+      Header: "Lead Received Date",
+      accessor: "lead_received_date",
+      sort: false,
+      Cell: ({ row }: any) => <span>{moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
+    },
     ...(user?.role == 4
       ? [
         {
@@ -465,6 +475,29 @@ const BasicInputElements = withSwal((props: any) => {
           Header: "Assigned by",
           accessor: "updated_by_user",
           sort: false,
+        },
+      ]
+      : []),
+    ...(user?.role == 3 || user?.role == 4
+      ? [
+        {
+          Header: "Assign Type",
+          accessor: "assign_type",
+          sort: false,
+          Cell: ({ row }: any) => {
+            const assignType = row.original.assign_type;
+          
+            // Define display text for each possible assignType
+            const displayText: { [key: string]: string } = {
+              "direct_assign": "Direct Assigned",
+              "auto_assign": "Auto Assigned",
+              "null": "",  // Handle the string "null" explicitly
+              "undefined": "",  // Handle the string "undefined" explicitly
+            };
+          
+            // Return the corresponding display text or "Unknown" if not found
+            return <span>{displayText[assignType] || ""}</span>;
+          }
         },
       ]
       : []),
@@ -731,7 +764,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Row>
                 <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Full Name</Form.Label>
+                    <Form.Label><span className="text-danger fs-4">* </span>Full Name</Form.Label>
                     <Form.Control
                       type="text"
                       name="full_name"
@@ -747,7 +780,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
                 <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Email</Form.Label>
+                    <Form.Label><span className="text-danger fs-4">* </span>Email</Form.Label>
                     <Form.Control
                       type="text"
                       name="email"
@@ -764,9 +797,9 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Phone</Form.Label>
+                    <Form.Label><span className="text-danger fs-4">* </span>Phone</Form.Label>
                     <Form.Control
-                      type="text"
+                      type="number"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
@@ -836,7 +869,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
                 <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Office</Form.Label>
+                    <Form.Label><span className="text-danger fs-4">* </span>Office Type</Form.Label>
                     <Select
                       className="react-select react-select-container"
                       classNamePrefix="react-select"

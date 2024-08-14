@@ -363,3 +363,15 @@ ul.tl li .timestamp {
 .menu .menu-item .sub-menu .menu-text {
   font-size: calc(var(--ct-menu-item-font-size)* 1);
 }
+
+/* Hide increment and decrement arrows in WebKit browsers */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide increment and decrement arrows in Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
