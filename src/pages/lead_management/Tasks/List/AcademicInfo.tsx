@@ -35,7 +35,7 @@ const AcademicInfo = ({ studentId }: any) => {
   const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
 
   const ValidationSchema = yup.object().shape({
-    qualification: yup.string().nullable(),
+    qualification: yup.string().required("Qualification cannot be empty"),
     place: yup.string().required("Place cannot be empty"),
     percentage: yup.string().required("Percentage cannot be empty"),
     year_of_passing: yup.string().required("Year of passing cannot be empty"),
