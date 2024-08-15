@@ -525,6 +525,11 @@ const BasicInputElements = withSwal((props: any) => {
       ]
       : []),
     {
+      Header: "Status",
+      accessor: "status",
+      sort: false,
+    },
+    {
       Header: " ",
       accessor: "",
       sort: false,
