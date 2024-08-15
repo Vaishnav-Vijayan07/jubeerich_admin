@@ -7,6 +7,11 @@
   font-style: normal;
 }
 
+:root {
+  --primary-green: #28a745;
+  --primary-red: #dc3545
+}
+
 .mdi:before,
 .mdi-set {
   display: inline-block;
@@ -7596,6 +7601,12 @@
 
 .mdi-delete::before {
   content: "\F01B4";
+  color: var(--primary-red);
+}
+
+.mdi-delete-outline::before {
+  content: "\F0E92";
+  color: var(--primary-red);
 }
 
 .mdi-delete-alert::before {
@@ -20324,6 +20335,8 @@
 
 .mdi-square-edit-outline::before {
   content: "\F090C";
+  // color:  #28a745
+  color: var(--primary-green);
 }
 
 .mdi-square-medium::before {

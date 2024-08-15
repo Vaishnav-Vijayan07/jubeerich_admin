@@ -187,6 +187,7 @@ const BasicInputElements = withSwal((props: any) => {
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
           <FeatherIcons
+            stroke="#28a745"
             icon="edit"
             size="15"
             className="cursor-pointer text-secondary"

@@ -251,6 +251,7 @@ const BasicInputElements = withSwal((props: any) => {
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
           <FeatherIcons
+            stroke="#28a745"
             icon="edit"
             size="15"
             className="cursor-pointer text-secondary"
@@ -263,6 +264,7 @@ const BasicInputElements = withSwal((props: any) => {
 
           {/* Delete Icon */}
           <FeatherIcons
+            stroke="#dc3545"
             icon="trash-2"
             size="15"
             className="cursor-pointer text-secondary"
