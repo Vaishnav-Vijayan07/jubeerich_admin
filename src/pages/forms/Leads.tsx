@@ -486,7 +486,7 @@ const BasicInputElements = withSwal((props: any) => {
           sort: false,
           Cell: ({ row }: any) => {
             const assignType = row.original.assign_type;
-          
+
             // Define display text for each possible assignType
             const displayText: { [key: string]: string } = {
               "direct_assign": "Direct Assigned",
@@ -494,7 +494,7 @@ const BasicInputElements = withSwal((props: any) => {
               "null": "",  // Handle the string "null" explicitly
               "undefined": "",  // Handle the string "undefined" explicitly
             };
-          
+
             // Return the corresponding display text or "Unknown" if not found
             return <span>{displayText[assignType] || ""}</span>;
           }
@@ -524,8 +524,6 @@ const BasicInputElements = withSwal((props: any) => {
         },
       ]
       : []),
-
-
     {
       Header: " ",
       accessor: "",
