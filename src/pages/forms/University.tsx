@@ -202,42 +202,91 @@ const BasicInputElements = withSwal((props: any) => {
 
     // Validate the form using yup
     try {
-      // await validationSchema.validate(formData, { abortEarly: false });
+      await validationSchema.validate(formData, { abortEarly: false });
 
       // Validation passed, handle form submission
 
-      if (userInfo) {
-        const { user_id } = JSON.parse(userInfo);
-        if (isUpdate) {
-          // Handle update logic
-          dispatch(
-            updateUniversity(
-              formData?.id,
-              formData.university_name,
-              formData.location,
-              formData.country_id,
-              formData.website_url,
-              formData.image_url,
-              user_id
-            )
-          );
-          setIsUpdate(false);
-        } else {
-          // Handle add logic
-          console.log("Here");
-
-          dispatch(
-            addUniversity(
-              formData.university_name,
-              formData.location,
-              formData.country_id,
-              formData.website_url,
-              formData.image_url,
-              user_id
-            )
-          );
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          if (userInfo) {
+            const { user_id } = JSON.parse(userInfo);
+            if (isUpdate) {
+              // Handle update logic
+              dispatch(
+                updateUniversity(
+                  formData?.id,
+                  formData.university_name,
+                  formData.location,
+                  formData.country_id,
+                  formData.website_url,
+                  formData.image_url,
+                  user_id
+                )
+              );
+              setIsUpdate(false);
+            } else {
+              // Handle add logic
+              console.log("Here");
+    
+              dispatch(
+                addUniversity(
+                  formData.university_name,
+                  formData.location,
+                  formData.country_id,
+                  formData.website_url,
+                  formData.image_url,
+                  user_id
+                )
+              );
+            }
+          }
         }
-      }
+      }).catch((err: any)=>{
+        console.log(err);
+      })
+
+      // if (userInfo) {
+      //   const { user_id } = JSON.parse(userInfo);
+      //   if (isUpdate) {
+      //     // Handle update logic
+      //     dispatch(
+      //       updateUniversity(
+      //         formData?.id,
+      //         formData.university_name,
+      //         formData.location,
+      //         formData.country_id,
+      //         formData.website_url,
+      //         formData.image_url,
+      //         user_id
+      //       )
+      //     );
+      //     setIsUpdate(false);
+      //   } else {
+      //     // Handle add logic
+      //     console.log("Here");
+
+      //     dispatch(
+      //       addUniversity(
+      //         formData.university_name,
+      //         formData.location,
+      //         formData.country_id,
+      //         formData.website_url,
+      //         formData.image_url,
+      //         user_id
+      //       )
+      //     );
+      //   }
+      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {

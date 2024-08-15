@@ -172,18 +172,48 @@ const BasicInputElements = withSwal((props: any) => {
       await validationSchema.validate(formData, { abortEarly: false });
 
       // Validation passed, handle form submission
-      if (userInfo) {
-        const { user_id } = JSON.parse(userInfo);
-        if (isUpdate) {
-          // Handle update logic
 
-          dispatch(updateStatus(formData.id, formData.status_name, formData.status_description, formData.color, user_id));
-          setIsUpdate(false);
-        } else {
-          // Handle add logic
-          dispatch(addStatus(formData.status_name, formData.status_description, formData.color, user_id));
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          if (userInfo) {
+            const { user_id } = JSON.parse(userInfo);
+            if (isUpdate) {
+              // Handle update logic
+    
+              dispatch(updateStatus(formData.id, formData.status_name, formData.status_description, formData.color, user_id));
+              setIsUpdate(false);
+            } else {
+              // Handle add logic
+              dispatch(addStatus(formData.status_name, formData.status_description, formData.color, user_id));
+            }
+          }
         }
-      }
+      }).catch((err: any)=>{
+        console.log(err);
+      })
+
+      // if (userInfo) {
+      //   const { user_id } = JSON.parse(userInfo);
+      //   if (isUpdate) {
+      //     // Handle update logic
+
+      //     dispatch(updateStatus(formData.id, formData.status_name, formData.status_description, formData.color, user_id));
+      //     setIsUpdate(false);
+      //   } else {
+      //     // Handle add logic
+      //     dispatch(addStatus(formData.status_name, formData.status_description, formData.color, user_id));
+      //   }
+      // }
 
       // Clear validation errors
       setValidationErrors(initialValidationState);

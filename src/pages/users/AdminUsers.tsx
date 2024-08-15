@@ -207,61 +207,134 @@ const BasicInputElements = withSwal((props: any) => {
     try {
       await validationSchema.validate(formData, { abortEarly: false });
       // Validation passed, handle form submission
-      if (isUpdate) {
-        // Handle update logic
-        if (userInfo) {
-          const { user_id } = JSON.parse(userInfo);
-          try {
-            await dispatch(
-              updateAdminUsers(
-                formData.id,
-                formData.employee_id,
-                formData.name,
-                formData.email,
-                formData.phone,
-                formData.address,
-                formData.username,
-                formData.password,
-                // formData.updated_by,
-                user_id,
-                formData.role_id,
-                selectedImage,
-                formData.branch_ids,
-                formData?.country_id
-              )
-            );
-          } catch (err) {
-            console.error("error updating", err);
+      
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          if (isUpdate) {
+            // Handle update logic
+            if (userInfo) {
+              const { user_id } = JSON.parse(userInfo);
+              try {
+                dispatch(
+                  updateAdminUsers(
+                    formData.id,
+                    formData.employee_id,
+                    formData.name,
+                    formData.email,
+                    formData.phone,
+                    formData.address,
+                    formData.username,
+                    formData.password,
+                    // formData.updated_by,
+                    user_id,
+                    formData.role_id,
+                    selectedImage,
+                    formData.branch_ids,
+                    formData?.country_id
+                  )
+                );
+              } catch (err) {
+                console.error("error updating", err);
+              }
+            }
+          } else {
+            // Handle add logic
+            if (userInfo) {
+              try {
+                const { user_id } = JSON.parse(userInfo);
+                dispatch(
+                  addAdminUsers(
+                    formData.employee_id,
+                    formData.name,
+                    formData.email,
+                    formData.phone,
+                    formData.address,
+                    formData.username,
+                    formData.password,
+                    // formData.updated_by,
+                    user_id,
+                    formData.role_id,
+                    selectedImage,
+                    formData.branch_ids,
+                    formData?.country_id
+                  )
+                );
+              } catch (err) {
+                console.error("error adding", err);
+                console.error(err);
+              }
+            }
           }
         }
-      } else {
-        // Handle add logic
-        if (userInfo) {
-          try {
-            const { user_id } = JSON.parse(userInfo);
-            await dispatch(
-              addAdminUsers(
-                formData.employee_id,
-                formData.name,
-                formData.email,
-                formData.phone,
-                formData.address,
-                formData.username,
-                formData.password,
-                // formData.updated_by,
-                user_id,
-                formData.role_id,
-                selectedImage,
-                formData.branch_ids,
-                formData?.country_id
-              )
-            );
-          } catch (err) {
-            console.error("error adding", err);
-            console.error(err);
-          }
-        }
-      }
+      }).catch((err: any)=>{
+        console.log(err);
+      })
+
+      // if (isUpdate) {
+      //   // Handle update logic
+      //   if (userInfo) {
+      //     const { user_id } = JSON.parse(userInfo);
+      //     try {
+      //       await dispatch(
+      //         updateAdminUsers(
+      //           formData.id,
+      //           formData.employee_id,
+      //           formData.name,
+      //           formData.email,
+      //           formData.phone,
+      //           formData.address,
+      //           formData.username,
+      //           formData.password,
+      //           // formData.updated_by,
+      //           user_id,
+      //           formData.role_id,
+      //           selectedImage,
+      //           formData.branch_ids,
+      //           formData?.country_id
+      //         )
+      //       );
+      //     } catch (err) {
+      //       console.error("error updating", err);
+      //     }
+      //   }
+      // } else {
+      //   // Handle add logic
+      //   if (userInfo) {
+      //     try {
+      //       const { user_id } = JSON.parse(userInfo);
+      //       await dispatch(
+      //         addAdminUsers(
+      //           formData.employee_id,
+      //           formData.name,
+      //           formData.email,
+      //           formData.phone,
+      //           formData.address,
+      //           formData.username,
+      //           formData.password,
+      //           // formData.updated_by,
+      //           user_id,
+      //           formData.role_id,
+      //           selectedImage,
+      //           formData.branch_ids,
+      //           formData?.country_id
+      //         )
+      //       );
+      //     } catch (err) {
+      //       console.error("error adding", err);
+      //       console.error(err);
+      //     }
+      //   }
+      // }
     } catch (validationError) {
       // Handle validation errors
       if (validationError instanceof yup.ValidationError) {

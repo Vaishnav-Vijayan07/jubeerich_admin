@@ -252,68 +252,146 @@ const BasicInputElements = withSwal((props: any) => {
     e.preventDefault();
     // Validate the form using yup
     try {
+      console.log('ENTERED');
+      
       await validationSchema.validate(formData, { abortEarly: false });
       // Validation passed, handle form submission
 
-      if (userInfo) {
-        const { user_id } = JSON.parse(userInfo);
-
-        if (isUpdate) {
-          // Handle update logic
-          dispatch(
-            updateBranches(
-              formData.id,
-              formData.branch_name,
-              formData.email,
-              formData.phone,
-              formData.address,
-              formData.city,
-              formData.state,
-              formData.country,
-              formData.pincode,
-              formData.contact_person_email,
-              formData.contact_person_name,
-              formData.contact_person_mobile,
-              formData.contact_person_designation,
-              formData.website,
-              formData.social_media,
-              formData.account_mail,
-              formData.support_mail,
-              formData.office_type,
-              formData.region_id,
-              formData.status,
-              user_id
-            )
-          );
-          setIsUpdate(false);
-        } else {
-          // Handle add logic
-          dispatch(
-            addBranches(
-              formData.branch_name,
-              formData.email,
-              formData.phone,
-              formData.address,
-              formData.city,
-              formData.state,
-              formData.country,
-              formData.pincode,
-              formData.contact_person_email,
-              formData.contact_person_name,
-              formData.contact_person_mobile,
-              formData.contact_person_designation,
-              formData.website,
-              formData.social_media,
-              formData.account_mail,
-              formData.support_mail,
-              formData.office_type,
-              formData.region_id,
-              formData.status,
-              user_id
-            )
-          );
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          if (userInfo) {
+            const { user_id } = JSON.parse(userInfo);
+    
+            if (isUpdate) {
+              // Handle update logic
+              dispatch(
+                updateBranches(
+                  formData.id,
+                  formData.branch_name,
+                  formData.email,
+                  formData.phone,
+                  formData.address,
+                  formData.city,
+                  formData.state,
+                  formData.country,
+                  formData.pincode,
+                  formData.contact_person_email,
+                  formData.contact_person_name,
+                  formData.contact_person_mobile,
+                  formData.contact_person_designation,
+                  formData.website,
+                  formData.social_media,
+                  formData.account_mail,
+                  formData.support_mail,
+                  formData.office_type,
+                  formData.region_id,
+                  formData.status,
+                  user_id
+                )
+              );
+              setIsUpdate(false);
+            } else {
+              // Handle add logic
+              dispatch(
+                addBranches(
+                  formData.branch_name,
+                  formData.email,
+                  formData.phone,
+                  formData.address,
+                  formData.city,
+                  formData.state,
+                  formData.country,
+                  formData.pincode,
+                  formData.contact_person_email,
+                  formData.contact_person_name,
+                  formData.contact_person_mobile,
+                  formData.contact_person_designation,
+                  formData.website,
+                  formData.social_media,
+                  formData.account_mail,
+                  formData.support_mail,
+                  formData.office_type,
+                  formData.region_id,
+                  formData.status,
+                  user_id
+                )
+              );
+            }
+          }
         }
-      }
+      }).catch((err: any)=>{
+        console.log(err);
+      })
+
+      // if (userInfo) {
+      //   const { user_id } = JSON.parse(userInfo);
+
+      //   if (isUpdate) {
+      //     // Handle update logic
+      //     dispatch(
+      //       updateBranches(
+      //         formData.id,
+      //         formData.branch_name,
+      //         formData.email,
+      //         formData.phone,
+      //         formData.address,
+      //         formData.city,
+      //         formData.state,
+      //         formData.country,
+      //         formData.pincode,
+      //         formData.contact_person_email,
+      //         formData.contact_person_name,
+      //         formData.contact_person_mobile,
+      //         formData.contact_person_designation,
+      //         formData.website,
+      //         formData.social_media,
+      //         formData.account_mail,
+      //         formData.support_mail,
+      //         formData.office_type,
+      //         formData.region_id,
+      //         formData.status,
+      //         user_id
+      //       )
+      //     );
+      //     setIsUpdate(false);
+      //   } else {
+      //     // Handle add logic
+      //     dispatch(
+      //       addBranches(
+      //         formData.branch_name,
+      //         formData.email,
+      //         formData.phone,
+      //         formData.address,
+      //         formData.city,
+      //         formData.state,
+      //         formData.country,
+      //         formData.pincode,
+      //         formData.contact_person_email,
+      //         formData.contact_person_name,
+      //         formData.contact_person_mobile,
+      //         formData.contact_person_designation,
+      //         formData.website,
+      //         formData.social_media,
+      //         formData.account_mail,
+      //         formData.support_mail,
+      //         formData.office_type,
+      //         formData.region_id,
+      //         formData.status,
+      //         user_id
+      //       )
+      //     );
+      //   }
+      // }
 
       // Clear validation errors
       setValidationErrors({
