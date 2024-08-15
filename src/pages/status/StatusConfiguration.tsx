@@ -62,7 +62,7 @@ const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
 
   //destructured all items from props
-  const { statusData, state, Status, loading, success, error, initialConfigloading } = props;
+  const { swal, statusData, state, Status, loading, success, error, initialConfigloading } = props;
 
   //Table data
   const records: TableRecords[] = state;
@@ -118,30 +118,70 @@ const BasicInputElements = withSwal((props: any) => {
 
     // Validate the form using yup
     try {
+      console.log('Entered');
+      
       await validationSchema.validate(formData, { abortEarly: false });
       console.log("here");
 
-      axios
-        .put(`/status_config`, {
-          access_role_id: formData.access_role_id,
-          status_ids: formData?.status_ids
-        })
-        .then((res) => {
-          showSuccessAlert(res.data.message);
-          dispatch(getStatusConfig());
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          axios
+          .put(`/status_config`, {
+            access_role_id: formData.access_role_id,
+            status_ids: formData?.status_ids
+          })
+          .then((res) => {
+            showSuccessAlert(res.data.message);
+            dispatch(getStatusConfig());
+  
+            // Clear validation errors
+            setValidationErrors(initialValidationState);
+  
+            //clear form data
+            setFormData(initialState);
+            setSelectedStatus(null);
+            toggleResponsiveModal()
+          })
+          .catch((err) => {
+            console.error(err);
+            showErrorAlert(err.message);
+          });
+        }
+      }).catch((err: any)=>{
+        console.log(err);
+      })
 
-          // Clear validation errors
-          setValidationErrors(initialValidationState);
+      // axios
+      //   .put(`/status_config`, {
+      //     access_role_id: formData.access_role_id,
+      //     status_ids: formData?.status_ids
+      //   })
+      //   .then((res) => {
+      //     showSuccessAlert(res.data.message);
+      //     dispatch(getStatusConfig());
 
-          //clear form data
-          setFormData(initialState);
-          setSelectedStatus(null);
-          toggleResponsiveModal()
-        })
-        .catch((err) => {
-          console.error(err);
-          showErrorAlert(err.message);
-        });
+      //     // Clear validation errors
+      //     setValidationErrors(initialValidationState);
+
+      //     //clear form data
+      //     setFormData(initialState);
+      //     setSelectedStatus(null);
+      //     toggleResponsiveModal()
+      //   })
+      //   .catch((err) => {
+      //     console.error(err);
+      //     showErrorAlert(err.message);
+      //   });
     } catch (validationError) {
       // Handle validation errors
       if (validationError instanceof yup.ValidationError) {

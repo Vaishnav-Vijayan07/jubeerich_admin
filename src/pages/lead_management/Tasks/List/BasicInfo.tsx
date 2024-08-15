@@ -10,6 +10,7 @@ import Select, { ActionMeta, OptionsType } from "react-select";
 import makeAnimated from "react-select/animated";
 import * as yup from 'yup';
 import { yupResolver } from "@hookform/resolvers/yup";
+import { withSwal } from 'react-sweetalert2';
 
 const validationErrorsInitialState = {
   full_name: "",
@@ -51,15 +52,28 @@ const initialState = {
   address: "",
 };
 
-const BasicInfo = ({
-  studentId,
-  country,
-  Countries,
-  OfficeTypes,
-  MaritalStatus,
-  basicData,
-  getBasicInfoApi,
-}: any) => {
+// const BasicInfo = ({
+//   studentId,
+//   country,
+//   Countries,
+//   OfficeTypes,
+//   MaritalStatus,
+//   basicData,
+//   getBasicInfoApi,
+// }: any) => {
+
+const BasicInfo = withSwal((props: any) => {
+  const {
+    swal,
+    studentId,
+    country,
+    Countries,
+    OfficeTypes,
+    MaritalStatus,
+    basicData,
+    getBasicInfoApi,
+  } = props;
+
   const [formData, setformData] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const animatedComponents = makeAnimated();
@@ -135,42 +149,93 @@ const BasicInfo = ({
     
     try {
       await ValidationSchema.validate(formData, {abortEarly: false})
-      
-      setLoading(true);
 
-      axios
-        .post("saveStudentBasicInfo", {
-          passport_no: formData?.passport_no,
-          dob: formData?.dob,
-          gender: formData?.gender,
-          marital_status: formData?.marital_status,
-          user_id: studentId,
-          full_name: formData?.full_name,
-          email: formData?.email,
-          phone: formData?.phone,
-          preferred_country: formData?.preferred_country,
-          office_type: formData?.office_type,
-          remarks: formData?.remarks,
-          nationality: formData?.nationality,
-          secondary_number: formData?.secondary_number,
-          state: formData?.state,
-          country: formData?.country,
-          address: formData?.address,
-          // counsiler_id: null,
-          // branch_id: formData?.,
-        })
-        .then((res) => {
-          console.log("res: =>", res);
-          setLoading(false);
-          showSuccessAlert(res.data.message);
-          getBasicInfoApi();
-          setValidationErrors(validationErrorsInitialState)
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-          showErrorAlert("Error occured");
-        });
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          setLoading(true);
+          axios
+            .post("saveStudentBasicInfo", {
+              passport_no: formData?.passport_no,
+              dob: formData?.dob,
+              gender: formData?.gender,
+              marital_status: formData?.marital_status,
+              user_id: studentId,
+              full_name: formData?.full_name,
+              email: formData?.email,
+              phone: formData?.phone,
+              preferred_country: formData?.preferred_country,
+              office_type: formData?.office_type,
+              remarks: formData?.remarks,
+              nationality: formData?.nationality,
+              secondary_number: formData?.secondary_number,
+              state: formData?.state,
+              country: formData?.country,
+              address: formData?.address,
+              // counsiler_id: null,
+              // branch_id: formData?.,
+            })
+            .then((res) => {
+              console.log("res: =>", res);
+              setLoading(false);
+              showSuccessAlert(res.data.message);
+              getBasicInfoApi();
+              setValidationErrors(validationErrorsInitialState)
+            })
+            .catch((err) => {
+              console.log(err);
+              setLoading(false);
+              showErrorAlert("Error occured");
+            });
+        }
+      }).catch((err: any)=>{
+        console.log(err);
+      })
+      
+      // setLoading(true);
+
+      // axios
+      //   .post("saveStudentBasicInfo", {
+      //     passport_no: formData?.passport_no,
+      //     dob: formData?.dob,
+      //     gender: formData?.gender,
+      //     marital_status: formData?.marital_status,
+      //     user_id: studentId,
+      //     full_name: formData?.full_name,
+      //     email: formData?.email,
+      //     phone: formData?.phone,
+      //     preferred_country: formData?.preferred_country,
+      //     office_type: formData?.office_type,
+      //     remarks: formData?.remarks,
+      //     nationality: formData?.nationality,
+      //     secondary_number: formData?.secondary_number,
+      //     state: formData?.state,
+      //     country: formData?.country,
+      //     address: formData?.address,
+      //     // counsiler_id: null,
+      //     // branch_id: formData?.,
+      //   })
+      //   .then((res) => {
+      //     console.log("res: =>", res);
+      //     setLoading(false);
+      //     showSuccessAlert(res.data.message);
+      //     getBasicInfoApi();
+      //     setValidationErrors(validationErrorsInitialState)
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //     setLoading(false);
+      //     showErrorAlert("Error occured");
+      //   });
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
@@ -532,6 +597,6 @@ const BasicInfo = ({
       </>
     </>
   );
-};
+});
 
 export default BasicInfo;

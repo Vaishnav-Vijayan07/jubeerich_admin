@@ -9,6 +9,7 @@ import { getUniversity } from "../../../../redux/University/actions";
 import { RootState } from "../../../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from 'yup';
+import { withSwal } from 'react-sweetalert2';
 
 const validationErrorsInitialState = {
   intersted_country: "",
@@ -40,7 +41,9 @@ const initialState = {
   course_fee: ""
 };
 
-const StudyPreference = ({ studentId, Countries }: any) => {
+// const StudyPreference = ({ studentId, Countries }: any) => {
+const StudyPreference = withSwal((props: any) => {
+  const { swal, studentId, Countries } = props;
   const [formData, setformData] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [universityData, setUniversityData] = useState([]);
@@ -136,38 +139,84 @@ const StudyPreference = ({ studentId, Countries }: any) => {
   const saveStudentStudyPreferenceInfo = async() => {
 
     try {
-      await ValidationSchema.validate(formData, { abortEarly: false})
+      await ValidationSchema.validate(formData, { abortEarly: false});
+
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          setLoading(true);
+          axios
+            .post("saveStudentStudyPreferenceInfo", {
+              intersted_country: formData?.intersted_country,
+              intrested_institution: formData?.intrested_institution,
+              intake_year: formData?.intake_year,
+              intake_month: formData?.intake_month,
+              estimated_budget: formData?.estimated_budget,
+              course_field_of_intrest: formData?.course_field_of_intrest,
+              user_id: studentId,
+              course_fee: formData?.course_fee,
+              universities: formData?.universities,
+              campus: formData?.campus,
+              stream: formData?.stream,
+              course: formData?.course,
+              duration: formData?.duration,
+            })
+            .then((res) => {
+              console.log("res: =>", res);
+              setLoading(false);
+              showSuccessAlert(res.data.message);
+              setValidationErrors(validationErrorsInitialState);
+              // getBasicInfoApi();
+            })
+            .catch((err) => {
+              console.log(err);
+              setLoading(false);
+              showErrorAlert("Error occured");
+            });
+        }
+      }).catch((err: any)=>{
+        console.log(err);
+      })
       
-      setLoading(true);
+      // setLoading(true);
       
-      axios
-        .post("saveStudentStudyPreferenceInfo", {
-          intersted_country: formData?.intersted_country,
-          intrested_institution: formData?.intrested_institution,
-          intake_year: formData?.intake_year,
-          intake_month: formData?.intake_month,
-          estimated_budget: formData?.estimated_budget,
-          course_field_of_intrest: formData?.course_field_of_intrest,
-          user_id: studentId,
-          course_fee: formData?.course_fee,
-          universities: formData?.universities,
-          campus: formData?.campus,
-          stream: formData?.stream,
-          course: formData?.course,
-          duration: formData?.duration,
-        })
-        .then((res) => {
-          console.log("res: =>", res);
-          setLoading(false);
-          showSuccessAlert(res.data.message);
-          setValidationErrors(validationErrorsInitialState);
-          // getBasicInfoApi();
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-          showErrorAlert("Error occured");
-        });
+      // axios
+      //   .post("saveStudentStudyPreferenceInfo", {
+      //     intersted_country: formData?.intersted_country,
+      //     intrested_institution: formData?.intrested_institution,
+      //     intake_year: formData?.intake_year,
+      //     intake_month: formData?.intake_month,
+      //     estimated_budget: formData?.estimated_budget,
+      //     course_field_of_intrest: formData?.course_field_of_intrest,
+      //     user_id: studentId,
+      //     course_fee: formData?.course_fee,
+      //     universities: formData?.universities,
+      //     campus: formData?.campus,
+      //     stream: formData?.stream,
+      //     course: formData?.course,
+      //     duration: formData?.duration,
+      //   })
+      //   .then((res) => {
+      //     console.log("res: =>", res);
+      //     setLoading(false);
+      //     showSuccessAlert(res.data.message);
+      //     setValidationErrors(validationErrorsInitialState);
+      //     // getBasicInfoApi();
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //     setLoading(false);
+      //     showErrorAlert("Error occured");
+      //   });
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
       const errors: any = {};
@@ -449,6 +498,6 @@ const StudyPreference = ({ studentId, Countries }: any) => {
       </>
     </>
   );
-};
+});
 
 export default StudyPreference;

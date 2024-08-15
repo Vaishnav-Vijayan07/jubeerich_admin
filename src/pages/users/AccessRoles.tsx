@@ -178,27 +178,66 @@ const BasicInputElements = withSwal((props: any) => {
       await validationSchema.validate(formData, { abortEarly: false });
 
       // Validation passed, handle form submission
-      if (isUpdate) {
-        // Handle update logic
-        if (userInfo) {
-          const { user_id } = JSON.parse(userInfo);
-          dispatch(
-            updateRoles(
-              formData.id,
-              formData.role_name,
-              formData.power_ids,
-              user_id
-            )
-          );
-          setIsUpdate(false);
+
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          if (isUpdate) {
+            // Handle update logic
+            if (userInfo) {
+              const { user_id } = JSON.parse(userInfo);
+              dispatch(
+                updateRoles(
+                  formData.id,
+                  formData.role_name,
+                  formData.power_ids,
+                  user_id
+                )
+              );
+              setIsUpdate(false);
+            }
+          } else {
+            // Handle add logic
+            if (userInfo) {
+              const { user_id } = JSON.parse(userInfo);
+              dispatch(addRoles(formData.role_name, formData.power_ids, user_id));
+            }
+          }
         }
-      } else {
-        // Handle add logic
-        if (userInfo) {
-          const { user_id } = JSON.parse(userInfo);
-          dispatch(addRoles(formData.role_name, formData.power_ids, user_id));
-        }
-      }
+      }).catch((err: any)=>{
+        console.log(err);
+      })
+
+      // if (isUpdate) {
+      //   // Handle update logic
+      //   if (userInfo) {
+      //     const { user_id } = JSON.parse(userInfo);
+      //     dispatch(
+      //       updateRoles(
+      //         formData.id,
+      //         formData.role_name,
+      //         formData.power_ids,
+      //         user_id
+      //       )
+      //     );
+      //     setIsUpdate(false);
+      //   }
+      // } else {
+      //   // Handle add logic
+      //   if (userInfo) {
+      //     const { user_id } = JSON.parse(userInfo);
+      //     dispatch(addRoles(formData.role_name, formData.power_ids, user_id));
+      //   }
+      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {

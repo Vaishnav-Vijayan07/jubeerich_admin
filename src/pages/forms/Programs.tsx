@@ -196,33 +196,77 @@ const BasicInputElements = withSwal((props: any) => {
 
       // Validation passed, handle form submission
 
-      if (isUpdate) {
-        // Handle update logic
-        dispatch(
-          updateProgram(
-            formData.id,
-            formData.program_name,
-            formData.university_id,
-            formData.degree_level,
-            formData.duration,
-            formData.tuition_fees,
-            formData.currency
-          )
-        );
-        setIsUpdate(false);
-      } else {
-        // Handle add logic
-        dispatch(
-          addProgram(
-            formData.program_name,
-            formData.university_id,
-            formData.degree_level,
-            formData.duration,
-            formData.tuition_fees,
-            formData.currency
-          )
-        );
-      }
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          if (isUpdate) {
+            // Handle update logic
+            dispatch(
+              updateProgram(
+                formData.id,
+                formData.program_name,
+                formData.university_id,
+                formData.degree_level,
+                formData.duration,
+                formData.tuition_fees,
+                formData.currency
+              )
+            );
+            setIsUpdate(false);
+          } else {
+            // Handle add logic
+            dispatch(
+              addProgram(
+                formData.program_name,
+                formData.university_id,
+                formData.degree_level,
+                formData.duration,
+                formData.tuition_fees,
+                formData.currency
+              )
+            );
+          }
+        }
+      }).catch((err: any)=>{
+        console.log(err);
+      })
+
+      // if (isUpdate) {
+      //   // Handle update logic
+      //   dispatch(
+      //     updateProgram(
+      //       formData.id,
+      //       formData.program_name,
+      //       formData.university_id,
+      //       formData.degree_level,
+      //       formData.duration,
+      //       formData.tuition_fees,
+      //       formData.currency
+      //     )
+      //   );
+      //   setIsUpdate(false);
+      // } else {
+      //   // Handle add logic
+      //   dispatch(
+      //     addProgram(
+      //       formData.program_name,
+      //       formData.university_id,
+      //       formData.degree_level,
+      //       formData.duration,
+      //       formData.tuition_fees,
+      //       formData.currency
+      //     )
+      //   );
+      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {

@@ -4,6 +4,7 @@ import { FormInput } from "../../../../components";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 import * as yup from 'yup';
+import { withSwal } from 'react-sweetalert2';
 
 
 const validationErrorsInitialState = {
@@ -29,7 +30,9 @@ const initialState = {
   years: 0
 };
 
-const AcademicInfo = ({ studentId }: any) => {
+// const AcademicInfo = ({ studentId }: any) => {
+const AcademicInfo = withSwal((props: any) => {
+  const { swal, studentId } = props;
   const [formData, setformData] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
@@ -77,33 +80,76 @@ const AcademicInfo = ({ studentId }: any) => {
     try {
 
       await ValidationSchema.validate(formData, { abortEarly: false})
-      
-      setLoading(true);
-      
-      axios
-        .post("saveStudentAcademicInfo", {
-          user_id: studentId,
-          qualification: formData?.qualification,
-          place: formData?.place,
-          percentage: formData?.percentage,
-          year_of_passing: formData?.year_of_passing,
-          backlogs: formData?.backlogs,
-          work_experience: formData?.work_experience,
-          designation: formData?.designation,
-        })
-        .then((res) => {
-          console.log("res: =>", res);
-          setLoading(false);
-          showSuccessAlert(res.data.message);
-          setValidationErrors(validationErrorsInitialState);
 
-          // getBasicInfoApi()
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-          showErrorAlert("Error occured");
-        });
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          setLoading(true);
+          axios
+            .post("saveStudentAcademicInfo", {
+              user_id: studentId,
+              qualification: formData?.qualification,
+              place: formData?.place,
+              percentage: formData?.percentage,
+              year_of_passing: formData?.year_of_passing,
+              backlogs: formData?.backlogs,
+              work_experience: formData?.work_experience,
+              designation: formData?.designation,
+            })
+            .then((res) => {
+              console.log("res: =>", res);
+              setLoading(false);
+              showSuccessAlert(res.data.message);
+              setValidationErrors(validationErrorsInitialState);
+    
+              // getBasicInfoApi()
+            })
+            .catch((err) => {
+              console.log(err);
+              setLoading(false);
+              showErrorAlert("Error occured");
+            });
+        }
+      }).catch((err: any)=>{
+        console.log(err);
+      })
+      
+      // setLoading(true);
+      
+      // axios
+      //   .post("saveStudentAcademicInfo", {
+      //     user_id: studentId,
+      //     qualification: formData?.qualification,
+      //     place: formData?.place,
+      //     percentage: formData?.percentage,
+      //     year_of_passing: formData?.year_of_passing,
+      //     backlogs: formData?.backlogs,
+      //     work_experience: formData?.work_experience,
+      //     designation: formData?.designation,
+      //   })
+      //   .then((res) => {
+      //     console.log("res: =>", res);
+      //     setLoading(false);
+      //     showSuccessAlert(res.data.message);
+      //     setValidationErrors(validationErrorsInitialState);
+
+      //     // getBasicInfoApi()
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //     setLoading(false);
+      //     showErrorAlert("Error occured");
+      //   });
+
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
@@ -287,6 +333,6 @@ const AcademicInfo = ({ studentId }: any) => {
       </>
     </>
   );
-};
+});
 
 export default AcademicInfo;

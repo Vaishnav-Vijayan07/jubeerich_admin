@@ -158,32 +158,74 @@ const BasicInputElements = withSwal((props: any) => {
     try {
       await validationSchema.validate(formData, { abortEarly: false });
 
-      if (userInfo) {
-        const { user_id } = JSON.parse(userInfo);
-        // Validation passed, handle form submission
-        if (isUpdate) {
-          dispatch(
-            updateCategory(
-              formData.id,
-              formData.category_name,
-              formData.category_description,
-              // formData.parent_category_id,
-              formData.status,
-              user_id
-            )
-          );
-        } else {
-          await dispatch(
-            addCategory(
-              formData.category_name,
-              formData.category_description,
-              // formData.parent_category_id,
-              formData.status,
-              user_id
-            )
-          );
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          if (userInfo) {
+            const { user_id } = JSON.parse(userInfo);
+            // Validation passed, handle form submission
+            if (isUpdate) {
+              dispatch(
+                updateCategory(
+                  formData.id,
+                  formData.category_name,
+                  formData.category_description,
+                  // formData.parent_category_id,
+                  formData.status,
+                  user_id
+                )
+              );
+            } else {
+              dispatch(
+                addCategory(
+                  formData.category_name,
+                  formData.category_description,
+                  // formData.parent_category_id,
+                  formData.status,
+                  user_id
+                )
+              );
+            }
+          }
         }
-      }
+      });
+
+      // if (userInfo) {
+      //   const { user_id } = JSON.parse(userInfo);
+      //   // Validation passed, handle form submission
+      //   if (isUpdate) {
+      //     dispatch(
+      //       updateCategory(
+      //         formData.id,
+      //         formData.category_name,
+      //         formData.category_description,
+      //         // formData.parent_category_id,
+      //         formData.status,
+      //         user_id
+      //       )
+      //     );
+      //   } else {
+      //     await dispatch(
+      //       addCategory(
+      //         formData.category_name,
+      //         formData.category_description,
+      //         // formData.parent_category_id,
+      //         formData.status,
+      //         user_id
+      //       )
+      //     );
+      //   }
+      // }
+      
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};

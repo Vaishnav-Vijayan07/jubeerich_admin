@@ -143,22 +143,48 @@ const BasicInputElements = withSwal((props: any) => {
 
     // Validate the form using yup
     try {
+      // Validation passed, handle form submission
       await validationSchema.validate(formData, { abortEarly: false });
 
-      // Validation passed, handle form submission
-
-      if (userInfo) {
-        const { user_id } = JSON.parse(userInfo);
-
-        if (isUpdate) {
-          // Handle update logic
-          dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id));
-          setIsUpdate(false);
-        } else {
-          // Handle add logic
-          dispatch(addSource(formData.source_name, formData.source_description, user_id));
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          if (userInfo) {
+            const { user_id } = JSON.parse(userInfo);
+    
+            if (isUpdate) {
+              // Handle update logic
+              dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id));
+              setIsUpdate(false);
+            } else {
+              // Handle add logic
+              dispatch(addSource(formData.source_name, formData.source_description, user_id));
+            }
+          }
         }
-      }
+      });
+
+      // if (userInfo) {
+      //   const { user_id } = JSON.parse(userInfo);
+
+      //   if (isUpdate) {
+      //     // Handle update logic
+      //     dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id));
+      //     setIsUpdate(false);
+      //   } else {
+      //     // Handle add logic
+      //     dispatch(addSource(formData.source_name, formData.source_description, user_id));
+      //   }
+      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {

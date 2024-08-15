@@ -180,30 +180,69 @@ const BasicInputElements = withSwal((props: any) => {
 
       // Validation passed, handle form submission
 
-      if (userInfo) {
-        const { user_id } = JSON.parse(userInfo);
-        if (isUpdate) {
-          // Handle update logic
-          dispatch(
-            updateMaritalStatus(
-              formData.id,
-              formData.marital_status_name,
-              formData.marital_status_description,
-              user_id
-            )
-          );
-          setIsUpdate(false);
-        } else {
-          // Handle add logic
-          dispatch(
-            addMaritalStatus(
-              formData.marital_status_name,
-              formData.marital_status_description,
-              user_id
-            )
-          );
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          if (userInfo) {
+            const { user_id } = JSON.parse(userInfo);
+            if (isUpdate) {
+              // Handle update logic
+              dispatch(
+                updateMaritalStatus(
+                  formData.id,
+                  formData.marital_status_name,
+                  formData.marital_status_description,
+                  user_id
+                )
+              );
+              setIsUpdate(false);
+            } else {
+              // Handle add logic
+              dispatch(
+                addMaritalStatus(
+                  formData.marital_status_name,
+                  formData.marital_status_description,
+                  user_id
+                )
+              );
+            }
+          }
         }
-      }
+      });
+
+      // if (userInfo) {
+      //   const { user_id } = JSON.parse(userInfo);
+      //   if (isUpdate) {
+      //     // Handle update logic
+      //     dispatch(
+      //       updateMaritalStatus(
+      //         formData.id,
+      //         formData.marital_status_name,
+      //         formData.marital_status_description,
+      //         user_id
+      //       )
+      //     );
+      //     setIsUpdate(false);
+      //   } else {
+      //     // Handle add logic
+      //     dispatch(
+      //       addMaritalStatus(
+      //         formData.marital_status_name,
+      //         formData.marital_status_description,
+      //         user_id
+      //       )
+      //     );
+      //   }
+      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {

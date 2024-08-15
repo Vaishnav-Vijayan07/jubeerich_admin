@@ -170,30 +170,69 @@ const BasicInputElements = withSwal((props: any) => {
 
       // Validation passed, handle form submission
 
-      if (userInfo) {
-        const { user_id } = JSON.parse(userInfo);
-        if (isUpdate) {
-          // Handle update logic
-          dispatch(
-            updateCountry(
-              formData.id,
-              formData.country_name,
-              formData.country_code,
-              formData.isd
-            )
-          );
-          setIsUpdate(false);
-        } else {
-          // Handle add logic
-          dispatch(
-            addCountry(
-              formData.country_name,
-              formData.country_code,
-              formData.isd
-            )
-          );
+      swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          if (userInfo) {
+            const { user_id } = JSON.parse(userInfo);
+            if (isUpdate) {
+              // Handle update logic
+              dispatch(
+                updateCountry(
+                  formData.id,
+                  formData.country_name,
+                  formData.country_code,
+                  formData.isd
+                )
+              );
+              setIsUpdate(false);
+            } else {
+              // Handle add logic
+              dispatch(
+                addCountry(
+                  formData.country_name,
+                  formData.country_code,
+                  formData.isd
+                )
+              );
+            }
+          }
         }
-      }
+      });
+
+      // if (userInfo) {
+      //   const { user_id } = JSON.parse(userInfo);
+      //   if (isUpdate) {
+      //     // Handle update logic
+      //     dispatch(
+      //       updateCountry(
+      //         formData.id,
+      //         formData.country_name,
+      //         formData.country_code,
+      //         formData.isd
+      //       )
+      //     );
+      //     setIsUpdate(false);
+      //   } else {
+      //     // Handle add logic
+      //     dispatch(
+      //       addCountry(
+      //         formData.country_name,
+      //         formData.country_code,
+      //         formData.isd
+      //       )
+      //     );
+      //   }
+      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {
