@@ -260,7 +260,8 @@ const BasicInputElements = withSwal((props: any) => {
           <Link to="#" className="action-icon" onClick={() =>
             handleDelete(row.original.id)
           }>
-            <i className="mdi mdi-delete"></i>
+            {/* <i className="mdi mdi-delete"></i> */}
+            <i className="mdi mdi-delete-outline"></i>
           </Link>
         </div>
       ),

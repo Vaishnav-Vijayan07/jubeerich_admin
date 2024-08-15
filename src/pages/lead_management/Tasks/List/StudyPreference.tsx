@@ -49,7 +49,7 @@ const StudyPreference = ({ studentId, Countries }: any) => {
   const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
 
   const ValidationSchema = yup.object().shape({
-    intersted_country: yup.string().required("Prefered Country cannot be empty"),
+    intersted_country: yup.string().nullable(),
     intrested_institution: yup.string().nullable(),
     intake_year: yup.string().required("Intake Year cannot be empty"),
     intake_month: yup.string().required("Intake Month cannot be empty"),
