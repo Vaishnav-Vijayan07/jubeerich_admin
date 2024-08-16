@@ -20,4 +20,8 @@ export const countries = [
     { name: "China", code: "CN", isd: "+86" },
     { name: "India", code: "IN", isd: "+91" }
   ];
-  
+
+  export const examtypes = [
+    { name : 'IELTS'},
+    { name : 'OET'}
+  ]
