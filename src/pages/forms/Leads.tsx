@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Row,
@@ -44,6 +44,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { getLeads } from "../../helpers";
 import moment from "moment";
+import { examtypes } from "./data";
 
 interface OptionType {
   value: string;
@@ -96,6 +97,7 @@ const initialState = {
   remarks: "",
   lead_received_date: new Date().toISOString().split("T")[0],
   ielts: true,
+  exam: ""
 };
 
 const initialValidationState = {
@@ -163,6 +165,13 @@ const BasicInputElements = withSwal((props: any) => {
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
+  const [selectExam, setSelectExam] = useState<boolean>(false);
+  const [selectedLanguageFile, setSelectedLanguageFile] = useState([])
+
+  const fileInputRef = useRef<any>(null);
+
+  // const [languageForm, setLanguageForm] = useState<ILanguageForm[]>([{ language_name: '', score: '', files: [] }])
+  const [languageForm, setLanguageForm] = useState<any[]>([{ language_name: '', score: '', files: [] }])
 
   console.log("selected Country ==>", selectedCountry);
 
@@ -264,6 +273,7 @@ const BasicInputElements = withSwal((props: any) => {
       remarks: item?.remarks || "",
       lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
       ielts: item?.ielts || false,
+      exam: item?.exam || ""
     }));
 
     setIsUpdate(true);
@@ -768,6 +778,31 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  const handleAddLanguageForm = () => {
+    console.log('Lanuage Form',languageForm);
+    setLanguageForm((prevData) => ([...prevData, { language_name: '', score: '', files: [] }]))
+  }
+
+  const handleLanguageInputChange = (index: number, e: any) => {
+      const { name, value } = e.target;
+      console.log('language name', name);
+      console.log('language score', value);
+      
+      const newFields = [...languageForm];
+      newFields[index][name] = value;
+      setLanguageForm(newFields);
+  }
+
+  const handleRemoveLanguageForm = (index: number, e: any) => {
+    const removeFields = languageForm.filter((data, i) => i !== index);
+    setLanguageForm(removeFields);
+  }
+
+  const handleFileChange = (e: any) => {
+      console.log('FILE', fileInputRef?.current?.files[0] || null);
+      setSelectedLanguageFile(fileInputRef?.current?.files[0] || null)
+      
+  }
 
   return (
     <>
@@ -787,7 +822,7 @@ const BasicInputElements = withSwal((props: any) => {
             </Modal.Header>
             <Modal.Body>
               <Row>
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label><span className="text-danger fs-4">* </span>Full Name</Form.Label>
                     <Form.Control
@@ -803,7 +838,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label><span className="text-danger fs-4">* </span>Email</Form.Label>
                     <Form.Control
@@ -820,7 +855,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label><span className="text-danger fs-4">* </span>Phone</Form.Label>
                     <Form.Control
@@ -837,7 +872,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Source</Form.Label>
                     <Select
@@ -855,7 +890,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Category</Form.Label>
                     <Select
@@ -874,7 +909,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Channel</Form.Label>
                     <Select
@@ -892,7 +927,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label><span className="text-danger fs-4">* </span>Office Type</Form.Label>
                     <Select
@@ -910,7 +945,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Country</Form.Label>
                     <Select
@@ -931,7 +966,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Remarks</Form.Label>
                     <Form.Control
@@ -947,7 +982,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>City</Form.Label>
                     <Form.Control
@@ -964,7 +999,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6} lg={4}>
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="lead_received_date">
                     <Form.Label>Lead Received Date</Form.Label>
                     <Form.Control
@@ -981,7 +1016,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6} lg={4}>
+                {/* <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="source_id">
                     <Form.Label>IELTS</Form.Label>
                     <Form.Check
@@ -992,8 +1027,91 @@ const BasicInputElements = withSwal((props: any) => {
                       checked={formData.ielts}
                     />
                   </Form.Group>
+                </Col> */}
+
+
+                <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="source_id">
+                    <Form.Label>Have you ever participated in any language exams ?</Form.Label>
+                    <div className="d-flex justify-content-start align-items-center mt-1">
+                      <div className="d-flex justify-content-start align-items-start me-2">
+                          <Form.Check
+                            type="radio"
+                            id="active-switch"
+                            name="ielts"
+                            onClick={() => setSelectExam(true)}
+                            // checked={formData.ielts}
+                          />
+                          <span className="ps-1 fw-bold">Yes</span>
+                      </div>
+                      <div className="d-flex justify-content-start align-items-start">
+                          <Form.Check
+                            type="radio"
+                            id="active-switch"
+                            name="ielts"
+                            onClick={() => setSelectExam(false)}
+                            // checked={!formData.ielts}
+                          />
+                          <span className="ps-1 fw-bold">No</span>
+                      </div>
+                    </div>
+                  </Form.Group>
                 </Col>
               </Row>
+
+              <Row>
+                {selectExam && languageForm.map((data, index)=>(
+                  <Row key={index}>
+                    <Col md={4} lg={4}>
+                      <Form.Group className="mb-3" controlId="language_name">
+                        <Form.Label>Exam Type</Form.Label>
+                        <Form.Select
+                            aria-label="Default select example"
+                            name="language_name"
+                            value={data.language_name}
+                            onChange={(e) => handleLanguageInputChange(index, e)}
+                          >
+                            <option value="" disabled>
+                              Choose..
+                            </option>
+                            {examtypes?.map((item: any) => (
+                              <option
+                                value={item?.name}
+                                key={item?.name}
+                                onClick={(e) => handleLanguageInputChange(index, e)}
+                                defaultValue={item.name === formData.exam ? item.name : undefined}
+                              >
+                                {item.name}
+                              </option>
+                            ))}
+                          </Form.Select>
+                      </Form.Group>
+                    </Col>
+                    <Col md={4} lg={4}>
+                      <Form.Group className="mb-3" controlId="score">
+                        <Form.Label>Language Score</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="score"
+                          value={data.score}
+                          onChange={(e) => {
+                            handleLanguageInputChange(index, e)
+                           }}
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    <Col className="d-flex justify-content-between">
+                      <Form.Group className="mb-3" controlId="profileImage">
+                        <Form.Label>Upload File</Form.Label>
+                          <Form.Control type="file" onChange={handleFileChange} ref={fileInputRef}/>
+                      </Form.Group>
+                      <i className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
+                      </Col>
+                  </Row>
+                ))}
+              </Row>
+              {selectExam && <Button onClick={handleAddLanguageForm}>Add Exam</Button>}
             </Modal.Body>
 
             <Modal.Footer>
@@ -1009,7 +1127,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Button
                 variant="danger"
                 id="button-addon2"
-                className="mt-1 ms-2"
+                className="mt-1"
                 onClick={() =>
                   isUpdate ? [handleCancelUpdate(), toggle()] : [toggle(), handleResetValues()]
                 }
