@@ -472,7 +472,7 @@ const StudentDetails = ({ studentId, taskId }: any) => {
                     as="ul"
                     className="nav nav-pills nav-fill navtab-bg row-gap-1"
                   >
-                    <Nav.Item as="li" className="nav-item">
+                    <Nav.Item as="li" className="nav-item nav_item_1">
                       <Nav.Link
                         // href="#"
                         eventKey="basic_info"
@@ -482,7 +482,7 @@ const StudentDetails = ({ studentId, taskId }: any) => {
                       </Nav.Link>
                     </Nav.Item>
 
-                    <Nav.Item as="li" className="nav-item">
+                    <Nav.Item as="li" className="nav-item nav_item_2">
                       <div>
                         <Nav.Link
                           // href="#"
@@ -494,7 +494,7 @@ const StudentDetails = ({ studentId, taskId }: any) => {
                       </div>
                     </Nav.Item>
 
-                    <Nav.Item as="li" className="nav-item">
+                    <Nav.Item as="li" className="nav-item nav_item_3">
                       <div>
                         <Nav.Link
                           // href="#"

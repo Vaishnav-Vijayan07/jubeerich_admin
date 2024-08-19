@@ -395,3 +395,34 @@ input[type="number"] {
 .content-page{
   overflow-x: hidden;
 }
+
+
+.nav-pills .nav_item_1 .nav-link.active, .nav-pills .show > .nav-link {
+  color: var(--ct-nav-pills-link-active-color);
+  background-color: #7d39d7dc;
+}
+
+.nav-pills .nav_item_1 .nav-link:hover, .nav-pills .show > .nav-link {
+  color: var(--ct-nav-pills-link-active-color);
+  background-color: #7d39d7dc !important;
+}
+
+.nav-pills .nav_item_2 .nav-link.active, .nav-pills .show > .nav-link {
+  color: var(--ct-nav-pills-link-active-color);
+  background-color: #267d5edc;
+}
+
+.nav-pills .nav_item_2 .nav-link:hover, .nav-pills .show > .nav-link {
+  color: var(--ct-nav-pills-link-active-color);
+  background-color: #267d5edc;
+}
+
+.nav-pills .nav_item_3 .nav-link.active, .nav-pills .show > .nav-link {
+  color: var(--ct-nav-pills-link-active-color);
+  background-color: #4daec9dc;
+}
+
+.nav-pills .nav_item_3 .nav-link:hover, .nav-pills .show > .nav-link {
+  color: var(--ct-nav-pills-link-active-color);
+  background-color: #4daec9dc;
+}
