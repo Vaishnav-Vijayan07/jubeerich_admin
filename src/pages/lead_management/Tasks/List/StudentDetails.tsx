@@ -55,8 +55,8 @@ const StudentDetails = ({ studentId, taskId }: any) => {
     setStatusId(null)
   }
 
-  console.log("selectedDate ==>", selectedDate);
-  
+  console.log("basicData ==>", basicData);
+
 
   const handleDateChange = (date: any) => {
     // const formattedDate = moment(date).format("YYYY-MM-DD");
@@ -106,9 +106,9 @@ const StudentDetails = ({ studentId, taskId }: any) => {
       showSuccessAlert(res.data.message);
       setRefresh(!refresh);
       toggleStandard()
-    }).catch((err)=>{
+    }).catch((err) => {
       console.log("err", err);
-      
+
     })
 
   }
@@ -369,33 +369,94 @@ const StudentDetails = ({ studentId, taskId }: any) => {
             </div>
           </Row>
           <Row>
-            <Col md={3}>
-              <Dropdown>
-                <Dropdown.Toggle
-                  className="cursor-pointer"
-                  variant="light"
-                // disabled={!StudentData?.status}
+            <div className="grid-container mb-2">
+              <div className="">
+                <p className="mt-2 mb-1 text-muted fw-light">Status</p>
+                <div
+                  className="d-flex align-items-start"
+                  style={{ gap: "5px" }}
                 >
-                  {basicData?.status?.status_name
-                    ? basicData?.status?.status_name
-                    : "Change status"}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {(status || [])?.map((item: any) => (
-                    // Check if the item is visible before rendering the Dropdown.Item
-
-                    <Dropdown.Item
-                      eventKey={item.id}
-                      key={item.id}
-                      onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      className="cursor-pointer"
+                      variant="light"
+                    // disabled={!StudentData?.status}
                     >
-                      {item.status_name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-            </Col>
-           
+                      {basicData?.status?.status_name
+                        ? basicData?.status?.status_name
+                        : "Change status"}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      {(status || [])?.map((item: any) => (
+                        // Check if the item is visible before rendering the Dropdown.Item
+
+                        <Dropdown.Item
+                          eventKey={item.id}
+                          key={item.id}
+                          onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                        >
+                          {item.status_name}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
+              </div>
+
+              <div className="">
+                <p className="mt-2 mb-1 text-muted fw-light">Lead Received Date</p>
+                <div
+                  className="d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                 <img
+                    src={icons.calender_time}
+                    alt="phone"
+                    className="me-1"
+                    width="16"
+                  />
+                  <input
+                    type="tel"
+                    value={basicData?.lead_received_date && moment(basicData?.lead_received_date).format("DD/MM/YYYY")}
+                    style={{
+                      border: "none",
+                      outline: "none",
+                      width: "100%",
+                      fontSize: "16px",
+                      fontWeight: 600,
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="">
+                <p className="mt-2 mb-1 text-muted fw-light">Followup Date</p>
+                <div
+                  className="d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                 <img
+                    src={icons.calender_time}
+                    alt="phone"
+                    className="me-1"
+                    width="16"
+                  />
+                  <input
+                    type="tel"
+                    value={basicData?.followup_date && moment(basicData?.followup_date).format("DD/MM/YYYY")}
+                    style={{
+                      border: "none",
+                      outline: "none",
+                      width: "100%",
+                      fontSize: "16px",
+                      fontWeight: 600,
+                    }}
+                  />
+                </div>
+              </div>
+
+            </div>
+
           </Row>
         </Card.Body>
       </Card>
