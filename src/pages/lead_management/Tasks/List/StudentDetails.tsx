@@ -5,6 +5,7 @@ import {
   Col,
   Dropdown,
   Form,
+  Modal,
   Nav,
   Row,
   Spinner,
@@ -21,7 +22,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { getMaritalStatus } from "../../../../redux/marital_status/actions";
 import axios from "axios";
-import { showSuccessAlert } from "../../../../constants";
+import { follow_up_id, future_leads_id, not_responding_id, showSuccessAlert } from "../../../../constants";
+import DatePicker from "react-datepicker";
+import moment from "moment";
+
 
 const StudentDetails = ({ studentId, taskId }: any) => {
   console.log("taskId", taskId);
@@ -30,7 +34,9 @@ const StudentDetails = ({ studentId, taskId }: any) => {
   const [status, setStatus] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [standard, setStandard] = useState(false)
+  const [statusId, setStatusId] = useState(null)
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [taskDetails, setTaskDetails] = useState<any>({});
 
   const dispatch = useDispatch();
@@ -43,6 +49,19 @@ const StudentDetails = ({ studentId, taskId }: any) => {
     })
   );
 
+  const toggleStandard = () => {
+    setStandard(!standard)
+    setSelectedDate(null)
+    setStatusId(null)
+  }
+
+  console.log("selectedDate ==>", selectedDate);
+  
+
+  const handleDateChange = (date: any) => {
+    // const formattedDate = moment(date).format("YYYY-MM-DD");
+    setSelectedDate(date);
+  };
   const getRoleBasedStatus = async (user_role: string) => {
     const { data } = await axios.get(`/lead_status`, {
       params: { user_role },
@@ -65,14 +84,34 @@ const StudentDetails = ({ studentId, taskId }: any) => {
   };
 
   const handleStatusChange = async (status_id: number) => {
-    const { data } = await axios.put("/lead_status", {
-      lead_id: studentId,
-      status_id,
-    });
+    if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
+      toggleStandard()
+    } else {
+      const { data } = await axios.put("/lead_status", {
+        lead_id: studentId,
+        status_id,
+      });
 
-    showSuccessAlert(data.message);
-    setRefresh(!refresh);
+      showSuccessAlert(data.message);
+      setRefresh(!refresh);
+    }
   };
+
+  const handleFollowUpDate = () => {
+    axios.put("/lead_status", {
+      lead_id: studentId,
+      status_id: statusId,
+      followup_date: selectedDate
+    }).then((res) => {
+      showSuccessAlert(res.data.message);
+      setRefresh(!refresh);
+      toggleStandard()
+    }).catch((err)=>{
+      console.log("err", err);
+      
+    })
+
+  }
 
   const getTaskDetails = () => {
     axios
@@ -174,31 +213,13 @@ const StudentDetails = ({ studentId, taskId }: any) => {
               <hr className="my-3" />
             </Col>
           </Row>
-
           <Row
             className="dotted-border-bottom"
             style={{ paddingBottom: "20px" }}
           >
             <Col>
               <h3>{taskDetails?.title}</h3>
-              {/* <p className="mt-1" style={{ color: "#4D4D4D" }}>
-                MBBS Admission for Russia, 2024 August intake, Mr. Austin
-                Stephen from Aluva,Kochi
-              </p> */}
-
               <div className="d-flex">
-                {/* <small
-                  style={{
-                    backgroundColor: "#a4f5c3",
-                    color: "#14522b",
-                    border: `1px solid #14522b`,
-                    borderRadius: "5px",
-                    padding: "4px 10px",
-                  }}
-                  className={classNames("rounded-pill fs-6 me-1")}
-                >
-                  High Priority
-                </small> */}
                 {basicData?.country_names?.map((country: any) => (
                   <small
                     style={{
@@ -213,19 +234,6 @@ const StudentDetails = ({ studentId, taskId }: any) => {
                     {country}
                   </small>
                 ))}
-
-                {/* <small
-                  style={{
-                    backgroundColor: "#a4f5c3",
-                    color: "#14522b",
-                    border: `1px solid #14522b`,
-                    borderRadius: "5px",
-                    padding: "4px 10px",
-                  }}
-                  className={classNames("rounded-pill fs-6 me-1")}
-                >
-                  MBBS
-                </small> */}
               </div>
             </Col>
           </Row>
@@ -366,7 +374,7 @@ const StudentDetails = ({ studentId, taskId }: any) => {
                 <Dropdown.Toggle
                   className="cursor-pointer"
                   variant="light"
-                  // disabled={!StudentData?.status}
+                // disabled={!StudentData?.status}
                 >
                   {basicData?.status?.status_name
                     ? basicData?.status?.status_name
@@ -379,7 +387,7 @@ const StudentDetails = ({ studentId, taskId }: any) => {
                     <Dropdown.Item
                       eventKey={item.id}
                       key={item.id}
-                      onClick={() => handleStatusChange(item?.id)}
+                      onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
                     >
                       {item.status_name}
                     </Dropdown.Item>
@@ -387,27 +395,7 @@ const StudentDetails = ({ studentId, taskId }: any) => {
                 </Dropdown.Menu>
               </Dropdown>
             </Col>
-            {/* <Col md={3}>
-                <Form.Group className="mb-3" controlId="preferred_country">
-                  <p className="mt-2 mb-1 text-muted fw-light">Status</p>
-                  <Form.Select
-                    className="mb-3 border border-primary"
-                    name="preferred_country"
-                    aria-label="Default select example"
-                    value={basicData?.status_id ? basicData?.status_id : ""}
-                    onChange={handleInputChange}
-                  >
-                    <option value="" disabled>
-                      Open this select menu
-                    </option>
-                    {(status || []).map((statusItem: any) => (
-                      <option key={statusItem.id} value={statusItem.id}>
-                        {statusItem.status_name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
-              </Col> */}
+           
           </Row>
         </Card.Body>
       </Card>
@@ -492,6 +480,32 @@ const StudentDetails = ({ studentId, taskId }: any) => {
           </Row>
         </Card.Body>
       </Card>
+
+      <Modal show={standard} centered onHide={toggleStandard} dialogClassName="modal-calendar-width" >
+        <Modal.Header onHide={toggleStandard} closeButton>
+          <h4 className="modal-title">Choose Followup Date</h4>
+        </Modal.Header>
+
+        <Modal.Body>
+          <div className="w-100 lead-date-picker">
+            <DatePicker minDate={new Date()} selected={selectedDate} onChange={handleDateChange} inline placeholderText="Choose a date" className="w-100" />
+          </div>
+        </Modal.Body>
+        <Modal.Footer className="mt-0">
+          <div className="text-end">
+            <Button
+              variant="danger"
+              className="me-1"
+              onClick={toggleStandard}
+            >
+              Cancel
+            </Button>
+            <Button variant="success" type="submit" onClick={handleFollowUpDate}>
+              Submit
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

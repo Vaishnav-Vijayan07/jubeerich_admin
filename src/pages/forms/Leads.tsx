@@ -345,126 +345,73 @@ const BasicInputElements = withSwal((props: any) => {
       await validationSchema.validate(formData, { abortEarly: false });
 
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          if (user) {
-            const { user_id } = user;
-            if (isUpdate) {
-              // Handle update logic
-              dispatch(
-                updateLeads(
-                  formData?.id,
-                  formData.full_name,
-                  formData.email,
-                  formData.phone,
-                  formData.category_id,
-                  formData.source_id,
-                  formData.channel_id,
-                  formData.city,
-                  formData.preferred_country,
-                  formData.office_type,
-                  null,
-                  null,
-                  null,
-                  user_id,
-                  formData.remarks,
-                  formData.lead_received_date,
-                  formData.ielts
-                )
-              );
-            } else {
-              // Handle add logic
-              console.log("here leads");
-    
-              dispatch(
-                addLeads(
-                  formData.full_name,
-                  formData.email,
-                  formData.phone,
-                  formData.category_id,
-                  formData.source_id,
-                  formData.channel_id,
-                  formData.city,
-                  formData.preferred_country,
-                  formData.office_type,
-                  null,
-                  null,
-                  null,
-                  user_id,
-                  formData.remarks,
-                  formData.lead_received_date,
-                  formData.ielts
-                )
-              );
+        .fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: `Yes, ${isUpdate ? 'Update' : 'Create'}`,
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            if (user) {
+              const { user_id } = user;
+              if (isUpdate) {
+                // Handle update logic
+                dispatch(
+                  updateLeads(
+                    formData?.id,
+                    formData.full_name,
+                    formData.email,
+                    formData.phone,
+                    formData.category_id,
+                    formData.source_id,
+                    formData.channel_id,
+                    formData.city,
+                    formData.preferred_country,
+                    formData.office_type,
+                    null,
+                    null,
+                    null,
+                    user_id,
+                    formData.remarks,
+                    formData.lead_received_date,
+                    formData.ielts
+                  )
+                );
+              } else {
+                // Handle add logic
+                console.log("here leads");
+
+                dispatch(
+                  addLeads(
+                    formData.full_name,
+                    formData.email,
+                    formData.phone,
+                    formData.category_id,
+                    formData.source_id,
+                    formData.channel_id,
+                    formData.city,
+                    formData.preferred_country,
+                    formData.office_type,
+                    null,
+                    null,
+                    null,
+                    user_id,
+                    formData.remarks,
+                    formData.lead_received_date,
+                    formData.ielts
+                  )
+                );
+              }
             }
           }
-        }
-      }).catch((err: any)=>{
-        console.log(err);
-      })
+        }).catch((err: any) => {
+          console.log(err);
+        })
 
-      // if (user) {
-      //   const { user_id } = user;
-      //   if (isUpdate) {
-      //     // Handle update logic
-      //     dispatch(
-      //       updateLeads(
-      //         formData?.id,
-      //         formData.full_name,
-      //         formData.email,
-      //         formData.phone,
-      //         formData.category_id,
-      //         formData.source_id,
-      //         formData.channel_id,
-      //         formData.city,
-      //         formData.preferred_country,
-      //         formData.office_type,
-      //         null,
-      //         null,
-      //         null,
-      //         user_id,
-      //         formData.remarks,
-      //         formData.lead_received_date,
-      //         formData.ielts
-      //       )
-      //     );
-      //   } else {
-      //     // Handle add logic
-      //     console.log("here leads");
-
-      //     dispatch(
-      //       addLeads(
-      //         formData.full_name,
-      //         formData.email,
-      //         formData.phone,
-      //         formData.category_id,
-      //         formData.source_id,
-      //         formData.channel_id,
-      //         formData.city,
-      //         formData.preferred_country,
-      //         formData.office_type,
-      //         null,
-      //         null,
-      //         null,
-      //         user_id,
-      //         formData.remarks,
-      //         formData.lead_received_date,
-      //         formData.ielts
-      //       )
-      //     );
-      //   }
-      // }
-
-      //   // ... Rest of the form submission logic ...
     } catch (validationError) {
       // Handle validation errors
       console.log("throw");
@@ -526,7 +473,13 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Lead Received Date",
       accessor: "lead_received_date",
       sort: false,
-      Cell: ({ row }: any) => <span>{moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
+      Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
+    },
+    {
+      Header: "Followup Date",
+      accessor: "followup_date",
+      sort: false,
+      Cell: ({ row }: any) => <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>,
     },
     ...(user?.role == 4
       ? [

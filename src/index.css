@@ -2,6 +2,10 @@
   cursor: pointer;
 }
 
+*{
+  box-sizing: border-box;
+}
+
 .react-datepicker-wrapper input {
   width: 100px;
 }
@@ -374,4 +378,20 @@ input[type="number"]::-webkit-outer-spin-button {
 /* Hide increment and decrement arrows in Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.modal-calendar-width .modal-dialog {
+  display: flex;
+  justify-content: center;
+  max-width: fit-content;
+  margin: auto;
+}
+
+.modal-calendar-width .modal-content {
+  width: auto;
+  margin: auto;
+}
+
+.content-page{
+  overflow-x: hidden;
 }
