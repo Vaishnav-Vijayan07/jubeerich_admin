@@ -46,6 +46,10 @@ interface LeadsData {
     remarks: string;
     lead_received_date: string;
     ielts: boolean;
+    // exam_details?: any[],
+    // exam_documents?: any[]
+    exam_details?: any,
+    exam_documents?: any
   };
   type: string;
 }
@@ -144,6 +148,8 @@ function* addLeads({
     remarks,
     lead_received_date,
     ielts,
+    exam_details,
+    exam_documents
   },
 }: LeadsData): SagaIterator {
   console.log("add leads");
@@ -166,7 +172,8 @@ function* addLeads({
       remarks,
       lead_received_date,
       ielts,
-    });
+      exam_details,
+    }, exam_documents);
     const data = response.data.message;
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));

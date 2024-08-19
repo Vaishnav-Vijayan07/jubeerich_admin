@@ -119,6 +119,10 @@ const initialValidationState = {
   ielts: true,
 };
 
+const languageFormInitialState =  [
+  { exam_name: '', marks: '' }
+]
+
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   const animatedComponents = makeAnimated();
@@ -126,7 +130,7 @@ const BasicInputElements = withSwal((props: any) => {
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
   }
-  console.log("user role ==>", userRole);
+  // console.log("user role ==>", userRole);
 
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -167,14 +171,8 @@ const BasicInputElements = withSwal((props: any) => {
   const [modal, setModal] = useState<boolean>(false);
   const [selectExam, setSelectExam] = useState<boolean>(false);
   const [selectedLanguageFile, setSelectedLanguageFile] = useState([])
-
   const fileInputRef = useRef<any>(null);
-
-  // const [languageForm, setLanguageForm] = useState<ILanguageForm[]>([{ language_name: '', score: '', files: [] }])
-  const [languageForm, setLanguageForm] = useState<any[]>([{ language_name: '', score: '', files: [] }])
-
-  console.log("selected Country ==>", selectedCountry);
-
+  const [languageForm, setLanguageForm] = useState<any[]>([{ exam_name: '', marks: '' }])
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -208,7 +206,7 @@ const BasicInputElements = withSwal((props: any) => {
     remarks: yup.string(),
   });
 
-  console.log("isUpdate ======>", isUpdate);
+  // console.log("isUpdate ======>", isUpdate);
 
 
   /*
@@ -347,8 +345,9 @@ const BasicInputElements = withSwal((props: any) => {
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log(formData);
+    
+    let exam_details = languageForm.length ? languageForm : [];
+    // let exam_documents = selectedFile.length ? selectedFile : [];
 
     // Validate the form using yup
     try {
@@ -598,7 +597,7 @@ const BasicInputElements = withSwal((props: any) => {
     handleResetValues();
   };
 
-  console.log("form data:", formData);
+  // console.log("form data:", formData);
 
 
   const handleResetValues = () => {
@@ -673,7 +672,7 @@ const BasicInputElements = withSwal((props: any) => {
         },
       });
 
-      console.log(data);
+      // console.log(data);
       if (data.status) {
         showSuccessAlert(data.message);
         dispatch(getLead());
@@ -702,11 +701,11 @@ const BasicInputElements = withSwal((props: any) => {
 
         if (data.status) {
           if (userRole == 4) {
-            console.log("getLeadsTL called bulk====>");
+            // console.log("getLeadsTL called bulk====>");
 
             dispatch(getLeadsTL());
           } else {
-            console.log("getLead called bulk==>");
+            // console.log("getLead called bulk==>");
 
             dispatch(getLead());
           }
@@ -779,14 +778,11 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleAddLanguageForm = () => {
-    console.log('Lanuage Form',languageForm);
-    setLanguageForm((prevData) => ([...prevData, { language_name: '', score: '', files: [] }]))
+    setLanguageForm((prevData) => ([...prevData, { exam_name: '', marks: ''}]))
   }
 
   const handleLanguageInputChange = (index: number, e: any) => {
       const { name, value } = e.target;
-      console.log('language name', name);
-      console.log('language score', value);
       
       const newFields = [...languageForm];
       newFields[index][name] = value;
@@ -794,14 +790,24 @@ const BasicInputElements = withSwal((props: any) => {
   }
 
   const handleRemoveLanguageForm = (index: number, e: any) => {
-    const removeFields = languageForm.filter((data, i) => i !== index);
+    const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+    const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
     setLanguageForm(removeFields);
+    setSelectedFile(removeFiles);
   }
 
-  const handleFileChange = (e: any) => {
-      console.log('FILE', fileInputRef?.current?.files[0] || null);
-      setSelectedLanguageFile(fileInputRef?.current?.files[0] || null)
-      
+  const handleFileChange = (index: number, e: any) => {
+    console.log('File',e.target.files);
+    console.log('File',fileInputRef?.current?.files[0]);
+    
+    const file = fileInputRef?.current?.files[0]
+
+    if(selectedFile.length){
+      const filteredFile = selectedFile.filter((data: any, i: any) => i!=index );
+      setSelectedFile(filteredFile);
+    }
+
+    setSelectedFile((prevData: any) => ([...prevData, fileInputRef?.current?.files[0]]))
   }
 
   return (
@@ -1063,12 +1069,12 @@ const BasicInputElements = withSwal((props: any) => {
                 {selectExam && languageForm.map((data, index)=>(
                   <Row key={index}>
                     <Col md={4} lg={4}>
-                      <Form.Group className="mb-3" controlId="language_name">
+                      <Form.Group className="mb-3" controlId="exam_name">
                         <Form.Label>Exam Type</Form.Label>
                         <Form.Select
                             aria-label="Default select example"
-                            name="language_name"
-                            value={data.language_name}
+                            name="exam_name"
+                            value={data.exam_name}
                             onChange={(e) => handleLanguageInputChange(index, e)}
                           >
                             <option value="" disabled>
@@ -1088,12 +1094,12 @@ const BasicInputElements = withSwal((props: any) => {
                       </Form.Group>
                     </Col>
                     <Col md={4} lg={4}>
-                      <Form.Group className="mb-3" controlId="score">
-                        <Form.Label>Language Score</Form.Label>
+                      <Form.Group className="mb-3" controlId="marks">
+                        <Form.Label>Exam Score</Form.Label>
                         <Form.Control
                           type="text"
-                          name="score"
-                          value={data.score}
+                          name="marks"
+                          value={data.marks}
                           onChange={(e) => {
                             handleLanguageInputChange(index, e)
                            }}
@@ -1102,16 +1108,19 @@ const BasicInputElements = withSwal((props: any) => {
                     </Col>
 
                     <Col className="d-flex justify-content-between">
-                      <Form.Group className="mb-3" controlId="profileImage">
+                    <Form name="exam_documents" encType="multipart/form-data">
+                      <Form.Group  className="mb-3" controlId="profileImage">
                         <Form.Label>Upload File</Form.Label>
-                          <Form.Control type="file" onChange={handleFileChange} ref={fileInputRef}/>
+                          <Form.Control name="exam_documents" type="file" onChange={(event) => handleFileChange(index, event)} ref={fileInputRef}/>
                       </Form.Group>
+                    </Form>
                       <i className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
-                      </Col>
+                      {selectExam && <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>}
+                    </Col>
                   </Row>
                 ))}
               </Row>
-              {selectExam && <Button onClick={handleAddLanguageForm}>Add Exam</Button>}
+              {/* {selectExam && <Button onClick={handleAddLanguageForm}>Add Exam</Button>} */}
             </Modal.Body>
 
             <Modal.Footer>
@@ -1129,7 +1138,7 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1"
                 onClick={() =>
-                  isUpdate ? [handleCancelUpdate(), toggle()] : [toggle(), handleResetValues()]
+                  isUpdate ? [handleCancelUpdate(), toggle()] : [toggle(), handleResetValues(), setLanguageForm(languageFormInitialState)]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
@@ -1183,7 +1192,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Modal>
         )}
 
-        <Col className="p-0 form__card">
+        <Col lg={12} className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
               <div className="d-flex flex-wrap gap-2 justify-content-end">
