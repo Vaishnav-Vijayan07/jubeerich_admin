@@ -89,7 +89,9 @@ export const addLeads = (
   updated_by: string | null,
   remarks: string | null,
   lead_received_date: string | null,
-  ielts: boolean
+  ielts: boolean,
+  exam_details?: any,
+  exam_documents?: any
 ): LeadsActionType => ({
   type: LeadsActionTypes.ADD_LEADS,
   payload: {
@@ -109,6 +111,8 @@ export const addLeads = (
     remarks,
     lead_received_date,
     ielts,
+    exam_details,
+    exam_documents
   },
 });
 

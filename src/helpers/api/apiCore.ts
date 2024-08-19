@@ -168,6 +168,26 @@ class APICore {
     return axios.post(url, formData, config);
   };
 
+  createWithMultipleFile = (url: string, data: any, files:any) => {
+    const formData = new FormData();
+
+    files.forEach((file: any) => {
+        formData.append(`exam_documents`, file)
+    });
+
+    for (const k in data) {  
+      formData.append(k, data[k]);
+    }
+
+    const config = {
+      headers: {
+        ...axios.defaults.headers,
+        "content-type": "multipart/form-data",
+      },
+    };
+    return axios.post(url, formData, config);
+  };
+
   /**
    * post given data to url with file
    */

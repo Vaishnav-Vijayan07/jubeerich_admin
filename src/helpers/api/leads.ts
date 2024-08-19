@@ -38,10 +38,13 @@ function addLeads(params: {
   remarks: string;
   lead_received_date: string;
   ielts: boolean;
-}) {
-  console.log(params);
-
-  return api.create(`${baseUrl}`, params);
+  exam_details?: any,
+  exam_documents?: any
+}, exam_documents?: any) {
+  
+  // return api.create(`${baseUrl}`, params);
+  // return api.createWithFile(`${baseUrl}`, params);
+  return api.createWithMultipleFile(`${baseUrl}`, params, exam_documents);
 }
 
 function updateLeads(
