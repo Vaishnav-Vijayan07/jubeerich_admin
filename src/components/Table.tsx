@@ -20,7 +20,6 @@ interface GlobalFilterProps {
   searchBoxClass: any;
 }
 
-// Define a default UI for filtering
 const GlobalFilter = ({
   preGlobalFilteredRows,
   globalFilter,
@@ -139,6 +138,23 @@ const Table = (props: TableProps) => {
       columns: props["columns"],
       data: props["data"],
       initialState: { pageSize: props["pageSize"] || 10 },
+      globalFilter: (rows, columnIds, filterValue) => {
+        return rows.filter((row) => {
+          return columnIds.some((id) => {
+            const columnValue = row.values[id];
+            if (Array.isArray(columnValue)) {
+              return columnValue.some((item: any) =>
+                JSON.stringify(item)
+                  .toLowerCase()
+                  .includes(filterValue.toLowerCase())
+              );
+            }
+            return String(columnValue)
+              .toLowerCase()
+              .includes(filterValue.toLowerCase());
+          });
+        });
+      },
     },
     otherProps.hasOwnProperty("useGlobalFilter") &&
       otherProps["useGlobalFilter"],
@@ -149,11 +165,8 @@ const Table = (props: TableProps) => {
     (hooks) => {
       isSelectable &&
         hooks.visibleColumns.push((columns: any) => [
-          // Let's make a column for selection
           {
             id: "selection",
-            // The header can use the table's getToggleAllRowsSelectedProps method
-            // to render a checkbox
             Header: ({ getToggleAllPageRowsSelectedProps }: any) => (
               <div>
                 <IndeterminateCheckbox
@@ -161,8 +174,6 @@ const Table = (props: TableProps) => {
                 />
               </div>
             ),
-            // The cell can use the individual row's getToggleRowSelectedProps method
-            // to the render a checkbox
             Cell: ({ row }: any) => (
               <div>
                 <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
@@ -174,10 +185,8 @@ const Table = (props: TableProps) => {
 
       isExpandable &&
         hooks.visibleColumns.push((columns: any) => [
-          // Let's make a column for selection
           {
-            // Build our expander column
-            id: "expander", // Make sure it has an ID
+            id: "expander",
             Header: ({
               getToggleAllRowsExpandedProps,
               isAllRowsExpanded,
@@ -187,15 +196,10 @@ const Table = (props: TableProps) => {
               </span>
             ),
             Cell: ({ row }) =>
-              // Use the row.canExpand and row.getToggleRowExpandedProps prop getter
-              // to build the toggle for expanding a row
               row.canExpand ? (
                 <span
                   {...row.getToggleRowExpandedProps({
                     style: {
-                      // We can even use the row.depth property
-                      // and paddingLeft to indicate the depth
-                      // of the row
                       paddingLeft: `${row.depth * 2}rem`,
                     },
                   })}

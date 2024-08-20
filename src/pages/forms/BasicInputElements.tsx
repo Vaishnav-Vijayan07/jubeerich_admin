@@ -135,6 +135,7 @@ const BasicInputElements = withSwal((props: any) => {
         channels,
         error,
         loading,
+        counsellors
     } = props;
 
     //State for handling update function
@@ -175,20 +176,15 @@ const BasicInputElements = withSwal((props: any) => {
     const applyFilters = () => {
         let tempItems = [...state];
 
-        console.log("temp items", tempItems);
-
-        console.log("filters ==>", filters);
-
-
-
         if (filters.status_id) {
             tempItems = tempItems.filter(item => item.status_id == filters.status_id);
         }
 
         if (filters.counsiler_id) {
-            tempItems = tempItems.filter(item => item.id === filters.counsiler_id);
+            tempItems = tempItems.filter(item =>
+                item.counselors.some((counselor: any) => counselor.id == filters.counsiler_id)
+            );
         }
-
         setFilteredItems(tempItems);
     };
 
@@ -494,6 +490,7 @@ const BasicInputElements = withSwal((props: any) => {
         {
             Header: "Country",
             accessor: "preferredCountries",
+            filter: "includes",
             sort: false,
             Cell: ({ row }: any) => <ul style={{ listStyle: "none" }}>{row.original.preferredCountries.map((item: any) => (
                 <li>{item?.country_name}</li>
@@ -1290,6 +1287,31 @@ const BasicInputElements = withSwal((props: any) => {
                                         </Form.Control>
                                     </div>
                                 </Form.Group>
+
+                                <Form.Group className="mb-3" controlId="counsiler_id">
+                                    <div className="select-wrapper">
+                                        <Form.Label>Counsellors</Form.Label>
+                                        <Form.Control
+                                            as="select"
+                                            name="counsiler_id"
+                                            value={filters.counsiler_id}
+                                            onChange={(e: any) => handleFilterChange(e)}
+                                            className="select-custom"
+                                        >
+                                            <option value="">All</option>
+                                            {counsellors?.map((item: any) => (
+                                                <option value={item.id} key={item.id}>
+                                                    {item.name}
+                                                </option>
+                                            ))}
+                                        </Form.Control>
+                                    </div>
+                                </Form.Group>
+
+                                <Form.Group className="">
+                                    <Button style={{margin:"auto"}}>Clear</Button>
+                                </Form.Group>
+
 
                             </div>
                             {userRole == 4 ? <Table

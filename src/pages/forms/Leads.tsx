@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Row,
   Col,
@@ -23,9 +23,11 @@ import {
 import { getCountry } from "../../redux/country/actions";
 import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import BasicInputElements from "./BasicInputElements";
+import axios from "axios";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  const [counsellors, setCounsellors] = useState([])
   let userRole: any;
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
@@ -67,6 +69,7 @@ const Leads = () => {
     dispatch(getSource());
     dispatch(getStatus());
     dispatch(getOfficeTypeData());
+    fetchAllCounsellors()
   }, [dispatch]);
 
   useEffect(() => {
@@ -76,6 +79,15 @@ const Leads = () => {
       dispatch(getLead());
     }
   }, [dispatch, userRole])
+
+  const fetchAllCounsellors = () => {
+    axios.get("/get_all_counsellors").then((res) => {
+      console.log("res =>", res.data.data);
+      setCounsellors(res.data.data)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
 
 
   const countryData = useMemo(() => {
@@ -158,6 +170,7 @@ const Leads = () => {
             error={error}
             loading={loading}
             status={statusData || []}
+            counsellors={counsellors}
           />
         </Col>
       </Row>
