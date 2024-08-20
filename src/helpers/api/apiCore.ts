@@ -206,6 +206,25 @@ class APICore {
     return axios.patch(url, formData, config);
   };
 
+  updateWithMultipleFile = (url: string, data: any, files: any) => {
+    const formData = new FormData();
+    for (const k in data) {
+      formData.append(k, data[k]);
+    }
+
+    files.forEach((file: any) => {
+      formData.append(`exam_documents`, file)
+    });
+
+    const config = {
+      headers: {
+        ...axios.defaults.headers,
+        "content-type": "multipart/form-data",
+      },
+    };
+    return axios.put(url, formData, config);
+  };
+
   isUserAuthenticated = () => {
     const user = this.getLoggedInUser();
 

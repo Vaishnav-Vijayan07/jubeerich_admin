@@ -81,7 +81,8 @@ export const addLeads = (
   source_id: string | null,
   channel_id: string | null,
   city: string | null,
-  preferred_country: number[] | null,
+  // preferred_country: number[] | null,
+  preferred_country: any | null,
   office_type: string | null,
   region_id: string | null,
   counsiler_id: string | null,
@@ -126,6 +127,7 @@ export const updateLeads = (
   channel_id: string | null,
   city: string | null,
   preferred_country: number[] | null,
+  // preferred_country: any | null,
   office_type: string | null,
   region_id: string | null,
   counsiler_id: string | null,
@@ -133,7 +135,10 @@ export const updateLeads = (
   updated_by: string | null,
   remarks: string | null,
   lead_received_date: string | null,
-  ielts: boolean
+  ielts: boolean,
+  // exam_details?: any,
+  // exam_documents?: any,
+  // changedFiles?: any
 ): LeadsActionType => ({
   type: LeadsActionTypes.UPDATE_LEADS,
   payload: {
@@ -154,6 +159,9 @@ export const updateLeads = (
     remarks,
     lead_received_date,
     ielts,
+    // exam_details,
+    // exam_documents,
+    // changedFiles
   },
 });
 
