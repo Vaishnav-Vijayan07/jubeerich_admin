@@ -161,6 +161,8 @@ const BasicInputElements = withSwal((props: any) => {
     const [filters, setFilters] = useState({
         status_id: '',
         counsiler_id: '',
+        lead_received_date: '',
+        followup_date: ''
     });
 
     useEffect(() => {
@@ -176,6 +178,9 @@ const BasicInputElements = withSwal((props: any) => {
     const applyFilters = () => {
         let tempItems = [...state];
 
+        console.log("tempItems ==>", tempItems);
+
+
         if (filters.status_id) {
             tempItems = tempItems.filter(item => item.status_id == filters.status_id);
         }
@@ -185,12 +190,27 @@ const BasicInputElements = withSwal((props: any) => {
                 item.counselors.some((counselor: any) => counselor.id == filters.counsiler_id)
             );
         }
+
+        if (filters.lead_received_date) {
+            tempItems = tempItems.filter(item => {
+                const itemDate = new Date(item.lead_received_date).toDateString();
+                const filterDate = new Date(filters.lead_received_date).toDateString();
+                return itemDate === filterDate;
+            });
+        }
+
+        if (filters.followup_date) {
+            tempItems = tempItems.filter(item => {
+                const itemDate = new Date(item.followup_date).toDateString();
+                const filterDate = new Date(filters.followup_date).toDateString();
+                return itemDate === filterDate;
+            });
+        }
         setFilteredItems(tempItems);
     };
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
-        console.log("e.target =========>", e.target.value);
 
         setFilters(prevFilters => ({
             ...prevFilters,
@@ -198,9 +218,14 @@ const BasicInputElements = withSwal((props: any) => {
         }));
     };
 
-    console.log("status ==>", status);
-
-
+    const handleClear = () => {
+        setFilters({
+            status_id: '',
+            counsiler_id: '',
+            lead_received_date: '',
+            followup_date: ''
+        })
+    }
 
     // Modal states
     const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -1266,9 +1291,9 @@ const BasicInputElements = withSwal((props: any) => {
                                 </Button>
                             </div>
                             <h4 className="header-title mb-4">Manage Leads</h4>
-                            <div className="d-flex flex-wrap gap-2 justify-content-end">
+                            <div className="d-flex flex-wrap gap-2 justify-content-end mb-3" style={{ alignItems: "end" }}>
 
-                                <Form.Group className="mb-3" controlId="status_id">
+                                <Form.Group className="" controlId="status_id">
                                     <div className="select-wrapper">
                                         <Form.Label>Status</Form.Label>
                                         <Form.Control
@@ -1288,7 +1313,7 @@ const BasicInputElements = withSwal((props: any) => {
                                     </div>
                                 </Form.Group>
 
-                                <Form.Group className="mb-3" controlId="counsiler_id">
+                                <Form.Group className="" controlId="counsiler_id">
                                     <div className="select-wrapper">
                                         <Form.Label>Counsellors</Form.Label>
                                         <Form.Control
@@ -1308,8 +1333,29 @@ const BasicInputElements = withSwal((props: any) => {
                                     </div>
                                 </Form.Group>
 
+                                <Form.Group controlId="lead_received_date">
+                                    <Form.Label>Lead Received Date</Form.Label>
+                                    <Form.Control
+                                        type="date"
+                                        name="lead_received_date"
+                                        value={filters.lead_received_date}
+                                        onChange={(e: any) => handleFilterChange(e)}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group controlId="followup_date">
+                                    <Form.Label>Followup Date</Form.Label>
+                                    <Form.Control
+                                        type="date"
+                                        name="followup_date"
+                                        value={filters.followup_date}
+                                        onChange={(e: any) => handleFilterChange(e)}
+                                    />
+                                </Form.Group>
+
+
                                 <Form.Group className="">
-                                    <Button style={{margin:"auto"}}>Clear</Button>
+                                    <Button style={{ margin: "auto" }} onClick={handleClear}>Clear</Button>
                                 </Form.Group>
 
 

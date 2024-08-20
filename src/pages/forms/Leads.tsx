@@ -82,13 +82,11 @@ const Leads = () => {
 
   const fetchAllCounsellors = () => {
     axios.get("/get_all_counsellors").then((res) => {
-      console.log("res =>", res.data.data);
       setCounsellors(res.data.data)
     }).catch((err) => {
       console.log(err)
     })
   }
-
 
   const countryData = useMemo(() => {
     if (!country) return [];
