@@ -49,7 +49,8 @@ interface LeadsData {
     // exam_details?: any[],
     // exam_documents?: any[]
     exam_details?: any,
-    exam_documents?: any
+    exam_documents?: any,
+    changedFiles: any
   };
   type: string;
 }
@@ -221,6 +222,9 @@ function* updateLeads({
     remarks,
     lead_received_date,
     ielts,
+    exam_details,
+    exam_documents,
+    changedFiles
   },
 }: LeadsData): SagaIterator {
   try {
@@ -241,7 +245,11 @@ function* updateLeads({
       remarks,
       lead_received_date,
       ielts,
-    });
+      // exam_details,
+      // changedFiles
+    }, 
+    // exam_documents
+  );
     const data = response.data.message;
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.UPDATE_LEADS, data));
