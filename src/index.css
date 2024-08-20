@@ -426,3 +426,34 @@ input[type="number"] {
   color: var(--ct-nav-pills-link-active-color);
   background-color: #4daec9dc;
 }
+
+
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.select-custom {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: url('./assets/images/icons/arrow.svg') no-repeat right 0.75rem center;
+  background-size: .9rem; /* Size of the custom arrow */
+  padding-right: 2.75rem; /* Increased padding to create space */
+  border: 1px solid #ced4da; /* Optional: border styling */
+  border-radius: 0.25rem; /* Optional: border-radius */
+}
+
+/* Optional: Add a visual placeholder for the arrow */
+.select-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 1rem; /* Space between the arrow and the edge */
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  /* background: url('./assets/images/icons/arrow.svg') no-repeat center; */
+  background-size: contain;
+  pointer-events: none; /* Ensure the arrow does not block clicks */
+}
