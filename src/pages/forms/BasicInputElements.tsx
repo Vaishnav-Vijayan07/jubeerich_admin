@@ -150,6 +150,7 @@ const BasicInputElements = withSwal((props: any) => {
     const [formData, setFormData] = useState(initialState);
     const [uploadModal, setUploadModal] = useState<boolean>(false);
     const [selectedFile, setSelectedFile] = useState<any>([]);
+    const [selectedFileName, setSelectedFileName] = useState<any>([]);
 
     const [className, setClassName] = useState<string>("");
     const [scroll, setScroll] = useState<boolean>(false);
@@ -335,6 +336,19 @@ const BasicInputElements = withSwal((props: any) => {
             exam: item?.exam || ""
         }));
 
+        
+        if(item?.exam_details.length){
+            setSelectExam(true)
+            setLanguageForm(item?.exam_details)
+          }
+      
+          if(item?.exam_documents.length){
+            console.log('File',item?.exam_documents);
+            
+            setSelectedFile(item?.exam_documents)
+            setSelectedFileName(item?.exam_documents)
+          }
+
         setIsUpdate(true);
     };
 
@@ -441,6 +455,7 @@ const BasicInputElements = withSwal((props: any) => {
                                         formData.channel_id,
                                         formData.city,
                                         formData.preferred_country,
+                                        // JSON.stringify(formData.preferred_country),
                                         formData.office_type,
                                         null,
                                         null,
@@ -464,7 +479,8 @@ const BasicInputElements = withSwal((props: any) => {
                                         formData.source_id,
                                         formData.channel_id,
                                         formData.city,
-                                        formData.preferred_country,
+                                        // formData.preferred_country,
+                                        JSON.stringify(formData.preferred_country),
                                         formData.office_type,
                                         null,
                                         null,
@@ -472,7 +488,9 @@ const BasicInputElements = withSwal((props: any) => {
                                         user_id,
                                         formData.remarks,
                                         formData.lead_received_date,
-                                        formData.ielts
+                                        formData.ielts,
+                                        JSON.stringify(exam_details),
+                                        selectedFile
                                     )
                                 );
                             }
@@ -670,6 +688,8 @@ const BasicInputElements = withSwal((props: any) => {
         setSelectedChannel(null);
         setSelectedOffice(null);
         setSelectedSource(null);
+        setLanguageForm(languageFormInitialState),
+        setSelectedFile([])
     };
 
     const toggleResponsiveModal = () => {
@@ -862,14 +882,12 @@ const BasicInputElements = withSwal((props: any) => {
         console.log('File', e.target.files);
         console.log('File', fileInputRef?.current?.files[0]);
 
-        const file = fileInputRef?.current?.files[0]
-
         if (selectedFile.length) {
             const filteredFile = selectedFile.filter((data: any, i: any) => i != index);
             setSelectedFile(filteredFile);
         }
 
-        setSelectedFile((prevData: any) => ([...prevData, fileInputRef?.current?.files[0]]))
+        setSelectedFile((prevData: any) => ([...prevData, e.target.files[0]]));
     }
 
     return (
@@ -1095,7 +1113,8 @@ const BasicInputElements = withSwal((props: any) => {
                                                     id="active-switch"
                                                     name="ielts"
                                                     onClick={() => setSelectExam(true)}
-                                                // checked={formData.ielts}
+                                                    // checked={formData.ielts}
+                                                    checked={selectExam}
                                                 />
                                                 <span className="ps-1 fw-bold">Yes</span>
                                             </div>
@@ -1105,7 +1124,8 @@ const BasicInputElements = withSwal((props: any) => {
                                                     id="active-switch"
                                                     name="ielts"
                                                     onClick={() => setSelectExam(false)}
-                                                // checked={!formData.ielts}
+                                                    // checked={!formData.ielts}
+                                                    checked={!selectExam}
                                                 />
                                                 <span className="ps-1 fw-bold">No</span>
                                             </div>
@@ -1124,6 +1144,7 @@ const BasicInputElements = withSwal((props: any) => {
                                                     aria-label="Default select example"
                                                     name="exam_name"
                                                     value={data.exam_name}
+                                                    disabled={isUpdate}
                                                     onChange={(e) => handleLanguageInputChange(index, e)}
                                                 >
                                                     <option value="" disabled>
@@ -1149,6 +1170,7 @@ const BasicInputElements = withSwal((props: any) => {
                                                     type="text"
                                                     name="marks"
                                                     value={data.marks}
+                                                    disabled={isUpdate}
                                                     onChange={(e) => {
                                                         handleLanguageInputChange(index, e)
                                                     }}
@@ -1160,7 +1182,8 @@ const BasicInputElements = withSwal((props: any) => {
                                             <Form name="exam_documents" encType="multipart/form-data">
                                                 <Form.Group className="mb-3" controlId="profileImage">
                                                     <Form.Label>Upload File</Form.Label>
-                                                    <Form.Control name="exam_documents" type="file" onChange={(event) => handleFileChange(index, event)} ref={fileInputRef} />
+                                                    <Form.Control name="exam_documents" type="file" disabled={isUpdate} onChange={(event) => { handleFileChange(index, event) }} ref={fileInputRef} />
+                                                    {selectedFile[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{selectedFile[index].exam_documents}</p>}
                                                 </Form.Group>
                                             </Form>
                                             <i className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>

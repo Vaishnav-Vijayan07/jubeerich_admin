@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 import * as yup from 'yup';
 import { withSwal } from 'react-sweetalert2';
+import { examtypes } from "../../../forms/data";
 
 
 const validationErrorsInitialState = {
@@ -36,6 +37,10 @@ const AcademicInfo = withSwal((props: any) => {
   const [formData, setformData] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
+  const [selectExam, setSelectExam] = useState<boolean>(false);
+  const [languageForm, setLanguageForm] = useState<any[]>([{ exam_name: '', marks: '' }]);
+  const [selectedFile, setSelectedFile] = useState<any>([]);
+  const fileInputRef = useRef<any>(null);
 
   const ValidationSchema = yup.object().shape({
     qualification: yup.string().required("Qualification cannot be empty"),
@@ -79,8 +84,34 @@ const AcademicInfo = withSwal((props: any) => {
   const saveStudentAcademicInfo = async() => {
     try {
 
-      await ValidationSchema.validate(formData, { abortEarly: false})
+      console.log('Language Form', languageForm);
+      console.log('selectedFile', selectedFile);
+      
 
+      let exam_details = languageForm.length ? languageForm : [];
+      console.log('exam_details',exam_details);
+      
+      const newFormData = new FormData();
+
+      newFormData.append('user_id', studentId.toString());
+      newFormData.append('qualification', formData?.qualification);
+      newFormData.append('place', formData?.place);
+      newFormData.append('percentage', formData?.percentage);
+      newFormData.append('year_of_passing', formData?.year_of_passing);
+      // newFormData.append('backlogs', JSON.stringify(formData?.backlogs));
+      newFormData.append('backlogs', '0');
+      newFormData.append('work_experience', JSON.stringify(formData?.work_experience));
+      newFormData.append('designation', formData?.designation);
+      newFormData.append('exam_details', JSON.stringify(exam_details));
+
+      selectedFile.forEach((file: any) => {
+        newFormData.append(`exam_documents`, file)
+      });
+
+      // await ValidationSchema.validate(formData, { abortEarly: false})
+      
+      console.log('Entered');
+      
       swal
       .fire({
         title: "Are you sure?",
@@ -95,15 +126,25 @@ const AcademicInfo = withSwal((props: any) => {
         if (result.isConfirmed) {
           setLoading(true);
           axios
-            .post("saveStudentAcademicInfo", {
-              user_id: studentId,
-              qualification: formData?.qualification,
-              place: formData?.place,
-              percentage: formData?.percentage,
-              year_of_passing: formData?.year_of_passing,
-              backlogs: formData?.backlogs,
-              work_experience: formData?.work_experience,
-              designation: formData?.designation,
+            // .post("saveStudentAcademicInfo", {
+            //   user_id: studentId.toString(),
+            //   qualification: formData?.qualification,
+            //   place: formData?.place,
+            //   percentage: formData?.percentage,
+            //   year_of_passing: formData?.year_of_passing,
+            //   backlogs: formData?.backlogs,
+            //   work_experience: formData?.work_experience,
+            //   designation: formData?.designation,
+            //   exam_details: JSON.stringify(exam_details)
+            // },{
+            //   headers: {
+            //     "Content-Type": "multipart/form-data",
+            //   }
+            // })
+            .post("saveStudentAcademicInfo", newFormData,{
+              headers: {
+                "Content-Type": "multipart/form-data",
+              }
             })
             .then((res) => {
               console.log("res: =>", res);
@@ -162,6 +203,39 @@ const AcademicInfo = withSwal((props: any) => {
       }
     }
   };
+  
+  const handleLanguageInputChange = (index: number, e: any) => {
+    const { name, value } = e.target;
+
+    const newFields = [...languageForm];
+    newFields[index][name] = value;
+    setLanguageForm(newFields);
+  }
+
+  const handleRemoveLanguageForm = (index: number, e: any) => {
+    const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+    const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
+    setLanguageForm(removeFields);
+    setSelectedFile(removeFiles);
+  }
+
+  const handleFileChange = (index: number, e: any) => {
+    console.log('File', e.target.files);
+    console.log('File', fileInputRef?.current?.files[0]);
+
+    const file = fileInputRef?.current?.files[0]
+
+    if (selectedFile.length) {
+      const filteredFile = selectedFile.filter((data: any, i: any) => i != index);
+      setSelectedFile(filteredFile);
+    }
+
+    setSelectedFile((prevData: any) => ([...prevData, fileInputRef?.current?.files[0]]))
+  }
+
+  const handleAddLanguageForm = () => {
+    setLanguageForm((prevData) => ([...prevData, { exam_name: '', marks: '' }]))
+  }
 
   console.log("formData", formData);
 
@@ -172,7 +246,8 @@ const AcademicInfo = withSwal((props: any) => {
           <i className="mdi mdi-account-circle me-1"></i> Academic Info
         </h5>
         <Row>
-          <Col xl={6} xxl={4}>
+          {/* <Col xl={6} xxl={4}> */}
+          <Col md={4} lg={4} xl={4} xxl={4}>
             <Form.Group className="mb-3" controlId="qualification">
               <Form.Label><span className="text-danger">* </span>Qualification</Form.Label>
               <FormInput
@@ -188,7 +263,8 @@ const AcademicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          {/* <Col xl={6} xxl={4}> */}
+          <Col md={4} lg={4} xl={4} xxl={4}>
             <Form.Group className="mb-3" controlId="place">
               <Form.Label><span className="text-danger">* </span>Place</Form.Label>
               <FormInput
@@ -203,7 +279,8 @@ const AcademicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          {/* <Col xl={6} xxl={4}> */}
+          <Col md={4} lg={4} xl={4} xxl={4}>
             <Form.Group className="mb-3" controlId="percentage">
               <Form.Label><span className="text-danger">* </span>Percentage</Form.Label>
               <FormInput
@@ -221,7 +298,8 @@ const AcademicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          {/* <Col xl={6} xxl={4}> */}
+          <Col md={4} lg={4} xl={4} xxl={4}>
             <Form.Group className="mb-3" controlId="year_of_passing">
               <Form.Label><span className="text-danger">* </span>Year of passing</Form.Label>
               <FormInput
@@ -239,7 +317,8 @@ const AcademicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          {/* <Col xl={6} xxl={4}> */}
+          <Col md={4} lg={4} xl={4} xxl={4}>
             <Form.Group className="mb-3" controlId="backlogs">
               <Form.Label>Backlogs</Form.Label>
               <FormInput
@@ -260,7 +339,8 @@ const AcademicInfo = withSwal((props: any) => {
           <i className="mdi mdi-account-circle me-1"></i> Work Experience
         </h5>
 
-          <Col xl={6} xxl={4}>
+          {/* <Col xl={6} xxl={4}> */}
+          <Col md={4} lg={4} xl={4} xxl={4}>
             <Form.Group className="mb-3" controlId="work_experience">
               <Form.Label>Work Experience</Form.Label>
               <FormInput
@@ -278,7 +358,8 @@ const AcademicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          {/* <Col xl={6} xxl={4}> */}
+          <Col md={4} lg={4} xl={4} xxl={4}>
             <Form.Group className="mb-3" controlId="company">
               <Form.Label>Company</Form.Label>
               <FormInput
@@ -295,7 +376,8 @@ const AcademicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          {/* <Col xl={4} xxl={4}> */}
+          <Col md={4} lg={4} xl={4} xxl={4}>
             <Form.Group className="mb-3" controlId="designation">
               <Form.Label>Designation</Form.Label>
               <FormInput
@@ -311,6 +393,90 @@ const AcademicInfo = withSwal((props: any) => {
             )}
             </Form.Group>
           </Col>
+
+          <Col md={4} lg={4} xl={4} xxl={4}>
+            <Form.Group className="mb-3" controlId="source_id">
+              <Form.Label>Have you ever participated in any language exams ?</Form.Label>
+              <div className="d-flex justify-content-start align-items-center mt-1">
+                <div className="d-flex justify-content-start align-items-start me-2">
+                  <Form.Check
+                    type="radio"
+                    id="active-switch"
+                    name="ielts"
+                    onClick={() => setSelectExam(true)}
+                  // checked={formData.ielts}
+                  />
+                  <span className="ps-1 fw-bold">Yes</span>
+                </div>
+                <div className="d-flex justify-content-start align-items-start">
+                  <Form.Check
+                    type="radio"
+                    id="active-switch"
+                    name="ielts"
+                    onClick={() => setSelectExam(false)}
+                  // checked={!formData.ielts}
+                  />
+                  <span className="ps-1 fw-bold">No</span>
+                </div>
+              </div>
+            </Form.Group>
+          </Col>
+
+          <Row>
+            {selectExam && languageForm.map((data, index) => (
+              <Row key={index}>
+                <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="exam_name">
+                    <Form.Label>Exam Type</Form.Label>
+                    <Form.Select
+                      aria-label="Default select example"
+                      name="exam_name"
+                      value={data.exam_name}
+                      onChange={(e) => handleLanguageInputChange(index, e)}
+                    >
+                      <option value="" disabled>
+                        Choose..
+                      </option>
+                      {examtypes?.map((item: any) => (
+                        <option
+                          value={item?.name}
+                          key={item?.name}
+                          onClick={(e) => handleLanguageInputChange(index, e)}
+                          // defaultValue={item.name === formData.exam ? item.name : undefined}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="marks">
+                    <Form.Label>Exam Score</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="marks"
+                      value={data.marks}
+                      onChange={(e) => {
+                        handleLanguageInputChange(index, e)
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+
+                <Col className="d-flex justify-content-between">
+                  <Form name="exam_documents" encType="multipart/form-data">
+                    <Form.Group className="mb-3" controlId="profileImage">
+                      <Form.Label>Upload File</Form.Label>
+                      <Form.Control name="exam_documents" type="file" onChange={(event) => handleFileChange(index, event)} ref={fileInputRef} />
+                    </Form.Group>
+                  </Form>
+                  <i className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
+                  {selectExam && <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>}
+                </Col>
+              </Row>
+            ))}
+          </Row>
 
           {/* <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="years">
