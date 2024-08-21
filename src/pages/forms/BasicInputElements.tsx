@@ -135,7 +135,8 @@ const BasicInputElements = withSwal((props: any) => {
         channels,
         error,
         loading,
-        counsellors
+        counsellors,
+        userData
     } = props;
 
     //State for handling update function
@@ -163,7 +164,9 @@ const BasicInputElements = withSwal((props: any) => {
         counsiler_id: '',
         lead_received_date: '',
         followup_date: '',
-        preferredCountries: ''
+        preferredCountries: '',
+        updated_by: '',
+        source_id: ''
     });
 
     useEffect(() => {
@@ -184,6 +187,14 @@ const BasicInputElements = withSwal((props: any) => {
 
         if (filters.status_id) {
             tempItems = tempItems.filter(item => item.status_id == filters.status_id);
+        }
+
+        if (filters.source_id) {
+            tempItems = tempItems.filter(item => item.source_id == filters.source_id);
+        }
+
+        if (filters.updated_by) {
+            tempItems = tempItems.filter(item => item.updated_by == filters.updated_by);
         }
 
         if (filters.counsiler_id) {
@@ -213,6 +224,7 @@ const BasicInputElements = withSwal((props: any) => {
                 return itemDate === filterDate;
             });
         }
+
         setFilteredItems(tempItems);
     };
 
@@ -231,7 +243,9 @@ const BasicInputElements = withSwal((props: any) => {
             counsiler_id: '',
             lead_received_date: '',
             followup_date: '',
-            preferredCountries: ''
+            preferredCountries: '',
+            updated_by: '',
+            source_id: ''
         })
     }
 
@@ -1301,7 +1315,7 @@ const BasicInputElements = withSwal((props: any) => {
                             <h4 className="header-title mb-4">Manage Leads</h4>
                             <div className="d-flex flex-wrap gap-2 justify-content-end mb-3" style={{ alignItems: "end" }}>
 
-                                <Form.Group className="" controlId="status_id">
+                                <Form.Group className="cust-select" controlId="status_id">
                                     <div className="select-wrapper">
                                         <Form.Label>Status</Form.Label>
                                         <Form.Control
@@ -1321,7 +1335,47 @@ const BasicInputElements = withSwal((props: any) => {
                                     </div>
                                 </Form.Group>
 
-                                <Form.Group className="" controlId="counsiler_id">
+                                <Form.Group className="cust-select" controlId="source_id">
+                                    <div className="select-wrapper">
+                                        <Form.Label>Source</Form.Label>
+                                        <Form.Control
+                                            as="select"
+                                            name="source_id"
+                                            value={filters.source_id}
+                                            onChange={(e: any) => handleFilterChange(e)}
+                                            className="select-custom"
+                                        >
+                                            <option value="">All</option>
+                                            {source?.map((item: any) => (
+                                                <option value={item.value} key={item.value}>
+                                                    {item.label}
+                                                </option>
+                                            ))}
+                                        </Form.Control>
+                                    </div>
+                                </Form.Group>
+
+                                <Form.Group className="cust-select" controlId="updated_by">
+                                    <div className="select-wrapper">
+                                        <Form.Label>Assigned By</Form.Label>
+                                        <Form.Control
+                                            as="select"
+                                            name="updated_by"
+                                            value={filters.updated_by}
+                                            onChange={(e: any) => handleFilterChange(e)}
+                                            className="select-custom"
+                                        >
+                                            <option value="">All</option>
+                                            {userData?.map((item: any) => (
+                                                <option value={item.value} key={item.value}>
+                                                    {item.label}
+                                                </option>
+                                            ))}
+                                        </Form.Control>
+                                    </div>
+                                </Form.Group>
+
+                                <Form.Group className="cust-select" controlId="counsiler_id">
                                     <div className="select-wrapper">
                                         <Form.Label>Counsellors</Form.Label>
                                         <Form.Control
@@ -1341,7 +1395,7 @@ const BasicInputElements = withSwal((props: any) => {
                                     </div>
                                 </Form.Group>
 
-                                <Form.Group className="" controlId="preferredCountries">
+                                <Form.Group className="cust-select" controlId="preferredCountries">
                                     <div className="select-wrapper">
                                         <Form.Label>Country</Form.Label>
                                         <Form.Control
@@ -1361,7 +1415,7 @@ const BasicInputElements = withSwal((props: any) => {
                                     </div>
                                 </Form.Group>
 
-                                <Form.Group controlId="lead_received_date">
+                                <Form.Group controlId="lead_received_date" className="cust-date">
                                     <Form.Label>Lead Received Date</Form.Label>
                                     <Form.Control
                                         type="date"
@@ -1371,7 +1425,7 @@ const BasicInputElements = withSwal((props: any) => {
                                     />
                                 </Form.Group>
 
-                                <Form.Group controlId="followup_date">
+                                <Form.Group controlId="followup_date" className="cust-date">
                                     <Form.Label>Followup Date</Form.Label>
                                     <Form.Control
                                         type="date"

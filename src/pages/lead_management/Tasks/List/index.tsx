@@ -18,7 +18,7 @@ const TaskList = () => {
   const [TaskArray, setTaskArray] = useState<TaskItemTypes[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(TaskArray[0]);
   const [initialLoading, setLoading] = useState(false);
-  const [pendingTasks, setpendingTasks] = useState([]);
+  const [pendingTasks, setpendingTasks] = useState<any[]>([]);
 
   const selectTask = (task: TaskItemTypes) => {
     setSelectedTask(task);
@@ -29,9 +29,21 @@ const TaskList = () => {
     axios
       .get(`/tasks`)
       .then((res) => {
-        setpendingTasks(res.data.data);
-        setTaskArray(res.data.data);
-        setSelectedTask(res.data.data[0]);
+        let pendingArray: any = []
+        let completedArray: any = []
+        res.data.data.map((item: any) => {
+          if (!item.isCompleted) {
+            pendingArray.push(item)
+          }else{
+            completedArray.push(item)
+          }
+        })
+        // setSelectedTask(res.data.data[0]);
+        // setTaskArray(res.data.data);
+        // setpendingTasks(res.data.data);
+        setpendingTasks(pendingArray)
+        setTaskArray(completedArray)
+        setSelectedTask(pendingArray[0])
       })
       .catch((err) => console.error(err))
       .finally(() => {
@@ -86,6 +98,23 @@ const TaskList = () => {
                           }}
                         ></TaskSection>
                       </div>
+
+                      {TaskArray.length > 0 && (
+                        <div className="mt-2">
+                          <TaskSection
+                            title="Completed Task"
+                            initialTaskId={selectedTask?.id}
+                            tasks={TaskArray}
+                            selectTask={selectTask}
+                            date={""}
+                            setSelectedDate={function (
+                              value: React.SetStateAction<string>
+                            ): void {
+                              throw new Error("Function not implemented.");
+                            }}
+                          ></TaskSection>
+                        </div>
+                      )}
                     </Col>
                   </Row>
                 </Card.Body>
@@ -99,6 +128,7 @@ const TaskList = () => {
             <StudentDetails
               studentId={selectedTask?.studentId}
               taskId={selectedTask?.id}
+              getTaskList={getTaskList}
             />
           )}
         </Col>

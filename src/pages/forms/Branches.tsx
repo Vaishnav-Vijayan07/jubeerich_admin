@@ -333,66 +333,6 @@ const BasicInputElements = withSwal((props: any) => {
         console.log(err);
       })
 
-      // if (userInfo) {
-      //   const { user_id } = JSON.parse(userInfo);
-
-      //   if (isUpdate) {
-      //     // Handle update logic
-      //     dispatch(
-      //       updateBranches(
-      //         formData.id,
-      //         formData.branch_name,
-      //         formData.email,
-      //         formData.phone,
-      //         formData.address,
-      //         formData.city,
-      //         formData.state,
-      //         formData.country,
-      //         formData.pincode,
-      //         formData.contact_person_email,
-      //         formData.contact_person_name,
-      //         formData.contact_person_mobile,
-      //         formData.contact_person_designation,
-      //         formData.website,
-      //         formData.social_media,
-      //         formData.account_mail,
-      //         formData.support_mail,
-      //         formData.office_type,
-      //         formData.region_id,
-      //         formData.status,
-      //         user_id
-      //       )
-      //     );
-      //     setIsUpdate(false);
-      //   } else {
-      //     // Handle add logic
-      //     dispatch(
-      //       addBranches(
-      //         formData.branch_name,
-      //         formData.email,
-      //         formData.phone,
-      //         formData.address,
-      //         formData.city,
-      //         formData.state,
-      //         formData.country,
-      //         formData.pincode,
-      //         formData.contact_person_email,
-      //         formData.contact_person_name,
-      //         formData.contact_person_mobile,
-      //         formData.contact_person_designation,
-      //         formData.website,
-      //         formData.social_media,
-      //         formData.account_mail,
-      //         formData.support_mail,
-      //         formData.office_type,
-      //         formData.region_id,
-      //         formData.status,
-      //         user_id
-      //       )
-      //     );
-      //   }
-      // }
-
       // Clear validation errors
       setValidationErrors({
         branch_name: "",
@@ -441,61 +381,11 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "phone",
       sort: false,
     },
-    // {
-    //   Header: "Address",
-    //   accessor: "address",
-    //   sort: false,
-    // },
     {
       Header: "City",
       accessor: "city",
       sort: false,
     },
-    // {
-    //   Header: "Pincode",
-    //   accessor: "pincode",
-    //   sort: false,
-    // },
-    // {
-    //   Header: "Contact Person Email",
-    //   accessor: "contact_person_email",
-    //   sort: false,
-    // },
-    // {
-    //   Header: "Contact Person Name",
-    //   accessor: "contact_person_name",
-    //   sort: false,
-    // },
-    // {
-    //   Header: "Contact Person Mobile",
-    //   accessor: "contact_person_mobile",
-    //   sort: false,
-    // },
-    // {
-    //   Header: "Contact Person Designation",
-    //   accessor: "contact_person_designation",
-    //   sort: false,
-    // },
-    // {
-    //   Header: "Website",
-    //   accessor: "website",
-    //   sort: false,
-    // },
-    // {
-    //   Header: "Social Media",
-    //   accessor: "social_media",
-    //   sort: false,
-    // },
-    // {
-    //   Header: "Account Mail",
-    //   accessor: "account_mail",
-    //   sort: false,
-    // },
-    // {
-    //   Header: "Support Mail",
-    //   accessor: "support_mail",
-    //   sort: false,
-    // },
     {
       Header: "Region",
       accessor: "region_name",

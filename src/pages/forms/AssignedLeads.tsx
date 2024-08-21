@@ -1065,27 +1065,6 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Select>
                 </Form.Group>
 
-                {/* <Form.Group className="ps-2">
-                  <Form.Label>City</Form.Label>
-                  <Form.Select
-                    aria-label="Select Filter"
-                    name="city"
-                    value={filters.city}
-                    onChange={(e) => handleFilterChange(e)}      
-
-                  >
-                    <option value="">All</option>
-                    {city?.map((data: any) => (
-                      <option
-                        value={data?.name}
-                        key={data?.name}      
-                      >
-                        {data?.name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group> */}
-
                 <Form.Group className="ps-2">
                   <Form.Label>CRE</Form.Label>
                   <Form.Select

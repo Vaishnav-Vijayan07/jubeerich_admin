@@ -27,7 +27,7 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 
 
-const StudentDetails = ({ studentId, taskId }: any) => {
+const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   console.log("taskId", taskId);
 
   const [basicData, setBasicData] = useState<any>([]);
@@ -166,6 +166,7 @@ const StudentDetails = ({ studentId, taskId }: any) => {
         console.log("res ==>", res.data);
 
         getTaskDetails();
+        getTaskList()
         showSuccessAlert(res.data.message);
       })
       .catch((err) => {
@@ -179,7 +180,7 @@ const StudentDetails = ({ studentId, taskId }: any) => {
     return (
       <Spinner
         animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
+        style={{ position: "absolute", top: "50%", left: "65%" }}
       />
     );
   }

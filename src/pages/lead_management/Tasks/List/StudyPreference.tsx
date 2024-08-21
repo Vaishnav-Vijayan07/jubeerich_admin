@@ -114,7 +114,7 @@ const StudyPreference = withSwal((props: any) => {
         );
 
         console.log("filteredUniversities ==>", filteredUniversities);
-        
+
 
         // setSelectedUniversities(filteredUniversities);
       })
@@ -136,96 +136,65 @@ const StudyPreference = withSwal((props: any) => {
   };
 
   // save details api
-  const saveStudentStudyPreferenceInfo = async() => {
+  const saveStudentStudyPreferenceInfo = async () => {
 
     try {
-      await ValidationSchema.validate(formData, { abortEarly: false});
+      await ValidationSchema.validate(formData, { abortEarly: false });
 
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          setLoading(true);
-          axios
-            .post("saveStudentStudyPreferenceInfo", {
-              intersted_country: formData?.intersted_country,
-              intrested_institution: formData?.intrested_institution,
-              intake_year: formData?.intake_year,
-              intake_month: formData?.intake_month,
-              estimated_budget: formData?.estimated_budget,
-              course_field_of_intrest: formData?.course_field_of_intrest,
-              user_id: studentId,
-              course_fee: formData?.course_fee,
-              universities: formData?.universities,
-              campus: formData?.campus,
-              stream: formData?.stream,
-              course: formData?.course,
-              duration: formData?.duration,
-            })
-            .then((res) => {
-              console.log("res: =>", res);
-              setLoading(false);
-              showSuccessAlert(res.data.message);
-              setValidationErrors(validationErrorsInitialState);
-              // getBasicInfoApi();
-            })
-            .catch((err) => {
-              console.log(err);
-              setLoading(false);
-              showErrorAlert("Error occured");
-            });
-        }
-      }).catch((err: any)=>{
-        console.log(err);
-      })
-      
-      // setLoading(true);
-      
-      // axios
-      //   .post("saveStudentStudyPreferenceInfo", {
-      //     intersted_country: formData?.intersted_country,
-      //     intrested_institution: formData?.intrested_institution,
-      //     intake_year: formData?.intake_year,
-      //     intake_month: formData?.intake_month,
-      //     estimated_budget: formData?.estimated_budget,
-      //     course_field_of_intrest: formData?.course_field_of_intrest,
-      //     user_id: studentId,
-      //     course_fee: formData?.course_fee,
-      //     universities: formData?.universities,
-      //     campus: formData?.campus,
-      //     stream: formData?.stream,
-      //     course: formData?.course,
-      //     duration: formData?.duration,
-      //   })
-      //   .then((res) => {
-      //     console.log("res: =>", res);
-      //     setLoading(false);
-      //     showSuccessAlert(res.data.message);
-      //     setValidationErrors(validationErrorsInitialState);
-      //     // getBasicInfoApi();
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //     setLoading(false);
-      //     showErrorAlert("Error occured");
-      //   });
+        .fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Save",
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            setLoading(true);
+            axios
+              .post("saveStudentStudyPreferenceInfo", {
+                intersted_country: formData?.intersted_country,
+                intrested_institution: formData?.intrested_institution,
+                intake_year: formData?.intake_year,
+                intake_month: formData?.intake_month,
+                estimated_budget: formData?.estimated_budget,
+                course_field_of_intrest: formData?.course_field_of_intrest,
+                user_id: studentId,
+                course_fee: formData?.course_fee,
+                universities: formData?.universities,
+                campus: formData?.campus,
+                stream: formData?.stream,
+                course: formData?.course,
+                duration: formData?.duration,
+              })
+              .then((res) => {
+                console.log("res: =>", res);
+                setLoading(false);
+                showSuccessAlert(res.data.message);
+                setValidationErrors(validationErrorsInitialState);
+                // getBasicInfoApi();
+              })
+              .catch((err) => {
+                console.log(err);
+                setLoading(false);
+                showErrorAlert("Error occured");
+              });
+          }
+        }).catch((err: any) => {
+          console.log(err);
+        })
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
-      const errors: any = {};
-      validationError.inner.forEach((error) => {
-        if (error.path) {
-          errors[error.path] = error.message;
-        }
-      });
-      setValidationErrors(errors);
+        const errors: any = {};
+        validationError.inner.forEach((error) => {
+          if (error.path) {
+            errors[error.path] = error.message;
+          }
+        });
+        setValidationErrors(errors);
       }
     }
 
@@ -314,7 +283,7 @@ const StudyPreference = withSwal((props: any) => {
                 onChange={handleInputChange}
               />
               {validationErrors.intake_year && (
-            <Form.Text className="text-danger">{validationErrors.intake_year}</Form.Text>)}
+                <Form.Text className="text-danger">{validationErrors.intake_year}</Form.Text>)}
             </Form.Group>
           </Col>
 
@@ -345,7 +314,7 @@ const StudyPreference = withSwal((props: any) => {
                 <option value="12">December</option>
               </Form.Select>
               {validationErrors.intake_month && (
-            <Form.Text className="text-danger">{validationErrors.intake_month}</Form.Text>)}
+                <Form.Text className="text-danger">{validationErrors.intake_month}</Form.Text>)}
             </Form.Group>
           </Col>
 
@@ -361,44 +330,32 @@ const StudyPreference = withSwal((props: any) => {
                 onChange={handleInputChange}
               />
               {validationErrors.estimated_budget && (
-            <Form.Text className="text-danger">{validationErrors.estimated_budget}</Form.Text>
-          )}
+                <Form.Text className="text-danger">{validationErrors.estimated_budget}</Form.Text>
+              )}
             </Form.Group>
           </Col>
 
           <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="course_field_of_intrest">
-              <Form.Label>Course field of intrest</Form.Label>
-              <FormInput
-                type="text"
-                name="course_field_of_intrest"
-                placeholder="Enter interested course field"
-                key="course_field_of_intrest"
-                value={formData.course_field_of_intrest}
-                onChange={handleInputChange}
+
+            <Form.Group className="mb-3" controlId="universities">
+              <Form.Label>University</Form.Label>
+              <Select
+                closeMenuOnSelect={false}
+                components={animatedComponents}
+                isMulti
+                className="react-select react-select-container"
+                name="universities"
+                classNamePrefix="react-select"
+                options={universityData}
+                value={selectedUniversities}
+                onChange={handleUniversityChange as any}
               />
-              {validationErrors.course_field_of_intrest && (
-            <Form.Text className="text-danger">{validationErrors.course_field_of_intrest}</Form.Text>
-          )}
+              {validationErrors.universities && (
+                <Form.Text className="text-danger">{validationErrors.universities}</Form.Text>
+              )}
             </Form.Group>
           </Col>
-          <Form.Group className="mb-3" controlId="universities">
-            <Form.Label>University</Form.Label>
-            <Select
-              closeMenuOnSelect={false}
-              components={animatedComponents}
-              isMulti
-              className="react-select react-select-container"
-              name="universities"
-              classNamePrefix="react-select"
-              options={universityData}
-              value={selectedUniversities}
-              onChange={handleUniversityChange as any}
-            />
-            {/* {validationErrors.course_field_of_intrest && (
-            <Form.Text className="text-danger">{validationErrors.course_field_of_intrest}</Form.Text>
-          )} */}
-          </Form.Group>
+
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="campus">
@@ -412,8 +369,8 @@ const StudyPreference = withSwal((props: any) => {
                 onChange={handleInputChange}
               />
               {validationErrors.campus && (
-            <Form.Text className="text-danger">{validationErrors.campus}</Form.Text>
-          )}
+                <Form.Text className="text-danger">{validationErrors.campus}</Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -429,8 +386,8 @@ const StudyPreference = withSwal((props: any) => {
                 onChange={handleInputChange}
               />
               {validationErrors.stream && (
-            <Form.Text className="text-danger">{validationErrors.stream}</Form.Text>
-          )}
+                <Form.Text className="text-danger">{validationErrors.stream}</Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -446,8 +403,8 @@ const StudyPreference = withSwal((props: any) => {
                 onChange={handleInputChange}
               />
               {validationErrors.course && (
-            <Form.Text className="text-danger">{validationErrors.course}</Form.Text>
-          )}
+                <Form.Text className="text-danger">{validationErrors.course}</Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -463,8 +420,8 @@ const StudyPreference = withSwal((props: any) => {
                 onChange={handleInputChange}
               />
               {validationErrors.duration && (
-            <Form.Text className="text-danger">{validationErrors.duration}</Form.Text>
-          )}
+                <Form.Text className="text-danger">{validationErrors.duration}</Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -480,8 +437,8 @@ const StudyPreference = withSwal((props: any) => {
                 onChange={handleInputChange}
               />
               {validationErrors.course_fee && (
-            <Form.Text className="text-danger">{validationErrors.course_fee}</Form.Text>
-          )}
+                <Form.Text className="text-danger">{validationErrors.course_fee}</Form.Text>
+              )}
             </Form.Group>
           </Col>
 

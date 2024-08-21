@@ -399,32 +399,32 @@ input[type="number"] {
 
 .nav-pills .nav_item_1 .nav-link.active, .nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
-  background-color: #7d39d7dc;
+  background-color: #0b118adc;
 }
 
 .nav-pills .nav_item_1 .nav-link:hover, .nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
-  background-color: #7d39d7dc !important;
+  background-color: #0b118adc !important;
 }
 
 .nav-pills .nav_item_2 .nav-link.active, .nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
-  background-color: #267d5edc;
+  background-color: #4760dde2;
 }
 
 .nav-pills .nav_item_2 .nav-link:hover, .nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
-  background-color: #267d5edc;
+  background-color: #4760dde2;
 }
 
 .nav-pills .nav_item_3 .nav-link.active, .nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
-  background-color: #4daec9dc;
+  background-color: #684dc9dc;
 }
 
 .nav-pills .nav_item_3 .nav-link:hover, .nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
-  background-color: #4daec9dc;
+  background-color: #684dc9dc;
 }
 
 
@@ -433,12 +433,22 @@ input[type="number"] {
   display: inline-block;
 }
 
+.select-wrapper select{
+  min-width: 200px !important;
+  max-width: 200px !important;
+}
+
+.cust-date input{
+  min-width: 200px !important;
+  max-width: 200px !important;
+}
+
 .select-custom {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   background: url('./assets/images/icons/arrow.svg') no-repeat right 0.75rem center;
-  background-size: .9rem; /* Size of the custom arrow */
+  background-size: .7rem .5rem; /* Size of the custom arrow */
   padding-right: 2.75rem; /* Increased padding to create space */
   border: 1px solid #ced4da; /* Optional: border styling */
   border-radius: 0.25rem; /* Optional: border-radius */
@@ -452,7 +462,7 @@ input[type="number"] {
   right: 1rem; /* Space between the arrow and the edge */
   transform: translateY(-50%);
   width: 1rem;
-  height: 1rem;
+  height: 0.5rem;
   /* background: url('./assets/images/icons/arrow.svg') no-repeat center; */
   background-size: contain;
   pointer-events: none; /* Ensure the arrow does not block clicks */

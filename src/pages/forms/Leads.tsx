@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
 import {
+  getAdminUsers,
   getCategory,
   getChannel,
   getLead,
@@ -46,7 +47,8 @@ const Leads = () => {
     // regions,
     channels,
     office,
-    status
+    status,
+    users
   } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     state: state.Leads.leads,
@@ -60,10 +62,12 @@ const Leads = () => {
     channels: state.Channels.channels.data,
     office: state.OfficeTypes.officeTypes,
     status: state.Status.status.data,
+    users: state.Users.adminUsers,
   }));
 
   useEffect(() => {
     dispatch(getCountry());
+    dispatch(getAdminUsers());
     dispatch(getCategory());
     dispatch(getChannel());
     dispatch(getSource());
@@ -136,6 +140,14 @@ const Leads = () => {
     }));
   }, [status]);
 
+  const userData = useMemo(() => {
+    if (!users) return [];
+    return users?.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.name,
+    }));
+  }, [users]);
+
   if (initialLoading) {
     return (
       <Spinner
@@ -169,6 +181,7 @@ const Leads = () => {
             loading={loading}
             status={statusData || []}
             counsellors={counsellors}
+            userData={userData}
           />
         </Col>
       </Row>
