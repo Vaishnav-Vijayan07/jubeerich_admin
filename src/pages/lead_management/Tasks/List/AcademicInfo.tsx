@@ -61,6 +61,12 @@ const AcademicInfo = withSwal((props: any) => {
       .then((res) => {
         console.log("res =>", res.data);
         setformData(res.data.data);
+        setLanguageForm(res.data?.data?.exam_details)
+        setSelectedFile(res.data?.data?.exam_documents)
+        
+        if(res.data?.data?.exam_details.length){
+          setSelectExam(true)
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -98,9 +104,9 @@ const AcademicInfo = withSwal((props: any) => {
       newFormData.append('place', formData?.place);
       newFormData.append('percentage', formData?.percentage);
       newFormData.append('year_of_passing', formData?.year_of_passing);
-      // newFormData.append('backlogs', JSON.stringify(formData?.backlogs));
-      newFormData.append('backlogs', '0');
-      newFormData.append('work_experience', JSON.stringify(formData?.work_experience));
+      newFormData.append('backlogs', JSON.stringify((formData?.backlogs == null ? 0 : formData.backlogs)));
+      // newFormData.append('backlogs', '0');
+      newFormData.append('work_experience', formData?.work_experience.toString());
       newFormData.append('designation', formData?.designation);
       newFormData.append('exam_details', JSON.stringify(exam_details));
 
@@ -108,7 +114,7 @@ const AcademicInfo = withSwal((props: any) => {
         newFormData.append(`exam_documents`, file)
       });
 
-      // await ValidationSchema.validate(formData, { abortEarly: false})
+      await ValidationSchema.validate(formData, { abortEarly: false})
       
       console.log('Entered');
       
@@ -404,6 +410,7 @@ const AcademicInfo = withSwal((props: any) => {
                     id="active-switch"
                     name="ielts"
                     onClick={() => setSelectExam(true)}
+                    checked={selectExam}
                   // checked={formData.ielts}
                   />
                   <span className="ps-1 fw-bold">Yes</span>
@@ -469,6 +476,7 @@ const AcademicInfo = withSwal((props: any) => {
                     <Form.Group className="mb-3" controlId="profileImage">
                       <Form.Label>Upload File</Form.Label>
                       <Form.Control name="exam_documents" type="file" onChange={(event) => handleFileChange(index, event)} ref={fileInputRef} />
+                      {selectedFile[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{selectedFile[index].exam_documents}</p>}
                     </Form.Group>
                   </Form>
                   <i className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
