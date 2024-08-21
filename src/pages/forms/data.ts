@@ -25,3 +25,8 @@ export const countries = [
     { name : 'IELTS'},
     { name : 'OET'}
   ]
+
+  export const city = [
+    { name : 'Kochi', value: 'Kochi'},
+    { name : 'Ernakulam', value: 'Ernakulam'}
+  ]

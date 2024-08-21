@@ -43,6 +43,7 @@ import FileUploader from "../../components/FileUploader";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { getLeads } from "../../helpers";
+import { city } from "./data";
 
 interface OptionType {
   value: string;
@@ -132,11 +133,18 @@ const BasicInputElements = withSwal((props: any) => {
     error,
     loading,
   } = props;
-
+  
+  const [tableData, setTableData] = useState([]);
+  
   //fetch token from session storage
 
   //Table data
-  const records: TableRecords[] = state;
+  // const records: TableRecords[] = state;
+  let records: TableRecords[] = state;
+
+  useEffect(() => {
+    setTableData(state);
+  }, [records])
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
@@ -156,6 +164,11 @@ const BasicInputElements = withSwal((props: any) => {
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
+  const [filters, setFilters] = useState({
+    source: '',
+    city: '',
+    CRE: ''
+  })
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -490,7 +503,8 @@ const BasicInputElements = withSwal((props: any) => {
             className="action-icon"
             onClick={() => handleDelete(row.original.id)}
           >
-            <i className="mdi mdi-delete"></i>
+            {/* <i className="mdi mdi-delete"></i> */}
+            <i className="mdi mdi-delete-outline"></i>
           </Link>
         </div>
       ),
@@ -646,6 +660,51 @@ const BasicInputElements = withSwal((props: any) => {
     setScroll(false);
     toggle();
   };
+
+  useEffect(() => {
+    applyFilter()
+  }, [filters])
+  
+
+  const applyFilter = () => {
+  
+    let filteredData: any = [...state];
+
+    if (filters.source) {
+      console.log('Entered');
+      
+      filteredData = filteredData.filter((data: any) => data.source_id == filters.source);
+    }
+
+    if (filters.city) {
+      filteredData = filteredData.filter((data: any) => data.city == filters.city);
+    }
+
+    if (filters.CRE) {
+      filteredData = filteredData.filter((data: any) => data.assigned_cre == filters.CRE);
+    }
+
+    if(filters.city || filters.CRE || filters.source){
+      setTableData(filteredData);
+    }
+  };
+
+  const handleFilterChange = (e: any) => {
+    const { name, value } = e.target;
+    setFilters((prev)=>({
+      ...prev, [name] : value
+    }))
+  }
+
+  const clearFilters = () => {
+    // dispatch(getLead());
+    setTableData(state);
+    setFilters({
+      source: '',
+      city: '',
+      CRE: ''
+    })
+  }
 
   return (
     <>
@@ -982,9 +1041,75 @@ const BasicInputElements = withSwal((props: any) => {
                 </Button> */}
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
+              <div className="d-flex justify-content-end">
+                <div className="me-2 mt-3">
+                  <Button className="mt-1" onClick={clearFilters} >Reset</Button>
+                </div>
+                <Form.Group>
+                  <Form.Label>Source</Form.Label>
+                  <Form.Select
+                    aria-label="Select Filter"
+                    name="source"
+                    value={filters.source}
+                    onChange={(e) => handleFilterChange(e)}      
+                  >
+                    <option value="">All</option>
+                    {source && source?.map((data: any) => (
+                      <option
+                        value={data?.value}
+                        key={data?.value}      
+                      >
+                        {data?.label}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+
+                {/* <Form.Group className="ps-2">
+                  <Form.Label>City</Form.Label>
+                  <Form.Select
+                    aria-label="Select Filter"
+                    name="city"
+                    value={filters.city}
+                    onChange={(e) => handleFilterChange(e)}      
+
+                  >
+                    <option value="">All</option>
+                    {city?.map((data: any) => (
+                      <option
+                        value={data?.name}
+                        key={data?.name}      
+                      >
+                        {data?.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group> */}
+
+                <Form.Group className="ps-2">
+                  <Form.Label>CRE</Form.Label>
+                  <Form.Select
+                    aria-label="Select Filter"
+                    name="CRE"
+                    value={filters.CRE}
+                    onChange={(e) => handleFilterChange(e)}      
+                  >
+                    <option value="">All</option>
+                    {cres?.map((data: any) => (
+                      <option
+                        value={data?.id}
+                        key={data?.id}      
+                      >
+                        {data?.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </div>
               <Table
                 columns={columns}
-                data={records ? records : []}
+                // data={records ? records : []}
+                data={tableData ? tableData : []}
                 pageSize={5}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
