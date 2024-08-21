@@ -162,7 +162,8 @@ const BasicInputElements = withSwal((props: any) => {
         status_id: '',
         counsiler_id: '',
         lead_received_date: '',
-        followup_date: ''
+        followup_date: '',
+        preferredCountries: ''
     });
 
     useEffect(() => {
@@ -188,6 +189,12 @@ const BasicInputElements = withSwal((props: any) => {
         if (filters.counsiler_id) {
             tempItems = tempItems.filter(item =>
                 item.counselors.some((counselor: any) => counselor.id == filters.counsiler_id)
+            );
+        }
+
+        if (filters.preferredCountries) {
+            tempItems = tempItems.filter(item =>
+                item.preferredCountries.some((preferredCountry: any) => preferredCountry.id == filters.preferredCountries)
             );
         }
 
@@ -223,7 +230,8 @@ const BasicInputElements = withSwal((props: any) => {
             status_id: '',
             counsiler_id: '',
             lead_received_date: '',
-            followup_date: ''
+            followup_date: '',
+            preferredCountries: ''
         })
     }
 
@@ -1327,6 +1335,26 @@ const BasicInputElements = withSwal((props: any) => {
                                             {counsellors?.map((item: any) => (
                                                 <option value={item.id} key={item.id}>
                                                     {item.name}
+                                                </option>
+                                            ))}
+                                        </Form.Control>
+                                    </div>
+                                </Form.Group>
+
+                                <Form.Group className="" controlId="preferredCountries">
+                                    <div className="select-wrapper">
+                                        <Form.Label>Country</Form.Label>
+                                        <Form.Control
+                                            as="select"
+                                            name="preferredCountries"
+                                            value={filters.preferredCountries}
+                                            onChange={(e: any) => handleFilterChange(e)}
+                                            className="select-custom"
+                                        >
+                                            <option value="">All</option>
+                                            {country?.map((item: any) => (
+                                                <option value={item.value} key={item.value}>
+                                                    {item.label}
                                                 </option>
                                             ))}
                                         </Form.Control>
