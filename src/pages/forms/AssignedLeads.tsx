@@ -25,10 +25,12 @@ import { getSource } from "../../redux/sources/actions";
 import {
   addLeads,
   deleteLeads,
+  getAdminUsers,
   getCategory,
   getChannel,
   getLead,
   getLeadAssigned,
+  getStatus,
   updateLeads,
 } from "../../redux/actions";
 import Select from "react-select";
@@ -44,6 +46,7 @@ import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { getLeads } from "../../helpers";
 import { city } from "./data";
+import moment from "moment";
 
 interface OptionType {
   value: string;
@@ -132,7 +135,14 @@ const BasicInputElements = withSwal((props: any) => {
     channels,
     error,
     loading,
+    status,
+    userData,
+    // statusData,
+    counsellors,
   } = props;
+
+  console.log('Status', status);
+  
   
   const [tableData, setTableData] = useState([]);
   
@@ -167,7 +177,13 @@ const BasicInputElements = withSwal((props: any) => {
   const [filters, setFilters] = useState({
     source: '',
     city: '',
-    CRE: ''
+    CRE: '',
+    counsiler_id: '',
+    status_id: '',
+    preferredCountries: '',
+    updated_by: '',
+    lead_received_date: '',
+    followup_date: '',
   })
 
   // Modal states
@@ -441,6 +457,18 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "source_name",
       sort: false,
     },
+    {
+      Header: "Lead Received Date",
+      accessor: "lead_received_date",
+      sort: false,
+      Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
+    },
+    {
+      Header: "Followup Date",
+      accessor: "followup_date",
+      sort: false,
+      Cell: ({ row }: any) => <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>,
+    },
     ...(user?.role == 4
       ? [
         {
@@ -671,8 +699,6 @@ const BasicInputElements = withSwal((props: any) => {
     let filteredData: any = [...state];
 
     if (filters.source) {
-      console.log('Entered');
-      
       filteredData = filteredData.filter((data: any) => data.source_id == filters.source);
     }
 
@@ -683,8 +709,49 @@ const BasicInputElements = withSwal((props: any) => {
     if (filters.CRE) {
       filteredData = filteredData.filter((data: any) => data.assigned_cre == filters.CRE);
     }
+    
+    if (filters.status_id) {
+      filteredData = filteredData.filter((data: any) => data.status_id == filters.status_id);
+    }
 
-    if(filters.city || filters.CRE || filters.source){
+    if (filters.updated_by) {
+      filteredData = filteredData.filter((data: any) => data.updated_by == filters.updated_by);
+    }
+
+    if (filters.counsiler_id) {
+      filteredData = filteredData.filter((data: any) =>
+        data.counselors.some((counselor: any) => counselor.id == filters.counsiler_id)
+      );
+    }
+
+    if (filters.preferredCountries) {
+      filteredData = filteredData.filter((data: any) =>
+        data.preferredCountries.some((preferredCountry: any) => preferredCountry.id == filters.preferredCountries)
+      );
+
+      console.log('Countries', filteredData);
+      
+    }
+
+    if (filters.lead_received_date) {
+      filteredData = filteredData.filter((data: any) => {
+        const itemDate = new Date(data.lead_received_date).toDateString();
+        const filterDate = new Date(filters.lead_received_date).toDateString();
+        return itemDate === filterDate;
+      });
+    }
+
+    if (filters.followup_date) {
+      filteredData = filteredData.filter((data: any) => {
+        const itemDate = new Date(data.followup_date).toDateString();
+        const filterDate = new Date(filters.followup_date).toDateString();
+        return itemDate === filterDate;
+      });
+    }
+
+    if(filters.city || filters.CRE || filters.source || filters.preferredCountries || filters.status_id ||
+      filters.followup_date || filters.lead_received_date || filters.counsiler_id || filters.updated_by
+    ){
       setTableData(filteredData);
     }
   };
@@ -702,7 +769,13 @@ const BasicInputElements = withSwal((props: any) => {
     setFilters({
       source: '',
       city: '',
-      CRE: ''
+      CRE: '',
+      counsiler_id: '',
+      status_id: '',
+      preferredCountries: '',
+      updated_by: '',
+      lead_received_date: '',
+      followup_date: '',
     })
   }
 
@@ -1041,23 +1114,103 @@ const BasicInputElements = withSwal((props: any) => {
                 </Button> */}
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
-              <div className="d-flex justify-content-end">
-                <div className="me-2 mt-3">
-                  <Button className="mt-1" onClick={clearFilters} >Reset</Button>
-                </div>
-                <Form.Group>
+              <div className="d-flex flex-wrap justify-content-end">
+                {/* <div className="me-2 mt-2">
+                  <Button className="mt-3" onClick={clearFilters} >Reset</Button>
+                </div> */}
+                <Form.Group className="cust-select ps-2 pt-2" controlId="status_id">
+                  <div className="select-wrapper">
+                    <Form.Label>Status</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="status_id"
+                      value={filters.status_id}
+                      onChange={(e: any) => handleFilterChange(e)}
+                      className="select-custom"
+                    >
+                      <option value="">All</option>
+                      {status?.map((item: any) => (
+                        <option value={item.value} key={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </div>
+                </Form.Group>
+
+                <Form.Group className="cust-select ps-2 pt-2" controlId="updated_by">
+                  <div className="select-wrapper">
+                    <Form.Label>Assigned By</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="updated_by"
+                      value={filters.updated_by}
+                      onChange={(e: any) => handleFilterChange(e)}
+                      className="select-custom"
+                    >
+                      <option value="">All</option>
+                      {userData?.map((item: any) => (
+                        <option value={item.value} key={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </div>
+                </Form.Group>
+
+                <Form.Group className="cust-select ps-2 pt-2" controlId="counsiler_id">
+                  <div className="select-wrapper">
+                    <Form.Label>Counsellors</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="counsiler_id"
+                      value={filters.counsiler_id}
+                      onChange={(e: any) => handleFilterChange(e)}
+                      className="select-custom"
+                    >
+                      <option value="">All</option>
+                      {counsellors?.map((item: any) => (
+                        <option value={item.id} key={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </div>
+                </Form.Group>
+
+                <Form.Group className="cust-select ps-2 pt-2" controlId="preferredCountries">
+                  <div className="select-wrapper">
+                    <Form.Label>Country</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="preferredCountries"
+                      value={filters.preferredCountries}
+                      onChange={(e: any) => handleFilterChange(e)}
+                      className="select-custom"
+                    >
+                      <option value="">All</option>
+                      {country?.map((item: any) => (
+                        <option value={item.value} key={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </div>
+                </Form.Group>
+
+                <Form.Group className="cust-select ps-2 pt-2">
                   <Form.Label>Source</Form.Label>
                   <Form.Select
                     aria-label="Select Filter"
                     name="source"
                     value={filters.source}
-                    onChange={(e) => handleFilterChange(e)}      
+                    onChange={(e) => handleFilterChange(e)}
                   >
                     <option value="">All</option>
                     {source && source?.map((data: any) => (
                       <option
                         value={data?.value}
-                        key={data?.value}      
+                        key={data?.value}
                       >
                         {data?.label}
                       </option>
@@ -1065,25 +1218,50 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Select>
                 </Form.Group>
 
-                <Form.Group className="ps-2">
+                <Form.Group className="cust-select ps-2 pt-2">
                   <Form.Label>CRE</Form.Label>
                   <Form.Select
                     aria-label="Select Filter"
                     name="CRE"
                     value={filters.CRE}
-                    onChange={(e) => handleFilterChange(e)}      
+                    onChange={(e) => handleFilterChange(e)}
                   >
                     <option value="">All</option>
                     {cres?.map((data: any) => (
                       <option
                         value={data?.id}
-                        key={data?.id}      
+                        key={data?.id}
                       >
                         {data?.name}
                       </option>
                     ))}
                   </Form.Select>
                 </Form.Group>
+
+                <Form.Group controlId="lead_received_date" className="cust-date pt-2 ps-2 pb-2">
+                  <Form.Label>Lead Received Date</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="lead_received_date"
+                    value={filters.lead_received_date}
+                    onChange={(e: any) => handleFilterChange(e)}
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="followup_date" className="cust-date pt-2 ps-2 pb-2">
+                  <Form.Label>Followup Date</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="followup_date"
+                    value={filters.followup_date}
+                    onChange={(e: any) => handleFilterChange(e)}
+                  />
+                </Form.Group>
+
+                <div style={{paddingTop: '0.4rem'}} className="ms-2 mt-2">
+                  <Button  className="mt-3" onClick={clearFilters} >Reset</Button>
+                </div>
+
               </div>
               <Table
                 columns={columns}
@@ -1107,6 +1285,8 @@ const BasicInputElements = withSwal((props: any) => {
 });
 
 const AssignedLeads = () => {
+  const [counsellors, setCounsellors] = useState([])
+
   const dispatch = useDispatch<AppDispatch>();
   const {
     user,
@@ -1121,6 +1301,8 @@ const AssignedLeads = () => {
     // regions,
     channels,
     office,
+    status,
+    users
   } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     state: state.Leads.assignedLeads,
@@ -1133,7 +1315,12 @@ const AssignedLeads = () => {
     categories: state.Category.category.data,
     channels: state.Channels.channels.data,
     office: state.OfficeTypes.officeTypes,
+    status: state.Status.status.data,
+    users: state.Users.adminUsers,
   }));
+
+  console.log('status',status);
+  
 
   useEffect(() => {
     dispatch(getCountry());
@@ -1142,7 +1329,19 @@ const AssignedLeads = () => {
     dispatch(getLeadAssigned());
     dispatch(getSource());
     dispatch(getOfficeTypeData());
+    dispatch(getStatus());
+    dispatch(getOfficeTypeData());
+    dispatch(getAdminUsers());
+    fetchAllCounsellors()
   }, [dispatch]);
+
+  const fetchAllCounsellors = () => {
+    axios.get("/get_all_counsellors").then((res) => {
+      setCounsellors(res.data.data)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
 
   const countryData = useMemo(() => {
     if (!country) return [];
@@ -1151,6 +1350,14 @@ const AssignedLeads = () => {
       label: item.country_name,
     }));
   }, [country]);
+
+  const statusData = useMemo(() => {
+    if (!status) return [];
+    return status.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.status_name,
+    }));
+  }, [status]);
 
   const sourceData = useMemo(() => {
     if (!source) return [];
@@ -1184,6 +1391,14 @@ const AssignedLeads = () => {
     }));
   }, [office]);
 
+  const userData = useMemo(() => {
+    if (!users) return [];
+    return users?.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.name,
+    }));
+  }, [users]);
+
   if (initialLoading) {
     return (
       <Spinner
@@ -1211,11 +1426,13 @@ const AssignedLeads = () => {
             categories={categoriesData || []}
             user={user || null}
             cres={cres || []}
-            // regions={regionsData || []}
+            status={statusData || []}
+            counsellors={counsellors || []}
             channels={channelsData || []}
             office={officeData || []}
             error={error}
             loading={loading}
+            userData={userData}
           />
         </Col>
       </Row>
