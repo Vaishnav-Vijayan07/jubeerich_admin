@@ -393,7 +393,7 @@ const BasicInputElements = withSwal((props: any) => {
                   closeMenuOnSelect={false}
                   components={animatedComponents}
                   isMulti
-                  options={powersData}
+                  options={[{ value: null, label: "None" }, ...powersData]}
                   value={selectedOptions}
                   onChange={handleSelectChange as any}
                   error={validationErrors.power_ids}
@@ -453,7 +453,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Table
                 columns={columns}
                 data={records ? records : []}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}

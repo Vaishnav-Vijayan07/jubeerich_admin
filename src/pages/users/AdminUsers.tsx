@@ -715,7 +715,7 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.role_id}
                           onChange={handleInputChange}
                         >
-                          <option value="" disabled selected>
+                          <option value="" selected>
                             Choose..
                           </option>
                           {RolesData?.map((item: any) => (
@@ -838,7 +838,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Table
                 columns={columns}
                 data={records ? records : []}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}

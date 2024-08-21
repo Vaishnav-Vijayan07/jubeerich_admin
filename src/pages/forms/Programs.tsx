@@ -422,7 +422,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="university_id"
-                  options={sourceData}
+                  options={[{ value: null, label: "None" }, ...sourceData]}
                   value={selectedSource}
                   onChange={handleSourceChange}
                 />
@@ -456,7 +456,7 @@ const BasicInputElements = withSwal((props: any) => {
                   value={formData.degree_level}
                   onChange={handleInputChange}
                 >
-                  <option value="" disabled>
+                  <option value="">
                     Choose..
                   </option>
                   <option
@@ -566,7 +566,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Table
                 columns={columns}
                 data={records ? records : []}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}

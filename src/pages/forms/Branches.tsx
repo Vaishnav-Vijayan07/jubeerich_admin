@@ -596,7 +596,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={formData.country}
                       onChange={handleCountryChange}
                     >
-                      <option value="" disabled>
+                      <option value="">
                         Choose..
                       </option>
                       {options?.map((item: any) => (
@@ -625,7 +625,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={formData.state}
                       onChange={handleStateChange}
                     >
-                      <option value="" disabled>
+                      <option value="">
                         Choose..
                       </option>
                       {states?.map((item: any) => (
@@ -653,7 +653,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={formData.city}
                       onChange={handleInputChange}
                     >
-                      <option value="" disabled>
+                      <option value="">
                         Choose..
                       </option>
                       {cities?.map((item: any, index: number) => (
@@ -680,7 +680,7 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="office_type"
-                      options={office}
+                      options={[{ value: null, label: "None" }, ...office]}
                       value={selectedOffice}
                       onChange={handleOfficeChanges}
                     />
@@ -697,7 +697,7 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="region_id"
-                      options={regions}
+                      options={[{ value: null, label: "None" }, ...regions]}
                       value={selectedRegion}
                       onChange={handleRegionChanges}
                     />
@@ -894,7 +894,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Table
                 columns={columns}
                 data={records ? records : []}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}

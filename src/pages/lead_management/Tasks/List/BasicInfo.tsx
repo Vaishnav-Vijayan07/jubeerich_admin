@@ -344,7 +344,7 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData.preferred_country}
                 onChange={handleInputChange}
               >
-                <option value="" disabled>
+                <option value="">
                   Open this select menu
                 </option>
                 {Countries?.map((country: any) => (
@@ -363,7 +363,7 @@ const BasicInfo = withSwal((props: any) => {
                 components={animatedComponents}
                 isMulti
                 name="preferred_country"
-                options={country}
+                options={[{ value: null, label: "None" }, ...country]}
                 value={selectedCountry}
                 onChange={handleSelectChange as any}
               />
@@ -381,7 +381,7 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData?.office_type}
                 onChange={handleInputChange}
               >
-                <option value="" disabled>
+                <option value="">
                   Open this select menu
                 </option>
                 {OfficeTypes?.map((officeType: any) => (
@@ -424,7 +424,7 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData?.gender}
                 onChange={handleInputChange}
               >
-                <option value="" disabled>
+                <option value="">
                   Open this select menu
                 </option>
                 <option value="Male">Male</option>
@@ -445,7 +445,7 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData?.marital_status}
                 onChange={handleInputChange}
               >
-                <option value="" disabled>
+                <option value="">
                   Open this select menu
                 </option>
                 {MaritalStatus?.map((marital_status: any) => (

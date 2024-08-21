@@ -407,7 +407,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <i className="mdi mdi-plus-circle"></i> Add Status
               </Button>
               <h4 className="header-title mb-4">Manage Status</h4>
-              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
+              <Table columns={columns} data={records ? records : []} pageSize={10} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
               />
             </Card.Body>

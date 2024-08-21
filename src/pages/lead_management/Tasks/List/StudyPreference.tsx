@@ -245,7 +245,7 @@ const StudyPreference = withSwal((props: any) => {
                 value={formData.intersted_country}
                 onChange={handleInputChange}
               >
-                <option value="" disabled>
+                <option value="">
                   Open this select menu
                 </option>
                 {Countries?.map((country: any) => (
@@ -297,7 +297,7 @@ const StudyPreference = withSwal((props: any) => {
                 value={formData?.intake_month}
                 onChange={handleInputChange}
               >
-                <option value="" disabled>
+                <option value="">
                   Open this select menu
                 </option>
                 <option value="01">January</option>
@@ -346,7 +346,7 @@ const StudyPreference = withSwal((props: any) => {
                 className="react-select react-select-container"
                 name="universities"
                 classNamePrefix="react-select"
-                options={universityData}
+                options={[{ value: null, label: "None" }, ...universityData]}
                 value={selectedUniversities}
                 onChange={handleUniversityChange as any}
               />
