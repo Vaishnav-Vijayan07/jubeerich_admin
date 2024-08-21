@@ -261,8 +261,7 @@ const BasicInputElements = withSwal((props: any) => {
     const validationSchema = yup.object().shape({
         full_name: yup
             .string()
-            .required("Full name is required")
-            .min(3, "Full name must be at least 3 characters long"),
+            .required("Name is required"),
         email: yup.string().required("Email is required").email("Invalid email"),
         phone: yup
             .string()
@@ -350,18 +349,18 @@ const BasicInputElements = withSwal((props: any) => {
             exam: item?.exam || ""
         }));
 
-        
-        if(item?.exam_details.length){
+
+        if (item?.exam_details.length) {
             setSelectExam(true)
             setLanguageForm(item?.exam_details)
-          }
-      
-          if(item?.exam_documents.length){
-            console.log('File',item?.exam_documents);
-            
+        }
+
+        if (item?.exam_documents.length) {
+            console.log('File', item?.exam_documents);
+
             setSelectedFile(item?.exam_documents)
             setSelectedFileName(item?.exam_documents)
-          }
+        }
 
         setIsUpdate(true);
     };
@@ -702,7 +701,7 @@ const BasicInputElements = withSwal((props: any) => {
         setSelectedChannel(null);
         setSelectedOffice(null);
         setSelectedSource(null);
-        setLanguageForm(languageFormInitialState),
+        setLanguageForm(languageFormInitialState)
         setSelectedFile([])
     };
 
@@ -979,7 +978,7 @@ const BasicInputElements = withSwal((props: any) => {
                                             className="react-select react-select-container"
                                             classNamePrefix="react-select"
                                             name="source_id"
-                                            options={source}
+                                            options={[{ value: null, label: "None" }, ...source]}
                                             value={selectedSource}
                                             onChange={handleDropDowns}
                                         />
@@ -997,7 +996,7 @@ const BasicInputElements = withSwal((props: any) => {
                                             className="react-select react-select-container"
                                             classNamePrefix="react-select"
                                             name="category_id"
-                                            options={categories}
+                                            options={[{ value: null, label: "None" }, ...categories]}
                                             value={selectedCategory}
                                             onChange={handleDropDowns}
                                         />
@@ -1016,7 +1015,7 @@ const BasicInputElements = withSwal((props: any) => {
                                             className="react-select react-select-container"
                                             classNamePrefix="react-select"
                                             name="channel_id"
-                                            options={channels}
+                                            options={[{ value: null, label: "None" }, ...channels]}
                                             value={selectedChannel}
                                             onChange={handleDropDowns}
                                         />
@@ -1034,7 +1033,7 @@ const BasicInputElements = withSwal((props: any) => {
                                             className="react-select react-select-container"
                                             classNamePrefix="react-select"
                                             name="office_type"
-                                            options={office}
+                                            options={[{ value: null, label: "None" }, ...office]}
                                             value={selectedOffice}
                                             onChange={handleDropDowns}
                                         />
@@ -1054,7 +1053,7 @@ const BasicInputElements = withSwal((props: any) => {
                                             components={animatedComponents}
                                             isMulti
                                             name="preferred_country"
-                                            options={country}
+                                            options={[{ value: null, label: "None" }, ...country]}
                                             value={selectedCountry}
                                             onChange={handleSelectChange as any}
                                         />
@@ -1161,7 +1160,7 @@ const BasicInputElements = withSwal((props: any) => {
                                                     disabled={isUpdate}
                                                     onChange={(e) => handleLanguageInputChange(index, e)}
                                                 >
-                                                    <option value="" disabled>
+                                                    <option value="">
                                                         Choose..
                                                     </option>
                                                     {examtypes?.map((item: any) => (
@@ -1197,7 +1196,7 @@ const BasicInputElements = withSwal((props: any) => {
                                                 <Form.Group className="mb-3" controlId="profileImage">
                                                     <Form.Label>Upload File</Form.Label>
                                                     <Form.Control name="exam_documents" type="file" disabled={isUpdate} onChange={(event) => { handleFileChange(index, event) }} ref={fileInputRef} />
-                                                    {selectedFile[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{selectedFile[index].exam_documents}</p>}
+                                                    {selectedFile[index]?.exam_documents && <p style={{ padding: '0%' }} className="mt-2">{selectedFile[index].exam_documents}</p>}
                                                 </Form.Group>
                                             </Form>
                                             <i className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
@@ -1468,7 +1467,7 @@ const BasicInputElements = withSwal((props: any) => {
                             {userRole == 4 ? <Table
                                 columns={columns}
                                 data={records ? records : []}
-                                pageSize={5}
+                                pageSize={10}
                                 sizePerPageList={sizePerPageList}
                                 isSortable={true}
                                 pagination={true}
@@ -1479,7 +1478,7 @@ const BasicInputElements = withSwal((props: any) => {
                             /> : <Table
                                 columns={columns}
                                 data={records ? records : []}
-                                pageSize={5}
+                                pageSize={10}
                                 sizePerPageList={sizePerPageList}
                                 isSortable={true}
                                 pagination={true}

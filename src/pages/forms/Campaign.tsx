@@ -325,7 +325,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   name="channel_id"
                   classNamePrefix="react-select"
-                  options={channelData}
+                  options={[{ value: null, label: "None" }, ...channelData]}
                   value={selectedChannel}
                   onChange={handleChannelChange}
                 />
@@ -380,7 +380,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <i className="mdi mdi-plus-circle"></i> Add Campaign
               </Button>
               <h4 className="header-title mb-4">Manage Campaigns</h4>
-              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
+              <Table columns={columns} data={records ? records : []} pageSize={10} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
               />
             </Card.Body>

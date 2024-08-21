@@ -199,8 +199,7 @@ const BasicInputElements = withSwal((props: any) => {
   const validationSchema = yup.object().shape({
     full_name: yup
       .string()
-      .required("Full name is required")
-      .min(3, "Full name must be at least 3 characters long"),
+      .required("Name is required"),
     email: yup.string().required("Email is required").email("Invalid email"),
     phone: yup.string().required("Phone is required"),
     category_id: yup.string().required("Category is required"),
@@ -854,7 +853,7 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="source_id"
-                      options={source}
+                      options={[{ value: null, label: "None" }, ...source]}
                       value={selectedSource}
                       onChange={handleDropDowns}
                     />
@@ -872,7 +871,7 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="category_id"
-                      options={categories}
+                      options={[{ value: null, label: "None" }, ...categories]}
                       value={selectedCategory}
                       onChange={handleDropDowns}
                     />
@@ -891,7 +890,7 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="channel_id"
-                      options={channels}
+                      options={[{ value: null, label: "None" }, ...channels]}
                       value={selectedChannel}
                       onChange={handleDropDowns}
                     />
@@ -909,7 +908,7 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="office_type"
-                      options={office}
+                      options={[{ value: null, label: "None" }, ...office]}
                       value={selectedOffice}
                       onChange={handleDropDowns}
                     />
@@ -927,7 +926,7 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="preferred_country"
-                      options={country}
+                      options={[{ value: null, label: "None" }, ...country]}
                       value={selectedCountry}
                       onChange={handleDropDowns}
                     />
@@ -1267,7 +1266,7 @@ const BasicInputElements = withSwal((props: any) => {
                 columns={columns}
                 // data={records ? records : []}
                 data={tableData ? tableData : []}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}

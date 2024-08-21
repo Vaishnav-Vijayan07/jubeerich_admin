@@ -292,7 +292,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   name="status_ids"
                   classNamePrefix="react-select"
-                  options={statusData}
+                  options={[{ value: null, label: "None" }, ...statusData]}
                   value={selectedStatus}
                   onChange={handleStatusChange as any}
                 />
@@ -333,7 +333,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <i className="mdi mdi-plus-circle"></i> Configure Status
               </Button>
               <h4 className="header-title mb-4">Manage Status Configuration</h4>
-              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
+              <Table columns={columns} data={records ? records : []} pageSize={10} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
               />
             </Card.Body>

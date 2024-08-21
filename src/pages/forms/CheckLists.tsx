@@ -335,7 +335,7 @@ const BasicInputElements = withSwal((props: any) => {
         <Col lg={7} className="p-0 form__card">
           <Card className="bg-white mt-md-3 m-lg-0 ms-lg-3">
             <Card.Body>
-              <Table columns={columns} data={records ? records : []} pageSize={5} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
+              <Table columns={columns} data={records ? records : []} pageSize={10} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
               />
             </Card.Body>

@@ -240,7 +240,7 @@ const LeadTable = ({ statusData, openModalWithClass, handleUpdate, leadsData, Us
       <Table
         columns={columns}
         data={leadsData ? leadsData : []}
-        pageSize={5}
+        pageSize={10}
         sizePerPageList={sizePerPageList}
         isSortable={true}
         pagination={true}

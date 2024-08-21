@@ -467,3 +467,29 @@ input[type="number"] {
   background-size: contain;
   pointer-events: none; /* Ensure the arrow does not block clicks */
 }
+
+select {
+  background-color: white; /* Background color of the select box */
+  color: rgb(98, 255, 0); /* Text color of the selected option */
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  appearance: none; /* Remove default styling for cross-browser consistency */
+}
+
+/* For styling the dropdown arrow */
+select::-ms-expand {
+  display: none;
+}
+
+/* If you want to style the options, you can target the entire select box */
+option {
+  color: black; /* Text color of options */
+  background-color: white; /* Background color of options */
+}
+
+/* Change the color of the selected option (affects the select box itself) */
+select option:checked {
+  background-color: rgb(173, 230, 178) !important;
+  color: rgb(0, 139, 21) !important;
+}

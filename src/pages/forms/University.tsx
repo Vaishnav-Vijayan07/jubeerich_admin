@@ -465,7 +465,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="country_id"
-                  options={country}
+                  options={[{ value: null, label: "None" }, ...country]}
                   value={selectedCountry}
                   onChange={handleSourceChange}
                 />
@@ -555,7 +555,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Table
                 columns={columns}
                 data={records ? records : []}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}

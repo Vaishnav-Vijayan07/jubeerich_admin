@@ -484,7 +484,7 @@ const LeadCompontents = withSwal((props: any) => {
                           className="react-select react-select-container"
                           name="country"
                           classNamePrefix="react-select"
-                          options={formattedCountryData}
+                          options={[{ value: "", label: "None" }, ...formattedCountryData]}
                           value={selectedCountry}
                           // onChange={handleCountryChange}
                           onChange={(e) => handleSelectChange(e, "country")}
@@ -502,7 +502,7 @@ const LeadCompontents = withSwal((props: any) => {
                           className="react-select react-select-container"
                           name="flag_id"
                           classNamePrefix="react-select"
-                          options={FlagData}
+                          options={[{ value: null, label: "None" }, ...FlagData]}
                           value={selectedFlag}
                           // onChange={handleFlagChange}
                           onChange={(e) => handleSelectChange(e, "flag_id")}
@@ -522,7 +522,7 @@ const LeadCompontents = withSwal((props: any) => {
                           className="react-select react-select-container"
                           name="category_id"
                           classNamePrefix="react-select"
-                          options={CategoryData}
+                          options={[{ value: null, label: "None" }, ...CategoryData]}
                           value={selectedCategory}
                           // onChange={handleSelectChange}
                           onChange={(e) => handleSelectChange(e, "category_id")}
@@ -542,7 +542,7 @@ const LeadCompontents = withSwal((props: any) => {
                           className="react-select react-select-container"
                           classNamePrefix="react-select"
                           name="source_id"
-                          options={SourceData}
+                          options={[{ value: null, label: "None" }, ...SourceData]}
                           value={selectedSource}
                           // onChange={handleSourceChange}
                           onChange={(e) => handleSelectChange(e, "source_id")}
@@ -564,7 +564,7 @@ const LeadCompontents = withSwal((props: any) => {
                           className="react-select react-select-container"
                           name="channel_id"
                           classNamePrefix="react-select"
-                          options={ChannelData}
+                          options={[{ value: null, label: "None" }, ...ChannelData]}
                           value={selectedChannel}
                           // onChange={handleChannelChange}
                           onChange={(e) => handleSelectChange(e, "channel_id")}
@@ -582,7 +582,7 @@ const LeadCompontents = withSwal((props: any) => {
                           className="react-select react-select-container"
                           name="user_id"
                           classNamePrefix="react-select"
-                          options={UsersData}
+                          options={[{ value: null, label: "None" }, ...UsersData]}
                           value={selectedUser}
                           // onChange={handleUserChange}
                           onChange={(e) => handleSelectChange(e, "user_id")}

@@ -441,7 +441,7 @@ const AcademicInfo = withSwal((props: any) => {
                       value={data.exam_name}
                       onChange={(e) => handleLanguageInputChange(index, e)}
                     >
-                      <option value="" disabled>
+                      <option value="">
                         Choose..
                       </option>
                       {examtypes?.map((item: any) => (

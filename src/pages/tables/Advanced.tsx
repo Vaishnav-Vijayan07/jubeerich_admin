@@ -82,7 +82,7 @@ const Advanced = () => {
               <Table
                 columns={columns}
                 data={data}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
@@ -102,7 +102,7 @@ const Advanced = () => {
               <Table
                 columns={columns}
                 data={data}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
@@ -125,7 +125,7 @@ const Advanced = () => {
               <Table
                 columns={columns}
                 data={data}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
@@ -148,7 +148,7 @@ const Advanced = () => {
               <Table
                 columns={columns}
                 data={expandableRecords}
-                pageSize={5}
+                pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}

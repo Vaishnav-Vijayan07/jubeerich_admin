@@ -118,7 +118,7 @@ const ManageTickets: React.FC<ManageTicketsProps> = ({ statusData, usersData }) 
                 styles={customStyles}
                 classNamePrefix="react-select"
                 placeholder="Choose status.."
-                options={statusData}
+                options={[{ value: null, label: "None" }, ...statusData]}
                 value={selectedStatus}
                 onChange={handleStatusChange as any}
               />
@@ -127,7 +127,7 @@ const ManageTickets: React.FC<ManageTicketsProps> = ({ statusData, usersData }) 
                 className="react-select react-select-container me-2"
                 name="country"
                 classNamePrefix="react-select"
-                options={usersData}
+                options={[{ value: null, label: "None" }, ...usersData]}
                 value={selectedUser}
                 styles={customStyles}
                 placeholder="Choose a user.."
