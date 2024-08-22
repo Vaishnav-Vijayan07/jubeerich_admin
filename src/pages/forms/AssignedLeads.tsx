@@ -795,21 +795,21 @@ const BasicInputElements = withSwal((props: any) => {
       }
 };
 
-  const clearFilters = () => {
-    // dispatch(getLead());
-    setTableData(state);
-    setFilters({
-      source: '',
-      city: '',
-      CRE: '',
-      counsiler_id: '',
-      status_id: '',
-      preferredCountries: '',
-      updated_by: '',
-      lead_received_date: '',
-      followup_date: '',
-    })
-  }
+  // const clearFilters = () => {
+  //   // dispatch(getLead());
+  //   setTableData(state);
+  //   setFilters({
+  //     source: '',
+  //     city: '',
+  //     CRE: '',
+  //     counsiler_id: '',
+  //     status_id: '',
+  //     preferredCountries: '',
+  //     updated_by: '',
+  //     lead_received_date: '',
+  //     followup_date: '',
+  //   })
+  // }
 
   const handleFilterDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -822,30 +822,22 @@ const BasicInputElements = withSwal((props: any) => {
 
 const handleClear = () => {
   setFilters({
-      // status_id: '',
-      // counsiler_id: '',
-      // lead_received_date: '',
-      // followup_date: '',
-      // preferredCountries: '',
-      // updated_by: '',
-      // source: ''
-
-      source: '',
-      city: '',
-      CRE: '',
-      counsiler_id: '',
-      status_id: '',
-      preferredCountries: '',
-      updated_by: '',
-      lead_received_date: '',
-      followup_date: '',
+    source: '',
+    city: '',
+    CRE: '',
+    counsiler_id: '',
+    status_id: '',
+    preferredCountries: '',
+    updated_by: '',
+    lead_received_date: '',
+    followup_date: '',
   })
-      setSelectedStatus(null);
-      setSelectedSourceFilter(null);
-      setSelectedAssignedBy(null);
-      setSelectedCounsellor(null);
-      setSelectedCountryFilter(null);
-      setSelectedCREFilter(null)
+    setSelectedStatus(null);
+    setSelectedSourceFilter(null);
+    setSelectedAssignedBy(null);
+    setSelectedCounsellor(null);
+    setSelectedCountryFilter(null);
+    setSelectedCREFilter(null)
 }
 
   return (
