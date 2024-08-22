@@ -36,6 +36,7 @@ import {
 import Select from "react-select";
 import {
   AUTH_SESSION_KEY,
+  customStyles,
   showErrorAlert,
   showSuccessAlert,
 } from "../../constants";
@@ -137,11 +138,12 @@ const BasicInputElements = withSwal((props: any) => {
     loading,
     status,
     userData,
-    // statusData,
     counsellors,
   } = props;
 
   console.log('Status', status);
+  console.log('CRES', cres);
+  
   
   
   const [tableData, setTableData] = useState([]);
@@ -170,6 +172,12 @@ const BasicInputElements = withSwal((props: any) => {
   const [formData, setFormData] = useState(initialState);
   const [uploadModal, setUploadModal] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<any>([]);
+  const [selectedStatus, setSelectedStatus] = useState<any>(null);
+  const [selectedSourceFilter, setSelectedSourceFilter] = useState<any>(null);
+  const [selectedAssignedBy, setSelectedAssignedBy] = useState<any>(null);
+  const [selectedCounsellor, setSelectedCounsellor] = useState<any>(null);
+  const [selectedCountryFilter, setSelectedCountryFilter] = useState<any>(null);
+  const [selectedCREFilter, setSelectedCREFilter] = useState<any>(null);
 
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
@@ -727,9 +735,6 @@ const BasicInputElements = withSwal((props: any) => {
       filteredData = filteredData.filter((data: any) =>
         data.preferredCountries.some((preferredCountry: any) => preferredCountry.id == filters.preferredCountries)
       );
-
-      console.log('Countries', filteredData);
-      
     }
 
     if (filters.lead_received_date) {
@@ -748,19 +753,47 @@ const BasicInputElements = withSwal((props: any) => {
       });
     }
 
-    if(filters.city || filters.CRE || filters.source || filters.preferredCountries || filters.status_id ||
-      filters.followup_date || filters.lead_received_date || filters.counsiler_id || filters.updated_by
-    ){
-      setTableData(filteredData);
-    }
+    setTableData(filteredData);
   };
 
-  const handleFilterChange = (e: any) => {
-    const { name, value } = e.target;
-    setFilters((prev)=>({
-      ...prev, [name] : value
-    }))
-  }
+  // ----- OWN ----- //
+  // const handleFilterChange = (e: any) => {
+  //   const { name, value } = e.target;
+  //   setFilters((prev)=>({
+  //     ...prev, [name] : value
+  //   }))
+  // }
+
+  const handleFilterChange = (selected: any, { name }: any) => {
+
+    setFilters(prevFilters => ({
+        ...prevFilters,
+        [name]: selected?.value,
+    }));
+
+    switch (name) {
+        case "status_id":
+            setSelectedStatus(selected);
+            break;
+        case "source_id":
+            setSelectedSourceFilter(selected);
+            break;
+        case "updated_by":
+            setSelectedAssignedBy(selected);
+            break;
+        case "counsiler_id":
+            setSelectedCounsellor(selected);
+            break;
+        case "preferredCountries":
+            setSelectedCountryFilter(selected);
+            break;
+        case "CRE":
+          setSelectedCREFilter(selected);
+            break;
+        default:
+            break;
+      }
+};
 
   const clearFilters = () => {
     // dispatch(getLead());
@@ -777,6 +810,43 @@ const BasicInputElements = withSwal((props: any) => {
       followup_date: '',
     })
   }
+
+  const handleFilterDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+
+    setFilters(prevFilters => ({
+        ...prevFilters,
+        [name]: value,
+    }));
+};
+
+const handleClear = () => {
+  setFilters({
+      // status_id: '',
+      // counsiler_id: '',
+      // lead_received_date: '',
+      // followup_date: '',
+      // preferredCountries: '',
+      // updated_by: '',
+      // source: ''
+
+      source: '',
+      city: '',
+      CRE: '',
+      counsiler_id: '',
+      status_id: '',
+      preferredCountries: '',
+      updated_by: '',
+      lead_received_date: '',
+      followup_date: '',
+  })
+      setSelectedStatus(null);
+      setSelectedSourceFilter(null);
+      setSelectedAssignedBy(null);
+      setSelectedCounsellor(null);
+      setSelectedCountryFilter(null);
+      setSelectedCREFilter(null)
+}
 
   return (
     <>
@@ -1063,7 +1133,136 @@ const BasicInputElements = withSwal((props: any) => {
           </Modal>
         )}
 
-        <Col className="p-0 form__card">
+        <Col lg={12} className="p-0 form__card">
+          <Card>
+            <Card.Body>
+              <h4 className="header-title mb-3">Filters</h4>
+              <Row className="mb-3">
+                <Col lg={3} md={4} sm={6} xs={12}>
+
+                  <Form.Group className="mb-3" controlId="status_id">
+                    <Form.Label>Status</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container select-wrapper"
+                      classNamePrefix="react-select"
+                      name="status_id"
+                      options={[{ value: null, label: "All" }, ...status]}
+                      value={selectedStatus}
+                      onChange={handleFilterChange}
+                    />
+                  </Form.Group>
+                </Col>
+
+                {user?.role == 3 || user?.role == 5 ? <Col lg={3} md={4} sm={6} xs={12}>
+                  <Form.Group className="mb-3" controlId="updated_by">
+                    <Form.Label>Assigned By</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container select-wrapper"
+                      classNamePrefix="react-select"
+                      name="updated_by"
+                      options={[{ value: null, label: "All" }, ...userData]}
+                      value={selectedAssignedBy}
+                      onChange={handleFilterChange}
+                    />
+                  </Form.Group>
+                </Col> : ""}
+
+                {user?.role == 3 || user?.role == 5 ? <Col lg={3} md={4} sm={6} xs={12}>
+                  <Form.Group className="mb-3" controlId="counsiler_id">
+                    <Form.Label>Counsellors</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container select-wrapper"
+                      classNamePrefix="react-select"
+                      name="counsiler_id"
+                      options={[{ value: null, label: "All" }, ...counsellors]}
+                      value={selectedCounsellor}
+                      onChange={handleFilterChange}
+                    />
+                  </Form.Group>
+                </Col> : ""}
+
+                <Col lg={3} md={4} sm={6} xs={12}>
+                  <Form.Group className="mb-3" controlId="preferredCountries">
+                    <Form.Label>Country</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container select-wrapper"
+                      classNamePrefix="react-select"
+                      name="preferredCountries"
+                      options={[{ value: null, label: "All" }, ...country]}
+                      value={selectedCountryFilter}
+                      onChange={handleFilterChange}
+                    />
+                  </Form.Group>
+                </Col>
+
+                <Col lg={3} md={4} sm={6} xs={12}>
+                  <Form.Group className="mb-3" controlId="CRE">
+                    <Form.Label>CRE</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container select-wrapper"
+                      classNamePrefix="react-select"
+                      name="CRE"
+                      options={[{ value: null, label: "All" }, ...cres]}
+                      value={selectedCREFilter}
+                      onChange={handleFilterChange}
+                    />
+                  </Form.Group>
+                </Col>
+
+
+                <Col lg={3} md={4} sm={6} xs={12}>
+                  <Form.Group className="mb-3" controlId="source_id">
+                    <Form.Label>Source</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container select-wrapper"
+                      classNamePrefix="react-select"
+                      name="source"
+                      options={[{ value: null, label: "All" }, ...source]}
+                      value={selectedSourceFilter}
+                      onChange={handleFilterChange}
+                    />
+                  </Form.Group>
+                </Col>
+
+                <Col lg={3} md={4} sm={6} xs={12}>
+                  <Form.Group controlId="lead_received_date" className="cust-date mb-3">
+                    <Form.Label>Lead Received Date</Form.Label>
+                    <Form.Control
+                      type="date"
+                      name="lead_received_date"
+                      value={filters.lead_received_date}
+                      onChange={(e: any) => handleFilterDateChange(e)}
+                    />
+                  </Form.Group>
+                </Col>
+
+                <Col lg={3} md={4} sm={6} xs={12}>
+                  <Form.Group controlId="followup_date" className="cust-date mb-3">
+                    <Form.Label>Followup Date</Form.Label>
+                    <Form.Control
+                      type="date"
+                      name="followup_date"
+                      value={filters.followup_date}
+                      onChange={(e: any) => handleFilterDateChange(e)}
+                    />
+                  </Form.Group>
+                </Col>
+
+                <Col lg={3} md={4} sm={6} xs={12} style={{ alignSelf: "center" }}>
+                  <Form.Group className="align-items-center">
+                    <Button style={{ margin: "auto" }} variant="primary" onClick={handleClear}>Clear</Button>
+                  </Form.Group>
+                </Col>
+              </Row>
+            </Card.Body>
+
+          </Card>
           <Card className="bg-white">
             <Card.Body>
               <div className="d-flex flex-wrap gap-2 justify-content-end">
@@ -1114,10 +1313,7 @@ const BasicInputElements = withSwal((props: any) => {
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
               <div className="d-flex flex-wrap justify-content-end">
-                {/* <div className="me-2 mt-2">
-                  <Button className="mt-3" onClick={clearFilters} >Reset</Button>
-                </div> */}
-                <Form.Group className="cust-select ps-2 pt-2" controlId="status_id">
+                {/* <Form.Group className="cust-select ps-2 pt-2" controlId="status_id">
                   <div className="select-wrapper">
                     <Form.Label>Status</Form.Label>
                     <Form.Control
@@ -1255,11 +1451,11 @@ const BasicInputElements = withSwal((props: any) => {
                     value={filters.followup_date}
                     onChange={(e: any) => handleFilterChange(e)}
                   />
-                </Form.Group>
+                </Form.Group> */}
 
-                <div style={{paddingTop: '0.4rem'}} className="ms-2 mt-2">
+                {/* <div style={{paddingTop: '0.4rem'}} className="ms-2 mt-2">
                   <Button  className="mt-3" onClick={clearFilters} >Reset</Button>
-                </div>
+                </div> */}
 
               </div>
               <Table
@@ -1341,6 +1537,14 @@ const AssignedLeads = () => {
       console.log(err)
     })
   }
+
+  const CREData = useMemo(() => {
+    if (!cres) return [];
+    return cres.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.name,
+    }));
+  }, [country]);
 
   const countryData = useMemo(() => {
     if (!country) return [];
@@ -1424,7 +1628,7 @@ const AssignedLeads = () => {
             source={sourceData || []}
             categories={categoriesData || []}
             user={user || null}
-            cres={cres || []}
+            cres={CREData || []}
             status={statusData || []}
             counsellors={counsellors || []}
             channels={channelsData || []}
