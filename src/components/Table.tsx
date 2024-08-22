@@ -157,7 +157,7 @@ const Table = (props: TableProps) => {
       },
     },
     otherProps.hasOwnProperty("useGlobalFilter") &&
-      otherProps["useGlobalFilter"],
+    otherProps["useGlobalFilter"],
     otherProps.hasOwnProperty("useSortBy") && otherProps["useSortBy"],
     otherProps.hasOwnProperty("useExpanded") && otherProps["useExpanded"],
     otherProps.hasOwnProperty("usePagination") && otherProps["usePagination"],
@@ -248,6 +248,7 @@ const Table = (props: TableProps) => {
             {(dataTable.headerGroups || []).map((headerGroup: any) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {(headerGroup.headers || []).map((column: any) => (
+
                   <th
                     {...column.getHeaderProps(
                       column.sort && column.getSortByToggleProps()
@@ -258,8 +259,24 @@ const Table = (props: TableProps) => {
                       sortable: column.sort === true,
                     })}
                   >
-                    {column.render("Header")}
+                    <span className="d-flex gap-1 align-items-center">
+                      {column.render("Header")}
+                      {column.sort && (
+                        <span>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <span style={{ fontSize: "8px" }}> ▼</span> // Descending
+                            ) : (
+                              <span style={{ fontSize: "8px" }}> ▲</span> // Ascending
+                            )
+                          ) : (
+                            <span> ↕</span> // Default unsorted state
+                          )}
+                        </span>
+                      )}
+                    </span>
                   </th>
+
                 ))}
               </tr>
             ))}

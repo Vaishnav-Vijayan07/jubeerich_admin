@@ -36,7 +36,6 @@ import {
 import Select from "react-select";
 import {
   AUTH_SESSION_KEY,
-  customStyles,
   showErrorAlert,
   showSuccessAlert,
 } from "../../constants";
@@ -143,10 +142,10 @@ const BasicInputElements = withSwal((props: any) => {
   } = props;
 
   console.log('Status', status);
-
-
+  
+  
   const [tableData, setTableData] = useState([]);
-
+  
   //fetch token from session storage
 
   //Table data
@@ -692,10 +691,10 @@ const BasicInputElements = withSwal((props: any) => {
   useEffect(() => {
     applyFilter()
   }, [filters])
-
+  
 
   const applyFilter = () => {
-
+  
     let filteredData: any = [...state];
 
     if (filters.source) {
@@ -709,7 +708,7 @@ const BasicInputElements = withSwal((props: any) => {
     if (filters.CRE) {
       filteredData = filteredData.filter((data: any) => data.assigned_cre == filters.CRE);
     }
-
+    
     if (filters.status_id) {
       filteredData = filteredData.filter((data: any) => data.status_id == filters.status_id);
     }
@@ -730,7 +729,7 @@ const BasicInputElements = withSwal((props: any) => {
       );
 
       console.log('Countries', filteredData);
-
+      
     }
 
     if (filters.lead_received_date) {
@@ -749,17 +748,17 @@ const BasicInputElements = withSwal((props: any) => {
       });
     }
 
-    if (filters.city || filters.CRE || filters.source || filters.preferredCountries || filters.status_id ||
+    if(filters.city || filters.CRE || filters.source || filters.preferredCountries || filters.status_id ||
       filters.followup_date || filters.lead_received_date || filters.counsiler_id || filters.updated_by
-    ) {
+    ){
       setTableData(filteredData);
     }
   };
 
   const handleFilterChange = (e: any) => {
     const { name, value } = e.target;
-    setFilters((prev) => ({
-      ...prev, [name]: value
+    setFilters((prev)=>({
+      ...prev, [name] : value
     }))
   }
 
@@ -851,7 +850,6 @@ const BasicInputElements = withSwal((props: any) => {
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Source</Form.Label>
                     <Select
-                      styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="source_id"
@@ -873,7 +871,6 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="category_id"
-                      styles={customStyles}
                       options={[{ value: null, label: "None" }, ...categories]}
                       value={selectedCategory}
                       onChange={handleDropDowns}
@@ -893,7 +890,6 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="channel_id"
-                      styles={customStyles}
                       options={[{ value: null, label: "None" }, ...channels]}
                       value={selectedChannel}
                       onChange={handleDropDowns}
@@ -912,7 +908,6 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="office_type"
-                      styles={customStyles}
                       options={[{ value: null, label: "None" }, ...office]}
                       value={selectedOffice}
                       onChange={handleDropDowns}
@@ -932,7 +927,6 @@ const BasicInputElements = withSwal((props: any) => {
                       classNamePrefix="react-select"
                       name="preferred_country"
                       options={[{ value: null, label: "None" }, ...country]}
-                      styles={customStyles}
                       value={selectedCountry}
                       onChange={handleDropDowns}
                     />
@@ -1263,8 +1257,8 @@ const BasicInputElements = withSwal((props: any) => {
                   />
                 </Form.Group>
 
-                <div style={{ paddingTop: '0.4rem' }} className="ms-2 mt-2">
-                  <Button className="mt-3" onClick={clearFilters} >Reset</Button>
+                <div style={{paddingTop: '0.4rem'}} className="ms-2 mt-2">
+                  <Button  className="mt-3" onClick={clearFilters} >Reset</Button>
                 </div>
 
               </div>
@@ -1324,8 +1318,8 @@ const AssignedLeads = () => {
     users: state.Users.adminUsers,
   }));
 
-  console.log('status', status);
-
+  console.log('status',status);
+  
 
   useEffect(() => {
     dispatch(getCountry());

@@ -158,7 +158,6 @@ const BasicInputElements = withSwal((props: any) => {
     const [selectedAssignedBy, setSelectedAssignedBy] = useState<any>(null);
     const [selectedCounsellor, setSelectedCounsellor] = useState<any>(null);
     const [selectedCountryFilter, setSelectedCountryFilter] = useState<any>(null);
-    const [selectedReceivedDate, setSelectedReceivedDate] = useState<any>(null);
 
 
     const [className, setClassName] = useState<string>("");
@@ -260,13 +259,9 @@ const BasicInputElements = withSwal((props: any) => {
             case "preferredCountries":
                 setSelectedCountryFilter(selected);
                 break;
-            case "lead_received_date":
-                setSelectedReceivedDate(selected);
-                break;
             default:
                 break;
         }
-        // setSelectedStatus
     };
 
     const handleFilterDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -293,7 +288,6 @@ const BasicInputElements = withSwal((props: any) => {
             setSelectedAssignedBy(null);
             setSelectedCounsellor(null);
             setSelectedCountryFilter(null);
-            setSelectedReceivedDate(null);
     }
 
     // Modal states
@@ -613,7 +607,7 @@ const BasicInputElements = withSwal((props: any) => {
         {
             Header: "City",
             accessor: "city",
-            sort: false,
+            sort: true,
         },
         {
             Header: "Country",
@@ -628,12 +622,12 @@ const BasicInputElements = withSwal((props: any) => {
         {
             Header: "Office",
             accessor: "office_type_name",
-            sort: false,
+            sort: true,
         },
         {
             Header: "Source",
             accessor: "source_name",
-            sort: false,
+            sort: true,
         },
         {
             Header: "Lead Received Date",
@@ -652,7 +646,7 @@ const BasicInputElements = withSwal((props: any) => {
                 {
                     Header: "Assigned CRE",
                     accessor: "cre_name",
-                    sort: false,
+                    sort: true,
                 },
             ]
             : []),
@@ -661,7 +655,7 @@ const BasicInputElements = withSwal((props: any) => {
                 {
                     Header: "Assigned by",
                     accessor: "updated_by_user",
-                    sort: false,
+                    sort: true,
                 },
             ]
             : []),
@@ -670,7 +664,7 @@ const BasicInputElements = withSwal((props: any) => {
                 {
                     Header: "Assign Type",
                     accessor: "assign_type",
-                    sort: false,
+                    sort: true,
                     Cell: ({ row }: any) => {
                         const assignType = row.original.assign_type;
 
@@ -714,7 +708,7 @@ const BasicInputElements = withSwal((props: any) => {
         {
             Header: "Status",
             accessor: "status",
-            sort: false,
+            sort: true,
         },
         {
             Header: " ",
@@ -1387,7 +1381,7 @@ const BasicInputElements = withSwal((props: any) => {
                                     </Form.Group>
                                 </Col>
 
-                                <Col lg={3} md={4} sm={6} xs={12}>
+                               {user?.role == 3 || user?.role == 5 ? <Col lg={3} md={4} sm={6} xs={12}>
                                     <Form.Group className="mb-3" controlId="updated_by">
                                         <Form.Label>Assigned By</Form.Label>
                                         <Select
@@ -1400,9 +1394,9 @@ const BasicInputElements = withSwal((props: any) => {
                                             onChange={handleFilterChange}
                                         />
                                     </Form.Group>
-                                </Col>
+                                </Col> : ""}
 
-                                <Col lg={3} md={4} sm={6} xs={12}>
+                                {user?.role == 3 || user?.role == 5 ? <Col lg={3} md={4} sm={6} xs={12}>
                                     <Form.Group className="mb-3" controlId="counsiler_id">
                                         <Form.Label>Counsellors</Form.Label>
                                         <Select
@@ -1415,7 +1409,7 @@ const BasicInputElements = withSwal((props: any) => {
                                             onChange={handleFilterChange}
                                         />
                                     </Form.Group>
-                                </Col>
+                                </Col>: ""}
 
                                 <Col lg={3} md={4} sm={6} xs={12}>
                                     <Form.Group className="mb-3" controlId="preferredCountries">
