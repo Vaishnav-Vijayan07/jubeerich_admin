@@ -31,6 +31,11 @@ const initialState = {
   years: 0
 };
 
+const initialLanguageState = {
+  exam_name: '',
+  marks: ''
+}
+
 // const AcademicInfo = ({ studentId }: any) => {
 const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
@@ -38,7 +43,7 @@ const AcademicInfo = withSwal((props: any) => {
   const [loading, setLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
   const [selectExam, setSelectExam] = useState<boolean>(false);
-  const [languageForm, setLanguageForm] = useState<any[]>([{ exam_name: '', marks: '' }]);
+  const [languageForm, setLanguageForm] = useState<any[]>([initialLanguageState]);
   const [selectedFile, setSelectedFile] = useState<any>([]);
   const fileInputRef = useRef<any>(null);
 
@@ -61,12 +66,25 @@ const AcademicInfo = withSwal((props: any) => {
       .then((res) => {
         console.log("res =>", res.data);
         setformData(res.data.data);
-        setLanguageForm(res.data?.data?.exam_details)
-        setSelectedFile(res.data?.data?.exam_documents)
+        setLanguageForm((res.data?.data?.exam_details) ? (res.data?.data?.exam_details) : [initialLanguageState])
+        // setSelectedFile(res.data?.data?.exam_documents)
+
+        const emptyFile = new File([], "empty.txt", {
+          type: "text/plain",
+        });
+
+        if (Array.isArray(res.data?.data?.exam_details)) {
+          for (let i = 0; i < res.data?.data?.exam_documents.length; i++) {
+            setSelectedFile((prevFile: any) => ([
+              ...prevFile, emptyFile
+            ]))
+          }
+        }
         
         if(res.data?.data?.exam_details.length){
           setSelectExam(true)
         }
+
       })
       .catch((err) => {
         console.error(err);
@@ -169,34 +187,6 @@ const AcademicInfo = withSwal((props: any) => {
       }).catch((err: any)=>{
         console.log(err);
       })
-      
-      // setLoading(true);
-      
-      // axios
-      //   .post("saveStudentAcademicInfo", {
-      //     user_id: studentId,
-      //     qualification: formData?.qualification,
-      //     place: formData?.place,
-      //     percentage: formData?.percentage,
-      //     year_of_passing: formData?.year_of_passing,
-      //     backlogs: formData?.backlogs,
-      //     work_experience: formData?.work_experience,
-      //     designation: formData?.designation,
-      //   })
-      //   .then((res) => {
-      //     console.log("res: =>", res);
-      //     setLoading(false);
-      //     showSuccessAlert(res.data.message);
-      //     setValidationErrors(validationErrorsInitialState);
-
-      //     // getBasicInfoApi()
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //     setLoading(false);
-      //     showErrorAlert("Error occured");
-      //   });
-
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
@@ -226,17 +216,27 @@ const AcademicInfo = withSwal((props: any) => {
   }
 
   const handleFileChange = (index: number, e: any) => {
-    console.log('File', e.target.files);
-    console.log('File', fileInputRef?.current?.files[0]);
+    // console.log('File', e.target.files);
+    // console.log('File', fileInputRef?.current?.files[0]);
 
-    const file = fileInputRef?.current?.files[0]
+    // const file = fileInputRef?.current?.files[0]
 
-    if (selectedFile.length) {
-      const filteredFile = selectedFile.filter((data: any, i: any) => i != index);
-      setSelectedFile(filteredFile);
+    // if (selectedFile.length) {
+    //   const filteredFile = selectedFile.filter((data: any, i: any) => i != index);
+    //   setSelectedFile(filteredFile);
+    // }
+
+    // setSelectedFile((prevData: any) => ([...prevData, fileInputRef?.current?.files[0]]))
+
+    let file = e.target.files[0];
+
+    if (Array.isArray(languageForm) && selectedFile.length) {
+        selectedFile.splice(index, 1, file);
+
+        setSelectedFile([...selectedFile]);
+    } else {
+        setSelectedFile((prevData: any) => [...prevData, file]);
     }
-
-    setSelectedFile((prevData: any) => ([...prevData, fileInputRef?.current?.files[0]]))
   }
 
   const handleAddLanguageForm = () => {
@@ -432,7 +432,8 @@ const AcademicInfo = withSwal((props: any) => {
           <Row>
             {selectExam && languageForm.map((data, index) => (
               <Row key={index}>
-                <Col md={4} lg={4}>
+                {/* <Col md={4} lg={4}> */}
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="exam_name">
                     <Form.Label>Exam Type</Form.Label>
                     <Form.Select
@@ -457,7 +458,8 @@ const AcademicInfo = withSwal((props: any) => {
                     </Form.Select>
                   </Form.Group>
                 </Col>
-                <Col md={4} lg={4}>
+                {/* <Col md={4} lg={4}> */}
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="marks">
                     <Form.Label>Exam Score</Form.Label>
                     <Form.Control
@@ -476,12 +478,14 @@ const AcademicInfo = withSwal((props: any) => {
                     <Form.Group className="mb-3" controlId="profileImage">
                       <Form.Label>Upload File</Form.Label>
                       <Form.Control name="exam_documents" type="file" onChange={(event) => handleFileChange(index, event)} ref={fileInputRef} />
-                      {selectedFile[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{selectedFile[index].exam_documents}</p>}
+                      {/* {selectedFile[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{selectedFile[index].exam_documents}</p>} */}
                     </Form.Group>
                   </Form>
-                  <i className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
-                  {selectExam && <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>}
                 </Col>
+                <div className="d-flex justify-content-end">
+                  <i className="mdi mdi-delete-outline fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
+                  {selectExam && <i className="mdi mdi-plus-circle-outline fs-3 ps-1" onClick={handleAddLanguageForm}></i>}
+                </div>
               </Row>
             ))}
           </Row>

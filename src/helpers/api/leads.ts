@@ -65,16 +65,15 @@ function updateLeads(
     remarks: string;
     lead_received_date: string;
     ielts: boolean;
-    // exam_details?: any,
+    exam_details?: any,
     // exam_documents?: any
-    // changedFiles: any,
   }, 
-  // exam_documents?: any
+  exam_documents?: any
 ) {
   console.log("params ==>", params);
   
-  return api.update(`${baseUrl}/${id}`, params);
-  // return api.updateWithMultipleFile(`${baseUrl}/${id}`, params, exam_documents);
+  // return api.update(`${baseUrl}/${id}`, params);
+  return api.updateWithMultipleFile(`${baseUrl}/${id}`, params, exam_documents);
 }
 
 function deleteLeads(id: string) {

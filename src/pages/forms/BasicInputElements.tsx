@@ -395,6 +395,7 @@ const BasicInputElements = withSwal((props: any) => {
             exam: item?.exam || ""
         }));
 
+        setIsUpdate(true);
 
         if (item?.exam_details.length) {
             setSelectExam(true)
@@ -404,11 +405,22 @@ const BasicInputElements = withSwal((props: any) => {
         if (item?.exam_documents.length) {
             console.log('File', item?.exam_documents);
 
-            setSelectedFile(item?.exam_documents)
+            // setSelectedFile(item?.exam_documents)
             setSelectedFileName(item?.exam_documents)
         }
 
-        setIsUpdate(true);
+        const emptyFile = new File([], "empty.txt", {
+            type: "text/plain",
+          });
+
+        if(Array.isArray(item?.exam_documents)){
+            for( let i=0; i<item?.exam_documents.length; i++){
+                setSelectedFile((prevFile: any) => ([
+                    ...prevFile, emptyFile
+                ]))
+            }   
+        }
+
     };
 
     //handle delete function
@@ -481,7 +493,11 @@ const BasicInputElements = withSwal((props: any) => {
         e.preventDefault();
 
         let exam_details = languageForm.length ? languageForm : [];
-        // let exam_documents = selectedFile.length ? selectedFile : [];
+
+        console.log('Exam Form',exam_details);
+        
+        console.log('Files Seletcted', selectedFile);
+    
 
         // Validate the form using yup
         try {
@@ -513,8 +529,8 @@ const BasicInputElements = withSwal((props: any) => {
                                         formData.source_id,
                                         formData.channel_id,
                                         formData.city,
-                                        formData.preferred_country,
-                                        // JSON.stringify(formData.preferred_country),
+                                        // formData.preferred_country,
+                                        JSON.stringify(formData.preferred_country),
                                         formData.office_type,
                                         null,
                                         null,
@@ -522,7 +538,9 @@ const BasicInputElements = withSwal((props: any) => {
                                         user_id,
                                         formData.remarks,
                                         formData.lead_received_date,
-                                        formData.ielts
+                                        formData.ielts,
+                                        JSON.stringify(exam_details),
+                                        selectedFile
                                     )
                                 );
                             } else {
@@ -938,15 +956,19 @@ const BasicInputElements = withSwal((props: any) => {
     }
 
     const handleFileChange = (index: number, e: any) => {
-        console.log('File', e.target.files);
-        console.log('File', fileInputRef?.current?.files[0]);
+        let file = e.target.files[0];
 
-        if (selectedFile.length) {
-            const filteredFile = selectedFile.filter((data: any, i: any) => i != index);
+        if (!(isUpdate) && selectedFile.length) {
+            const filteredFile = selectedFile.filter((data: any, i: number) => i !== index);
             setSelectedFile(filteredFile);
+        } else if (isUpdate && selectedFile.length) {
+            selectedFile.splice(index, 1, file);
+
+            setSelectedFile([...selectedFile]);
+        } else {
+            setSelectedFile((prevData: any) => [...prevData, file]);
         }
 
-        setSelectedFile((prevData: any) => ([...prevData, e.target.files[0]]));
     }
 
 
@@ -1209,7 +1231,7 @@ const BasicInputElements = withSwal((props: any) => {
                                                     aria-label="Default select example"
                                                     name="exam_name"
                                                     value={data.exam_name}
-                                                    disabled={isUpdate}
+                                                    // disabled={isUpdate}
                                                     onChange={(e) => handleLanguageInputChange(index, e)}
                                                 >
                                                     <option value="">
@@ -1235,7 +1257,7 @@ const BasicInputElements = withSwal((props: any) => {
                                                     type="text"
                                                     name="marks"
                                                     value={data.marks}
-                                                    disabled={isUpdate}
+                                                    // disabled={isUpdate}
                                                     onChange={(e) => {
                                                         handleLanguageInputChange(index, e)
                                                     }}
@@ -1247,7 +1269,7 @@ const BasicInputElements = withSwal((props: any) => {
                                             <Form name="exam_documents" encType="multipart/form-data">
                                                 <Form.Group className="mb-3" controlId="profileImage">
                                                     <Form.Label>Upload File</Form.Label>
-                                                    <Form.Control name="exam_documents" type="file" disabled={isUpdate} onChange={(event) => { handleFileChange(index, event) }} ref={fileInputRef} />
+                                                    <Form.Control name="exam_documents" type="file" onChange={(event) => { handleFileChange(index, event) }} ref={fileInputRef} />
                                                     {selectedFile[index]?.exam_documents && <p style={{ padding: '0%' }} className="mt-2">{selectedFile[index].exam_documents}</p>}
                                                 </Form.Group>
                                             </Form>
