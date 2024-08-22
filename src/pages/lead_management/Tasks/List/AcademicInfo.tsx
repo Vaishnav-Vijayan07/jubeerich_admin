@@ -45,6 +45,7 @@ const AcademicInfo = withSwal((props: any) => {
   const [selectExam, setSelectExam] = useState<boolean>(false);
   const [languageForm, setLanguageForm] = useState<any[]>([initialLanguageState]);
   const [selectedFile, setSelectedFile] = useState<any>([]);
+  const [selectedFileName, setSelectedFileName] = useState<any>([]);
   const fileInputRef = useRef<any>(null);
 
   const ValidationSchema = yup.object().shape({
@@ -68,6 +69,7 @@ const AcademicInfo = withSwal((props: any) => {
         setformData(res.data.data);
         setLanguageForm((res.data?.data?.exam_details) ? (res.data?.data?.exam_details) : [initialLanguageState])
         // setSelectedFile(res.data?.data?.exam_documents)
+        setSelectedFileName(res.data?.data?.exam_documents)
 
         const emptyFile = new File([], "empty.txt", {
           type: "text/plain",
@@ -121,6 +123,7 @@ const AcademicInfo = withSwal((props: any) => {
       newFormData.append('qualification', formData?.qualification);
       newFormData.append('place', formData?.place);
       newFormData.append('percentage', formData?.percentage);
+      newFormData.append('company', formData?.company);
       newFormData.append('year_of_passing', formData?.year_of_passing);
       newFormData.append('backlogs', JSON.stringify((formData?.backlogs == null ? 0 : formData.backlogs)));
       // newFormData.append('backlogs', '0');
@@ -400,7 +403,7 @@ const AcademicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col md={4} lg={4} xl={4} xxl={4}>
+          <Col>
             <Form.Group className="mb-3" controlId="source_id">
               <Form.Label>Have you ever participated in any language exams ?</Form.Label>
               <div className="d-flex justify-content-start align-items-center mt-1">
@@ -433,7 +436,7 @@ const AcademicInfo = withSwal((props: any) => {
             {selectExam && languageForm.map((data, index) => (
               <Row key={index}>
                 {/* <Col md={4} lg={4}> */}
-                <Col md={6} lg={4}>
+                <Col md={3} lg={3}>
                   <Form.Group className="mb-3" controlId="exam_name">
                     <Form.Label>Exam Type</Form.Label>
                     <Form.Select
@@ -459,7 +462,7 @@ const AcademicInfo = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
                 {/* <Col md={4} lg={4}> */}
-                <Col md={6} lg={4}>
+                <Col md={3} lg={3}>
                   <Form.Group className="mb-3" controlId="marks">
                     <Form.Label>Exam Score</Form.Label>
                     <Form.Control
@@ -473,19 +476,20 @@ const AcademicInfo = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col className="d-flex justify-content-between">
+                <Col md={6} lg={6} className="d-flex justify-content-between">
                   <Form name="exam_documents" encType="multipart/form-data">
                     <Form.Group className="mb-3" controlId="profileImage">
                       <Form.Label>Upload File</Form.Label>
                       <Form.Control name="exam_documents" type="file" onChange={(event) => handleFileChange(index, event)} ref={fileInputRef} />
                       {/* {selectedFile[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{selectedFile[index].exam_documents}</p>} */}
+                      {selectedFileName[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{selectedFileName[index].exam_documents}</p>}
                     </Form.Group>
                   </Form>
+                  <div className="mt-3 pt-1 d-flex">
+                    <i className="mdi mdi-delete-outline fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
+                    {selectExam && <i className="mdi mdi-plus-circle-outline fs-3 ps-1" onClick={handleAddLanguageForm}></i>}
+                  </div>
                 </Col>
-                <div className="d-flex justify-content-end">
-                  <i className="mdi mdi-delete-outline fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
-                  {selectExam && <i className="mdi mdi-plus-circle-outline fs-3 ps-1" onClick={handleAddLanguageForm}></i>}
-                </div>
               </Row>
             ))}
           </Row>

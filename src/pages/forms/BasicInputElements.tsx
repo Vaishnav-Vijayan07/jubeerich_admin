@@ -1264,7 +1264,8 @@ const BasicInputElements = withSwal((props: any) => {
                                                 <Form.Group className="mb-3" controlId="profileImage">
                                                     <Form.Label>Upload File</Form.Label>
                                                     <Form.Control name="exam_documents" type="file" onChange={(event) => { handleFileChange(index, event) }} ref={fileInputRef} />
-                                                    {selectedFile[index]?.exam_documents && <p style={{ padding: '0%' }} className="mt-2">{selectedFile[index].exam_documents}</p>}
+                                                    {/* {selectedFile[index]?.exam_documents && <p style={{ padding: '0%' }} className="mt-2">{selectedFile[index].exam_documents}</p>} */}
+                                                    {selectedFileName[index]?.exam_documents && <p style={{ padding: '0%' }} className="mt-2">{selectedFileName[index].exam_documents}</p>}
                                                 </Form.Group>
                                             </Form>
                                             <i className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
