@@ -72,6 +72,7 @@ const BasicInfo = withSwal((props: any) => {
     MaritalStatus,
     basicData,
     getBasicInfoApi,
+    role
   } = props;
 
   const [formData, setformData] = useState(initialState);
@@ -356,6 +357,7 @@ const BasicInfo = withSwal((props: any) => {
                 options={[{ value: null, label: "None" }, ...country]}
                 value={selectedCountry}
                 onChange={handleSelectChange as any}
+                isDisabled={role == 7 ? true : false}
               />
               {validationErrors.preferred_country && <Form.Text className="text-danger">{validationErrors.preferred_country}</Form.Text>}
             </Form.Group>

@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { getMaritalStatus } from "../../../../redux/marital_status/actions";
 import axios from "axios";
-import { follow_up_id, future_leads_id, not_responding_id, showSuccessAlert } from "../../../../constants";
+import { follow_up_id, future_leads_id, not_responding_id, showErrorAlert, showSuccessAlert } from "../../../../constants";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 
@@ -191,6 +191,19 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   };
 
   console.log("basicData ==>", basicData);
+
+  const addNewCountry = (newCountryId: number) => {
+    axios.put("assign_new_country", {
+      id: taskId,
+      newCountryId: newCountryId
+    }).then((res) => {
+      showSuccessAlert(res.data.message)
+      getTaskDetails();
+    }).catch((err) => {
+      console.log("error:", err);
+      showErrorAlert(err)
+    })
+  }
 
   if (loading) {
     return (
@@ -426,7 +439,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   className="d-flex align-items-center"
                   style={{ gap: "5px" }}
                 >
-                 <img
+                  <img
                     src={icons.calender_time}
                     alt="phone"
                     className="me-1"
@@ -452,7 +465,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   className="d-flex align-items-center"
                   style={{ gap: "5px" }}
                 >
-                 <img
+                  <img
                     src={icons.calender_time}
                     alt="phone"
                     className="me-1"
@@ -475,6 +488,38 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             </div>
 
           </Row>
+
+          {user.role == 7 && <Row>
+            <div className="">
+              <p className="mt-2 mb-1 text-muted fw-light">Add New Country</p>
+              <div
+                className="d-flex align-items-start"
+                style={{ gap: "5px" }}
+              >
+                <Dropdown>
+                  <Dropdown.Toggle
+                    className="cursor-pointer"
+                    variant="light"
+                  >
+                    Choose Country
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    {(countryData || [])?.map((item: any) => (
+                      // Check if the item is visible before rendering the Dropdown.Item
+
+                      <Dropdown.Item
+                        eventKey={item.value}
+                        key={item.value}
+                        onClick={() => addNewCountry(item.value)}
+                      >
+                        {item.label}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            </div>
+          </Row>}
         </Card.Body>
       </Card>
 
@@ -535,6 +580,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                           MaritalStatus={maritialData}
                           basicData={basicData}
                           getBasicInfoApi={getBasicInfo}
+                          role={user.role}
                         />
                       )}
                     </Tab.Pane>
