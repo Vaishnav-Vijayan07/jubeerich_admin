@@ -224,7 +224,6 @@ function* updateLeads({
     ielts,
     exam_details,
     exam_documents,
-    changedFiles
   },
 }: LeadsData): SagaIterator {
   try {
@@ -245,10 +244,9 @@ function* updateLeads({
       remarks,
       lead_received_date,
       ielts,
-      // exam_details,
-      // changedFiles
+      exam_details,
     }, 
-    // exam_documents
+    exam_documents
   );
     const data = response.data.message;
 

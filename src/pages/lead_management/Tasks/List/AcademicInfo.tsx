@@ -169,34 +169,6 @@ const AcademicInfo = withSwal((props: any) => {
       }).catch((err: any)=>{
         console.log(err);
       })
-      
-      // setLoading(true);
-      
-      // axios
-      //   .post("saveStudentAcademicInfo", {
-      //     user_id: studentId,
-      //     qualification: formData?.qualification,
-      //     place: formData?.place,
-      //     percentage: formData?.percentage,
-      //     year_of_passing: formData?.year_of_passing,
-      //     backlogs: formData?.backlogs,
-      //     work_experience: formData?.work_experience,
-      //     designation: formData?.designation,
-      //   })
-      //   .then((res) => {
-      //     console.log("res: =>", res);
-      //     setLoading(false);
-      //     showSuccessAlert(res.data.message);
-      //     setValidationErrors(validationErrorsInitialState);
-
-      //     // getBasicInfoApi()
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //     setLoading(false);
-      //     showErrorAlert("Error occured");
-      //   });
-
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
@@ -432,7 +404,8 @@ const AcademicInfo = withSwal((props: any) => {
           <Row>
             {selectExam && languageForm.map((data, index) => (
               <Row key={index}>
-                <Col md={4} lg={4}>
+                {/* <Col md={4} lg={4}> */}
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="exam_name">
                     <Form.Label>Exam Type</Form.Label>
                     <Form.Select
@@ -457,7 +430,8 @@ const AcademicInfo = withSwal((props: any) => {
                     </Form.Select>
                   </Form.Group>
                 </Col>
-                <Col md={4} lg={4}>
+                {/* <Col md={4} lg={4}> */}
+                <Col md={6} lg={4}>
                   <Form.Group className="mb-3" controlId="marks">
                     <Form.Label>Exam Score</Form.Label>
                     <Form.Control
