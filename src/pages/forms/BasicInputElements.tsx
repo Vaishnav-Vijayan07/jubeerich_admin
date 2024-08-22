@@ -366,17 +366,13 @@ const BasicInputElements = withSwal((props: any) => {
         const emptyFile = new File([], "empty.txt", {
             type: "text/plain",
           });
-          const emptyBlob = new Blob([], { type: "text/plain" });
-
 
         if(Array.isArray(item?.exam_documents)){
             for( let i=0; i<item?.exam_documents.length; i++){
                 setSelectedFile((prevFile: any) => ([
                     ...prevFile, emptyFile
                 ]))
-            }
-            console.log('FILESS', selectedFile);
-            
+            }   
         }
 
     };
