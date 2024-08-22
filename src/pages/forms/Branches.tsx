@@ -13,7 +13,7 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { addBranches, deleteBranches, getBranches, updateBranches } from "../../redux/branches/actions";
-import { AUTH_SESSION_KEY } from "../../constants";
+import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { getRegion } from "../../redux/regions/actions";
 import Select from "react-select";
 import { getOfficeTypeData } from "../../redux/OfficeType/actions";
@@ -253,85 +253,85 @@ const BasicInputElements = withSwal((props: any) => {
     // Validate the form using yup
     try {
       console.log('ENTERED');
-      
+
       await validationSchema.validate(formData, { abortEarly: false });
       // Validation passed, handle form submission
 
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          if (userInfo) {
-            const { user_id } = JSON.parse(userInfo);
-    
-            if (isUpdate) {
-              // Handle update logic
-              dispatch(
-                updateBranches(
-                  formData.id,
-                  formData.branch_name,
-                  formData.email,
-                  formData.phone,
-                  formData.address,
-                  formData.city,
-                  formData.state,
-                  formData.country,
-                  formData.pincode,
-                  formData.contact_person_email,
-                  formData.contact_person_name,
-                  formData.contact_person_mobile,
-                  formData.contact_person_designation,
-                  formData.website,
-                  formData.social_media,
-                  formData.account_mail,
-                  formData.support_mail,
-                  formData.office_type,
-                  formData.region_id,
-                  formData.status,
-                  user_id
-                )
-              );
-              setIsUpdate(false);
-            } else {
-              // Handle add logic
-              dispatch(
-                addBranches(
-                  formData.branch_name,
-                  formData.email,
-                  formData.phone,
-                  formData.address,
-                  formData.city,
-                  formData.state,
-                  formData.country,
-                  formData.pincode,
-                  formData.contact_person_email,
-                  formData.contact_person_name,
-                  formData.contact_person_mobile,
-                  formData.contact_person_designation,
-                  formData.website,
-                  formData.social_media,
-                  formData.account_mail,
-                  formData.support_mail,
-                  formData.office_type,
-                  formData.region_id,
-                  formData.status,
-                  user_id
-                )
-              );
+        .fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: `Yes, ${isUpdate ? 'Update' : 'Create'}`,
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            if (userInfo) {
+              const { user_id } = JSON.parse(userInfo);
+
+              if (isUpdate) {
+                // Handle update logic
+                dispatch(
+                  updateBranches(
+                    formData.id,
+                    formData.branch_name,
+                    formData.email,
+                    formData.phone,
+                    formData.address,
+                    formData.city,
+                    formData.state,
+                    formData.country,
+                    formData.pincode,
+                    formData.contact_person_email,
+                    formData.contact_person_name,
+                    formData.contact_person_mobile,
+                    formData.contact_person_designation,
+                    formData.website,
+                    formData.social_media,
+                    formData.account_mail,
+                    formData.support_mail,
+                    formData.office_type,
+                    formData.region_id,
+                    formData.status,
+                    user_id
+                  )
+                );
+                setIsUpdate(false);
+              } else {
+                // Handle add logic
+                dispatch(
+                  addBranches(
+                    formData.branch_name,
+                    formData.email,
+                    formData.phone,
+                    formData.address,
+                    formData.city,
+                    formData.state,
+                    formData.country,
+                    formData.pincode,
+                    formData.contact_person_email,
+                    formData.contact_person_name,
+                    formData.contact_person_mobile,
+                    formData.contact_person_designation,
+                    formData.website,
+                    formData.social_media,
+                    formData.account_mail,
+                    formData.support_mail,
+                    formData.office_type,
+                    formData.region_id,
+                    formData.status,
+                    user_id
+                  )
+                );
+              }
             }
           }
-        }
-      }).catch((err: any)=>{
-        console.log(err);
-      })
+        }).catch((err: any) => {
+          console.log(err);
+        })
 
       // Clear validation errors
       setValidationErrors({
@@ -677,6 +677,7 @@ const BasicInputElements = withSwal((props: any) => {
                   <Form.Group className="mb-3" controlId="source_id">
                     <Form.Label>Office</Form.Label>
                     <Select
+                      styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="office_type"
@@ -694,6 +695,7 @@ const BasicInputElements = withSwal((props: any) => {
                   <Form.Group className="mb-3" controlId="source_id">
                     <Form.Label>Region</Form.Label>
                     <Select
+                      styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="region_id"
@@ -859,7 +861,7 @@ const BasicInputElements = withSwal((props: any) => {
               </Row>
             </Modal.Body>
             <Modal.Footer>
-            <Button
+              <Button
                 variant="primary"
                 id="button-addon2"
                 className="mt-1 ms-2"
@@ -872,7 +874,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 "
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(),handleResetValues()])}
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>

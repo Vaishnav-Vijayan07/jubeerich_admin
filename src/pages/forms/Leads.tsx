@@ -86,7 +86,15 @@ const Leads = () => {
 
   const fetchAllCounsellors = () => {
     axios.get("/get_all_counsellors").then((res) => {
-      setCounsellors(res.data.data)
+      const counsellorData = res?.data?.data?.map((item: any) => {
+        return (
+          {
+            label: item?.name,
+            value: item?.id
+          }
+        )
+      })
+      setCounsellors(counsellorData)
     }).catch((err) => {
       console.log(err)
     })

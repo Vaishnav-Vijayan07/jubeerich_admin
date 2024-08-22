@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import axios from "axios";
-import { showErrorAlert, showSuccessAlert } from "../../../../constants";
+import { customStyles, showErrorAlert, showSuccessAlert } from "../../../../constants";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { getUniversity } from "../../../../redux/University/actions";
@@ -41,6 +41,23 @@ const initialState = {
   course_fee: ""
 };
 
+const monthData: any = [
+  { value: null, label: "None" },
+  { value: "01", label: "January" },
+  { value: "02", label: "February" },
+  { value: "03", label: "March" },
+  { value: "04", label: "April" },
+  { value: "05", label: "May" },
+  { value: "06", label: "June" },
+  { value: "07", label: "July" },
+  { value: "08", label: "August" },
+  { value: "09", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
+
+
 // const StudyPreference = ({ studentId, Countries }: any) => {
 const StudyPreference = withSwal((props: any) => {
   const { swal, studentId, Countries } = props;
@@ -48,7 +65,7 @@ const StudyPreference = withSwal((props: any) => {
   const [loading, setLoading] = useState(false);
   const [universityData, setUniversityData] = useState([]);
   const [selectedUniversities, setSelectedUniversities] = useState<any>([]);
-  const [selectedUniversities1, setSelectedUniversities1] = useState<any>(null);
+  const [selectedMonth, setSelectedMonth] = useState<any>(null);
   const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
 
   const ValidationSchema = yup.object().shape({
@@ -64,26 +81,7 @@ const StudyPreference = withSwal((props: any) => {
     course: yup.string().nullable(),
     duration: yup.string().nullable(),
     course_fee: yup.string().nullable(),
-
-    // intersted_country: formData?.intersted_country,
-    // intrested_institution: formData?.intrested_institution,
-    // intake_year: formData?.intake_year,
-    // intake_month: formData?.intake_month,
-    // estimated_budget: formData?.estimated_budget,
-    // course_field_of_intrest: formData?.course_field_of_intrest,
-    // user_id: studentId,
-    // course_fee: formData?.course_fee,
-    // universities: formData?.universities,
-    // campus: formData?.campus,
-    // stream: formData?.stream,
-    // course: formData?.course,
-    // duration: formData?.duration,
   })
-
-  console.log("selectedUniversities =====>", selectedUniversities);
-
-
-  console.log("university data", universityData);
 
 
   const dispatch = useDispatch()
@@ -92,8 +90,6 @@ const StudyPreference = withSwal((props: any) => {
 
   const University = useSelector((state: RootState) => state.University.universities.data);
 
-
-  // apis
   const getStudyPreferenceInfo = () => {
     setformData(initialState)
     axios
@@ -113,10 +109,10 @@ const StudyPreference = withSwal((props: any) => {
           idsArray.includes(university.value)
         );
 
-        console.log("filteredUniversities ==>", filteredUniversities);
-
-
-        // setSelectedUniversities(filteredUniversities);
+        const updatedMonth = monthData?.filter(
+          (month: any) => month.value == res?.data?.data?.intake_month
+        );
+        setSelectedMonth(updatedMonth[0])
       })
       .catch((err) => {
         console.error(err);
@@ -228,6 +224,21 @@ const StudyPreference = withSwal((props: any) => {
     }
   }
 
+  const handleDropDowns = (selected: any, { name }: any) => {
+    setformData((prev) => ({
+      ...prev,
+      [name]: selected.value,
+    }));
+
+    switch (name) {
+      case "intake_month":
+        setSelectedMonth(selected);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <>
       <>
@@ -290,33 +301,24 @@ const StudyPreference = withSwal((props: any) => {
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="intake_month">
               <Form.Label><span className="text-danger">* </span> Intake Month</Form.Label>
-              <Form.Select
+              <Select
+                styles={customStyles}
+                className="react-select react-select-container"
+                classNamePrefix="react-select"
                 name="intake_month"
-                className="mb-3"
-                aria-label="Default select example"
-                value={formData?.intake_month}
-                onChange={handleInputChange}
-              >
-                <option value="">
-                  Open this select menu
-                </option>
-                <option value="01">January</option>
-                <option value="02">February</option>
-                <option value="03">March</option>
-                <option value="04">April</option>
-                <option value="05">May</option>
-                <option value="06">June</option>
-                <option value="07">July</option>
-                <option value="08">August</option>
-                <option value="09">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-              </Form.Select>
+                options={monthData}
+                value={selectedMonth}
+                onChange={handleDropDowns}
+              />
               {validationErrors.intake_month && (
-                <Form.Text className="text-danger">{validationErrors.intake_month}</Form.Text>)}
+                <Form.Text className="text-danger">
+                  {validationErrors.intake_month}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
+
+
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="estimated_budget">

@@ -15,3 +15,16 @@ export const lost_id = "44";
 
 //session user
 export const AUTH_SESSION_KEY = "jb_user";
+
+export const customStyles = {
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? '#a9b3e6e2' : state.isFocused ? '#8a99e2' : '#fff',
+      color: state.isSelected ? '#fff' : state.isFocused ? '#fff' : '#333',
+      padding: 10,
+    }),
+    singleValue: (provided: any, state: any) => ({
+      ...provided,
+      color: '#333', // Color of the selected option displayed in the select box
+    }),
+  };

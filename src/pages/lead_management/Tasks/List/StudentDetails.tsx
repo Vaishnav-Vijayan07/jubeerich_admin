@@ -155,6 +155,22 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     }));
   }, [Countries]);
 
+  const officeData = useMemo(() => {
+    if (!OfficeTypes) return [];
+    return OfficeTypes.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.office_type_name,
+    }));
+  }, [OfficeTypes]);
+
+  const maritialData = useMemo(() => {
+    if (!MaritalStatus) return [];
+    return MaritalStatus.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.marital_status_name,
+    }));
+  }, [MaritalStatus]);
+
   // Finish Task
   const handleFinishTask = () => {
     axios
@@ -514,9 +530,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                         <BasicInfo
                           studentId={studentId}
                           Countries={Countries}
-                          OfficeTypes={OfficeTypes}
+                          OfficeTypes={officeData}
                           country={countryData || []}
-                          MaritalStatus={MaritalStatus}
+                          MaritalStatus={maritialData}
                           basicData={basicData}
                           getBasicInfoApi={getBasicInfo}
                         />

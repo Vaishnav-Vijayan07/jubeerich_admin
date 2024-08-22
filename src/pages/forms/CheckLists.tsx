@@ -15,6 +15,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { addChecklist, deleteChecklist, getChecklistById, updateCheklist } from "../../redux/actions";
 import Select from "react-select";
+import { customStyles } from "../../constants";
 
 interface TableRecords {
   id: number;
@@ -310,6 +311,7 @@ const BasicInputElements = withSwal((props: any) => {
             <Form.Group className="mb-3" controlId="priority">
               <Form.Label>Status Type</Form.Label>
               <Select
+                styles={customStyles}
                 className="react-select react-select-container"
                 name="priority"
                 classNamePrefix="react-select"

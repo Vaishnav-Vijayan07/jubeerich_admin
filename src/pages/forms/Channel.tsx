@@ -29,7 +29,7 @@ import {
   updateChannel,
 } from "../../redux/actions";
 import Select from "react-select";
-import { AUTH_SESSION_KEY } from "../../constants";
+import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { Link } from "react-router-dom";
 
 interface OptionType {
@@ -182,45 +182,45 @@ const BasicInputElements = withSwal((props: any) => {
       await validationSchema.validate(formData, { abortEarly: false });
 
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          if (userInfo) {
-            const { user_id } = JSON.parse(userInfo);
-            if (isUpdate) {
-              // Handle update logic
-              dispatch(
-                updateChannel(
-                  formData.id,
-                  formData.source_id,
-                  formData.channel_name,
-                  formData.channel_description,
-                  user_id
-                )
-              );
-              setIsUpdate(false);
-            } else {
-              // Handle add logic
-              dispatch(
-                addChannel(
-                  formData.source_id,
-                  formData.channel_name,
-                  formData.channel_description,
-                  user_id
-                )
-              );
+        .fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: `Yes, ${isUpdate ? 'Update' : 'Create'}`,
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            if (userInfo) {
+              const { user_id } = JSON.parse(userInfo);
+              if (isUpdate) {
+                // Handle update logic
+                dispatch(
+                  updateChannel(
+                    formData.id,
+                    formData.source_id,
+                    formData.channel_name,
+                    formData.channel_description,
+                    user_id
+                  )
+                );
+                setIsUpdate(false);
+              } else {
+                // Handle add logic
+                dispatch(
+                  addChannel(
+                    formData.source_id,
+                    formData.channel_name,
+                    formData.channel_description,
+                    user_id
+                  )
+                );
+              }
             }
           }
-        }
-      });
+        });
 
       // if (userInfo) {
       //   const { user_id } = JSON.parse(userInfo);
@@ -406,6 +406,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="source_id">
                 <Form.Label>Lead Source</Form.Label>
                 <Select
+                  styles={customStyles}
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="source_id"
@@ -438,7 +439,7 @@ const BasicInputElements = withSwal((props: any) => {
                 onClick={() =>
                   isUpdate
                     ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(),handleResetValues()]
+                    : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}

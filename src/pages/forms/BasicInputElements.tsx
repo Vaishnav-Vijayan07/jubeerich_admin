@@ -26,6 +26,7 @@ import {
 import Select, { ActionMeta, OptionsType } from "react-select";
 import {
     AUTH_SESSION_KEY,
+    customStyles,
     showErrorAlert,
     showSuccessAlert,
 } from "../../constants";
@@ -152,6 +153,13 @@ const BasicInputElements = withSwal((props: any) => {
     const [uploadModal, setUploadModal] = useState<boolean>(false);
     const [selectedFile, setSelectedFile] = useState<any>([]);
     const [selectedFileName, setSelectedFileName] = useState<any>([]);
+    const [selectedStatus, setSelectedStatus] = useState<any>(null);
+    const [selectedSourceFilter, setSelectedSourceFilter] = useState<any>(null);
+    const [selectedAssignedBy, setSelectedAssignedBy] = useState<any>(null);
+    const [selectedCounsellor, setSelectedCounsellor] = useState<any>(null);
+    const [selectedCountryFilter, setSelectedCountryFilter] = useState<any>(null);
+    const [selectedReceivedDate, setSelectedReceivedDate] = useState<any>(null);
+
 
     const [className, setClassName] = useState<string>("");
     const [scroll, setScroll] = useState<boolean>(false);
@@ -229,7 +237,39 @@ const BasicInputElements = withSwal((props: any) => {
         setFilteredItems(tempItems);
     };
 
-    const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleFilterChange = (selected: any, { name }: any) => {
+
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            [name]: selected?.value,
+        }));
+
+        switch (name) {
+            case "status_id":
+                setSelectedStatus(selected);
+                break;
+            case "source_id":
+                setSelectedSourceFilter(selected);
+                break;
+            case "updated_by":
+                setSelectedAssignedBy(selected);
+                break;
+            case "counsiler_id":
+                setSelectedCounsellor(selected);
+                break;
+            case "preferredCountries":
+                setSelectedCountryFilter(selected);
+                break;
+            case "lead_received_date":
+                setSelectedReceivedDate(selected);
+                break;
+            default:
+                break;
+        }
+        // setSelectedStatus
+    };
+
+    const handleFilterDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
 
         setFilters(prevFilters => ({
@@ -248,6 +288,12 @@ const BasicInputElements = withSwal((props: any) => {
             updated_by: '',
             source_id: ''
         })
+            setSelectedStatus(null);
+            setSelectedSourceFilter(null);
+            setSelectedAssignedBy(null);
+            setSelectedCounsellor(null);
+            setSelectedCountryFilter(null);
+            setSelectedReceivedDate(null);
     }
 
     // Modal states
@@ -903,6 +949,7 @@ const BasicInputElements = withSwal((props: any) => {
         setSelectedFile((prevData: any) => ([...prevData, e.target.files[0]]));
     }
 
+
     return (
         <>
             <Row className="justify-content-between px-2">
@@ -976,6 +1023,7 @@ const BasicInputElements = withSwal((props: any) => {
                                         <Form.Label>Source</Form.Label>
                                         <Select
                                             className="react-select react-select-container"
+                                            styles={customStyles}
                                             classNamePrefix="react-select"
                                             name="source_id"
                                             options={[{ value: null, label: "None" }, ...source]}
@@ -993,6 +1041,7 @@ const BasicInputElements = withSwal((props: any) => {
                                     <Form.Group className="mb-3" controlId="channel_name">
                                         <Form.Label>Category</Form.Label>
                                         <Select
+                                            styles={customStyles}
                                             className="react-select react-select-container"
                                             classNamePrefix="react-select"
                                             name="category_id"
@@ -1012,6 +1061,7 @@ const BasicInputElements = withSwal((props: any) => {
                                     <Form.Group className="mb-3" controlId="channel_name">
                                         <Form.Label>Channel</Form.Label>
                                         <Select
+                                            styles={customStyles}
                                             className="react-select react-select-container"
                                             classNamePrefix="react-select"
                                             name="channel_id"
@@ -1030,6 +1080,7 @@ const BasicInputElements = withSwal((props: any) => {
                                     <Form.Group className="mb-3" controlId="channel_name">
                                         <Form.Label><span className="text-danger fs-4">* </span>Office Type</Form.Label>
                                         <Select
+                                            styles={customStyles}
                                             className="react-select react-select-container"
                                             classNamePrefix="react-select"
                                             name="office_type"
@@ -1048,6 +1099,7 @@ const BasicInputElements = withSwal((props: any) => {
                                     <Form.Group className="mb-3" controlId="channel_name">
                                         <Form.Label>Country</Form.Label>
                                         <Select
+                                            styles={customStyles}
                                             className="react-select react-select-container"
                                             classNamePrefix="react-select"
                                             components={animatedComponents}
@@ -1278,6 +1330,119 @@ const BasicInputElements = withSwal((props: any) => {
                 )}
 
                 <Col lg={12} className="p-0 form__card">
+                    <Card>
+                        <Card.Body>
+                            <h4 className="header-title mb-3">Filters</h4>
+                            <Row className="mb-3">
+                                <Col lg={3} md={4} sm={6} xs={12}>
+
+                                    <Form.Group className="mb-3" controlId="status_id">
+                                        <Form.Label>Status</Form.Label>
+                                        <Select
+                                            styles={customStyles}
+                                            className="react-select react-select-container select-wrapper"
+                                            classNamePrefix="react-select"
+                                            name="status_id"
+                                            options={[{ value: null, label: "All" }, ...status]}
+                                            value={selectedStatus}
+                                            onChange={handleFilterChange}
+                                        />
+                                    </Form.Group>
+                                </Col>
+
+                                <Col lg={3} md={4} sm={6} xs={12}>
+                                    <Form.Group className="mb-3" controlId="source_id">
+                                        <Form.Label>Source</Form.Label>
+                                        <Select
+                                            styles={customStyles}
+                                            className="react-select react-select-container select-wrapper"
+                                            classNamePrefix="react-select"
+                                            name="source_id"
+                                            options={[{ value: null, label: "All" }, ...source]}
+                                            value={selectedSourceFilter}
+                                            onChange={handleFilterChange}
+                                        />
+                                    </Form.Group>
+                                </Col>
+
+                                <Col lg={3} md={4} sm={6} xs={12}>
+                                    <Form.Group className="mb-3" controlId="updated_by">
+                                        <Form.Label>Assigned By</Form.Label>
+                                        <Select
+                                            styles={customStyles}
+                                            className="react-select react-select-container select-wrapper"
+                                            classNamePrefix="react-select"
+                                            name="updated_by"
+                                            options={[{ value: null, label: "All" }, ...userData]}
+                                            value={selectedAssignedBy}
+                                            onChange={handleFilterChange}
+                                        />
+                                    </Form.Group>
+                                </Col>
+
+                                <Col lg={3} md={4} sm={6} xs={12}>
+                                    <Form.Group className="mb-3" controlId="counsiler_id">
+                                        <Form.Label>Counsellors</Form.Label>
+                                        <Select
+                                            styles={customStyles}
+                                            className="react-select react-select-container select-wrapper"
+                                            classNamePrefix="react-select"
+                                            name="counsiler_id"
+                                            options={[{ value: null, label: "All" }, ...counsellors]}
+                                            value={selectedCounsellor}
+                                            onChange={handleFilterChange}
+                                        />
+                                    </Form.Group>
+                                </Col>
+
+                                <Col lg={3} md={4} sm={6} xs={12}>
+                                    <Form.Group className="mb-3" controlId="preferredCountries">
+                                        <Form.Label>Country</Form.Label>
+                                        <Select
+                                            styles={customStyles}
+                                            className="react-select react-select-container select-wrapper"
+                                            classNamePrefix="react-select"
+                                            name="preferredCountries"
+                                            options={[{ value: null, label: "All" }, ...country]}
+                                            value={selectedCountryFilter}
+                                            onChange={handleFilterChange}
+                                        />
+                                    </Form.Group>
+                                </Col>
+
+                                <Col lg={3} md={4} sm={6} xs={12}>
+                                    <Form.Group controlId="lead_received_date" className="cust-date mb-3">
+                                        <Form.Label>Lead Received Date</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            name="lead_received_date"
+                                            value={filters.lead_received_date}
+                                            onChange={(e: any) => handleFilterDateChange(e)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+
+                                <Col lg={3} md={4} sm={6} xs={12}>
+                                    <Form.Group controlId="followup_date" className="cust-date mb-3">
+                                        <Form.Label>Followup Date</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            name="followup_date"
+                                            value={filters.followup_date}
+                                            onChange={(e: any) => handleFilterDateChange(e)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+
+                                <Col lg={3} md={4} sm={6} xs={12} style={{ alignSelf: "center" }}>
+                                    <Form.Group className="align-items-center">
+                                        <Button style={{ margin: "auto" }} variant="primary" onClick={handleClear}>Clear</Button>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+
+                    </Card>
                     <Card className="bg-white">
                         <Card.Body>
                             <div className="d-flex flex-wrap gap-2 justify-content-end">
@@ -1335,135 +1500,6 @@ const BasicInputElements = withSwal((props: any) => {
                                 </Button>
                             </div>
                             <h4 className="header-title mb-4">Manage Leads</h4>
-                            <div className="d-flex flex-wrap gap-2 justify-content-end mb-3" style={{ alignItems: "end" }}>
-
-                                <Form.Group className="cust-select" controlId="status_id">
-                                    <div className="select-wrapper">
-                                        <Form.Label>Status</Form.Label>
-                                        <Form.Control
-                                            as="select"
-                                            name="status_id"
-                                            value={filters.status_id}
-                                            onChange={(e: any) => handleFilterChange(e)}
-                                            className="select-custom"
-                                        >
-                                            <option value="">All</option>
-                                            {status?.map((item: any) => (
-                                                <option value={item.value} key={item.value}>
-                                                    {item.label}
-                                                </option>
-                                            ))}
-                                        </Form.Control>
-                                    </div>
-                                </Form.Group>
-
-                                <Form.Group className="cust-select" controlId="source_id">
-                                    <div className="select-wrapper">
-                                        <Form.Label>Source</Form.Label>
-                                        <Form.Control
-                                            as="select"
-                                            name="source_id"
-                                            value={filters.source_id}
-                                            onChange={(e: any) => handleFilterChange(e)}
-                                            className="select-custom"
-                                        >
-                                            <option value="">All</option>
-                                            {source?.map((item: any) => (
-                                                <option value={item.value} key={item.value}>
-                                                    {item.label}
-                                                </option>
-                                            ))}
-                                        </Form.Control>
-                                    </div>
-                                </Form.Group>
-
-                                <Form.Group className="cust-select" controlId="updated_by">
-                                    <div className="select-wrapper">
-                                        <Form.Label>Assigned By</Form.Label>
-                                        <Form.Control
-                                            as="select"
-                                            name="updated_by"
-                                            value={filters.updated_by}
-                                            onChange={(e: any) => handleFilterChange(e)}
-                                            className="select-custom"
-                                        >
-                                            <option value="">All</option>
-                                            {userData?.map((item: any) => (
-                                                <option value={item.value} key={item.value}>
-                                                    {item.label}
-                                                </option>
-                                            ))}
-                                        </Form.Control>
-                                    </div>
-                                </Form.Group>
-
-                                <Form.Group className="cust-select" controlId="counsiler_id">
-                                    <div className="select-wrapper">
-                                        <Form.Label>Counsellors</Form.Label>
-                                        <Form.Control
-                                            as="select"
-                                            name="counsiler_id"
-                                            value={filters.counsiler_id}
-                                            onChange={(e: any) => handleFilterChange(e)}
-                                            className="select-custom"
-                                        >
-                                            <option value="">All</option>
-                                            {counsellors?.map((item: any) => (
-                                                <option value={item.id} key={item.id}>
-                                                    {item.name}
-                                                </option>
-                                            ))}
-                                        </Form.Control>
-                                    </div>
-                                </Form.Group>
-
-                                <Form.Group className="cust-select" controlId="preferredCountries">
-                                    <div className="select-wrapper">
-                                        <Form.Label>Country</Form.Label>
-                                        <Form.Control
-                                            as="select"
-                                            name="preferredCountries"
-                                            value={filters.preferredCountries}
-                                            onChange={(e: any) => handleFilterChange(e)}
-                                            className="select-custom"
-                                        >
-                                            <option value="">All</option>
-                                            {country?.map((item: any) => (
-                                                <option value={item.value} key={item.value}>
-                                                    {item.label}
-                                                </option>
-                                            ))}
-                                        </Form.Control>
-                                    </div>
-                                </Form.Group>
-
-                                <Form.Group controlId="lead_received_date" className="cust-date">
-                                    <Form.Label>Lead Received Date</Form.Label>
-                                    <Form.Control
-                                        type="date"
-                                        name="lead_received_date"
-                                        value={filters.lead_received_date}
-                                        onChange={(e: any) => handleFilterChange(e)}
-                                    />
-                                </Form.Group>
-
-                                <Form.Group controlId="followup_date" className="cust-date">
-                                    <Form.Label>Followup Date</Form.Label>
-                                    <Form.Control
-                                        type="date"
-                                        name="followup_date"
-                                        value={filters.followup_date}
-                                        onChange={(e: any) => handleFilterChange(e)}
-                                    />
-                                </Form.Group>
-
-
-                                <Form.Group className="">
-                                    <Button style={{ margin: "auto" }} onClick={handleClear}>Clear</Button>
-                                </Form.Group>
-
-
-                            </div>
                             {userRole == 4 ? <Table
                                 columns={columns}
                                 data={records ? records : []}

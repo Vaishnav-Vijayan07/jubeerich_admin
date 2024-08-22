@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
 import Select from "react-select";
-import { AUTH_SESSION_KEY } from "../../constants";
+import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { getUniversity } from "../../redux/University/actions";
 import {
   addProgram,
@@ -197,48 +197,48 @@ const BasicInputElements = withSwal((props: any) => {
       // Validation passed, handle form submission
 
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          if (isUpdate) {
-            // Handle update logic
-            dispatch(
-              updateProgram(
-                formData.id,
-                formData.program_name,
-                formData.university_id,
-                formData.degree_level,
-                formData.duration,
-                formData.tuition_fees,
-                formData.currency
-              )
-            );
-            setIsUpdate(false);
-          } else {
-            // Handle add logic
-            dispatch(
-              addProgram(
-                formData.program_name,
-                formData.university_id,
-                formData.degree_level,
-                formData.duration,
-                formData.tuition_fees,
-                formData.currency
-              )
-            );
+        .fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: `Yes, ${isUpdate ? 'Update' : 'Create'}`,
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            if (isUpdate) {
+              // Handle update logic
+              dispatch(
+                updateProgram(
+                  formData.id,
+                  formData.program_name,
+                  formData.university_id,
+                  formData.degree_level,
+                  formData.duration,
+                  formData.tuition_fees,
+                  formData.currency
+                )
+              );
+              setIsUpdate(false);
+            } else {
+              // Handle add logic
+              dispatch(
+                addProgram(
+                  formData.program_name,
+                  formData.university_id,
+                  formData.degree_level,
+                  formData.duration,
+                  formData.tuition_fees,
+                  formData.currency
+                )
+              );
+            }
           }
-        }
-      }).catch((err: any)=>{
-        console.log(err);
-      })
+        }).catch((err: any) => {
+          console.log(err);
+        })
 
       // if (isUpdate) {
       //   // Handle update logic
@@ -419,6 +419,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="university_id">
                 <Form.Label>University</Form.Label>
                 <Select
+                  styles={customStyles}
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="university_id"
@@ -535,7 +536,7 @@ const BasicInputElements = withSwal((props: any) => {
                 onClick={() =>
                   isUpdate
                     ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(),handleResetValues()]
+                    : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}

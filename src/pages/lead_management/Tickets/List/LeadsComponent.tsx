@@ -16,6 +16,7 @@ import axios from "axios";
 import { APICore } from "../../../../helpers/api/apiCore";
 import DatePicker from "react-datepicker";
 import moment from "moment";
+import { customStyles } from "../../../../constants";
 
 // Function to convert country data
 const convertCountryData = () => {
@@ -481,6 +482,7 @@ const LeadCompontents = withSwal((props: any) => {
                       <Form.Group controlId="country">
                         <Form.Label>Country</Form.Label>
                         <Select
+                          styles={customStyles}
                           className="react-select react-select-container"
                           name="country"
                           classNamePrefix="react-select"
@@ -499,6 +501,7 @@ const LeadCompontents = withSwal((props: any) => {
                       <Form.Group controlId="flag_id">
                         <Form.Label>Flags</Form.Label>
                         <Select
+                          styles={customStyles}
                           className="react-select react-select-container"
                           name="flag_id"
                           classNamePrefix="react-select"
@@ -519,6 +522,7 @@ const LeadCompontents = withSwal((props: any) => {
                       <Form.Group controlId="category_id">
                         <Form.Label>Category</Form.Label>
                         <Select
+                          styles={customStyles}
                           className="react-select react-select-container"
                           name="category_id"
                           classNamePrefix="react-select"
@@ -539,6 +543,7 @@ const LeadCompontents = withSwal((props: any) => {
                           Source <span className="text-danger">*</span>
                         </Form.Label>
                         <Select
+                          styles={customStyles}
                           className="react-select react-select-container"
                           classNamePrefix="react-select"
                           name="source_id"
@@ -561,6 +566,7 @@ const LeadCompontents = withSwal((props: any) => {
                           Channel <span className="text-danger">*</span>
                         </Form.Label>
                         <Select
+                          styles={customStyles}
                           className="react-select react-select-container"
                           name="channel_id"
                           classNamePrefix="react-select"
@@ -579,6 +585,7 @@ const LeadCompontents = withSwal((props: any) => {
                       <Form.Group controlId="user_id">
                         <Form.Label>Users</Form.Label>
                         <Select
+                          styles={customStyles}
                           className="react-select react-select-container"
                           name="user_id"
                           classNamePrefix="react-select"

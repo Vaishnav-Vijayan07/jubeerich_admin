@@ -29,7 +29,7 @@ import {
   updateChannel,
 } from "../../redux/actions";
 import Select from "react-select";
-import { AUTH_SESSION_KEY } from "../../constants";
+import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import {
   addRegion,
   deleteRegion,
@@ -193,45 +193,45 @@ const BasicInputElements = withSwal((props: any) => {
       // Validation passed, handle form submission
 
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          if (userInfo) {
-            const { user_id } = JSON.parse(userInfo);
-            if (isUpdate) {
-              // Handle update logic
-              dispatch(
-                updateRegion(
-                  formData.id,
-                  formData.region_name,
-                  formData.region_description,
-                  formData.regional_manager_id,
-                  user_id
-                )
-              );
-              setIsUpdate(false);
-            } else {
-              // Handle add logic
-              dispatch(
-                addRegion(
-                  formData.region_name,
-                  formData.region_description,
-                  formData.regional_manager_id,
-                  user_id
-                )
-              );
+        .fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: `Yes, ${isUpdate ? 'Update' : 'Create'}`,
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            if (userInfo) {
+              const { user_id } = JSON.parse(userInfo);
+              if (isUpdate) {
+                // Handle update logic
+                dispatch(
+                  updateRegion(
+                    formData.id,
+                    formData.region_name,
+                    formData.region_description,
+                    formData.regional_manager_id,
+                    user_id
+                  )
+                );
+                setIsUpdate(false);
+              } else {
+                // Handle add logic
+                dispatch(
+                  addRegion(
+                    formData.region_name,
+                    formData.region_description,
+                    formData.regional_manager_id,
+                    user_id
+                  )
+                );
+              }
             }
           }
-        }
-      });
+        });
 
       // if (userInfo) {
       //   const { user_id } = JSON.parse(userInfo);
@@ -423,6 +423,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="source_id">
                 <Form.Label>Regional Manger</Form.Label>
                 <Select
+                  styles={customStyles}
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="regional_manager_id"

@@ -16,7 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { addCampaign, deleteCampaign, getCampaign, getChannel, updateCampaign } from "../../redux/actions";
 import Select from "react-select";
-import { AUTH_SESSION_KEY } from "../../constants";
+import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { Link } from "react-router-dom";
 
 interface TableRecords {
@@ -322,6 +322,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="channel_id">
                 <Form.Label>Channel</Form.Label>
                 <Select
+                  styles={customStyles}
                   className="react-select react-select-container"
                   name="channel_id"
                   classNamePrefix="react-select"

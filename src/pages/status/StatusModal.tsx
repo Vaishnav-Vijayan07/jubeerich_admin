@@ -12,7 +12,7 @@ import { addStatus, deleteStatus, getStatus, updateStatus } from "../../redux/ac
 import Select from "react-select";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import { AUTH_SESSION_KEY } from "../../constants";
+import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 
 interface modalType {
   modal: boolean;
@@ -390,6 +390,7 @@ const StatusModal = ({ modal, setModal }: modalType) => {
               <Form.Group className="mb-3" controlId="status_type">
                 <Form.Label>Priority</Form.Label>
                 <Select
+                  styles={customStyles}
                   className="react-select react-select-container"
                   name="status_type"
                   classNamePrefix="react-select"
@@ -404,6 +405,7 @@ const StatusModal = ({ modal, setModal }: modalType) => {
               <Form.Group className="mb-3" controlId="is_substatus">
                 <Form.Label>Status Type</Form.Label>
                 <Select
+                  styles={customStyles}
                   className="react-select react-select-container"
                   name="is_substatus"
                   classNamePrefix="react-select"
