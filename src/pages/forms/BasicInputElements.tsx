@@ -144,7 +144,8 @@ const BasicInputElements = withSwal((props: any) => {
         loading,
         counsellors,
         userData,
-        region
+        region,
+        regionData
     } = props;
 
     //State for handling update function
@@ -1298,7 +1299,7 @@ const BasicInputElements = withSwal((props: any) => {
                                             className="react-select react-select-container"
                                             classNamePrefix="react-select"
                                             name="region_id"
-                                            options={[{ value: null, label: "None" }, ...region]}
+                                            options={[{ value: null, label: "None" }, ...regionData]}
                                             value={selectedRegion}
                                             onChange={handleDropDowns}
                                         />
@@ -1338,6 +1339,8 @@ const BasicInputElements = withSwal((props: any) => {
                                     </Form.Group>
                                 </Col>
                             </Row>
+
+                            {console.log("region =====>", region)}
 
                             <Row>
                                 {selectExam && languageForm.map((data, index) => (

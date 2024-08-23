@@ -171,6 +171,9 @@ const Leads = () => {
     }));
   }, [users]);
 
+  console.log("regionData ==>", regionData);
+  
+
   if (initialLoading) {
     return (
       <Spinner
@@ -206,6 +209,7 @@ const Leads = () => {
             counsellors={counsellors}
             userData={userData}
             region={regionData}
+            regionData={regionData}
           />
         </Col>
       </Row>
