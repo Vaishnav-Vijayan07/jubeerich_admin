@@ -533,7 +533,7 @@ const BasicInputElements = withSwal((props: any) => {
                                         formData.remarks,
                                         formData.lead_received_date,
                                         formData.ielts,
-                                        JSON.stringify(exam_details),
+                                        exam_details[0]?.exam_name ? JSON.stringify(exam_details) : null,
                                         selectedFile
                                     )
                                 );
@@ -559,8 +559,9 @@ const BasicInputElements = withSwal((props: any) => {
                                         user_id,
                                         formData.remarks,
                                         formData.lead_received_date,
+                                        // formData.ielts,
                                         formData.ielts,
-                                        JSON.stringify(exam_details),
+                                        exam_details[0]?.exam_name ? JSON.stringify(exam_details) : null,
                                         selectedFile
                                     )
                                 );
@@ -921,7 +922,6 @@ const BasicInputElements = withSwal((props: any) => {
     ) => {
         if (Array.isArray(selectedOptions)) {
             setSelectedCountry(selectedOptions);
-            // const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
             const selectedIdsArray = selectedOptions?.map((option) => parseInt(option.value));
             setFormData((prev: any) => ({
                 ...prev,
@@ -942,11 +942,41 @@ const BasicInputElements = withSwal((props: any) => {
         setLanguageForm(newFields);
     }
 
-    const handleRemoveLanguageForm = (index: number, e: any) => {
-        const removeFields = languageForm.filter((data: any, i: number) => i !== index);
-        const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
-        setLanguageForm(removeFields);
-        setSelectedFile(removeFiles);
+    const handleRemoveLanguageForm = async(index: number, e: any, exam_name: string) => {
+        const payload = {
+            id: formData?.id,
+            exam_name: exam_name
+        }
+        console.log('PAYLOAD', payload);
+
+        try {
+            swal.fire({
+                title: "Are you sure?",
+                text: "This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Delete",
+            })
+            .then((result: any)=>{
+                if(result.isConfirmed){
+                    axios.delete('/exams', { data: payload }).then((res: any)=> {
+                        const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+                        const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
+                        setLanguageForm(removeFields);
+                        setSelectedFile(removeFiles);
+                        showSuccessAlert(res.data.message);
+                    }).catch((err: any)=>{
+                        console.log(err);
+                        showErrorAlert("Error occured");
+                    })
+                }   
+            })
+        } catch (error) {
+            console.log(error);
+        }
+        
     }
 
     const handleFileChange = (index: number, e: any) => {
@@ -1194,7 +1224,6 @@ const BasicInputElements = withSwal((props: any) => {
                                                     id="active-switch"
                                                     name="ielts"
                                                     onClick={() => setSelectExam(true)}
-                                                    // checked={formData.ielts}
                                                     checked={selectExam}
                                                 />
                                                 <span className="ps-1 fw-bold">Yes</span>
@@ -1205,7 +1234,6 @@ const BasicInputElements = withSwal((props: any) => {
                                                     id="active-switch"
                                                     name="ielts"
                                                     onClick={() => setSelectExam(false)}
-                                                    // checked={!formData.ielts}
                                                     checked={!selectExam}
                                                 />
                                                 <span className="ps-1 fw-bold">No</span>
@@ -1225,7 +1253,6 @@ const BasicInputElements = withSwal((props: any) => {
                                                     aria-label="Default select example"
                                                     name="exam_name"
                                                     value={data.exam_name}
-                                                    // disabled={isUpdate}
                                                     onChange={(e) => handleLanguageInputChange(index, e)}
                                                 >
                                                     <option value="">
@@ -1251,7 +1278,6 @@ const BasicInputElements = withSwal((props: any) => {
                                                     type="text"
                                                     name="marks"
                                                     value={data.marks}
-                                                    // disabled={isUpdate}
                                                     onChange={(e) => {
                                                         handleLanguageInputChange(index, e)
                                                     }}
@@ -1264,17 +1290,15 @@ const BasicInputElements = withSwal((props: any) => {
                                                 <Form.Group className="mb-3" controlId="profileImage">
                                                     <Form.Label>Upload File</Form.Label>
                                                     <Form.Control name="exam_documents" type="file" onChange={(event) => { handleFileChange(index, event) }} ref={fileInputRef} />
-                                                    {/* {selectedFile[index]?.exam_documents && <p style={{ padding: '0%' }} className="mt-2">{selectedFile[index].exam_documents}</p>} */}
                                                     {selectedFileName[index]?.exam_documents && <p style={{ padding: '0%' }} className="mt-2">{selectedFileName[index].exam_documents}</p>}
                                                 </Form.Group>
                                             </Form>
-                                            <i className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
+                                            <i className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e, data.exam_name)}></i>
                                             {selectExam && <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>}
                                         </Col>
                                     </Row>
                                 ))}
                             </Row>
-                            {/* {selectExam && <Button onClick={handleAddLanguageForm}>Add Exam</Button>} */}
                         </Modal.Body>
 
                         <Modal.Footer>

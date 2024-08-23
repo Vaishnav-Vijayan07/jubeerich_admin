@@ -85,6 +85,8 @@ const AcademicInfo = withSwal((props: any) => {
         
         if(res.data?.data?.exam_details.length){
           setSelectExam(true)
+        } else {
+          setSelectExam(false)
         }
 
       })
@@ -211,11 +213,40 @@ const AcademicInfo = withSwal((props: any) => {
     setLanguageForm(newFields);
   }
 
-  const handleRemoveLanguageForm = (index: number, e: any) => {
-    const removeFields = languageForm.filter((data: any, i: number) => i !== index);
-    const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
-    setLanguageForm(removeFields);
-    setSelectedFile(removeFiles);
+  const handleRemoveLanguageForm = (index: number, e: any, exam_name: string) => {
+    const payload = {
+      id: studentId,
+      exam_name: exam_name
+    }
+
+    try {
+      swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Delete",
+    })
+    .then((result: any)=>{
+        if(result.isConfirmed){
+            axios.delete('/exams', { data: payload }).then((res: any)=> {
+                const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+                const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
+                setLanguageForm(removeFields);
+                setSelectedFile(removeFiles);
+                showSuccessAlert(res.data.message);
+            }).catch((err: any)=>{
+                console.log(err);
+                showErrorAlert("Error occured");
+            })
+        }   
+    })
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 
   const handleFileChange = (index: number, e: any) => {
@@ -431,9 +462,10 @@ const AcademicInfo = withSwal((props: any) => {
               </div>
             </Form.Group>
           </Col>
-
+            {console.log(languageForm)
+            }
           <Row>
-            {selectExam && languageForm.map((data, index) => (
+            {selectExam && languageForm?.map((data, index) => (
               <Row key={index}>
                 {/* <Col md={4} lg={4}> */}
                 <Col md={3} lg={3}>
@@ -442,7 +474,7 @@ const AcademicInfo = withSwal((props: any) => {
                     <Form.Select
                       aria-label="Default select example"
                       name="exam_name"
-                      value={data.exam_name}
+                      value={data?.exam_name}
                       onChange={(e) => handleLanguageInputChange(index, e)}
                     >
                       <option value="">
@@ -453,9 +485,8 @@ const AcademicInfo = withSwal((props: any) => {
                           value={item?.name}
                           key={item?.name}
                           onClick={(e) => handleLanguageInputChange(index, e)}
-                          // defaultValue={item.name === formData.exam ? item.name : undefined}
                         >
-                          {item.name}
+                          {item?.name}
                         </option>
                       ))}
                     </Form.Select>
@@ -468,7 +499,7 @@ const AcademicInfo = withSwal((props: any) => {
                     <Form.Control
                       type="text"
                       name="marks"
-                      value={data.marks}
+                      value={data?.marks}
                       onChange={(e) => {
                         handleLanguageInputChange(index, e)
                       }}
@@ -481,32 +512,17 @@ const AcademicInfo = withSwal((props: any) => {
                     <Form.Group className="mb-3" controlId="profileImage">
                       <Form.Label>Upload File</Form.Label>
                       <Form.Control name="exam_documents" type="file" onChange={(event) => handleFileChange(index, event)} ref={fileInputRef} />
-                      {/* {selectedFile[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{selectedFile[index].exam_documents}</p>} */}
-                      {selectedFileName[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{selectedFileName[index].exam_documents}</p>}
+                      {/* {selectedFileName.length && selectedFileName[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{selectedFileName.length && selectedFileName[index].exam_documents}</p>} */}
                     </Form.Group>
                   </Form>
                   <div className="mt-3 pt-1 d-flex">
-                    <i className="mdi mdi-delete-outline fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e)}></i>
+                    <i className="mdi mdi-delete-outline fs-3 ps-1" onClick={(e) => handleRemoveLanguageForm(index, e, data?.exam_name)}></i>
                     {selectExam && <i className="mdi mdi-plus-circle-outline fs-3 ps-1" onClick={handleAddLanguageForm}></i>}
                   </div>
                 </Col>
               </Row>
             ))}
           </Row>
-
-          {/* <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="years">
-              <Form.Label>Years</Form.Label>
-              <FormInput
-                type="text"
-                name="years"
-                placeholder="Enter years"
-                key="years"
-                value={formData?.years}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-          </Col> */}
 
           <Button variant="primary" className="mt-4" type="submit" onClick={saveStudentAcademicInfo} disabled={loading}>
             Save Details
