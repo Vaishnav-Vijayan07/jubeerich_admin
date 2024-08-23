@@ -513,9 +513,7 @@ const BasicInputElements = withSwal((props: any) => {
         let exam_details = languageForm.length ? languageForm : [];
 
         console.log('Form Data',formData);
-        console.log('REGION', selectedRegion);
-        
-        
+
         // Validate the form using yup
         try {
             await validationSchema.validate(formData, { abortEarly: false });
@@ -550,7 +548,7 @@ const BasicInputElements = withSwal((props: any) => {
                                         JSON.stringify(formData.preferred_country),
                                         formData.office_type,
                                         // null, // Region Nulled
-                                        formData.region_id,
+                                        formData.region_id ? formData.region_id : null,
                                         null,
                                         null,
                                         user_id,
@@ -579,7 +577,7 @@ const BasicInputElements = withSwal((props: any) => {
                                         JSON.stringify(formData.preferred_country),
                                         formData.office_type,
                                         // null, // Region Nulled
-                                        formData.region_id,
+                                        formData.region_id ? formData.region_id : null,
                                         null,
                                         null,
                                         user_id,
