@@ -25,6 +25,7 @@ import { getCountry } from "../../redux/country/actions";
 import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
+import { getRegion } from "../../redux/regions/actions";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -48,7 +49,8 @@ const Leads = () => {
     channels,
     office,
     status,
-    users
+    users,
+    region
   } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     state: state.Leads.leads,
@@ -63,6 +65,7 @@ const Leads = () => {
     office: state.OfficeTypes.officeTypes,
     status: state.Status.status.data,
     users: state.Users.adminUsers,
+    region: state.Region.regions
   }));
 
   useEffect(() => {
@@ -73,8 +76,12 @@ const Leads = () => {
     dispatch(getSource());
     dispatch(getStatus());
     dispatch(getOfficeTypeData());
+    dispatch(getRegion());
     fetchAllCounsellors()
   }, [dispatch]);
+
+  console.log('Region From Lead', region);
+  
 
   useEffect(() => {
     if (userRole == 4) {
@@ -156,6 +163,14 @@ const Leads = () => {
     }));
   }, [users]);
 
+  const regionData = useMemo(() => {
+    if (!region) return [];
+    return region?.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.region_name,
+    }));
+  }, [users]);
+
   if (initialLoading) {
     return (
       <Spinner
@@ -190,6 +205,7 @@ const Leads = () => {
             status={statusData || []}
             counsellors={counsellors}
             userData={userData}
+            region={regionData}
           />
         </Col>
       </Row>

@@ -27,6 +27,7 @@ import Select, { ActionMeta, OptionsType } from "react-select";
 import {
     AUTH_SESSION_KEY,
     customStyles,
+    region_id,
     showErrorAlert,
     showSuccessAlert,
 } from "../../constants";
@@ -88,7 +89,9 @@ const initialState = {
     lead_received_date: new Date().toISOString().split("T")[0],
     ielts: true,
     exam: "",
-    zipcode: ""
+    zipcode: "",
+    region_id: "",
+
 };
 
 const initialValidationState = {
@@ -108,7 +111,8 @@ const initialValidationState = {
     remarks: "",
     lead_received_date: "",
     ielts: true,
-    zipcode: ""
+    zipcode: "",
+    region_id: "",
 };
 
 const languageFormInitialState = [
@@ -139,7 +143,8 @@ const BasicInputElements = withSwal((props: any) => {
         error,
         loading,
         counsellors,
-        userData
+        userData,
+        region
     } = props;
 
     //State for handling update function
@@ -160,6 +165,8 @@ const BasicInputElements = withSwal((props: any) => {
     const [selectedAssignedBy, setSelectedAssignedBy] = useState<any>(null);
     const [selectedCounsellor, setSelectedCounsellor] = useState<any>(null);
     const [selectedCountryFilter, setSelectedCountryFilter] = useState<any>(null);
+    const [activeRegion, setActiveRegion] = useState<any>(null);
+    const [selectedRegion, setSelectedRegion] = useState(null)
 
 
     const [className, setClassName] = useState<string>("");
@@ -346,6 +353,10 @@ const BasicInputElements = withSwal((props: any) => {
         const updatedOffice = office?.filter(
             (office: any) => office.value == item.office_type
         );
+        const updatedRegion = region?.filter(
+            (region: any) => region.value == item.region_id
+        );
+
         // const updatedCountry = country?.filter(
         //   (country: any) => country.value == item.preferred_country
         // );
@@ -363,9 +374,12 @@ const BasicInputElements = withSwal((props: any) => {
 
         const countryArray = item?.preferredCountries?.map((country: any) => (country?.id));
 
+        console.log('Updated Region', updatedRegion);
+
         // const prefferedCountryIds = item?.preffered_country?.map
         setSelectedSource(updatedSource[0]);
         setSelectedOffice(updatedOffice[0]);
+        setSelectedRegion(updatedRegion[0]);
         setSelectedCountry(updatedCountry);
         setSelectedCategory(updatedCtegory[0]);
         setSelectedChannel(updatedChannels[0]);
@@ -390,7 +404,8 @@ const BasicInputElements = withSwal((props: any) => {
             lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
             ielts: item?.ielts || false,
             exam: item?.exam || "",
-            zipcode: item?.zipcode
+            zipcode: item?.zipcode,
+            region_id: item?.region_id || "",
         }));
 
         setIsUpdate(true);
@@ -483,6 +498,9 @@ const BasicInputElements = withSwal((props: any) => {
             case "channel_id":
                 setSelectedChannel(selected);
                 break;
+            case "region_id":
+                setSelectedRegion(selected);
+                break;                
             default:
                 break;
         }
@@ -495,6 +513,8 @@ const BasicInputElements = withSwal((props: any) => {
         let exam_details = languageForm.length ? languageForm : [];
 
         console.log('Form Data',formData);
+        console.log('REGION', selectedRegion);
+        
         
         // Validate the form using yup
         try {
@@ -529,7 +549,8 @@ const BasicInputElements = withSwal((props: any) => {
                                         // formData.preferred_country,
                                         JSON.stringify(formData.preferred_country),
                                         formData.office_type,
-                                        null,
+                                        // null, // Region Nulled
+                                        formData.region_id,
                                         null,
                                         null,
                                         user_id,
@@ -557,7 +578,8 @@ const BasicInputElements = withSwal((props: any) => {
                                         // formData.preferred_country,
                                         JSON.stringify(formData.preferred_country),
                                         formData.office_type,
-                                        null,
+                                        // null, // Region Nulled
+                                        formData.region_id,
                                         null,
                                         null,
                                         user_id,
@@ -763,6 +785,7 @@ const BasicInputElements = withSwal((props: any) => {
         setSelectedCategory(null);
         setSelectedChannel(null);
         setSelectedOffice(null);
+        setSelectedRegion(null);
         setSelectedSource(null);
         setLanguageForm(languageFormInitialState)
         setSelectedFile([])
@@ -999,6 +1022,16 @@ const BasicInputElements = withSwal((props: any) => {
 
     }
 
+    useEffect(() => {
+        if(selectedOffice?.value == region_id){
+            setActiveRegion(true);
+        } else {
+            setActiveRegion(false);
+            setSelectedRegion(null);
+        }
+    }, [selectedOffice])
+    
+
 
     return (
         <>
@@ -1034,6 +1067,7 @@ const BasicInputElements = withSwal((props: any) => {
                                         )}
                                     </Form.Group>
                                 </Col>
+
                                 <Col md={4} lg={4}>
                                     <Form.Group className="mb-3" controlId="channel_name">
                                         <Form.Label><span className="text-danger fs-4">* </span>Email</Form.Label>
@@ -1087,6 +1121,7 @@ const BasicInputElements = withSwal((props: any) => {
                                         )}
                                     </Form.Group>
                                 </Col>
+
                                 <Col md={4} lg={4}>
                                     <Form.Group className="mb-3" controlId="channel_name">
                                         <Form.Label>Category</Form.Label>
@@ -1126,7 +1161,8 @@ const BasicInputElements = withSwal((props: any) => {
                                         )}
                                     </Form.Group>
                                 </Col>
-                                <Col md={4} lg={4}>
+
+                                {/* <Col md={4} lg={4}>
                                     <Form.Group className="mb-3" controlId="channel_name">
                                         <Form.Label><span className="text-danger fs-4">* </span>Office Type</Form.Label>
                                         <Select
@@ -1144,7 +1180,8 @@ const BasicInputElements = withSwal((props: any) => {
                                             </Form.Text>
                                         )}
                                     </Form.Group>
-                                </Col>
+                                </Col> */}
+
                                 <Col md={4} lg={4}>
                                     <Form.Group className="mb-3" controlId="channel_name">
                                         <Form.Label>Country</Form.Label>
@@ -1236,6 +1273,46 @@ const BasicInputElements = withSwal((props: any) => {
                                 </Col>
 
                                 <Col md={4} lg={4}>
+                                    <Form.Group className="mb-3" controlId="channel_name">
+                                        <Form.Label><span className="text-danger fs-4">* </span>Office Type</Form.Label>
+                                        <Select
+                                            styles={customStyles}
+                                            className="react-select react-select-container"
+                                            classNamePrefix="react-select"
+                                            name="office_type"
+                                            options={[{ value: null, label: "None" }, ...office]}
+                                            value={selectedOffice}
+                                            onChange={handleDropDowns}
+                                        />
+                                        {validationErrors.office_type && (
+                                            <Form.Text className="text-danger">
+                                                {validationErrors.office_type}
+                                            </Form.Text>
+                                        )}
+                                    </Form.Group>
+                                </Col>
+
+                                { activeRegion && <Col md={4} lg={4}>
+                                    <Form.Group className="mb-3" controlId="region_id">
+                                        <Form.Label><span className="text-danger fs-4">* </span>Region</Form.Label>
+                                        <Select
+                                            styles={customStyles}
+                                            className="react-select react-select-container"
+                                            classNamePrefix="react-select"
+                                            name="region_id"
+                                            options={[{ value: null, label: "None" }, ...region]}
+                                            value={selectedRegion}
+                                            onChange={handleDropDowns}
+                                        />
+                                        {validationErrors.region_id && (
+                                            <Form.Text className="text-danger">
+                                                {validationErrors.region_id}
+                                            </Form.Text>
+                                        )}
+                                    </Form.Group>
+                                </Col>}
+
+                                <Col md={4} lg={4} className="mt-2">
                                     <Form.Group className="mb-3" controlId="source_id">
                                         <Form.Label>Have you ever participated in any language exams ?</Form.Label>
                                         <div className="d-flex justify-content-start align-items-center mt-1">
