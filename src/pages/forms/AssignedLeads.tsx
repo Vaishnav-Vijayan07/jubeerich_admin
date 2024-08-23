@@ -350,81 +350,81 @@ const BasicInputElements = withSwal((props: any) => {
     console.log(formData);
 
     // Validate the form using yup
-    // try {
-    //   // await validationSchema.validate(formData, { abortEarly: false });
+    try {
+      // await validationSchema.validate(formData, { abortEarly: false });
 
-    //   //   // Validation passed, handle form submission
+      //   // Validation passed, handle form submission
 
-    //   if (user) {
-    //     const { user_id } = user;
-    //     if (isUpdate) {
-    //       // Handle update logic
-    //       dispatch(
-    //         updateLeads(
-    //           formData?.id,
-    //           formData.full_name,
-    //           formData.email,
-    //           formData.phone,
-    //           formData.category_id,
-    //           formData.source_id,
-    //           formData.channel_id,
-    //           formData.city,
-    //           formData.preferred_country,
-    //           formData.office_type,
-    //           null,
-    //           null,
-    //           null,
-    //           user_id,
-    //           formData.remarks,
-    //           formData.lead_received_date,
-    //           formData.ielts,
-    //           formData.zipcode
-    //         )
-    //       );
-    //       setIsUpdate(false);
-    //     } else {
-    //       // Handle add logic
-    //       console.log("here leads");
+      if (user) {
+        const { user_id } = user;
+        if (isUpdate) {
+          // Handle update logic
+          dispatch(
+            updateLeads(
+              formData?.id,
+              formData.full_name,
+              formData.email,
+              formData.phone,
+              formData.category_id,
+              formData.source_id,
+              formData.channel_id,
+              formData.city,
+              formData.preferred_country,
+              formData.office_type,
+              null,
+              null,
+              null,
+              user_id,
+              formData.remarks,
+              formData.lead_received_date,
+              formData.ielts,
+              formData.zipcode
+            )
+          );
+          setIsUpdate(false);
+        } else {
+          // Handle add logic
+          console.log("here leads");
 
-    //       dispatch(
-    //         addLeads(
-    //           formData.full_name,
-    //           formData.email,
-    //           formData.phone,
-    //           formData.category_id,
-    //           formData.source_id,
-    //           formData.channel_id,
-    //           formData.city,
-    //           formData.preferred_country,
-    //           formData.office_type,
-    //           null,
-    //           null,
-    //           null,
-    //           user_id,
-    //           formData.remarks,
-    //           formData.lead_received_date,
-    //           formData.ielts,
-    //           formData.zipcode
-    //         )
-    //       );
-    //     }
-    //   }
+          dispatch(
+            addLeads(
+              formData.full_name,
+              formData.email,
+              formData.phone,
+              formData.category_id,
+              formData.source_id,
+              formData.channel_id,
+              formData.city,
+              formData.preferred_country,
+              formData.office_type,
+              null,
+              null,
+              null,
+              user_id,
+              formData.remarks,
+              formData.lead_received_date,
+              formData.ielts,
+              formData.zipcode
+            )
+          );
+        }
+      }
 
-    //   //   // ... Rest of the form submission logic ...
-    // } catch (validationError) {
-    //   // Handle validation errors
-    //   console.log("throw");
+      //   // ... Rest of the form submission logic ...
+    } catch (validationError) {
+      // Handle validation errors
+      console.log("throw");
 
-    //   if (validationError instanceof yup.ValidationError) {
-    //     const errors: any = {};
-    //     validationError.inner.forEach((error) => {
-    //       if (error.path) {
-    //         errors[error.path] = error.message;
-    //       }
-    //     });
-    //     setValidationErrors(errors);
-    //   }
-    // }
+      if (validationError instanceof yup.ValidationError) {
+        const errors: any = {};
+        validationError.inner.forEach((error) => {
+          if (error.path) {
+            errors[error.path] = error.message;
+          }
+        });
+        setValidationErrors(errors);
+      }
+    }
   };
 
   const columns = [
