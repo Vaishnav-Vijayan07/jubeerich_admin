@@ -12,6 +12,7 @@ export const meeting_to_be_scheduled_id = "53";
 export const meeting_scheduled_id = "37";
 export const spam_id = "45";
 export const lost_id = "44";
+export const region_id = "4";
 
 //session user
 export const AUTH_SESSION_KEY = "jb_user";
