@@ -14,6 +14,7 @@ export const spam_id = "45";
 export const lost_id = "44";
 export const region_id = "4"
 
+
 //session user
 export const AUTH_SESSION_KEY = "jb_user";
 
