@@ -726,9 +726,10 @@ const BasicInputElements = withSwal((props: any) => {
     }
 
     if (filters.counsiler_id) {
-      filteredData = filteredData.filter((data: any) =>
-        data.counselors.some((counselor: any) => counselor.id == filters.counsiler_id)
-      );
+      filteredData = filteredData.filter((data: any) => data.counsiler_id == filters.counsiler_id);
+      // filteredData = filteredData.filter((data: any) =>
+      //   data.counselors.some((counselor: any) => counselor.id == filters.counsiler_id)
+      // );
     }
 
     if (filters.preferredCountries) {
@@ -755,14 +756,6 @@ const BasicInputElements = withSwal((props: any) => {
 
     setTableData(filteredData);
   };
-
-  // ----- OWN ----- //
-  // const handleFilterChange = (e: any) => {
-  //   const { name, value } = e.target;
-  //   setFilters((prev)=>({
-  //     ...prev, [name] : value
-  //   }))
-  // }
 
   const handleFilterChange = (selected: any, { name }: any) => {
 
@@ -793,52 +786,36 @@ const BasicInputElements = withSwal((props: any) => {
         default:
             break;
       }
-};
-
-  // const clearFilters = () => {
-  //   // dispatch(getLead());
-  //   setTableData(state);
-  //   setFilters({
-  //     source: '',
-  //     city: '',
-  //     CRE: '',
-  //     counsiler_id: '',
-  //     status_id: '',
-  //     preferredCountries: '',
-  //     updated_by: '',
-  //     lead_received_date: '',
-  //     followup_date: '',
-  //   })
-  // }
+  };
 
   const handleFilterDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
 
     setFilters(prevFilters => ({
-        ...prevFilters,
-        [name]: value,
+      ...prevFilters,
+      [name]: value,
     }));
-};
+  };
 
-const handleClear = () => {
-  setFilters({
-    source: '',
-    city: '',
-    CRE: '',
-    counsiler_id: '',
-    status_id: '',
-    preferredCountries: '',
-    updated_by: '',
-    lead_received_date: '',
-    followup_date: '',
-  })
+  const handleClear = () => {
+    setFilters({
+      source: '',
+      city: '',
+      CRE: '',
+      counsiler_id: '',
+      status_id: '',
+      preferredCountries: '',
+      updated_by: '',
+      lead_received_date: '',
+      followup_date: '',
+    })
     setSelectedStatus(null);
     setSelectedSourceFilter(null);
     setSelectedAssignedBy(null);
     setSelectedCounsellor(null);
     setSelectedCountryFilter(null);
     setSelectedCREFilter(null)
-}
+  }
 
   return (
     <>
@@ -1305,150 +1282,6 @@ const handleClear = () => {
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
               <div className="d-flex flex-wrap justify-content-end">
-                {/* <Form.Group className="cust-select ps-2 pt-2" controlId="status_id">
-                  <div className="select-wrapper">
-                    <Form.Label>Status</Form.Label>
-                    <Form.Control
-                      as="select"
-                      name="status_id"
-                      value={filters.status_id}
-                      onChange={(e: any) => handleFilterChange(e)}
-                      className="select-custom"
-                    >
-                      <option value="">All</option>
-                      {status?.map((item: any) => (
-                        <option value={item.value} key={item.value}>
-                          {item.label}
-                        </option>
-                      ))}
-                    </Form.Control>
-                  </div>
-                </Form.Group>
-
-                <Form.Group className="cust-select ps-2 pt-2" controlId="updated_by">
-                  <div className="select-wrapper">
-                    <Form.Label>Assigned By</Form.Label>
-                    <Form.Control
-                      as="select"
-                      name="updated_by"
-                      value={filters.updated_by}
-                      onChange={(e: any) => handleFilterChange(e)}
-                      className="select-custom"
-                    >
-                      <option value="">All</option>
-                      {userData?.map((item: any) => (
-                        <option value={item.value} key={item.value}>
-                          {item.label}
-                        </option>
-                      ))}
-                    </Form.Control>
-                  </div>
-                </Form.Group>
-
-                <Form.Group className="cust-select ps-2 pt-2" controlId="counsiler_id">
-                  <div className="select-wrapper">
-                    <Form.Label>Counsellors</Form.Label>
-                    <Form.Control
-                      as="select"
-                      name="counsiler_id"
-                      value={filters.counsiler_id}
-                      onChange={(e: any) => handleFilterChange(e)}
-                      className="select-custom"
-                    >
-                      <option value="">All</option>
-                      {counsellors?.map((item: any) => (
-                        <option value={item.id} key={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </Form.Control>
-                  </div>
-                </Form.Group>
-
-                <Form.Group className="cust-select ps-2 pt-2" controlId="preferredCountries">
-                  <div className="select-wrapper">
-                    <Form.Label>Country</Form.Label>
-                    <Form.Control
-                      as="select"
-                      name="preferredCountries"
-                      value={filters.preferredCountries}
-                      onChange={(e: any) => handleFilterChange(e)}
-                      className="select-custom"
-                    >
-                      <option value="">All</option>
-                      {country?.map((item: any) => (
-                        <option value={item.value} key={item.value}>
-                          {item.label}
-                        </option>
-                      ))}
-                    </Form.Control>
-                  </div>
-                </Form.Group>
-
-                <Form.Group className="cust-select ps-2 pt-2">
-                  <Form.Label>Source</Form.Label>
-                  <Form.Select
-                    aria-label="Select Filter"
-                    name="source"
-                    value={filters.source}
-                    onChange={(e) => handleFilterChange(e)}
-                  >
-                    <option value="">All</option>
-                    {source && source?.map((data: any) => (
-                      <option
-                        value={data?.value}
-                        key={data?.value}
-                      >
-                        {data?.label}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
-
-                <Form.Group className="cust-select ps-2 pt-2">
-                  <Form.Label>CRE</Form.Label>
-                  <Form.Select
-                    aria-label="Select Filter"
-                    name="CRE"
-                    value={filters.CRE}
-                    onChange={(e) => handleFilterChange(e)}
-                  >
-                    <option value="">All</option>
-                    {cres?.map((data: any) => (
-                      <option
-                        value={data?.id}
-                        key={data?.id}
-                      >
-                        {data?.name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
-
-                <Form.Group controlId="lead_received_date" className="cust-date pt-2 ps-2 pb-2">
-                  <Form.Label>Lead Received Date</Form.Label>
-                  <Form.Control
-                    type="date"
-                    name="lead_received_date"
-                    value={filters.lead_received_date}
-                    onChange={(e: any) => handleFilterChange(e)}
-                  />
-                </Form.Group>
-
-                <Form.Group controlId="followup_date" className="cust-date pt-2 ps-2 pb-2">
-                  <Form.Label>Followup Date</Form.Label>
-                  <Form.Control
-                    type="date"
-                    name="followup_date"
-                    value={filters.followup_date}
-                    onChange={(e: any) => handleFilterChange(e)}
-                  />
-                </Form.Group> */}
-
-                {/* <div style={{paddingTop: '0.4rem'}} className="ms-2 mt-2">
-                  <Button  className="mt-3" onClick={clearFilters} >Reset</Button>
-                </div> */}
-
               </div>
               <Table
                 columns={columns}
@@ -1524,6 +1357,7 @@ const AssignedLeads = () => {
 
   const fetchAllCounsellors = () => {
     axios.get("/get_all_counsellors").then((res) => {
+      console.log('Counsillers', res.data.data);
       setCounsellors(res.data.data)
     }).catch((err) => {
       console.log(err)
@@ -1594,6 +1428,14 @@ const AssignedLeads = () => {
     }));
   }, [users]);
 
+  const counsellorsData = useMemo(() => {
+    if (!users) return [];
+    return users?.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.name,
+    }));
+  }, [users]);
+
   if (initialLoading) {
     return (
       <Spinner
@@ -1622,7 +1464,7 @@ const AssignedLeads = () => {
             user={user || null}
             cres={CREData || []}
             status={statusData || []}
-            counsellors={counsellors || []}
+            counsellors={counsellorsData || []}
             channels={channelsData || []}
             office={officeData || []}
             error={error}
