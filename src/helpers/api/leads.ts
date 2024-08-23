@@ -38,6 +38,7 @@ function addLeads(params: {
   remarks: string;
   lead_received_date: string;
   ielts: boolean;
+  zipcode: string;
   exam_details?: any,
   exam_documents?: any
 }, exam_documents?: any) {
@@ -65,6 +66,7 @@ function updateLeads(
     remarks: string;
     lead_received_date: string;
     ielts: boolean;
+    zipcode: string;
     exam_details?: any,
     // exam_documents?: any
   }, 

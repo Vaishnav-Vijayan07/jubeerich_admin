@@ -48,6 +48,7 @@ interface LeadsData {
     ielts: boolean;
     // exam_details?: any[],
     // exam_documents?: any[]
+    zipcode: any,
     exam_details?: any,
     exam_documents?: any,
     changedFiles: any
@@ -149,6 +150,7 @@ function* addLeads({
     remarks,
     lead_received_date,
     ielts,
+    zipcode,
     exam_details,
     exam_documents
   },
@@ -173,6 +175,7 @@ function* addLeads({
       remarks,
       lead_received_date,
       ielts,
+      zipcode,
       exam_details,
     }, exam_documents);
     const data = response.data.message;
@@ -222,6 +225,7 @@ function* updateLeads({
     remarks,
     lead_received_date,
     ielts,
+    zipcode,
     exam_details,
     exam_documents,
   },
@@ -244,6 +248,7 @@ function* updateLeads({
       remarks,
       lead_received_date,
       ielts,
+      zipcode,
       exam_details,
     }, 
     exam_documents

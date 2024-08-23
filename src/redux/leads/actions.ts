@@ -91,6 +91,7 @@ export const addLeads = (
   remarks: string | null,
   lead_received_date: string | null,
   ielts: boolean,
+  zipcode?: string | null,
   exam_details?: any,
   exam_documents?: any
 ): LeadsActionType => ({
@@ -112,6 +113,7 @@ export const addLeads = (
     remarks,
     lead_received_date,
     ielts,
+    zipcode,
     exam_details,
     exam_documents
   },
@@ -136,6 +138,7 @@ export const updateLeads = (
   remarks: string | null,
   lead_received_date: string | null,
   ielts: boolean,
+  zipcode: string | null,
   exam_details?: any,
   exam_documents?: any,
 ): LeadsActionType => ({
@@ -158,6 +161,7 @@ export const updateLeads = (
     remarks,
     lead_received_date,
     ielts,
+    zipcode,
     exam_details,
     exam_documents,
   },

@@ -87,7 +87,8 @@ const initialState = {
     remarks: "",
     lead_received_date: new Date().toISOString().split("T")[0],
     ielts: true,
-    exam: ""
+    exam: "",
+    zipcode: ""
 };
 
 const initialValidationState = {
@@ -107,6 +108,7 @@ const initialValidationState = {
     remarks: "",
     lead_received_date: "",
     ielts: true,
+    zipcode: ""
 };
 
 const languageFormInitialState = [
@@ -319,6 +321,7 @@ const BasicInputElements = withSwal((props: any) => {
         lead_received_date: yup.date().required("Date is required"),
         ielts: yup.boolean(),
         remarks: yup.string(),
+        zipcode: yup.string().required("Zipcode is required").matches(/^\d+$/, 'Zipcode must be a valid one')
     });
 
     // console.log("isUpdate ======>", isUpdate);
@@ -386,7 +389,8 @@ const BasicInputElements = withSwal((props: any) => {
             remarks: item?.remarks || "",
             lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
             ielts: item?.ielts || false,
-            exam: item?.exam || ""
+            exam: item?.exam || "",
+            zipcode: item?.zipcode
         }));
 
         setIsUpdate(true);
@@ -449,6 +453,8 @@ const BasicInputElements = withSwal((props: any) => {
             }));
             return;
         }
+        console.log('name');
+        
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
@@ -488,11 +494,8 @@ const BasicInputElements = withSwal((props: any) => {
 
         let exam_details = languageForm.length ? languageForm : [];
 
-        console.log('Exam Form',exam_details);
+        console.log('Form Data',formData);
         
-        console.log('Files Seletcted', selectedFile);
-    
-
         // Validate the form using yup
         try {
             await validationSchema.validate(formData, { abortEarly: false });
@@ -533,8 +536,9 @@ const BasicInputElements = withSwal((props: any) => {
                                         formData.remarks,
                                         formData.lead_received_date,
                                         formData.ielts,
+                                        formData.zipcode,
                                         exam_details[0]?.exam_name ? JSON.stringify(exam_details) : null,
-                                        selectedFile
+                                        selectedFile,
                                     )
                                 );
                             } else {
@@ -559,8 +563,8 @@ const BasicInputElements = withSwal((props: any) => {
                                         user_id,
                                         formData.remarks,
                                         formData.lead_received_date,
-                                        // formData.ielts,
                                         formData.ielts,
+                                        formData.zipcode,
                                         exam_details[0]?.exam_name ? JSON.stringify(exam_details) : null,
                                         selectedFile
                                     )
@@ -1179,6 +1183,7 @@ const BasicInputElements = withSwal((props: any) => {
                                         )}
                                     </Form.Group>
                                 </Col>
+                                
                                 <Col md={4} lg={4}>
                                     <Form.Group className="mb-3" controlId="channel_name">
                                         <Form.Label>City</Form.Label>
@@ -1213,6 +1218,22 @@ const BasicInputElements = withSwal((props: any) => {
                                     </Form.Group>
                                 </Col>
 
+                                <Col md={4} lg={4}>
+                                    <Form.Group className="mb-3" controlId="channel_name">
+                                        <Form.Label><span className="text-danger fs-4">* </span>Zipcode</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="zipcode"
+                                            value={formData.zipcode}
+                                            onChange={handleInputChange}
+                                        />
+                                        {validationErrors.zipcode && (
+                                            <Form.Text className="text-danger">
+                                                {validationErrors.zipcode}
+                                            </Form.Text>
+                                        )}
+                                    </Form.Group>
+                                </Col>
 
                                 <Col md={4} lg={4}>
                                     <Form.Group className="mb-3" controlId="source_id">

@@ -83,7 +83,7 @@ const AcademicInfo = withSwal((props: any) => {
           }
         }
         
-        if(res.data?.data?.exam_details.length){
+        if(res.data.data.exam_details?.length){
           setSelectExam(true)
         } else {
           setSelectExam(false)
@@ -131,7 +131,7 @@ const AcademicInfo = withSwal((props: any) => {
       // newFormData.append('backlogs', '0');
       newFormData.append('work_experience', formData?.work_experience.toString());
       newFormData.append('designation', formData?.designation);
-      newFormData.append('exam_details', JSON.stringify(exam_details));
+      newFormData.append('exam_details', exam_details[0].exam_name ? JSON.stringify(exam_details) : '');
 
       selectedFile.forEach((file: any) => {
         newFormData.append(`exam_documents`, file)
@@ -238,7 +238,6 @@ const AcademicInfo = withSwal((props: any) => {
                 setSelectedFile(removeFiles);
                 showSuccessAlert(res.data.message);
             }).catch((err: any)=>{
-                console.log(err);
                 showErrorAlert("Error occured");
             })
         }   
