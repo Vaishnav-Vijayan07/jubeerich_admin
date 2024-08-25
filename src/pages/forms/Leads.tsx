@@ -169,7 +169,7 @@ const Leads = () => {
       value: item.id.toString(),
       label: item.region_name,
     }));
-  }, [users]);
+  }, [region]);
 
   console.log("regionData ==>", regionData);
   

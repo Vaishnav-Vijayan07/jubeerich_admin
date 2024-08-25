@@ -83,7 +83,7 @@ const AcademicInfo = withSwal((props: any) => {
           }
         }
         
-        if(res.data.data.exam_details?.length){
+        if(res.data.data?.exam_details?.length){
           setSelectExam(true)
         } else {
           setSelectExam(false)
@@ -453,6 +453,7 @@ const AcademicInfo = withSwal((props: any) => {
                     type="radio"
                     id="active-switch"
                     name="ielts"
+                    checked={!selectExam}
                     onClick={() => setSelectExam(false)}
                   // checked={!formData.ielts}
                   />
