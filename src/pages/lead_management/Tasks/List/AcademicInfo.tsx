@@ -83,7 +83,7 @@ const AcademicInfo = withSwal((props: any) => {
           }
         }
         
-        if(res.data.data.exam_details?.length){
+        if(res.data.data?.exam_details?.length){
           setSelectExam(true)
         } else {
           setSelectExam(false)
@@ -453,6 +453,7 @@ const AcademicInfo = withSwal((props: any) => {
                     type="radio"
                     id="active-switch"
                     name="ielts"
+                    checked={!selectExam}
                     onClick={() => setSelectExam(false)}
                   // checked={!formData.ielts}
                   />
@@ -510,7 +511,7 @@ const AcademicInfo = withSwal((props: any) => {
                     <Form.Group className="mb-3" controlId="profileImage">
                       <Form.Label>Upload File</Form.Label>
                       <Form.Control name="exam_documents" type="file" onChange={(event) => handleFileChange(index, event)} ref={fileInputRef} />
-                      {selectedFileName.length ? selectedFileName[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{ selectedFileName[index].exam_documents }</p> : ""}
+                      {selectedFileName?.length ? selectedFileName[index]?.exam_documents && <p style={{padding: '0%'}} className="mt-2">{ selectedFileName[index].exam_documents }</p> : ""}
                     </Form.Group>
                   </Form>
                   <div className="mt-3 pt-1 d-flex">

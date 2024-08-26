@@ -411,12 +411,12 @@ const BasicInputElements = withSwal((props: any) => {
 
         setIsUpdate(true);
 
-        if (item?.exam_details.length) {
+        if (item?.exam_details?.length) {
             setSelectExam(true)
             setLanguageForm(item?.exam_details)
         }
 
-        if (item?.exam_documents.length) {
+        if (item?.exam_documents?.length) {
             console.log('File', item?.exam_documents);
 
             // setSelectedFile(item?.exam_documents)
