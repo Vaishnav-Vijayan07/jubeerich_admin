@@ -6,7 +6,7 @@ import { getChannels, addChannels, updateChannels, deleteChannels } from "./mast
 import { addCampaigns, getCampaigns, updateCampaigns, deleteCampaigns } from "./master/campaigns";
 import { addBranches, deleteBranches, getBranches, updateBranches } from "./master/branches";
 import { addAccessRole, deleteAccessRoles, getAccessRoles, updateAccessRole } from "./users/accessRoles";
-import { addAdminUsers, deleteAdminUsers, getAdminUsers, updateAdminUsers } from "./users/adminUsers";
+import { addAdminUsers, deleteAdminUsers, getAdminUsers, updateAdminUsers, getFranchiseCounsellors } from "./users/adminUsers";
 import { getLeads, addLeads, updateLeads, deleteLeads, getLeadUser } from "./leads";
 import { getAllChecklists, getChecklistById, addChecklist, updateChecklist, deleteChecklist } from "./checklist";
 import { addSubStatus, deleteSubStatus, getAllSubStatus, updateSubStatus } from "./subStatus";
@@ -83,5 +83,6 @@ export {
   deletePrograms,
   getPrograms,
   updatePrograms,
-  getStatusConfig
+  getStatusConfig,
+  getFranchiseCounsellors
 };

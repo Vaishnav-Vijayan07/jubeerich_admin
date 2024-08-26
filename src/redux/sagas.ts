@@ -9,6 +9,7 @@ import campaignSaga from "./campaigns/saga";
 import branchesSaga from "./branches/saga";
 import RoleSaga from "./users/roles/saga";
 import UsersSaga from "./users/adminUsers/saga";
+import FranchiseSaga from "./users/franchiseCounsellors/saga";
 import LeadsSaga from "./leads/saga";
 import statusSaga from "./status/saga";
 import ChecklistSaga from "./checklist/saga";
@@ -47,5 +48,6 @@ export default function* rootSaga() {
     SubStatusSaga(),
     HistorySaga(),
     DashboardSaga(),
+    FranchiseSaga()
   ]);
 }

@@ -8,6 +8,9 @@ const baseUrl = "/admin_users";
 function getAdminUsers() {
   return api.get(`${baseUrl}`, {});
 }
+function getFranchiseCounsellors() {
+  return api.get(`get_franchise_counsellors`, {});
+}
 
 function addAdminUsers(params: {
   employee_id: string;
@@ -22,6 +25,7 @@ function addAdminUsers(params: {
   profileImage: File;
   branch_ids: string;
   country_id: any;
+  franchise_id?: string
 }) {
   if (params.country_id == undefined) {
     params.country_id = null;
@@ -45,6 +49,7 @@ function updateAdminUsers(
     profileImage: File;
     branch_ids: string;
     country_id: any;
+    franchise_id?: string
   }
 ) {
   console.log(params.country_id);
@@ -70,4 +75,5 @@ export {
   updateAdminUsers,
   deleteAdminUsers,
   updateBranch,
+  getFranchiseCounsellors
 };

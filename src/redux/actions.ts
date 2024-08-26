@@ -7,6 +7,7 @@ export * from "./campaigns/actions";
 export * from "./branches/actions";
 export * from "./users/roles/actions";
 export * from "./users/adminUsers/actions";
+export * from "./users/franchiseCounsellors/actions";
 export * from "./leads/actions";
 export * from "./status/actions";
 export * from "./checklist/actions";

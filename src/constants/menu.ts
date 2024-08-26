@@ -28,7 +28,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "airplay",
     url: "/dashboard-4",
-    roles: ["Monitor", "Add Lead", "View Task"],
+    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise"],
   },
 
   // { key: "apps", label: "Apps", isTitle: true },
@@ -225,7 +225,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "user_management",
     label: "User Management",
     isTitle: true,
-    roles: ["Monitor"],
+    roles: ["Monitor", "Manage Franchise"],
   },
 
   {
@@ -243,6 +243,14 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "users",
     roles: ["Monitor"],
+  },
+  {
+    key: "counsellor_creation",
+    label: "Counsellor Creation",
+    url: "/user_management/counsellor_creation",
+    isTitle: false,
+    icon: "users",
+    roles: ["Manage Franchise"],
   },
 ];
 

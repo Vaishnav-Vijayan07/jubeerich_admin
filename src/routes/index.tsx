@@ -68,6 +68,7 @@ const CheckLists = React.lazy(() => import("../pages/forms/CheckLists"));
 // users
 const AccessRoles = React.lazy(() => import("../pages/users/AccessRoles"));
 const AdminUsers = React.lazy(() => import("../pages/users/AdminUsers"));
+const FranchiseCounsellors = React.lazy(() => import("../pages/users/FranchiseCounsellors"));
 // tables
 const BasicTables = React.lazy(() => import("../pages/tables/Basic"));
 const AdvancedTables = React.lazy(() => import("../pages/tables/Advanced"));
@@ -107,7 +108,7 @@ const dashboardRoutes: RoutesProps = {
       // element: <Dashboard4 />,
       element: (
         <PrivateRoute
-          roles={["Add Lead", "View Task", "Monitor"]}
+          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise"]}
           component={Dashboard4}
         />
       ),
@@ -419,6 +420,13 @@ const UserRoutes = {
       name: "User Creation",
       // element: <AdminUsers />,
       element: <PrivateRoute roles={["Monitor"]} component={AdminUsers} />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/user_management/counsellor_creation",
+      name: "Counsellor Creation",
+      // element: <AdminUsers />,
+      element: <PrivateRoute roles={["Manage Franchise"]} component={FranchiseCounsellors} />,
       route: PrivateRoute,
     },
   ],

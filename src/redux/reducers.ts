@@ -9,6 +9,7 @@ import Campaign from "./campaigns/reducers";
 import Branches from "./branches/reducer";
 import Roles from "./users/roles/reducer";
 import Users from "./users/adminUsers/reducers";
+import FranchiseUsers from "./users/franchiseCounsellors/reducers";
 import Leads from "./leads/reducers";
 import Status from "./status/reducers";
 import Checklist from "./checklist/reducers";
@@ -44,5 +45,6 @@ export default combineReducers({
   Checklist,
   SubStatus,
   History,
-  Dashboard
+  Dashboard,
+  FranchiseUsers
 });
