@@ -309,30 +309,29 @@ const BasicInputElements = withSwal((props: any) => {
     initialValidationState
   );
 
-  const validationSchema = yup.object().shape({
-    full_name: yup.string().required("Name is required"),
-    email: yup.string().required("Email is required").email("Invalid email"),
-    phone: yup
-      .string()
-      .required("Phone is required")
-      .matches(/^[0-9]{10}$/, "Phone number must be a 10-digit number"),
-    category_id: yup.string().required("Category is required").nullable(),
-    source_id: yup.string().required("Source is required").nullable(),
-    channel_id: yup.string().required("Channel is required").nullable(),
-    city: yup.string().required("City is required"),
-    preferred_country: yup
-      .array()
-      .min(1, "At least one preferred country is required")
-      .required("Preferred country is required"),
-    office_type: yup.string().required("Office type is required").nullable(),
-    lead_received_date: yup.date().required("Date is required"),
-    ielts: yup.boolean(),
-    remarks: yup.string(),
-    zipcode: yup
-      .string()
-      .required("Zipcode is required")
-      .matches(/^\d+$/, "Zipcode must be a valid one"),
-  });
+    const validationSchema = yup.object().shape({
+        full_name: yup
+            .string()
+            .required("Name is required"),
+        email: yup.string().required("Email is required").email("Invalid email"),
+        phone: yup
+            .string()
+            .required("Phone is required")
+            .matches(/^[0-9]{10}$/, "Phone number must be a 10-digit number"),
+        category_id: yup.string().required("Category is required").nullable(),
+        source_id: yup.string().required("Source is required").nullable(),
+        channel_id: yup.string().required("Channel is required").nullable(),
+        city: yup.string().required("City is required"),
+        preferred_country: yup
+            .array()
+            .min(1, "At least one preferred country is required")
+            .required("Preferred country is required"),
+        office_type: yup.string().required("Office type is required").nullable(),
+        lead_received_date: yup.date().required("Date is required"),
+        // ielts: yup.boolean(),
+        // remarks: yup.string(),
+        zipcode: yup.string().required("Zipcode is required").matches(/^\d+$/, 'Zipcode must be a valid one').nullable()
+    });
 
   // console.log("isUpdate ======>", isUpdate);
 
