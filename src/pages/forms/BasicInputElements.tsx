@@ -327,9 +327,9 @@ const BasicInputElements = withSwal((props: any) => {
             .required("Preferred country is required"),
         office_type: yup.string().required("Office type is required").nullable(),
         lead_received_date: yup.date().required("Date is required"),
-        ielts: yup.boolean(),
-        remarks: yup.string(),
-        zipcode: yup.string().required("Zipcode is required").matches(/^\d+$/, 'Zipcode must be a valid one')
+        // ielts: yup.boolean(),
+        // remarks: yup.string(),
+        zipcode: yup.string().required("Zipcode is required").matches(/^\d+$/, 'Zipcode must be a valid one').nullable()
     });
 
     // console.log("isUpdate ======>", isUpdate);
