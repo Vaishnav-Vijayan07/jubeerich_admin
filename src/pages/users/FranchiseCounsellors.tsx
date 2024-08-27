@@ -28,6 +28,7 @@ import {
   deleteAdminUsers,
   getAdminUsers,
   getBranches,
+  getFranchiseUsers,
   updateAdminUsers,
   updateFranchiseUsers,
 } from "../../redux/actions";
@@ -858,7 +859,7 @@ const FranchiseCounsellors = () => {
   }));
 
   useEffect(() => {
-    dispatch(getAdminUsers());
+    dispatch(getFranchiseUsers());
     dispatch(getBranches());
     dispatch(getCountry());
     dispatch(getRoles());
