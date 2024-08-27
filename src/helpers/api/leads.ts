@@ -21,29 +21,31 @@ function getLeadUser() {
   return api.get("/leads_user", {});
 }
 
-function addLeads(params: {
-  full_name: string;
-  email: string;
-  phone: string;
-  category_id: string;
-  source_id: string;
-  channel_id: string;
-  city: string;
-  preferred_country: string;
-  office_type: string;
-  region_id: string | null;
-  counsiler_id: string | null;
-  branch_id: string | null;
-  updated_by: string;
-  remarks: string;
-  lead_received_date: string;
-  ielts: boolean;
-  zipcode: string;
-  exam_details?: any,
+function addLeads(
+  params: {
+    full_name: string;
+    email: string;
+    phone: string;
+    category_id: string;
+    source_id: string;
+    channel_id: string;
+    city: string;
+    preferred_country: string;
+    office_type: string;
+    region_id: string | null;
+    counsiler_id: string | null;
+    branch_id: string | null;
+    updated_by: string;
+    remarks: string;
+    lead_received_date: string;
+    ielts: boolean;
+    zipcode: string;
+    exam_details?: any;
+    exam_documents?: any;
+    franchisee_id?: string;
+  },
   exam_documents?: any
-}, exam_documents?: any) {
-  // return api.create(`${baseUrl}`, params);
-  // return api.createWithFile(`${baseUrl}`, params);
+) {
   return api.createWithMultipleFile(`${baseUrl}`, params, exam_documents);
 }
 
@@ -67,13 +69,13 @@ function updateLeads(
     lead_received_date: string;
     ielts: boolean;
     zipcode: string;
-    exam_details?: any,
+    exam_details?: any;
     // exam_documents?: any
-  }, 
+  },
   exam_documents?: any
 ) {
   console.log("params ==>", params);
-  
+
   // return api.update(`${baseUrl}/${id}`, params);
   return api.updateWithMultipleFile(`${baseUrl}/${id}`, params, exam_documents);
 }
@@ -82,4 +84,12 @@ function deleteLeads(id: string) {
   return api.delete(`${baseUrl}/${id}`, {});
 }
 
-export { getLeads, getLeadUser, addLeads, updateLeads, deleteLeads, getLeadsByCreTl,getAssignedLeadsByCreTl };
+export {
+  getLeads,
+  getLeadUser,
+  addLeads,
+  updateLeads,
+  deleteLeads,
+  getLeadsByCreTl,
+  getAssignedLeadsByCreTl,
+};

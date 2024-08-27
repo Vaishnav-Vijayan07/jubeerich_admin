@@ -13,6 +13,8 @@ axios.interceptors.response.use(
     return response;
   },
   (error) => {
+    console.log(error);
+
     let message;
 
     if (error && error.response && error.response.status === 404) {
@@ -34,17 +36,29 @@ axios.interceptors.response.use(
           break;
         default: {
           // Check if the error response contains a "message" field
-          if (error.response && error.response.data && error.response.data.message) {
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
             message = error.response.data.message;
-          } else if (error.response && error.response.data && Array.isArray(error.response.data.errors)) {
+          } else if (
+            error.response &&
+            error.response.data &&
+            Array.isArray(error.response.data.errors)
+          ) {
             // Check if the error response contains an "errors" array (validation errors)
             const validationErrors = error.response.data.errors;
-            message = validationErrors.map((error: any) => error.msg).join(", ");
+            message = validationErrors
+              .map((error: any) => error.msg)
+              .join(", ");
           } else {
             message = "An error occurred";
           }
         }
       }
+      console.log("here");
+      console.log(message);
 
       // Reject the Promise with the error message
       return Promise.reject(message);
@@ -168,14 +182,14 @@ class APICore {
     return axios.post(url, formData, config);
   };
 
-  createWithMultipleFile = (url: string, data: any, files:any) => {
+  createWithMultipleFile = (url: string, data: any, files: any) => {
     const formData = new FormData();
 
     files.forEach((file: any) => {
-        formData.append(`exam_documents`, file)
+      formData.append(`exam_documents`, file);
     });
 
-    for (const k in data) {  
+    for (const k in data) {
       formData.append(k, data[k]);
     }
 
@@ -213,7 +227,7 @@ class APICore {
     }
 
     files.forEach((file: any) => {
-      formData.append(`exam_documents`, file)
+      formData.append(`exam_documents`, file);
     });
 
     const config = {
@@ -245,7 +259,8 @@ class APICore {
   };
 
   setLoggedInUser = (session: any) => {
-    if (session) sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
+    if (session)
+      sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
     else {
       sessionStorage.removeItem(AUTH_SESSION_KEY);
       sessionStorage.removeItem("branch_id");

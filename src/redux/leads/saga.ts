@@ -51,6 +51,7 @@ interface LeadsData {
     zipcode: any,
     exam_details?: any,
     exam_documents?: any,
+    franchisee_id?:string,
     changedFiles: any
   };
   type: string;
@@ -152,7 +153,8 @@ function* addLeads({
     ielts,
     zipcode,
     exam_details,
-    exam_documents
+    exam_documents,
+    franchisee_id
   },
 }: LeadsData): SagaIterator {
   console.log("add leads");
@@ -177,6 +179,7 @@ function* addLeads({
       ielts,
       zipcode,
       exam_details,
+      franchisee_id
     }, exam_documents);
     const data = response.data.message;
 

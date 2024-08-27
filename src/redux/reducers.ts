@@ -23,6 +23,7 @@ import MaritalStatus from "./marital_status/reducers";
 import Country from "./country/reducers";
 import University from "./University/reducers";
 import Program from "./programs/reducers";
+import Franchise from "./franchise/reducers";
 export default combineReducers({
   Auth,
   Layout,
@@ -46,5 +47,6 @@ export default combineReducers({
   SubStatus,
   History,
   Dashboard,
-  FranchiseUsers
+  FranchiseUsers,
+  Franchise,
 });

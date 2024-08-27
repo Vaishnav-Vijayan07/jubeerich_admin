@@ -26,6 +26,7 @@ import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import { getRegion } from "../../redux/regions/actions";
+import { getFranchise } from "../../redux/franchise/actions";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -50,7 +51,8 @@ const Leads = () => {
     office,
     status,
     users,
-    region
+    region,
+    franchisees
   } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     state: state.Leads.leads,
@@ -65,7 +67,8 @@ const Leads = () => {
     office: state.OfficeTypes.officeTypes,
     status: state.Status.status.data,
     users: state.Users.adminUsers,
-    region: state.Region.regions
+    region: state.Region.regions,
+    franchisees: state.Franchise.franchiseUsers,
   }));
 
   useEffect(() => {
@@ -77,6 +80,7 @@ const Leads = () => {
     dispatch(getStatus());
     dispatch(getOfficeTypeData());
     dispatch(getRegion());
+    dispatch(getFranchise());
     fetchAllCounsellors()
   }, [dispatch]);
 
@@ -171,7 +175,15 @@ const Leads = () => {
     }));
   }, [region]);
 
-  console.log("regionData ==>", regionData);
+  const franchiseeData = useMemo(() => {
+    if (!franchisees) return [];
+    return franchisees?.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.name,
+    }));
+  }, [franchisees]);
+
+  console.log("franchiseeData ==>", franchiseeData);
   
 
   if (initialLoading) {
@@ -210,6 +222,7 @@ const Leads = () => {
             userData={userData}
             region={regionData}
             regionData={regionData}
+            franchisees={franchiseeData}
           />
         </Col>
       </Row>

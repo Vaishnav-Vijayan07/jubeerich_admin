@@ -14,6 +14,7 @@ export const spam_id = "45";
 export const lost_id = "44";
 export const region_id = "4"
 export const franchise_manager_id = "11"
+export const franchise_id_from_office = "5"
 export const franchise_counsellor_id = "12"
 
 //session user

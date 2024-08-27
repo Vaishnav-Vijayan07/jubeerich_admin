@@ -23,6 +23,7 @@ import MaritalStatusSaga from "./marital_status/saga";
 import CountrySaga from "./country/saga";
 import UniversitySaga from "./University/saga";
 import ProgramSaga from "./programs/saga";
+import FranchiseUserSaga from "./franchise/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -48,6 +49,7 @@ export default function* rootSaga() {
     SubStatusSaga(),
     HistorySaga(),
     DashboardSaga(),
-    FranchiseSaga()
+    FranchiseSaga(),
+    FranchiseUserSaga(),
   ]);
 }

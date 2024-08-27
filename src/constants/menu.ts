@@ -161,6 +161,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         url: "/settings/master/branches",
         parentKey: "master",
       },
+      {
+        key: "franchisees",
+        label: "Franchisees",
+        url: "/settings/master/franchise",
+        parentKey: "master",
+      },
     ],
   },
 
