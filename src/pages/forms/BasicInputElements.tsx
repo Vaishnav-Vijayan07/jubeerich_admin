@@ -88,7 +88,7 @@ const initialValidationState = {
   full_name: "",
   email: "",
   phone: "",
-  category_id: "",
+  category_id: null,
   source_id: "",
   channel_id: "",
   city: "",
@@ -321,16 +321,16 @@ const BasicInputElements = withSwal((props: any) => {
     category_id: yup.string().required("Category is required").nullable(),
     source_id: yup.string().required("Source is required").nullable(),
     channel_id: yup.string().required("Channel is required").nullable(),
-    city: yup.string().required("City is required"),
-    preferred_country: yup
-      .array()
-      .min(1, "At least one preferred country is required")
-      .required("Preferred country is required"),
+    // city: yup.string().required("City is required"),
+    // preferred_country: yup
+    //   .array()
+    //   .min(1, "At least one preferred country is required")
+    //   .required("Preferred country is required"),
     office_type: yup.string().required("Office type is required").nullable(),
     lead_received_date: yup.date().required("Date is required"),
     // ielts: yup.boolean(),
     // remarks: yup.string(),
-    zipcode: yup.string().required("Zipcode is required").matches(/^\d+$/, 'Zipcode must be a valid one').nullable()
+    // zipcode: yup.string().matches(/^\d+$/, 'Zipcode must be a valid one').nullable()
   });
 
   // console.log("isUpdate ======>", isUpdate);
@@ -1227,7 +1227,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Category</Form.Label>
+                    <Form.Label><span className="text-danger fs-4">* </span>Category</Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -1321,7 +1321,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>
-                      <span className="text-danger fs-4">* </span>Zipcode
+                      Zipcode
                     </Form.Label>
                     <Form.Control
                       type="text"
