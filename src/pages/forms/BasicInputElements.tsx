@@ -81,7 +81,7 @@ const initialState = {
   exam: "",
   zipcode: "",
   region_id: "",
-  franchisee_id: "",
+  franchise_id: "",
 };
 
 const initialValidationState = {
@@ -344,8 +344,6 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
-    console.log("item:", item);
-
     //update source dropdown
     const updatedSource = source?.filter(
       (source: any) => source.value == item.source_id
@@ -357,9 +355,6 @@ const BasicInputElements = withSwal((props: any) => {
       (region: any) => region.value == item.region_id
     );
 
-    // const updatedCountry = country?.filter(
-    //   (country: any) => country.value == item.preferred_country
-    // );
     const updatedCtegory = categories?.filter(
       (category: any) => category.value == item.category_id
     );
@@ -376,7 +371,27 @@ const BasicInputElements = withSwal((props: any) => {
       (country: any) => country?.id
     );
 
-    console.log("Updated Region", updatedRegion);
+    const { value } = updatedOffice[0];
+    const { franchise_id, region_id: region_id_from_item } = item;
+
+    if (franchise_id && value === franchise_id_from_office) {
+      console.log("HERE");
+      setIsFranchiseActive(true);
+      setActiveRegion(false);
+      const franchiseValue = franchisees.find(
+        (item: any) => item.value == franchise_id
+      );
+      setSelectedFranchisee(franchiseValue);
+    }
+
+    if (region_id_from_item && value === region_id) {
+      setActiveRegion(true);
+      setIsFranchiseActive(false);
+      const regionValue = regionData.find(
+        (item: any) => item.value == region_id
+      );
+      setSelectedRegion(regionValue);
+    }
 
     // const prefferedCountryIds = item?.preffered_country?.map
     setSelectedSource(updatedSource[0]);
@@ -410,6 +425,7 @@ const BasicInputElements = withSwal((props: any) => {
       exam: item?.exam || "",
       zipcode: item?.zipcode,
       region_id: item?.region_id || "",
+      franchise_id: item?.franchise_id || "",
     }));
 
     setIsUpdate(true);
@@ -478,11 +494,15 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleDropDowns = (selected: any, { name }: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: selected.value,
-    }));
+    // Update form data for all dropdowns except franchise_id and region_id
+    if (name !== "franchise_id" && name !== "region_id") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: selected.value,
+      }));
+    }
 
+    // Handle specific dropdown selections
     switch (name) {
       case "source_id":
         setSelectedSource(selected);
@@ -494,16 +514,48 @@ const BasicInputElements = withSwal((props: any) => {
         setSelectedCountry(selected);
         break;
       case "office_type":
+        const { value } = selected;
+        if (value !== franchise_id_from_office && value !== region_id) {
+          setFormData((prev: any) => ({
+            ...prev,
+            region_id: null,
+            franchise_id: null,
+          }));
+          setIsFranchiseActive(false);
+          setActiveRegion(false);
+        }
+
+        if (value == franchise_id_from_office) {
+          setIsFranchiseActive(true);
+          setActiveRegion(false);
+        }
+
+        if (value == region_id) {
+          setActiveRegion(true);
+          setIsFranchiseActive(false);
+        }
+
         setSelectedOffice(selected);
         break;
       case "channel_id":
         setSelectedChannel(selected);
+
         break;
       case "region_id":
         setSelectedRegion(selected);
+        setFormData((prev: any) => ({
+          ...prev,
+          region_id: selected.value,
+          franchise_id: null, // Reset franchise_id when region_id changes
+        }));
         break;
-      case "franchisee_id":
+      case "franchise_id":
         setSelectedFranchisee(selected);
+        setFormData((prev: any) => ({
+          ...prev,
+          region_id: null, // Reset region_id when franchise_id changes
+          franchise_id: selected.value,
+        }));
         break;
       default:
         break;
@@ -563,7 +615,8 @@ const BasicInputElements = withSwal((props: any) => {
                     exam_details[0]?.exam_name
                       ? JSON.stringify(exam_details)
                       : null,
-                    selectedFile
+                    selectedFile,
+                    formData.franchise_id ? formData.franchise_id : null
                   )
                 );
               } else {
@@ -595,7 +648,7 @@ const BasicInputElements = withSwal((props: any) => {
                       ? JSON.stringify(exam_details)
                       : null,
                     selectedFile,
-                    formData.franchisee_id ? formData.franchisee_id : null
+                    formData.franchise_id ? formData.franchise_id : null
                   )
                 );
               }
@@ -808,6 +861,8 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedSource(null);
     setLanguageForm(languageFormInitialState);
     setSelectedFile([]);
+    setActiveRegion(false);
+    setIsFranchiseActive(false);
   };
 
   const toggleResponsiveModal = () => {
@@ -1054,34 +1109,6 @@ const BasicInputElements = withSwal((props: any) => {
       setSelectedFile((prevData: any) => [...prevData, file]);
     }
   };
-
-  useEffect(() => {
-    if (selectedOffice?.value == region_id) {
-      setActiveRegion(true);
-      setSelectedFranchisee(null);
-      setFormData((prev: any) => ({
-        ...prev,
-        franchisee_id: null,
-      }));
-    } else {
-      setActiveRegion(false);
-      setSelectedRegion(null);
-    }
-  }, [selectedOffice]);
-
-  useEffect(() => {
-    if (selectedOffice?.value == franchise_id_from_office) {
-      setIsFranchiseActive(true);
-      setSelectedRegion(null);
-      setFormData((prev: any) => ({
-        ...prev,
-        region_id: null,
-      }));
-    } else {
-      setIsFranchiseActive(false);
-      setSelectedFranchisee(null);
-    }
-  }, [selectedOffice]);
 
   return (
     <>
@@ -1361,7 +1388,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                 {isFranchiseActive && (
                   <Col md={4} lg={4}>
-                    <Form.Group className="mb-3" controlId="franchisee_id">
+                    <Form.Group className="mb-3" controlId="franchise_id">
                       <Form.Label>
                         <span className="text-danger fs-4">* </span>Franchisee
                       </Form.Label>
@@ -1369,7 +1396,7 @@ const BasicInputElements = withSwal((props: any) => {
                         styles={customStyles}
                         className="react-select react-select-container"
                         classNamePrefix="react-select"
-                        name="franchisee_id"
+                        name="franchise_id"
                         options={[
                           { value: null, label: "None" },
                           ...franchisees,
@@ -1416,8 +1443,6 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
               </Row>
-
-              {console.log("region =====>", region)}
 
               <Row>
                 {selectExam &&

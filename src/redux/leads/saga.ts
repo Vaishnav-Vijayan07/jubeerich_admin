@@ -51,7 +51,7 @@ interface LeadsData {
     zipcode: any,
     exam_details?: any,
     exam_documents?: any,
-    franchisee_id?:string,
+    franchise_id?:string,
     changedFiles: any
   };
   type: string;
@@ -154,7 +154,7 @@ function* addLeads({
     zipcode,
     exam_details,
     exam_documents,
-    franchisee_id
+    franchise_id
   },
 }: LeadsData): SagaIterator {
   console.log("add leads");
@@ -179,7 +179,7 @@ function* addLeads({
       ielts,
       zipcode,
       exam_details,
-      franchisee_id
+      franchise_id
     }, exam_documents);
     const data = response.data.message;
 
@@ -231,6 +231,7 @@ function* updateLeads({
     zipcode,
     exam_details,
     exam_documents,
+    franchise_id
   },
 }: LeadsData): SagaIterator {
   try {
@@ -253,6 +254,7 @@ function* updateLeads({
       ielts,
       zipcode,
       exam_details,
+      franchise_id
     }, 
     exam_documents
   );

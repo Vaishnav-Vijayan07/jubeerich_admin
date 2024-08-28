@@ -61,7 +61,6 @@ function updateFranchiseAdminUsersApi(
     phone: string;
     address: string;
     username: string;
-    password: string;
     updated_by: string;
     role_id: string;
     branch_ids: string | null;
@@ -69,10 +68,7 @@ function updateFranchiseAdminUsersApi(
     franchise_id: string;
   }
 ) {
-  console.log(params);
-  console.log(id);
-
-  // return api.update(`/admin_users/${id}`, params);
+  return api.update(`/admin_users/${id}`, params);
 }
 
 export {

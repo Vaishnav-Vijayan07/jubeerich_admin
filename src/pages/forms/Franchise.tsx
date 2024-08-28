@@ -326,12 +326,13 @@ const BasicInputElements = withSwal((props: any) => {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+            confirmButtonText: `Yes, ${
+              isUpdateAdminUser ? "Update" : "Create"
+            }`,
           })
           .then((result: any) => {
             if (result.isConfirmed) {
               if (isUpdateAdminUser) {
-                // Handle update logic
                 console.log("here");
                 dispatch(
                   updateFranchiseAdminUser(
@@ -342,7 +343,6 @@ const BasicInputElements = withSwal((props: any) => {
                     adminUserFormData.phone,
                     adminUserFormData.address,
                     adminUserFormData.username,
-                    adminUserFormData.password,
                     user_id,
                     franchise_counsellor_id,
                     null,
@@ -352,8 +352,6 @@ const BasicInputElements = withSwal((props: any) => {
                 );
                 setIsUpdateAdminUser(false);
               } else {
-                console.log("here");
-
                 dispatch(
                   addFranchiseAdminUser(
                     adminUserFormData.employee_id,
@@ -423,13 +421,14 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "address",
       sort: false,
     },
+
     {
       Header: "Slug",
       accessor: "slug",
       sort: false,
     },
     {
-      Header: "Add Admin User",
+      Header: "Admin User",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
@@ -437,21 +436,24 @@ const BasicInputElements = withSwal((props: any) => {
           {/* Edit Icon */}
 
           {row?.original?.adminUsers.length > 0 ? (
-            <Link
-              to="#"
-              className="action-icon"
-              onClick={() => {
-                setAdminUserFormData((prev: any) => ({
-                  ...prev,
-                  franchise_id: row?.original?.id,
-                }));
-                setIsUpdateAdminUser(true);
-                handleUpdateAdminUser(row.original?.adminUsers[0]);
-                toggleResponsiveModalAdminUser();
-              }}
-            >
-              <i className="mdi mdi-account-edit-outline text-primary font-5"></i>
-            </Link>
+            <>
+              <span>{row?.original?.adminUsers[0]?.name}</span>
+              <Link
+                to="#"
+                className="action-icon"
+                onClick={() => {
+                  setAdminUserFormData((prev: any) => ({
+                    ...prev,
+                    franchise_id: row?.original?.id,
+                  }));
+                  setIsUpdateAdminUser(true);
+                  handleUpdateAdminUser(row.original?.adminUsers[0]);
+                  toggleResponsiveModalAdminUser();
+                }}
+              >
+                <i className="mdi mdi-account-edit-outline text-primary font-5"></i>
+              </Link>
+            </>
           ) : (
             <Link
               to="#"
@@ -570,7 +572,6 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Header closeButton>
               <h4 className="modal-title">Lead Channel Management</h4>
             </Modal.Header>
-
             {error && (
               <Alert variant="danger" className="my-2">
                 {error}
@@ -695,6 +696,14 @@ const BasicInputElements = withSwal((props: any) => {
           onHide={toggleResponsiveModalAdminUser}
           dialogClassName="modal-dialog-centered"
         >
+          <Modal.Header closeButton>
+            <h4 className="modal-title">Franchise Admin user Management</h4>
+          </Modal.Header>
+          {error && (
+            <Alert variant="danger" className="my-2">
+              {error}
+            </Alert>
+          )}
           <Modal.Body>
             <Row>
               <Col className="bg-white">
@@ -793,23 +802,25 @@ const BasicInputElements = withSwal((props: any) => {
                         </Form.Group>
                       </Row>
 
-                      <Row>
-                        <Form.Group className="mb-3" controlId="password">
-                          <Form.Label>Password</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="password"
-                            placeholder="Enter password"
-                            value={adminUserFormData.password}
-                            onChange={handleInputChangeAdminUsers}
-                          />
-                          {adminUsersValidationErrors.password && (
-                            <Form.Text className="text-danger">
-                              {adminUsersValidationErrors.password}
-                            </Form.Text>
-                          )}
-                        </Form.Group>
-                      </Row>
+                      {!isUpdateAdminUser && (
+                        <Row>
+                          <Form.Group className="mb-3" controlId="password">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="password"
+                              placeholder="Enter password"
+                              value={adminUserFormData.password}
+                              onChange={handleInputChangeAdminUsers}
+                            />
+                            {adminUsersValidationErrors.password && (
+                              <Form.Text className="text-danger">
+                                {adminUsersValidationErrors.password}
+                              </Form.Text>
+                            )}
+                          </Form.Group>
+                        </Row>
+                      )}
                     </Col>
 
                     <Col md={6}>
