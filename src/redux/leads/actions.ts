@@ -94,7 +94,7 @@ export const addLeads = (
   zipcode?: string | null,
   exam_details?: any,
   exam_documents?: any,
-  franchisee_id?: string | null
+  franchise_id?: string | null
 ): LeadsActionType => ({
   type: LeadsActionTypes.ADD_LEADS,
   payload: {
@@ -108,7 +108,7 @@ export const addLeads = (
     preferred_country,
     office_type,
     region_id,
-    franchisee_id,
+    franchise_id,
     counsiler_id,
     branch_id,
     updated_by,
@@ -143,6 +143,7 @@ export const updateLeads = (
   zipcode: string | null,
   exam_details?: any,
   exam_documents?: any,
+  franchise_id?: string | null
 ): LeadsActionType => ({
   type: LeadsActionTypes.UPDATE_LEADS,
   payload: {
@@ -166,6 +167,7 @@ export const updateLeads = (
     zipcode,
     exam_details,
     exam_documents,
+    franchise_id
   },
 });
 

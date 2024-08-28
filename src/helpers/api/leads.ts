@@ -42,7 +42,7 @@ function addLeads(
     zipcode: string;
     exam_details?: any;
     exam_documents?: any;
-    franchisee_id?: string;
+    franchise_id?: string;
   },
   exam_documents?: any
 ) {
@@ -70,6 +70,7 @@ function updateLeads(
     ielts: boolean;
     zipcode: string;
     exam_details?: any;
+    franchise_id?: string;
     // exam_documents?: any
   },
   exam_documents?: any
