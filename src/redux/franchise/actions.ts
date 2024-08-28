@@ -9,7 +9,6 @@ export interface FranchiseActionType {
     | FranchiseActionTypes.ADD_FRANCHISE
     | FranchiseActionTypes.UPDATE_FRANCHISE
     | FranchiseActionTypes.DELETE_FRANCHISE
-    | FranchiseActionTypes.DELETE_FRANCHISE_ADMINUSER
     | FranchiseActionTypes.ADD_FRANCHISE_ADMINUSER
     | FranchiseActionTypes.UPDATE_FRANCHISE_ADMINUSER;
   payload: {} | string;
@@ -148,9 +147,4 @@ export const updateFranchiseAdminUser = (
     country_id,
     franchise_id,
   },
-});
-
-export const deleteFranchiseAdminUser = (id: string): FranchiseActionType => ({
-  type: FranchiseActionTypes.DELETE_FRANCHISE_ADMINUSER,
-  payload: { id },
 });
