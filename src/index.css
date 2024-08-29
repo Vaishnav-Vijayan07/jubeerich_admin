@@ -437,6 +437,10 @@ input[type="number"] {
   background-color: #635692dc;
 }
 
+.nav-link{
+  color: #6c757d;
+}
+
 
 /* .select-wrapper{
   min-width: 200px !important;

@@ -79,6 +79,14 @@ const MENU_ITEMS: MenuItemTypes[] = [
     url: "/leads/tasks",
     roles: ["View Task"],
   },
+  {
+    key: "ordinary_tasks",
+    label: "Todo",
+    isTitle: false,
+    icon: "list",
+    url: "/leads/ordinary_tasks",
+    roles: ["View Task"],
+  },
 
   { key: "settings", label: "Settings", isTitle: true, roles: ["Monitor"] },
 

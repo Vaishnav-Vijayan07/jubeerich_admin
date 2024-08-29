@@ -24,6 +24,7 @@ const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard3/"));
 // - crm pages
 
 const CRMLeads = React.lazy(() => import("../pages/apps/CRM/Leads/"));
+const OrdinaryTasks = React.lazy(() => import("../pages/lead_management/OrdinaryTasks"));
 
 //Leads
 const CRMLeadsList = React.lazy(
@@ -187,6 +188,15 @@ const leadRoutes = {
       // element: <Tasks />,
       element: (
         <PrivateRoute roles={["View Task", "Monitor"]} component={Tasks} />
+      ),
+      route: PrivateRoute,
+    },
+    {
+      path: "leads/ordinary_tasks",
+      name: "Ordinary Tasks",
+      // element: <Tasks />,
+      element: (
+        <PrivateRoute roles={["View Task", "Monitor"]} component={OrdinaryTasks} />
       ),
       route: PrivateRoute,
     },
