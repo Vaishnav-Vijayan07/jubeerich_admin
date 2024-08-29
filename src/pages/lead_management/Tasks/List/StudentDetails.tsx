@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -11,9 +11,6 @@ import {
   Spinner,
   Tab,
 } from "react-bootstrap";
-import BasicInfo from "./BasicInfo";
-import AcademicInfo from "./AcademicInfo";
-import StudyPreference from "./StudyPreference";
 import classNames from "classnames";
 import { icons } from "../../../../assets/images/icons";
 import { getCountry } from "../../../../redux/country/actions";
@@ -25,11 +22,14 @@ import axios from "axios";
 import { follow_up_id, future_leads_id, not_responding_id, showErrorAlert, showSuccessAlert } from "../../../../constants";
 import DatePicker from "react-datepicker";
 import moment from "moment";
+import Comments from "./Comments";
+
+const BasicInfo = lazy(() => import('./BasicInfo'));
+const AcademicInfo = lazy(() => import('./AcademicInfo'));
+const StudyPreference = lazy(() => import('./StudyPreference'));
 
 
 const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
-  console.log("taskId", taskId);
-
   const [basicData, setBasicData] = useState<any>([]);
   const [status, setStatus] = useState([]);
   const [refresh, setRefresh] = useState(false);
@@ -54,9 +54,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     setSelectedDate(null)
     setStatusId(null)
   }
-
-  console.log("basicData ==>", basicData);
-
 
   const handleDateChange = (date: any) => {
     // const formattedDate = moment(date).format("YYYY-MM-DD");
@@ -567,35 +564,58 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                         </Nav.Link>
                       </div>
                     </Nav.Item>
+
+                    <Nav.Item as="li" className="nav-item nav_item_4">
+                      <Nav.Link
+                        // href="#"
+                        eventKey="comments"
+                        className="nav-link cursor-pointer"
+                      >
+                        Comments
+                      </Nav.Link>
+                    </Nav.Item>
                   </Nav>
 
                   <Tab.Content>
                     <Tab.Pane eventKey="basic_info">
                       {studentId && (
-                        <BasicInfo
-                          studentId={studentId}
-                          Countries={Countries}
-                          OfficeTypes={officeData}
-                          country={countryData || []}
-                          MaritalStatus={maritialData}
-                          basicData={basicData}
-                          getBasicInfoApi={getBasicInfo}
-                          role={user.role}
-                        />
+                        <Suspense fallback={<></>}>
+                          <BasicInfo
+                            studentId={studentId}
+                            Countries={Countries}
+                            OfficeTypes={officeData}
+                            country={countryData || []}
+                            MaritalStatus={maritialData}
+                            basicData={basicData}
+                            getBasicInfoApi={getBasicInfo}
+                            role={user.role}
+                          />
+                        </Suspense>
                       )}
                     </Tab.Pane>
 
                     <Tab.Pane eventKey="academic_info">
-                      {studentId && <AcademicInfo studentId={studentId} />}
+                      <Suspense fallback={<></>}>
+                        {studentId && <AcademicInfo studentId={studentId} />}
+                      </Suspense>
                     </Tab.Pane>
 
                     <Tab.Pane eventKey="study_preference">
                       {studentId && (
-                        <StudyPreference
-                          studentId={studentId}
-                          Countries={Countries}
-                        />
+                        <Suspense fallback={<></>}>
+
+                          <StudyPreference
+                            studentId={studentId}
+                            Countries={Countries}
+                          />
+                        </Suspense>
                       )}
+                    </Tab.Pane>
+
+                    <Tab.Pane eventKey="comments">
+                      <Suspense fallback={<></>}>
+                        {studentId && <Comments studentId={studentId} />}
+                      </Suspense>
                     </Tab.Pane>
                   </Tab.Content>
                 </Card.Body>
