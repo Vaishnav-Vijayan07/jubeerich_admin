@@ -570,7 +570,7 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit("franchise")}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Lead Channel Management</h4>
+              <h4 className="modal-title">Franchise Management</h4>
             </Modal.Header>
             {error && (
               <Alert variant="danger" className="my-2">
@@ -580,7 +580,7 @@ const BasicInputElements = withSwal((props: any) => {
 
             <Modal.Body>
               <Form.Group className="mb-3" controlId="name">
-                <Form.Label>Lead Name</Form.Label>
+                <Form.Label>Franchise Name</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -595,7 +595,7 @@ const BasicInputElements = withSwal((props: any) => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="email">
-                <Form.Label>Lead Email</Form.Label>
+                <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -610,7 +610,7 @@ const BasicInputElements = withSwal((props: any) => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="address">
-                <Form.Label>Lead Address</Form.Label>
+                <Form.Label>Address</Form.Label>
                 <Form.Control
                   type="text"
                   name="address"
@@ -625,7 +625,7 @@ const BasicInputElements = withSwal((props: any) => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="phone">
-                <Form.Label>Lead Phone</Form.Label>
+                <Form.Label>Phone</Form.Label>
                 <Form.Control
                   type="text"
                   name="phone"
@@ -896,9 +896,9 @@ const BasicInputElements = withSwal((props: any) => {
                 className="btn-sm btn-blue waves-effect waves-light float-end"
                 onClick={toggleResponsiveModal}
               >
-                <i className="mdi mdi-plus-circle"></i> Add Lead Channel
+                <i className="mdi mdi-plus-circle"></i> Add Franchise
               </Button>
-              <h4 className="header-title mb-4">Manage Lead Channels</h4>
+              <h4 className="header-title mb-4">Manage Franchise</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}

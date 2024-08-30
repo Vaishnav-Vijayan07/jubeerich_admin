@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Dropdown, Card } from "react-bootstrap";
+import { Row, Col, Dropdown, Card, Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 // components
@@ -8,16 +8,29 @@ import TaskSection from "./Section";
 import Task from "./Task";
 
 // dummy data
-import { TaskItemTypes } from "./data";
+import { TaskItemTypes, taskPriorityTypes, taskStatusTypes } from "./data";
 import axios from "axios";
+import { FormInput } from "../../../components";
+import Select, { ActionMeta, OptionsType } from "react-select";
 
 // Task List
 const TaskList = () => {
+  const initialTaskFormState = {
+    id: "",
+    title: "",
+    description: "",
+    status: "",
+    due_date: "",
+    priority: "",
+  }
+
   const [todayTask, setTodayTask] = useState([]);
   const [upcomingTask, setUpcomingTask] = useState([]);
   const [completedTask, setCompletedTask] = useState([]);
   const [expiredTask, setExpiredTask] = useState([]);
-  const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(todayTask[0]);  
+  const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(todayTask[0]);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [taskFormData, setTaskFormData] = useState<any>(initialTaskFormState);
 
   const getAllTasks = async () => {
     try {
@@ -42,6 +55,17 @@ const TaskList = () => {
     setSelectedTask(task);
   };
 
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  }
+
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setTaskFormData((prev: any) => ({
+      ...prev, [name]: value
+    }))
+  }
+
   return (
     <>
       <PageTitle
@@ -59,7 +83,7 @@ const TaskList = () => {
                 <Card.Body>
                   <Row style={{ display: "flex", justifyContent: "end" }}>
                     <Col sm={3}>
-                      <Link
+                      <Link onClick={toggleModal}
                         to="#"
                         className="btn btn-primary waves-effect waves-light"
                       >
@@ -101,6 +125,75 @@ const TaskList = () => {
                       </div>
                     </Col>
                   </Row>
+                  <Modal show={showModal} onHide={toggleModal} dialogClassName="modal-dialog-centered">
+                    <Modal.Header>
+                      <h4 className="modal-title">Add Task</h4>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <Col className="col-auto">
+                        <FormInput
+                          label="Name"
+                          type="text"
+                          name="title"
+                          placeholder="Enter task name"
+                          value={taskFormData.title}
+                          onChange={handleInputChange}
+                          containerClass={"mb-3"}
+                        />
+                        <FormInput
+                          label="Description"
+                          type="text"
+                          name="description"
+                          placeholder="Enter description"
+                          value={taskFormData.description}
+                          onChange={handleInputChange}
+                          containerClass={"mb-3"}
+                        />
+                        <FormInput
+                          label="Due Date"
+                          type="date"
+                          name="due_date"
+                          placeholder="Choose Date"
+                          value={taskFormData.due_date}
+                          onChange={handleInputChange}
+                          containerClass={"mb-3"}
+                        />
+                        <FormInput
+                          label="Priority"
+                          type="text"
+                          name="priority"
+                          placeholder="Choose priority"
+                          value={taskFormData.priority}
+                          onChange={handleInputChange}
+                          containerClass={"mb-3"}
+                        />
+                        <Form.Group className="mb-3" controlId="status">
+                          <Form.Label>Status</Form.Label>
+                          <Select
+                            // styles={customStyles}
+                            className="react-select react-select-container select-wrapper"
+                            classNamePrefix="react-select"
+                            name="status"
+                            options={[{ value: null, label: "All" }, ...taskStatusTypes]}
+                            value={taskFormData.status}
+                            onChange={handleInputChange}
+                          />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="priority">
+                          <Form.Label>Priority</Form.Label>
+                          <Select
+                            // styles={customStyles}
+                            className="react-select react-select-container select-wrapper"
+                            classNamePrefix="react-select"
+                            name="priority"
+                            options={[{ value: null, label: "All" }, ...taskPriorityTypes]}
+                            value={taskFormData.priority}
+                            onChange={handleInputChange}
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Modal.Body>
+                  </Modal>
                 </Card.Body>
               </Card>
             </Col>
