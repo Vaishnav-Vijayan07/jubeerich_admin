@@ -21,6 +21,22 @@ export const DateReverse = (DateString: any) => {
   return DateString?.split("-").reverse().join("-");
 };
 
+export const formatTimestamp = (timestamp: any) => {
+  const date = new Date(timestamp);
+  const day = date.getDate();
+  const month = date.toLocaleString('default', { month: 'short' });
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  const ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12 || 12;
+
+  const time = minutes === 0 ? `${hours}${ampm}` : `${hours}:${minutes < 10 ? '0' : ''}${minutes}${ampm}`;
+  
+  return `${day} ${month} ${time}`;
+};
+
+
 export const getTimeFromTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
   const hours = date.getHours();

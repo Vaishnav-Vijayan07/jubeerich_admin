@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Dropdown, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
@@ -9,16 +9,38 @@ import TaskSection from "./Section";
 import Task from "./Task";
 
 // dummy data
-import { todayTasks, upcomingTasks, otherTasks, TaskItemTypes } from "./data";
+import { TaskItemTypes } from "./data";
+import axios from "axios";
 
 // Task List
 const TaskList = () => {
-  const [todayTask] = useState<TaskItemTypes[]>([...todayTasks]);
-  const [upcomingTask] = useState<TaskItemTypes[]>([...upcomingTasks]);
-  const [otherTask] = useState<TaskItemTypes[]>([...otherTasks]);
-  const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(
-    todayTasks[0]
-  );
+  const [todayTask, setTodayTask] = useState([]);
+  const [upcomingTask, setUpcomingTask] = useState([]);
+  const [completedTask, setCompletedTask] = useState([]);
+  const [expiredTask, setExpiredTask] = useState([]);
+  const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(todayTask[0]);
+
+  console.log("todayTask ==>", todayTask);
+  
+
+  const getAllTasks = async () => {
+    try {
+      const tasks = await axios.get('ordinary_task')
+      console.log("tasks ==>", tasks.data.data);
+      setTodayTask(tasks?.data?.data?.todaysTasks)
+      setSelectedTask(tasks?.data?.data?.todaysTasks[0])
+      setUpcomingTask(tasks?.data?.data?.upcomingTasks)
+      setCompletedTask(tasks?.data?.data?.completedTasks)
+      setExpiredTask(tasks?.data?.data?.expiredTasks)
+    } catch (err) {
+      console.log("error:", err);
+    }
+  }
+
+  useEffect(() => {
+    getAllTasks()
+  }, [])
+
 
   /**
    * Selects the task
@@ -38,12 +60,12 @@ const TaskList = () => {
         title={"Tasks List"}
       />
       <Row>
-        <Col xl={8}>
+        <Col xl={7}>
           <Row>
             <Col>
               <Card>
                 <Card.Body>
-                  <Row>
+                  <Row style={{ display: "flex", justifyContent: "end" }}>
                     <Col sm={3}>
                       <Link
                         to="#"
@@ -51,32 +73,6 @@ const TaskList = () => {
                       >
                         <i className="fe-plus me-1"></i>Add New
                       </Link>
-                    </Col>
-                    <Col sm={9}>
-                      <div className="float-sm-end mt-3 mt-sm-0">
-                        <div className="d-inline-block mb-3 mb-sm-0 me-sm-2">
-                          <form className="search-bar form-inline">
-                            <div className="position-relative">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search..."
-                              />
-                              <span className="mdi mdi-magnify"></span>
-                            </div>
-                          </form>
-                        </div>
-                        <Dropdown className="d-inline-block" align="end">
-                          <Dropdown.Toggle variant="light">
-                            <i className="mdi mdi-filter-variant"></i>
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            <Dropdown.Item>Due Date</Dropdown.Item>
-                            <Dropdown.Item>Added Date</Dropdown.Item>
-                            <Dropdown.Item>Assignee</Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </div>
                     </Col>
                   </Row>
 
@@ -99,31 +95,27 @@ const TaskList = () => {
                       </div>
                       <div className="mt-4 mb-4">
                         <TaskSection
-                          title="Other"
-                          tasks={otherTask}
+                          title="Completed"
+                          tasks={completedTask}
+                          selectTask={selectTask}
+                        ></TaskSection>
+                      </div>
+                      <div className="mt-4 mb-4">
+                        <TaskSection
+                          title="Expired"
+                          tasks={expiredTask}
                           selectTask={selectTask}
                         ></TaskSection>
                       </div>
                     </Col>
                   </Row>
-
-                  <div className="row mt-4">
-                    <div className="col-12">
-                      <div className="text-center">
-                        <Link to="#" className="btn btn-sm btn-white">
-                          <i className="mdi mdi-spin mdi-loading me-2"></i>
-                          Load more
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
                 </Card.Body>
               </Card>
             </Col>
           </Row>
         </Col>
 
-        <Col xl={4}>
+        <Col xl={5}>
           <Task {...selectedTask} />
         </Col>
       </Row>
