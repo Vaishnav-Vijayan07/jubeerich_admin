@@ -20,8 +20,6 @@ import { Form } from "react-bootstrap";
 const Task = (task: TaskItemTypes) => {
   const [completed, setCompleted] = useState<boolean>(task.stage === "Done");
   const [formData, setFormData] = useState({ title: '', description: '' });
-  console.log("task ===>", task);
-  
 
   useEffect(() => {
    setFormData(task)
