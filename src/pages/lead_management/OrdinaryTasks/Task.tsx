@@ -20,10 +20,12 @@ import { Form } from "react-bootstrap";
 const Task = (task: TaskItemTypes) => {
   const [completed, setCompleted] = useState<boolean>(task.stage === "Done");
   const [formData, setFormData] = useState({ title: '', description: '' });
+  console.log("task ===>", task);
+  
 
   useEffect(() => {
    setFormData(task)
-  }, [])
+  }, [task])
   
   /*
    * mark completd on selected task
@@ -85,7 +87,7 @@ const Task = (task: TaskItemTypes) => {
                     as="textarea"
                     rows={3}
                     name="description"
-                    value={formData.description}
+                    value={formData?.description}
                     onChange={handleChange}
                     placeholder="Enter your text here..."
                   />
