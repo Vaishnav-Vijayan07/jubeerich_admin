@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 // components
 import PageTitle from "../../../components/PageTitle";
-
 import TaskSection from "./Section";
 import Task from "./Task";
 
@@ -18,10 +17,7 @@ const TaskList = () => {
   const [upcomingTask, setUpcomingTask] = useState([]);
   const [completedTask, setCompletedTask] = useState([]);
   const [expiredTask, setExpiredTask] = useState([]);
-  const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(todayTask[0]);
-
-  console.log("todayTask ==>", todayTask);
-  
+  const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(todayTask[0]);  
 
   const getAllTasks = async () => {
     try {
@@ -42,10 +38,6 @@ const TaskList = () => {
   }, [])
 
 
-  /**
-   * Selects the task
-   * @param {*} taks
-   */
   const selectTask = (task: TaskItemTypes) => {
     setSelectedTask(task);
   };
