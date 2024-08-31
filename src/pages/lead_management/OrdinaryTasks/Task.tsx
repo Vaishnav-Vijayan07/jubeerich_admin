@@ -65,7 +65,7 @@ const Task = (task: TaskItemTypes) => {
 
           <Row>
             <Col>
-              <h4>{task.title}</h4>
+              { task.title && <h4>{task.title}</h4>}
 
               <Row>
                 <Col>
@@ -73,7 +73,7 @@ const Task = (task: TaskItemTypes) => {
                   <div className="d-flex align-items-start">
                     <i className="mdi mdi-calendar-month-outline font-18 text-success me-1"></i>
                     <div className="w-100">
-                      <h5 className="mt-1 font-size-14">{formatTimestamp(task.due_date)}</h5>
+                      { task.due_date && <h5 className="mt-1 font-size-14">{formatTimestamp(task.due_date)}</h5>}
                     </div>
                   </div>
                 </Col>

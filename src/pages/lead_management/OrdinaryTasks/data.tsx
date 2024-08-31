@@ -509,7 +509,7 @@ const otherTasks: TaskItemTypes[] = [
 ];
 
 const taskStatusTypes = [
-  { label: 'Low', value: 'pending' },
+  { label: 'Pending', value: 'pending' },
   { label: 'In progress', value: 'in_progress' },
   { label: 'Completed', value: 'completed' },
 ]
@@ -520,7 +520,11 @@ const taskPriorityTypes = [
   { label: 'High', value: 'high' },
 ]
 
+const actionTypes = {
+  update: 'update',
+  delete: 'delete'
+}
 
 const allTasks = [...todayTasks, ...upcomingTasks, ...otherTasks];
 
-export { todayTasks, upcomingTasks, otherTasks, allTasks, taskStatusTypes, taskPriorityTypes };
+export { todayTasks, upcomingTasks, otherTasks, allTasks, taskStatusTypes, taskPriorityTypes, actionTypes };
