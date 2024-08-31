@@ -15,9 +15,10 @@ import Select, { ActionMeta, OptionsType } from "react-select";
 import { showErrorAlert, showSuccessAlert } from "../../../constants";
 import moment from "moment";
 import { format } from "path";
+import { withSwal } from "react-sweetalert2";
 
 // Task List
-const TaskList = () => {
+const TaskList = withSwal(({ swal }: any) => {
   const initialTaskFormState = {
     id: "",
     title: "",
@@ -104,42 +105,54 @@ const TaskList = () => {
     setIsUpdate(false)
   }
 
-  const onSubmit = async() => {
+  const onSubmit = async () => {
     try {
-      setIsTaskLoading(true)
+      setIsTaskLoading(true);
       const userId = sessionStorage.getItem('jb_user');
       const userDetails = userId ? JSON.parse(userId) : '';
-
-      if(!isUpdate) {
-        let formattedData = { ...taskFormData, user_id: userDetails.user_id }
   
-        const result = await axios.post(`${baseUrl}`, formattedData);
-        if(result?.status){
-          showSuccessAlert('Task Created Succesfully');
+      const confirmResult = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: isUpdate ? "Yes, update it!" : "Yes, delete it!",
+      });
+  
+      if (confirmResult.isConfirmed) {
+        let formattedData = { ...taskFormData, user_id: userDetails.user_id };
+  
+        let result;
+        if (!isUpdate) {
+          result = await axios.post(`${baseUrl}`, formattedData);
+          if (result?.status) {
+            showSuccessAlert('Todo Created Successfully');
+          }
+        } else {
+          result = await axios.put(`${baseUrl}/${taskFormData?.id}`, formattedData);
+          if (result?.status) {
+            showSuccessAlert('Todo Updated Successfully');
+            setIsUpdate(false);
+          }
+        }
+  
+        if (result?.status) {
           handleResetValues();
           toggleModal();
-          setIsTaskLoading(false);
-          getAllTasks()
-        } 
-      } else {
-        let formattedData = { ...taskFormData, user_id: userDetails.user_id }
-  
-        const result = await axios.put(`${baseUrl}/${taskFormData?.id}`, formattedData);
-        if(result?.status){
-          showSuccessAlert('Task Updated Succesfully');
-          setIsUpdate(false);
-          handleResetValues();
-          toggleModal();
-          setIsTaskLoading(false);
-          getAllTasks()
-        } 
+          getAllTasks();
+        }
       }
+  
+      setIsTaskLoading(false);
     } catch (error) {
-      showErrorAlert('Task Error')
-      console.log(error);
+      showErrorAlert('Todo Error');
+      console.error(error);
+      setIsTaskLoading(false); // Ensure loading is stopped in case of error
     }
-  }
-
+  };
+  
   const handleDropdownUpdate = (value: string, type: string) => {
     switch (type) {
       case Type.Status:
@@ -160,13 +173,13 @@ const TaskList = () => {
       setIsTaskLoading(true);
       const result = await axios.delete(`${baseUrl}/${id}`);
       if (result?.status) {
-        showSuccessAlert('Task Deleted Succesfully');
+        showSuccessAlert('Todo Deleted Succesfully');
         handleResetValues();
         setIsTaskLoading(false);
         getAllTasks()
       }
     } catch (error) {
-      showErrorAlert('Task Error')
+      showErrorAlert('Todo Error')
       console.log(error);
     }
   }
@@ -202,8 +215,8 @@ const TaskList = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Tasks", path: "/apps/tasks/list" },
-          { label: "Tasks List", path: "/apps/tasks/list", active: true },
+          { label: "Todo", path: "/apps/tasks/list" },
+          { label: "Todo List", path: "/apps/tasks/list", active: true },
         ]}
         title={"Tasks List"}
       />
@@ -232,6 +245,7 @@ const TaskList = () => {
                           title="Today"
                           tasks={todayTask}
                           selectTask={selectTask}
+                          actionFunction={actionFunction}
                         ></TaskSection>
                       </div>
                       <div className="mt-4">
@@ -247,6 +261,7 @@ const TaskList = () => {
                           title="Completed"
                           tasks={completedTask}
                           selectTask={selectTask}
+                          actionFunction={actionFunction}
                         ></TaskSection>
                       </div>
                       <div className="mt-4 mb-4">
@@ -254,13 +269,14 @@ const TaskList = () => {
                           title="Expired"
                           tasks={expiredTask}
                           selectTask={selectTask}
+                          actionFunction={actionFunction}
                         ></TaskSection>
                       </div>
                     </Col>
                   </Row>
                   <Modal show={showModal} onHide={toggleModal} dialogClassName="modal-dialog-centered">
                     <Modal.Header closeButton>
-                      <h4 className="modal-title">{ isUpdate ? 'Update' : 'Add' } Task</h4>
+                      <h4 className="modal-title">{ isUpdate ? 'Update' : 'Add' } Todo</h4>
                     </Modal.Header>
                     <Modal.Body>
                       <Col className="col-auto">
@@ -332,6 +348,6 @@ const TaskList = () => {
       </Row>
     </>
   );
-};
+});
 
 export default TaskList;

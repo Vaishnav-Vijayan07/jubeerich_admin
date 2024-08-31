@@ -14,7 +14,7 @@ import { withSwal } from "react-sweetalert2";
 
 // dummy data
 import { actionTypes, TaskItemTypes } from "./data";
-import {formatTimestamp } from "../../../constants";
+import { formatTimestamp } from "../../../constants";
 
 const Task = withSwal(({
   task,
@@ -38,14 +38,11 @@ const Task = withSwal(({
   };
 
   const handleActionFucntion = (item: any, action: string) => {
-    console.log('Entered 1');
     if (actionFunction) {
 
       if (actionTypes.update == action) {
         actionFunction(item, action)
       } else {
-        console.log('Entered');
-        
         swal
           .fire({
             title: "Are you sure?",
@@ -109,8 +106,8 @@ const Task = withSwal(({
                   >
                     {task.priority}
                   </span>
-                  <span onClick={() => handleActionFucntion(task,actionTypes.update)} className="mdi mdi-pencil ps-1"/>
-                  <span onClick={() => handleActionFucntion(task,actionTypes.delete)} className="mdi mdi-delete ps-1"/>
+                  <span onClick={() => handleActionFucntion(task, actionTypes.update)} className="mdi mdi-pencil ps-1 fs-4" />
+                  <span onClick={() => handleActionFucntion(task, actionTypes.delete)} className="mdi mdi-delete ps-1 fs-4" />
                 </li>
               </ul>
             </div>
