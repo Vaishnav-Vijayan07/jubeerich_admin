@@ -10,17 +10,24 @@ import {
 } from "react-bootstrap";
 import classNames from "classnames";
 import { ReactSortable } from "react-sortablejs";
+import { withSwal } from "react-sweetalert2";
 
 // dummy data
-import { TaskItemTypes } from "./data";
-import {formatTimestamp } from "../../../constants";
+import { actionTypes, TaskItemTypes } from "./data";
+import { formatTimestamp } from "../../../constants";
 
-const Task = ({
+const Task = withSwal(({
   task,
   selectTask,
+  actionFunction,
+  selectedTaskId,
+  swal
 }: {
   task: TaskItemTypes;
   selectTask: (task: TaskItemTypes) => void;
+  actionFunction?: (item: any, action: string) => void;
+  selectedTaskId: any
+  swal: any
 }) => {
   const [completed, setCompleted] = useState<boolean>(task.stage === "Done");
 
@@ -32,21 +39,39 @@ const Task = ({
     selectTask(task);
   };
 
+  const handleActionFucntion = (item: any, action: string) => {
+    if (actionFunction) {
+
+      if (actionTypes.update == action) {
+        actionFunction(item, action)
+      } else {
+        swal
+          .fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+          })
+          .then((result: any) => {
+            if (result.isConfirmed) {
+              actionFunction(item, action)
+            }
+          });
+      }
+    }
+  }
+
   return (
     <>
       <Row className="justify-content-sm-between">
         <span className="task-item"></span>
         <Col md={6} className="mb-2 ps-3">
           <div className="form-check">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id={`task-${task.id}`}
-              checked={completed}
-              onChange={markCompleted}
-            />
             <label
-              className="form-check-label"
+              className={`form-check-label ${task.id == selectedTaskId ? 'text-danger' : ''}`}
               htmlFor={`task-${task.id}`}
               onClick={() => selectTask(task)}
             >
@@ -76,6 +101,8 @@ const Task = ({
                   >
                     {task.priority}
                   </span>
+                  <span onClick={() => handleActionFucntion(task, actionTypes.update)} className="mdi mdi-pencil ps-1 fs-4" />
+                  <span onClick={() => handleActionFucntion(task, actionTypes.delete)} className="mdi mdi-delete ps-1 fs-4" />
                 </li>
               </ul>
             </div>
@@ -84,15 +111,17 @@ const Task = ({
       </Row>
     </>
   );
-};
+});
 
 interface TaskSectionState {
   title: string;
   tasks: TaskItemTypes[];
   selectTask: (task: TaskItemTypes) => void;
+  actionFunction?: (item: any, action: string) => void;
+  selectedTaskId: any
 }
 
-const TaskSection = ({ title, tasks, selectTask }: TaskSectionState) => {
+const TaskSection = ({ title, tasks, selectTask, actionFunction, selectedTaskId }: TaskSectionState) => {
   const [collapse, setCollapse] = useState<boolean>(true);
   const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
 
@@ -130,7 +159,7 @@ const TaskSection = ({ title, tasks, selectTask }: TaskSectionState) => {
               setList={setTaskList}
             >
               {(taskList || []).map((task, idx) => (
-                <Task selectTask={selectTask} task={task} key={idx} />
+                <Task selectedTaskId={selectedTaskId} selectTask={selectTask} task={task} key={idx} actionFunction={actionFunction} />
               ))}
             </ReactSortable>
           </Card.Body>

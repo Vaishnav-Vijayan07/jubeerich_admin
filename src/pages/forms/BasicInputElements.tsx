@@ -321,16 +321,8 @@ const BasicInputElements = withSwal((props: any) => {
     category_id: yup.string().required("Category is required").nullable(),
     source_id: yup.string().required("Source is required").nullable(),
     channel_id: yup.string().required("Channel is required").nullable(),
-    // city: yup.string().required("City is required"),
-    // preferred_country: yup
-    //   .array()
-    //   .min(1, "At least one preferred country is required")
-    //   .required("Preferred country is required"),
     office_type: yup.string().required("Office type is required").nullable(),
     lead_received_date: yup.date().required("Date is required"),
-    // ielts: yup.boolean(),
-    // remarks: yup.string(),
-    // zipcode: yup.string().matches(/^\d+$/, 'Zipcode must be a valid one').nullable()
   });
 
   // console.log("isUpdate ======>", isUpdate);
@@ -619,6 +611,7 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.franchise_id ? formData.franchise_id : null
                   )
                 );
+                // setSelectedFile([])
               } else {
                 // Handle add logic
                 console.log("here leads");
@@ -651,6 +644,7 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.franchise_id ? formData.franchise_id : null
                   )
                 );
+                // setSelectedFile([])
               }
             }
           }
@@ -1080,7 +1074,7 @@ const BasicInputElements = withSwal((props: any) => {
                 );
                 setLanguageForm(removeFields);
                 setSelectedFile(removeFiles);
-                showSuccessAlert(res.data.message);
+                showSuccessAlert(res?.data?.message);
               })
               .catch((err: any) => {
                 console.log(err);
@@ -1094,16 +1088,27 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleFileChange = (index: number, e: any) => {
+    
     let file = e.target.files[0];
 
-    if (!isUpdate && selectedFile.length) {
-      const filteredFile = selectedFile.filter(
-        (data: any, i: number) => i !== index
-      );
-      setSelectedFile(filteredFile);
-    } else if (isUpdate && selectedFile.length) {
-      selectedFile.splice(index, 1, file);
+    // if (!isUpdate && selectedFile.length) {
+    //   // const filteredFile = selectedFile.filter(
+    //   //   (data: any, i: number) => i !== index
+    //   // );
+    //   // setSelectedFile([...filteredFile, file]);
 
+    //   selectedFile.splice(index, 1, file);
+    //   setSelectedFile([...selectedFile]);
+
+    // } else if (isUpdate && selectedFile.length) {
+    //   selectedFile.splice(index, 1, file);
+    //   setSelectedFile([...selectedFile]);
+    // } else {
+    //   setSelectedFile((prevData: any) => [...prevData, file]);
+    // }
+
+    if (selectedFile.length) {
+      selectedFile.splice(index, 1, file);
       setSelectedFile([...selectedFile]);
     } else {
       setSelectedFile((prevData: any) => [...prevData, file]);
@@ -1548,11 +1553,12 @@ const BasicInputElements = withSwal((props: any) => {
                 className="mt-1"
                 onClick={() =>
                   isUpdate
-                    ? [handleCancelUpdate(), toggle()]
+                    ? [handleCancelUpdate(), toggle(), setLanguageForm(languageFormInitialState), setSelectedFile([]), setSelectedFileName([])]
                     : [
                       toggle(),
                       handleResetValues(),
                       setLanguageForm(languageFormInitialState),
+                      setSelectedFile([])
                     ]
                 }
               >
@@ -1563,6 +1569,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="success"
                 id="button-addon2"
                 className="mt-1"
+                disabled={loading}
               >
                 {isUpdate ? "Update" : "Submit"}
               </Button>

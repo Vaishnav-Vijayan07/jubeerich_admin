@@ -232,14 +232,12 @@ const BasicInputElements = withSwal((props: any) => {
     source_id: yup.string().required("Source is required"),
     channel_id: yup.string().required("Channel is required"),
     city: yup.string().required("City is required"),
-    // preferred_country: yup.string().required("Preferred country is required"),
     preferred_country: yup
     .array()
     .min(1, "At least one preferred country is required")
     .required("Preferred country is required"),
     office_type: yup.string().required("Office type is required"),
     lead_received_date: yup.date().required("Date is required"),
-    // ielts: yup.boolean(),
     remarks: yup.string(),
   });
 
@@ -459,6 +457,7 @@ const BasicInputElements = withSwal((props: any) => {
               selectedFile
             )
           );
+          setSelectedFileName([])
           setIsUpdate(false);
         } else {
           // Handle add logic
@@ -954,12 +953,22 @@ const BasicInputElements = withSwal((props: any) => {
   const handleFileChange = (index: number, e: any) => {
     let file = e.target.files[0];
 
-    if (!(isUpdate) && selectedFile.length) {
-      const filteredFile = selectedFile.filter((data: any, i: number) => i !== index);
-      setSelectedFile(filteredFile);
-    } else if (isUpdate && selectedFile.length) {
-      selectedFile.splice(index, 1, file);
+    // if (!(isUpdate) && selectedFile.length) {
+    //   // const filteredFile = selectedFile.filter((data: any, i: number) => i !== index);
+    //   // setSelectedFile(filteredFile);
+    //   selectedFile.splice(index, 1, file);
 
+    //   setSelectedFile([...selectedFile])
+    // } else if (isUpdate && selectedFile.length) {
+    //   selectedFile.splice(index, 1, file);
+
+    //   setSelectedFile([...selectedFile]);
+    // } else {
+    //   setSelectedFile((prevData: any) => [...prevData, file]);
+    // }
+
+    if (selectedFile.length) {
+      selectedFile.splice(index, 1, file);
       setSelectedFile([...selectedFile]);
     } else {
       setSelectedFile((prevData: any) => [...prevData, file]);
@@ -1668,7 +1677,7 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1 ms-2"
                 onClick={() =>
-                  isUpdate ? [handleCancelUpdate(), toggle()] : toggle()
+                  isUpdate ? [handleCancelUpdate(), toggle(), setLanguageForm([{ exam_name: '', marks: '' }]), setSelectedFile([]), setSelectedFileName([])] : [toggle(), setLanguageForm([{ exam_name: '', marks: '' }]), setSelectedFile([]), setSelectedFileName([])]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
