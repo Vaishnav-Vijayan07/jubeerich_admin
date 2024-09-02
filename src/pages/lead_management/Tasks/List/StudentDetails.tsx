@@ -23,6 +23,7 @@ import { follow_up_id, future_leads_id, not_responding_id, showErrorAlert, showS
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import Comments from "./Comments";
+import Attachments from "./Attachments";
 
 const BasicInfo = lazy(() => import('./BasicInfo'));
 const AcademicInfo = lazy(() => import('./AcademicInfo'));
@@ -574,6 +575,16 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                         Comments
                       </Nav.Link>
                     </Nav.Item>
+
+                    <Nav.Item as="li" className="nav-item nav_item_5">
+                      <Nav.Link
+                        // href="#"
+                        eventKey="attachments"
+                        className="nav-link cursor-pointer"
+                      >
+                        Attachments
+                      </Nav.Link>
+                    </Nav.Item>
                   </Nav>
 
                   <Tab.Content>
@@ -615,6 +626,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     <Tab.Pane eventKey="comments">
                       <Suspense fallback={<></>}>
                         {studentId && <Comments studentId={studentId} />}
+                      </Suspense>
+                    </Tab.Pane>
+
+                    <Tab.Pane eventKey="attachments">
+                      <Suspense fallback={<></>}>
+                        {studentId && <Attachments studentId={studentId} />}
                       </Suspense>
                     </Tab.Pane>
                   </Tab.Content>
