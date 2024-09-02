@@ -20,11 +20,13 @@ const Task = withSwal(({
   task,
   selectTask,
   actionFunction,
+  selectedTaskId,
   swal
 }: {
   task: TaskItemTypes;
   selectTask: (task: TaskItemTypes) => void;
   actionFunction?: (item: any, action: string) => void;
+  selectedTaskId: any
   swal: any
 }) => {
   const [completed, setCompleted] = useState<boolean>(task.stage === "Done");
@@ -68,15 +70,8 @@ const Task = withSwal(({
         <span className="task-item"></span>
         <Col md={6} className="mb-2 ps-3">
           <div className="form-check">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id={`task-${task.id}`}
-              checked={completed}
-              onChange={markCompleted}
-            />
             <label
-              className="form-check-label"
+              className={`form-check-label ${task.id == selectedTaskId ? 'text-danger' : ''}`}
               htmlFor={`task-${task.id}`}
               onClick={() => selectTask(task)}
             >
@@ -123,9 +118,10 @@ interface TaskSectionState {
   tasks: TaskItemTypes[];
   selectTask: (task: TaskItemTypes) => void;
   actionFunction?: (item: any, action: string) => void;
+  selectedTaskId: any
 }
 
-const TaskSection = ({ title, tasks, selectTask, actionFunction }: TaskSectionState) => {
+const TaskSection = ({ title, tasks, selectTask, actionFunction, selectedTaskId }: TaskSectionState) => {
   const [collapse, setCollapse] = useState<boolean>(true);
   const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
 
@@ -163,7 +159,7 @@ const TaskSection = ({ title, tasks, selectTask, actionFunction }: TaskSectionSt
               setList={setTaskList}
             >
               {(taskList || []).map((task, idx) => (
-                <Task selectTask={selectTask} task={task} key={idx} actionFunction={actionFunction} />
+                <Task selectedTaskId={selectedTaskId} selectTask={selectTask} task={task} key={idx} actionFunction={actionFunction} />
               ))}
             </ReactSortable>
           </Card.Body>
