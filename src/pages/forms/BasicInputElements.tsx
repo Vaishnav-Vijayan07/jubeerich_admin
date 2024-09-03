@@ -1571,6 +1571,7 @@ const BasicInputElements = withSwal((props: any) => {
             </Modal.Footer>
           </Form>
         </Modal>
+        
         {/* </Col> */}
 
         {user?.role == 2 && (
