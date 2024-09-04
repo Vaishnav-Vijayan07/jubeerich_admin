@@ -427,6 +427,20 @@ input[type="number"] {
   background-color: #684dc9dc;
 }
 
+.nav-pills .nav_item_4 .nav-link.active, .nav-pills .show > .nav-link {
+  color: var(--ct-nav-pills-link-active-color);
+  background-color: #635692dc;
+}
+
+.nav-pills .nav_item_4 .nav-link:hover, .nav-pills .show > .nav-link {
+  color: var(--ct-nav-pills-link-active-color);
+  background-color: #635692dc;
+}
+
+.nav-link{
+  color: #6c757d;
+}
+
 
 /* .select-wrapper{
   min-width: 200px !important;

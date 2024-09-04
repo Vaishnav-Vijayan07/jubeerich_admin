@@ -262,7 +262,7 @@ const Table = (props: TableProps) => {
                     <span className="d-flex gap-1 align-items-center">
                       {column.render("Header")}
                       {column.sort && (
-                        <span>
+                        <span className="d-flex align-items-center">
                           {column.isSorted ? (
                             column.isSortedDesc ? (
                               <span style={{ fontSize: "8px" }}> ▼</span> // Descending
@@ -270,7 +270,7 @@ const Table = (props: TableProps) => {
                               <span style={{ fontSize: "8px" }}> ▲</span> // Ascending
                             )
                           ) : (
-                            <span> ↕</span> // Default unsorted state
+                            <span style={{ fontSize: "16px" }}> ↕</span> // Default unsorted state
                           )}
                         </span>
                       )}
