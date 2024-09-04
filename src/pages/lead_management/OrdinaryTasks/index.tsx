@@ -23,7 +23,7 @@ const TaskList = withSwal(({ swal }: any) => {
     id: "",
     title: "",
     description: "",
-    status: "",
+    status: "pending",
     due_date: "",
     priority: "",
   }
@@ -50,7 +50,7 @@ const TaskList = withSwal(({ swal }: any) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [taskFormData, setTaskFormData] = useState<any>(initialTaskFormState);
   const [selectedPriority, setselectedPriority] = useState<any>(null);
-  const [selectedStatus, setselectedStatus] = useState<any>(null);
+  const [selectedStatus, setselectedStatus] = useState<any>({ label: "Pending", value: "pending" });
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const [isTaskLoading, setIsTaskLoading] = useState(false);
   const [isValidationError, setIsValidationError] = useState(initialTaskFormValidationError);
@@ -379,7 +379,7 @@ const TaskList = withSwal(({ swal }: any) => {
                           containerClass={"mb-3"}
                         />
                         {isValidationError.due_date && <Form.Text className="text-danger">{isValidationError.due_date}</Form.Text>}
-                        <Form.Group className="mb-3" controlId="status">
+                        {isUpdate && <Form.Group className="mb-3" controlId="status">
                           <Form.Label>Status</Form.Label>
                           <Select
                             className="react-select react-select-container select-wrapper"
@@ -389,7 +389,7 @@ const TaskList = withSwal(({ swal }: any) => {
                             value={selectedStatus}
                             onChange={handleInputSelect}
                           />
-                        </Form.Group>
+                        </Form.Group>}
                         {isValidationError.status && <Form.Text className="text-danger">{isValidationError.status}</Form.Text>}
                         <Form.Group className="mb-3" controlId="priority">
                           <Form.Label>Priority</Form.Label>

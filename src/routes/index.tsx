@@ -61,6 +61,7 @@ const University = React.lazy(() => import("../pages/forms/University"));
 const Programs = React.lazy(() => import("../pages/forms/Programs"));
 const Franchiseees = React.lazy(() => import("../pages/forms/Franchise"));
 const Status = React.lazy(() => import("../pages/status/Status"));
+const Campus = React.lazy(() => import("../pages/forms/Campus"));
 const StatusConfig = React.lazy(
   () => import("../pages/status/StatusConfiguration")
 );
@@ -339,6 +340,12 @@ const settingsRoutes = {
           name: "Status Config",
           // element: <SubStatus />,
           element: <PrivateRoute roles={["Monitor"]} component={SubStatus} />,
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/campus",
+          name: "Campus",
+          element: <PrivateRoute roles={["Monitor"]} component={Campus} />,
           route: PrivateRoute,
         },
       ],

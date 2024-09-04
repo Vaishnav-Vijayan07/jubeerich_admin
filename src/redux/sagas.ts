@@ -24,6 +24,7 @@ import CountrySaga from "./country/saga";
 import UniversitySaga from "./University/saga";
 import ProgramSaga from "./programs/saga";
 import FranchiseUserSaga from "./franchise/saga";
+import CampusSaga from "./campus/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -51,5 +52,6 @@ export default function* rootSaga() {
     DashboardSaga(),
     FranchiseSaga(),
     FranchiseUserSaga(),
+    CampusSaga()
   ]);
 }

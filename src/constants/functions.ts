@@ -1,3 +1,5 @@
+import moment from 'moment-timezone';
+
 export interface StatusObjType {
   status_name: string;
   color: string;
@@ -21,18 +23,25 @@ export const DateReverse = (DateString: any) => {
   return DateString?.split("-").reverse().join("-");
 };
 
+const timezone = 'Asia/Kolkata';
+
+
 export const formatTimestamp = (timestamp: any) => {
-  const date = new Date(timestamp);
-  const day = date.getDate();
-  const month = date.toLocaleString('default', { month: 'short' });
-  let hours = date.getHours();
-  const minutes = date.getMinutes();
+  // Create a moment object in the specified timezone
+  const date = moment.tz(timestamp, timezone);
 
-  const ampm = hours >= 12 ? 'pm' : 'am';
-  hours = hours % 12 || 12;
+  const day = date.date(); // Day of the month
+  const month = date.format('MMM'); // Short month name (e.g., Jan, Feb)
+  let hours = date.hours(); // Get hours in 24-hour format
+  const minutes = date.minutes(); // Get minutes
 
+  const ampm = hours >= 12 ? 'pm' : 'am'; // Determine AM/PM
+  hours = hours % 12 || 12; // Convert to 12-hour format
+
+  // Format time string
   const time = minutes === 0 ? `${hours}${ampm}` : `${hours}:${minutes < 10 ? '0' : ''}${minutes}${ampm}`;
-  
+
+  // Return formatted date and time
   return `${day} ${month} ${time}`;
 };
 
