@@ -30,6 +30,7 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import Comments from "./Comments";
 import Attachments from "./Attachments";
+import WorkExpereince from "./WorkExpereince";
 
 const BasicInfo = lazy(() => import('./BasicInfo'));
 const AcademicInfo = lazy(() => import('./AcademicInfo'));
@@ -576,6 +577,18 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       </div>
                     </Nav.Item>
 
+                    <Nav.Item as="li" className="nav-item nav_item_2">
+                      <div>
+                        <Nav.Link
+                          // href="#"
+                          eventKey="work_info"
+                          className="nav-link cursor-pointer"
+                        >
+                          Work Experience
+                        </Nav.Link>
+                      </div>
+                    </Nav.Item>
+
                     <Nav.Item as="li" className="nav-item nav_item_3">
                       <div>
                         <Nav.Link
@@ -630,6 +643,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     <Tab.Pane eventKey="academic_info">
                       <Suspense fallback={<></>}>
                         {studentId && <AcademicInfo studentId={studentId} />}
+                      </Suspense>
+                    </Tab.Pane>
+                    
+                    <Tab.Pane eventKey="work_info">
+                      <Suspense fallback={<></>}>
+                        {studentId && <WorkExpereince studentId={studentId} />}
                       </Suspense>
                     </Tab.Pane>
 

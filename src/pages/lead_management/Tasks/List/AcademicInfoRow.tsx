@@ -1,13 +1,31 @@
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
+import React from "react";
 
-const AcademicInfoRow = ({
+interface AcademicInfo {
+  id?: number;
+  qualification: string;
+  place: string;
+  percentage: number;
+  year_of_passing: number;
+  backlogs?: number;
+}
+
+interface AcademicInfoRowProps {
+  academicInfo: AcademicInfo[];
+  handleAcademicInfoChange: (index: number, event: React.ChangeEvent<HTMLInputElement>) => void;
+  validationErrors?: Record<string, string>;
+  addMoreAcademicInfo: () => void;
+  removeAcademicInfo: (index: number, id: number) => void;
+}
+
+const AcademicInfoRow: React.FC<AcademicInfoRowProps> = ({
   academicInfo,
   handleAcademicInfoChange,
   validationErrors,
   addMoreAcademicInfo,
   removeAcademicInfo,
-}: any) => {
+}) => {
   return (
     <Row>
       <h5 className="mb-4 text-uppercase">
@@ -16,80 +34,98 @@ const AcademicInfoRow = ({
 
       {/* Initial Education Entry */}
       <Row>
-        <Col md={4} lg={4} xl={4} xxl={4}>
-          <Form.Group className="mb-3" controlId="qualification">
-            <Form.Label>
-              <span className="text-danger">* </span>Qualification
-            </Form.Label>
-            <FormInput
-              type="text"
-              name="qualification"
-              placeholder="Enter qualification"
-              value={academicInfo?.[0]?.qualification || ""}
-              onChange={(e) => handleAcademicInfoChange(0, e)}
-            />
-          </Form.Group>
-        </Col>
+        {academicInfo.map((item, index) => (
+          <React.Fragment key={index}>
+            <Col md={4} lg={4} xl={4} xxl={4}>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  <span className="text-danger">* </span>Qualification
+                </Form.Label>
+                <FormInput
+                  type="text"
+                  name="qualification"
+                  placeholder="Enter qualification"
+                  value={item.qualification || ""}
+                  onChange={(e) => handleAcademicInfoChange(index, e)}
+                />
+              </Form.Group>
+            </Col>
 
-        <Col md={4} lg={4} xl={4} xxl={4}>
-          <Form.Group className="mb-3" controlId="place">
-            <Form.Label>
-              <span className="text-danger">* </span>Place
-            </Form.Label>
-            <FormInput
-              type="text"
-              name="place"
-              placeholder="Enter place"
-              value={academicInfo?.[0]?.place || ""}
-              onChange={(e) => handleAcademicInfoChange(0, e)}
-            />
-          </Form.Group>
-        </Col>
+            <Col md={4} lg={4} xl={4} xxl={4}>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  <span className="text-danger">* </span>Place
+                </Form.Label>
+                <FormInput
+                  type="text"
+                  name="place"
+                  placeholder="Enter place"
+                  value={item.place || ""}
+                  onChange={(e) => handleAcademicInfoChange(index, e)}
+                />
+              </Form.Group>
+            </Col>
 
-        <Col md={4} lg={4} xl={4} xxl={4}>
-          <Form.Group className="mb-3" controlId="percentage">
-            <Form.Label>
-              <span className="text-danger">* </span>Percentage
-            </Form.Label>
-            <FormInput
-              type="number"
-              name="percentage"
-              placeholder="Enter percentage"
-              value={academicInfo?.[0]?.percentage || ""}
-              onChange={(e) => handleAcademicInfoChange(0, e)}
-              min={0}
-            />
-          </Form.Group>
-        </Col>
+            <Col md={4} lg={4} xl={4} xxl={4}>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  <span className="text-danger">* </span>Percentage
+                </Form.Label>
+                <FormInput
+                  type="number"
+                  name="percentage"
+                  placeholder="Enter percentage"
+                  value={item.percentage || ""}
+                  onChange={(e) => handleAcademicInfoChange(index, e)}
+                  min={0}
+                />
+              </Form.Group>
+            </Col>
 
-        <Col md={4} lg={4} xl={4} xxl={4}>
-          <Form.Group className="mb-3" controlId="year_of_passing">
-            <Form.Label>
-              <span className="text-danger">* </span>Year of passing
-            </Form.Label>
-            <FormInput
-              type="number"
-              name="year_of_passing"
-              placeholder="Enter year of passing"
-              value={academicInfo?.[0]?.year_of_passing || ""}
-              onChange={(e) => handleAcademicInfoChange(0, e)}
-              min={0}
-            />
-          </Form.Group>
-        </Col>
+            <Col md={4} lg={4} xl={4} xxl={4}>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  <span className="text-danger">* </span>Year of passing
+                </Form.Label>
+                <FormInput
+                  type="number"
+                  name="year_of_passing"
+                  placeholder="Enter year of passing"
+                  value={item.year_of_passing || ""}
+                  onChange={(e) => handleAcademicInfoChange(index, e)}
+                  min={0}
+                />
+              </Form.Group>
+            </Col>
 
-        <Col md={4} lg={4} xl={4} xxl={4}>
-          <Form.Group className="mb-2" controlId="backlogs">
-            <Form.Label>Backlogs</Form.Label>
-            <FormInput
-              type="number"
-              name="backlogs"
-              placeholder="Enter backlogs"
-              value={academicInfo?.[0]?.backlogs}
-              onChange={(e) => handleAcademicInfoChange(0, e)}
-            />
-          </Form.Group>
-        </Col>
+            <Col md={4} lg={4} xl={4} xxl={4}>
+              <Form.Group className="mb-2">
+                <Form.Label>Backlogs</Form.Label>
+                <FormInput
+                  type="number"
+                  name="backlogs"
+                  placeholder="Enter backlogs"
+                  value={item.backlogs || ""}
+                  onChange={(e) => handleAcademicInfoChange(index, e)}
+                />
+              </Form.Group>
+            </Col>
+
+            {academicInfo.length > 1 && (
+              <Col className="d-flex align-items-center gap-1 mb-2">
+                <i
+                  className="text-danger mdi mdi-minus-circle-outline fs-3 ps-1"
+                  onClick={() => {
+                    const itemId = item.id ?? 0;
+                    removeAcademicInfo(index, itemId);
+                  }}
+                ></i>
+                <span className="text-danger">Remove</span>
+              </Col>
+            )}
+          </React.Fragment>
+        ))}
+
         <Row className="mb-2">
           <Col className="d-flex align-items-center gap-1">
             <i
@@ -100,106 +136,6 @@ const AcademicInfoRow = ({
           </Col>
         </Row>
       </Row>
-
-      {academicInfo?.length > 1 &&
-        academicInfo?.slice(1).map((item: any, index: any) => (
-          <Row key={index + 1}>
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId="qualification">
-                <Form.Label>
-                  <span className="text-danger">* </span>Qualification
-                </Form.Label>
-                <FormInput
-                  type="text"
-                  name="qualification"
-                  placeholder="Enter qualification"
-                  value={item?.qualification || ""}
-                  onChange={(e) => handleAcademicInfoChange(index + 1, e)}
-                />
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId="place">
-                <Form.Label>
-                  <span className="text-danger">* </span>Place
-                </Form.Label>
-                <FormInput
-                  type="text"
-                  name="place"
-                  placeholder="Enter place"
-                  value={item?.place || ""}
-                  onChange={(e) => handleAcademicInfoChange(index + 1, e)}
-                />
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId="percentage">
-                <Form.Label>
-                  <span className="text-danger">* </span>Percentage
-                </Form.Label>
-                <FormInput
-                  type="number"
-                  name="percentage"
-                  placeholder="Enter percentage"
-                  value={item?.percentage || ""}
-                  onChange={(e) => handleAcademicInfoChange(index + 1, e)}
-                  min={0}
-                />
-                {validationErrors.percentage && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.percentage}
-                  </Form.Text>
-                )}
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId="year_of_passing">
-                <Form.Label>
-                  <span className="text-danger">* </span>Year of passing
-                </Form.Label>
-                <FormInput
-                  type="number"
-                  name="year_of_passing"
-                  placeholder="Enter year of passing"
-                  value={item?.year_of_passing || ""}
-                  onChange={(e) => handleAcademicInfoChange(index + 1, e)}
-                  min={0}
-                />
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-2" controlId="backlogs">
-                <Form.Label>Backlogs</Form.Label>
-                <FormInput
-                  type="number"
-                  name="backlogs"
-                  placeholder="Enter backlogs"
-                  value={item?.backlogs}
-                  onChange={(e) => handleAcademicInfoChange(index + 1, e)}
-                />
-              </Form.Group>
-            </Col>
-
-            {academicInfo.length > 1 && (
-              <Row className="mb-2">
-                <Col className="d-flex align-items-center gap-1">
-                  <i
-                    className="text-danger mdi mdi-minus-circle-outline fs-3 ps-1"
-                    onClick={() => {
-                      const itemId = item.id ?? 0;
-                      removeAcademicInfo(index + 1, itemId);
-                    }}
-                  ></i>
-                  <span className="text-danger">Remove</span>
-                </Col>
-              </Row>
-            )}
-          </Row>
-        ))}
     </Row>
   );
 };

@@ -16,30 +16,31 @@ type AcademicItem = {
   backlogs: number;
 };
 
-type ItemType = WorkItem | AcademicItem;
+type ExamItem = {
+  id: string;
+  exam_name: string;
+  marks: string;
+  exam_documents: null;
+  document: null;
+};
 
-export const isAllItemsPresent = (
-  type: "work" | "academic",
-  data: ItemType[]
-): boolean => {
-  return data.every((item: any) => {
-    if (type === "work") {
-      // Check fields other than id and years for work
-      return (
-        item["designation"] !== "" &&
-        item["company"] !== "" &&
-        item["from"] !== "" &&
-        item["to"] !== ""
-      );
-    } else if (type === "academic") {
-      // Check fields other than id and backlogs for academic
-      return (
-        item["qualification"] !== "" &&
-        item["place"] !== "" &&
-        item["percentage"] !== "" &&
-        item["year_of_passing"] !== ""
-      );
-    }
-    return false;
-  });
+export const isAllItemsPresentWork = (data: WorkItem): boolean => {
+  return (
+    data.designation !== "" &&
+    data.company !== "" &&
+    data.from !== "" &&
+    data.to !== ""
+  );
+};
+
+export const isAllItemsPresentAcademic = (data: AcademicItem): boolean => {
+  return (
+    data.qualification !== "" &&
+    data.place !== "" &&
+    data.percentage !== "" &&
+    data.year_of_passing !== ""
+  );
+};
+export const isAllItemsPresentExam = (data: ExamItem): boolean => {
+  return data.exam_name !== "" && data.marks !== "";
 };

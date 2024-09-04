@@ -158,7 +158,7 @@ const TaskSection = ({ title, tasks, selectTask, actionFunction, selectedTaskId 
               list={taskList}
               setList={setTaskList}
             >
-              {(taskList || []).map((task, idx) => (
+              {(taskList || [])?.map((task, idx) => (
                 <Task selectedTaskId={selectedTaskId} selectTask={selectTask} task={task} key={idx} actionFunction={actionFunction} />
               ))}
             </ReactSortable>
