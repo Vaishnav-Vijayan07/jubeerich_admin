@@ -24,6 +24,7 @@ import Country from "./country/reducers";
 import University from "./University/reducers";
 import Program from "./programs/reducers";
 import Franchise from "./franchise/reducers";
+import Campus from "./campus/reducers";
 export default combineReducers({
   Auth,
   Layout,
@@ -49,4 +50,5 @@ export default combineReducers({
   Dashboard,
   FranchiseUsers,
   Franchise,
+  Campus
 });

@@ -152,17 +152,17 @@ const MENU_ITEMS: MenuItemTypes[] = [
         parentKey: "master",
       },
       {
+        key: "campus",
+        label: "Campus",
+        url: "/settings/master/campus",
+        parentKey: "master",
+      },
+      {
         key: "programs",
         label: "Programs",
         url: "/settings/master/programs",
         parentKey: "master",
       },
-      // {
-      //   key: "campaign",
-      //   label: "Campaign",
-      //   url: "/settings/master/campaign",
-      //   parentKey: "master",
-      // },
       {
         key: "branches",
         label: "Branches",
@@ -177,6 +177,22 @@ const MENU_ITEMS: MenuItemTypes[] = [
       },
     ],
   },
+
+  // {
+  //   key: "courses",
+  //   label: "Course Setup",
+  //   isTitle: false,
+  //   icon: "settings",
+  //   roles: ["Monitor"],
+  //   children: [
+  //     {
+  //       key: "campus",
+  //       label: "Lead Category",
+  //       url: "/settings/master/category",
+  //       parentKey: "master",
+  //     },
+  //   ],
+  // },
 
   { key: "status_management", label: "Status Management", isTitle: true, roles: ["Monitor"] },
 

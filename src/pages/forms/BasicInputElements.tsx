@@ -137,6 +137,9 @@ const BasicInputElements = withSwal((props: any) => {
     franchisees,
   } = props;
 
+  console.log("counsellors ===>", counsellors);
+  
+
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);

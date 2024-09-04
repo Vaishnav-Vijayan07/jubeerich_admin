@@ -10,6 +10,8 @@ import { addAdminUsers, deleteAdminUsers, getAdminUsers, updateAdminUsers, getFr
 import { getLeads, addLeads, updateLeads, deleteLeads, getLeadUser } from "./leads";
 import { getAllChecklists, getChecklistById, addChecklist, updateChecklist, deleteChecklist } from "./checklist";
 import { addSubStatus, deleteSubStatus, getAllSubStatus, updateSubStatus } from "./subStatus";
+import { addUniversitysApi, deleteUniversitysApi, getUniversitysApi, updateUniversitysApi } from "./university";
+import { addCampusApi, deleteCampusApi, getCampusApi, updateCampusApi } from "./campus";
 import { addStatus, deleteStatus, getStatus, updateStatus, getStatusConfig } from "./master/status";
 import {
   addHistory,
@@ -84,5 +86,6 @@ export {
   getPrograms,
   updatePrograms,
   getStatusConfig,
-  getFranchiseCounsellors
+  getFranchiseCounsellors, addUniversitysApi, deleteUniversitysApi, getUniversitysApi, updateUniversitysApi,
+  addCampusApi, deleteCampusApi, getCampusApi, updateCampusApi
 };
