@@ -19,11 +19,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { getMaritalStatus } from "../../../../redux/marital_status/actions";
 import axios from "axios";
-import { follow_up_id, future_leads_id, not_responding_id, showErrorAlert, showSuccessAlert } from "../../../../constants";
+import {
+  follow_up_id,
+  future_leads_id,
+  not_responding_id,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../../../../constants";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import Comments from "./Comments";
 import Attachments from "./Attachments";
+import WorkExpereince from "./WorkExpereince";
 
 const BasicInfo = lazy(() => import('./BasicInfo'));
 const AcademicInfo = lazy(() => import('./AcademicInfo'));
@@ -35,8 +42,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [status, setStatus] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [standard, setStandard] = useState(false)
-  const [statusId, setStatusId] = useState(null)
+  const [standard, setStandard] = useState(false);
+  const [statusId, setStatusId] = useState(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [taskDetails, setTaskDetails] = useState<any>({});
 
@@ -82,8 +89,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   };
 
   const handleStatusChange = async (status_id: number) => {
-    if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
-      toggleStandard()
+    if (
+      status_id == follow_up_id ||
+      status_id == future_leads_id ||
+      status_id == not_responding_id
+    ) {
+      toggleStandard();
     } else {
       const { data } = await axios.put("/lead_status", {
         lead_id: studentId,
@@ -96,20 +107,21 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   };
 
   const handleFollowUpDate = () => {
-    axios.put("/lead_status", {
-      lead_id: studentId,
-      status_id: statusId,
-      followup_date: selectedDate
-    }).then((res) => {
-      showSuccessAlert(res.data.message);
-      setRefresh(!refresh);
-      toggleStandard()
-    }).catch((err) => {
-      console.log("err", err);
-
-    })
-
-  }
+    axios
+      .put("/lead_status", {
+        lead_id: studentId,
+        status_id: statusId,
+        followup_date: selectedDate,
+      })
+      .then((res) => {
+        showSuccessAlert(res.data.message);
+        setRefresh(!refresh);
+        toggleStandard();
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
 
   const getTaskDetails = () => {
     axios
@@ -180,7 +192,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         console.log("res ==>", res.data);
 
         getTaskDetails();
-        getTaskList()
+        getTaskList();
         showSuccessAlert(res.data.message);
       })
       .catch((err) => {
@@ -191,17 +203,20 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   console.log("basicData ==>", basicData);
 
   const addNewCountry = (newCountryId: number) => {
-    axios.put("assign_new_country", {
-      id: taskId,
-      newCountryId: newCountryId
-    }).then((res) => {
-      showSuccessAlert(res.data.message)
-      getTaskDetails();
-    }).catch((err) => {
-      console.log("error:", err);
-      showErrorAlert(err)
-    })
-  }
+    axios
+      .put("assign_new_country", {
+        id: taskId,
+        newCountryId: newCountryId,
+      })
+      .then((res) => {
+        showSuccessAlert(res.data.message);
+        getTaskDetails();
+      })
+      .catch((err) => {
+        console.log("error:", err);
+        showErrorAlert(err);
+      });
+  };
 
   if (loading) {
     return (
@@ -324,7 +339,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     src={icons.email}
                     alt="email"
                     className="me-1"
-                    width="16"
+                    width="17"
                   />
                   {/* <h5 className="m-0 font-size-14">{taskObject.email}</h5> */}
                   <input
@@ -408,7 +423,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     <Dropdown.Toggle
                       className="cursor-pointer"
                       variant="light"
-                    // disabled={!StudentData?.status}
+                      // disabled={!StudentData?.status}
                     >
                       {basicData?.status?.status_name
                         ? basicData?.status?.status_name
@@ -421,7 +436,10 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                         <Dropdown.Item
                           eventKey={item.id}
                           key={item.id}
-                          onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                          onClick={() => [
+                            handleStatusChange(item?.id),
+                            setStatusId(item?.id),
+                          ]}
                         >
                           {item.status_name}
                         </Dropdown.Item>
@@ -432,7 +450,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               </div>
 
               <div className="">
-                <p className="mt-2 mb-1 text-muted fw-light">Lead Received Date</p>
+                <p className="mt-2 mb-1 text-muted fw-light">
+                  Lead Received Date
+                </p>
                 <div
                   className="d-flex align-items-center"
                   style={{ gap: "5px" }}
@@ -445,7 +465,10 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   />
                   <input
                     type="tel"
-                    value={basicData?.lead_received_date && moment(basicData?.lead_received_date).format("DD/MM/YYYY")}
+                    value={
+                      basicData?.lead_received_date &&
+                      moment(basicData?.lead_received_date).format("DD/MM/YYYY")
+                    }
                     style={{
                       border: "none",
                       outline: "none",
@@ -471,7 +494,10 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   />
                   <input
                     type="tel"
-                    value={basicData?.followup_date && moment(basicData?.followup_date).format("DD/MM/YYYY")}
+                    value={
+                      basicData?.followup_date &&
+                      moment(basicData?.followup_date).format("DD/MM/YYYY")
+                    }
                     style={{
                       border: "none",
                       outline: "none",
@@ -482,42 +508,39 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   />
                 </div>
               </div>
-
             </div>
-
           </Row>
 
-          {user.role == 7 && <Row>
-            <div className="">
-              <p className="mt-2 mb-1 text-muted fw-light">Add New Country</p>
-              <div
-                className="d-flex align-items-start"
-                style={{ gap: "5px" }}
-              >
-                <Dropdown>
-                  <Dropdown.Toggle
-                    className="cursor-pointer"
-                    variant="light"
-                  >
-                    Choose Country
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {(countryData || [])?.map((item: any) => (
-                      // Check if the item is visible before rendering the Dropdown.Item
+          {user.role == 7 && (
+            <Row>
+              <div className="">
+                <p className="mt-2 mb-1 text-muted fw-light">Add New Country</p>
+                <div
+                  className="d-flex align-items-start"
+                  style={{ gap: "5px" }}
+                >
+                  <Dropdown>
+                    <Dropdown.Toggle className="cursor-pointer" variant="light">
+                      Choose Country
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      {(countryData || [])?.map((item: any) => (
+                        // Check if the item is visible before rendering the Dropdown.Item
 
-                      <Dropdown.Item
-                        eventKey={item.value}
-                        key={item.value}
-                        onClick={() => addNewCountry(item.value)}
-                      >
-                        {item.label}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
+                        <Dropdown.Item
+                          eventKey={item.value}
+                          key={item.value}
+                          onClick={() => addNewCountry(item.value)}
+                        >
+                          {item.label}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
               </div>
-            </div>
-          </Row>}
+            </Row>
+          )}
         </Card.Body>
       </Card>
 
@@ -550,6 +573,18 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                           className="nav-link cursor-pointer"
                         >
                           Academic info
+                        </Nav.Link>
+                      </div>
+                    </Nav.Item>
+
+                    <Nav.Item as="li" className="nav-item nav_item_2">
+                      <div>
+                        <Nav.Link
+                          // href="#"
+                          eventKey="work_info"
+                          className="nav-link cursor-pointer"
+                        >
+                          Work Experience
                         </Nav.Link>
                       </div>
                     </Nav.Item>
@@ -610,6 +645,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                         {studentId && <AcademicInfo studentId={studentId} />}
                       </Suspense>
                     </Tab.Pane>
+                    
+                    <Tab.Pane eventKey="work_info">
+                      <Suspense fallback={<></>}>
+                        {studentId && <WorkExpereince studentId={studentId} />}
+                      </Suspense>
+                    </Tab.Pane>
 
                     <Tab.Pane eventKey="study_preference">
                       {studentId && (
@@ -642,26 +683,38 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         </Card.Body>
       </Card>
 
-      <Modal show={standard} centered onHide={toggleStandard} dialogClassName="modal-calendar-width" >
+      <Modal
+        show={standard}
+        centered
+        onHide={toggleStandard}
+        dialogClassName="modal-calendar-width"
+      >
         <Modal.Header onHide={toggleStandard} closeButton>
           <h4 className="modal-title">Choose Followup Date</h4>
         </Modal.Header>
 
         <Modal.Body>
           <div className="w-100 lead-date-picker">
-            <DatePicker minDate={new Date()} selected={selectedDate} onChange={handleDateChange} inline placeholderText="Choose a date" className="w-100" />
+            <DatePicker
+              minDate={new Date()}
+              selected={selectedDate}
+              onChange={handleDateChange}
+              inline
+              placeholderText="Choose a date"
+              className="w-100"
+            />
           </div>
         </Modal.Body>
         <Modal.Footer className="mt-0">
           <div className="text-end">
-            <Button
-              variant="danger"
-              className="me-1"
-              onClick={toggleStandard}
-            >
+            <Button variant="danger" className="me-1" onClick={toggleStandard}>
               Cancel
             </Button>
-            <Button variant="success" type="submit" onClick={handleFollowUpDate}>
+            <Button
+              variant="success"
+              type="submit"
+              onClick={handleFollowUpDate}
+            >
               Submit
             </Button>
           </div>

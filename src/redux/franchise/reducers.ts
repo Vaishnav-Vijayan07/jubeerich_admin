@@ -25,6 +25,8 @@ export interface SourceActionType {
     | FranchiseActionTypes.GET_FRANCHISE
     | FranchiseActionTypes.ADD_FRANCHISE
     | FranchiseActionTypes.UPDATE_FRANCHISE
+    | FranchiseActionTypes.ADD_FRANCHISE_ADMINUSER
+    | FranchiseActionTypes.UPDATE_FRANCHISE_ADMINUSER
     | FranchiseActionTypes.DELETE_FRANCHISE;
   payload: {
     actionType?: string;
@@ -81,6 +83,24 @@ const Franchise = (
             initialLoading: false,
           };
         }
+        case FranchiseActionTypes.ADD_FRANCHISE_ADMINUSER: {
+          showSuccessAlert(action.payload.data);
+          return {
+            ...state,
+            loading: false,
+            error: null,
+            initialLoading: false,
+          };
+        }
+        case FranchiseActionTypes.UPDATE_FRANCHISE_ADMINUSER: {
+          showSuccessAlert(action.payload.data);
+          return {
+            ...state,
+            loading: false,
+            error: null,
+            initialLoading: false,
+          };
+        }
         default:
           return { ...state };
       }
@@ -123,6 +143,24 @@ const Franchise = (
             initialLoading: false,
           };
         }
+        case FranchiseActionTypes.ADD_FRANCHISE_ADMINUSER: {
+          showErrorAlert(action.payload.error);
+          return {
+            ...state,
+            error: action.payload.error,
+            loading: false,
+            initialLoading: false,
+          };
+        }
+        case FranchiseActionTypes.UPDATE_FRANCHISE_ADMINUSER: {
+          showErrorAlert(action.payload.error);
+          return {
+            ...state,
+            error: action.payload.error,
+            loading: false,
+            initialLoading: false,
+          };
+        }
         default:
           return { ...state };
       }
@@ -132,6 +170,10 @@ const Franchise = (
     case FranchiseActionTypes.ADD_FRANCHISE:
       return { ...state, loading: true, error: null };
     case FranchiseActionTypes.UPDATE_FRANCHISE:
+      return { ...state, loading: true, error: null };
+    case FranchiseActionTypes.ADD_FRANCHISE_ADMINUSER:
+      return { ...state, loading: true, error: null };
+    case FranchiseActionTypes.UPDATE_FRANCHISE_ADMINUSER:
       return { ...state, loading: true, error: null };
     default:
       return { ...state };

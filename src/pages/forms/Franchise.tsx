@@ -350,7 +350,6 @@ const BasicInputElements = withSwal((props: any) => {
                     adminUserFormData.franchise_id
                   )
                 );
-                setIsUpdateAdminUser(false);
               } else {
                 dispatch(
                   addFranchiseAdminUser(
@@ -802,7 +801,7 @@ const BasicInputElements = withSwal((props: any) => {
                         </Form.Group>
                       </Row>
 
-                      {!isUpdateAdminUser && (
+                      {(!isUpdateAdminUser && !error) && (
                         <Row>
                           <Form.Group className="mb-3" controlId="password">
                             <Form.Label>Password</Form.Label>
