@@ -8,7 +8,7 @@ import { APICore } from "../../helpers/api/apiCore";
 import {
   CourseTypeApiResponseSuccess,
   CourseTypeApiResponseError,
-  getCourseType
+  getCourseType,
 } from "./actions";
 
 // constants
@@ -17,7 +17,7 @@ import {
   addCourseTypeApi,
   deleteCourseTypeApi,
   getCourseTypeApi,
-  updateCourseTypeApi
+  updateCourseTypeApi,
 } from "../../helpers";
 
 interface CourseTypeData {
@@ -38,7 +38,7 @@ const api = new APICore();
 function* getAllCourseType(): SagaIterator {
   try {
     const response = yield call(getCourseTypeApi);
-    const data = response.data.data;
+    const data = response.data;
 
     // NOTE - You can change this according to response format from your api
     yield put(
@@ -54,15 +54,12 @@ function* getAllCourseType(): SagaIterator {
 }
 
 function* addCourseType({
-  payload: {
-    type_name,
-    description
-  },
+  payload: { type_name, description },
 }: CourseTypeData): SagaIterator {
   try {
     const response = yield call(addCourseTypeApi, {
       type_name,
-      description
+      description,
     });
     const data = response.data.message;
 
@@ -79,16 +76,12 @@ function* addCourseType({
 }
 
 function* updateCourseType({
-  payload: {
-    id,
-    type_name,
-    description
-  },
+  payload: { id, type_name, description },
 }: CourseTypeData): SagaIterator {
   try {
     const response = yield call(updateCourseTypeApi, id, {
       type_name,
-      description
+      description,
     });
     const data = response.data.message;
 
@@ -123,7 +116,10 @@ function* deleteCourseType({ payload: { id } }: CourseTypeData): SagaIterator {
     yield put(getCourseType());
   } catch (error: any) {
     yield put(
-      CourseTypeApiResponseError(CourseTypeActionTypes.DELETE_COURSE_TYPE, error)
+      CourseTypeApiResponseError(
+        CourseTypeActionTypes.DELETE_COURSE_TYPE,
+        error
+      )
     );
   }
 }

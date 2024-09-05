@@ -1,41 +1,37 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
 import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import { yupResolver } from "@hookform/resolvers/yup";
+import Select from "react-select";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import Select from "react-select";
-import { AUTH_SESSION_KEY, customStyles } from "../../constants";
-import { getUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
-import {
-  addCampus,
-  addCourseType,
-  deleteCampus,
-  deleteCourseType,
-  getCampus,
-  getCourseType,
-  updateCampus,
-  updateCourseType,
-} from "../../redux/actions";
 
-interface OptionType {
-  value: string;
-  label: string;
-}
+import {
+  deleteStream,
+  getStream,
+  updateStream,
+  addStream,
+} from "../../redux/stream/actions";
+import { customStyles } from "../../constants";
+import { getCourseType } from "../../redux/actions";
+import {
+  addCourse,
+  deleteCourse,
+  getCourse,
+  updateCourse,
+} from "../../redux/course/actions";
+import { isOptionDisabled } from "react-select/src/builtins";
 
 interface TableRecords {
   id: string;
-  type_name: string;
-  description: string;
-  university_id: string;
+  stream_name: string;
+  stream_description: string;
 }
 
 const sizePerPageList = [
@@ -59,21 +55,34 @@ const sizePerPageList = [
 
 const initialState = {
   id: "",
-  type_name: "",
-  description: "",
+  course_name: "",
+  course_description: "",
+  course_type_id: "",
+  stream_id: "",
+  updated_by: "",
 };
 
 const initialValidationState = {
-  type_name: "",
-  description: "",
+  course_name: "",
+  course_description: "",
+  course_type_id: "",
+  stream_id: "",
+  updated_by: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, university, error, loading } = props;
+  const {
+    swal,
+    state,
+    error,
+    loading,
+    userId,
+    streamOptions,
+    courseTypeOptions,
+  } = props;
 
   //fetch token from session storage
-  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
   //Table data
   const records: TableRecords[] = state;
@@ -81,6 +90,8 @@ const BasicInputElements = withSwal((props: any) => {
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
   const [formData, setFormData] = useState(initialState);
+  const [selectedCourseType, setSelectedCourseType] = useState<any>(null);
+  const [selectedStream, setSelectedStream] = useState<any>(null);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -91,21 +102,44 @@ const BasicInputElements = withSwal((props: any) => {
   );
 
   const validationSchema = yup.object().shape({
-    type_name: yup.string().required("Course Type is required"),
-    description: yup
+    course_name: yup
       .string()
-      .required("Description is required")
-      .min(3, "Description must be at least 3 characters long"),
+      .required("Course name is required")
+      .min(3, "Course name must be at least 3 characters long"),
+
+    course_description: yup
+      .string()
+      .required("Course description is required")
+      .min(5, "Course description must be at least 5 characters long"),
+
+    course_type_id: yup.string().required("Course type is required"),
+
+    stream_id: yup.string().required("Stream is required"),
   });
 
   const handleUpdate = (item: any) => {
-    //update source dropdown
+    const courseType = courseTypeOptions.find(
+      (record: any) => record?.value == item?.course_type?.id
+    );
+    const stream = streamOptions.find(
+      (record: any) => record?.value == item?.stream?.id
+    );
+
+    if (courseType && stream) {
+      setSelectedCourseType(courseType);
+      setSelectedStream(stream);
+    } else {
+      setSelectedCourseType(null);
+      setSelectedStream(null);
+    }
 
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
-      type_name: item?.type_name,
-      description: item?.description,
+      course_name: item?.course_name,
+      course_description: item?.course_description,
+      course_type_id: item?.course_type?.id,
+      stream_id: item?.stream?.id,
     }));
 
     setIsUpdate(true);
@@ -125,7 +159,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteCourseType(id));
+          dispatch(deleteCourse(id));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -139,6 +173,22 @@ const BasicInputElements = withSwal((props: any) => {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
+    }));
+  };
+
+  const handleCourseTypeChange = (selected: any) => {
+    setSelectedCourseType(selected);
+    setFormData((prev) => ({
+      ...prev,
+      course_type_id: selected.value,
+    }));
+  };
+
+  const handleStreamChange = (selected: any) => {
+    setSelectedStream(selected);
+    setFormData((prev) => ({
+      ...prev,
+      stream_id: selected.value,
     }));
   };
 
@@ -167,10 +217,13 @@ const BasicInputElements = withSwal((props: any) => {
             if (isUpdate) {
               // Handle update logic
               dispatch(
-                updateCourseType(
+                updateCourse(
                   formData?.id,
-                  formData.type_name,
-                  formData.description
+                  formData.course_name,
+                  formData.course_description,
+                  formData.course_type_id,
+                  formData.stream_id,
+                  userId ? userId : null
                 )
               );
               setIsUpdate(false);
@@ -178,7 +231,15 @@ const BasicInputElements = withSwal((props: any) => {
               // Handle add logic
               console.log("Here");
 
-              dispatch(addCourseType(formData.type_name, formData.description));
+              dispatch(
+                addCourse(
+                  formData.course_name,
+                  formData.course_description,
+                  formData.course_type_id,
+                  formData.stream_id,
+                  userId ? userId : null
+                )
+              );
             }
           }
         })
@@ -207,13 +268,23 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Course Type",
-      accessor: "type_name",
+      Header: "Course",
+      accessor: "course_name",
       sort: true,
     },
     {
       Header: "Description",
-      accessor: "description",
+      accessor: "course_description",
+      sort: false,
+    },
+    {
+      Header: "Type",
+      accessor: "course_type.type_name",
+      sort: false,
+    },
+    {
+      Header: "Stream",
+      accessor: "stream.stream_name",
       sort: false,
     },
     {
@@ -288,36 +359,74 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Course Type Management</h4>
+              <h4 className="modal-title">Campus Management</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="type_name">
-                <Form.Label>Course Type</Form.Label>
+              <Form.Group className="mb-3" controlId="course_name">
+                <Form.Label>Course Name</Form.Label>
                 <Form.Control
                   type="text"
-                  name="type_name"
-                  value={formData.type_name}
+                  name="course_name"
+                  value={formData.course_name}
                   onChange={handleInputChange}
                 />
-                {validationErrors.type_name && (
+                {validationErrors.course_name && (
                   <Form.Text className="text-danger">
-                    {validationErrors.type_name}
+                    {validationErrors.course_name}
                   </Form.Text>
                 )}
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="description">
+              <Form.Group className="mb-3" controlId="course_description">
                 <Form.Label>Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
-                  name="description"
-                  value={formData.description}
+                  name="course_description"
+                  value={formData.course_description}
                   onChange={handleInputChange}
                 />
-                {validationErrors.description && (
+                {validationErrors.course_description && (
                   <Form.Text className="text-danger">
-                    {validationErrors.description}
+                    {validationErrors.course_description}
+                  </Form.Text>
+                )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="course_type_id">
+                <Form.Label>Course Type</Form.Label>
+                <Select
+                  styles={customStyles}
+                  className="react-select react-select-container"
+                  classNamePrefix="react-select"
+                  name="course_type_id"
+                  options={courseTypeOptions}
+                  value={selectedCourseType}
+                  onChange={handleCourseTypeChange}
+                />
+
+                {validationErrors.course_type_id && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.course_type_id}
+                  </Form.Text>
+                )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="stream_id">
+                <Form.Label>Streams</Form.Label>
+                <Select
+                  styles={customStyles}
+                  className="react-select react-select-container"
+                  classNamePrefix="react-select"
+                  name="stream_id"
+                  options={streamOptions}
+                  value={selectedStream}
+                  onChange={handleStreamChange}
+                />
+
+                {validationErrors.stream_id && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.stream_id}
                   </Form.Text>
                 )}
               </Form.Group>
@@ -364,9 +473,9 @@ const BasicInputElements = withSwal((props: any) => {
                 className="btn-sm btn-blue waves-effect waves-light float-end"
                 onClick={toggleResponsiveModal}
               >
-                <i className="mdi mdi-plus-circle"></i> Add Course Type
+                <i className="mdi mdi-plus-circle"></i> Add Course
               </Button>
-              <h4 className="header-title mb-4">Manage Course Type</h4>
+              <h4 className="header-title mb-4">Manage Course</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -385,20 +494,31 @@ const BasicInputElements = withSwal((props: any) => {
   );
 });
 
-const CourseType = () => {
+const Course = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector(
-    (state: RootState) => ({
-      state: state.CourseType.courseType.data,
-      error: state.CourseType.error,
-      loading: state.CourseType.loading,
-      initialLoading: state.CourseType.initialloading,
-    })
-  );
+  const {
+    state,
+    error,
+    loading,
+    initialLoading,
+    userId,
+    streamOptions,
+    courseTypeOptions,
+  } = useSelector((state: RootState) => ({
+    state: state.Course.course.data,
+    streamOptions: state.Stream.stream.formattedStreams,
+    courseTypeOptions: state.CourseType.courseType.formattedCourseTypes,
+    error: state.Course.error,
+    loading: state.Course.loading,
+    initialLoading: state.Course.initialloading,
+    userId: state.Auth.user?.user_id,
+  }));
 
   useEffect(() => {
+    dispatch(getStream());
+    dispatch(getCourse());
     dispatch(getCourseType());
   }, []);
 
@@ -415,17 +535,24 @@ const CourseType = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/campus" },
-          { label: "Course Type", path: "/master/campus", active: true },
+          { label: "Master", path: "" },
+          { label: "Courses", path: "", active: true },
         ]}
-        title={"Course Type"}
+        title={"Courses"}
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} error={error} loading={loading} />
+          <BasicInputElements
+            state={state}
+            streamOptions={streamOptions || []}
+            courseTypeOptions={courseTypeOptions || []}
+            error={error}
+            loading={loading}
+            userId={userId}
+          />
         </Col>
       </Row>
     </React.Fragment>
   );
 };
-export default CourseType;
+export default Course;

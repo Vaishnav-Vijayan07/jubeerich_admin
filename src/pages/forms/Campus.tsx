@@ -1,15 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -21,9 +13,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
-import {getUniversity} from "../../redux/University/actions";
+import { getUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
-import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
+import {
+  addCampus,
+  deleteCampus,
+  getCampus,
+  updateCampus,
+} from "../../redux/actions";
 
 interface OptionType {
   value: string;
@@ -60,13 +57,13 @@ const initialState = {
   id: "",
   campus_name: "",
   location: "",
-  university_id: ""
+  university_id: "",
 };
 
 const initialValidationState = {
   campus_name: "",
   location: "",
-  university_id: ""
+  university_id: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -81,9 +78,8 @@ const BasicInputElements = withSwal((props: any) => {
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
-  const [selectedUniversity, setSelectedUniversity] = useState<OptionType | null>(
-    null
-  );
+  const [selectedUniversity, setSelectedUniversity] =
+    useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
 
   // Modal states
@@ -125,7 +121,7 @@ const BasicInputElements = withSwal((props: any) => {
       id: item?.id,
       campus_name: item?.campus_name,
       location: item?.location,
-      university_id: item?.university_id
+      university_id: item?.university_id,
     }));
 
     setIsUpdate(true);
@@ -180,7 +176,7 @@ const BasicInputElements = withSwal((props: any) => {
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: `Yes, ${isUpdate ? 'Update' : 'Create'}`,
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -205,15 +201,16 @@ const BasicInputElements = withSwal((props: any) => {
                   addCampus(
                     formData.campus_name,
                     formData.location,
-                    formData.university_id,
+                    formData.university_id
                   )
                 );
               }
             }
           }
-        }).catch((err: any) => {
-          console.log(err);
         })
+        .catch((err: any) => {
+          console.log(err);
+        });
     } catch (validationError) {
       // Handle validation errors
       if (validationError instanceof yup.ValidationError) {
@@ -241,7 +238,7 @@ const BasicInputElements = withSwal((props: any) => {
       sort: true,
     },
     {
-      Header: "Locaton",
+      Header: "Location",
       accessor: "location",
       sort: false,
     },
@@ -257,18 +254,24 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <Link to="#" className="action-icon" onClick={() => {
-            setIsUpdate(true);
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => {
+              setIsUpdate(true);
+              handleUpdate(row.original);
+              toggleResponsiveModal();
+            }}
+          >
             <i className="mdi mdi-square-edit-outline"></i>
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => handleDelete(row.original.id)}
+          >
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -316,7 +319,6 @@ const BasicInputElements = withSwal((props: any) => {
       // Clear validation errors
     }
   }, [loading, error]);
-
 
   return (
     <>
@@ -388,8 +390,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="primary"
                 id="button-addon2"
                 className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]
-                }
+                onClick={() => [handleResetValues()]}
               >
                 Clear
               </Button>
@@ -437,7 +438,6 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
-
               />
             </Card.Body>
           </Card>
