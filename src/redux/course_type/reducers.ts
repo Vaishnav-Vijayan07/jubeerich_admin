@@ -2,56 +2,55 @@
 import { showErrorAlert, showSuccessAlert } from "../../constants";
 
 // constants
-import { CampusActionTypes } from "./constants";
+import { CourseTypeActionTypes } from "./constants";
 
 const INIT_STATE = {
-  campus: [],
+  courseType: [],
   loading: false,
   initialloading: false,
   error: null,
 };
 
-interface CampusData {
+interface CourseTypeData {
   id: string;
-  campus_name: string;
-  location: string;
-  university_id: string;
+  type_name: string;
+  description: string;
 }
 
 export interface CampusActionType {
   type:
-  | CampusActionTypes.API_RESPONSE_SUCCESS
-  | CampusActionTypes.API_RESPONSE_ERROR
-  | CampusActionTypes.GET_CAMPUS
-  | CampusActionTypes.ADD_CAMPUS
-  | CampusActionTypes.UPDATE_CAMPUS
-  | CampusActionTypes.DELETE_CAMPUS;
+  | CourseTypeActionTypes.API_RESPONSE_SUCCESS
+  | CourseTypeActionTypes.API_RESPONSE_ERROR
+  | CourseTypeActionTypes.GET_COURSE_TYPE
+  | CourseTypeActionTypes.ADD_COURSE_TYPE
+  | CourseTypeActionTypes.UPDATE_COURSE_TYPE
+  | CourseTypeActionTypes.DELETE_COURSE_TYPE;
   payload: {
     actionType?: string;
-    data?: CampusData | {};
+    data?: CourseTypeData | {};
     error?: string;
   };
 }
 
 interface State {
-  campus?: CampusData | {};
+  courseType?: CourseTypeData | {};
   loading?: boolean;
   value?: boolean;
 }
 
-const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
+const CourseType = (state: State = INIT_STATE, action: CampusActionType): any => {
   switch (action.type) {
-    case CampusActionTypes.API_RESPONSE_SUCCESS:
+    case CourseTypeActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
-        case CampusActionTypes.GET_CAMPUS: {
+        case CourseTypeActionTypes.GET_COURSE_TYPE: {
           return {
             ...state,
-            campus: action.payload.data,
+            courseType: action.payload.data,
             loading: false,
             initialloading: false,
           };
         }
-        case CampusActionTypes.ADD_CAMPUS: {
+        case CourseTypeActionTypes.ADD_COURSE_TYPE: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
@@ -59,7 +58,7 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
             initialloading: false,
           };
         }
-        case CampusActionTypes.UPDATE_CAMPUS: {
+        case CourseTypeActionTypes.UPDATE_COURSE_TYPE: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
@@ -67,7 +66,7 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
             initialloading: false,
           };
         }
-        case CampusActionTypes.DELETE_CAMPUS: {
+        case CourseTypeActionTypes.DELETE_COURSE_TYPE: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
@@ -79,18 +78,18 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
           return { ...state };
       }
 
-    case CampusActionTypes.API_RESPONSE_ERROR:
+    case CourseTypeActionTypes.API_RESPONSE_ERROR:
       switch (action.payload.actionType) {
-        case CampusActionTypes.GET_CAMPUS: {
+        case CourseTypeActionTypes.GET_COURSE_TYPE: {
           return {
             ...state,
             error: action.payload.error,
-            campus: [],
+            courseType: [],
             loading: false,
             initialloading: false,
           };
         }
-        case CampusActionTypes.ADD_CAMPUS: {
+        case CourseTypeActionTypes.ADD_COURSE_TYPE: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -99,7 +98,7 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
             initialloading: false,
           };
         }
-        case CampusActionTypes.UPDATE_CAMPUS: {
+        case CourseTypeActionTypes.UPDATE_COURSE_TYPE: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -108,7 +107,7 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
             initialloading: false,
           };
         }
-        case CampusActionTypes.DELETE_CAMPUS: {
+        case CourseTypeActionTypes.DELETE_COURSE_TYPE: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -121,17 +120,17 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
           return { ...state };
       }
 
-    case CampusActionTypes.GET_CAMPUS:
+    case CourseTypeActionTypes.GET_COURSE_TYPE:
       return { ...state, loading: true, initialloading: true };
-    case CampusActionTypes.ADD_CAMPUS:
+    case CourseTypeActionTypes.ADD_COURSE_TYPE:
       return { ...state, loading: true, initialloading: true };
-    case CampusActionTypes.UPDATE_CAMPUS:
+    case CourseTypeActionTypes.UPDATE_COURSE_TYPE:
       return { ...state, loading: true, initialloading: true };
-    case CampusActionTypes.DELETE_CAMPUS:
+    case CourseTypeActionTypes.DELETE_COURSE_TYPE:
       return { ...state, loading: true, initialloading: true };
     default:
       return { ...state };
   }
 };
 
-export default Campus;
+export default CourseType;

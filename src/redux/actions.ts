@@ -15,3 +15,4 @@ export * from "./subStatus/actions";
 export * from "./history/actions";
 export * from "./dashboard/actions";
 export * from "./campus/actions";
+export * from "./course_type/actions";
