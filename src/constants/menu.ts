@@ -178,21 +178,21 @@ const MENU_ITEMS: MenuItemTypes[] = [
     ],
   },
 
-  // {
-  //   key: "courses",
-  //   label: "Course Setup",
-  //   isTitle: false,
-  //   icon: "settings",
-  //   roles: ["Monitor"],
-  //   children: [
-  //     {
-  //       key: "campus",
-  //       label: "Lead Category",
-  //       url: "/settings/master/category",
-  //       parentKey: "master",
-  //     },
-  //   ],
-  // },
+  {
+    key: "courses",
+    label: "Course Setup",
+    isTitle: false,
+    icon: "settings",
+    roles: ["Monitor"],
+    children: [
+      {
+        key: "campus",
+        label: "Lead Category",
+        url: "/settings/master/course_type",
+        parentKey: "master",
+      },
+    ],
+  },
 
   { key: "status_management", label: "Status Management", isTitle: true, roles: ["Monitor"] },
 
