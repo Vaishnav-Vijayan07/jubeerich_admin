@@ -25,6 +25,7 @@ import University from "./University/reducers";
 import Program from "./programs/reducers";
 import Franchise from "./franchise/reducers";
 import Campus from "./campus/reducers";
+import CourseType from "./course_type/reducers";
 export default combineReducers({
   Auth,
   Layout,
@@ -50,5 +51,6 @@ export default combineReducers({
   Dashboard,
   FranchiseUsers,
   Franchise,
-  Campus
+  Campus,
+  CourseType
 });

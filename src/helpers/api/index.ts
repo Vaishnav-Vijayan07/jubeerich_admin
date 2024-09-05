@@ -13,6 +13,7 @@ import { addSubStatus, deleteSubStatus, getAllSubStatus, updateSubStatus } from 
 import { addUniversitysApi, deleteUniversitysApi, getUniversitysApi, updateUniversitysApi } from "./university";
 import { addCampusApi, deleteCampusApi, getCampusApi, updateCampusApi } from "./campus";
 import { addStatus, deleteStatus, getStatus, updateStatus, getStatusConfig } from "./master/status";
+import { addCourseTypeApi, deleteCourseTypeApi, getCourseTypeApi, updateCourseTypeApi } from "./courseType";
 import {
   addHistory,
   getAllHistories,
@@ -87,5 +88,6 @@ export {
   updatePrograms,
   getStatusConfig,
   getFranchiseCounsellors, addUniversitysApi, deleteUniversitysApi, getUniversitysApi, updateUniversitysApi,
-  addCampusApi, deleteCampusApi, getCampusApi, updateCampusApi
+  addCampusApi, deleteCampusApi, getCampusApi, updateCampusApi,
+  addCourseTypeApi, deleteCourseTypeApi, getCourseTypeApi, updateCourseTypeApi
 };
