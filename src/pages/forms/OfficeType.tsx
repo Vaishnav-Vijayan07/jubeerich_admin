@@ -113,8 +113,8 @@ const BasicInputElements = withSwal((props: any) => {
       .min(3, "Office name must be at least 3 characters long"),
     office_type_description: yup
       .string()
-      .required("Office description is required")
-      .min(3, "Office description must be at least 3 characters long"),
+      // .required("Office description is required")
+      // .min(3, "Office description must be at least 3 characters long"),
     // source_id: yup.string().required("Please choose a source"),
   });
 

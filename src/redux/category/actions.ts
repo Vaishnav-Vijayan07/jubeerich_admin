@@ -14,12 +14,8 @@ export interface CategoryActionType {
 
 interface CategoryData {
   id: number;
-  category_name: string;
-  category_description: string;
-  parent_category_id: string;
-  status: string;
-  updated_by: number;
-  //   token: string;
+  name: string;
+  description: string;
 }
 
 // common success
@@ -45,38 +41,26 @@ export const getCategory = (): CategoryActionType => ({
 });
 
 export const addCategory = (
-  category_name: string,
-  category_description: string,
-  // parent_category_id: string,
-  status: boolean,
-  updated_by: number
+  name: string,
+  description: string,
 ): CategoryActionType => ({
   type: CategoryActionTypes.ADD_CATEGORY,
   payload: {
-    category_name,
-    category_description,
-    // parent_category_id,
-    status,
-    updated_by,
+    name,
+    description
   },
 });
 
 export const updateCategory = (
   id: string,
-  category_name: string,
-  category_description: string,
-  // parent_category_id: string,
-  status: boolean,
-  updated_by: number
+  name: string,
+  description: string
 ): CategoryActionType => ({
   type: CategoryActionTypes.UPDATE_CATEGORY,
   payload: {
     id,
-    category_name,
-    category_description,
-    // parent_category_id,
-    status,
-    updated_by,
+    name,
+    description
   },
 });
 

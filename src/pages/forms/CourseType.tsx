@@ -21,9 +21,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
-import {getUniversity} from "../../redux/University/actions";
+import { getUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
 import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
+import axios from "axios";
 
 interface OptionType {
   value: string;
@@ -306,6 +307,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+
   useEffect(() => {
     // Check for errors and clear the form
     if (!loading && !error) {
@@ -370,7 +372,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="university_id"
-                  options={[{ value: null, label: "None" }, ...university]}
+                  options={university}
                   value={selectedUniversity}
                   onChange={handleUniversityChange}
                 />

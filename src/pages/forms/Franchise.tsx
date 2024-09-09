@@ -22,18 +22,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
-import {
-  addAdminUsers,
-  addChannel,
-  deleteChannel,
-  getChannel,
-  updateChannel,
-} from "../../redux/actions";
-import Select from "react-select";
 import {
   AUTH_SESSION_KEY,
-  customStyles,
   franchise_counsellor_id,
 } from "../../constants";
 import { Link } from "react-router-dom";
@@ -158,7 +148,7 @@ const BasicInputElements = withSwal((props: any) => {
     email: yup.string().required("Email is required"),
     address: yup.string().required("Address is required"),
     phone: yup.string().required("Phone number is required"),
-    pocName: yup.string().required("Point of Contact Name is required"),
+    // pocName: yup.string().required("Point of Contact Name is required"),
   });
 
   const adminUsersValidationSchema = yup.object().shape({

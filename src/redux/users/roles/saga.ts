@@ -38,7 +38,7 @@ const api = new APICore();
 function* getRole(): SagaIterator {
   try {
     const response = yield call(getAccessRolesApi);
-    const data = response.data.data;
+    const data = response.data?.data;    
 
     // NOTE - You can change this according to response format from your api
     yield put(rolesApiResponseSuccess(RolesActionTypes.GET_ROLES, data));

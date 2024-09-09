@@ -131,37 +131,37 @@ const BasicInputElements = withSwal((props: any) => {
       .required("Phone number is required")
       .matches(/^[0-9]+$/, "Phone number must be digits only")
       .min(10, "Phone number must be at least 10 digits long"),
-    address: yup.string().required("Address is required").min(3, "Address must be at least 3 characters long"),
-    city: yup.string().required("City is required"),
-    state: yup.string().required("State is required"),
-    country: yup.string().required("Country is required"),
+    address: yup.string(),
+    city: yup.string(),
+    state: yup.string(),
+    country: yup.string(),
     pincode: yup
-      .string()
-      .required("Pincode is required")
-      .matches(/^[0-9]+$/, "Pincode must be digits only")
-      .min(5, "Pincode must be at least 5 digits long"),
-    contact_person_email: yup.string().email("Must be a valid email").required("Contact person email is required"),
+      .string(),
+      // .required("Pincode is required")
+      // .matches(/^[0-9]+$/, "Pincode must be digits only")
+      // .min(5, "Pincode must be at least 5 digits long"),
+    contact_person_email: yup.string(),
     contact_person_name: yup
-      .string()
-      .required("Contact person name is required")
-      .min(3, "Contact person name must be at least 3 characters long"),
+      .string(),
+      // .required("Contact person name is required")
+      // .min(3, "Contact person name must be at least 3 characters long"),
     contact_person_mobile: yup
-      .string()
-      .required("Contact person mobile number is required")
-      .matches(/^[0-9]+$/, "Mobile number must be digits only")
-      .min(10, "Mobile number must be at least 10 digits long"),
+      .string(),
+      // .required("Contact person mobile number is required")
+      // .matches(/^[0-9]+$/, "Mobile number must be digits only")
+      // .min(10, "Mobile number must be at least 10 digits long"),
     contact_person_designation: yup
-      .string()
-      .required("Contact person designation is required")
-      .min(3, "Designation must be at least 3 characters long"),
-    website: yup.string().url("Must be a valid URL").required("Website URL is required"),
-    social_media: yup.string().url("Must be a valid URL").required("Social media URL is required"),
-    account_mail: yup.string().email("Must be a valid email").required("Account email is required"),
-    support_mail: yup.string().email("Must be a valid email").required("Support email is required"),
+      .string(),
+      // .required("Contact person designation is required")
+      // .min(3, "Designation must be at least 3 characters long"),
+    website: yup.string(),
+    social_media: yup.string(),
+    account_mail: yup.string(),
+    support_mail: yup.string(),
     office_type: yup.string().required("Office type is required"),
     region_id: yup.string().required("Region ID is required"),
-    updated_by: yup.string().required("Updated by is required"),
-    status: yup.string().required("Status is required"),
+    updated_by: yup.string(),
+    status: yup.string(),
   });
 
   const methods = useForm({
@@ -681,7 +681,7 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="office_type"
-                      options={[{ value: null, label: "None" }, ...office]}
+                      options={office}
                       value={selectedOffice}
                       onChange={handleOfficeChanges}
                     />
@@ -699,7 +699,7 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="region_id"
-                      options={[{ value: null, label: "None" }, ...regions]}
+                      options={regions}
                       value={selectedRegion}
                       onChange={handleRegionChanges}
                     />

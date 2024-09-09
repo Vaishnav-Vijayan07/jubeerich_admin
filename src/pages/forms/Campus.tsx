@@ -97,13 +97,12 @@ const BasicInputElements = withSwal((props: any) => {
   const validationSchema = yup.object().shape({
     campus_name: yup
       .string()
-      .required("Campus name name is required")
-      .min(3, "Campus name name must be at least 3 characters long"),
+      .min(3, "Campus name name must be at least 3 characters long")
+      .required("Campus name name is required"),
     location: yup
       .string()
-      .required("Location is required")
-      .min(3, "Location must be at least 3 characters long"),
-    university_id: yup.string().required("University ID is required"),
+      .required("Location is required"),
+    university_id: yup.string().required("University is required"),
   });
 
   /*
@@ -370,7 +369,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="university_id"
-                  options={[{ value: null, label: "None" }, ...university]}
+                  options={university}
                   value={selectedUniversity}
                   onChange={handleUniversityChange}
                 />

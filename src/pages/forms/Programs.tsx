@@ -72,7 +72,7 @@ const initialState = {
   university_id: "",
   degree_level: "",
   duration: "",
-  tuition_fees: "",
+  tuition_fees: null,
   currency: "",
 };
 
@@ -116,13 +116,13 @@ const BasicInputElements = withSwal((props: any) => {
       .string()
       .required("Program name is required")
       .min(3, "Program name must be at least 3 characters long"),
-    university_id: yup.string().required("University ID is required"),
+    university_id: yup.string().required("University is required"),
     degree_level: yup.string().required("Degree level is required"),
     duration: yup.string().required("Duration is required"),
     tuition_fees: yup
       .number()
       .required("Tuition fees are required")
-      .positive("Tuition fees must be a positive number"),
+      .positive("Tuition fees must be a positive number").nullable(),
     currency: yup.string().required("Currency is required"),
   });
 
@@ -239,34 +239,6 @@ const BasicInputElements = withSwal((props: any) => {
         }).catch((err: any) => {
           console.log(err);
         })
-
-      // if (isUpdate) {
-      //   // Handle update logic
-      //   dispatch(
-      //     updateProgram(
-      //       formData.id,
-      //       formData.program_name,
-      //       formData.university_id,
-      //       formData.degree_level,
-      //       formData.duration,
-      //       formData.tuition_fees,
-      //       formData.currency
-      //     )
-      //   );
-      //   setIsUpdate(false);
-      // } else {
-      //   // Handle add logic
-      //   dispatch(
-      //     addProgram(
-      //       formData.program_name,
-      //       formData.university_id,
-      //       formData.degree_level,
-      //       formData.duration,
-      //       formData.tuition_fees,
-      //       formData.currency
-      //     )
-      //   );
-      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {
@@ -390,7 +362,6 @@ const BasicInputElements = withSwal((props: any) => {
   return (
     <>
       <Row className="justify-content-between px-2">
-        {/* <Col lg={5} className="bg-white p-3"> */}
         <Modal
           show={responsiveModal}
           onHide={toggleResponsiveModal}
@@ -423,7 +394,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="university_id"
-                  options={[{ value: null, label: "None" }, ...sourceData]}
+                  options={sourceData}
                   value={selectedSource}
                   onChange={handleSourceChange}
                 />
@@ -433,21 +404,6 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Text>
                 )}
               </Form.Group>
-
-              {/* <Form.Group className="mb-3" controlId="degree_level">
-                <Form.Label>Degree Level</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="degree_level"
-                  value={formData.degree_level}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.degree_level && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.degree_level}
-                  </Form.Text>
-                )}
-              </Form.Group> */}
 
               <Form.Group className="mb-3" controlId="degree_level">
                 <Form.Label>Degree Level</Form.Label>
@@ -493,7 +449,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Form.Control
                   type="number"
                   name="tuition_fees"
-                  value={formData.tuition_fees}
+                  value={formData.tuition_fees || ""}
                   onChange={handleInputChange}
                 />
                 {validationErrors.tuition_fees && (

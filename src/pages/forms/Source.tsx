@@ -82,8 +82,8 @@ const BasicInputElements = withSwal((props: any) => {
       .min(3, "source name must be at least 3 characters long"),
     source_description: yup
       .string()
-      .required("source description is required")
-      .min(3, "source description must be at least 3 characters long"),
+      // .required("source description is required")
+      // .min(3, "source description must be at least 3 characters long"),
   });
 
   /*

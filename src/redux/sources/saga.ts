@@ -33,7 +33,7 @@ const api = new APICore();
 function* getSources(): SagaIterator {
   try {
     const response = yield call(getSourcesApi);
-    const data = response.data;
+    const data = response.data.data;
 
 
     // NOTE - You can change this according to response format from your api

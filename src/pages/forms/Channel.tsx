@@ -108,9 +108,9 @@ const BasicInputElements = withSwal((props: any) => {
       .required("channel name is required")
       .min(3, "channel name must be at least 3 characters long"),
     channel_description: yup
-      .string()
-      .required("channel description is required")
-      .min(3, "channel description must be at least 3 characters long"),
+      .string(),
+      // .required("channel description is required")
+      // .min(3, "channel description must be at least 3 characters long"),
     source_id: yup.string().required("Please choose a source"),
   });
 
@@ -410,7 +410,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="source_id"
-                  options={[{ value: null, label: "None" }, ...sourceData]}
+                  options={sourceData}
                   value={selectedSource}
                   onChange={handleSourceChange}
                 />

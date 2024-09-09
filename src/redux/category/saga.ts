@@ -16,11 +16,8 @@ import { CategoryActionTypes } from "./constants";
 interface CategoryData {
   payload: {
     id: number;
-    category_name: string;
-    category_description: string;
-    // parent_id: number;
-    status: boolean;
-    updated_by: number;
+    name: string;
+    description: string;
   };
   type: string;
 }
@@ -46,13 +43,11 @@ function* getCategories(): SagaIterator {
 /**
  * Logout the user
  */
-function* addCategory({ payload: { category_name, category_description, status, updated_by } }: CategoryData): SagaIterator {
+function* addCategory({ payload: { name, description } }: CategoryData): SagaIterator {
   try {
     const response = yield call(addCategoryApi, {
-      category_name,
-      category_description,
-      status,
-      updated_by,
+      name,
+      description
     });
     const data = response.data.message;
 
@@ -65,14 +60,12 @@ function* addCategory({ payload: { category_name, category_description, status, 
   }
 }
 
-function* updateCategory({ payload: { id, category_name, category_description, status, updated_by } }: CategoryData): SagaIterator {
+function* updateCategory({ payload: { id, name, description } }: CategoryData): SagaIterator {
   try {
     const response = yield call(updateCategoryApi, {
       id,
-      category_name,
-      category_description,
-      status,
-      updated_by,
+      name,
+      description
     });
     const data = response.data.message;
 
@@ -83,9 +76,9 @@ function* updateCategory({ payload: { id, category_name, category_description, s
   }
 }
 
-function* deleteCategory({ payload: { id, updated_by } }: CategoryData): SagaIterator {
+function* deleteCategory({ payload: { id } }: CategoryData): SagaIterator {
   try {
-    const response = yield call(deleteCategoryApi, { id, updated_by });
+    const response = yield call(deleteCategoryApi, { id });
     const data = response.data.message;
 
     yield put(categoryApiResponseSuccess(CategoryActionTypes.DELETE_CATEGORY, data));
