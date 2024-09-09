@@ -601,7 +601,8 @@ const BasicInputElements = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="address">
                 <Form.Label>Address</Form.Label>
                 <Form.Control
-                  type="text"
+                  // type="text"
+                  as="textarea"
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
@@ -616,7 +617,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="phone">
                 <Form.Label>Phone</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="number"
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
