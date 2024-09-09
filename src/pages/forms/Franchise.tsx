@@ -450,6 +450,18 @@ const BasicInputElements = withSwal((props: any) => {
               onClick={() => {
                 setAdminUserFormData((prev: any) => ({
                   ...prev,
+                  id: "",
+                  employee_id: "",
+                  name: "",
+                  email: "",
+                  phone: "",
+                  address: "",
+                  username: "",
+                  password: "",
+                  updated_by: "",
+                  role_id: "",
+                  branch_ids: null,
+                  country_id: null,
                   franchise_id: row?.original?.id,
                 }));
                 toggleResponsiveModalAdminUser();
