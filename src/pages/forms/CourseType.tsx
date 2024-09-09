@@ -1,15 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -23,8 +15,16 @@ import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { getUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
-import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
-import axios from "axios";
+import {
+  addCampus,
+  addCourseType,
+  deleteCampus,
+  deleteCourseType,
+  getCampus,
+  getCourseType,
+  updateCampus,
+  updateCourseType,
+} from "../../redux/actions";
 
 interface OptionType {
   value: string;
@@ -33,8 +33,8 @@ interface OptionType {
 
 interface TableRecords {
   id: string;
-  campus_name: string;
-  location: string;
+  type_name: string;
+  description: string;
   university_id: string;
 }
 
@@ -59,15 +59,13 @@ const sizePerPageList = [
 
 const initialState = {
   id: "",
-  campus_name: "",
-  location: "",
-  university_id: ""
+  type_name: "",
+  description: "",
 };
 
 const initialValidationState = {
-  campus_name: "",
-  location: "",
-  university_id: ""
+  type_name: "",
+  description: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -82,9 +80,6 @@ const BasicInputElements = withSwal((props: any) => {
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
-  const [selectedUniversity, setSelectedUniversity] = useState<OptionType | null>(
-    null
-  );
   const [formData, setFormData] = useState(initialState);
 
   // Modal states
@@ -96,37 +91,21 @@ const BasicInputElements = withSwal((props: any) => {
   );
 
   const validationSchema = yup.object().shape({
-    campus_name: yup
+    type_name: yup.string().required("Course Type is required"),
+    description: yup
       .string()
-      .required("Campus name name is required")
-      .min(3, "Campus name name must be at least 3 characters long"),
-    location: yup
-      .string()
-      .required("Location is required")
-      .min(3, "Location must be at least 3 characters long"),
-    university_id: yup.string().required("University ID is required"),
-  });
-
-  /*
-   * form methods
-   */
-  const methods = useForm({
-    resolver: yupResolver(validationSchema), // Integrate yup with react-hook-form
-    defaultValues: initialState,
+      .required("Description is required")
+      .min(3, "Description must be at least 3 characters long"),
   });
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedUniversity: OptionType[] = university?.filter(
-      (country: any) => country.value == item.university_id
-    );
-    setSelectedUniversity(updatedUniversity[0]);
+
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
-      campus_name: item?.campus_name,
-      location: item?.location,
-      university_id: item?.university_id
+      type_name: item?.type_name,
+      description: item?.description,
     }));
 
     setIsUpdate(true);
@@ -146,7 +125,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteCampus(id));
+          dispatch(deleteCourseType(id));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -181,40 +160,31 @@ const BasicInputElements = withSwal((props: any) => {
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: `Yes, ${isUpdate ? 'Update' : 'Create'}`,
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
         })
         .then((result: any) => {
           if (result.isConfirmed) {
-            if (userInfo) {
-              const { user_id } = JSON.parse(userInfo);
-              if (isUpdate) {
-                // Handle update logic
-                dispatch(
-                  updateCampus(
-                    formData?.id,
-                    formData.campus_name,
-                    formData.location,
-                    formData.university_id
-                  )
-                );
-                setIsUpdate(false);
-              } else {
-                // Handle add logic
-                console.log("Here");
+            if (isUpdate) {
+              // Handle update logic
+              dispatch(
+                updateCourseType(
+                  formData?.id,
+                  formData.type_name,
+                  formData.description
+                )
+              );
+              setIsUpdate(false);
+            } else {
+              // Handle add logic
+              console.log("Here");
 
-                dispatch(
-                  addCampus(
-                    formData.campus_name,
-                    formData.location,
-                    formData.university_id,
-                  )
-                );
-              }
+              dispatch(addCourseType(formData.type_name, formData.description));
             }
           }
-        }).catch((err: any) => {
-          console.log(err);
         })
+        .catch((err: any) => {
+          console.log(err);
+        });
     } catch (validationError) {
       // Handle validation errors
       if (validationError instanceof yup.ValidationError) {
@@ -237,18 +207,13 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Campus Name",
-      accessor: "campus_name",
+      Header: "Course Type",
+      accessor: "type_name",
       sort: true,
     },
     {
-      Header: "Locaton",
-      accessor: "location",
-      sort: false,
-    },
-    {
-      Header: "University",
-      accessor: "university",
+      Header: "Description",
+      accessor: "description",
       sort: false,
     },
     {
@@ -258,18 +223,24 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <Link to="#" className="action-icon" onClick={() => {
-            setIsUpdate(true);
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => {
+              setIsUpdate(true);
+              handleUpdate(row.original);
+              toggleResponsiveModal();
+            }}
+          >
             <i className="mdi mdi-square-edit-outline"></i>
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => handleDelete(row.original.id)}
+          >
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -284,19 +255,9 @@ const BasicInputElements = withSwal((props: any) => {
     handleResetValues();
   };
 
-  //source
-  const handleUniversityChange = (selected: any) => {
-    setSelectedUniversity(selected);
-    setFormData((prev) => ({
-      ...prev,
-      university_id: selected.value,
-    }));
-  };
-
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
     setFormData(initialState); //clear form data
-    setSelectedUniversity(null);
   };
 
   const toggleResponsiveModal = () => {
@@ -314,11 +275,8 @@ const BasicInputElements = withSwal((props: any) => {
       setResponsiveModal(false);
       setValidationErrors(initialValidationState); // Clear validation errors
       setFormData(initialState); //clear form data
-      setSelectedUniversity(null);
-      // Clear validation errors
     }
   }, [loading, error]);
-
 
   return (
     <>
@@ -331,55 +289,36 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Campus Management</h4>
+              <h4 className="modal-title">Course Type Management</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="campus_name">
-                <Form.Label>Campus Name</Form.Label>
+              <Form.Group className="mb-3" controlId="type_name">
+                <Form.Label>Course Type</Form.Label>
                 <Form.Control
                   type="text"
-                  name="campus_name"
-                  value={formData.campus_name}
+                  name="type_name"
+                  value={formData.type_name}
                   onChange={handleInputChange}
                 />
-                {validationErrors.campus_name && (
+                {validationErrors.type_name && (
                   <Form.Text className="text-danger">
-                    {validationErrors.campus_name}
+                    {validationErrors.type_name}
                   </Form.Text>
                 )}
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="location">
-                <Form.Label>Location</Form.Label>
+              <Form.Group className="mb-3" controlId="description">
+                <Form.Label>Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
-                  name="location"
-                  value={formData.location}
+                  name="description"
+                  value={formData.description}
                   onChange={handleInputChange}
                 />
-                {validationErrors.location && (
+                {validationErrors.description && (
                   <Form.Text className="text-danger">
-                    {validationErrors.location}
-                  </Form.Text>
-                )}
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="university_id">
-                <Form.Label>University</Form.Label>
-                <Select
-                  styles={customStyles}
-                  className="react-select react-select-container"
-                  classNamePrefix="react-select"
-                  name="university_id"
-                  options={university}
-                  value={selectedUniversity}
-                  onChange={handleUniversityChange}
-                />
-
-                {validationErrors.university_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.university_id}
+                    {validationErrors.description}
                   </Form.Text>
                 )}
               </Form.Group>
@@ -390,8 +329,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="primary"
                 id="button-addon2"
                 className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]
-                }
+                onClick={() => [handleResetValues()]}
               >
                 Clear
               </Button>
@@ -439,7 +377,6 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
-
               />
             </Card.Body>
           </Card>
@@ -451,33 +388,20 @@ const BasicInputElements = withSwal((props: any) => {
 
 const CourseType = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [sourceData, setSourceData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading, university } = useSelector(
+  const { state, error, loading, initialLoading } = useSelector(
     (state: RootState) => ({
-      state: state.Campus.campus.data,
-      error: state.Campus.error,
-      loading: state.Campus.loading,
-      initialLoading: state.Campus.initialloading,
-      university: state.University.universities.data,
+      state: state.CourseType.courseType.data,
+      error: state.CourseType.error,
+      loading: state.CourseType.loading,
+      initialLoading: state.CourseType.initialloading,
     })
   );
 
   useEffect(() => {
-    dispatch(getUniversity());
-    dispatch(getCampus());
+    dispatch(getCourseType());
   }, []);
-
-  useEffect(() => {
-    if (university) {
-      const UniversityArray = university?.map((source: any) => ({
-        value: source.id.toString(),
-        label: source.university_name, // Replace with the appropriate field from the lead data
-      }));
-      setSourceData(UniversityArray);
-    }
-  }, [university]);
 
   if (initialLoading) {
     return (
@@ -499,12 +423,7 @@ const CourseType = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            university={sourceData}
-            error={error}
-            loading={loading}
-          />
+          <BasicInputElements state={state} error={error} loading={loading} />
         </Col>
       </Row>
     </React.Fragment>

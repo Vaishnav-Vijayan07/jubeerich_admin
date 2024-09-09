@@ -186,9 +186,21 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Monitor"],
     children: [
       {
-        key: "campus",
-        label: "Lead Category",
+        key: "course_type",
+        label: "Course Type",
         url: "/settings/master/course_type",
+        parentKey: "master",
+      },
+      {
+        key: "course",
+        label: "Course",
+        url: "/settings/master/course",
+        parentKey: "master",
+      },
+      {
+        key: "stream",
+        label: "Stream",
+        url: "/settings/master/stream",
         parentKey: "master",
       },
     ],

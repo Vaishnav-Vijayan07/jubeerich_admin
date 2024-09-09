@@ -26,6 +26,8 @@ import ProgramSaga from "./programs/saga";
 import FranchiseUserSaga from "./franchise/saga";
 import CampusSaga from "./campus/saga";
 import CourseTypeSaga from "./course_type/saga";
+import CourseSaga from "./course/saga";
+import StreamSaga from "./stream/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -54,6 +56,8 @@ export default function* rootSaga() {
     FranchiseSaga(),
     FranchiseUserSaga(),
     CampusSaga(),
-    CourseTypeSaga()
+    CourseTypeSaga(),
+    CourseSaga(),
+    StreamSaga()
   ]);
 }

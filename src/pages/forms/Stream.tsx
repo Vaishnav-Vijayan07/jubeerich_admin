@@ -1,37 +1,27 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
 import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import Select from "react-select";
-import { AUTH_SESSION_KEY, customStyles } from "../../constants";
-import { getUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
-import {
-  addCampus,
-  deleteCampus,
-  getCampus,
-  updateCampus,
-} from "../../redux/actions";
 
-interface OptionType {
-  value: string;
-  label: string;
-}
+import {
+  deleteStream,
+  getStream,
+  updateStream,
+  addStream,
+} from "../../redux/stream/actions";
 
 interface TableRecords {
   id: string;
-  campus_name: string;
-  location: string;
-  university_id: string;
+  stream_name: string;
+  stream_description: string;
 }
 
 const sizePerPageList = [
@@ -55,31 +45,26 @@ const sizePerPageList = [
 
 const initialState = {
   id: "",
-  campus_name: "",
-  location: "",
-  university_id: "",
+  stream_name: "",
+  stream_description: "",
 };
 
 const initialValidationState = {
-  campus_name: "",
-  location: "",
-  university_id: "",
+  stream_name: "",
+  stream_description: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, university, error, loading } = props;
+  const { swal, state, error, loading, userId } = props;
 
   //fetch token from session storage
-  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
   //Table data
   const records: TableRecords[] = state;
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
-  const [selectedUniversity, setSelectedUniversity] =
-    useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
 
   // Modal states
@@ -91,36 +76,21 @@ const BasicInputElements = withSwal((props: any) => {
   );
 
   const validationSchema = yup.object().shape({
-    campus_name: yup
+    stream_name: yup.string().required("Streams is required"),
+    stream_description: yup
       .string()
-      .min(3, "Campus name name must be at least 3 characters long")
-      .required("Campus name name is required"),
-    location: yup
-      .string()
-      .required("Location is required"),
-    university_id: yup.string().required("University is required"),
-  });
-
-  /*
-   * form methods
-   */
-  const methods = useForm({
-    resolver: yupResolver(validationSchema), // Integrate yup with react-hook-form
-    defaultValues: initialState,
+      .required("stream_description is required")
+      .min(3, "stream_description must be at least 3 characters long"),
   });
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedUniversity: OptionType[] = university?.filter(
-      (country: any) => country.value == item.university_id
-    );
-    setSelectedUniversity(updatedUniversity[0]);
+
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
-      campus_name: item?.campus_name,
-      location: item?.location,
-      university_id: item?.university_id,
+      stream_name: item?.stream_name,
+      stream_description: item?.stream_description,
     }));
 
     setIsUpdate(true);
@@ -140,7 +110,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteCampus(id));
+          dispatch(deleteStream(id));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -179,31 +149,28 @@ const BasicInputElements = withSwal((props: any) => {
         })
         .then((result: any) => {
           if (result.isConfirmed) {
-            if (userInfo) {
-              const { user_id } = JSON.parse(userInfo);
-              if (isUpdate) {
-                // Handle update logic
-                dispatch(
-                  updateCampus(
-                    formData?.id,
-                    formData.campus_name,
-                    formData.location,
-                    formData.university_id
-                  )
-                );
-                setIsUpdate(false);
-              } else {
-                // Handle add logic
-                console.log("Here");
+            if (isUpdate) {
+              // Handle update logic
+              dispatch(
+                updateStream(
+                  formData?.id,
+                  formData.stream_name,
+                  formData.stream_description,
+                  userId ? userId : null
+                )
+              );
+              setIsUpdate(false);
+            } else {
+              // Handle add logic
+              console.log("Here");
 
-                dispatch(
-                  addCampus(
-                    formData.campus_name,
-                    formData.location,
-                    formData.university_id
-                  )
-                );
-              }
+              dispatch(
+                addStream(
+                  formData.stream_name,
+                  formData.stream_description,
+                  userId ? userId : null
+                )
+              );
             }
           }
         })
@@ -232,18 +199,13 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Campus Name",
-      accessor: "campus_name",
+      Header: "Stream",
+      accessor: "stream_name",
       sort: true,
     },
     {
-      Header: "Location",
-      accessor: "location",
-      sort: false,
-    },
-    {
-      Header: "University",
-      accessor: "university",
+      Header: "Description",
+      accessor: "stream_description",
       sort: false,
     },
     {
@@ -285,19 +247,9 @@ const BasicInputElements = withSwal((props: any) => {
     handleResetValues();
   };
 
-  //source
-  const handleUniversityChange = (selected: any) => {
-    setSelectedUniversity(selected);
-    setFormData((prev) => ({
-      ...prev,
-      university_id: selected.value,
-    }));
-  };
-
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
     setFormData(initialState); //clear form data
-    setSelectedUniversity(null);
   };
 
   const toggleResponsiveModal = () => {
@@ -314,8 +266,6 @@ const BasicInputElements = withSwal((props: any) => {
       setResponsiveModal(false);
       setValidationErrors(initialValidationState); // Clear validation errors
       setFormData(initialState); //clear form data
-      setSelectedUniversity(null);
-      // Clear validation errors
     }
   }, [loading, error]);
 
@@ -330,55 +280,36 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Campus Management</h4>
+              <h4 className="modal-title">Streams Management</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="campus_name">
-                <Form.Label>Campus Name</Form.Label>
+              <Form.Group className="mb-3" controlId="stream_name">
+                <Form.Label>Streams</Form.Label>
                 <Form.Control
                   type="text"
-                  name="campus_name"
-                  value={formData.campus_name}
+                  name="stream_name"
+                  value={formData.stream_name}
                   onChange={handleInputChange}
                 />
-                {validationErrors.campus_name && (
+                {validationErrors.stream_name && (
                   <Form.Text className="text-danger">
-                    {validationErrors.campus_name}
+                    {validationErrors.stream_name}
                   </Form.Text>
                 )}
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="location">
-                <Form.Label>Location</Form.Label>
+              <Form.Group className="mb-3" controlId="stream_description">
+                <Form.Label>Stream Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
-                  name="location"
-                  value={formData.location}
+                  name="stream_description"
+                  value={formData.stream_description}
                   onChange={handleInputChange}
                 />
-                {validationErrors.location && (
+                {validationErrors.stream_description && (
                   <Form.Text className="text-danger">
-                    {validationErrors.location}
-                  </Form.Text>
-                )}
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="university_id">
-                <Form.Label>University</Form.Label>
-                <Select
-                  styles={customStyles}
-                  className="react-select react-select-container"
-                  classNamePrefix="react-select"
-                  name="university_id"
-                  options={university}
-                  value={selectedUniversity}
-                  onChange={handleUniversityChange}
-                />
-
-                {validationErrors.university_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.university_id}
+                    {validationErrors.stream_description}
                   </Form.Text>
                 )}
               </Form.Group>
@@ -425,9 +356,9 @@ const BasicInputElements = withSwal((props: any) => {
                 className="btn-sm btn-blue waves-effect waves-light float-end"
                 onClick={toggleResponsiveModal}
               >
-                <i className="mdi mdi-plus-circle"></i> Add Campus
+                <i className="mdi mdi-plus-circle"></i> Add Streams
               </Button>
-              <h4 className="header-title mb-4">Manage Campus</h4>
+              <h4 className="header-title mb-4">Manage Streams</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -446,35 +377,23 @@ const BasicInputElements = withSwal((props: any) => {
   );
 });
 
-const Campus = () => {
+const Stream = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [sourceData, setSourceData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading, university } = useSelector(
+  const { state, error, loading, initialLoading, userId } = useSelector(
     (state: RootState) => ({
-      state: state.Campus.campus.data,
-      error: state.Campus.error,
-      loading: state.Campus.loading,
-      initialLoading: state.Campus.initialloading,
-      university: state.University.universities.data,
+      state: state.Stream.stream.data,
+      error: state.Stream.error,
+      loading: state.Stream.loading,
+      initialLoading: state.Stream.initialloading,
+      userId: state.Auth.user?.user_id,
     })
   );
 
   useEffect(() => {
-    dispatch(getUniversity());
-    dispatch(getCampus());
+    dispatch(getStream());
   }, []);
-
-  useEffect(() => {
-    if (university) {
-      const UniversityArray = university?.map((source: any) => ({
-        value: source.id.toString(),
-        label: source.university_name, // Replace with the appropriate field from the lead data
-      }));
-      setSourceData(UniversityArray);
-    }
-  }, [university]);
 
   if (initialLoading) {
     return (
@@ -489,22 +408,22 @@ const Campus = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/campus" },
-          { label: "Campus", path: "/master/campus", active: true },
+          { label: "Master", path: "" },
+          { label: "Streams", path: "", active: true },
         ]}
-        title={"Campus"}
+        title={"Streams"}
       />
       <Row>
         <Col>
           <BasicInputElements
             state={state}
-            university={sourceData}
             error={error}
             loading={loading}
+            userId={userId}
           />
         </Col>
       </Row>
     </React.Fragment>
   );
 };
-export default Campus;
+export default Stream;

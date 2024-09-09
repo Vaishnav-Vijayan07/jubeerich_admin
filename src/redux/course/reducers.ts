@@ -2,17 +2,16 @@
 import { showErrorAlert, showSuccessAlert } from "../../constants";
 
 // constants
-import { CourseTypeActionTypes } from "./constants";
+import { CourseActionTypes} from "./constants";
 
 const INIT_STATE = {
-  courseType: [],
-  options: [],
+  course: [],
   loading: false,
   initialloading: false,
   error: null,
 };
 
-interface CourseTypeData {
+interface CourseData {
   id: string;
   type_name: string;
   description: string;
@@ -20,42 +19,38 @@ interface CourseTypeData {
 
 export interface CampusActionType {
   type:
-    | CourseTypeActionTypes.API_RESPONSE_SUCCESS
-    | CourseTypeActionTypes.API_RESPONSE_ERROR
-    | CourseTypeActionTypes.GET_COURSE_TYPE
-    | CourseTypeActionTypes.ADD_COURSE_TYPE
-    | CourseTypeActionTypes.UPDATE_COURSE_TYPE
-    | CourseTypeActionTypes.DELETE_COURSE_TYPE;
+  | CourseActionTypes.API_RESPONSE_SUCCESS
+  | CourseActionTypes.API_RESPONSE_ERROR
+  | CourseActionTypes.GET_COURSE
+  | CourseActionTypes.ADD_COURSE
+  | CourseActionTypes.UPDATE_COURSE
+  | CourseActionTypes.DELETE_COURSE;
   payload: {
     actionType?: string;
-    data?: any;
+    data?: CourseData | {};
     error?: string;
   };
 }
 
 interface State {
-  courseType?: CourseTypeData | {};
+  course?: CourseData | {};
   loading?: boolean;
   value?: boolean;
 }
 
-const CourseType = (
-  state: State = INIT_STATE,
-  action: CampusActionType
-): any => {
+const Course = (state: State = INIT_STATE, action: CampusActionType): any => {
   switch (action.type) {
-    case CourseTypeActionTypes.API_RESPONSE_SUCCESS:
+    case CourseActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
-        case CourseTypeActionTypes.GET_COURSE_TYPE: {
+        case CourseActionTypes.GET_COURSE: {
           return {
             ...state,
-            courseType: action.payload.data.data,
-            options: action.payload.data.formattedCourseTypes,
+            course: action.payload.data,
             loading: false,
             initialloading: false,
           };
         }
-        case CourseTypeActionTypes.ADD_COURSE_TYPE: {
+        case CourseActionTypes.ADD_COURSE: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
@@ -63,7 +58,7 @@ const CourseType = (
             initialloading: false,
           };
         }
-        case CourseTypeActionTypes.UPDATE_COURSE_TYPE: {
+        case CourseActionTypes.UPDATE_COURSE: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
@@ -71,7 +66,7 @@ const CourseType = (
             initialloading: false,
           };
         }
-        case CourseTypeActionTypes.DELETE_COURSE_TYPE: {
+        case CourseActionTypes.DELETE_COURSE: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
@@ -83,18 +78,18 @@ const CourseType = (
           return { ...state };
       }
 
-    case CourseTypeActionTypes.API_RESPONSE_ERROR:
+    case CourseActionTypes.API_RESPONSE_ERROR:
       switch (action.payload.actionType) {
-        case CourseTypeActionTypes.GET_COURSE_TYPE: {
+        case CourseActionTypes.GET_COURSE: {
           return {
             ...state,
             error: action.payload.error,
-            courseType: [],
+            course: [],
             loading: false,
             initialloading: false,
           };
         }
-        case CourseTypeActionTypes.ADD_COURSE_TYPE: {
+        case CourseActionTypes.ADD_COURSE: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -103,7 +98,7 @@ const CourseType = (
             initialloading: false,
           };
         }
-        case CourseTypeActionTypes.UPDATE_COURSE_TYPE: {
+        case CourseActionTypes.UPDATE_COURSE: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -112,7 +107,7 @@ const CourseType = (
             initialloading: false,
           };
         }
-        case CourseTypeActionTypes.DELETE_COURSE_TYPE: {
+        case CourseActionTypes.DELETE_COURSE: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -125,17 +120,17 @@ const CourseType = (
           return { ...state };
       }
 
-    case CourseTypeActionTypes.GET_COURSE_TYPE:
+    case CourseActionTypes.GET_COURSE:
       return { ...state, loading: true, initialloading: true };
-    case CourseTypeActionTypes.ADD_COURSE_TYPE:
+    case CourseActionTypes.ADD_COURSE:
       return { ...state, loading: true, initialloading: true };
-    case CourseTypeActionTypes.UPDATE_COURSE_TYPE:
+    case CourseActionTypes.UPDATE_COURSE:
       return { ...state, loading: true, initialloading: true };
-    case CourseTypeActionTypes.DELETE_COURSE_TYPE:
+    case CourseActionTypes.DELETE_COURSE:
       return { ...state, loading: true, initialloading: true };
     default:
       return { ...state };
   }
 };
 
-export default CourseType;
+export default Course;
