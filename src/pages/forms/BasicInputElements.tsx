@@ -138,6 +138,7 @@ const BasicInputElements = withSwal((props: any) => {
   } = props;
 
   console.log("counsellors ===>", counsellors);
+  console.log("categories ===>", categories);
   
 
   //State for handling update function
@@ -1235,7 +1236,8 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Category</Form.Label>
+                    {/* <Form.Label><span className="text-danger fs-4">* </span>Category</Form.Label> */}
+                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
