@@ -1677,7 +1677,7 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1 ms-2"
                 onClick={() =>
-                  isUpdate ? [handleCancelUpdate(), toggle(), setLanguageForm([{ exam_name: '', marks: '' }]), setSelectedFile([]), setSelectedFileName([])] : [toggle(), setLanguageForm([{ exam_name: '', marks: '' }]), setSelectedFile([]), setSelectedFileName([])]
+                  isUpdate ? [handleCancelUpdate(), toggle(), setLanguageForm([{ exam_name: '', marks: '' }]), setSelectedFile([]), setSelectedFileName([]), handleResetValues()] : [toggle(), setLanguageForm([{ exam_name: '', marks: '' }]), setSelectedFile([]), setSelectedFileName([]),handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}

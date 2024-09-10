@@ -58,6 +58,7 @@ const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const { swal } = props;
   const { state, loading, error } = props;
+
   //Table data
   const records: TableRecords[] = state;
 

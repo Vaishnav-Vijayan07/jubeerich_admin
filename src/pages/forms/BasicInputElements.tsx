@@ -1556,12 +1556,13 @@ const BasicInputElements = withSwal((props: any) => {
                 className="mt-1"
                 onClick={() =>
                   isUpdate
-                    ? [handleCancelUpdate(), toggle(), setLanguageForm(languageFormInitialState), setSelectedFile([]), setSelectedFileName([])]
+                    ? [handleCancelUpdate(), toggle(), setLanguageForm(languageFormInitialState), setSelectedFile([]), setSelectedFileName([]),handleResetValues()]
                     : [
                       toggle(),
                       handleResetValues(),
                       setLanguageForm(languageFormInitialState),
-                      setSelectedFile([])
+                      setSelectedFile([]),
+                      setSelectedFileName([])
                     ]
                 }
               >
