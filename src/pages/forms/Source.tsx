@@ -448,8 +448,6 @@ const Sources = () => {
     initialloading: state.Source.initialloading,
   }));
 
-  console.log('leadType',leadType);
-
   const leadTypeData = useMemo(() => {
     if (!leadType) return [];
     return leadType.map((item: any) => ({
@@ -457,9 +455,6 @@ const Sources = () => {
       label: item?.name,
     }));
   }, [leadType]);
-
-  console.log('leadType Full',leadTypeData);
-  
 
   useEffect(() => {
     dispatch(getSource());

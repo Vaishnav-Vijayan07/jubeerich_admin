@@ -137,6 +137,9 @@ const BasicInputElements = withSwal((props: any) => {
     franchisees,
   } = props;
 
+  const [sourceData, setSourceData] = useState<any>(source);
+  const [channelData, setChannelData] = useState<any>(channels);
+
   console.log("counsellors ===>", counsellors);
   console.log("categories ===>", categories);
   
@@ -502,9 +505,16 @@ const BasicInputElements = withSwal((props: any) => {
     switch (name) {
       case "source_id":
         setSelectedSource(selected);
+        setSelectedChannel(null);
+        let filteredChannel = channels.filter((data: any) => data.source_id == selected.value);
+        setChannelData(filteredChannel)
         break;
       case "category_id":
+        setSelectedSource(null);
+        setSelectedChannel(null);
         setSelectedCategory(selected);
+        let filteredSource = source.filter((data: any) => data.lead_type == selected.value);
+        setSourceData(filteredSource);
         break;
       case "preferred_country":
         setSelectedCountry(selected);
@@ -1196,15 +1206,38 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
+                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="category_id"
+                      // options={[{ value: null, label: "None" }, ...categories]}
+                      options={categories}
+                      value={selectedCategory}
+                      onChange={handleDropDowns}
+                    />
+                    {validationErrors.category_id && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.category_id}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+
+                <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label><span className="text-danger fs-4">* </span>Source</Form.Label>
                     <Select
                       className="react-select react-select-container"
                       styles={customStyles}
                       classNamePrefix="react-select"
                       name="source_id"
-                      options={[{ value: null, label: "None" }, ...source]}
+                      // options={[{ value: null, label: "None" }, ...sourceData]}
+                      options={sourceData}
                       value={selectedSource}
                       onChange={handleDropDowns}
+                      isDisabled={!selectedCategory}
                     />
                     {validationErrors.source_id && (
                       <Form.Text className="text-danger">
@@ -1222,9 +1255,11 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="channel_id"
-                      options={[{ value: null, label: "None" }, ...channels]}
+                      // options={[{ value: null, label: "None" }, ...channelData]}
+                      options={channelData}
                       value={selectedChannel}
                       onChange={handleDropDowns}
+                      isDisabled={!selectedSource}
                     />
                     {validationErrors.channel_id && (
                       <Form.Text className="text-danger">
@@ -1234,9 +1269,8 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={4} lg={4}>
+                {/* <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    {/* <Form.Label><span className="text-danger fs-4">* </span>Category</Form.Label> */}
                     <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
                     <Select
                       styles={customStyles}
@@ -1253,7 +1287,7 @@ const BasicInputElements = withSwal((props: any) => {
                       </Form.Text>
                     )}
                   </Form.Group>
-                </Col>
+                </Col> */}
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">

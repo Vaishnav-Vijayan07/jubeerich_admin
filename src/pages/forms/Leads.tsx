@@ -125,6 +125,7 @@ const Leads = () => {
     return source.map((item: any) => ({
       value: item.id.toString(),
       label: item.source_name,
+      lead_type: item.lead_type_id
     }));
   }, [source]);
 
@@ -149,6 +150,7 @@ const Leads = () => {
     return channels.map((item: any) => ({
       value: item.id.toString(),
       label: item.channel_name,
+      source_id: item?.source_id
     }));
   }, [channels]);
 
