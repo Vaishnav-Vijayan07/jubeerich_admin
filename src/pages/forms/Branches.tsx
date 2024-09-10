@@ -503,17 +503,21 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleResetValues = () => {
+    console.log('ENTERED');
+    
     setValidationErrors({
       branch_name: "",
       address: "",
       city: "",
       country: "",
+      region_id: ""
     });
-
+    
+    setSelectedRegion(null);
     setFormData(initialState)
-    setSelectedRegion('')
     setSelectedOffice('')
     setValidationErrors(initialValidationState);
+    console.log(selectedRegion);
   }
 
   useEffect(() => {
@@ -874,7 +878,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 "
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal(), handleResetValues()] : [ toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
