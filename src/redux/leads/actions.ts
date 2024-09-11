@@ -21,6 +21,7 @@ interface LeadsData {
   email: string;
   phone: string;
   category_id: string;
+  lead_type_id: string;
   source_id: string;
   channel_id: string;
   city: string;
@@ -78,6 +79,7 @@ export const addLeads = (
   email: string | null,
   phone: string | null,
   category_id: string | null,
+  lead_type_id: string | null,
   source_id: string | null,
   channel_id: string | null,
   city: string | null,
@@ -94,7 +96,7 @@ export const addLeads = (
   zipcode?: string | null,
   exam_details?: any,
   exam_documents?: any,
-  franchise_id?: string | null
+  franchise_id?: string | null,
 ): LeadsActionType => ({
   type: LeadsActionTypes.ADD_LEADS,
   payload: {
@@ -102,6 +104,7 @@ export const addLeads = (
     email,
     phone,
     category_id,
+    lead_type_id,
     source_id,
     channel_id,
     city,
@@ -127,6 +130,7 @@ export const updateLeads = (
   email: string | null,
   phone: string | null,
   category_id: string | null,
+  lead_type_id: string | null,
   source_id: string | null,
   channel_id: string | null,
   city: string | null,
@@ -152,6 +156,7 @@ export const updateLeads = (
     email,
     phone,
     category_id,
+    lead_type_id,
     source_id,
     channel_id,
     city,
