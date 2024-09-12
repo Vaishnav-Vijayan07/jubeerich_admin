@@ -179,7 +179,7 @@ const BasicInputElements = withSwal((props: any) => {
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
 
-    if (name == "role_id" && value !== "7") {
+    if (name == "role_id" && value !== counsellor_id) {
       setFormData((prevData) => ({
         ...prevData,
         country_id: undefined,
@@ -255,7 +255,8 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.role_id == regional_manager_id ? formData.region_id : null,
                     // formData.role_id == counsellor_tl_id ? formData.branch_id : null,
                     (formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) ? formData.branch_id : null,
-                    formData.role_id == branch_counsellor_id ? formData.country_ids : null
+                    // formData.role_id == branch_counsellor_id ? formData.country_ids : null
+                    null
                   )
                 );
               } catch (err) {
@@ -284,7 +285,8 @@ const BasicInputElements = withSwal((props: any) => {
                     formData?.country_id,
                     formData.role_id == regional_manager_id ? formData.region_id : null,
                     (formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) ? formData.branch_id : null,
-                    formData.role_id == branch_counsellor_id ? formData.country_ids : null
+                    // formData.role_id == branch_counsellor_id ? formData.country_ids : null
+                    null
                   )
                 );
               } catch (err) {
@@ -787,7 +789,7 @@ const BasicInputElements = withSwal((props: any) => {
                         )}
                       </Form.Group>
                     </Col>
-                    {formData?.role_id == counsellor_id && (
+                    {(formData?.role_id == counsellor_id || formData.role_id == branch_counsellor_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="role_id">
                           <Form.Label>Country</Form.Label>
@@ -845,7 +847,7 @@ const BasicInputElements = withSwal((props: any) => {
                       </Col>
                     )}
 
-                    {formData.role_id == branch_counsellor_id && <Col md={4} lg={4}>
+                    {/* {formData.role_id == branch_counsellor_id && <Col md={4} lg={4}>
                       <Form.Group className="mb-3" controlId="country_ids">
                         <Form.Label>Country</Form.Label>
                         <Select
@@ -858,13 +860,8 @@ const BasicInputElements = withSwal((props: any) => {
                           value={selectedCountry}
                           onChange={handleSelectChange as any}
                         />
-                        {/* {validationErrors.country_ids && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.preferred_country}
-                          </Form.Text>
-                        )} */}
                       </Form.Group>
-                    </Col>}
+                    </Col>} */}
 
                     {(formData?.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) && (
                       <Col md={6}>
@@ -1034,10 +1031,6 @@ const AdminUsers = () => {
 
   const RolesData = useSelector((state: RootState) => ({
     state: state.Roles.roles,
-  }));
-
-  const RegionData = useSelector((state: RootState) => ({
-    state: state.Region.regions,
   }));
 
   useEffect(() => {

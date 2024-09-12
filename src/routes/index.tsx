@@ -4,6 +4,7 @@ import { Route, Navigate, RouteProps } from "react-router-dom";
 // components
 import PrivateRoute from "./PrivateRoute";
 import { AUTH_SESSION_KEY } from "../constants";
+import UserBox from "../pages/forms/UserBox";
 
 // lazy load all the views
 
@@ -292,6 +293,13 @@ const settingsRoutes = {
           name: "branches",
           // element: <Branches />,
           element: <PrivateRoute roles={["Monitor"]} component={Branches} />,
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/branches_detials/:branchId",
+          name: "branches_details",
+          // element: <Branches />,
+          element: <PrivateRoute roles={["Monitor"]} component={UserBox} />,
           route: PrivateRoute,
         },
         {
