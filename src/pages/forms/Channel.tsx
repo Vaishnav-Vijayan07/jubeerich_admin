@@ -31,6 +31,7 @@ import {
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { Link } from "react-router-dom";
+import useDropdownData from "../../hooks/useDropdownDatas";
 
 interface OptionType {
   value: string;
@@ -189,7 +190,7 @@ const BasicInputElements = withSwal((props: any) => {
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: `Yes, ${isUpdate ? 'Update' : 'Create'}`,
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -298,18 +299,24 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <Link to="#" className="action-icon" onClick={() => {
-            setIsUpdate(true);
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => {
+              setIsUpdate(true);
+              handleUpdate(row.original);
+              toggleResponsiveModal();
+            }}
+          >
             <i className="mdi mdi-square-edit-outline"></i>
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => handleDelete(row.original.id)}
+          >
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -428,7 +435,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="primary"
                 id="button-addon2"
                 className="mt-1 ms-2"
-                onClick={() => ([handleResetValues()])}
+                onClick={() => [handleResetValues()]}
               >
                 Clear
               </Button>
@@ -487,8 +494,8 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Channel = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [sourceData, setSourceData] = useState([]);
-
+  const { dropdownData: sourceData, loading: dropDownLoading } =
+    useDropdownData("sources");
   //Fetch data from redux store
   const { state, error, loading, initialloading } = useSelector(
     (state: RootState) => ({
@@ -499,24 +506,9 @@ const Channel = () => {
     })
   );
 
-  const Source = useSelector(
-    (state: RootState) => state?.Source?.sources?.data
-  );
-
   useEffect(() => {
     dispatch(getChannel());
-    dispatch(getSource());
   }, []);
-
-  useEffect(() => {
-    if (Source) {
-      const SourceArray = Source?.map((source: any) => ({
-        value: source.id.toString(),
-        label: source.source_name, // Replace with the appropriate field from the lead data
-      }));
-      setSourceData(SourceArray);
-    }
-  }, [Source]);
 
   if (initialloading) {
     return (
@@ -540,7 +532,7 @@ const Channel = () => {
         <Col>
           <BasicInputElements
             state={state}
-            sourceData={sourceData}
+            sourceData={sourceData.sources || []}
             error={error}
             loading={loading}
           />

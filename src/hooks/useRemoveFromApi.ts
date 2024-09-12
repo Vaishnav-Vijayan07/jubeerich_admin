@@ -22,7 +22,7 @@ const useRemoveFromApi = (getAcademicInfo: () => void) => {
         setLoading(true);
 
         try {
-          const res = await axios.delete(`academic_work_info/${type}/${id}`, {
+          const res = await axios.delete(`basic_info/${type}/${id}`, {
             headers: {
               "Content-Type": "application/json", // Assuming no file data is sent
             },

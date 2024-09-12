@@ -3,14 +3,18 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import axios from "axios";
 import moment from "moment";
-import { customStyles, showErrorAlert, showSuccessAlert } from "../../../../constants";
+import {
+  customStyles,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../../../../constants";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import Select, { ActionMeta, OptionsType } from "react-select";
 import makeAnimated from "react-select/animated";
-import * as yup from 'yup';
+import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { withSwal } from 'react-sweetalert2';
+import { withSwal } from "react-sweetalert2";
 
 const validationErrorsInitialState = {
   full_name: "",
@@ -30,7 +34,7 @@ const validationErrorsInitialState = {
   state: "",
   country: "",
   address: "",
-}
+};
 
 const initialState = {
   full_name: "",
@@ -72,26 +76,41 @@ const BasicInfo = withSwal((props: any) => {
     MaritalStatus,
     basicData,
     getBasicInfoApi,
-    role
+    role,
   } = props;
 
   const [formData, setformData] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [selectedOfficeType, setSelectedOfficeType] = useState<any>(null);
   const [selectedGender, setSelectedGender] = useState<any>(null);
-  const [selectedMaritialStatus, setSelectedMaritialStatus] = useState<any>(null);
+  const [selectedMaritialStatus, setSelectedMaritialStatus] =
+    useState<any>(null);
   const animatedComponents = makeAnimated();
   const [selectedCountry, setSelectedCountry] = useState<any>([]);
-  const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
+  const [validationErrors, setValidationErrors] = useState(
+    validationErrorsInitialState
+  );
 
   console.log("form data =>", formData);
 
-  const genderData: any = [{ value: null, label: "None" }, { value: "Male", label: "Male" }, { value: "Female", label: "Female" }, { value: "Other", label: "Other" },]
+  const genderData: any = [
+    { value: null, label: "None" },
+    { value: "Male", label: "Male" },
+    { value: "Female", label: "Female" },
+    { value: "Other", label: "Other" },
+  ];
 
   const ValidationSchema = yup.object().shape({
     full_name: yup.string().required("Name cannot be empty"),
-    email: yup.string().required("Email cannot be empty").email("Enter a valid email"),
-    phone: yup.string().required("Password cannot be empty").matches(/^[0-9]+$/, "Phone number must be digits only").max(10, "Enter a valid phone number"),
+    email: yup
+      .string()
+      .required("Email cannot be empty")
+      .email("Enter a valid email"),
+    phone: yup
+      .string()
+      .required("Password cannot be empty")
+      .matches(/^[0-9]+$/, "Phone number must be digits only")
+      .max(10, "Enter a valid phone number"),
     city: yup.string().nullable(),
     preferred_country: yup.array().of(yup.string()).nullable(),
     office_type: yup.string().required("Office Type cannot be empty"),
@@ -102,11 +121,15 @@ const BasicInfo = withSwal((props: any) => {
     gender: yup.string().required("Gender is required"),
     marital_status: yup.string().nullable(),
     nationality: yup.string().nullable(),
-    secondary_number: yup.string().matches(/^[0-9]+$/, "Phone number must be digits only").max(10, "Enter a valid phone number").nullable(),
+    secondary_number: yup
+      .string()
+      .matches(/^[0-9]+$/, "Phone number must be digits only")
+      .max(10, "Enter a valid phone number")
+      .nullable(),
     state: yup.string().nullable(),
     country: yup.string().nullable(),
     address: yup.string().nullable(),
-  })
+  });
 
   const getBasicInfo = () => {
     setformData(initialState);
@@ -114,38 +137,40 @@ const BasicInfo = withSwal((props: any) => {
       .get(`getStudentBasicInfo/${studentId}`)
       .then((res) => {
         console.log("res =>", res.data);
-        const countries = res?.data?.data?.preferredCountries?.map((item: any) => {
-          return {
-            label: item?.country_name,
-            value: item?.id
+        const countries = res?.data?.data?.preferredCountries?.map(
+          (item: any) => {
+            return {
+              label: item?.country_name,
+              value: item?.id,
+            };
           }
-        })
-        setSelectedCountry(countries)
+        );
+        setSelectedCountry(countries);
 
         const updatedOffice = OfficeTypes?.filter(
           (office: any) => office.value == res?.data?.data?.office_type
         );
-        setSelectedOfficeType(updatedOffice[0])
+        setSelectedOfficeType(updatedOffice[0]);
 
         const updatedGender = genderData?.filter(
           (gender: any) => gender.value == res?.data?.data?.gender
         );
-        setSelectedGender(updatedGender[0])
+        setSelectedGender(updatedGender[0]);
 
         const updatedMaritialStatus = MaritalStatus?.filter(
-          (maritalStatus: any) => maritalStatus.value == res?.data?.data?.marital_status
+          (maritalStatus: any) =>
+            maritalStatus.value == res?.data?.data?.marital_status
         );
 
-        setSelectedMaritialStatus(updatedMaritialStatus[0])
-
+        setSelectedMaritialStatus(updatedMaritialStatus[0]);
 
         const modifiedData = {
           ...res.data.data,
           preferred_country: res?.data?.data?.country_ids,
           // dob: moment(res?.data?.dob).format("YYYY-MM-DD")
-          dob: moment(res?.data?.data?.dob).format("YYYY-MM-DD")
-        }
-        console.log('MODIFIED DATE', modifiedData.dob);
+          dob: moment(res?.data?.data?.dob).format("YYYY-MM-DD"),
+        };
+        console.log("MODIFIED DATE", modifiedData.dob);
 
         setformData(modifiedData);
       })
@@ -169,9 +194,8 @@ const BasicInfo = withSwal((props: any) => {
 
   // save details api
   const saveStudentBasicInfo = async () => {
-
     try {
-      await ValidationSchema.validate(formData, { abortEarly: false })
+      await ValidationSchema.validate(formData, { abortEarly: false });
 
       swal
         .fire({
@@ -212,7 +236,7 @@ const BasicInfo = withSwal((props: any) => {
                 setLoading(false);
                 showSuccessAlert(res.data.message);
                 getBasicInfoApi();
-                setValidationErrors(validationErrorsInitialState)
+                setValidationErrors(validationErrorsInitialState);
               })
               .catch((err) => {
                 console.log(err);
@@ -220,9 +244,10 @@ const BasicInfo = withSwal((props: any) => {
                 showErrorAlert("Error occured");
               });
           }
-        }).catch((err: any) => {
-          console.log(err);
         })
+        .catch((err: any) => {
+          console.log(err);
+        });
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
@@ -234,7 +259,6 @@ const BasicInfo = withSwal((props: any) => {
         setValidationErrors(errors);
       }
     }
-
   };
 
   const handleDropDowns = (selected: any, { name }: any) => {
@@ -248,7 +272,7 @@ const BasicInfo = withSwal((props: any) => {
         setSelectedOfficeType(selected);
         break;
       case "gender":
-        setSelectedGender(selected)
+        setSelectedGender(selected);
         break;
       case "marital_status":
         setSelectedMaritialStatus(selected);
@@ -282,7 +306,9 @@ const BasicInfo = withSwal((props: any) => {
         <Row>
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="full_name">
-              <Form.Label><span className="text-danger">* </span>Full Name</Form.Label>
+              <Form.Label>
+                <span className="text-danger">* </span>Full Name
+              </Form.Label>
               <FormInput
                 type="text"
                 name="full_name"
@@ -292,13 +318,19 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData?.full_name}
                 onChange={handleInputChange}
               />
-              {validationErrors.full_name && <Form.Text className="text-danger">{validationErrors.full_name}</Form.Text>}
+              {validationErrors.full_name && (
+                <Form.Text className="text-danger">
+                  {validationErrors.full_name}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="email">
-              <Form.Label><span className="text-danger">* </span>Email Id</Form.Label>
+              <Form.Label>
+                <span className="text-danger">* </span>Email Id
+              </Form.Label>
               <FormInput
                 type="email"
                 name="email"
@@ -307,13 +339,19 @@ const BasicInfo = withSwal((props: any) => {
                 key="email"
                 onChange={handleInputChange}
               />
-              {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
+              {validationErrors.email && (
+                <Form.Text className="text-danger">
+                  {validationErrors.email}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="phone">
-              <Form.Label><span className="text-danger">* </span>Phone Number</Form.Label>
+              <Form.Label>
+                <span className="text-danger">* </span>Phone Number
+              </Form.Label>
               <FormInput
                 type="phone"
                 name="phone"
@@ -323,7 +361,9 @@ const BasicInfo = withSwal((props: any) => {
                 onChange={handleInputChange}
               />
               {validationErrors.phone && (
-                <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>
+                <Form.Text className="text-danger">
+                  {validationErrors.phone}
+                </Form.Text>
               )}
             </Form.Group>
           </Col>
@@ -340,7 +380,9 @@ const BasicInfo = withSwal((props: any) => {
                 onChange={handleInputChange}
               />
               {validationErrors.city && (
-                <Form.Text className="text-danger">{validationErrors.city}</Form.Text>
+                <Form.Text className="text-danger">
+                  {validationErrors.city}
+                </Form.Text>
               )}
             </Form.Group>
           </Col>
@@ -359,7 +401,11 @@ const BasicInfo = withSwal((props: any) => {
                 onChange={handleSelectChange as any}
                 isDisabled={role == 7 ? true : false}
               />
-              {validationErrors.preferred_country && <Form.Text className="text-danger">{validationErrors.preferred_country}</Form.Text>}
+              {validationErrors.preferred_country && (
+                <Form.Text className="text-danger">
+                  {validationErrors.preferred_country}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -399,13 +445,19 @@ const BasicInfo = withSwal((props: any) => {
                 defaultValue={formData?.passport_no}
                 onChange={handleInputChange}
               />
-              {validationErrors.passport_no && <Form.Text className="text-danger">{validationErrors.passport_no}</Form.Text>}
+              {validationErrors.passport_no && (
+                <Form.Text className="text-danger">
+                  {validationErrors.passport_no}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="gender">
-              <Form.Label><span className="text-danger">*</span> Gender</Form.Label>
+              <Form.Label>
+                <span className="text-danger">*</span> Gender
+              </Form.Label>
               <Select
                 styles={customStyles}
                 className="react-select react-select-container"
@@ -445,7 +497,9 @@ const BasicInfo = withSwal((props: any) => {
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="dob">
-              <Form.Label><span className="text-danger">*</span> Date of Birth</Form.Label>
+              <Form.Label>
+                <span className="text-danger">*</span> Date of Birth
+              </Form.Label>
               <FormInput
                 type="date"
                 name="dob"
@@ -455,7 +509,11 @@ const BasicInfo = withSwal((props: any) => {
                 value={moment(formData?.dob).format("YYYY-MM-DD")}
                 onChange={handleInputChange}
               />
-              {validationErrors.dob && <Form.Text className="text-danger">{validationErrors.dob}</Form.Text>}
+              {validationErrors.dob && (
+                <Form.Text className="text-danger">
+                  {validationErrors.dob}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -471,7 +529,11 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData?.nationality}
                 onChange={handleInputChange}
               />
-              {validationErrors.nationality && <Form.Text className="text-danger">{validationErrors.nationality}</Form.Text>}
+              {validationErrors.nationality && (
+                <Form.Text className="text-danger">
+                  {validationErrors.nationality}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -487,7 +549,11 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData?.secondary_number}
                 onChange={handleInputChange}
               />
-              {validationErrors.secondary_number && <Form.Text className="text-danger">{validationErrors.secondary_number}</Form.Text>}
+              {validationErrors.secondary_number && (
+                <Form.Text className="text-danger">
+                  {validationErrors.secondary_number}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -503,7 +569,11 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData?.state}
                 onChange={handleInputChange}
               />
-              {validationErrors.state && <Form.Text className="text-danger">{validationErrors.state}</Form.Text>}
+              {validationErrors.state && (
+                <Form.Text className="text-danger">
+                  {validationErrors.state}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -519,7 +589,11 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData?.country}
                 onChange={handleInputChange}
               />
-              {validationErrors.country && <Form.Text className="text-danger">{validationErrors.country}</Form.Text>}
+              {validationErrors.country && (
+                <Form.Text className="text-danger">
+                  {validationErrors.country}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -535,7 +609,11 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData.address}
                 onChange={handleInputChange}
               />
-              {validationErrors.address && <Form.Text className="text-danger">{validationErrors.address}</Form.Text>}
+              {validationErrors.address && (
+                <Form.Text className="text-danger">
+                  {validationErrors.address}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -550,7 +628,11 @@ const BasicInfo = withSwal((props: any) => {
                 value={formData.remarks}
                 onChange={handleInputChange}
               />
-              {validationErrors.remarks && <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>}
+              {validationErrors.remarks && (
+                <Form.Text className="text-danger">
+                  {validationErrors.remarks}
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
 

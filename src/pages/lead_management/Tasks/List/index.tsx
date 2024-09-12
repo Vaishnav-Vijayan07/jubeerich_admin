@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Row, Col, Card, Spinner } from "react-bootstrap";
 
 // components
@@ -9,12 +9,10 @@ import TaskSection from "./Section";
 // dummy data
 import { TaskItemTypes } from "./data";
 import axios from "axios";
-import StudentDetails from "./StudentDetails";
-import { useDispatch } from "react-redux";
+const StudentDetails = lazy(() => import("./StudentDetails"));
 
 // Task List
 const TaskList = () => {
-  const dispatch = useDispatch();
   const [TaskArray, setTaskArray] = useState<TaskItemTypes[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(TaskArray[0]);
   const [initialLoading, setLoading] = useState(false);
@@ -29,21 +27,21 @@ const TaskList = () => {
     axios
       .get(`/tasks`)
       .then((res) => {
-        let pendingArray: any = []
-        let completedArray: any = []
+        let pendingArray: any = [];
+        let completedArray: any = [];
         res.data.data.map((item: any) => {
           if (!item.isCompleted) {
-            pendingArray.push(item)
-          }else{
-            completedArray.push(item)
+            pendingArray.push(item);
+          } else {
+            completedArray.push(item);
           }
-        })
+        });
         // setSelectedTask(res.data.data[0]);
         // setTaskArray(res.data.data);
         // setpendingTasks(res.data.data);
-        setpendingTasks(pendingArray)
-        setTaskArray(completedArray)
-        setSelectedTask(pendingArray[0])
+        setpendingTasks(pendingArray);
+        setTaskArray(completedArray);
+        setSelectedTask(pendingArray[0]);
       })
       .catch((err) => console.error(err))
       .finally(() => {
@@ -125,11 +123,13 @@ const TaskList = () => {
 
         <Col xl={8}>
           {selectedTask && (
-            <StudentDetails
-              studentId={selectedTask?.studentId}
-              taskId={selectedTask?.id}
-              getTaskList={getTaskList}
-            />
+            <Suspense fallback={<Spinner animation="border" />}>
+              <StudentDetails
+                studentId={selectedTask?.studentId}
+                taskId={selectedTask?.id}
+                getTaskList={getTaskList}
+              />
+            </Suspense>
           )}
         </Col>
       </Row>

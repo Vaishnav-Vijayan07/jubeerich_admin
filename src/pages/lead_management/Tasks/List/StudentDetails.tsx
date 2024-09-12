@@ -32,10 +32,9 @@ import Comments from "./Comments";
 import Attachments from "./Attachments";
 import WorkExpereince from "./WorkExpereince";
 
-const BasicInfo = lazy(() => import('./BasicInfo'));
-const AcademicInfo = lazy(() => import('./AcademicInfo'));
-const StudyPreference = lazy(() => import('./StudyPreference'));
-
+const BasicInfo = lazy(() => import("./BasicInfo"));
+const AcademicInfo = lazy(() => import("./AcademicInfo"));
+const StudyPreference = lazy(() => import("./StudyPreference"));
 
 const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [basicData, setBasicData] = useState<any>([]);
@@ -46,6 +45,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [statusId, setStatusId] = useState(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [taskDetails, setTaskDetails] = useState<any>({});
+
+  const [activeTab, setActiveTab] = useState<any>("basic_info");
 
   const dispatch = useDispatch();
   const { Countries, OfficeTypes, MaritalStatus, user } = useSelector(
@@ -58,10 +59,10 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   );
 
   const toggleStandard = () => {
-    setStandard(!standard)
-    setSelectedDate(null)
-    setStatusId(null)
-  }
+    setStandard(!standard);
+    setSelectedDate(null);
+    setStatusId(null);
+  };
 
   const handleDateChange = (date: any) => {
     // const formattedDate = moment(date).format("YYYY-MM-DD");
@@ -543,11 +544,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           )}
         </Card.Body>
       </Card>
-
       <Card>
         <Card.Body>
           <Row>
-            <Tab.Container defaultActiveKey="basic_info">
+            <Tab.Container
+              activeKey={activeTab}
+              onSelect={(tab) => setActiveTab(tab)}
+            >
               <Card>
                 <Card.Body>
                   <Nav
@@ -557,53 +560,42 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   >
                     <Nav.Item as="li" className="nav-item nav_item_1">
                       <Nav.Link
-                        // href="#"
                         eventKey="basic_info"
                         className="nav-link cursor-pointer"
                       >
-                        Basic info
+                        Basic Info
                       </Nav.Link>
                     </Nav.Item>
 
                     <Nav.Item as="li" className="nav-item nav_item_2">
-                      <div>
-                        <Nav.Link
-                          // href="#"
-                          eventKey="academic_info"
-                          className="nav-link cursor-pointer"
-                        >
-                          Academic info
-                        </Nav.Link>
-                      </div>
+                      <Nav.Link
+                        eventKey="academic_info"
+                        className="nav-link cursor-pointer"
+                      >
+                        Academic Info
+                      </Nav.Link>
                     </Nav.Item>
 
                     <Nav.Item as="li" className="nav-item nav_item_2">
-                      <div>
-                        <Nav.Link
-                          // href="#"
-                          eventKey="work_info"
-                          className="nav-link cursor-pointer"
-                        >
-                          Work Experience
-                        </Nav.Link>
-                      </div>
+                      <Nav.Link
+                        eventKey="work_info"
+                        className="nav-link cursor-pointer"
+                      >
+                        Work Experience
+                      </Nav.Link>
                     </Nav.Item>
 
                     <Nav.Item as="li" className="nav-item nav_item_3">
-                      <div>
-                        <Nav.Link
-                          // href="#"
-                          eventKey="study_preference"
-                          className="nav-link cursor-pointer"
-                        >
-                          Study preference info
-                        </Nav.Link>
-                      </div>
+                      <Nav.Link
+                        eventKey="study_preference"
+                        className="nav-link cursor-pointer"
+                      >
+                        Study Preference
+                      </Nav.Link>
                     </Nav.Item>
 
                     <Nav.Item as="li" className="nav-item nav_item_4">
                       <Nav.Link
-                        // href="#"
                         eventKey="comments"
                         className="nav-link cursor-pointer"
                       >
@@ -613,7 +605,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
                     <Nav.Item as="li" className="nav-item nav_item_5">
                       <Nav.Link
-                        // href="#"
                         eventKey="attachments"
                         className="nav-link cursor-pointer"
                       >
@@ -623,58 +614,53 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   </Nav>
 
                   <Tab.Content>
-                    <Tab.Pane eventKey="basic_info">
-                      {studentId && (
-                        <Suspense fallback={<></>}>
-                          <BasicInfo
-                            studentId={studentId}
-                            Countries={Countries}
-                            OfficeTypes={officeData}
-                            country={countryData || []}
-                            MaritalStatus={maritialData}
-                            basicData={basicData}
-                            getBasicInfoApi={getBasicInfo}
-                            role={user.role}
-                          />
-                        </Suspense>
-                      )}
-                    </Tab.Pane>
-
-                    <Tab.Pane eventKey="academic_info">
-                      <Suspense fallback={<></>}>
-                        {studentId && <AcademicInfo studentId={studentId} />}
+                    {/* Conditionally render the content based on the active tab */}
+                    {activeTab === "basic_info" && studentId && (
+                      <Suspense fallback={<div>Loading Basic Info...</div>}>
+                        <BasicInfo
+                          studentId={studentId}
+                          Countries={Countries}
+                          OfficeTypes={officeData}
+                          country={countryData || []}
+                          MaritalStatus={maritialData}
+                          basicData={basicData}
+                          getBasicInfoApi={getBasicInfo}
+                          role={user.role}
+                        />
                       </Suspense>
-                    </Tab.Pane>
-                    
-                    <Tab.Pane eventKey="work_info">
-                      <Suspense fallback={<></>}>
-                        {studentId && <WorkExpereince studentId={studentId} />}
+                    )}
+
+                    {activeTab === "academic_info" && studentId && (
+                      <Suspense fallback={null}>
+                        <AcademicInfo studentId={studentId} />
                       </Suspense>
-                    </Tab.Pane>
+                    )}
 
-                    <Tab.Pane eventKey="study_preference">
-                      {studentId && (
-                        <Suspense fallback={<></>}>
-
-                          <StudyPreference
-                            studentId={studentId}
-                            Countries={Countries}
-                          />
-                        </Suspense>
-                      )}
-                    </Tab.Pane>
-
-                    <Tab.Pane eventKey="comments">
-                      <Suspense fallback={<></>}>
-                        {studentId && <Comments studentId={studentId} />}
+                    {activeTab === "work_info" && studentId && (
+                      <Suspense fallback={null}>
+                        <WorkExpereince studentId={studentId} />
                       </Suspense>
-                    </Tab.Pane>
+                    )}
 
-                    <Tab.Pane eventKey="attachments">
-                      <Suspense fallback={<></>}>
-                        {studentId && <Attachments studentId={studentId} />}
+                    {activeTab === "study_preference" && studentId && (
+                      <Suspense
+                        fallback={<div>Loading Study Preferences...</div>}
+                      >
+                        <StudyPreference studentId={studentId} />
                       </Suspense>
-                    </Tab.Pane>
+                    )}
+
+                    {activeTab === "comments" && studentId && (
+                      <Suspense fallback={<div>Loading Comments...</div>}>
+                        <Comments studentId={studentId} />
+                      </Suspense>
+                    )}
+
+                    {activeTab === "attachments" && studentId && (
+                      <Suspense fallback={<div>Loading Attachments...</div>}>
+                        <Attachments studentId={studentId} />
+                      </Suspense>
+                    )}
                   </Tab.Content>
                 </Card.Body>
               </Card>

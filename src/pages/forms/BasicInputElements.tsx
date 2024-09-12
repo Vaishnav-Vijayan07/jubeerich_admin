@@ -138,7 +138,6 @@ const BasicInputElements = withSwal((props: any) => {
   } = props;
 
   console.log("counsellors ===>", counsellors);
-  
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
@@ -313,9 +312,7 @@ const BasicInputElements = withSwal((props: any) => {
   );
 
   const validationSchema = yup.object().shape({
-    full_name: yup
-      .string()
-      .required("Name is required"),
+    full_name: yup.string().required("Name is required"),
     email: yup.string().required("Email is required").email("Invalid email"),
     phone: yup
       .string()
@@ -629,7 +626,7 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.channel_id,
                     formData.city,
                     // formData.preferred_country,
-                    JSON.stringify(formData.preferred_country),
+                    JSON.stringify([formData.preferred_country]),
                     formData.office_type,
                     // null, // Region Nulled
                     formData.region_id ? formData.region_id : null,
@@ -740,67 +737,67 @@ const BasicInputElements = withSwal((props: any) => {
     },
     ...(user?.role == 4
       ? [
-        {
-          Header: "Assigned CRE",
-          accessor: "cre_name",
-          sort: true,
-        },
-      ]
+          {
+            Header: "Assigned CRE",
+            accessor: "cre_name",
+            sort: true,
+          },
+        ]
       : []),
     ...(user?.role == 3
       ? [
-        {
-          Header: "Assigned by",
-          accessor: "updated_by_user",
-          sort: true,
-        },
-      ]
+          {
+            Header: "Assigned by",
+            accessor: "updated_by_user",
+            sort: true,
+          },
+        ]
       : []),
     ...(user?.role == 3 || user?.role == 4
       ? [
-        {
-          Header: "Assign Type",
-          accessor: "assign_type",
-          sort: true,
-          Cell: ({ row }: any) => {
-            const assignType = row.original.assign_type;
+          {
+            Header: "Assign Type",
+            accessor: "assign_type",
+            sort: true,
+            Cell: ({ row }: any) => {
+              const assignType = row.original.assign_type;
 
-            // Define display text for each possible assignType
-            const displayText: { [key: string]: string } = {
-              direct_assign: "Direct Assigned",
-              auto_assign: "Auto Assigned",
-              null: "", // Handle the string "null" explicitly
-              undefined: "", // Handle the string "undefined" explicitly
-            };
+              // Define display text for each possible assignType
+              const displayText: { [key: string]: string } = {
+                direct_assign: "Direct Assigned",
+                auto_assign: "Auto Assigned",
+                null: "", // Handle the string "null" explicitly
+                undefined: "", // Handle the string "undefined" explicitly
+              };
 
-            // Return the corresponding display text or "Unknown" if not found
-            return <span>{displayText[assignType] || ""}</span>;
+              // Return the corresponding display text or "Unknown" if not found
+              return <span>{displayText[assignType] || ""}</span>;
+            },
           },
-        },
-      ]
+        ]
       : []),
     ...(user?.role == 3 || user?.role == 5
       ? [
-        {
-          Header: "Assigned counsellor",
-          accessor: "counselors",
-          sort: false,
-          Cell: ({ row }: any) => {
-            const counselors = row?.original.counselors;
-            return (
-              <ul style={{ listStyle: "none", padding: 0 }}>
-                {counselors && counselors.length > 0 ? (
-                  counselors.map((item: any) => (
-                    <li key={item?.counselor_name}>{item?.counselor_name}</li>
-                  ))
-                ) : (
-                  <li>Not assigned</li>
-                )}
-              </ul>
-            );
+          {
+            Header: "Assigned counsellor",
+            accessor: "counselors",
+            sort: false,
+            Cell: ({ row }: any) => {
+              const counselors = row?.original.counselors;
+              return (
+                <ul style={{ listStyle: "none", padding: 0 }}>
+                  {counselors && counselors.length > 0 ? (
+                    counselors.map((item: any) => (
+                      <li key={item?.counselor_name}>{item?.counselor_name}</li>
+                    ))
+                  ) : (
+                    <li>Not assigned</li>
+                  )}
+                </ul>
+              );
+            },
           },
-        },
-      ]
+        ]
       : []),
     {
       Header: "Status",
@@ -1091,7 +1088,6 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleFileChange = (index: number, e: any) => {
-    
     let file = e.target.files[0];
 
     // if (!isUpdate && selectedFile.length) {
@@ -1195,7 +1191,9 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Source</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Source
+                    </Form.Label>
                     <Select
                       className="react-select react-select-container"
                       styles={customStyles}
@@ -1215,7 +1213,9 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Channel</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Channel
+                    </Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -1235,7 +1235,9 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Category</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Category
+                    </Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -1256,7 +1258,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Country</Form.Label>
-                    <Select
+                    {/* <Select
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
@@ -1266,6 +1268,15 @@ const BasicInputElements = withSwal((props: any) => {
                       options={[{ value: null, label: "None" }, ...country]}
                       value={selectedCountry}
                       onChange={handleSelectChange as any}
+                    /> */}
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="preferred_country"
+                      options={country}
+                      value={selectedCountry}
+                      onChange={handleDropDowns}
                     />
                     {validationErrors.preferred_country && (
                       <Form.Text className="text-danger">
@@ -1328,9 +1339,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      Zipcode
-                    </Form.Label>
+                    <Form.Label>Zipcode</Form.Label>
                     <Form.Control
                       type="text"
                       name="zipcode"
@@ -1556,13 +1565,19 @@ const BasicInputElements = withSwal((props: any) => {
                 className="mt-1"
                 onClick={() =>
                   isUpdate
-                    ? [handleCancelUpdate(), toggle(), setLanguageForm(languageFormInitialState), setSelectedFile([]), setSelectedFileName([])]
+                    ? [
+                        handleCancelUpdate(),
+                        toggle(),
+                        setLanguageForm(languageFormInitialState),
+                        setSelectedFile([]),
+                        setSelectedFileName([]),
+                      ]
                     : [
-                      toggle(),
-                      handleResetValues(),
-                      setLanguageForm(languageFormInitialState),
-                      setSelectedFile([])
-                    ]
+                        toggle(),
+                        handleResetValues(),
+                        setLanguageForm(languageFormInitialState),
+                        setSelectedFile([]),
+                      ]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
@@ -1579,7 +1594,7 @@ const BasicInputElements = withSwal((props: any) => {
             </Modal.Footer>
           </Form>
         </Modal>
-        
+
         {/* </Col> */}
 
         {user?.role == 2 && (

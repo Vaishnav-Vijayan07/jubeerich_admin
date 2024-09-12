@@ -21,6 +21,7 @@ import {
   getCampus,
   updateCampus,
 } from "../../redux/actions";
+import useDropdownData from "../../hooks/useDropdownDatas";
 
 interface OptionType {
   value: string;
@@ -449,33 +450,22 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Campus = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [sourceData, setSourceData] = useState([]);
+  const { dropdownData: universities, loading: dropDownLoading } =
+    useDropdownData("universities");
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading, university } = useSelector(
+  const { state, error, loading, initialLoading } = useSelector(
     (state: RootState) => ({
       state: state.Campus.campus.data,
       error: state.Campus.error,
       loading: state.Campus.loading,
       initialLoading: state.Campus.initialloading,
-      university: state.University.universities.data,
     })
   );
 
   useEffect(() => {
-    dispatch(getUniversity());
     dispatch(getCampus());
   }, []);
-
-  useEffect(() => {
-    if (university) {
-      const UniversityArray = university?.map((source: any) => ({
-        value: source.id.toString(),
-        label: source.university_name, // Replace with the appropriate field from the lead data
-      }));
-      setSourceData(UniversityArray);
-    }
-  }, [university]);
 
   if (initialLoading) {
     return (
@@ -499,7 +489,7 @@ const Campus = () => {
         <Col>
           <BasicInputElements
             state={state}
-            university={sourceData}
+            university={universities.universities}
             error={error}
             loading={loading}
           />
