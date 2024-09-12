@@ -23,6 +23,7 @@ import {
   franchise_id_from_office,
   showErrorAlert,
   showSuccessAlert,
+  baseUrl,
 } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
@@ -107,7 +108,7 @@ const initialValidationState = {
   lead_type_id: ""
 };
 
-const languageFormInitialState = [{ exam_type: "", marks: "" }];
+const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -1143,6 +1144,25 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+//   const handleViewFile = (event: any) => {
+//     event.preventDefault();
+
+//   const { file_name, file_path } = f;
+//   const fileUrl = `${baseUrl}/${file_path}`;
+
+//   const link = document.createElement("a");
+//   link.setAttribute("target", "_blank");
+
+//   link.href = fileUrl;
+//   link.setAttribute("download", file_name);
+
+//   document.body.appendChild(link);
+//   link.click();
+//   document.body.removeChild(link);
+  
+// };
+
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -1618,8 +1638,10 @@ const BasicInputElements = withSwal((props: any) => {
                             <Form.Label>Overall Score</Form.Label>
                             <Form.Control
                               type="text"
-                              name="marks"
-                              value={data.marks}
+                              // name="marks"
+                              name="overall_score"
+                              // value={data.marks}
+                              value={data.overall_score}
                               onChange={(e) => {
                                 handleLanguageMarkInputChange(index, e);
                               }}
@@ -1632,7 +1654,7 @@ const BasicInputElements = withSwal((props: any) => {
                             encType="multipart/form-data"
                           >
                             <Form.Group className="mb-3" controlId="profileImage">
-                              <Form.Label>Upload File</Form.Label>
+                              <Form.Label>Upload Score Card</Form.Label>
                               <Form.Control
                                 name="exam_documents"
                                 type="file"
@@ -1656,7 +1678,7 @@ const BasicInputElements = withSwal((props: any) => {
                               type="date"
                               name="exam_date"
                               // value={data?.exam_date}
-                              value={moment(data?.exam_date).format("YYYY-MM-DD")}
+                              value={moment(data?.exam_date).format("YYYY-MM-DD") ?? moment(data?.exam_date).format("YYYY-MM-DD")}
                               onChange={(e) => {
                                 handleLanguageInputChange(index, e);
                               }}
