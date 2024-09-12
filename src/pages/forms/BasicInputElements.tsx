@@ -83,7 +83,7 @@ const initialState = {
   zipcode: "",
   region_id: "",
   franchise_id: "",
-  lead_type_id: ""
+  lead_type_id: "",
 };
 
 const initialValidationState = {
@@ -105,10 +105,12 @@ const initialValidationState = {
   ielts: true,
   zipcode: "",
   region_id: "",
-  lead_type_id: ""
+  lead_type_id: "",
 };
 
-const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
+const languageFormInitialState = [
+  { id: "", exam_type: "", marks: "", exam_date: "" },
+];
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -145,7 +147,6 @@ const BasicInputElements = withSwal((props: any) => {
 
   console.log("counsellors ===>", counsellors);
   console.log("categories ===>", categories);
-  
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
@@ -508,14 +509,18 @@ const BasicInputElements = withSwal((props: any) => {
       case "source_id":
         setSelectedSource(selected);
         setSelectedChannel(null);
-        let filteredChannel = channels.filter((data: any) => data.source_id == selected.value);
-        setChannelData(filteredChannel)
+        let filteredChannel = channels.filter(
+          (data: any) => data.source_id == selected.value
+        );
+        setChannelData(filteredChannel);
         break;
       case "category_id":
         setSelectedSource(null);
         setSelectedChannel(null);
         setSelectedCategory(selected);
-        let filteredSource = source.filter((data: any) => data.lead_type == selected.value);
+        let filteredSource = source.filter(
+          (data: any) => data.lead_type == selected.value
+        );
         setSourceData(filteredSource);
         break;
       case "preferred_country":
@@ -626,7 +631,7 @@ const BasicInputElements = withSwal((props: any) => {
                       ? JSON.stringify(exam_details)
                       : null,
                     selectedFile,
-                    formData.franchise_id ? formData.franchise_id : null,
+                    formData.franchise_id ? formData.franchise_id : null
                   )
                 );
                 // setSelectedFile([])
@@ -660,7 +665,7 @@ const BasicInputElements = withSwal((props: any) => {
                       ? JSON.stringify(exam_details)
                       : null,
                     selectedFile,
-                    formData.franchise_id ? formData.franchise_id : null,
+                    formData.franchise_id ? formData.franchise_id : null
                   )
                 );
                 // setSelectedFile([])
@@ -1062,7 +1067,7 @@ const BasicInputElements = withSwal((props: any) => {
     const { name, value } = e.target;
 
     const newFields = [...languageForm];
-    newFields[index][name] = value.replace(/[^0-9]/g, '');
+    newFields[index][name] = value.replace(/[^0-9]/g, "");
     setLanguageForm(newFields);
   };
 
@@ -1141,24 +1146,23 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-//   const handleViewFile = (event: any) => {
-//     event.preventDefault();
+  //   const handleViewFile = (event: any) => {
+  //     event.preventDefault();
 
-//   const { file_name, file_path } = f;
-//   const fileUrl = `${baseUrl}/${file_path}`;
+  //   const { file_name, file_path } = f;
+  //   const fileUrl = `${baseUrl}/${file_path}`;
 
-//   const link = document.createElement("a");
-//   link.setAttribute("target", "_blank");
+  //   const link = document.createElement("a");
+  //   link.setAttribute("target", "_blank");
 
-//   link.href = fileUrl;
-//   link.setAttribute("download", file_name);
+  //   link.href = fileUrl;
+  //   link.setAttribute("download", file_name);
 
-//   document.body.appendChild(link);
-//   link.click();
-//   document.body.removeChild(link);
-  
-// };
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
 
+  // };
 
   return (
     <>
@@ -1237,7 +1241,9 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Lead Type
+                    </Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -1279,7 +1285,9 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Source</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Source
+                    </Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -1630,7 +1638,10 @@ const BasicInputElements = withSwal((props: any) => {
                           </Form.Group>
                         </Col>
                         <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="listening_score">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="listening_score"
+                          >
                             <Form.Label>Listening Score</Form.Label>
                             <Form.Control
                               type="text"
@@ -1643,7 +1654,10 @@ const BasicInputElements = withSwal((props: any) => {
                           </Form.Group>
                         </Col>
                         <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="speaking_score">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="speaking_score"
+                          >
                             <Form.Label>Speaking Score</Form.Label>
                             <Form.Control
                               type="text"
@@ -1658,7 +1672,10 @@ const BasicInputElements = withSwal((props: any) => {
                       </Row>
                       <Row>
                         <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="reading_score">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="reading_score"
+                          >
                             <Form.Label>Reading Score</Form.Label>
                             <Form.Control
                               type="text"
@@ -1671,7 +1688,10 @@ const BasicInputElements = withSwal((props: any) => {
                           </Form.Group>
                         </Col>
                         <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="writing_score">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="writing_score"
+                          >
                             <Form.Label>Writing Score</Form.Label>
                             <Form.Control
                               type="text"
@@ -1703,7 +1723,10 @@ const BasicInputElements = withSwal((props: any) => {
                             name="exam_documents"
                             encType="multipart/form-data"
                           >
-                            <Form.Group className="mb-3" controlId="profileImage">
+                            <Form.Group
+                              className="mb-3"
+                              controlId="profileImage"
+                            >
                               <Form.Label>Upload Score Card</Form.Label>
                               <Form.Control
                                 name="exam_documents"
@@ -1728,7 +1751,10 @@ const BasicInputElements = withSwal((props: any) => {
                               type="date"
                               name="exam_date"
                               // value={data?.exam_date}
-                              value={moment(data?.exam_date).format("YYYY-MM-DD") ?? moment(data?.exam_date).format("YYYY-MM-DD")}
+                              value={
+                                moment(data?.exam_date).format("YYYY-MM-DD") ??
+                                moment(data?.exam_date).format("YYYY-MM-DD")
+                              }
                               onChange={(e) => {
                                 handleLanguageInputChange(index, e);
                               }}
@@ -1768,24 +1794,22 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1"
-                onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggle(), setLanguageForm(languageFormInitialState), setSelectedFile([]), setSelectedFileName([]),handleResetValues()]
-                    ? [
-                        handleCancelUpdate(),
-                        toggle(),
-                        setLanguageForm(languageFormInitialState),
-                        setSelectedFile([]),
-                        setSelectedFileName([]),
-                      ]
-                    : [
-                        toggle(),
-                        handleResetValues(),
-                        setLanguageForm(languageFormInitialState),
-                        setSelectedFile([]),
-                      setSelectedFileName([]),
-                      ]
-                }
+                onClick={() => {
+                  if (isUpdate) {
+                    handleCancelUpdate();
+                    toggle();
+                    setLanguageForm(languageFormInitialState);
+                    setSelectedFile([]);
+                    setSelectedFileName([]);
+                    handleResetValues();
+                  } else {
+                    toggle();
+                    setLanguageForm(languageFormInitialState);
+                    setSelectedFile([]);
+                    setSelectedFileName([]);
+                    handleResetValues();
+                  }
+                }}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
