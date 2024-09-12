@@ -3,12 +3,12 @@ import { ProgramsActionTypes } from "./constants";
 
 export interface ProgramActionType {
   type:
-    | ProgramsActionTypes.API_RESPONSE_SUCCESS
-    | ProgramsActionTypes.API_RESPONSE_ERROR
-    | ProgramsActionTypes.GET_PROGRAM
-    | ProgramsActionTypes.ADD_PROGRAM
-    | ProgramsActionTypes.UPDATE_PROGRAM
-    | ProgramsActionTypes.DELETE_PROGRAM;
+  | ProgramsActionTypes.API_RESPONSE_SUCCESS
+  | ProgramsActionTypes.API_RESPONSE_ERROR
+  | ProgramsActionTypes.GET_PROGRAM
+  | ProgramsActionTypes.ADD_PROGRAM
+  | ProgramsActionTypes.UPDATE_PROGRAM
+  | ProgramsActionTypes.DELETE_PROGRAM;
   payload: {} | string;
 }
 
@@ -48,7 +48,7 @@ export const addProgram = (
   university_id: string,
   degree_level: string,
   duration: string,
-  tuition_fees: string,
+  tuition_fees: string | null,
   currency: string
 ): ProgramActionType => ({
   type: ProgramsActionTypes.ADD_PROGRAM,
@@ -68,7 +68,7 @@ export const updateProgram = (
   university_id: string,
   degree_level: string,
   duration: string,
-  tuition_fees: string,
+  tuition_fees: string | null,
   currency: string
 ): ProgramActionType => ({
   type: ProgramsActionTypes.UPDATE_PROGRAM,

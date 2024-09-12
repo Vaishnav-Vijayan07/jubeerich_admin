@@ -325,6 +325,8 @@ const BasicInputElements = withSwal((props: any) => {
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
     setFormData(initialState); //clear form data
+    setSelectedCourseType(null);
+    setSelectedStream(null);
   };
 
   const toggleResponsiveModal = () => {

@@ -21,13 +21,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
-import {
-  addChannel,
-  deleteChannel,
-  getChannel,
-  updateChannel,
-} from "../../redux/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import {
@@ -116,9 +109,9 @@ const BasicInputElements = withSwal((props: any) => {
       .required("channel name is required")
       .min(3, "channel name must be at least 3 characters long"),
     region_description: yup
-      .string()
-      .required("channel description is required")
-      .min(3, "channel description must be at least 3 characters long"),
+      .string(),
+      // .required("channel description is required")
+      // .min(3, "channel description must be at least 3 characters long"),
     regional_manager_id: yup
       .string()
       .required("Please choose a regional manger"),
@@ -232,33 +225,6 @@ const BasicInputElements = withSwal((props: any) => {
             }
           }
         });
-
-      // if (userInfo) {
-      //   const { user_id } = JSON.parse(userInfo);
-      //   if (isUpdate) {
-      //     // Handle update logic
-      //     dispatch(
-      //       updateRegion(
-      //         formData.id,
-      //         formData.region_name,
-      //         formData.region_description,
-      //         formData.regional_manager_id,
-      //         user_id
-      //       )
-      //     );
-      //     setIsUpdate(false);
-      //   } else {
-      //     // Handle add logic
-      //     dispatch(
-      //       addRegion(
-      //         formData.region_name,
-      //         formData.region_description,
-      //         formData.regional_manager_id,
-      //         user_id
-      //       )
-      //     );
-      //   }
-      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {
@@ -432,7 +398,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="regional_manager_id"
-                  options={[{ value: null, label: "None" }, ...mangersData]}
+                  options={mangersData}
                   value={selectedManager}
                   onChange={handleManagerChange}
                 />

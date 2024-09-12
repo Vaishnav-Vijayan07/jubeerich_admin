@@ -21,14 +21,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
-import {
-  addChannel,
-  deleteChannel,
-  getChannel,
-  updateChannel,
-} from "../../redux/actions";
-import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
 import {
   addFlag,
@@ -114,8 +106,8 @@ const BasicInputElements = withSwal((props: any) => {
       .min(3, "Flag name must be at least 3 characters long"),
     flag_description: yup
       .string()
-      .required("Flag description is required")
-      .min(3, "Flag description must be at least 3 characters long"),
+      // .required("Flag description is required")
+      // .min(3, "Flag description must be at least 3 characters long"),
     // source_id: yup.string().required("Please choose a source"),
   });
 

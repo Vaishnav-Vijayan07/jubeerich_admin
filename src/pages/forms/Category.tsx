@@ -52,10 +52,7 @@ const sizePerPageList = [
 const initialFormData = {
   id: "",
   category_name: "",
-  category_description: "",
-  parent_category_id: "1",
-  status: true,
-  updated_by: "",
+  category_description: ""
 };
 
 const initialValidationState = {
@@ -87,12 +84,9 @@ const BasicInputElements = withSwal((props: any) => {
   const validationSchema = yup.object().shape({
     category_name: yup
       .string()
-      .required("Category name is required")
-      .min(3, "Category name must be at least 3 characters long"),
+      .required("Category name is required"),
     category_description: yup
       .string()
-      .required("Category description is required")
-      .min(3, "Category description must be at least 3 characters long"),
   });
 
   /*
@@ -110,11 +104,8 @@ const BasicInputElements = withSwal((props: any) => {
   const handleUpdate = (item: any) => {
     setFormData({
       id: item?.id,
-      category_name: item?.category_name,
-      category_description: item?.category_description,
-      parent_category_id: item.parent_category_id,
-      status: item?.status,
-      updated_by: item.updated_by,
+      category_name: item?.name,
+      category_description: item?.description
     });
     setIsUpdate(true);
   };
@@ -179,9 +170,6 @@ const BasicInputElements = withSwal((props: any) => {
                   formData.id,
                   formData.category_name,
                   formData.category_description,
-                  // formData.parent_category_id,
-                  formData.status,
-                  user_id
                 )
               );
             } else {
@@ -189,42 +177,12 @@ const BasicInputElements = withSwal((props: any) => {
                 addCategory(
                   formData.category_name,
                   formData.category_description,
-                  // formData.parent_category_id,
-                  formData.status,
-                  user_id
                 )
               );
             }
           }
         }
       });
-
-      // if (userInfo) {
-      //   const { user_id } = JSON.parse(userInfo);
-      //   // Validation passed, handle form submission
-      //   if (isUpdate) {
-      //     dispatch(
-      //       updateCategory(
-      //         formData.id,
-      //         formData.category_name,
-      //         formData.category_description,
-      //         // formData.parent_category_id,
-      //         formData.status,
-      //         user_id
-      //       )
-      //     );
-      //   } else {
-      //     await dispatch(
-      //       addCategory(
-      //         formData.category_name,
-      //         formData.category_description,
-      //         // formData.parent_category_id,
-      //         formData.status,
-      //         user_id
-      //       )
-      //     );
-      //   }
-      // }
       
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
@@ -247,37 +205,32 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Lead Category Name",
-      accessor: "category_name",
+      Header: "Lead Type Name",
+      accessor: "name",
       sort: true,
     },
     {
-      Header: "Lead Category Description",
-      accessor: "category_description",
+      Header: "Lead Type Description",
+      accessor: "description",
       sort: false,
     },
     // {
-    //   Header: "Slug",
-    //   accessor: "slug",
-    //   sort: false,
+    //   Header: "Status",
+    //   accessor: "status",
+    //   sort: true,
+    //   Cell: ({ row }: any) => (
+    //     <React.Fragment>
+    //       <span
+    //         className={classNames("badge", {
+    //           "badge-soft-success": row.original.status === true,
+    //           "badge-soft-danger": row.original.status === false,
+    //         })}
+    //       >
+    //         {row.original.status ? "active" : "disabled"}
+    //       </span>
+    //     </React.Fragment>
+    //   ),
     // },
-    {
-      Header: "Status",
-      accessor: "status",
-      sort: true,
-      Cell: ({ row }: any) => (
-        <React.Fragment>
-          <span
-            className={classNames("badge", {
-              "badge-soft-success": row.original.status === true,
-              "badge-soft-danger": row.original.status === false,
-            })}
-          >
-            {row.original.status ? "active" : "disabled"}
-          </span>
-        </React.Fragment>
-      ),
-    },
     {
       Header: " ",
       accessor: "",
@@ -347,11 +300,11 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Lead Category Management</h4>
+              <h4 className="modal-title">Lead Type Management</h4>
             </Modal.Header>
             <Modal.Body>
               <Form.Group className="mb-3" controlId="validationCustom01">
-                <Form.Label>Lead Category Name</Form.Label>
+                <Form.Label>Lead Type Name</Form.Label>
                 <Form.Control
                   type="text"
                   name="category_name"
@@ -366,7 +319,7 @@ const BasicInputElements = withSwal((props: any) => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="validationCustom01">
-                <Form.Label>Lead Category Description</Form.Label>
+                <Form.Label>Lead Type Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
@@ -379,19 +332,6 @@ const BasicInputElements = withSwal((props: any) => {
                     {validationErrors.category_description}
                   </Form.Text>
                 )}
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Label>Status</Form.Label>
-                <Form.Check
-                  type="switch"
-                  id="active-switch"
-                  label={formData.status === true ? "Active" : "Inactive"}
-                  name="status"
-                  onChange={handleInputChange}
-                  // value={inputs.status}
-                  checked={formData.status}
-                />
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
@@ -436,9 +376,9 @@ const BasicInputElements = withSwal((props: any) => {
                 className="btn-sm btn-blue waves-effect waves-light float-end"
                 onClick={toggleResponsiveModal}
               >
-                <i className="mdi mdi-plus-circle"></i> Add Lead Category
+                <i className="mdi mdi-plus-circle"></i> Add Lead Type
               </Button>
-              <h4 className="header-title mb-4">Manage Lead Categories</h4>
+              <h4 className="header-title mb-4">Manage Lead Type</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -489,9 +429,9 @@ const Category = () => {
       <PageTitle
         breadCrumbItems={[
           { label: "Master", path: "/master/category" },
-          { label: "Lead Category", path: "/master/category", active: true },
+          { label: "Lead Type", path: "/master/category", active: true },
         ]}
-        title={"Lead Category"}
+        title={"Lead Type"}
       />
       <Row>
         <Col>

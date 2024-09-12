@@ -22,18 +22,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
-import {
-  addAdminUsers,
-  addChannel,
-  deleteChannel,
-  getChannel,
-  updateChannel,
-} from "../../redux/actions";
-import Select from "react-select";
 import {
   AUTH_SESSION_KEY,
-  customStyles,
   franchise_counsellor_id,
 } from "../../constants";
 import { Link } from "react-router-dom";
@@ -158,7 +148,7 @@ const BasicInputElements = withSwal((props: any) => {
     email: yup.string().required("Email is required"),
     address: yup.string().required("Address is required"),
     phone: yup.string().required("Phone number is required"),
-    pocName: yup.string().required("Point of Contact Name is required"),
+    // pocName: yup.string().required("Point of Contact Name is required"),
   });
 
   const adminUsersValidationSchema = yup.object().shape({
@@ -460,6 +450,18 @@ const BasicInputElements = withSwal((props: any) => {
               onClick={() => {
                 setAdminUserFormData((prev: any) => ({
                   ...prev,
+                  id: "",
+                  employee_id: "",
+                  name: "",
+                  email: "",
+                  phone: "",
+                  address: "",
+                  username: "",
+                  password: "",
+                  updated_by: "",
+                  role_id: "",
+                  branch_ids: null,
+                  country_id: null,
                   franchise_id: row?.original?.id,
                 }));
                 toggleResponsiveModalAdminUser();
@@ -611,7 +613,8 @@ const BasicInputElements = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="address">
                 <Form.Label>Address</Form.Label>
                 <Form.Control
-                  type="text"
+                  // type="text"
+                  as="textarea"
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
@@ -626,7 +629,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="phone">
                 <Form.Label>Phone</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="number"
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}

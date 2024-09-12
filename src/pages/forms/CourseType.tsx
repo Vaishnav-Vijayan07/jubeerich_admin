@@ -268,6 +268,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+
   useEffect(() => {
     // Check for errors and clear the form
     if (!loading && !error) {

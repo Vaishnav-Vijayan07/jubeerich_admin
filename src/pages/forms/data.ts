@@ -23,7 +23,8 @@ export const countries = [
 
   export const examtypes = [
     { name : 'IELTS'},
-    { name : 'OET'}
+    { name : 'OET'},
+    { name : 'PTE'},
   ]
 
   export const city = [

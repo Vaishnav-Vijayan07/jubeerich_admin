@@ -61,7 +61,10 @@ export const addAdminUsers = (
   role_id: string,
   profileImage: File | null,
   branch_ids: string,
-  country_id: any
+  country_id: any,
+  region_id: any,
+  branch_id: any,
+  country_ids: any
 ): AdminUsersActionType => ({
   type: AdminUserActionTypes.ADD_ADMIN_USERS,
   payload: {
@@ -77,6 +80,9 @@ export const addAdminUsers = (
     profileImage,
     branch_ids,
     country_id,
+    region_id,
+    branch_id,
+    country_ids
   },
 });
 
@@ -93,7 +99,10 @@ export const updateAdminUsers = (
   role_id: string,
   profileImage: File | null,
   branch_ids: string,
-  country_id: any
+  country_id: any,
+  region_id: any,
+  branch_id: any,
+  country_ids: any
 ): AdminUsersActionType => ({
   type: AdminUserActionTypes.UPDATE_ADMIN_USERS,
   payload: {
@@ -109,7 +118,10 @@ export const updateAdminUsers = (
     role_id,
     profileImage,
     branch_ids,
-    country_id
+    country_id,
+    region_id,
+    branch_id,
+    country_ids
   },
 });
 

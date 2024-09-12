@@ -14,15 +14,12 @@ import {
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
-import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
 import {
   addMaritalStatus,
@@ -108,8 +105,8 @@ const BasicInputElements = withSwal((props: any) => {
       .min(3, "status name must be at least 3 characters long"),
     marital_status_description: yup
       .string()
-      .required("status description is required")
-      .min(3, "status description must be at least 3 characters long"),
+      // .required("status description is required")
+      // .min(3, "status description must be at least 3 characters long"),
     // source_id: yup.string().required("Please choose a source"),
   });
 

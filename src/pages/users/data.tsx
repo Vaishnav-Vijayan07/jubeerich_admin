@@ -47,6 +47,9 @@ export interface MyInitialState {
   role_id: string;
   profile_image_path: string;
   branch_ids: string;
+  region_id: string,
+  branch_id?: string,
+  country_ids?: string
 }
 
 export const initialState = {
@@ -63,6 +66,7 @@ export const initialState = {
   country_id: undefined,
   branch_ids: "",
   profile_image_path: "",
+  region_id: ""
 };
 
 export const initialValidationState = {
@@ -76,4 +80,6 @@ export const initialValidationState = {
   role_id: "",
   country_id: "",
   branch_ids: "",
+  region_id: "",
+  branch_id: ""
 };

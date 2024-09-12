@@ -20,6 +20,7 @@ interface SourceData {
     source_description: string;
     updated_by: string;
     status: string;
+    lead_type_id: string
   };
   type: string;
 }
@@ -33,7 +34,7 @@ const api = new APICore();
 function* getSources(): SagaIterator {
   try {
     const response = yield call(getSourcesApi);
-    const data = response.data;
+    const data = response.data.data;
 
 
     // NOTE - You can change this according to response format from your api
@@ -46,12 +47,13 @@ function* getSources(): SagaIterator {
 /**
  * Logout the user
  */
-function* addSource({ payload: { source_name, source_description, updated_by } }: SourceData): SagaIterator {
+function* addSource({ payload: { source_name, source_description, updated_by, lead_type_id } }: SourceData): SagaIterator {
   try {
     const response = yield call(addSourcesApi, {
       source_name,
       source_description,
       updated_by,
+      lead_type_id
     });
     const data = response.data.message;
 
@@ -64,13 +66,14 @@ function* addSource({ payload: { source_name, source_description, updated_by } }
   }
 }
 
-function* updateSource({ payload: { id, source_name, source_description, updated_by } }: SourceData): SagaIterator {
+function* updateSource({ payload: { id, source_name, source_description, updated_by,lead_type_id } }: SourceData): SagaIterator {
   try {
 
     const response = yield call(updateSourcesApi, id, {
       source_name,
       source_description,
       updated_by,
+      lead_type_id
     });
     const data = response.data.message;
 

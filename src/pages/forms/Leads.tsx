@@ -85,6 +85,7 @@ const Leads = () => {
   }, [dispatch]);
 
   console.log('Region From Lead', region);
+  console.log('Type From Lead', categories);
   
 
   useEffect(() => {
@@ -124,14 +125,23 @@ const Leads = () => {
     return source.map((item: any) => ({
       value: item.id.toString(),
       label: item.source_name,
+      lead_type: item.lead_type_id
     }));
   }, [source]);
 
-  const categoriesData = useMemo(() => {
+  // const categoriesData = useMemo(() => {
+  //   if (!categories) return [];
+  //   return categories.map((item: any) => ({
+  //     value: item.id.toString(),
+  //     label: item.category_name,
+  //   }));
+  // }, [categories]);
+
+  const leadTypesData = useMemo(() => {
     if (!categories) return [];
     return categories.map((item: any) => ({
       value: item.id.toString(),
-      label: item.category_name,
+      label: item.name,
     }));
   }, [categories]);
 
@@ -140,6 +150,7 @@ const Leads = () => {
     return channels.map((item: any) => ({
       value: item.id.toString(),
       label: item.channel_name,
+      source_id: item?.source_id
     }));
   }, [channels]);
 
@@ -210,7 +221,8 @@ const Leads = () => {
             state={state}
             country={countryData || []}
             source={sourceData || []}
-            categories={categoriesData || []}
+            // categories={categoriesData || []}
+            categories={leadTypesData || []}
             user={user || null}
             cres={cres || []}
             channels={channelsData || []}

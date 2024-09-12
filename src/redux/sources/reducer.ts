@@ -18,6 +18,7 @@ interface SourceData {
   source_description: string;
   updated_by: string;
   status: string;
+  lead_type_id: string
 }
 
 export interface SourceActionType {

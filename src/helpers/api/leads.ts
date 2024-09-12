@@ -27,6 +27,7 @@ function addLeads(
     email: string;
     phone: string;
     category_id: string;
+    lead_type_id: string;
     source_id: string;
     channel_id: string;
     city: string;
@@ -56,6 +57,7 @@ function updateLeads(
     email: string;
     phone: string;
     category_id: string;
+    lead_type_id: string;
     source_id: string;
     channel_id: string;
     city: string;

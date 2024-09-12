@@ -223,7 +223,7 @@ const settingsRoutes = {
       name: "Forms",
       children: [
         {
-          path: "/settings/master/category",
+          path: "/settings/master/type",
           name: "Category",
           // element: <Category />,
           element: <PrivateRoute roles={["Monitor"]} component={Category} />,

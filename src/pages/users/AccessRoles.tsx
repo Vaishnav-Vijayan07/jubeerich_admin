@@ -476,7 +476,7 @@ const AccessRoles = () => {
   //Fetch data from redux store
   const { state, error, loading, initialLoading } = useSelector(
     (state: RootState) => ({
-      state: state.Roles.roles,
+      state: state.Roles?.roles,
       error: state.Roles.error,
       loading: state.Roles.loading,
       initialLoading: state.Roles.initialLoading,
@@ -487,7 +487,7 @@ const AccessRoles = () => {
     dispatch(getRoles());
 
     axios.get("access_powers").then((res) => {
-      const data = res?.data;
+      const data = res?.data?.data;
 
       const Array = data?.map((item: any) => ({
         value: item.id.toString(), // Convert id to string or whatever unique identifier you have

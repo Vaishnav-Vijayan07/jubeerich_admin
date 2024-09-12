@@ -77,8 +77,8 @@ export const addBranches = (
   social_media: string,
   account_mail: string,
   support_mail: string,
-  office_type: string,
-  region_id: string,
+  office_type: string | null,
+  region_id: string | null,
   status: boolean,
   updated_by: string
 ): BranchActionType => ({
@@ -125,8 +125,8 @@ export const updateBranches = (
   social_media: string,
   account_mail: string,
   support_mail: string,
-  office_type: string,
-  region_id: string,
+  office_type: string | null,
+  region_id: string | null,
   status: boolean,
   updated_by: string
 ): BranchActionType => ({

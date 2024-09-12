@@ -326,7 +326,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   name="channel_id"
                   classNamePrefix="react-select"
-                  options={[{ value: null, label: "None" }, ...channelData]}
+                  options={channelData}
                   value={selectedChannel}
                   onChange={handleChannelChange}
                 />

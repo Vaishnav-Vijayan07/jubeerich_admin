@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
@@ -7,6 +7,7 @@ import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Select, { ActionMeta, OptionsType } from "react-select";
 
 // components
 import PageTitle from "../../components/PageTitle";
@@ -15,6 +16,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { addSource, deleteSource, getSource, updateSource } from "../../redux/sources/actions";
 import { AUTH_SESSION_KEY } from "../../constants";
 import { Link } from "react-router-dom";
+import { getCategory } from "../../redux/actions";
 
 interface TableRecords {
   id: number;
@@ -47,17 +49,23 @@ const initialState = {
   source_name: "",
   source_description: "",
   updated_by: "",
+  lead_type_id: ""
 };
 
 const initialValidationState = {
   source_name: "",
   source_description: "",
+  lead_type_id: ""
 };
 
 const BasicInputElements = withSwal((props: any) => {
+  const [selectedLeadType, setSelectedLeadType] = useState<any>(null);
   const dispatch = useDispatch<AppDispatch>();
   const { swal } = props;
-  const { state, loading, error } = props;
+  const { state, loading, error, leadType } = props;
+
+  console.log('leadType 2',leadType);
+
   //Table data
   const records: TableRecords[] = state;
 
@@ -80,10 +88,13 @@ const BasicInputElements = withSwal((props: any) => {
       .string()
       .required("source name is required")
       .min(3, "source name must be at least 3 characters long"),
+    lead_type_id: yup
+      .string()
+      .required("lead type is required"),
     source_description: yup
       .string()
-      .required("source description is required")
-      .min(3, "source description must be at least 3 characters long"),
+      // .required("source description is required")
+      // .min(3, "source description must be at least 3 characters long"),
   });
 
   /*
@@ -100,7 +111,17 @@ const BasicInputElements = withSwal((props: any) => {
       source_name: item?.source_name,
       source_description: item?.source_description,
       updated_by: item?.updated_by,
+      lead_type_id: item?.lead_type_id
     });
+
+    console.log('leadTypeData',leadType);
+    
+    
+    if(item?.lead_type_id){
+      let filtered = leadType.filter((data: any) => data.value == item?.lead_type_id );
+      console.log('filtered',filtered);
+      setSelectedLeadType(filtered[0]);
+    }
 
     setIsUpdate(true);
   };
@@ -128,6 +149,20 @@ const BasicInputElements = withSwal((props: any) => {
       });
   };
 
+  const handleDropDowns = (selected: any, { name }: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: selected.value,
+    }));
+
+    switch (name) {
+      case "lead_type_id":
+        setSelectedLeadType(selected);
+      break;
+    }
+  };
+
+
   //handle onchange function
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -146,6 +181,9 @@ const BasicInputElements = withSwal((props: any) => {
       // Validation passed, handle form submission
       await validationSchema.validate(formData, { abortEarly: false });
 
+      console.log('selectedLeadType',selectedLeadType.value);
+      
+
       swal
       .fire({
         title: "Are you sure?",
@@ -163,11 +201,16 @@ const BasicInputElements = withSwal((props: any) => {
     
             if (isUpdate) {
               // Handle update logic
-              dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id));
+              dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id, formData.lead_type_id));
               setIsUpdate(false);
+              handleCancelUpdate(),
+              toggleResponsiveModal(),
+              handleResetValues()
             } else {
               // Handle add logic
-              dispatch(addSource(formData.source_name, formData.source_description, user_id));
+              dispatch(addSource(formData.source_name, formData.source_description, user_id, formData.lead_type_id));
+              toggleResponsiveModal(),
+              handleResetValues()
             }
           }
         }
@@ -178,11 +221,11 @@ const BasicInputElements = withSwal((props: any) => {
 
       //   if (isUpdate) {
       //     // Handle update logic
-      //     dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id));
+      //     dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id, formData.lead_type_id));
       //     setIsUpdate(false);
       //   } else {
       //     // Handle add logic
-      //     dispatch(addSource(formData.source_name, formData.source_description, user_id));
+      //     dispatch(addSource(formData.source_name, formData.source_description, user_id, formData.lead_type_id));
       //   }
       // }
 
@@ -216,6 +259,11 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Lead Source Description",
       accessor: "source_description",
+      sort: false,
+    },
+    {
+      Header: "Lead Type ",
+      accessor: "leadType",
       sort: false,
     },
     {
@@ -267,6 +315,7 @@ const BasicInputElements = withSwal((props: any) => {
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
     setFormData(initialState); //clear form data
+    setSelectedLeadType(null)
   };
 
   useEffect(() => {
@@ -303,6 +352,23 @@ const BasicInputElements = withSwal((props: any) => {
                 )}
               </Form.Group>
 
+              <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Label>Lead Type</Form.Label>
+                <Select
+                  className="react-select react-select-container"
+                  classNamePrefix="react-select"
+                  name="lead_type_id"
+                  options={[{ value: null, label: "None" }, ...leadType]}
+                  value={selectedLeadType}
+                  onChange={handleDropDowns}
+                />
+                {validationErrors.lead_type_id && (
+                  <Form.Text className="text-danger">
+                    {validationErrors.lead_type_id}
+                  </Form.Text>
+                )}
+              </Form.Group>
+
               <Form.Group className="mb-3" controlId="source_description">
                 <Form.Label>Lead Source Description</Form.Label>
                 <Form.Control
@@ -331,7 +397,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 "
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(),handleResetValues()])}
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal(), handleResetValues()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -374,15 +440,25 @@ const Sources = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   //Fetch data from redux store
-  const { state, error, loading, initialloading } = useSelector((state: RootState) => ({
+  const { state, leadType, error, loading, initialloading } = useSelector((state: RootState) => ({
     state: state.Source.sources.data,
+    leadType: state.Category.category.data,
     error: state.Source.error,
     loading: state.Source.loading,
     initialloading: state.Source.initialloading,
   }));
 
+  const leadTypeData = useMemo(() => {
+    if (!leadType) return [];
+    return leadType.map((item: any) => ({
+      value: item?.id.toString(),
+      label: item?.name,
+    }));
+  }, [leadType]);
+
   useEffect(() => {
     dispatch(getSource());
+    dispatch(getCategory())
   }, []);
 
   if (initialloading) {
@@ -405,7 +481,7 @@ const Sources = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} error={error} loading={loading} />
+          <BasicInputElements state={state} leadType={leadTypeData} error={error} loading={loading} />
         </Col>
       </Row>
     </React.Fragment>

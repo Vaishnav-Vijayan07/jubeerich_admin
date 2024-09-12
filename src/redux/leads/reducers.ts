@@ -22,6 +22,7 @@ interface LeadsData {
   enquiry: string;
   status: string;
   category_id: string;
+  lead_type_id:string;
   source_id: string;
   channel_id: string;
   user_id: string;
