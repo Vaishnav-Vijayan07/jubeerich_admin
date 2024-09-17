@@ -4,7 +4,7 @@ import { Button, Card, Col, Form, Modal, Row } from 'react-bootstrap'
 import { Link, useParams } from 'react-router-dom'
 import Table from '../../components/Table';
 import axios from 'axios';
-import { AUTH_SESSION_KEY, baseUrl, branch_counsellor_id, counsellor_id, counsellor_tl_id, regional_manager_id } from '../../constants';
+import { AUTH_SESSION_KEY, baseUrl, branch_counsellor_id, counsellor_id, counsellor_tl_id, regional_manager_id, showErrorAlert } from '../../constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { addAdminUsers, deleteAdminUsers, updateAdminUsers } from '../../redux/actions';
 import Select from 'react-select/src/Select';
@@ -63,6 +63,8 @@ const UserBox = withSwal((props: any) => {
     const [selectedCountry, setSelectedCountry] = useState<any[]>([]);
     const [isUpdate, setIsUpdate] = useState<boolean>(false)
     const [countryData, setCountryData] = useState([]);
+    const [counsellorTLData, setCounsellorTLData] = useState<any>({});
+    const [isTL, setIsTL] = useState<boolean>(false)
     const dispatch = useDispatch();
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
@@ -112,6 +114,11 @@ const UserBox = withSwal((props: any) => {
             Header: "Name",
             accessor: "name",
             sort: false,
+        },
+        {
+            Header: "Role",
+            accessor: "role",
+            sort: false
         },
         {
             Header: "Country",
@@ -248,7 +255,6 @@ const UserBox = withSwal((props: any) => {
             phone: item.phone,
             address: item.address,
             username: item.username,
-            // password: item.password,
             updated_by: item.updated_by,
             branch_ids: item?.branch_ids,
             role_id: item?.role_id,
@@ -276,7 +282,7 @@ const UserBox = withSwal((props: any) => {
             .then((result: any) => {
                 if (result.isConfirmed) {
                     dispatch(deleteAdminUsers(id));
-                    // swal.fire("Deleted!", "Your item has been deleted.", "success");
+                    swal.fire("Deleted!", "Your item has been deleted.", "success");
                 }
             });
     };
@@ -304,24 +310,42 @@ const UserBox = withSwal((props: any) => {
         setSelectedBranch([]);
         setSelectedCountry([])
         setSelectedImage(null);
+        setIsTL(false)
     }
 
 
-    const getBranchDetails = async () => {
-        let { data } = await axios.get(`${baseUrl}/api/branches/${branchId}`);
-        setBranchDetails(data?.data)
+    const getBranchDetails = async() => {
+        try {
+            let { data } = await axios.get(`${baseUrl}/api/branches/${branchId}`);
+            setBranchDetails(data?.data)
+        } catch (error) {
+            console.log(error);
+            showErrorAlert(error)
+        }
     }
 
-    const getBranchWiseCounsellors = async () => {
-        let result = await axios.get(`${baseUrl}/api/get_all_counsellors/${branchId}`);
-        console.log('result', result);
-        setTableData(result?.data?.data)
+    const getBranchWiseCounsellors = async() => {
+        try {
+            let { data } = await axios.get(`${baseUrl}/api/get_all_counsellors/${branchId}`);
+            setTableData(data?.data)
+        } catch (error) {
+            console.log(error);
+            showErrorAlert(error)
+        }
+    }
+
+    const getBranchWiseCounsellorTL = async() => {
+        try {
+            let { data } = await axios.get(`${baseUrl}/api/get_all_counsellors_tl/${branchId}`);
+            setCounsellorTLData(data?.data[0])
+        } catch (error) {
+            console.log(error);
+            showErrorAlert(error)
+        }
     }
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        console.log(formData.country_id);
 
         try {
             await validationSchema.validate(formData, { abortEarly: false });
@@ -339,7 +363,6 @@ const UserBox = withSwal((props: any) => {
                 .then((result: any) => {
                     if (result.isConfirmed) {
                         if (isUpdate) {
-                            // Handle update logic
                             if (userInfo) {
                                 const { user_id } = JSON.parse(userInfo);
                                 try {
@@ -353,14 +376,13 @@ const UserBox = withSwal((props: any) => {
                                             formData.address,
                                             formData.username,
                                             formData.password,
-                                            // formData.updated_by,
                                             user_id,
-                                            formData.role_id,
+                                            // formData.role_id,
+                                            (isTL ? counsellor_tl_id : formData.role_id),
                                             selectedImage,
                                             formData.branch_ids,
                                             formData?.country_id,
                                             formData.role_id == regional_manager_id ? formData.region_id : null,
-                                            // (formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) ? formData.branch_id : null,
                                             branchId,
                                             formData.role_id == branch_counsellor_id ? formData.country_ids : null
                                         )
@@ -373,7 +395,6 @@ const UserBox = withSwal((props: any) => {
                                 }
                             }
                         } else {
-                            // Handle add logic
                             if (userInfo) {
                                 try {
                                     const { user_id } = JSON.parse(userInfo);
@@ -386,14 +407,13 @@ const UserBox = withSwal((props: any) => {
                                             formData.address,
                                             formData.username,
                                             formData.password,
-                                            // formData.updated_by,
                                             user_id,
-                                            formData.role_id,
+                                            // formData.role_id,
+                                            (isTL ? counsellor_tl_id : formData.role_id),
                                             selectedImage,
                                             formData.branch_ids,
                                             formData?.country_id,
                                             formData.role_id == regional_manager_id ? formData.region_id : null,
-                                            // (formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) ? formData.branch_id : null,
                                             branchId,
                                             formData.role_id == branch_counsellor_id ? formData.country_ids : null
                                         )
@@ -426,10 +446,10 @@ const UserBox = withSwal((props: any) => {
     };
 
     useEffect(() => {
-        // dispatch(getBranches());
         dispatch(getCountry());
         getBranchDetails();
         getBranchWiseCounsellors();
+        getBranchWiseCounsellorTL();
     }, [branchId])
 
     useEffect(() => {
@@ -491,10 +511,10 @@ const UserBox = withSwal((props: any) => {
                                             <strong>Website :</strong>
                                             <span className="ms-2">{branchDetails?.website}</span>
                                         </p>
-                                        <p className="text-muted mb-1 font-13">
+                                        {/* <p className="text-muted mb-1 font-13">
                                             <strong>Social Media :</strong>
                                             <span className="ms-2">{branchDetails?.social_media}</span>
-                                        </p>
+                                        </p> */}
                                         <p className="text-muted mb-1 font-13">
                                             <strong>Support Email :</strong>
                                             <span className="ms-2">{branchDetails?.support_mail}</span>
@@ -514,19 +534,48 @@ const UserBox = withSwal((props: any) => {
                                 sizePerPageList={sizePerPageList}
                                 isSortable={true}
                                 pagination={true}
-                                isSelectable={true}
                                 isSearchable={true}
                                 tableClass="table-striped dt-responsive nowrap w-100"
-                            // onSelect={handleSelectedValues}
                             />
                         </Col>
                     </Row>
+
+                    {/* <Row className='pt-2'>
+                        <div className='d-flex justify-content-end pb-2'>
+                            <Button onClick={() => [toggleModal(),setIsTL(true)]}>Add Branch Counsellor TL</Button>
+                        </div>
+                        <Card className="text-center border border-2">
+                            <Card.Body>
+                                <div className='d-flex justify-content-center'>
+                                    <h4>Branch Counsellor TL Details</h4>
+                                </div>
+                                <div className="text-start mt-3">
+                                    <p className="text-muted mb-2 font-13">
+                                        <strong>Name :</strong>
+                                        <span className="ms-2">{counsellorTLData?.name}</span>
+                                    </p>
+                                    <p className="text-muted mb-2 font-13">
+                                        <strong>Mobile :</strong>
+                                        <span className="ms-2">{counsellorTLData?.phone}</span>
+                                    </p>
+                                    <p className="text-muted mb-2 font-13">
+                                        <strong>Email :</strong>
+                                        <span className="ms-2 ">{counsellorTLData?.email}</span>
+                                    </p>
+                                    <p className="text-muted mb-1 font-13">
+                                        <strong>Address :</strong>
+                                        <span className="ms-2">{counsellorTLData?.address}</span>
+                                    </p>
+                                </div>
+                            </Card.Body>
+                        </Card>
+                    </Row> */}
 
                     {/* Modal */}
                     <Row className="justify-content-between px-2">
                         <Modal show={showModal} onHide={toggleModal} dialogClassName={'modal-right'}>
                             <h6 className="fw-medium px-3 m-0 py-2 font-13 text-uppercase bg-light">
-                                <span className="d-block py-1">Add Branch Counsellor</span>
+                                <span className="d-block py-1">Add Branch Counsellor {isTL ? 'TL' : ''}</span>
                             </h6>
                             <Modal.Body>
                                 <Row>
@@ -693,48 +742,6 @@ const UserBox = withSwal((props: any) => {
                                                         )}
                                                     </Form.Group>
                                                 </Col>
-
-                                                {/* <Col md={6}>
-                                                    <Form.Group className="mb-3" controlId="region_id">
-                                                        <Form.Label>Branch</Form.Label>
-                                                        <Form.Select
-                                                            aria-label="Default select example"
-                                                            name="branch_id"
-                                                            value={formData.branch_id}
-                                                            onChange={handleInputChange}
-                                                        >
-                                                            <option value="" disabled selected>
-                                                                Choose..
-                                                            </option>
-                                                            {BranchesData?.map((item: any) => (
-                                                                <option value={item?.value} key={item?.value}>
-                                                                    {item.label}
-                                                                </option>
-                                                            ))}
-                                                        </Form.Select>
-
-                                                        {validationErrors.branch_id && (
-                                                            <Form.Text className="text-danger">
-                                                                {validationErrors.branch_id}
-                                                            </Form.Text>
-                                                        )}
-                                                    </Form.Group>
-                                                </Col> */}
-
-                                                {/* {formData.role_id == branch_counsellor_id && <Col md={4} lg={4}>
-                                                            <Form.Group className="mb-3" controlId="country_ids">
-                                                                <Form.Label>Country</Form.Label>
-                                                                <Select
-                                                                    className="react-select react-select-container"
-                                                                    classNamePrefix="react-select"
-                                                                    isMulti
-                                                                    name="country_ids"
-                                                                    options={[{ value: null, label: "None" }, ...countryData]}
-                                                                    value={selectedCountry}
-                                                                    onChange={handleSelectChange as any}
-                                                                />
-                                                            </Form.Group>
-                                                        </Col>} */}
 
                                             </Row>
                                             <div className="text-end">
