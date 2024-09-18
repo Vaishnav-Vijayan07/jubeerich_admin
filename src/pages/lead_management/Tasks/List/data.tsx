@@ -693,6 +693,10 @@ export const Visa_Types = [
   },
 ]
 
+export const visa_decline = 'visa_decline';
+export const visa_approve = 'visa_approve';
+export const travel_history = 'travel_history';
+
 export {
   todayTasks,
   upcomingTasks,

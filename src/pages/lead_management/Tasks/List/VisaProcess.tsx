@@ -2,12 +2,13 @@ import axios from 'axios';
 import React, { useEffect, useMemo, useState } from 'react'
 import { Spinner } from 'react-bootstrap';
 import { withSwal } from "react-sweetalert2";
-import { baseUrl } from '../../../../constants';
+import { baseUrl, showErrorAlert, showSuccessAlert } from '../../../../constants';
 import VisaProcessRow from './VisaProcessRow';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../../redux/store';
 import { getCourse } from '../../../../redux/course/actions';
 import { getUniversity } from '../../../../redux/University/actions';
+import { travel_history, visa_approve, visa_decline } from './data';
 
 const VisaProcess = withSwal((props: any) => {
   const { swal, studentId } = props;
@@ -45,10 +46,7 @@ const VisaProcess = withSwal((props: any) => {
     purpose_of_travel: "",
   };
 
-  const [loading, setLoading] = useState(false);
-  const [visaDeclineData, setVisaDeclineData] = useState<any>(null);
-  const [visaApproveData, setVisaApproveData] = useState<any>(null);
-  const [travelHistoryData, setTravelHistoryData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [visaDeclineFormData, setVisaDeclineFormData] = useState<any>([initialVisaDeclineForm]);
   const [visaApproveFormData, setVisaApproveFormData] = useState<any>([initialVisaApproveForm]);
   const [travelHistoryFormData, setTravelHistoryFormData] = useState<any>([initialTravelHistoryForm]);
@@ -62,12 +60,12 @@ const VisaProcess = withSwal((props: any) => {
   }));
 
   useEffect(() => {
-    getVisaProcess()
+    getVisaProcess();
   }, [studentId])
 
   useEffect(() => {
-    dispatch(getCourse())
-    dispatch(getUniversity())
+    dispatch(getCourse());
+    dispatch(getUniversity());
   }, [studentId])
 
   const formatSelectOptions = (data: any[], valueKey: string, labelKey: string) => {
@@ -85,34 +83,39 @@ const VisaProcess = withSwal((props: any) => {
   const universityData = useMemo(() => formatSelectOptions(universities, "id", "university_name"), [universities]);
 
   const getVisaProcess = async () => {
-    const result = await axios.get(`${baseUrl}/api/visa_process/${studentId}`);
-    if (result) {
-      setVisaApproveData(result?.data?.data?.previousVisaApprove);
-      setVisaDeclineData(result?.data?.data?.previousVisaDeclineData);
-      setTravelHistoryData(result?.data?.data?.travelHistory);
-
-      setVisaApproveFormData(result?.data?.data?.previousVisaApprove);
-      setVisaDeclineFormData(result?.data?.data?.previousVisaDeclineData);
-      setTravelHistoryFormData(result?.data?.data?.travelHistory);
+    setLoading(true)
+    try {
+      const response = await axios.get(`${baseUrl}/api/visa_process/${studentId}`);
+      if (response && response.data) {
+        const data = response.data.data;
+        setVisaApproveFormData(data?.previousVisaApprove);
+        setVisaDeclineFormData(data?.previousVisaDeclineData);
+        setTravelHistoryFormData(data?.travelHistory);
+        setLoading(false)
+      }
+    } catch (error) {
+      console.error('Error fetching visa process data:', error);
+      showErrorAlert('Error fetching visa process data');
+      setLoading(false)
     }
-  }
+  };
+  
 
   const handleVisaInputChange = (index: any, e: any, formName: any) => {
-    console.log('Target', e.target);
     const { name, value } = e.target;
 
     switch (formName) {
-      case 'visa_decline':
+      case visa_decline:
         const newVisaDeclineFormData = [...visaDeclineFormData];
         newVisaDeclineFormData[index][name] = value;
         setVisaDeclineFormData(newVisaDeclineFormData);
         break;
-      case 'visa_approve':
+      case visa_approve:
         const newVisaApproveFormData = [...visaApproveFormData];
         newVisaApproveFormData[index][name] = value;
         setVisaApproveFormData(newVisaApproveFormData);
         break;
-      case 'travel_history':
+      case travel_history:
         const newTravelHistoryFormData = [...travelHistoryFormData];
         newTravelHistoryFormData[index][name] = value;
         setTravelHistoryFormData(newTravelHistoryFormData);
@@ -130,17 +133,17 @@ const VisaProcess = withSwal((props: any) => {
   ) => {
 
     switch (formName) {
-      case 'visa_decline':
+      case visa_decline:
         const newVisaDeclineFormData = [...visaDeclineFormData];
         newVisaDeclineFormData[index][field] = value;
         setVisaDeclineFormData(newVisaDeclineFormData);
         break;
-      case 'visa_approve':
+      case visa_approve:
         const newVisaApproveFormData = [...visaApproveFormData];
         newVisaApproveFormData[index][field] = value;
         setVisaApproveFormData(newVisaApproveFormData);
         break;
-      case 'travel_history':
+      case travel_history:
         const newTravelHistoryFormData = [...travelHistoryFormData];
         newTravelHistoryFormData[index][field] = value;
         setTravelHistoryFormData(newTravelHistoryFormData);
@@ -151,22 +154,21 @@ const VisaProcess = withSwal((props: any) => {
   };
 
   const addMoreVisaForm = (formName: string) => {
-    console.log('formName', formName);
 
     switch (formName) {
-      case 'visa_decline':
+      case visa_decline:
         setVisaDeclineFormData([
           ...visaDeclineFormData,
           initialVisaDeclineForm
         ]);
         break;
-      case 'visa_approve':
+      case visa_approve:
         setVisaApproveFormData([
           ...visaApproveFormData,
           initialVisaApproveForm
         ]);
         break;
-      case 'travel_history':
+      case travel_history:
         setTravelHistoryFormData([
           ...travelHistoryFormData,
           initialTravelHistoryForm
@@ -177,11 +179,33 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  const removeVisaItem = async(id: any, formName: any) => {
+  const removeVisaItem = async (id: any, formName: any) => {
     try {
-      let result = await axios.delete(`${baseUrl}/api/delete_visa_item/${formName}/${id}`);
-      console.log('result',result);
-      
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Delete",
+      });
+
+      if (result.isConfirmed) {
+        setLoading(true);
+
+        try {
+          let result = await axios.delete(`${baseUrl}/api/delete_visa_item/${formName}/${id}`);
+          showSuccessAlert(result.data.message);
+          getVisaProcess();
+        } catch (err) {
+          console.error(err);
+          showErrorAlert("Error occurred");
+        } finally {
+          setLoading(false);
+        }
+      }
+
     } catch (error) {
       console.log(error);
     }
@@ -189,31 +213,31 @@ const VisaProcess = withSwal((props: any) => {
 
   const removeVisaForm = (index: any, itemId: any, formName: string) => {
     switch (formName) {
-      case 'visa_approve':
+      case visa_approve:
         if (itemId == 0) {
           const newVisaApproveFormData = [...visaApproveFormData];
           newVisaApproveFormData.splice(index, 1);
           setVisaApproveFormData(newVisaApproveFormData);
         } else {
-          removeVisaItem(itemId, "visa_approve")
+          removeVisaItem(itemId, visa_approve)
         }
         break;
-      case 'visa_decline':
+      case visa_decline:
         if (itemId == 0) {
           const newVisaDeclineFormData = [...visaDeclineFormData];
           newVisaDeclineFormData.splice(index, 1);
           setVisaDeclineFormData(newVisaDeclineFormData);
         } else {
-          removeVisaItem(itemId, "visa_decline")
+          removeVisaItem(itemId, visa_decline)
         }
         break;
-      case 'travel_history':
+      case travel_history:
         if (itemId == 0) {
           const newVisaTravelFormData = [...travelHistoryFormData];
           newVisaTravelFormData.splice(index, 1);
           setTravelHistoryFormData(newVisaTravelFormData);
         } else {
-          removeVisaItem(itemId, "travel_history")
+          removeVisaItem(itemId, travel_history)
         }
         break;
       default:
@@ -223,13 +247,13 @@ const VisaProcess = withSwal((props: any) => {
 
   const saveVisaFormData = (submitName: string) => {
     switch (submitName) {
-      case 'visa_decline':
+      case visa_decline:
         submitDeclinedVisa();
         break;
-      case 'visa_approve':
+      case visa_approve:
         submitApprovedVisa();
         break;
-      case 'travel_history':
+      case travel_history:
         submitTravelHistory();
         break;
       default:
@@ -238,52 +262,121 @@ const VisaProcess = withSwal((props: any) => {
   }
 
   const submitDeclinedVisa = async () => {
+    const body = {
+      userId: loggedUser.user_id,
+      visaDecline: visaDeclineFormData
+    };
+  
+    console.log('BODY', body);
+  
     try {
-      let body = {
-        userId: loggedUser.user_id,
-        visaDecline: visaDeclineFormData
+      const confirmationResult = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      });
+  
+      if (confirmationResult.isConfirmed) {
+        setLoading(true);
+        try {
+          const response = await axios.post(`${baseUrl}/api/visa_decline_process/`, body);
+          console.log('response', response);
+          showSuccessAlert(response.data.message);
+          getVisaProcess();
+        } catch (error) {
+          console.error('Error during API call:', error);
+          showErrorAlert("Error occurred");
+        } finally {
+          setLoading(false);
+        }
       }
-
-      console.log('BODY', body);
-
-      let result = await axios.post(`${baseUrl}/api/visa_decline_process/`, body);
-      console.log('result', result);
     } catch (error) {
-      console.log(error);
+      console.error('Error during confirmation process:', error);
     }
-  }
-
+  };
+  
   const submitApprovedVisa = async () => {
+    const body = {
+      userId: loggedUser.user_id,
+      visaApproved: visaApproveFormData
+    };
+  
+    console.log('BODY', body);
+  
     try {
-      let body = {
-        userId: loggedUser.user_id,
-        visaApproved: visaApproveFormData
+      const confirmationResult = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      });
+  
+      if (confirmationResult.isConfirmed) {
+        setLoading(true);
+  
+        try {
+          const response = await axios.post(`${baseUrl}/api/visa_approve_process/`, body);
+          console.log('response', response);
+          showSuccessAlert(response.data.message);
+          getVisaProcess();
+        } catch (error) {
+          console.error('Error during API call:', error);
+          showErrorAlert("Error occurred");
+        } finally {
+          setLoading(false);
+        }
       }
-
-      console.log('BODY', body);
-
-      let result = await axios.post(`${baseUrl}/api/visa_approve_process/`, body);
-      console.log('result', result);
     } catch (error) {
-      console.log(error);
+      console.error('Error during confirmation process:', error);
     }
-  }
+  };
+  
 
   const submitTravelHistory = async () => {
+    const body = {
+      userId: loggedUser.user_id,
+      travelHistory: travelHistoryFormData
+    };
+  
+    console.log('BODY', body);
+  
     try {
-      let body = {
-        userId: loggedUser.user_id,
-        travelHistory: travelHistoryFormData
+      const confirmationResult = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      });
+  
+      if (confirmationResult.isConfirmed) {
+        setLoading(true);
+  
+        try {
+          const response = await axios.post(`${baseUrl}/api/travel_history/`, body);
+          console.log('response', response);
+          showSuccessAlert(response.data.message);
+          getVisaProcess();
+        } catch (error) {
+          console.error('Error during API call:', error);
+          showErrorAlert("Error occurred");
+        } finally {
+          setLoading(false);
+        }
       }
-
-      console.log('BODY', body);
-
-      let result = await axios.post(`${baseUrl}/api/travel_history/`, body);
-      console.log('result', result);
     } catch (error) {
-      console.log(error);
+      console.error('Error during confirmation process:', error);
     }
-  }
+  };
 
   if (loading) {
     return (
