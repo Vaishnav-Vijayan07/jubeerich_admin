@@ -86,12 +86,20 @@ const VisaProcess = withSwal((props: any) => {
     setLoading(true)
     try {
       const response = await axios.get(`${baseUrl}/api/visa_process/${studentId}`);
+      console.log('response',response);
+      
       if (response && response.data) {
         const data = response.data.data;
         setVisaApproveFormData(data?.previousVisaApprove);
         setVisaDeclineFormData(data?.previousVisaDeclineData);
         setTravelHistoryFormData(data?.travelHistory);
-        setLoading(false)
+        setLoading(false);
+      } else {
+        setVisaApproveFormData(initialVisaApproveForm);
+        setVisaDeclineFormData(initialVisaDeclineForm);
+        setTravelHistoryFormData(initialTravelHistoryForm);
+        setLoading(false);
+
       }
     } catch (error) {
       console.error('Error fetching visa process data:', error);

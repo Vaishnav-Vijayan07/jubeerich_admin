@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { FormInput } from '../../../../components';
 import moment from 'moment';
@@ -7,10 +7,29 @@ import { travel_history, visa_approve, visa_decline, Visa_Types } from './data';
 
 const VisaProcessRow = ({ visaDecline, visaApprove, travelHistory, countries, courses, universities, handleVisaInputChange, handleVisaSelectChange, saveVisaForm, addMoreVisaForm, removeVisaForm }: any) => {
 
-  const [selectedVisaType, setSelectedVisaType] = useState<any>(null);
-  const [selectedCountry, setSelectedCountry] = useState<any>(null);
-  const [selectedCourse, setSelectedCourse] = useState<any>(null);
-  const [selectedInstitution, setSelectedInstitution] = useState<any>(null);
+  const [visaDeclineData, setVisaDeclineData] = useState<any[]>([]);
+  const [visaApproveData, setVisaApproveData] = useState<any[]>([]);
+  const [travelHistoryData, setTravelHistoryData] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (visaDecline.length) {
+      setVisaDeclineData(visaDecline);
+    } else {
+      addMoreVisaForm(visa_decline);
+    }
+  
+    if (visaApprove.length) {
+      setVisaApproveData(visaApprove);
+    } else {
+      addMoreVisaForm(visa_approve);
+    }
+  
+    if (travelHistory.length) {
+      setTravelHistoryData(travelHistory);
+    } else {
+      addMoreVisaForm(travel_history);
+    }
+  }, [visaDecline, visaApprove, travelHistory]);
 
   return (
     <Row>
@@ -20,7 +39,7 @@ const VisaProcessRow = ({ visaDecline, visaApprove, travelHistory, countries, co
         <h5 className="mb-4 text-uppercase">
           <i className="mdi mdi-account-circle me-1"></i>Previous Visa Decline
         </h5>
-        {visaDecline.length > 0 && visaDecline.map((data: any, index: any) => (
+        {visaDeclineData.length > 0 && visaDeclineData.map((data: any, index: any) => (
           <Row key={index}>
 
             <Col md={6} lg={6} xl={6} xxl={4}>
@@ -145,7 +164,7 @@ const VisaProcessRow = ({ visaDecline, visaApprove, travelHistory, countries, co
               </Form.Group>
             </Col>
             <hr />
-            {visaDecline.length > 0 && (
+            {visaDeclineData.length > 1 && (
               <Row className="mb-2">
                 <Col className="d-flex align-items-center gap-1">
                   <i
@@ -180,7 +199,7 @@ const VisaProcessRow = ({ visaDecline, visaApprove, travelHistory, countries, co
           <i className="mdi mdi-account-circle me-1"></i>Previous Visa Approvals
         </h5>
 
-        {visaApprove.length > 0 && visaApprove.map((data: any, index: any) => (
+        {visaApproveData.length > 0 && visaApproveData.map((data: any, index: any) => (
           <Row key={index}>
             <Col md={6} lg={6} xl={6} xxl={4}>
               <Form.Group className="mb-3" controlId="visa_type">
@@ -290,7 +309,7 @@ const VisaProcessRow = ({ visaDecline, visaApprove, travelHistory, countries, co
               </Form.Group>
             </Col>
             <hr />
-            {visaApprove.length > 0 && (
+            {visaApproveData.length > 1 && (
               <Row className="mb-2">
                 <Col className="d-flex align-items-center gap-1">
                   <i
@@ -325,7 +344,7 @@ const VisaProcessRow = ({ visaDecline, visaApprove, travelHistory, countries, co
           <i className="mdi mdi-account-circle me-1"></i>Travel History
         </h5>
 
-        {travelHistory.length > 0 && travelHistory.map((data: any, index: any) => (
+        {travelHistoryData.length > 0 && travelHistoryData.map((data: any, index: any) => (
           <Row key={index}>
             <Col md={6} lg={6} xl={6} xxl={4}>
               <Form.Group className="mb-3" controlId="country_id">
@@ -400,7 +419,7 @@ const VisaProcessRow = ({ visaDecline, visaApprove, travelHistory, countries, co
               </Form.Group>
             </Col>
             <hr />
-            {travelHistory.length > 0 && (
+            {travelHistoryData.length > 1 && (
               <Row className="mb-2">
                 <Col className="d-flex align-items-center gap-1">
                   <i
