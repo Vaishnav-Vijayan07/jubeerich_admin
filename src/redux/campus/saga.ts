@@ -26,6 +26,7 @@ interface CampusData {
     campus_name: string;
     location: string;
     university_id: string;
+    courses: { course_fee: string; course_link: string; course_id: string | number }[];
   };
   type: string;
 }
@@ -59,13 +60,15 @@ function* addCampus({
     campus_name,
     location,
     university_id,
+    courses
   },
 }: CampusData): SagaIterator {
   try {
     const response = yield call(addCampusApi, {
       campus_name,
       location,
-      university_id
+      university_id,
+      courses
     });
     const data = response.data.message;
 
@@ -87,6 +90,7 @@ function* updateCampus({
     campus_name,
     location,
     university_id,
+    courses
   },
 }: CampusData): SagaIterator {
   try {
@@ -94,6 +98,7 @@ function* updateCampus({
       campus_name,
       location,
       university_id,
+      courses
     });
     const data = response.data.message;
 

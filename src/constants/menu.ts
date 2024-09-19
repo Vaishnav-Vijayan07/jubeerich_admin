@@ -4,7 +4,7 @@ export interface MenuItemTypes {
   isTitle?: boolean;
   icon?: string;
   url?: string;
-  only?: any,
+  only?: any;
   roles?: Array<string>;
   badge?: {
     variant: string;
@@ -146,24 +146,6 @@ const MENU_ITEMS: MenuItemTypes[] = [
         parentKey: "master",
       },
       {
-        key: "university",
-        label: "University",
-        url: "/settings/master/university",
-        parentKey: "master",
-      },
-      {
-        key: "campus",
-        label: "Campus",
-        url: "/settings/master/campus",
-        parentKey: "master",
-      },
-      {
-        key: "programs",
-        label: "Programs",
-        url: "/settings/master/programs",
-        parentKey: "master",
-      },
-      {
         key: "branches",
         label: "Branches",
         url: "/settings/master/branches",
@@ -179,8 +161,8 @@ const MENU_ITEMS: MenuItemTypes[] = [
   },
 
   {
-    key: "courses",
-    label: "Course Setup",
+    key: "academic_management",
+    label: "Academic Setup",
     isTitle: false,
     icon: "settings",
     roles: ["Monitor"],
@@ -192,15 +174,27 @@ const MENU_ITEMS: MenuItemTypes[] = [
         parentKey: "master",
       },
       {
+        key: "stream",
+        label: "Stream",
+        url: "/settings/master/stream",
+        parentKey: "master",
+      },
+      {
         key: "course",
         label: "Course",
         url: "/settings/master/course",
         parentKey: "master",
       },
       {
-        key: "stream",
-        label: "Stream",
-        url: "/settings/master/stream",
+        key: "university",
+        label: "University",
+        url: "/settings/master/university",
+        parentKey: "master",
+      },
+      {
+        key: "campus",
+        label: "Campus",
+        url: "/settings/master/campus",
         parentKey: "master",
       },
     ],

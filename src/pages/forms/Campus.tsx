@@ -15,12 +15,8 @@ import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { getUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
-import {
-  addCampus,
-  deleteCampus,
-  getCampus,
-  updateCampus,
-} from "../../redux/actions";
+import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
+import { getCourse } from "../../redux/course/actions";
 
 interface OptionType {
   value: string;
@@ -58,6 +54,7 @@ const initialState = {
   campus_name: "",
   location: "",
   university_id: "",
+  courses: [{ course_fee: "", course_link: "", course_id: "" }],
 };
 
 const initialValidationState = {
@@ -68,7 +65,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, university, error, loading } = props;
+  const { swal, state, university, error, loading, courseData } = props;
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -78,26 +75,21 @@ const BasicInputElements = withSwal((props: any) => {
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
-  const [selectedUniversity, setSelectedUniversity] =
-    useState<OptionType | null>(null);
+  const [selectedUniversity, setSelectedUniversity] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
     campus_name: yup
       .string()
       .min(3, "Campus name name must be at least 3 characters long")
       .required("Campus name name is required"),
-    location: yup
-      .string()
-      .required("Location is required"),
+    location: yup.string().required("Location is required"),
     university_id: yup.string().required("University is required"),
   });
 
@@ -109,20 +101,36 @@ const BasicInputElements = withSwal((props: any) => {
     defaultValues: initialState,
   });
 
+  // const handleUpdate = (item: any) => {
+  //   //update source dropdown
+  //   const updatedUniversity: OptionType[] = university?.filter((country: any) => country.value == item.university_id);
+  //   setSelectedUniversity(updatedUniversity[0]);
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     id: item?.id,
+  //     campus_name: item?.campus_name,
+  //     location: item?.location,
+  //     university_id: item?.university_id,
+  //   }));
+
+  //   setIsUpdate(true);
+  // };
+
   const handleUpdate = (item: any) => {
-    //update source dropdown
-    const updatedUniversity: OptionType[] = university?.filter(
-      (country: any) => country.value == item.university_id
-    );
+    // Update university dropdown
+    const updatedUniversity: OptionType[] = university?.filter((country: any) => country.value == item.university_id);
     setSelectedUniversity(updatedUniversity[0]);
+  
+    // Set form data including courses
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
       campus_name: item?.campus_name,
       location: item?.location,
       university_id: item?.university_id,
+      courses: item?.courses || [] // Ensure courses is an array, defaulting to empty if undefined
     }));
-
+  
     setIsUpdate(true);
   };
 
@@ -149,12 +157,27 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   //handle onchange function
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: any, index?: number) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prevData) => {
+      if (typeof index === "number") {
+        const updatedCourses = [...prevData.courses];
+        updatedCourses[index] = {
+          ...updatedCourses[index],
+          [name]: value,
+        };
+
+        return {
+          ...prevData,
+          courses: updatedCourses,
+        };
+      }
+
+      return {
+        ...prevData,
+        [name]: value,
+      };
+    });
   };
 
   //handle form submission
@@ -184,25 +207,13 @@ const BasicInputElements = withSwal((props: any) => {
               if (isUpdate) {
                 // Handle update logic
                 dispatch(
-                  updateCampus(
-                    formData?.id,
-                    formData.campus_name,
-                    formData.location,
-                    formData.university_id
-                  )
+                  updateCampus(formData?.id, formData.campus_name, formData.location, formData.university_id, formData.courses)
                 );
                 setIsUpdate(false);
               } else {
                 // Handle add logic
                 console.log("Here");
-
-                dispatch(
-                  addCampus(
-                    formData.campus_name,
-                    formData.location,
-                    formData.university_id
-                  )
-                );
+                dispatch(addCampus(formData.campus_name, formData.location, formData.university_id, formData.courses));
               }
             }
           }
@@ -266,11 +277,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-          >
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -319,112 +326,184 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const addNewCourse = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      courses: [...prevData.courses, { course_fee: "", course_link: "", course_id: "" }],
+    }));
+  };
+
+  const removeCourse = (index: number) => {
+    setFormData((prevData) => {
+      const updatedCourses = prevData.courses.filter((_, i) => i !== index);
+      return {
+        ...prevData,
+        courses: updatedCourses,
+      };
+    });
+  };
+
+  console.log("formData ==>", formData);
+
   return (
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-lg modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Campus Management</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="campus_name">
-                <Form.Label>Campus Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="campus_name"
-                  value={formData.campus_name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.campus_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.campus_name}
-                  </Form.Text>
-                )}
-              </Form.Group>
+              <Row>
+                <Col md={6}>
+                  {/* Campus Name */}
+                  <Form.Group className="mb-3" controlId="campus_name">
+                    <Form.Label>Campus Name</Form.Label>
+                    <Form.Control type="text" name="campus_name" value={formData.campus_name} onChange={handleInputChange} />
+                    {validationErrors.campus_name && (
+                      <Form.Text className="text-danger">{validationErrors.campus_name}</Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
 
-              <Form.Group className="mb-3" controlId="location">
-                <Form.Label>Location</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.location && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.location}
-                  </Form.Text>
-                )}
-              </Form.Group>
+                <Col md={6}>
+                  {/* University */}
+                  <Form.Group className="mb-3" controlId="university_id">
+                    <Form.Label>University</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="university_id"
+                      options={university}
+                      value={selectedUniversity}
+                      onChange={handleUniversityChange}
+                    />
+                    {validationErrors.university_id && (
+                      <Form.Text className="text-danger">{validationErrors.university_id}</Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
 
-              <Form.Group className="mb-3" controlId="university_id">
-                <Form.Label>University</Form.Label>
-                <Select
-                  styles={customStyles}
-                  className="react-select react-select-container"
-                  classNamePrefix="react-select"
-                  name="university_id"
-                  options={university}
-                  value={selectedUniversity}
-                  onChange={handleUniversityChange}
-                />
+              <Row>
+                <Col md={6}>
+                  {/* Location */}
+                  <Form.Group className="mb-3" controlId="location">
+                    <Form.Label>Location</Form.Label>
+                    <Form.Control as="textarea" rows={5} name="location" value={formData.location} onChange={handleInputChange} />
+                    {validationErrors.location && <Form.Text className="text-danger">{validationErrors.location}</Form.Text>}
+                  </Form.Group>
+                </Col>
+              </Row>
 
-                {validationErrors.university_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.university_id}
-                  </Form.Text>
-                )}
-              </Form.Group>
+              {/* Courses Section */}
+              {/* <h5 className="mb-4 text-uppercase">
+                <i className="mdi mdi-account-circle me-1"></i> Courses
+              </h5> */}
+              <h5 className="mb-4 text-uppercase" style={{ backgroundColor: "#f0f0f0", padding: "10px", borderRadius: "4px" }}>
+                <i className="mdi mdi-book-open-outline me-1"></i> Courses
+              </h5>
+              {formData.courses.map((course, index) => (
+                <>
+                  <h5>Course {index + 1}</h5>
+                  <Row key={index} className="">
+                    <Col md={6}>
+                      <Form.Group className="mb-2" controlId={`course_id_${index}`}>
+                        <Form.Label>Course Name</Form.Label>
+                        <Form.Control
+                          as="select"
+                          name="course_id"
+                          value={course.course_id || ""}
+                          onChange={(e) => handleInputChange(e, index)}
+                        >
+                          <option value="">Select a Course</option>
+                          {courseData?.map((courseOption: any) => (
+                            <option key={courseOption.id} value={courseOption.id}>
+                              {courseOption.course_name}
+                            </option>
+                          ))}
+                        </Form.Control>
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={6}>
+                      <Form.Group className="mb-2" controlId={`course_fee_${index}`}>
+                        <Form.Label>Course Fee</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="course_fee"
+                          value={course.course_fee}
+                          onChange={(e) => handleInputChange(e, index)}
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={6}>
+                      <Form.Group className="mb-2" controlId={`course_link_${index}`}>
+                        <Form.Label>Course Link</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="course_link"
+                          value={course.course_link}
+                          onChange={(e) => handleInputChange(e, index)}
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    <Col className="d-flex align-items-center gap-1">
+                      <i
+                        className="text-danger mdi mdi-minus-circle-outline fs-3 ps-1"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => removeCourse(index)}
+                      ></i>
+                      <span className="text-danger">Remove</span>
+                    </Col>
+                  </Row>
+                </>
+              ))}
+
+              {/* Button to add a new course */}
+              <Row className="mb-2">
+                <Col sm={6} className="d-flex align-items-center gap-1">
+                  <i
+                    className="text-primary mdi mdi-plus-circle-outline fs-3 ps-1"
+                    style={{ cursor: "pointer" }}
+                    onClick={addNewCourse}
+                  ></i>
+                  <span className="text-primary">Add More</span>
+                </Col>
+              </Row>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]}
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={handleResetValues}>
                 Clear
               </Button>
               <Button
                 variant="danger"
                 id="button-addon2"
-                className="mt-1 "
+                className="mt-1"
                 onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(), handleResetValues()]
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
           </Form>
         </Modal>
+
         {/* </Col> */}
 
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Campus
               </Button>
               <h4 className="header-title mb-4">Manage Campus</h4>
@@ -451,19 +530,19 @@ const Campus = () => {
   const [sourceData, setSourceData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading, university } = useSelector(
-    (state: RootState) => ({
-      state: state.Campus.campus.data,
-      error: state.Campus.error,
-      loading: state.Campus.loading,
-      initialLoading: state.Campus.initialloading,
-      university: state.University.universities.data,
-    })
-  );
+  const { state, error, loading, initialLoading, university, courseData } = useSelector((state: RootState) => ({
+    state: state.Campus.campus.data,
+    error: state.Campus.error,
+    loading: state.Campus.loading,
+    initialLoading: state.Campus.initialloading,
+    university: state.University.universities.data,
+    courseData: state.Course.course.data,
+  }));
 
   useEffect(() => {
     dispatch(getUniversity());
     dispatch(getCampus());
+    dispatch(getCourse());
   }, []);
 
   useEffect(() => {
@@ -477,12 +556,7 @@ const Campus = () => {
   }, [university]);
 
   if (initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      />
-    );
+    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
   }
 
   return (
@@ -496,12 +570,7 @@ const Campus = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            university={sourceData}
-            error={error}
-            loading={loading}
-          />
+          <BasicInputElements state={state} university={sourceData} error={error} loading={loading} courseData={courseData} />
         </Col>
       </Row>
     </React.Fragment>

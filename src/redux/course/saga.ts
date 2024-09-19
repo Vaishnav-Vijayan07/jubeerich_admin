@@ -26,7 +26,6 @@ interface CourseData {
     course_description: string;
     course_type_id: number | string;
     stream_id: number | string;
-    updated_by: string;
   };
   type: string;
 }
@@ -58,8 +57,7 @@ function* addCourse({
     course_name,
     course_description,
     course_type_id,
-    stream_id,
-    updated_by,
+    stream_id
   },
 }: CourseData): SagaIterator {
   try {
@@ -67,8 +65,7 @@ function* addCourse({
       course_name,
       course_description,
       course_type_id,
-      stream_id,
-      updated_by,
+      stream_id
     });
     const data = response.data.message;
 
@@ -86,8 +83,7 @@ function* updateCourse({
     course_name,
     course_description,
     course_type_id,
-    stream_id,
-    updated_by,
+    stream_id
   },
 }: CourseData): SagaIterator {
   try {
@@ -95,8 +91,7 @@ function* updateCourse({
       course_name,
       course_description,
       course_type_id,
-      stream_id,
-      updated_by,
+      stream_id
     });
     const data = response.data.message;
 

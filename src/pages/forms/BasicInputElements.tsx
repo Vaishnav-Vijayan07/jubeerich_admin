@@ -8,13 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import makeAnimated from "react-select/animated";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
-import {
-  addLeads,
-  deleteLeads,
-  getLead,
-  getLeadsTL,
-  updateLeads,
-} from "../../redux/actions";
+import { addLeads, deleteLeads, getLead, getLeadsTL, updateLeads } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
 import {
   AUTH_SESSION_KEY,
@@ -23,6 +17,10 @@ import {
   franchise_id_from_office,
   showErrorAlert,
   showSuccessAlert,
+  counsellor_tl_id,
+  cre_tl_id,
+  it_team_id,
+  regional_manager_id,
 } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
@@ -138,7 +136,6 @@ const BasicInputElements = withSwal((props: any) => {
   } = props;
 
   console.log("counsellors ===>", counsellors);
-  
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
@@ -168,9 +165,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [modal, setModal] = useState<boolean>(false);
   const [selectExam, setSelectExam] = useState<boolean>(false);
   const fileInputRef = useRef<any>(null);
-  const [languageForm, setLanguageForm] = useState<any[]>([
-    { exam_name: "", marks: "" },
-  ]);
+  const [languageForm, setLanguageForm] = useState<any[]>([{ exam_name: "", marks: "" }]);
   const [filteredItems, setFilteredItems] = useState<any[]>([]); // Filtered data
   const [filters, setFilters] = useState({
     status_id: "",
@@ -198,37 +193,24 @@ const BasicInputElements = withSwal((props: any) => {
     console.log("tempItems ==>", tempItems);
 
     if (filters.status_id) {
-      tempItems = tempItems.filter(
-        (item) => item.status_id == filters.status_id
-      );
+      tempItems = tempItems.filter((item) => item.status_id == filters.status_id);
     }
 
     if (filters.source_id) {
-      tempItems = tempItems.filter(
-        (item) => item.source_id == filters.source_id
-      );
+      tempItems = tempItems.filter((item) => item.source_id == filters.source_id);
     }
 
     if (filters.updated_by) {
-      tempItems = tempItems.filter(
-        (item) => item.updated_by == filters.updated_by
-      );
+      tempItems = tempItems.filter((item) => item.updated_by == filters.updated_by);
     }
 
     if (filters.counsiler_id) {
-      tempItems = tempItems.filter((item) =>
-        item.counselors.some(
-          (counselor: any) => counselor.id == filters.counsiler_id
-        )
-      );
+      tempItems = tempItems.filter((item) => item.counselors.some((counselor: any) => counselor.id == filters.counsiler_id));
     }
 
     if (filters.preferredCountries) {
       tempItems = tempItems.filter((item) =>
-        item.preferredCountries.some(
-          (preferredCountry: any) =>
-            preferredCountry.id == filters.preferredCountries
-        )
+        item.preferredCountries.some((preferredCountry: any) => preferredCountry.id == filters.preferredCountries)
       );
     }
 
@@ -308,14 +290,10 @@ const BasicInputElements = withSwal((props: any) => {
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    full_name: yup
-      .string()
-      .required("Name is required"),
+    full_name: yup.string().required("Name is required"),
     email: yup.string().required("Email is required").email("Invalid email"),
     phone: yup
       .string()
@@ -340,31 +318,19 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedSource = source?.filter(
-      (source: any) => source.value == item.source_id
-    );
-    const updatedOffice = office?.filter(
-      (office: any) => office.value == item.office_type
-    );
-    const updatedRegion = region?.filter(
-      (region: any) => region.value == item.region_id
-    );
+    const updatedSource = source?.filter((source: any) => source.value == item.source_id);
+    const updatedOffice = office?.filter((office: any) => office.value == item.office_type);
+    const updatedRegion = region?.filter((region: any) => region.value == item.region_id);
 
-    const updatedCtegory = categories?.filter(
-      (category: any) => category.value == item.category_id
-    );
-    const updatedChannels = channels?.filter(
-      (channel: any) => channel.value == item.channel_id
-    );
+    const updatedCtegory = categories?.filter((category: any) => category.value == item.category_id);
+    const updatedChannels = channels?.filter((channel: any) => channel.value == item.channel_id);
 
     const updatedCountry = item?.preferredCountries?.map((country: any) => ({
       value: country?.id,
       label: country?.country_name,
     }));
 
-    const countryArray = item?.preferredCountries?.map(
-      (country: any) => country?.id
-    );
+    const countryArray = item?.preferredCountries?.map((country: any) => country?.id);
 
     const { value } = updatedOffice[0];
     const { franchise_id, region_id: region_id_from_item } = item;
@@ -373,18 +339,14 @@ const BasicInputElements = withSwal((props: any) => {
       console.log("HERE");
       setIsFranchiseActive(true);
       setActiveRegion(false);
-      const franchiseValue = franchisees.find(
-        (item: any) => item.value == franchise_id
-      );
+      const franchiseValue = franchisees.find((item: any) => item.value == franchise_id);
       setSelectedFranchisee(franchiseValue);
     }
 
     if (region_id_from_item && value === region_id) {
       setActiveRegion(true);
       setIsFranchiseActive(false);
-      const regionValue = regionData.find(
-        (item: any) => item.value == region_id
-      );
+      const regionValue = regionData.find((item: any) => item.value == region_id);
       setSelectedRegion(regionValue);
     }
 
@@ -413,9 +375,7 @@ const BasicInputElements = withSwal((props: any) => {
       // branch_id: item?.branch_id || "",
       updated_by: item?.updated_by || "",
       remarks: item?.remarks || "",
-      lead_received_date:
-        moment(item?.lead_received_date).format("YYYY-MM-DD") ||
-        new Date()?.toISOString().split("T")[0],
+      lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
       ielts: item?.ielts || false,
       exam: item?.exam || "",
       zipcode: item?.zipcode,
@@ -607,9 +567,7 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.lead_received_date,
                     formData.ielts,
                     formData.zipcode,
-                    exam_details[0]?.exam_name
-                      ? JSON.stringify(exam_details)
-                      : null,
+                    exam_details[0]?.exam_name ? JSON.stringify(exam_details) : null,
                     selectedFile,
                     formData.franchise_id ? formData.franchise_id : null
                   )
@@ -640,9 +598,7 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.lead_received_date,
                     formData.ielts,
                     formData.zipcode,
-                    exam_details[0]?.exam_name
-                      ? JSON.stringify(exam_details)
-                      : null,
+                    exam_details[0]?.exam_name ? JSON.stringify(exam_details) : null,
                     selectedFile,
                     formData.franchise_id ? formData.franchise_id : null
                   )
@@ -721,10 +677,7 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "lead_received_date",
       sort: false,
       Cell: ({ row }: any) => (
-        <span>
-          {row.original.lead_received_date &&
-            moment(row.original.lead_received_date).format("DD/MM/YYYY")}
-        </span>
+        <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
       ),
     },
     {
@@ -732,75 +685,70 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "followup_date",
       sort: false,
       Cell: ({ row }: any) => (
-        <span>
-          {row.original.followup_date &&
-            moment(row.original.followup_date).format("DD/MM/YYYY")}
-        </span>
+        <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>
       ),
     },
     ...(user?.role == 4
       ? [
-        {
-          Header: "Assigned CRE",
-          accessor: "cre_name",
-          sort: true,
-        },
-      ]
+          {
+            Header: "Assigned CRE",
+            accessor: "cre_name",
+            sort: true,
+          },
+        ]
       : []),
     ...(user?.role == 3
       ? [
-        {
-          Header: "Assigned by",
-          accessor: "updated_by_user",
-          sort: true,
-        },
-      ]
+          {
+            Header: "Assigned by",
+            accessor: "updated_by_user",
+            sort: true,
+          },
+        ]
       : []),
     ...(user?.role == 3 || user?.role == 4
       ? [
-        {
-          Header: "Assign Type",
-          accessor: "assign_type",
-          sort: true,
-          Cell: ({ row }: any) => {
-            const assignType = row.original.assign_type;
+          {
+            Header: "Assign Type",
+            accessor: "assign_type",
+            sort: true,
+            Cell: ({ row }: any) => {
+              const assignType = row.original.assign_type;
 
-            // Define display text for each possible assignType
-            const displayText: { [key: string]: string } = {
-              direct_assign: "Direct Assigned",
-              auto_assign: "Auto Assigned",
-              null: "", // Handle the string "null" explicitly
-              undefined: "", // Handle the string "undefined" explicitly
-            };
+              // Define display text for each possible assignType
+              const displayText: { [key: string]: string } = {
+                direct_assign: "Direct Assigned",
+                auto_assign: "Auto Assigned",
+                null: "", // Handle the string "null" explicitly
+                undefined: "", // Handle the string "undefined" explicitly
+              };
 
-            // Return the corresponding display text or "Unknown" if not found
-            return <span>{displayText[assignType] || ""}</span>;
+              // Return the corresponding display text or "Unknown" if not found
+              return <span>{displayText[assignType] || ""}</span>;
+            },
           },
-        },
-      ]
+        ]
       : []),
     ...(user?.role == 3 || user?.role == 5
       ? [
-        {
-          Header: "Assigned counsellor",
-          accessor: "counselors",
-          sort: false,
-          Cell: ({ row }: any) => {
-            const counselors = row?.original.counselors;
-            return (
-              <ul style={{ listStyle: "none", padding: 0 }}>
-                {counselors && counselors.length > 0 ? (
-                  counselors.map((item: any) => (
-                    <li key={item?.counselor_name}>{item?.counselor_name}</li>
-                  ))
-                ) : (
-                  <li>Not assigned</li>
-                )}
-              </ul>
-            );
+          {
+            Header: "Assigned counsellor",
+            accessor: "counselors",
+            sort: false,
+            Cell: ({ row }: any) => {
+              const counselors = row?.original.counselors;
+              return (
+                <ul style={{ listStyle: "none", padding: 0 }}>
+                  {counselors && counselors.length > 0 ? (
+                    counselors.map((item: any) => <li key={item?.counselor_name}>{item?.counselor_name}</li>)
+                  ) : (
+                    <li>Not assigned</li>
+                  )}
+                </ul>
+              );
+            },
           },
-        },
-      ]
+        ]
       : []),
     {
       Header: "Status",
@@ -826,11 +774,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-          >
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -1020,9 +964,7 @@ const BasicInputElements = withSwal((props: any) => {
   ) => {
     if (Array.isArray(selectedOptions)) {
       setSelectedCountry(selectedOptions);
-      const selectedIdsArray = selectedOptions?.map((option) =>
-        parseInt(option.value)
-      );
+      const selectedIdsArray = selectedOptions?.map((option) => parseInt(option.value));
       setFormData((prev: any) => ({
         ...prev,
         preferred_country: selectedIdsArray,
@@ -1042,11 +984,7 @@ const BasicInputElements = withSwal((props: any) => {
     setLanguageForm(newFields);
   };
 
-  const handleRemoveLanguageForm = async (
-    index: number,
-    e: any,
-    exam_name: string
-  ) => {
+  const handleRemoveLanguageForm = async (index: number, e: any, exam_name: string) => {
     const payload = {
       id: formData?.id,
       exam_name: exam_name,
@@ -1069,12 +1007,8 @@ const BasicInputElements = withSwal((props: any) => {
             axios
               .delete("/exams", { data: payload })
               .then((res: any) => {
-                const removeFields = languageForm.filter(
-                  (data: any, i: number) => i !== index
-                );
-                const removeFiles = selectedFile.filter(
-                  (data: any, i: number) => i !== index
-                );
+                const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+                const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
                 setLanguageForm(removeFields);
                 setSelectedFile(removeFiles);
                 showSuccessAlert(res?.data?.message);
@@ -1091,24 +1025,7 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleFileChange = (index: number, e: any) => {
-    
     let file = e.target.files[0];
-
-    // if (!isUpdate && selectedFile.length) {
-    //   // const filteredFile = selectedFile.filter(
-    //   //   (data: any, i: number) => i !== index
-    //   // );
-    //   // setSelectedFile([...filteredFile, file]);
-
-    //   selectedFile.splice(index, 1, file);
-    //   setSelectedFile([...selectedFile]);
-
-    // } else if (isUpdate && selectedFile.length) {
-    //   selectedFile.splice(index, 1, file);
-    //   setSelectedFile([...selectedFile]);
-    // } else {
-    //   setSelectedFile((prevData: any) => [...prevData, file]);
-    // }
 
     if (selectedFile.length) {
       selectedFile.splice(index, 1, file);
@@ -1141,17 +1058,8 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Label>
                       <span className="text-danger fs-4">* </span>Full Name
                     </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="full_name"
-                      value={formData.full_name}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.full_name && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.full_name}
-                      </Form.Text>
-                    )}
+                    <Form.Control type="text" name="full_name" value={formData.full_name} onChange={handleInputChange} />
+                    {validationErrors.full_name && <Form.Text className="text-danger">{validationErrors.full_name}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -1160,17 +1068,8 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Label>
                       <span className="text-danger fs-4">* </span>Email
                     </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.email && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.email}
-                      </Form.Text>
-                    )}
+                    <Form.Control type="text" name="email" value={formData.email} onChange={handleInputChange} />
+                    {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -1179,23 +1078,16 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Label>
                       <span className="text-danger fs-4">* </span>Phone
                     </Form.Label>
-                    <Form.Control
-                      type="number"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.phone && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.phone}
-                      </Form.Text>
-                    )}
+                    <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
+                    {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                   </Form.Group>
                 </Col>
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Source</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Source
+                    </Form.Label>
                     <Select
                       className="react-select react-select-container"
                       styles={customStyles}
@@ -1205,17 +1097,15 @@ const BasicInputElements = withSwal((props: any) => {
                       value={selectedSource}
                       onChange={handleDropDowns}
                     />
-                    {validationErrors.source_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.source_id}
-                      </Form.Text>
-                    )}
+                    {validationErrors.source_id && <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>}
                   </Form.Group>
                 </Col>
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Channel</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Channel
+                    </Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -1225,17 +1115,15 @@ const BasicInputElements = withSwal((props: any) => {
                       value={selectedChannel}
                       onChange={handleDropDowns}
                     />
-                    {validationErrors.channel_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.channel_id}
-                      </Form.Text>
-                    )}
+                    {validationErrors.channel_id && <Form.Text className="text-danger">{validationErrors.channel_id}</Form.Text>}
                   </Form.Group>
                 </Col>
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Category</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Category
+                    </Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -1246,9 +1134,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleDropDowns}
                     />
                     {validationErrors.category_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.category_id}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.category_id}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -1268,9 +1154,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleSelectChange as any}
                     />
                     {validationErrors.preferred_country && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.preferred_country}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.preferred_country}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -1278,34 +1162,16 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Remarks</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="remarks"
-                      value={formData.remarks}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.remarks && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.remarks}
-                      </Form.Text>
-                    )}
+                    <Form.Control type="text" name="remarks" value={formData.remarks} onChange={handleInputChange} />
+                    {validationErrors.remarks && <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>}
                   </Form.Group>
                 </Col>
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>City</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.city && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.city}
-                      </Form.Text>
-                    )}
+                    <Form.Control type="text" name="city" value={formData.city} onChange={handleInputChange} />
+                    {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -1319,29 +1185,16 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleInputChange}
                     />
                     {validationErrors.lead_received_date && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.lead_received_date}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.lead_received_date}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      Zipcode
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="zipcode"
-                      value={formData.zipcode}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.zipcode && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.zipcode}
-                      </Form.Text>
-                    )}
+                    <Form.Label>Zipcode</Form.Label>
+                    <Form.Control type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
+                    {validationErrors.zipcode && <Form.Text className="text-danger">{validationErrors.zipcode}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -1360,9 +1213,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleDropDowns}
                     />
                     {validationErrors.office_type && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.office_type}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.office_type}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -1378,18 +1229,11 @@ const BasicInputElements = withSwal((props: any) => {
                         className="react-select react-select-container"
                         classNamePrefix="react-select"
                         name="region_id"
-                        options={[
-                          { value: null, label: "None" },
-                          ...regionData,
-                        ]}
+                        options={[{ value: null, label: "None" }, ...regionData]}
                         value={selectedRegion}
                         onChange={handleDropDowns}
                       />
-                      {validationErrors.region_id && (
-                        <Form.Text className="text-danger">
-                          {validationErrors.region_id}
-                        </Form.Text>
-                      )}
+                      {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
                     </Form.Group>
                   </Col>
                 )}
@@ -1405,27 +1249,18 @@ const BasicInputElements = withSwal((props: any) => {
                         className="react-select react-select-container"
                         classNamePrefix="react-select"
                         name="franchise_id"
-                        options={[
-                          { value: null, label: "None" },
-                          ...franchisees,
-                        ]}
+                        options={[{ value: null, label: "None" }, ...franchisees]}
                         value={selectedFranchisee}
                         onChange={handleDropDowns}
                       />
-                      {validationErrors.region_id && (
-                        <Form.Text className="text-danger">
-                          {validationErrors.region_id}
-                        </Form.Text>
-                      )}
+                      {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
                     </Form.Group>
                   </Col>
                 )}
 
                 <Col md={4} lg={4} className="mt-2">
                   <Form.Group className="mb-3" controlId="source_id">
-                    <Form.Label>
-                      Have you ever participated in any language exams ?
-                    </Form.Label>
+                    <Form.Label>Have you ever participated in any language exams ?</Form.Label>
                     <div className="d-flex justify-content-start align-items-center mt-1">
                       <div className="d-flex justify-content-start align-items-start me-2">
                         <Form.Check
@@ -1463,23 +1298,15 @@ const BasicInputElements = withSwal((props: any) => {
                             aria-label="Default select example"
                             name="exam_name"
                             value={data.exam_name}
-                            onChange={(e) =>
-                              handleLanguageInputChange(index, e)
-                            }
+                            onChange={(e) => handleLanguageInputChange(index, e)}
                           >
                             <option value="">Choose..</option>
                             {examtypes?.map((item: any) => (
                               <option
                                 value={item?.name}
                                 key={item?.name}
-                                onClick={(e) =>
-                                  handleLanguageInputChange(index, e)
-                                }
-                                defaultValue={
-                                  item.name === formData.exam
-                                    ? item.name
-                                    : undefined
-                                }
+                                onClick={(e) => handleLanguageInputChange(index, e)}
+                                defaultValue={item.name === formData.exam ? item.name : undefined}
                               >
                                 {item.name}
                               </option>
@@ -1502,10 +1329,7 @@ const BasicInputElements = withSwal((props: any) => {
                       </Col>
 
                       <Col className="d-flex justify-content-between">
-                        <Form
-                          name="exam_documents"
-                          encType="multipart/form-data"
-                        >
+                        <Form name="exam_documents" encType="multipart/form-data">
                           <Form.Group className="mb-3" controlId="profileImage">
                             <Form.Label>Upload File</Form.Label>
                             <Form.Control
@@ -1525,15 +1349,10 @@ const BasicInputElements = withSwal((props: any) => {
                         </Form>
                         <i
                           className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1"
-                          onClick={(e) =>
-                            handleRemoveLanguageForm(index, e, data.exam_name)
-                          }
+                          onClick={(e) => handleRemoveLanguageForm(index, e, data.exam_name)}
                         ></i>
                         {selectExam && (
-                          <i
-                            className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1"
-                            onClick={handleAddLanguageForm}
-                          ></i>
+                          <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>
                         )}
                       </Col>
                     </Row>
@@ -1542,12 +1361,7 @@ const BasicInputElements = withSwal((props: any) => {
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]}
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
@@ -1556,43 +1370,32 @@ const BasicInputElements = withSwal((props: any) => {
                 className="mt-1"
                 onClick={() =>
                   isUpdate
-                    ? [handleCancelUpdate(), toggle(), setLanguageForm(languageFormInitialState), setSelectedFile([]), setSelectedFileName([])]
-                    : [
-                      toggle(),
-                      handleResetValues(),
-                      setLanguageForm(languageFormInitialState),
-                      setSelectedFile([])
-                    ]
+                    ? [
+                        handleCancelUpdate(),
+                        toggle(),
+                        setLanguageForm(languageFormInitialState),
+                        setSelectedFile([]),
+                        setSelectedFileName([]),
+                      ]
+                    : [toggle(), handleResetValues(), setLanguageForm(languageFormInitialState), setSelectedFile([])]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-                disabled={loading}
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1" disabled={loading}>
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
           </Form>
         </Modal>
-        
+
         {/* </Col> */}
 
-        {user?.role == 2 && (
-          <Modal
-            show={uploadModal}
-            onHide={toggleUploadModal}
-            dialogClassName="modal-dialog-centered"
-          >
+        {user?.role == it_team_id && (
+          <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body>
-              <p className="text-muted mb-1 font-small">
-                *Please upload the Excel file following the example format.
-              </p>
+              <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
               <FileUploader
                 onFileUpload={handleOnFileUpload}
                 showPreview={true}
@@ -1600,17 +1403,10 @@ const BasicInputElements = withSwal((props: any) => {
                 setSelectedFile={setSelectedFile}
               />
               <div className="d-flex gap-2 justify-content-end mt-2">
-                <Button
-                  className="btn-sm btn-blue waves-effect waves-light"
-                  onClick={handleDownloadClick}
-                >
+                <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
                   <i className="mdi mdi-download-circle"></i> Download Sample
                 </Button>
-                <Button
-                  className="btn-sm btn-success waves-effect waves-light"
-                  onClick={handleFileUpload}
-                  disabled={isLoading}
-                >
+                <Button className="btn-sm btn-success waves-effect waves-light" onClick={handleFileUpload} disabled={isLoading}>
                   <i className="mdi mdi-upload"></i> Upload File
                 </Button>
               </div>
@@ -1681,10 +1477,7 @@ const BasicInputElements = withSwal((props: any) => {
                         className="react-select react-select-container select-wrapper"
                         classNamePrefix="react-select"
                         name="counsiler_id"
-                        options={[
-                          { value: null, label: "All" },
-                          ...counsellors,
-                        ]}
+                        options={[{ value: null, label: "All" }, ...counsellors]}
                         value={selectedCounsellor}
                         onChange={handleFilterChange}
                       />
@@ -1710,10 +1503,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
 
                 <Col lg={3} md={4} sm={6} xs={12}>
-                  <Form.Group
-                    controlId="lead_received_date"
-                    className="cust-date mb-3"
-                  >
+                  <Form.Group controlId="lead_received_date" className="cust-date mb-3">
                     <Form.Label>Lead Received Date</Form.Label>
                     <Form.Control
                       type="date"
@@ -1725,10 +1515,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
 
                 <Col lg={3} md={4} sm={6} xs={12}>
-                  <Form.Group
-                    controlId="followup_date"
-                    className="cust-date mb-3"
-                  >
+                  <Form.Group controlId="followup_date" className="cust-date mb-3">
                     <Form.Label>Followup Date</Form.Label>
                     <Form.Control
                       type="date"
@@ -1739,19 +1526,9 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col
-                  lg={3}
-                  md={4}
-                  sm={6}
-                  xs={12}
-                  style={{ alignSelf: "center" }}
-                >
+                <Col lg={3} md={4} sm={6} xs={12} style={{ alignSelf: "center" }}>
                   <Form.Group className="align-items-center">
-                    <Button
-                      style={{ margin: "auto" }}
-                      variant="primary"
-                      onClick={handleClear}
-                    >
+                    <Button style={{ margin: "auto" }} variant="primary" onClick={handleClear}>
                       Clear
                     </Button>
                   </Form.Group>
@@ -1763,15 +1540,12 @@ const BasicInputElements = withSwal((props: any) => {
             <Card.Body>
               <div className="d-flex flex-wrap gap-2 justify-content-end">
                 {user.role == 2 && (
-                  <Button
-                    className="btn-sm btn-blue waves-effect waves-light"
-                    onClick={toggleUploadModal}
-                  >
+                  <Button className="btn-sm btn-blue waves-effect waves-light" onClick={toggleUploadModal}>
                     <i className="mdi mdi-upload"></i> Import Leads
                   </Button>
                 )}
 
-                {user?.role == 4 && (
+                {user?.role == cre_tl_id && (
                   <>
                     <Dropdown className="btn-group">
                       <Dropdown.Toggle
@@ -1781,28 +1555,64 @@ const BasicInputElements = withSwal((props: any) => {
                       >
                         <i className="mdi mdi-account-plus"></i> Assign CRE's
                       </Dropdown.Toggle>
-                      <Dropdown.Menu
-                        style={{ maxHeight: "150px", overflow: "auto" }}
-                      >
+                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                         {cres?.map((item: any) => (
-                          <Dropdown.Item
-                            key={item.id}
-                            onClick={() =>
-                              handleAssignBulk(selectedValues, item.id)
-                            }
-                          >
+                          <Dropdown.Item key={item.id} onClick={() => handleAssignBulk(selectedValues, item.id)}>
                             {item.name}
                           </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
                     </Dropdown>
 
-                    <Button
-                      className="btn-sm btn-blue waves-effect waves-light float-end"
-                      onClick={handleAutoAssign}
-                    >
+                    <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={handleAutoAssign}>
                       <i className="mdi mdi-plus-circle"></i> Auto Assign
                     </Button>
+                  </>
+                )}
+
+                {user?.role == counsellor_tl_id && (
+                  <>
+                    <Dropdown className="btn-group">
+                      <Dropdown.Toggle
+                        disabled={selectedValues?.length > 0 ? false : true}
+                        variant="light"
+                        className="table-action-btn btn-sm btn-blue"
+                      >
+                        <i className="mdi mdi-account-plus"></i> Assign CRE's
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
+                        {cres?.map((item: any) => (
+                          <Dropdown.Item key={item.id} onClick={() => handleAssignBulk(selectedValues, item.id)}>
+                            {item.name}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
+
+                    <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={handleAutoAssign}>
+                      <i className="mdi mdi-plus-circle"></i> Auto Assign
+                    </Button>
+                  </>
+                )}
+
+                {user?.role == regional_manager_id && (
+                  <>
+                    <Dropdown className="btn-group">
+                      <Dropdown.Toggle
+                        disabled={selectedValues?.length > 0 ? false : true}
+                        variant="light"
+                        className="table-action-btn btn-sm btn-blue"
+                      >
+                        <i className="mdi mdi-account-plus"></i> Assign Branch
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
+                        {cres?.map((item: any) => (
+                          <Dropdown.Item key={item.id} onClick={() => handleAssignBulk(selectedValues, item.id)}>
+                            {item.name}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </>
                 )}
 

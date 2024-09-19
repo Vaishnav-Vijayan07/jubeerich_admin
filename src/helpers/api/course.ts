@@ -13,7 +13,7 @@ function addCourseApi(params: {
   course_description: string;
   course_type_id: number | string;
   stream_id: number | string;
-  updated_by: string;
+
 }) {
   console.log(params);
 
@@ -27,7 +27,6 @@ function updateCourseApi(
     course_description: string;
     course_type_id: number | string;
     stream_id: number | string;
-    updated_by: string;
   }
 ) {
   return api.update(`${baseUrl}/${id}`, params);

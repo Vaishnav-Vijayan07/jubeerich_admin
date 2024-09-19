@@ -223,7 +223,6 @@ const BasicInputElements = withSwal((props: any) => {
                   formData.course_description,
                   formData.course_type_id,
                   formData.stream_id,
-                  userId ? userId : null
                 )
               );
               setIsUpdate(false);
@@ -236,8 +235,7 @@ const BasicInputElements = withSwal((props: any) => {
                   formData.course_name,
                   formData.course_description,
                   formData.course_type_id,
-                  formData.stream_id,
-                  userId ? userId : null
+                  formData.stream_id
                 )
               );
             }

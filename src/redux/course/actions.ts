@@ -45,15 +45,13 @@ export const addCourse = (
   course_description: string,
   course_type_id: number | string,
   stream_id: number | string,
-  updated_by: string
 ): CourseActionType => ({
   type: CourseActionTypes.ADD_COURSE,
   payload: {
     course_name,
     course_description,
     course_type_id,
-    stream_id,
-    updated_by,
+    stream_id
   },
 });
 
@@ -62,8 +60,7 @@ export const updateCourse = (
   course_name: string,
   course_description: string,
   course_type_id: number | string,
-  stream_id: number | string,
-  updated_by: string
+  stream_id: number | string
 ): CourseActionType => ({
   type: CourseActionTypes.UPDATE_COURSE,
   payload: {
@@ -71,8 +68,7 @@ export const updateCourse = (
     course_name,
     course_description,
     course_type_id,
-    stream_id,
-    updated_by,
+    stream_id
   },
 });
 
