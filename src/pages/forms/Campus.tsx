@@ -17,6 +17,7 @@ import { getUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
 import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
 import { getCourse } from "../../redux/course/actions";
+import useDropdownData from "../../hooks/useDropdownDatas";
 
 interface OptionType {
   value: string;
@@ -101,26 +102,11 @@ const BasicInputElements = withSwal((props: any) => {
     defaultValues: initialState,
   });
 
-  // const handleUpdate = (item: any) => {
-  //   //update source dropdown
-  //   const updatedUniversity: OptionType[] = university?.filter((country: any) => country.value == item.university_id);
-  //   setSelectedUniversity(updatedUniversity[0]);
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     id: item?.id,
-  //     campus_name: item?.campus_name,
-  //     location: item?.location,
-  //     university_id: item?.university_id,
-  //   }));
-
-  //   setIsUpdate(true);
-  // };
-
   const handleUpdate = (item: any) => {
     // Update university dropdown
-    const updatedUniversity: OptionType[] = university?.filter((country: any) => country.value == item.university_id);
+    const updatedUniversity: OptionType[] = university?.filter((university: any) => university.value == item.university_id);
     setSelectedUniversity(updatedUniversity[0]);
-  
+
     // Set form data including courses
     setFormData((prev) => ({
       ...prev,
@@ -128,9 +114,9 @@ const BasicInputElements = withSwal((props: any) => {
       campus_name: item?.campus_name,
       location: item?.location,
       university_id: item?.university_id,
-      courses: item?.courses || [] // Ensure courses is an array, defaulting to empty if undefined
+      courses: item?.courses || [], // Ensure courses is an array, defaulting to empty if undefined
     }));
-  
+
     setIsUpdate(true);
   };
 
@@ -250,12 +236,24 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Location",
       accessor: "location",
-      sort: false,
+      sort: true,
     },
     {
       Header: "University",
       accessor: "university",
+      sort: true,
+    },
+    {
+      Header: "courses",
+      accessor: "courseNames",
       sort: false,
+      Cell: ({ row }: any) => (
+        <ul style={{ listStyle: "none" }}>
+          {row.original.courseNames?.map((item: string) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      ),
     },
     {
       Header: " ",
@@ -327,10 +325,20 @@ const BasicInputElements = withSwal((props: any) => {
   }, [loading, error]);
 
   const addNewCourse = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      courses: [...prevData.courses, { course_fee: "", course_link: "", course_id: "" }],
-    }));
+    setFormData((prevData) => {
+      const currentCoursesLength = prevData.courses.length; // Get the current number of courses
+      const maxCourses = courseData.length; // Use the length of courseData as the limit
+
+      if (currentCoursesLength >= maxCourses) {
+        // If the current number of courses is greater than or equal to the max allowed, do nothing
+        return prevData;
+      }
+
+      return {
+        ...prevData,
+        courses: [...prevData.courses, { course_fee: "", course_link: "", course_id: "" }],
+      };
+    });
   };
 
   const removeCourse = (index: number) => {
@@ -398,20 +406,17 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
               </Row>
 
-              {/* Courses Section */}
-              {/* <h5 className="mb-4 text-uppercase">
-                <i className="mdi mdi-account-circle me-1"></i> Courses
-              </h5> */}
               <h5 className="mb-4 text-uppercase" style={{ backgroundColor: "#f0f0f0", padding: "10px", borderRadius: "4px" }}>
                 <i className="mdi mdi-book-open-outline me-1"></i> Courses
               </h5>
-              {formData.courses.map((course, index) => (
+              {formData?.courses?.map((course, index) => (
                 <>
                   <h5>Course {index + 1}</h5>
                   <Row key={index} className="">
                     <Col md={6}>
                       <Form.Group className="mb-2" controlId={`course_id_${index}`}>
                         <Form.Label>Course Name</Form.Label>
+                        {console.log("course ==>", course)}
                         <Form.Control
                           as="select"
                           name="course_id"
@@ -465,16 +470,18 @@ const BasicInputElements = withSwal((props: any) => {
               ))}
 
               {/* Button to add a new course */}
-              <Row className="mb-2">
-                <Col sm={6} className="d-flex align-items-center gap-1">
-                  <i
-                    className="text-primary mdi mdi-plus-circle-outline fs-3 ps-1"
-                    style={{ cursor: "pointer" }}
-                    onClick={addNewCourse}
-                  ></i>
-                  <span className="text-primary">Add More</span>
-                </Col>
-              </Row>
+              {formData.courses?.length < courseData?.length && (
+                <Row className="mb-2">
+                  <Col sm={6} className="d-flex align-items-center gap-1">
+                    <i
+                      className="text-primary mdi mdi-plus-circle-outline fs-3 ps-1"
+                      style={{ cursor: "pointer" }}
+                      onClick={addNewCourse}
+                    ></i>
+                    <span className="text-primary">Add More</span>
+                  </Col>
+                </Row>
+              )}
             </Modal.Body>
 
             <Modal.Footer>
@@ -527,16 +534,14 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Campus = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { dropdownData: universities, loading: dropDownLoading } =
-    useDropdownData("universities");
+  const { dropdownData: universities, loading: dropDownLoading } = useDropdownData("universities");
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading, university, courseData } = useSelector((state: RootState) => ({
+  const { state, error, loading, initialLoading, courseData } = useSelector((state: RootState) => ({
     state: state.Campus.campus.data,
     error: state.Campus.error,
     loading: state.Campus.loading,
     initialLoading: state.Campus.initialloading,
-    university: state.University.universities.data,
     courseData: state.Course.course.data,
   }));
 
@@ -560,7 +565,13 @@ const Campus = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} university={sourceData} error={error} loading={loading} courseData={courseData} />
+          <BasicInputElements
+            state={state}
+            university={universities.universities}
+            error={error}
+            loading={loading}
+            courseData={courseData}
+          />
         </Col>
       </Row>
     </React.Fragment>

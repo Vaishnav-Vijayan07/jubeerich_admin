@@ -15,7 +15,7 @@ import Select, { ActionMeta, OptionsType } from "react-select";
 import { showErrorAlert, showSuccessAlert } from "../../../constants";
 import moment from "moment";
 import { withSwal } from "react-sweetalert2";
-import * as yup from 'yup';
+import * as yup from "yup";
 
 // Task List
 const TaskList = withSwal(({ swal }: any) => {
@@ -26,7 +26,7 @@ const TaskList = withSwal(({ swal }: any) => {
     status: "pending",
     due_date: "",
     priority: "",
-  }
+  };
 
   const initialTaskFormValidationError = {
     id: "",
@@ -35,12 +35,12 @@ const TaskList = withSwal(({ swal }: any) => {
     status: "",
     due_date: "",
     priority: "",
-  }
+  };
 
   const Type = {
-    Status: 'status',
-    Priority: 'priority'
-  }
+    Status: "status",
+    Priority: "priority",
+  };
 
   const [todayTask, setTodayTask] = useState([]);
   const [upcomingTask, setUpcomingTask] = useState([]);
@@ -54,87 +54,85 @@ const TaskList = withSwal(({ swal }: any) => {
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const [isTaskLoading, setIsTaskLoading] = useState(false);
   const [isValidationError, setIsValidationError] = useState(initialTaskFormValidationError);
-  const [selectedTaskId, setSelectedTaskId] = useState<string>('');
-  const [clearForm, setClearForm] = useState<boolean>(true)
-  const baseUrl = '/ordinary_task';
+  const [selectedTaskId, setSelectedTaskId] = useState<string>("");
+  const [clearForm, setClearForm] = useState<boolean>(true);
+  const baseUrl = "/ordinary_task";
 
   const ValidationSchema = yup.object().shape({
     title: yup.string().min(3, "Title must be valid").required("Title is required"),
     description: yup.string().nullable(),
     due_date: yup.string().required("Due date is required"),
     priority: yup.string().required("Priority is required"),
-    status: yup.string().required("Status is required")
-  })
+    status: yup.string().required("Status is required"),
+  });
 
   const getAllTasks = async () => {
     try {
-      const tasks = await axios.get('ordinary_task')
-      setTodayTask(tasks?.data?.data?.todaysTasks)
-      // setSelectedTask(tasks?.data?.data?.todaysTasks[0])
-      setSelectedTask(tasks?.data?.data?.todaysTasks)
-      setUpcomingTask(tasks?.data?.data?.upcomingTasks)
-      setCompletedTask(tasks?.data?.data?.completedTasks)
-      setExpiredTask(tasks?.data?.data?.expiredTasks)
+      const tasks = await axios.get("ordinary_task");
+      setTodayTask(tasks?.data?.data?.todaysTasks);
+      setSelectedTask(tasks?.data?.data?.todaysTasks[0]);
+      setUpcomingTask(tasks?.data?.data?.upcomingTasks);
+      setCompletedTask(tasks?.data?.data?.completedTasks);
+      setExpiredTask(tasks?.data?.data?.expiredTasks);
     } catch (err) {
       console.log("error:", err);
     }
-  }
+  };
 
   useEffect(() => {
-    getAllTasks()
-  }, [])
-
+    getAllTasks();
+  }, []);
 
   const selectTask = (task: TaskItemTypes) => {
-    setSelectedTaskId(task?.id)
+    setSelectedTaskId(task?.id);
     setSelectedTask(task);
   };
 
   const toggleModal = () => {
     setShowModal(!showModal);
-  }
+  };
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
 
     setTaskFormData((prev: any) => ({
-      ...prev, [name]: value
-    }))
-  }
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleInputSelect = (selected: any, { name }: any) => {
     setTaskFormData((prev: any) => ({
       ...prev,
-      [name]: selected?.value
-    }))
+      [name]: selected?.value,
+    }));
 
     switch (name) {
-      case 'priority':
+      case "priority":
         setselectedPriority(selected);
         break;
-      case 'status':
+      case "status":
         setselectedStatus(selected);
-        break
+        break;
       default:
         break;
     }
-  }
+  };
 
   const handleResetValues = () => {
     setTaskFormData(initialTaskFormState);
-    setselectedPriority(null)
-    setselectedStatus(null)
-    setIsUpdate(false)
-  }
+    setselectedPriority(null);
+    setselectedStatus(null);
+    setIsUpdate(false);
+  };
 
   const onSubmit = async () => {
     try {
-
-      await ValidationSchema.validate(taskFormData, { abortEarly: false })
+      await ValidationSchema.validate(taskFormData, { abortEarly: false });
 
       setIsTaskLoading(true);
-      const userId = sessionStorage.getItem('jb_user');
-      const userDetails = userId ? JSON.parse(userId) : '';
+      const userId = sessionStorage.getItem("jb_user");
+      const userDetails = userId ? JSON.parse(userId) : "";
 
       const confirmResult = await swal.fire({
         title: "Are you sure?",
@@ -153,12 +151,12 @@ const TaskList = withSwal(({ swal }: any) => {
         if (!isUpdate) {
           result = await axios.post(`${baseUrl}`, formattedData);
           if (result?.status) {
-            showSuccessAlert('Todo Created Successfully');
+            showSuccessAlert("Todo Created Successfully");
           }
         } else {
           result = await axios.put(`${baseUrl}/${taskFormData?.id}`, formattedData);
           if (result?.status) {
-            showSuccessAlert('Todo Updated Successfully');
+            showSuccessAlert("Todo Updated Successfully");
             setIsUpdate(false);
           }
         }
@@ -179,7 +177,7 @@ const TaskList = withSwal(({ swal }: any) => {
             errors[error.path] = error.message;
           }
         });
-        showErrorAlert('Todo Error');
+        showErrorAlert("Todo Error");
         setIsTaskLoading(false);
         setIsValidationError(errors);
       }
@@ -193,35 +191,34 @@ const TaskList = withSwal(({ swal }: any) => {
     switch (type) {
       case Type.Status:
         const filteredStatus = taskStatusTypes.filter((data: any) => data.value == value);
-        setselectedStatus(filteredStatus[0])
+        setselectedStatus(filteredStatus[0]);
         break;
       case Type.Priority:
         const filteredPriority = taskPriorityTypes.filter((data: any) => data.value == value);
-        setselectedPriority(filteredPriority[0])
+        setselectedPriority(filteredPriority[0]);
         break;
       default:
         break;
     }
-  }
+  };
 
   const deleteTask = async (id: any) => {
     try {
       setIsTaskLoading(true);
       const result = await axios.delete(`${baseUrl}/${id}`);
       if (result?.status) {
-        showSuccessAlert('Todo Deleted Succesfully');
+        showSuccessAlert("Todo Deleted Succesfully");
         handleResetValues();
         setIsTaskLoading(false);
         getAllTasks();
       }
     } catch (error) {
-      showErrorAlert('Todo Error')
+      showErrorAlert("Todo Error");
       console.log(error);
     }
-  }
+  };
 
   const actionFunction = (item: any, action: string) => {
-
     switch (action) {
       case actionTypes.update:
         setTaskFormData((prev: any) => ({
@@ -231,7 +228,7 @@ const TaskList = withSwal(({ swal }: any) => {
           description: item?.description,
           status: item?.status,
           priority: item?.priority,
-          due_date: moment(item?.due_date).format('YYYY-MM-DD')
+          due_date: moment(item?.due_date).format("YYYY-MM-DD"),
         }));
 
         handleDropdownUpdate(item.status, Type.Status);
@@ -245,7 +242,7 @@ const TaskList = withSwal(({ swal }: any) => {
       default:
         break;
     }
-  }
+  };
 
   const updateStatus = async (form: any, selected: any) => {
     try {
@@ -256,25 +253,23 @@ const TaskList = withSwal(({ swal }: any) => {
         status: selected?.value,
         due_date: form?.due_date,
         priority: form?.priority,
-        user_id: form.user_id
-      }
+        user_id: form.user_id,
+      };
 
       const result = await axios.put(`/ordinary_task/${form?.id}`, formattedData);
 
       if (result) {
-        showSuccessAlert('Status Updated Successfully');
+        showSuccessAlert("Status Updated Successfully");
         getAllTasks();
         setSelectedTask(todayTask[0]);
         setClearForm((prev) => !prev);
-        setSelectedTaskId('');
+        setSelectedTaskId("");
       }
     } catch (error) {
       console.log(error);
-      showErrorAlert(error)
+      showErrorAlert(error);
     }
-
-
-  }
+  };
 
   return (
     <>
@@ -293,10 +288,7 @@ const TaskList = withSwal(({ swal }: any) => {
                 <Card.Body>
                   <Row style={{ display: "flex", justifyContent: "end" }}>
                     <Col sm={3} md={3} lg={3}>
-                      <Link onClick={toggleModal}
-                        to="#"
-                        className="btn btn-primary waves-effect waves-light"
-                      >
+                      <Link onClick={toggleModal} to="#" className="btn btn-primary waves-effect waves-light">
                         <i className="fe-plus me-1" style={{ margin: "0px !important" }}></i>Add New
                       </Link>
                     </Col>
@@ -345,7 +337,7 @@ const TaskList = withSwal(({ swal }: any) => {
                   </Row>
                   <Modal show={showModal} onHide={toggleModal} dialogClassName="modal-dialog-centered">
                     <Modal.Header closeButton>
-                      <h4 className="modal-title">{isUpdate ? 'Update' : 'Add'} Todo</h4>
+                      <h4 className="modal-title">{isUpdate ? "Update" : "Add"} Todo</h4>
                     </Modal.Header>
                     <Modal.Body>
                       <Col className="col-auto">
@@ -368,7 +360,9 @@ const TaskList = withSwal(({ swal }: any) => {
                           onChange={handleInputChange}
                           containerClass={"mb-3"}
                         />
-                        {isValidationError.description && <Form.Text className="text-danger">{isValidationError.description}</Form.Text>}
+                        {isValidationError.description && (
+                          <Form.Text className="text-danger">{isValidationError.description}</Form.Text>
+                        )}
                         <FormInput
                           label="Due Date"
                           type="date"
@@ -378,18 +372,22 @@ const TaskList = withSwal(({ swal }: any) => {
                           onChange={handleInputChange}
                           containerClass={"mb-3"}
                         />
-                        {isValidationError.due_date && <Form.Text className="text-danger">{isValidationError.due_date}</Form.Text>}
-                        {isUpdate && <Form.Group className="mb-3" controlId="status">
-                          <Form.Label>Status</Form.Label>
-                          <Select
-                            className="react-select react-select-container select-wrapper"
-                            classNamePrefix="react-select"
-                            name="status"
-                            options={[{ value: null, label: "All" }, ...taskStatusTypes]}
-                            value={selectedStatus}
-                            onChange={handleInputSelect}
-                          />
-                        </Form.Group>}
+                        {isValidationError.due_date && (
+                          <Form.Text className="text-danger">{isValidationError.due_date}</Form.Text>
+                        )}
+                        {isUpdate && (
+                          <Form.Group className="mb-3" controlId="status">
+                            <Form.Label>Status</Form.Label>
+                            <Select
+                              className="react-select react-select-container select-wrapper"
+                              classNamePrefix="react-select"
+                              name="status"
+                              options={[{ value: null, label: "All" }, ...taskStatusTypes]}
+                              value={selectedStatus}
+                              onChange={handleInputSelect}
+                            />
+                          </Form.Group>
+                        )}
                         {isValidationError.status && <Form.Text className="text-danger">{isValidationError.status}</Form.Text>}
                         <Form.Group className="mb-3" controlId="priority">
                           <Form.Label>Priority</Form.Label>
@@ -402,12 +400,18 @@ const TaskList = withSwal(({ swal }: any) => {
                             onChange={handleInputSelect}
                           />
                         </Form.Group>
-                        {isValidationError.priority && <Form.Text className="text-danger">{isValidationError.priority}</Form.Text>}
+                        {isValidationError.priority && (
+                          <Form.Text className="text-danger">{isValidationError.priority}</Form.Text>
+                        )}
                       </Col>
                     </Modal.Body>
                     <Modal.Footer>
-                      <Button className="btn btn-danger" onClick={() => [handleResetValues(), toggleModal()]}>Close</Button>
-                      <Button className="btn btn-primary" disabled={isTaskLoading} onClick={onSubmit}>{isUpdate ? 'Update' : 'Submit'}</Button>
+                      <Button className="btn btn-danger" onClick={() => [handleResetValues(), toggleModal()]}>
+                        Close
+                      </Button>
+                      <Button className="btn btn-primary" disabled={isTaskLoading} onClick={onSubmit}>
+                        {isUpdate ? "Update" : "Submit"}
+                      </Button>
                     </Modal.Footer>
                   </Modal>
                 </Card.Body>
@@ -416,10 +420,7 @@ const TaskList = withSwal(({ swal }: any) => {
           </Row>
         </Col>
 
-        <Col xl={4}>
-          {/* <Task  task={selectedTask} updateStatus={updateStatus} /> */}
-          <Task clearForm={clearForm} task={selectedTask} updateStatus={updateStatus} />
-        </Col>
+        <Col xl={4}>{selectedTask && <Task clearForm={clearForm} task={selectedTask} updateStatus={updateStatus} />}</Col>
       </Row>
     </>
   );

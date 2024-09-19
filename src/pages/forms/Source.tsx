@@ -203,13 +203,13 @@ const BasicInputElements = withSwal((props: any) => {
               // Handle update logic
               dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id, formData.lead_type_id));
               setIsUpdate(false);
-              handleCancelUpdate(),
-              toggleResponsiveModal(),
+              handleCancelUpdate();
+              toggleResponsiveModal();
               handleResetValues()
             } else {
               // Handle add logic
               dispatch(addSource(formData.source_name, formData.source_description, user_id, formData.lead_type_id));
-              toggleResponsiveModal(),
+              toggleResponsiveModal()
               handleResetValues()
             }
           }

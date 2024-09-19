@@ -1147,72 +1147,8 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                {/* <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="lead_type_id"
-                      // options={[{ value: null, label: "None" }, ...categories]}
-                      options={categories}
-                      value={selectedCategory}
-                      onChange={handleDropDowns}
-                    />
-                    {validationErrors.category_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.category_id}
-                      </Form.Text>
-                    )}
-                  </Form.Group>
-                </Col> */}
-
-                {/* <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Source
-                    </Form.Label>
-                    <Form.Control
-                      type="number"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.phone && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.phone}
-                      </Form.Text>
-                    )}
-                  </Form.Group>
-                </Col> */}
-
-                {/* <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="lead_type_id"
-                      // options={[{ value: null, label: "None" }, ...categories]}
-                      options={categories}
-                      value={selectedCategory}
-                      onChange={handleDropDowns}
-                    />
-                    {validationErrors.category_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.category_id}
-                      </Form.Text>
-                    )}
-                  </Form.Group>
-                </Col> */}
-
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Source
-                    </Form.Label>
                     <Form.Label>
                       <span className="text-danger fs-4">* </span>Lead Type
                     </Form.Label>
@@ -1233,71 +1169,6 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-
-                {/* <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="lead_type_id"
-                      // options={[{ value: null, label: "None" }, ...categories]}
-                      options={categories}
-                      value={selectedCategory}
-                      onChange={handleDropDowns}
-                    />
-                    {validationErrors.category_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.category_id}
-                      </Form.Text>
-                    )}
-                  </Form.Group>
-                </Col> */}
-
-                {/* <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Source
-                    </Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="category_id"
-                      // options={[{ value: null, label: "None" }, ...categories]}
-                      options={categories}
-                      value={selectedCategory}
-                      onChange={handleDropDowns}
-                    />
-                    {validationErrors.category_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.category_id}
-                      </Form.Text>
-                    )}
-                  </Form.Group>
-                </Col> */}
-
-                {/* <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="lead_type_id"
-                      // options={[{ value: null, label: "None" }, ...categories]}
-                      options={categories}
-                      value={selectedCategory}
-                      onChange={handleDropDowns}
-                    />
-                    {validationErrors.category_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.category_id}
-                      </Form.Text>
-                    )}
-                  </Form.Group>
-                </Col> */}
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
@@ -1339,38 +1210,9 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                {/* <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="category_id"
-                      options={[{ value: null, label: "None" }, ...categories]}
-                      value={selectedCategory}
-                      onChange={handleDropDowns}
-                    />
-                    {validationErrors.category_id && (
-                      <Form.Text className="text-danger">{validationErrors.category_id}</Form.Text>
-                    )}
-                  </Form.Group>
-                </Col> */}
-
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Country</Form.Label>
-                    {/* <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      components={animatedComponents}
-                      isMulti
-                      name="preferred_country"
-                      options={[{ value: null, label: "None" }, ...country]}
-                      value={selectedCountry}
-                      onChange={handleSelectChange as any}
-                    /> */}
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -1419,7 +1261,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Zipcode</Form.Label>
+                    <Form.Label><span className="text-danger fs-4"></span>Zipcode</Form.Label>
                     <Form.Control
                       type="text"
                       name="zipcode"

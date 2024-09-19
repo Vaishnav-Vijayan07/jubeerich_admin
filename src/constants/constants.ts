@@ -22,11 +22,6 @@ export const franchise_id_from_office = "5"
 export const franchise_counsellor_id = "12"
 export const counsellor_tl_id = "13"
 export const branch_counsellor_id = "14"
-
-
-export const regional_manager_id = "10";
-export const counsellor_tl_id  = "13";
-export const branch_counsellor_id  = "14";
 export const counsellor_id  = "7";
 
 //session user
