@@ -164,13 +164,13 @@ const StudyPreference = withSwal((props: any) => {
     }
   };
 
-  // if (loading)
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "100%", left: "50%" }}
-  //     />
-  //   );
+  if (loading || dropDownLoading)
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "100%", left: "50%" }}
+      />
+    );
 
   return (
     <>

@@ -31,6 +31,7 @@ import moment from "moment";
 import Comments from "./Comments";
 import Attachments from "./Attachments";
 import WorkExpereince from "./WorkExpereince";
+import EducationDetails from "./EducationDetails";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const AcademicInfo = lazy(() => import("./AcademicInfo"));
@@ -594,6 +595,15 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       </Nav.Link>
                     </Nav.Item>
 
+                    <Nav.Item as="li" className="nav-item nav_item_3">
+                      <Nav.Link
+                        eventKey="education_details"
+                        className="nav-link cursor-pointer"
+                      >
+                        Education Details
+                      </Nav.Link>
+                    </Nav.Item>
+
                     <Nav.Item as="li" className="nav-item nav_item_4">
                       <Nav.Link
                         eventKey="comments"
@@ -643,21 +653,25 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     )}
 
                     {activeTab === "study_preference" && studentId && (
-                      <Suspense
-                        fallback={<div>Loading Study Preferences...</div>}
-                      >
+                      <Suspense fallback={null}>
                         <StudyPreference studentId={studentId} />
                       </Suspense>
                     )}
 
+                    {activeTab === "education_details" && studentId && (
+                      <Suspense fallback={null}>
+                        <EducationDetails studentId={studentId} />
+                      </Suspense>
+                    )}
+
                     {activeTab === "comments" && studentId && (
-                      <Suspense fallback={<div>Loading Comments...</div>}>
+                      <Suspense fallback={null}>
                         <Comments studentId={studentId} />
                       </Suspense>
                     )}
 
                     {activeTab === "attachments" && studentId && (
-                      <Suspense fallback={<div>Loading Attachments...</div>}>
+                      <Suspense fallback={null}>
                         <Attachments studentId={studentId} />
                       </Suspense>
                     )}

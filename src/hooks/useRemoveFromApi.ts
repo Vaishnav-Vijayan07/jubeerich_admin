@@ -2,9 +2,12 @@ import swal from "sweetalert2";
 import axios from "axios";
 import { useState } from "react";
 import { showErrorAlert, showSuccessAlert } from "../constants";
+import { useDispatch } from "react-redux";
+import { refreshData } from "../redux/countryReducer";
 
-const useRemoveFromApi = (getAcademicInfo: () => void) => {
+const useRemoveFromApi = () => {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const removeFromApi = async (id: any, type: string) => {
     try {
@@ -30,7 +33,7 @@ const useRemoveFromApi = (getAcademicInfo: () => void) => {
 
           console.log("Response: =>", res);
           showSuccessAlert(res.data.message);
-          getAcademicInfo();
+          dispatch(refreshData());
         } catch (err) {
           console.error(err);
           showErrorAlert("Error occurred");

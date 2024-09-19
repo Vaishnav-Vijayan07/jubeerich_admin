@@ -7,6 +7,8 @@ import AcademicInfoRow from "./AcademicInfoRow";
 import ExamData from "./ExamRows";
 import useSaveStudentAcademicInfo from "../../../../hooks/useSaveStudentAcademicInfo";
 import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 
 const initialStateAcademic = {
   id: 0,
@@ -27,6 +29,10 @@ const initialStateExam = {
 const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
   const [loading, setLoading] = useState(false);
+
+  const refresh = useSelector(
+    (state: RootState) => state.refreshReducer.refreshing
+  );
 
   const [academicInfoFromApi, setAcademicInfoFromApi] = useState<any[]>([
     initialStateAcademic,
@@ -56,8 +62,7 @@ const AcademicInfo = withSwal((props: any) => {
 
   const { saveStudentAcademicInfo, loading: saveLoading } =
     useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
-  const { removeFromApi, loading: deleteLoading } =
-    useRemoveFromApi(fetchAcademicInfo);
+  const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
 
   // Fetch academic info using useCallback to memoize the function
 
@@ -65,7 +70,7 @@ const AcademicInfo = withSwal((props: any) => {
     if (studentId) {
       fetchAcademicInfo();
     }
-  }, [studentId, fetchAcademicInfo]);
+  }, [studentId, refresh]);
 
   const handleInputChange = (
     setter: React.Dispatch<React.SetStateAction<any[]>>,

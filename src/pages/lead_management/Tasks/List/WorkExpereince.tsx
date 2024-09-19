@@ -6,6 +6,8 @@ import { withSwal } from "react-sweetalert2";
 import WorkExpRow from "./WorkExpRow";
 import { isAllItemsPresentWork } from "../../../../utils/fieldsChecker";
 import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 
 const initialStateWork = {
   id: 0,
@@ -19,6 +21,10 @@ const initialStateWork = {
 const WorkExpereince = withSwal((props: any) => {
   const { swal, studentId } = props;
   const [loading, setLoading] = useState(false);
+
+  const refresh = useSelector(
+    (state: RootState) => state.refreshReducer.refreshing
+  );
 
   const [workExperienceFromApi, setWorkExperienceFromApi] = useState<any>(null);
   const getAcademicInfo = () => {
@@ -35,8 +41,7 @@ const WorkExpereince = withSwal((props: any) => {
         console.error(err);
       });
   };
-  const { removeFromApi, loading: deleteLoading } =
-    useRemoveFromApi(getAcademicInfo);
+  const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
 
   // apis
 
@@ -44,7 +49,7 @@ const WorkExpereince = withSwal((props: any) => {
     if (studentId) {
       getAcademicInfo();
     }
-  }, [studentId]);
+  }, [studentId, refresh]);
 
   const saveStudentAcademicInfo = async () => {
     const newFormData = new FormData();
@@ -136,18 +141,18 @@ const WorkExpereince = withSwal((props: any) => {
     }
   };
 
-  if (loading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "45%" }}
-      />
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "100%", left: "45%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <>
-      <Row className={deleteLoading ? "opacity-25" : ""}>
+      <Row className={deleteLoading || loading ? "opacity-25" : ""}>
         <WorkExpRow
           workExperience={workExperienceFromApi}
           handleWorkExperienceChange={handleWorkExperienceChange}
@@ -161,9 +166,9 @@ const WorkExpereince = withSwal((props: any) => {
           className="mt-4"
           type="submit"
           onClick={saveStudentAcademicInfo}
-          disabled={deleteLoading}
+          disabled={deleteLoading || loading}
         >
-          {deleteLoading ? (
+          {deleteLoading || loading ? (
             <>
               <Spinner
                 as="span"
@@ -172,7 +177,7 @@ const WorkExpereince = withSwal((props: any) => {
                 role="status"
                 aria-hidden="true"
               />
-              {" Loading..."} {/* Show spinner and text */}
+              {" Saving..."} {/* Show spinner and text */}
             </>
           ) : (
             "Save Details" // Normal button text when not loading

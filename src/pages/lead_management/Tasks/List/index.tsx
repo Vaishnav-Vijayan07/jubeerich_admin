@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Card, Spinner } from "react-bootstrap";
 
 // components
@@ -9,7 +9,7 @@ import TaskSection from "./Section";
 // dummy data
 import { TaskItemTypes } from "./data";
 import axios from "axios";
-const StudentDetails = lazy(() => import("./StudentDetails"));
+import StudentDetails from "./StudentDetails";
 
 // Task List
 const TaskList = () => {
@@ -55,14 +55,14 @@ const TaskList = () => {
 
   console.log("selectedTask========>", selectedTask);
 
-  if (initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      />
-    );
-  }
+  // if (initialLoading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "50%", left: "50%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <>
@@ -123,13 +123,11 @@ const TaskList = () => {
 
         <Col xl={8}>
           {selectedTask && (
-            <Suspense fallback={<Spinner animation="border" />}>
-              <StudentDetails
-                studentId={selectedTask?.studentId}
-                taskId={selectedTask?.id}
-                getTaskList={getTaskList}
-              />
-            </Suspense>
+            <StudentDetails
+              studentId={selectedTask?.studentId}
+              taskId={selectedTask?.id}
+              getTaskList={getTaskList}
+            />
           )}
         </Col>
       </Row>
