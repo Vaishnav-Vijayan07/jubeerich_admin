@@ -1283,7 +1283,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col> */}
 
-                <Col md={4} lg={4}>
+                {/* <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>
                       <span className="text-danger fs-4">* </span>Source
@@ -1304,7 +1304,7 @@ const BasicInputElements = withSwal((props: any) => {
                       </Form.Text>
                     )}
                   </Form.Group>
-                </Col>
+                </Col> */}
 
                 {/* <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
