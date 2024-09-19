@@ -13,10 +13,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { Link } from "react-router-dom";
 
 import {
-  deleteStream,
   getStream,
-  updateStream,
-  addStream,
 } from "../../redux/stream/actions";
 import { customStyles } from "../../constants";
 import { getCourseType } from "../../redux/actions";
@@ -26,7 +23,6 @@ import {
   getCourse,
   updateCourse,
 } from "../../redux/course/actions";
-import { isOptionDisabled } from "react-select/src/builtins";
 
 interface TableRecords {
   id: string;
@@ -327,6 +323,8 @@ const BasicInputElements = withSwal((props: any) => {
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
     setFormData(initialState); //clear form data
+    setSelectedCourseType(null);
+    setSelectedStream(null);
   };
 
   const toggleResponsiveModal = () => {
@@ -413,6 +411,8 @@ const BasicInputElements = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="stream_id">
                 <Form.Label>Streams</Form.Label>
                 <Select
+                
+                
                   styles={customStyles}
                   className="react-select react-select-container"
                   classNamePrefix="react-select"

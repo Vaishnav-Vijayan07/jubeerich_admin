@@ -28,6 +28,7 @@ import Campus from "./campus/reducers";
 import CourseType from "./course_type/reducers";
 import Course from "./course/reducers";
 import Stream from "./stream/reducers";
+import refreshReducer from "./countryReducer";
 export default combineReducers({
   Auth,
   Layout,
@@ -56,5 +57,6 @@ export default combineReducers({
   Campus,
   CourseType,
   Course,
-  Stream
+  Stream,
+  refreshReducer
 });

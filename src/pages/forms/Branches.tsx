@@ -17,8 +17,9 @@ import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { getRegion } from "../../redux/regions/actions";
 import Select from "react-select";
 import { getOfficeTypeData } from "../../redux/OfficeType/actions";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames";
+import UserBox from "./UserBox";
 
 interface TableRecords {
   id: string;
@@ -414,6 +415,10 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
+          {/* View Icon */}
+          <Link to={`/settings/master/branches_detials/${row.original?.id}`} className="action-icon">
+            <i className="mdi mdi-eye-outline"></i>
+          </Link>
           {/* Edit Icon */}
           <Link to="#" className="action-icon" onClick={() => {
             handleUpdate(row.original);
@@ -503,17 +508,21 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleResetValues = () => {
+    console.log('ENTERED');
+    
     setValidationErrors({
       branch_name: "",
       address: "",
       city: "",
       country: "",
+      region_id: ""
     });
-
+    
+    setSelectedRegion(null);
     setFormData(initialState)
-    setSelectedRegion('')
     setSelectedOffice('')
     setValidationErrors(initialValidationState);
+    console.log(selectedRegion);
   }
 
   useEffect(() => {
@@ -874,7 +883,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 "
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal(), handleResetValues()] : [ toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>

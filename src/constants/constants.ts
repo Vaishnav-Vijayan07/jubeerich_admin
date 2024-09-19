@@ -24,6 +24,11 @@ export const counsellor_tl_id = "13"
 export const branch_counsellor_id = "14"
 
 
+export const regional_manager_id = "10";
+export const counsellor_tl_id  = "13";
+export const branch_counsellor_id  = "14";
+export const counsellor_id  = "7";
+
 //session user
 export const AUTH_SESSION_KEY = "jb_user";
 

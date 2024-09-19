@@ -21,6 +21,7 @@ import {
   cre_tl_id,
   it_team_id,
   regional_manager_id,
+  baseUrl,
 } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
@@ -80,6 +81,7 @@ const initialState = {
   zipcode: "",
   region_id: "",
   franchise_id: "",
+  lead_type_id: "",
 };
 
 const initialValidationState = {
@@ -101,9 +103,12 @@ const initialValidationState = {
   ielts: true,
   zipcode: "",
   region_id: "",
+  lead_type_id: "",
 };
 
-const languageFormInitialState = [{ exam_name: "", marks: "" }];
+const languageFormInitialState = [
+  { id: "", exam_type: "", marks: "", exam_date: "" },
+];
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -135,7 +140,14 @@ const BasicInputElements = withSwal((props: any) => {
     franchisees,
   } = props;
 
+  const [sourceData, setSourceData] = useState<any>(source);
+  const [channelData, setChannelData] = useState<any>(channels);
+
+
+  
+
   console.log("counsellors ===>", counsellors);
+  console.log("categories ===>", categories);
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
@@ -165,7 +177,9 @@ const BasicInputElements = withSwal((props: any) => {
   const [modal, setModal] = useState<boolean>(false);
   const [selectExam, setSelectExam] = useState<boolean>(false);
   const fileInputRef = useRef<any>(null);
-  const [languageForm, setLanguageForm] = useState<any[]>([{ exam_name: "", marks: "" }]);
+  const [languageForm, setLanguageForm] = useState<any[]>([
+    { id: "", exam_type: "", marks: "" },
+  ]);
   const [filteredItems, setFilteredItems] = useState<any[]>([]); // Filtered data
   const [filters, setFilters] = useState({
     status_id: "",
@@ -387,7 +401,8 @@ const BasicInputElements = withSwal((props: any) => {
 
     if (item?.exam_details?.length) {
       setSelectExam(true);
-      setLanguageForm(item?.exam_details);
+      // setLanguageForm(item?.exam_details);
+      setLanguageForm(item?.exams);
     }
 
     if (item?.exam_documents?.length) {
@@ -461,9 +476,20 @@ const BasicInputElements = withSwal((props: any) => {
     switch (name) {
       case "source_id":
         setSelectedSource(selected);
+        setSelectedChannel(null);
+        let filteredChannel = channels.filter(
+          (data: any) => data.source_id == selected.value
+        );
+        setChannelData(filteredChannel);
         break;
       case "category_id":
+        setSelectedSource(null);
+        setSelectedChannel(null);
         setSelectedCategory(selected);
+        let filteredSource = source.filter(
+          (data: any) => data.lead_type == selected.value
+        );
+        setSourceData(filteredSource);
         break;
       case "preferred_country":
         setSelectedCountry(selected);
@@ -524,6 +550,7 @@ const BasicInputElements = withSwal((props: any) => {
     let exam_details = languageForm.length ? languageForm : [];
 
     console.log("Form Data", formData);
+    console.log("Exam Data", exam_details);
 
     // Validate the form using yup
     try {
@@ -552,36 +579,6 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.email,
                     formData.phone,
                     formData.category_id,
-                    formData.source_id,
-                    formData.channel_id,
-                    formData.city,
-                    // formData.preferred_country,
-                    JSON.stringify(formData.preferred_country),
-                    formData.office_type,
-                    // null, // Region Nulled
-                    formData.region_id ? formData.region_id : null,
-                    null,
-                    null,
-                    user_id,
-                    formData.remarks,
-                    formData.lead_received_date,
-                    formData.ielts,
-                    formData.zipcode,
-                    exam_details[0]?.exam_name ? JSON.stringify(exam_details) : null,
-                    selectedFile,
-                    formData.franchise_id ? formData.franchise_id : null
-                  )
-                );
-                // setSelectedFile([])
-              } else {
-                // Handle add logic
-                console.log("here leads");
-
-                dispatch(
-                  addLeads(
-                    formData.full_name,
-                    formData.email,
-                    formData.phone,
                     formData.category_id,
                     formData.source_id,
                     formData.channel_id,
@@ -598,7 +595,43 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.lead_received_date,
                     formData.ielts,
                     formData.zipcode,
-                    exam_details[0]?.exam_name ? JSON.stringify(exam_details) : null,
+                    exam_details[0]?.exam_type
+                      ? JSON.stringify(exam_details)
+                      : null,
+                    selectedFile,
+                    formData.franchise_id ? formData.franchise_id : null
+                  )
+                );
+                // setSelectedFile([])
+              } else {
+                // Handle add logic
+                console.log("here leads");
+
+                dispatch(
+                  addLeads(
+                    formData.full_name,
+                    formData.email,
+                    formData.phone,
+                    formData.category_id,
+                    formData.category_id,
+                    formData.source_id,
+                    formData.channel_id,
+                    formData.city,
+                    // formData.preferred_country,
+                    JSON.stringify([formData.preferred_country]),
+                    formData.office_type,
+                    // null, // Region Nulled
+                    formData.region_id ? formData.region_id : null,
+                    null,
+                    null,
+                    user_id,
+                    formData.remarks,
+                    formData.lead_received_date,
+                    formData.ielts,
+                    formData.zipcode,
+                    exam_details[0]?.exam_type
+                      ? JSON.stringify(exam_details)
+                      : null,
                     selectedFile,
                     formData.franchise_id ? formData.franchise_id : null
                   )
@@ -740,7 +773,9 @@ const BasicInputElements = withSwal((props: any) => {
               return (
                 <ul style={{ listStyle: "none", padding: 0 }}>
                   {counselors && counselors.length > 0 ? (
-                    counselors.map((item: any) => <li key={item?.counselor_name}>{item?.counselor_name}</li>)
+                    counselors.map((item: any) => (
+                      <li key={item?.counselor_name}>{item?.counselor_name}</li>
+                    ))
                   ) : (
                     <li>Not assigned</li>
                   )}
@@ -973,7 +1008,7 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleAddLanguageForm = () => {
-    setLanguageForm((prevData) => [...prevData, { exam_name: "", marks: "" }]);
+    setLanguageForm((prevData) => [...prevData, { exam_type: "", marks: "" }]);
   };
 
   const handleLanguageInputChange = (index: number, e: any) => {
@@ -984,10 +1019,22 @@ const BasicInputElements = withSwal((props: any) => {
     setLanguageForm(newFields);
   };
 
-  const handleRemoveLanguageForm = async (index: number, e: any, exam_name: string) => {
+  const handleLanguageMarkInputChange = (index: number, e: any) => {
+    const { name, value } = e.target;
+
+    const newFields = [...languageForm];
+    newFields[index][name] = value.replace(/[^0-9]/g, "");
+    setLanguageForm(newFields);
+  };
+
+  const handleRemoveLanguageForm = async (
+    index: number,
+    e: any,
+    exam_type: string
+  ) => {
     const payload = {
       id: formData?.id,
-      exam_name: exam_name,
+      exam_type: exam_type,
     };
     console.log("PAYLOAD", payload);
 
@@ -1035,6 +1082,24 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  //   const handleViewFile = (event: any) => {
+  //     event.preventDefault();
+
+  //   const { file_name, file_path } = f;
+  //   const fileUrl = `${baseUrl}/${file_path}`;
+
+  //   const link = document.createElement("a");
+  //   link.setAttribute("target", "_blank");
+
+  //   link.href = fileUrl;
+  //   link.setAttribute("download", file_name);
+
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+
+  // };
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -1068,20 +1133,171 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Label>
                       <span className="text-danger fs-4">* </span>Email
                     </Form.Label>
-                    <Form.Control type="text" name="email" value={formData.email} onChange={handleInputChange} />
-                    {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
+                    <Form.Control
+                      type="text"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.email && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.email}
+                      </Form.Text>
+                    )}
                   </Form.Group>
                 </Col>
+
+                {/* <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="channel_name">
+                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="lead_type_id"
+                      // options={[{ value: null, label: "None" }, ...categories]}
+                      options={categories}
+                      value={selectedCategory}
+                      onChange={handleDropDowns}
+                    />
+                    {validationErrors.category_id && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.category_id}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col> */}
+
+                {/* <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="channel_name">
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Source
+                    </Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.phone && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.phone}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col> */}
+
+                {/* <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="channel_name">
+                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="lead_type_id"
+                      // options={[{ value: null, label: "None" }, ...categories]}
+                      options={categories}
+                      value={selectedCategory}
+                      onChange={handleDropDowns}
+                    />
+                    {validationErrors.category_id && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.category_id}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col> */}
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>
-                      <span className="text-danger fs-4">* </span>Phone
+                      <span className="text-danger fs-4">* </span>Source
                     </Form.Label>
-                    <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
-                    {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Lead Type
+                    </Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="category_id"
+                      // options={[{ value: null, label: "None" }, ...categories]}
+                      options={categories}
+                      value={selectedCategory}
+                      onChange={handleDropDowns}
+                    />
+                    {validationErrors.category_id && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.category_id}
+                      </Form.Text>
+                    )}
                   </Form.Group>
                 </Col>
+
+                {/* <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="channel_name">
+                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="lead_type_id"
+                      // options={[{ value: null, label: "None" }, ...categories]}
+                      options={categories}
+                      value={selectedCategory}
+                      onChange={handleDropDowns}
+                    />
+                    {validationErrors.category_id && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.category_id}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col> */}
+
+                {/* <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="channel_name">
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Source
+                    </Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="category_id"
+                      // options={[{ value: null, label: "None" }, ...categories]}
+                      options={categories}
+                      value={selectedCategory}
+                      onChange={handleDropDowns}
+                    />
+                    {validationErrors.category_id && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.category_id}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col> */}
+
+                {/* <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="channel_name">
+                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="lead_type_id"
+                      // options={[{ value: null, label: "None" }, ...categories]}
+                      options={categories}
+                      value={selectedCategory}
+                      onChange={handleDropDowns}
+                    />
+                    {validationErrors.category_id && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.category_id}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col> */}
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
@@ -1093,9 +1309,11 @@ const BasicInputElements = withSwal((props: any) => {
                       styles={customStyles}
                       classNamePrefix="react-select"
                       name="source_id"
-                      options={[{ value: null, label: "None" }, ...source]}
+                      // options={[{ value: null, label: "None" }, ...sourceData]}
+                      options={source}
                       value={selectedSource}
                       onChange={handleDropDowns}
+                      // isDisabled={!selectedCategory}
                     />
                     {validationErrors.source_id && <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>}
                   </Form.Group>
@@ -1111,19 +1329,19 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="channel_id"
-                      options={[{ value: null, label: "None" }, ...channels]}
+                      // options={[{ value: null, label: "None" }, ...channelData]}
+                      options={channelData}
                       value={selectedChannel}
                       onChange={handleDropDowns}
+                      // isDisabled={!selectedSource}
                     />
                     {validationErrors.channel_id && <Form.Text className="text-danger">{validationErrors.channel_id}</Form.Text>}
                   </Form.Group>
                 </Col>
 
-                <Col md={4} lg={4}>
+                {/* <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Category
-                    </Form.Label>
+                    <Form.Label><span className="text-danger fs-4">* </span>Lead Type</Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -1137,12 +1355,12 @@ const BasicInputElements = withSwal((props: any) => {
                       <Form.Text className="text-danger">{validationErrors.category_id}</Form.Text>
                     )}
                   </Form.Group>
-                </Col>
+                </Col> */}
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Country</Form.Label>
-                    <Select
+                    {/* <Select
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
@@ -1152,6 +1370,15 @@ const BasicInputElements = withSwal((props: any) => {
                       options={[{ value: null, label: "None" }, ...country]}
                       value={selectedCountry}
                       onChange={handleSelectChange as any}
+                    /> */}
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="preferred_country"
+                      options={country}
+                      value={selectedCountry}
+                      onChange={handleDropDowns}
                     />
                     {validationErrors.preferred_country && (
                       <Form.Text className="text-danger">{validationErrors.preferred_country}</Form.Text>
@@ -1193,8 +1420,17 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Zipcode</Form.Label>
-                    <Form.Control type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
-                    {validationErrors.zipcode && <Form.Text className="text-danger">{validationErrors.zipcode}</Form.Text>}
+                    <Form.Control
+                      type="text"
+                      name="zipcode"
+                      value={formData.zipcode}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.zipcode && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.zipcode}
+                      </Form.Text>
+                    )}
                   </Form.Group>
                 </Col>
 
@@ -1291,70 +1527,178 @@ const BasicInputElements = withSwal((props: any) => {
                 {selectExam &&
                   languageForm.map((data, index) => (
                     <Row key={index}>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="exam_name">
-                          <Form.Label>Exam Type</Form.Label>
-                          <Form.Select
-                            aria-label="Default select example"
-                            name="exam_name"
-                            value={data.exam_name}
-                            onChange={(e) => handleLanguageInputChange(index, e)}
-                          >
-                            <option value="">Choose..</option>
-                            {examtypes?.map((item: any) => (
-                              <option
-                                value={item?.name}
-                                key={item?.name}
-                                onClick={(e) => handleLanguageInputChange(index, e)}
-                                defaultValue={item.name === formData.exam ? item.name : undefined}
-                              >
-                                {item.name}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="marks">
-                          <Form.Label>Exam Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="marks"
-                            value={data.marks}
-                            onChange={(e) => {
-                              handleLanguageInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-
-                      <Col className="d-flex justify-content-between">
-                        <Form name="exam_documents" encType="multipart/form-data">
-                          <Form.Group className="mb-3" controlId="profileImage">
-                            <Form.Label>Upload File</Form.Label>
-                            <Form.Control
-                              name="exam_documents"
-                              type="file"
-                              onChange={(event) => {
-                                handleFileChange(index, event);
-                              }}
-                              ref={fileInputRef}
-                            />
-                            {selectedFileName[index]?.exam_documents && (
-                              <p style={{ padding: "0%" }} className="mt-2">
-                                {selectedFileName[index].exam_documents}
-                              </p>
-                            )}
+                      <Row>
+                        <Col md={4} lg={4}>
+                          <Form.Group className="mb-3" controlId="exam_type">
+                            <Form.Label>Exam Type</Form.Label>
+                            <Form.Select
+                              aria-label="Default select example"
+                              name="exam_type"
+                              value={data.exam_type}
+                              onChange={(e) =>
+                                handleLanguageInputChange(index, e)
+                              }
+                            >
+                              <option value="">Choose..</option>
+                              {examtypes?.map((item: any) => (
+                                <option
+                                  value={item?.name}
+                                  key={item?.name}
+                                  onClick={(e) =>
+                                    handleLanguageInputChange(index, e)
+                                  }
+                                  defaultValue={
+                                    item.name === formData.exam
+                                      ? item.name
+                                      : undefined
+                                  }
+                                >
+                                  {item.name}
+                                </option>
+                              ))}
+                            </Form.Select>
                           </Form.Group>
-                        </Form>
-                        <i
-                          className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1"
-                          onClick={(e) => handleRemoveLanguageForm(index, e, data.exam_name)}
-                        ></i>
-                        {selectExam && (
-                          <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>
-                        )}
-                      </Col>
+                        </Col>
+                        <Col md={4} lg={4}>
+                          <Form.Group
+                            className="mb-3"
+                            controlId="listening_score"
+                          >
+                            <Form.Label>Listening Score</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="listening_score"
+                              value={data.listening_score}
+                              onChange={(e) => {
+                                handleLanguageMarkInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={4} lg={4}>
+                          <Form.Group
+                            className="mb-3"
+                            controlId="speaking_score"
+                          >
+                            <Form.Label>Speaking Score</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="speaking_score"
+                              value={data.speaking_score}
+                              onChange={(e) => {
+                                handleLanguageMarkInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col md={4} lg={4}>
+                          <Form.Group
+                            className="mb-3"
+                            controlId="reading_score"
+                          >
+                            <Form.Label>Reading Score</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="reading_score"
+                              value={data.reading_score}
+                              onChange={(e) => {
+                                handleLanguageMarkInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={4} lg={4}>
+                          <Form.Group
+                            className="mb-3"
+                            controlId="writing_score"
+                          >
+                            <Form.Label>Writing Score</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="writing_score"
+                              value={data.writing_score}
+                              onChange={(e) => {
+                                handleLanguageMarkInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={4} lg={4}>
+                          <Form.Group className="mb-3" controlId="marks">
+                            <Form.Label>Overall Score</Form.Label>
+                            <Form.Control
+                              type="text"
+                              // name="marks"
+                              name="overall_score"
+                              // value={data.marks}
+                              value={data.overall_score}
+                              onChange={(e) => {
+                                handleLanguageMarkInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col className="d-flex justify-content-between">
+                          <Form
+                            name="exam_documents"
+                            encType="multipart/form-data"
+                          >
+                            <Form.Group
+                              className="mb-3"
+                              controlId="profileImage"
+                            >
+                              <Form.Label>Upload Score Card</Form.Label>
+                              <Form.Control
+                                name="exam_documents"
+                                type="file"
+                                onChange={(event) => {
+                                  handleFileChange(index, event);
+                                }}
+                                ref={fileInputRef}
+                              />
+                              {selectedFileName[index]?.exam_documents && (
+                                // <p style={{ padding: "0%" }} className="mt-2">
+                                //   {selectedFileName[index].exam_documents}
+                                // </p>
+                                <a href={`${baseUrl}/uploads/${selectedFileName[index].exam_documents}`}>{selectedFileName[index].exam_documents}</a>
+                              )}
+                            </Form.Group>
+                          </Form>
+                        </Col>
+                        <Col md={4} lg={4}>
+                          <Form.Group className="mb-3" controlId="exam_date">
+                            <Form.Label>Exam Date</Form.Label>
+                            <Form.Control
+                              type="date"
+                              name="exam_date"
+                              // value={data?.exam_date}
+                              value={
+                                moment(data?.exam_date).format("YYYY-MM-DD") ??
+                                moment(data?.exam_date).format("YYYY-MM-DD")
+                              }
+                              onChange={(e) => {
+                                handleLanguageInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={4} lg={4} className="mt-3">
+                          <i
+                            className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1"
+                            onClick={(e) =>
+                              handleRemoveLanguageForm(index, e, data.exam_type)
+                            }
+                          ></i>
+                          {selectExam && (
+                            <i
+                              className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1"
+                              onClick={handleAddLanguageForm}
+                            ></i>
+                          )}
+                        </Col>
+                      </Row>
                     </Row>
                   ))}
               </Row>
@@ -1368,17 +1712,22 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1"
-                onClick={() =>
-                  isUpdate
-                    ? [
-                        handleCancelUpdate(),
-                        toggle(),
-                        setLanguageForm(languageFormInitialState),
-                        setSelectedFile([]),
-                        setSelectedFileName([]),
-                      ]
-                    : [toggle(), handleResetValues(), setLanguageForm(languageFormInitialState), setSelectedFile([])]
-                }
+                onClick={() => {
+                  if (isUpdate) {
+                    handleCancelUpdate();
+                    toggle();
+                    setLanguageForm(languageFormInitialState);
+                    setSelectedFile([]);
+                    setSelectedFileName([]);
+                    handleResetValues();
+                  } else {
+                    toggle();
+                    setLanguageForm(languageFormInitialState);
+                    setSelectedFile([]);
+                    setSelectedFileName([]);
+                    handleResetValues();
+                  }
+                }}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>

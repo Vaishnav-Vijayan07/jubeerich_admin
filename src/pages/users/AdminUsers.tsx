@@ -30,7 +30,7 @@ import {
   updateAdminUsers,
 } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
-import { AUTH_SESSION_KEY, baseUrl } from "../../constants";
+import { AUTH_SESSION_KEY, baseUrl, branch_counsellor_id, counsellor_id, counsellor_tl_id, customStyles, regional_manager_id } from "../../constants";
 import {
   MyInitialState,
   OptionType,
@@ -42,6 +42,7 @@ import {
 import { APICore } from "../../helpers/api/apiCore";
 import { Link } from "react-router-dom";
 import { getCountry } from "../../redux/country/actions";
+import { getRegion } from "../../redux/regions/actions";
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -51,6 +52,7 @@ const BasicInputElements = withSwal((props: any) => {
     BranchesData,
     CountriesData,
     RolesData,
+    regionData,
     error,
     loading,
   } = props;
@@ -68,6 +70,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [formData, setFormData] = useState<MyInitialState>(initialState);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [selectedBranch, setSelectedBranch] = useState<OptionType[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<any[]>([]);
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -123,6 +126,10 @@ const BasicInputElements = withSwal((props: any) => {
       label: item.branch_name,
     }));
 
+    const countryArray = item?.countries?.map(
+      (country: any) => country?.id
+    );
+
     setSelectedBranch(selectedPowerIds);
 
     setFormData((prev) => ({
@@ -138,9 +145,13 @@ const BasicInputElements = withSwal((props: any) => {
       updated_by: item.updated_by,
       branch_ids: item?.branch_ids,
       role_id: item?.role_id,
+      region_id: item?.region_id,
+      branch_id: item?.branch_id,
+      country_ids: countryArray,
       profile_image_path: item?.profile_image_path,
     }));
 
+    setSelectedCountry(item?.countries);
     setIsUpdate(true);
   };
 
@@ -168,7 +179,7 @@ const BasicInputElements = withSwal((props: any) => {
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
 
-    if (name == "role_id" && value !== "7") {
+    if (name == "role_id" && value !== counsellor_id) {
       setFormData((prevData) => ({
         ...prevData,
         country_id: undefined,
@@ -240,7 +251,12 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.role_id,
                     selectedImage,
                     formData.branch_ids,
-                    formData?.country_id
+                    formData?.country_id,
+                    formData.role_id == regional_manager_id ? formData.region_id : null,
+                    // formData.role_id == counsellor_tl_id ? formData.branch_id : null,
+                    (formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) ? formData.branch_id : null,
+                    // formData.role_id == branch_counsellor_id ? formData.country_ids : null
+                    null
                   )
                 );
               } catch (err) {
@@ -266,7 +282,11 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.role_id,
                     selectedImage,
                     formData.branch_ids,
-                    formData?.country_id
+                    formData?.country_id,
+                    formData.role_id == regional_manager_id ? formData.region_id : null,
+                    (formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) ? formData.branch_id : null,
+                    // formData.role_id == branch_counsellor_id ? formData.country_ids : null
+                    null
                   )
                 );
               } catch (err) {
@@ -489,6 +509,7 @@ const BasicInputElements = withSwal((props: any) => {
     setIsUpdate(false);
     setFormData(initialState);
     setSelectedBranch([]);
+    setSelectedCountry([])
     setSelectedImage(null);
   };
 
@@ -525,6 +546,7 @@ const BasicInputElements = withSwal((props: any) => {
     setFormData(initialState);
     setValidationErrors(initialValidationState);
     setSelectedBranch([]);
+    setSelectedCountry([])
     setSelectedImage(null);
   }
 
@@ -540,6 +562,41 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const handleSelectChange = (
+    selectedOptions: OptionType[] | OptionsType<OptionType> | null,
+    actionMeta: ActionMeta<OptionType>
+  ) => {
+    if (Array.isArray(selectedOptions)) {
+      setSelectedCountry(selectedOptions);
+      const selectedIdsArray = selectedOptions?.map((option) =>
+        parseInt(option.value)
+      );
+      setFormData((prev: any) => ({
+        ...prev,
+        country_ids: selectedIdsArray,
+      }));
+    }
+  };
+
+  const customStyles2 = {
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? '#a9b3e6e2' : state.isFocused ? '#8a99e2' : '#fff',
+      color: state.isSelected ? '#fff' : state.isFocused ? '#fff' : '#333',
+      padding: 10,
+    }),
+    singleValue: (provided: any, state: any) => ({
+      ...provided,
+      color: '#333', // Color of the selected option displayed in the select box
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      maxHeight: 200, // Set maxHeight of the menu (change this value as needed)
+      overflowY: 'auto', // Enable scrolling if content overflows
+
+    }),
+  };
+  
   console.log(CountriesData);
 
   return (
@@ -732,7 +789,7 @@ const BasicInputElements = withSwal((props: any) => {
                         )}
                       </Form.Group>
                     </Col>
-                    {formData?.role_id == "7" && (
+                    {(formData?.role_id == counsellor_id || formData.role_id == branch_counsellor_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="role_id">
                           <Form.Label>Country</Form.Label>
@@ -760,6 +817,101 @@ const BasicInputElements = withSwal((props: any) => {
                         </Form.Group>
                       </Col>
                     )}
+
+                    {formData?.role_id == regional_manager_id && (
+                      <Col md={6}>
+                        <Form.Group className="mb-3" controlId="region_id">
+                          <Form.Label>Region</Form.Label>
+                          <Form.Select
+                            aria-label="Default select example"
+                            name="region_id"
+                            value={formData.region_id}
+                            onChange={handleInputChange}
+                          >
+                            <option value="" disabled selected>
+                              Choose..
+                            </option>
+                            {regionData?.map((item: any) => (
+                              <option value={item?.value} key={item?.value}>
+                                {item.label}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        
+                          {validationErrors.role_id && (
+                            <Form.Text className="text-danger">
+                              {validationErrors.role_id}
+                            </Form.Text>
+                          )}
+                        </Form.Group>
+                      </Col>
+                    )}
+
+                    {/* {formData.role_id == branch_counsellor_id && <Col md={4} lg={4}>
+                      <Form.Group className="mb-3" controlId="country_ids">
+                        <Form.Label>Country</Form.Label>
+                        <Select
+                          styles={customStyles2}
+                          className="react-select react-select-container"
+                          classNamePrefix="react-select"
+                          isMulti
+                          name="country_ids"
+                          options={[{ value: null, label: "None" }, ...CountriesData]}
+                          value={selectedCountry}
+                          onChange={handleSelectChange as any}
+                        />
+                      </Form.Group>
+                    </Col>} */}
+
+                    {(formData?.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) && (
+                      <Col md={6}>
+                        <Form.Group className="mb-3" controlId="region_id">
+                          <Form.Label>Branch</Form.Label>
+                          <Form.Select
+                            aria-label="Default select example"
+                            name="branch_id"
+                            value={formData.branch_id}
+                            onChange={handleInputChange}
+                          >
+                            <option value="" disabled selected>
+                              Choose..
+                            </option>
+                            {BranchesData?.map((item: any) => (
+                              <option value={item?.value} key={item?.value}>
+                                {item.label}
+                              </option>
+                            ))}
+                          </Form.Select>
+
+                          {validationErrors.branch_id && (
+                            <Form.Text className="text-danger">
+                              {validationErrors.branch_id}
+                            </Form.Text>
+                          )}
+                        </Form.Group>
+                      </Col>
+                    )}
+
+                    {/* { formData.role_id == branch_counsellor_id && <Col md={4} lg={4}>
+                      <Form.Group className="mb-3" controlId="country_ids">
+                        <Form.Label>Country</Form.Label>
+                        <Select
+                          className="react-select react-select-container"
+                          classNamePrefix="react-select"
+                          isMulti
+                          // styles={customStyles}
+                          name="country_ids"
+                          options={[{ value: null, label: "None" }, ...CountriesData]}
+                          value={selectedCountry}
+                          onChange={handleSelectChange as any}
+                        /> */}
+                        {/* {validationErrors.country_ids && (
+                          <Form.Text className="text-danger">
+                            {validationErrors.preferred_country}
+                          </Form.Text>
+                        )} */}
+                      {/* </Form.Group>
+                    </Col>} */}
                   </Row>
 
                   {/* <Row>
@@ -857,6 +1009,7 @@ const AdminUsers = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [branchData, setBranchData] = useState([]);
   const [countryData, setCountryData] = useState([]);
+  const [regionData, setRegionData] = useState([])
 
   //Fetch data from redux store
   const { state, error, loading, initialLoading } = useSelector(
@@ -874,6 +1027,8 @@ const AdminUsers = () => {
 
   const Countries = useSelector((state: RootState) => state?.Country.countries);
 
+  const Regions = useSelector((state: RootState) => state.Region.regions);
+
   const RolesData = useSelector((state: RootState) => ({
     state: state.Roles.roles,
   }));
@@ -883,7 +1038,18 @@ const AdminUsers = () => {
     dispatch(getBranches());
     dispatch(getCountry());
     dispatch(getRoles());
+    dispatch(getRegion());
   }, []);
+
+  useEffect(() => {
+    if (Regions) {
+      const regionArray = Regions?.map((region: any) => ({
+        value: region.id.toString(),
+        label: region.region_name,
+      }));
+      setRegionData(regionArray);
+    }
+  }, [Regions]);
 
   useEffect(() => {
     if (Branch) {
@@ -936,6 +1102,7 @@ const AdminUsers = () => {
             CountriesData={countryData}
             loading={loading}
             RolesData={RolesData?.state}
+            regionData={regionData}
           />
         </Col>
       </Row>

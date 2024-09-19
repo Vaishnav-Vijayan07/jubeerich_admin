@@ -38,6 +38,7 @@ import {
   updateUniversity,
 } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
+import useDropdownData from "../../hooks/useDropdownDatas";
 
 interface OptionType {
   value: string;
@@ -593,37 +594,23 @@ const BasicInputElements = withSwal((props: any) => {
 
 const University = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [sourceData, setSourceData] = useState([]);
+
+  const { dropdownData: country, loading: dropDownLoading } =
+    useDropdownData("countries");
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading, country } = useSelector(
+  const { state, error, loading, initialLoading } = useSelector(
     (state: RootState) => ({
       state: state.University.universities.data,
       error: state.University.error,
       loading: state.University.loading,
       initialLoading: state.University.initialloading,
-      country: state.Country.countries,
     })
   );
 
-  // const Source = useSelector(
-  //   (state: RootState) => state?.Source?.sources?.data
-  // );
-
   useEffect(() => {
     dispatch(getUniversity());
-    dispatch(getCountry());
   }, []);
-
-  useEffect(() => {
-    if (country) {
-      const CountryArray = country?.map((source: any) => ({
-        value: source.id.toString(),
-        label: source.country_name, // Replace with the appropriate field from the lead data
-      }));
-      setSourceData(CountryArray);
-    }
-  }, [country]);
 
   if (initialLoading) {
     return (
@@ -647,7 +634,7 @@ const University = () => {
         <Col>
           <BasicInputElements
             state={state}
-            country={sourceData}
+            country={country?.countries || []}
             error={error}
             loading={loading}
           />

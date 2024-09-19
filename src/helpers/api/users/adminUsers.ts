@@ -26,6 +26,9 @@ function addAdminUsers(params: {
   branch_ids: string;
   country_id: any;
   franchise_id?: string
+  region_id?: string
+  branch_id?: string,
+  country_ids?: string
 }) {
   if (params.country_id == undefined) {
     params.country_id = null;
@@ -49,7 +52,10 @@ function updateAdminUsers(
     profileImage: File;
     branch_ids: string;
     country_id: any;
-    franchise_id?: string
+    franchise_id?: string;
+    region_id?: string;
+    branch_id?: string;
+    country_ids?: string
   }
 ) {
   console.log(params.country_id);

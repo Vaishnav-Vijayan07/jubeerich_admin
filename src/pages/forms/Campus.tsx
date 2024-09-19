@@ -527,7 +527,8 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Campus = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [sourceData, setSourceData] = useState([]);
+  const { dropdownData: universities, loading: dropDownLoading } =
+    useDropdownData("universities");
 
   //Fetch data from redux store
   const { state, error, loading, initialLoading, university, courseData } = useSelector((state: RootState) => ({
@@ -540,20 +541,9 @@ const Campus = () => {
   }));
 
   useEffect(() => {
-    dispatch(getUniversity());
     dispatch(getCampus());
     dispatch(getCourse());
   }, []);
-
-  useEffect(() => {
-    if (university) {
-      const UniversityArray = university?.map((source: any) => ({
-        value: source.id.toString(),
-        label: source.university_name, // Replace with the appropriate field from the lead data
-      }));
-      setSourceData(UniversityArray);
-    }
-  }, [university]);
 
   if (initialLoading) {
     return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;

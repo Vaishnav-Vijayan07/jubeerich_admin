@@ -13,6 +13,7 @@ function addSources(params: {
   source_name: string;
   source_description: string;
   updated_by: string;
+  lead_type_id: string
 }) {
 
   return api.create(`${baseUrl}`, params);
@@ -24,6 +25,7 @@ function updateSources(
     source_name: string;
     source_description: string;
     updated_by: string;
+    lead_type_id: string
   }
 ) {
 

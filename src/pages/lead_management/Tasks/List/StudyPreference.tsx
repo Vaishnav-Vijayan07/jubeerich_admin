@@ -1,460 +1,213 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
-import { FormInput } from "../../../../components";
+import { Button, Col, Row, Spinner } from "react-bootstrap";
+import { withSwal } from "react-sweetalert2";
+import useDropdownData from "../../../../hooks/useDropdownDatas";
 import axios from "axios";
-import { customStyles, showErrorAlert, showSuccessAlert } from "../../../../constants";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
-import { getUniversity } from "../../../../redux/University/actions";
-import { RootState } from "../../../../redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import * as yup from 'yup';
-import { withSwal } from 'react-sweetalert2';
+import StudyPreferenceRow from "./StudyPrefRow";
+import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 
-const validationErrorsInitialState = {
-  intersted_country: "",
-  intrested_institution: "",
-  intake_year: "",
-  intake_month: "",
-  estimated_budget: "",
-  course_field_of_intrest: "",
-  universities: "",
-  campus: "",
-  stream: "",
-  course: "",
-  duration: "",
-  course_fee: ""
-}
-
-const initialState = {
-  intersted_country: "",
-  intrested_institution: "",
-  intake_year: "",
-  intake_month: "",
-  estimated_budget: "",
-  course_field_of_intrest: "",
-  universities: "",
-  campus: "",
-  stream: "",
-  course: "",
-  duration: "",
-  course_fee: ""
+const initialStateStudyPreference = {
+  id: null,
+  universityId: "",
+  campusId: "",
+  courseTypeId: "",
+  streamId: "",
+  courseId: "",
+  intakeYear: "",
+  intakeMonth: "",
+  estimatedBudget: "",
 };
-
-const monthData: any = [
-  { value: null, label: "None" },
-  { value: "01", label: "January" },
-  { value: "02", label: "February" },
-  { value: "03", label: "March" },
-  { value: "04", label: "April" },
-  { value: "05", label: "May" },
-  { value: "06", label: "June" },
-  { value: "07", label: "July" },
-  { value: "08", label: "August" },
-  { value: "09", label: "September" },
-  { value: "10", label: "October" },
-  { value: "11", label: "November" },
-  { value: "12", label: "December" },
-];
-
 
 // const StudyPreference = ({ studentId, Countries }: any) => {
 const StudyPreference = withSwal((props: any) => {
-  const { swal, studentId, Countries } = props;
-  const [formData, setformData] = useState(initialState);
+  const { swal, studentId } = props;
+
   const [loading, setLoading] = useState(false);
-  const [universityData, setUniversityData] = useState([]);
-  const [selectedUniversities, setSelectedUniversities] = useState<any>([]);
-  const [selectedMonth, setSelectedMonth] = useState<any>(null);
-  const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
+  const [studyPreferenceData, setStudyPreferenceData] = useState<any[]>([
+    initialStateStudyPreference,
+  ]);
 
-  const ValidationSchema = yup.object().shape({
-    intersted_country: yup.string().nullable(),
-    intrested_institution: yup.string().nullable(),
-    intake_year: yup.string().required("Intake Year cannot be empty"),
-    intake_month: yup.string().required("Intake Month cannot be empty"),
-    estimated_budget: yup.string().nullable(),
-    course_field_of_intrest: yup.string().nullable(),
-    universities: yup.array().of(yup.string()).nullable(),
-    campus: yup.string().nullable(),
-    stream: yup.string().nullable(),
-    course: yup.string().nullable(),
-    duration: yup.string().nullable(),
-    course_fee: yup.string().nullable(),
-  })
+  const [countryName, setCountryName] = useState("");
+  const [studyPreferenceId, setStudyPreferenceId] = useState("");
 
-
-  const dispatch = useDispatch()
-
-  const animatedComponents = makeAnimated();
-
-  const University = useSelector((state: RootState) => state.University.universities.data);
-
-  const getStudyPreferenceInfo = () => {
-    setformData(initialState)
+  const getStudyPrefData = async () => {
     axios
-      .get(`getStudentStudyPrferenceInfo/${studentId}`)
+      .get(`/study_preferences_details/${studentId}`)
       .then((res) => {
-        console.log("res =>", res.data);
-        setformData(res.data.data);
+        setStudyPreferenceId(res.data.data?.id);
+        setCountryName(res.data.data?.country?.country_name);
 
-        const selectedUniversities = University?.map((university: any) => ({
-          value: university.id,
-          label: university.university_name,
-        }));
-
-        // Filter the universities to include only those in the comma-separated string
-        const idsArray = res?.data?.data?.universities?.split(',')?.map((id: any) => parseInt(id, 10));
-        const filteredUniversities = selectedUniversities.filter((university: any) =>
-          idsArray.includes(university.value)
+        setStudyPreferenceData(
+          res.data.data?.studyPreferenceDetails.length > 0
+            ? res.data.data.studyPreferenceDetails
+            : [initialStateStudyPreference]
         );
-
-        const updatedMonth = monthData?.filter(
-          (month: any) => month.value == res?.data?.data?.intake_month
-        );
-        setSelectedMonth(updatedMonth[0])
       })
       .catch((err) => {
         console.error(err);
       });
   };
 
-  useEffect(() => {
-    dispatch(getUniversity())
-  }, [])
+  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
-  // handling input data
-  const handleInputChange = (e: any) => {
-    setformData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+  useEffect(() => {
+    if (
+      dropdownData.universities.length > 0 &&
+      dropdownData.campuses.length > 0
+    ) {
+      getStudyPrefData();
+    }
+  }, [dropdownData.universities.length, dropdownData.campuses.length]);
+
+  const handleStudyPreferenceChange = (
+    index: number,
+    field: string,
+    value: any
+  ) => {
+    const updatedPrefs = [...studyPreferenceData];
+    updatedPrefs[index][field] = value;
+    setStudyPreferenceData(updatedPrefs);
   };
 
-  // save details api
-  const saveStudentStudyPreferenceInfo = async () => {
+  const addMoreStudyPreference = () => {
+    setStudyPreferenceData([
+      ...studyPreferenceData,
+      {
+        id: null,
+        universityId: "",
+        campusId: "",
+        courseTypeId: "",
+        streamId: "",
+        courseId: "",
+        intakeYear: "",
+        intakeMonth: "",
+        estimatedBudget: "",
+      },
+    ]);
+  };
+
+  const removeStudyPreferenceData = (id: any, type: string) => {
+    swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Delete",
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          setLoading(true);
+          axios
+            .delete(`basic_info/${type}/${id}`, {
+              headers: {
+                "Content-Type": "application/json", // Assuming no file data is sent
+              },
+            })
+            .then((res) => {
+              console.log("Response: =>", res);
+              setLoading(false);
+              showSuccessAlert(res.data.message);
+              getStudyPrefData();
+            })
+            .catch((err) => {
+              console.log(err);
+              setLoading(false);
+              showErrorAlert("Error occurred");
+            });
+        }
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+  };
+
+  const removeStudyPreference = (index: number, itemId: any) => {
+    console.log(itemId);
+
+    if (itemId === 0) {
+      const updatedPrefs = studyPreferenceData.filter((_, i) => i !== index);
+      setStudyPreferenceData(updatedPrefs);
+    } else {
+      removeStudyPreferenceData(itemId, "studyPreference");
+    }
+  };
+
+  const saveStudyPreferenceData = async () => {
+    setLoading(true);
+    const modifiedDataToServer = studyPreferenceData?.map((data: any) => ({
+      id: data.id ?? 0,
+      universityId: data.universityId,
+      campusId: data.campusId,
+      courseTypeId: data.courseTypeId,
+      streamId: data.streamId,
+      courseId: data.courseId,
+      intakeYear: data.intakeYear, // Ensure intakeYear is an integer
+      intakeMonth: data.intakeMonth, // Assuming intakeMonth is already in the desired format
+      estimatedBudget: data.estimatedBudget,
+    }));
 
     try {
-      await ValidationSchema.validate(formData, { abortEarly: false });
-
-      swal
-        .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, Save",
-        })
-        .then((result: any) => {
-          if (result.isConfirmed) {
-            setLoading(true);
-            axios
-              .post("saveStudentStudyPreferenceInfo", {
-                intersted_country: formData?.intersted_country,
-                intrested_institution: formData?.intrested_institution,
-                intake_year: formData?.intake_year,
-                intake_month: formData?.intake_month,
-                estimated_budget: formData?.estimated_budget,
-                course_field_of_intrest: formData?.course_field_of_intrest,
-                user_id: studentId,
-                course_fee: formData?.course_fee,
-                universities: formData?.universities,
-                campus: formData?.campus,
-                stream: formData?.stream,
-                course: formData?.course,
-                duration: formData?.duration,
-              })
-              .then((res) => {
-                console.log("res: =>", res);
-                setLoading(false);
-                showSuccessAlert(res.data.message);
-                setValidationErrors(validationErrorsInitialState);
-                // getBasicInfoApi();
-              })
-              .catch((err) => {
-                console.log(err);
-                setLoading(false);
-                showErrorAlert("Error occured");
-              });
-          }
-        }).catch((err: any) => {
-          console.log(err);
-        })
-    } catch (validationError) {
-      if (validationError instanceof yup.ValidationError) {
-        const errors: any = {};
-        validationError.inner.forEach((error) => {
-          if (error.path) {
-            errors[error.path] = error.message;
-          }
-        });
-        setValidationErrors(errors);
-      }
-    }
-
-  };
-
-  useEffect(() => {
-    if (University) {
-      const universityArray = University?.map((university: any) => ({
-        value: university.id,
-        label: university.university_name,
-      }));
-      setUniversityData(universityArray);
-    }
-  }, [University]);
-
-  useEffect(() => {
-    if (studentId) {
-      getStudyPreferenceInfo();
-    }
-  }, [studentId, University]);
-
-  const handleUniversityChange = (selectedOptions: any) => {
-
-    if (Array.isArray(selectedOptions)) {
-      setSelectedUniversities(selectedOptions);
-      const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
-      setformData((prev) => ({
-        ...prev,
-        universities: selectedIdsString,
-      }));
-    }
-  }
-
-  const handleDropDowns = (selected: any, { name }: any) => {
-    setformData((prev) => ({
-      ...prev,
-      [name]: selected.value,
-    }));
-
-    switch (name) {
-      case "intake_month":
-        setSelectedMonth(selected);
-        break;
-      default:
-        break;
+      const response = await axios.post(`study_preferences_details`, {
+        study_preferences: modifiedDataToServer,
+        studyPreferenceId,
+      });
+      showSuccessAlert("Data updated successfully");
+      getStudyPrefData();
+    } catch (error) {
+      console.error("Error saving data", error);
+      showErrorAlert("Error occurred while saving data");
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading || dropDownLoading)
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "100%", left: "50%" }}
+      />
+    );
 
   return (
     <>
-      <>
-        <h5 className="mb-4 text-uppercase">
-          <i className="mdi mdi-account-circle me-1"></i> Study Preference Info
-        </h5>
-        <Row>
-          <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="intersted_country">
-              <Form.Label>Preferred Country</Form.Label>
-              <Form.Select
-                className="mb-3"
-                name="intersted_country"
-                aria-label="Default select example"
-                value={formData.intersted_country}
-                onChange={handleInputChange}
-              >
-                <option value="">
-                  Open this select menu
-                </option>
-                {Countries?.map((country: any) => (
-                  <option value={country.id}>{country.country_name}</option>
-                ))}
-              </Form.Select>
-              {validationErrors.intersted_country && <Form.Text className="text-danger">{validationErrors.intersted_country}</Form.Text>}
-            </Form.Group>
-          </Col>
+      <StudyPreferenceRow
+        StudyPreference={studyPreferenceData}
+        countryName={countryName}
+        handleStudyPreferenceChange={handleStudyPreferenceChange}
+        addMoreStudyPreference={addMoreStudyPreference}
+        removeStudyPreference={removeStudyPreference}
+        dropdownData={dropdownData}
+        loading={loading}
+      />
 
-          <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="intrested_institution">
-              <Form.Label>Intrested institution</Form.Label>
-              <FormInput
-                type="text"
-                name="intrested_institution"
-                placeholder="Enter intrested institution"
-                key="intrested_institution"
-                value={formData.intrested_institution}
-                onChange={handleInputChange}
+      <Row>
+        <Button
+          variant="primary"
+          className="mt-4"
+          type="submit"
+          onClick={saveStudyPreferenceData}
+          disabled={loading} // Disable button while loading
+        >
+          {loading ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
               />
-              {validationErrors.intrested_institution && <Form.Text className="text-danger">{validationErrors.intrested_institution}</Form.Text>}
-            </Form.Group>
-          </Col>
-
-          <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="intake_year">
-              <Form.Label><span className="text-danger">* </span> Intake year</Form.Label>
-              <FormInput
-                type="number"
-                name="intake_year"
-                placeholder="Enter intake year"
-                key="intake_year"
-                value={formData.intake_year}
-                onChange={handleInputChange}
-              />
-              {validationErrors.intake_year && (
-                <Form.Text className="text-danger">{validationErrors.intake_year}</Form.Text>)}
-            </Form.Group>
-          </Col>
-
-          <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="intake_month">
-              <Form.Label><span className="text-danger">* </span> Intake Month</Form.Label>
-              <Select
-                styles={customStyles}
-                className="react-select react-select-container"
-                classNamePrefix="react-select"
-                name="intake_month"
-                options={monthData}
-                value={selectedMonth}
-                onChange={handleDropDowns}
-              />
-              {validationErrors.intake_month && (
-                <Form.Text className="text-danger">
-                  {validationErrors.intake_month}
-                </Form.Text>
-              )}
-            </Form.Group>
-          </Col>
-
-
-
-          <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="estimated_budget">
-              <Form.Label>Estimated budget</Form.Label>
-              <FormInput
-                type="number"
-                name="estimated_budget"
-                placeholder="Enter estimated budget"
-                key="estimated_budget"
-                value={formData.estimated_budget}
-                onChange={handleInputChange}
-              />
-              {validationErrors.estimated_budget && (
-                <Form.Text className="text-danger">{validationErrors.estimated_budget}</Form.Text>
-              )}
-            </Form.Group>
-          </Col>
-
-          <Col xl={6} xxl={4}>
-
-            <Form.Group className="mb-3" controlId="universities">
-              <Form.Label>University</Form.Label>
-              <Select
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                isMulti
-                className="react-select react-select-container"
-                name="universities"
-                classNamePrefix="react-select"
-                options={[{ value: null, label: "None" }, ...universityData]}
-                value={selectedUniversities}
-                onChange={handleUniversityChange as any}
-              />
-              {validationErrors.universities && (
-                <Form.Text className="text-danger">{validationErrors.universities}</Form.Text>
-              )}
-            </Form.Group>
-          </Col>
-
-
-          <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="campus">
-              <Form.Label>Campus</Form.Label>
-              <FormInput
-                type="text"
-                name="campus"
-                placeholder="Enter campus name"
-                key="campus"
-                value={formData.campus}
-                onChange={handleInputChange}
-              />
-              {validationErrors.campus && (
-                <Form.Text className="text-danger">{validationErrors.campus}</Form.Text>
-              )}
-            </Form.Group>
-          </Col>
-
-          <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="stream">
-              <Form.Label>Stream</Form.Label>
-              <FormInput
-                type="text"
-                name="stream"
-                placeholder="Enter stream name"
-                key="stream"
-                value={formData.stream}
-                onChange={handleInputChange}
-              />
-              {validationErrors.stream && (
-                <Form.Text className="text-danger">{validationErrors.stream}</Form.Text>
-              )}
-            </Form.Group>
-          </Col>
-
-          <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="course">
-              <Form.Label>Course</Form.Label>
-              <FormInput
-                type="text"
-                name="course"
-                placeholder="Enter course name"
-                key="course"
-                value={formData.course}
-                onChange={handleInputChange}
-              />
-              {validationErrors.course && (
-                <Form.Text className="text-danger">{validationErrors.course}</Form.Text>
-              )}
-            </Form.Group>
-          </Col>
-
-          <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="duration">
-              <Form.Label>Duration</Form.Label>
-              <FormInput
-                type="number"
-                name="duration"
-                placeholder="Enter duration"
-                key="duration"
-                value={formData.duration}
-                onChange={handleInputChange}
-              />
-              {validationErrors.duration && (
-                <Form.Text className="text-danger">{validationErrors.duration}</Form.Text>
-              )}
-            </Form.Group>
-          </Col>
-
-          <Col xl={6} xxl={4}>
-            <Form.Group className="mb-3" controlId="course_fee">
-              <Form.Label>Course fee</Form.Label>
-              <FormInput
-                type="number"
-                name="course_fee"
-                placeholder="Enter course fee"
-                key="course_fee"
-                value={formData.course_fee}
-                onChange={handleInputChange}
-              />
-              {validationErrors.course_fee && (
-                <Form.Text className="text-danger">{validationErrors.course_fee}</Form.Text>
-              )}
-            </Form.Group>
-          </Col>
-
-          <Button
-            variant="primary"
-            className="mt-4"
-            type="submit"
-            onClick={saveStudentStudyPreferenceInfo}
-            disabled={loading}
-          >
-            Save Details
-          </Button>
-        </Row>
-      </>
+              {"Saving..."} {/* Show spinner and text */}
+            </>
+          ) : (
+            "Save Details" // Normal button text when not loading
+          )}
+        </Button>
+      </Row>
     </>
   );
 });

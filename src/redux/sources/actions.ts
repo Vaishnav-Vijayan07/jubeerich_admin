@@ -45,13 +45,15 @@ export const getSource = (): SourceActionType => ({
 export const addSource = (
   source_name: string,
   source_description: string,
-  updated_by: string
+  updated_by: string,
+  lead_type_id: string
 ): SourceActionType => ({
   type: SourceActionTypes.ADD_SOURCES,
   payload: {
     source_name,
     source_description,
     updated_by,
+    lead_type_id
   },
 });
 
@@ -59,7 +61,8 @@ export const updateSource = (
   id: string,
   source_name: string,
   source_description: string,
-  updated_by: string
+  updated_by: string,
+  lead_type_id: string
 ): SourceActionType => ({
   type: SourceActionTypes.UPDATE_SOURCES,
   payload: {
@@ -67,6 +70,7 @@ export const updateSource = (
     source_name,
     source_description,
     updated_by,
+    lead_type_id
   },
 });
 

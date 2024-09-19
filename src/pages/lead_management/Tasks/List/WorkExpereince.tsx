@@ -1,50 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
-import { FormInput } from "../../../../components";
+import React, { useEffect, useState } from "react";
+import { Button, Row, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
-import * as yup from "yup";
 import { withSwal } from "react-sweetalert2";
-import { examtypes } from "../../../forms/data";
-import moment from "moment";
-import AcademicInfoRow from "./AcademicInfoRow";
 import WorkExpRow from "./WorkExpRow";
 import { isAllItemsPresentWork } from "../../../../utils/fieldsChecker";
-
-const validationErrorsInitialState = {
-  qualification: "",
-  place: "",
-  percentage: "",
-  year_of_passing: "",
-  backlogs: "",
-  years: "",
-  company: "",
-  designation: "",
-  from: "",
-  to: "",
-};
-
-const initialState = {
-  qualification: "",
-  place: "",
-  percentage: "",
-  year_of_passing: "",
-  backlogs: 0,
-  years: 0,
-  designation: "",
-  company: "",
-  from: "",
-  to: "",
-};
-
-const initialStateAcademic = {
-  id: 0,
-  qualification: "",
-  place: "",
-  percentage: "",
-  year_of_passing: "",
-  backlogs: 0,
-};
+import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 
 const initialStateWork = {
   id: 0,
@@ -55,22 +18,16 @@ const initialStateWork = {
   to: "",
 };
 
-const initialLanguageState = {
-  exam_name: "",
-  marks: "",
-};
-
 const WorkExpereince = withSwal((props: any) => {
   const { swal, studentId } = props;
-  const [formData, setformData] = useState(initialState);
   const [loading, setLoading] = useState(false);
-  const [workExperience, setWorkExperience] = useState<any>([initialStateWork]);
+
+  const refresh = useSelector(
+    (state: RootState) => state.refreshReducer.refreshing
+  );
 
   const [workExperienceFromApi, setWorkExperienceFromApi] = useState<any>(null);
-
-  // apis
   const getAcademicInfo = () => {
-    setformData(initialState);
     axios
       .get(`getStudentAcademicInfo/${studentId}`)
       .then((res) => {
@@ -84,12 +41,15 @@ const WorkExpereince = withSwal((props: any) => {
         console.error(err);
       });
   };
+  const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
+
+  // apis
 
   useEffect(() => {
     if (studentId) {
       getAcademicInfo();
     }
-  }, [studentId]);
+  }, [studentId, refresh]);
 
   const saveStudentAcademicInfo = async () => {
     const newFormData = new FormData();
@@ -149,44 +109,6 @@ const WorkExpereince = withSwal((props: any) => {
       });
   };
 
-  const removeFromApi = (id: any, type: string) => {
-    swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Delete",
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          setLoading(true);
-          axios
-            .delete(`academic_work_info/${type}/${id}`, {
-              headers: {
-                "Content-Type": "application/json", // Assuming no file data is sent
-              },
-            })
-            .then((res) => {
-              console.log("Response: =>", res);
-              setLoading(false);
-              showSuccessAlert(res.data.message);
-              getAcademicInfo();
-            })
-            .catch((err) => {
-              console.log(err);
-              setLoading(false);
-              showErrorAlert("Error occurred");
-            });
-        }
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
-  };
-
   const handleWorkExperienceChange = (index: any, e: any) => {
     const { name, value } = e.target;
     const newWorkExperience = [...workExperienceFromApi];
@@ -219,36 +141,49 @@ const WorkExpereince = withSwal((props: any) => {
     }
   };
 
-  if (loading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "45%" }}
-      />
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "100%", left: "45%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <>
-      <>
+      <Row className={deleteLoading || loading ? "opacity-25" : ""}>
         <WorkExpRow
           workExperience={workExperienceFromApi}
           handleWorkExperienceChange={handleWorkExperienceChange}
           addMoreWorkExperience={addMoreWorkExperience}
           removeWorkExperience={removeWorkExperience}
         />
-        <Row>
-          <Button
-            variant="primary"
-            className="mt-4"
-            type="submit"
-            onClick={saveStudentAcademicInfo}
-            disabled={loading}
-          >
-            Save Details
-          </Button>
-        </Row>
-      </>
+      </Row>
+      <Row>
+        <Button
+          variant="primary"
+          className="mt-4"
+          type="submit"
+          onClick={saveStudentAcademicInfo}
+          disabled={deleteLoading || loading}
+        >
+          {deleteLoading || loading ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              {" Saving..."} {/* Show spinner and text */}
+            </>
+          ) : (
+            "Save Details" // Normal button text when not loading
+          )}
+        </Button>
+      </Row>
     </>
   );
 });

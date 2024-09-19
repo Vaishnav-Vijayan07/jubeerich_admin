@@ -2,9 +2,12 @@ import swal from "sweetalert2";
 import axios from "axios";
 import { useState } from "react";
 import { showErrorAlert, showSuccessAlert } from "../constants";
+import { useDispatch } from "react-redux";
+import { refreshData } from "../redux/countryReducer";
 
-const useRemoveFromApi = (getAcademicInfo: () => void) => {
+const useRemoveFromApi = () => {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const removeFromApi = async (id: any, type: string) => {
     try {
@@ -22,7 +25,7 @@ const useRemoveFromApi = (getAcademicInfo: () => void) => {
         setLoading(true);
 
         try {
-          const res = await axios.delete(`academic_work_info/${type}/${id}`, {
+          const res = await axios.delete(`basic_info/${type}/${id}`, {
             headers: {
               "Content-Type": "application/json", // Assuming no file data is sent
             },
@@ -30,7 +33,7 @@ const useRemoveFromApi = (getAcademicInfo: () => void) => {
 
           console.log("Response: =>", res);
           showSuccessAlert(res.data.message);
-          getAcademicInfo();
+          dispatch(refreshData());
         } catch (err) {
           console.error(err);
           showErrorAlert("Error occurred");

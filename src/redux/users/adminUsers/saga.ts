@@ -39,6 +39,9 @@ interface UsersData {
     profileImage: File;
     branch_ids: string;
     country_id: any;
+    branch_id: string,
+    region_id: string,
+    country_ids: string
   };
   type: string;
 }
@@ -79,6 +82,9 @@ function* addAdminUser({
     profileImage,
     branch_ids,
     country_id,
+    region_id,
+    branch_id,
+    country_ids
   },
 }: UsersData): SagaIterator {
   try {
@@ -95,6 +101,9 @@ function* addAdminUser({
       profileImage,
       branch_ids,
       country_id,
+      region_id,
+      branch_id,
+      country_ids
     });
     const data = response.data;
 
@@ -137,6 +146,9 @@ function* updateAdminUser({
     profileImage,
     branch_ids,
     country_id,
+    region_id,
+    branch_id,
+    country_ids
   },
 }: UsersData): SagaIterator {
   try {
@@ -153,6 +165,9 @@ function* updateAdminUser({
       profileImage,
       branch_ids,
       country_id,
+      region_id,
+      branch_id,
+      country_ids
     });
     const data = response.data.message;
 

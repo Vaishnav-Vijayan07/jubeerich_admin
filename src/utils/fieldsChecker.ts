@@ -16,6 +16,18 @@ type AcademicItem = {
   backlogs: number;
 };
 
+type StudyPreferenceItem = {
+  id: string;
+  universityId: string;
+  campusId: string;
+  courseTypeId: string;
+  streamId: string;
+  courseId: string;
+  intakeYear: string;
+  intakeMonth: string;
+  estimatedBudget: string;
+};
+
 type ExamItem = {
   id: string;
   exam_name: string;
@@ -43,4 +55,19 @@ export const isAllItemsPresentAcademic = (data: AcademicItem): boolean => {
 };
 export const isAllItemsPresentExam = (data: ExamItem): boolean => {
   return data.exam_name !== "" && data.marks !== "";
+};
+
+export const isAllItemsPresentStudyPreference = (
+  data: StudyPreferenceItem
+): boolean => {
+  return (
+    data.universityId !== "" &&
+    data.campusId !== "" &&
+    data.courseTypeId !== "" &&
+    data.streamId !== "" &&
+    data.courseId !== "" &&
+    data.intakeYear !== "" &&
+    data.intakeMonth !== "" &&
+    data.estimatedBudget !== ""
+  );
 };

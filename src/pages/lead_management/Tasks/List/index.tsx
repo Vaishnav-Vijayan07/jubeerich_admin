@@ -10,11 +10,9 @@ import TaskSection from "./Section";
 import { TaskItemTypes } from "./data";
 import axios from "axios";
 import StudentDetails from "./StudentDetails";
-import { useDispatch } from "react-redux";
 
 // Task List
 const TaskList = () => {
-  const dispatch = useDispatch();
   const [TaskArray, setTaskArray] = useState<TaskItemTypes[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(TaskArray[0]);
   const [initialLoading, setLoading] = useState(false);
@@ -29,21 +27,21 @@ const TaskList = () => {
     axios
       .get(`/tasks`)
       .then((res) => {
-        let pendingArray: any = []
-        let completedArray: any = []
+        let pendingArray: any = [];
+        let completedArray: any = [];
         res.data.data.map((item: any) => {
           if (!item.isCompleted) {
-            pendingArray.push(item)
-          }else{
-            completedArray.push(item)
+            pendingArray.push(item);
+          } else {
+            completedArray.push(item);
           }
-        })
+        });
         // setSelectedTask(res.data.data[0]);
         // setTaskArray(res.data.data);
         // setpendingTasks(res.data.data);
-        setpendingTasks(pendingArray)
-        setTaskArray(completedArray)
-        setSelectedTask(pendingArray[0])
+        setpendingTasks(pendingArray);
+        setTaskArray(completedArray);
+        setSelectedTask(pendingArray[0]);
       })
       .catch((err) => console.error(err))
       .finally(() => {
@@ -57,14 +55,14 @@ const TaskList = () => {
 
   console.log("selectedTask========>", selectedTask);
 
-  if (initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      />
-    );
-  }
+  // if (initialLoading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "50%", left: "50%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <>

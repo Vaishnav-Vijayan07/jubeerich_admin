@@ -100,7 +100,12 @@ export interface TaskItemTypes {
   setTaskArray: React.Dispatch<React.SetStateAction<TaskItemTypes[]>>;
   TaskArray: Array<TaskItemTypes>;
   handleUpdateLeadTitle: (taskId: any, name: any, newLeadTitle: any) => void;
-  handleUpdateStatus: (taskId: number, status_name: string, color: string, status: string) => void;
+  handleUpdateStatus: (
+    taskId: number,
+    status_name: string,
+    color: string,
+    status: string
+  ) => void;
   pickedDate: Date;
 }
 
@@ -604,6 +609,104 @@ const otherTasks = [
   },
 ];
 
+const intakeYearList = [
+  { label: "2022", value: "2022" },
+  { label: "2023", value: "2023" },
+  { label: "2024", value: "2024" },
+  { label: "2025", value: "2025" },
+  { label: "2026", value: "2026" },
+  { label: "2027", value: "2027" },
+  { label: "2028", value: "2028" },
+  { label: "2029", value: "2029" },
+  { label: "2030", value: "2030" },
+  { label: "2031", value: "2031" },
+];
+
+const intakeMonthOptions = [
+  { label: "January", value: "01" },
+  { label: "April", value: "04" },
+  { label: "July", value: "07" },
+  { label: "September", value: "09" },
+  { label: "November", value: "11" },
+];
+
+const courseOptions = [
+  { label: "Computer Science", value: 1 },
+  { label: "Mechanical Engineering", value: 2 },
+  { label: "Business Administration", value: 3 },
+  { label: "Fine Arts", value: 4 },
+  { label: "Biotechnology", value: 5 },
+];
+
+const streamOptions = [
+  { label: "Engineering", value: 1 },
+  { label: "Business", value: 2 },
+  { label: "Arts", value: 3 },
+  { label: "Science", value: 4 },
+  { label: "Medicine", value: 5 },
+];
+
+const courseTypeOptions = [
+  { label: "Undergraduate", value: 1 },
+  { label: "Postgraduate", value: 2 },
+  { label: "Diploma", value: 3 },
+  { label: "Doctorate", value: 4 },
+  { label: "Certificate", value: 5 },
+];
+
+const campusOptions = [
+  { label: "Main Campus", value: 1 },
+  { label: "North Campus", value: 2 },
+  { label: "South Campus", value: 3 },
+  { label: "East Campus", value: 4 },
+  { label: "West Campus", value: 5 },
+];
+
+const universityOptions = [
+  { label: "Harvard University", value: 1 },
+  { label: "Stanford University", value: 2 },
+  { label: "University of Oxford", value: 3 },
+  { label: "MIT", value: 4 },
+  { label: "University of Cambridge", value: 5 },
+];
+
 const allTasks = [...todayTasks, ...upcomingTasks, ...otherTasks];
 
-export { todayTasks, upcomingTasks, otherTasks, allTasks };
+export const Visa_Types = [
+  {
+    label: "Tourist Visa", value: "tourist_visa"
+  },
+  {
+    label: "Business Visa", value: "business_visa"
+  },
+  {
+    label: "Work Visa", value: "work_visa"
+  },
+  {
+    label: "Student Visa", value: "student_visa"
+  },
+  {
+    label: "Transit Visa", value: "transit_visa"
+  },
+  {
+    label: "Permanent Residency Visa", value: "permanent_residency_visa"
+  },
+]
+
+export const visa_decline = 'visa_decline';
+export const visa_approve = 'visa_approve';
+export const travel_history = 'travel_history';
+
+export {
+  todayTasks,
+  upcomingTasks,
+  otherTasks,
+  allTasks,
+  intakeYearList,
+  universityOptions,
+  campusOptions,
+  streamOptions,
+  courseOptions,
+  courseTypeOptions,
+  intakeMonthOptions,
+};
