@@ -672,6 +672,31 @@ const universityOptions = [
 
 const allTasks = [...todayTasks, ...upcomingTasks, ...otherTasks];
 
+export const Visa_Types = [
+  {
+    label: "Tourist Visa", value: "tourist_visa"
+  },
+  {
+    label: "Business Visa", value: "business_visa"
+  },
+  {
+    label: "Work Visa", value: "work_visa"
+  },
+  {
+    label: "Student Visa", value: "student_visa"
+  },
+  {
+    label: "Transit Visa", value: "transit_visa"
+  },
+  {
+    label: "Permanent Residency Visa", value: "permanent_residency_visa"
+  },
+]
+
+export const visa_decline = 'visa_decline';
+export const visa_approve = 'visa_approve';
+export const travel_history = 'travel_history';
+
 export {
   todayTasks,
   upcomingTasks,

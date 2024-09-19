@@ -31,6 +31,7 @@ import moment from "moment";
 import Comments from "./Comments";
 import Attachments from "./Attachments";
 import WorkExpereince from "./WorkExpereince";
+import VisaProcess from "./VisaProcess";
 import EducationDetails from "./EducationDetails";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
@@ -621,6 +622,15 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                         Attachments
                       </Nav.Link>
                     </Nav.Item>
+
+                    <Nav.Item as="li" className="nav-item nav_item_6">
+                      <Nav.Link
+                        eventKey="visa_process"
+                        className="nav-link cursor-pointer"
+                      >
+                        Visa Process
+                      </Nav.Link>
+                    </Nav.Item>
                   </Nav>
 
                   <Tab.Content>
@@ -649,6 +659,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     {activeTab === "work_info" && studentId && (
                       <Suspense fallback={null}>
                         <WorkExpereince studentId={studentId} />
+                      </Suspense>
+                    )}
+
+                    {activeTab === "visa_process" && studentId && (
+                      <Suspense fallback={null}>
+                        <VisaProcess studentId={studentId} />
                       </Suspense>
                     )}
 

@@ -1740,9 +1740,10 @@ const BasicInputElements = withSwal((props: any) => {
                                 ref={fileInputRef}
                               />
                               {selectedFileName[index]?.exam_documents && (
-                                <p style={{ padding: "0%" }} className="mt-2">
-                                  {selectedFileName[index].exam_documents}
-                                </p>
+                                // <p style={{ padding: "0%" }} className="mt-2">
+                                //   {selectedFileName[index].exam_documents}
+                                // </p>
+                                <a href={`${baseUrl}/uploads/${selectedFileName[index].exam_documents}`}>{selectedFileName[index].exam_documents}</a>
                               )}
                             </Form.Group>
                           </Form>
