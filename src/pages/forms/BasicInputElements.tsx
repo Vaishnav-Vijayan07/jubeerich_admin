@@ -132,7 +132,10 @@ const BasicInputElements = withSwal((props: any) => {
     region,
     regionData,
     franchisees,
-  } = props;
+  } = props;  
+
+  console.log("channel ==>", channels);
+  
 
   const [sourceData, setSourceData] = useState<any>(source);
   const [channelData, setChannelData] = useState<any>(channels);

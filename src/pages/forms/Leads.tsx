@@ -27,10 +27,13 @@ import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import { getRegion } from "../../redux/regions/actions";
 import { getFranchise } from "../../redux/franchise/actions";
+import useDropdownData from "../../hooks/useDropdownDatas";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   const [counsellors, setCounsellors] = useState([])
+  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
+
   let userRole: any;
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
@@ -44,11 +47,7 @@ const Leads = () => {
     loading,
     initialLoading,
     country,
-    source,
     categories,
-    // regions,
-    channels,
-    office,
     status,
     users,
     region,
@@ -61,10 +60,7 @@ const Leads = () => {
     loading: state.Leads.loading,
     initialLoading: state.Leads.initialloading,
     country: state.Country.countries,
-    source: state.Source.sources.data,
     categories: state.Category.category.data,
-    channels: state.Channels.channels.data,
-    office: state.OfficeTypes.officeTypes,
     status: state.Status.status.data,
     users: state.Users.adminUsers,
     region: state.Region.regions,
@@ -72,29 +68,31 @@ const Leads = () => {
   }));
 
   useEffect(() => {
-    dispatch(getCountry());
-    dispatch(getAdminUsers());
-    dispatch(getCategory());
-    dispatch(getChannel());
-    dispatch(getSource());
-    dispatch(getStatus());
-    dispatch(getOfficeTypeData());
-    dispatch(getRegion());
-    dispatch(getFranchise());
-    fetchAllCounsellors()
-  }, [dispatch]);
+    // dispatch(getCountry());
+    // dispatch(getAdminUsers());
+    // dispatch(getCategory());
+    // dispatch(getChannel());
+    // dispatch(getSource());
+    // dispatch(getStatus());
+    // dispatch(getOfficeTypeData());
+    // dispatch(getRegion());
+    // dispatch(getFranchise());
+    // fetchAllCounsellors()
+  }, []);
 
   console.log('Region From Lead', region);
   console.log('Type From Lead', categories);
   
 
   useEffect(() => {
+    console.log("here");
+    
     if (userRole == 4) {
       dispatch(getLeadsTL());
     } else {
       dispatch(getLead());
     }
-  }, [dispatch, userRole])
+  }, [userRole])
 
   const fetchAllCounsellors = () => {
     axios.get("/get_all_counsellors").then((res) => {
@@ -111,80 +109,6 @@ const Leads = () => {
       console.log(err)
     })
   }
-
-  const countryData = useMemo(() => {
-    if (!country) return [];
-    return country.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.country_name,
-    }));
-  }, [country]);
-
-  const sourceData = useMemo(() => {
-    if (!source) return [];
-    return source.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.source_name,
-      lead_type: item.lead_type_id
-    }));
-  }, [source]);
-
-  // const categoriesData = useMemo(() => {
-  //   if (!categories) return [];
-  //   return categories.map((item: any) => ({
-  //     value: item.id.toString(),
-  //     label: item.category_name,
-  //   }));
-  // }, [categories]);
-
-  const leadTypesData = useMemo(() => {
-    if (!categories) return [];
-    return categories.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.name,
-    }));
-  }, [categories]);
-
-  const channelsData = useMemo(() => {
-    if (!channels) return [];
-    return channels.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.channel_name,
-      source_id: item?.source_id
-    }));
-  }, [channels]);
-
-  const officeData = useMemo(() => {
-    if (!office) return [];
-    return office?.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.office_type_name,
-    }));
-  }, [office]);
-
-  const statusData = useMemo(() => {
-    if (!status) return [];
-    return status?.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.status_name,
-    }));
-  }, [status]);
-
-  const userData = useMemo(() => {
-    if (!users) return [];
-    return users?.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.name,
-    }));
-  }, [users]);
-
-  const regionData = useMemo(() => {
-    if (!region) return [];
-    return region?.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.region_name,
-    }));
-  }, [region]);
 
   const franchiseeData = useMemo(() => {
     if (!franchisees) return [];
@@ -219,21 +143,20 @@ const Leads = () => {
         <Col>
           <BasicInputElements
             state={state}
-            country={countryData || []}
-            source={sourceData || []}
-            // categories={categoriesData || []}
-            categories={leadTypesData || []}
+            country={dropdownData.countries || []}
+            source={dropdownData.sources|| []}
+            categories={dropdownData.leadTypes || []}
             user={user || null}
             cres={cres || []}
-            channels={channelsData || []}
-            office={officeData || []}
+            channels={dropdownData.channels || []}
+            office={dropdownData.officeTypes || []}
             error={error}
             loading={loading}
-            status={statusData || []}
-            counsellors={counsellors}
-            userData={userData}
-            region={regionData}
-            regionData={regionData}
+            status={dropdownData.statuses || []}
+            counsellors={counsellors || []}
+            userData={dropdownData.adminUsers || []}
+            region={dropdownData.regions}
+            regionData={dropdownData.regions || []}
             franchisees={franchiseeData}
           />
         </Col>
