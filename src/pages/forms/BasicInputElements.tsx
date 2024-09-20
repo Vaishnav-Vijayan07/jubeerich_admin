@@ -94,9 +94,6 @@ const initialValidationState = {
   city: "",
   preferred_country: "",
   office_type: "",
-  //   region_id: "",
-  //   counsiler_id: "",
-  //   branch_id: "",
   updated_by: "",
   remarks: "",
   lead_received_date: "",
@@ -106,13 +103,10 @@ const initialValidationState = {
   lead_type_id: "",
 };
 
-const languageFormInitialState = [
-  { id: "", exam_type: "", marks: "", exam_date: "" },
-];
+const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-  const animatedComponents = makeAnimated();
   let userRole: any;
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
@@ -143,12 +137,6 @@ const BasicInputElements = withSwal((props: any) => {
   const [sourceData, setSourceData] = useState<any>(source);
   const [channelData, setChannelData] = useState<any>(channels);
 
-
-  
-
-  console.log("counsellors ===>", counsellors);
-  console.log("categories ===>", categories);
-
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);
@@ -177,9 +165,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [modal, setModal] = useState<boolean>(false);
   const [selectExam, setSelectExam] = useState<boolean>(false);
   const fileInputRef = useRef<any>(null);
-  const [languageForm, setLanguageForm] = useState<any[]>([
-    { id: "", exam_type: "", marks: "" },
-  ]);
+  const [languageForm, setLanguageForm] = useState<any[]>([{ id: "", exam_type: "", marks: "" }]);
   const [filteredItems, setFilteredItems] = useState<any[]>([]); // Filtered data
   const [filters, setFilters] = useState({
     status_id: "",
@@ -203,31 +189,23 @@ const BasicInputElements = withSwal((props: any) => {
 
   const applyFilters = () => {
     let tempItems = [...state];
-
-    console.log("tempItems ==>", tempItems);
-
     if (filters.status_id) {
       tempItems = tempItems.filter((item) => item.status_id == filters.status_id);
     }
-
     if (filters.source_id) {
       tempItems = tempItems.filter((item) => item.source_id == filters.source_id);
     }
-
     if (filters.updated_by) {
       tempItems = tempItems.filter((item) => item.updated_by == filters.updated_by);
     }
-
     if (filters.counsiler_id) {
       tempItems = tempItems.filter((item) => item.counselors.some((counselor: any) => counselor.id == filters.counsiler_id));
     }
-
     if (filters.preferredCountries) {
       tempItems = tempItems.filter((item) =>
         item.preferredCountries.some((preferredCountry: any) => preferredCountry.id == filters.preferredCountries)
       );
     }
-
     if (filters.lead_received_date) {
       tempItems = tempItems.filter((item) => {
         const itemDate = new Date(item.lead_received_date).toDateString();
@@ -235,7 +213,6 @@ const BasicInputElements = withSwal((props: any) => {
         return itemDate === filterDate;
       });
     }
-
     if (filters.followup_date) {
       tempItems = tempItems.filter((item) => {
         const itemDate = new Date(item.followup_date).toDateString();
@@ -243,7 +220,6 @@ const BasicInputElements = withSwal((props: any) => {
         return itemDate === filterDate;
       });
     }
-
     setFilteredItems(tempItems);
   };
 
@@ -320,11 +296,6 @@ const BasicInputElements = withSwal((props: any) => {
     lead_received_date: yup.date().required("Date is required"),
   });
 
-  // console.log("isUpdate ======>", isUpdate);
-
-  /*
-   * form methods
-   */
   const methods = useForm({
     resolver: yupResolver(validationSchema), // Integrate yup with react-hook-form
     defaultValues: initialState,
@@ -384,9 +355,6 @@ const BasicInputElements = withSwal((props: any) => {
       city: item?.city || "",
       preferred_country: countryArray,
       office_type: item?.office_type || "",
-      // region_id: item?.region_id || "",
-      // counsiler_id: item?.counsiler_id || "",
-      // branch_id: item?.branch_id || "",
       updated_by: item?.updated_by || "",
       remarks: item?.remarks || "",
       lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
@@ -401,14 +369,10 @@ const BasicInputElements = withSwal((props: any) => {
 
     if (item?.exam_details?.length) {
       setSelectExam(true);
-      // setLanguageForm(item?.exam_details);
       setLanguageForm(item?.exams);
     }
 
     if (item?.exam_documents?.length) {
-      console.log("File", item?.exam_documents);
-
-      // setSelectedFile(item?.exam_documents)
       setSelectedFileName(item?.exam_documents);
     }
 
@@ -477,18 +441,14 @@ const BasicInputElements = withSwal((props: any) => {
       case "source_id":
         setSelectedSource(selected);
         setSelectedChannel(null);
-        let filteredChannel = channels.filter(
-          (data: any) => data.source_id == selected.value
-        );
+        let filteredChannel = channels.filter((data: any) => data.source_id == selected.value);
         setChannelData(filteredChannel);
         break;
       case "category_id":
         setSelectedSource(null);
         setSelectedChannel(null);
         setSelectedCategory(selected);
-        let filteredSource = source.filter(
-          (data: any) => data.lead_type == selected.value
-        );
+        let filteredSource = source.filter((data: any) => data.lead_type == selected.value);
         setSourceData(filteredSource);
         break;
       case "preferred_country":
@@ -546,15 +506,9 @@ const BasicInputElements = withSwal((props: any) => {
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     let exam_details = languageForm.length ? languageForm : [];
-
-    console.log("Form Data", formData);
-    console.log("Exam Data", exam_details);
-
-    // Validate the form using yup
     try {
-      await validationSchema.validate(formData, { abortEarly: false });
+      // await validationSchema.validate(formData, { abortEarly: false });
 
       swal
         .fire({
@@ -583,10 +537,8 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.source_id,
                     formData.channel_id,
                     formData.city,
-                    // formData.preferred_country,
                     JSON.stringify(formData.preferred_country),
                     formData.office_type,
-                    // null, // Region Nulled
                     formData.region_id ? formData.region_id : null,
                     null,
                     null,
@@ -595,18 +547,12 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.lead_received_date,
                     formData.ielts,
                     formData.zipcode,
-                    exam_details[0]?.exam_type
-                      ? JSON.stringify(exam_details)
-                      : null,
+                    exam_details[0]?.exam_type ? JSON.stringify(exam_details) : null,
                     selectedFile,
                     formData.franchise_id ? formData.franchise_id : null
                   )
                 );
-                // setSelectedFile([])
               } else {
-                // Handle add logic
-                console.log("here leads");
-
                 dispatch(
                   addLeads(
                     formData.full_name,
@@ -617,10 +563,8 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.source_id,
                     formData.channel_id,
                     formData.city,
-                    // formData.preferred_country,
                     JSON.stringify([formData.preferred_country]),
                     formData.office_type,
-                    // null, // Region Nulled
                     formData.region_id ? formData.region_id : null,
                     null,
                     null,
@@ -629,14 +573,11 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.lead_received_date,
                     formData.ielts,
                     formData.zipcode,
-                    exam_details[0]?.exam_type
-                      ? JSON.stringify(exam_details)
-                      : null,
+                    exam_details[0]?.exam_type ? JSON.stringify(exam_details) : null,
                     selectedFile,
                     formData.franchise_id ? formData.franchise_id : null
                   )
                 );
-                // setSelectedFile([])
               }
             }
           }
@@ -645,9 +586,6 @@ const BasicInputElements = withSwal((props: any) => {
           console.log(err);
         });
     } catch (validationError) {
-      // Handle validation errors
-      console.log("throw");
-
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
         validationError.inner.forEach((error) => {
@@ -755,8 +693,6 @@ const BasicInputElements = withSwal((props: any) => {
                 null: "", // Handle the string "null" explicitly
                 undefined: "", // Handle the string "undefined" explicitly
               };
-
-              // Return the corresponding display text or "Unknown" if not found
               return <span>{displayText[assignType] || ""}</span>;
             },
           },
@@ -773,9 +709,7 @@ const BasicInputElements = withSwal((props: any) => {
               return (
                 <ul style={{ listStyle: "none", padding: 0 }}>
                   {counselors && counselors.length > 0 ? (
-                    counselors.map((item: any) => (
-                      <li key={item?.counselor_name}>{item?.counselor_name}</li>
-                    ))
+                    counselors.map((item: any) => <li key={item?.counselor_name}>{item?.counselor_name}</li>)
                   ) : (
                     <li>Not assigned</li>
                   )}
@@ -823,8 +757,6 @@ const BasicInputElements = withSwal((props: any) => {
     setIsUpdate(false);
     handleResetValues();
   };
-
-  // console.log("form data:", formData);
 
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
@@ -1027,11 +959,7 @@ const BasicInputElements = withSwal((props: any) => {
     setLanguageForm(newFields);
   };
 
-  const handleRemoveLanguageForm = async (
-    index: number,
-    e: any,
-    exam_type: string
-  ) => {
+  const handleRemoveLanguageForm = async (index: number, e: any, exam_type: string) => {
     const payload = {
       id: formData?.id,
       exam_type: exam_type,
@@ -1082,36 +1010,10 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  //   const handleViewFile = (event: any) => {
-  //     event.preventDefault();
-
-  //   const { file_name, file_path } = f;
-  //   const fileUrl = `${baseUrl}/${file_path}`;
-
-  //   const link = document.createElement("a");
-  //   link.setAttribute("target", "_blank");
-
-  //   link.href = fileUrl;
-  //   link.setAttribute("download", file_name);
-
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-
-  // };
-
   return (
     <>
       <Row className="justify-content-between px-2">
-        {/* <Col lg={5} className="bg-white p-3"> */}
-
-        <Modal
-          show={modal}
-          onHide={toggle}
-          dialogClassName={className}
-          // size={size}
-          scrollable={scroll}
-        >
+        <Modal show={modal} onHide={toggle} dialogClassName={className} scrollable={scroll}>
           <Form onSubmit={onSubmit} key={"lead-form"}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Lead Management</h4>
@@ -1133,17 +1035,8 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Label>
                       <span className="text-danger fs-4">* </span>Email
                     </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.email && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.email}
-                      </Form.Text>
-                    )}
+                    <Form.Control type="text" name="email" value={formData.email} onChange={handleInputChange} />
+                    {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -1157,15 +1050,12 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="category_id"
-                      // options={[{ value: null, label: "None" }, ...categories]}
                       options={categories}
                       value={selectedCategory}
                       onChange={handleDropDowns}
                     />
                     {validationErrors.category_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.category_id}
-                      </Form.Text>
+                      <Form.Text className="text-danger">{validationErrors.category_id}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -1180,11 +1070,9 @@ const BasicInputElements = withSwal((props: any) => {
                       styles={customStyles}
                       classNamePrefix="react-select"
                       name="source_id"
-                      // options={[{ value: null, label: "None" }, ...sourceData]}
                       options={source}
                       value={selectedSource}
                       onChange={handleDropDowns}
-                      // isDisabled={!selectedCategory}
                     />
                     {validationErrors.source_id && <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>}
                   </Form.Group>
@@ -1200,7 +1088,6 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="channel_id"
-                      // options={[{ value: null, label: "None" }, ...channelData]}
                       options={channelData}
                       value={selectedChannel}
                       onChange={handleDropDowns}
@@ -1261,18 +1148,11 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label><span className="text-danger fs-4"></span>Zipcode</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="zipcode"
-                      value={formData.zipcode}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.zipcode && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.zipcode}
-                      </Form.Text>
-                    )}
+                    <Form.Label>
+                      <span className="text-danger fs-4"></span>Zipcode
+                    </Form.Label>
+                    <Form.Control type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
+                    {validationErrors.zipcode && <Form.Text className="text-danger">{validationErrors.zipcode}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -1377,23 +1257,15 @@ const BasicInputElements = withSwal((props: any) => {
                               aria-label="Default select example"
                               name="exam_type"
                               value={data.exam_type}
-                              onChange={(e) =>
-                                handleLanguageInputChange(index, e)
-                              }
+                              onChange={(e) => handleLanguageInputChange(index, e)}
                             >
                               <option value="">Choose..</option>
                               {examtypes?.map((item: any) => (
                                 <option
                                   value={item?.name}
                                   key={item?.name}
-                                  onClick={(e) =>
-                                    handleLanguageInputChange(index, e)
-                                  }
-                                  defaultValue={
-                                    item.name === formData.exam
-                                      ? item.name
-                                      : undefined
-                                  }
+                                  onClick={(e) => handleLanguageInputChange(index, e)}
+                                  defaultValue={item.name === formData.exam ? item.name : undefined}
                                 >
                                   {item.name}
                                 </option>
@@ -1402,10 +1274,7 @@ const BasicInputElements = withSwal((props: any) => {
                           </Form.Group>
                         </Col>
                         <Col md={4} lg={4}>
-                          <Form.Group
-                            className="mb-3"
-                            controlId="listening_score"
-                          >
+                          <Form.Group className="mb-3" controlId="listening_score">
                             <Form.Label>Listening Score</Form.Label>
                             <Form.Control
                               type="text"
@@ -1418,10 +1287,7 @@ const BasicInputElements = withSwal((props: any) => {
                           </Form.Group>
                         </Col>
                         <Col md={4} lg={4}>
-                          <Form.Group
-                            className="mb-3"
-                            controlId="speaking_score"
-                          >
+                          <Form.Group className="mb-3" controlId="speaking_score">
                             <Form.Label>Speaking Score</Form.Label>
                             <Form.Control
                               type="text"
@@ -1436,10 +1302,7 @@ const BasicInputElements = withSwal((props: any) => {
                       </Row>
                       <Row>
                         <Col md={4} lg={4}>
-                          <Form.Group
-                            className="mb-3"
-                            controlId="reading_score"
-                          >
+                          <Form.Group className="mb-3" controlId="reading_score">
                             <Form.Label>Reading Score</Form.Label>
                             <Form.Control
                               type="text"
@@ -1452,10 +1315,7 @@ const BasicInputElements = withSwal((props: any) => {
                           </Form.Group>
                         </Col>
                         <Col md={4} lg={4}>
-                          <Form.Group
-                            className="mb-3"
-                            controlId="writing_score"
-                          >
+                          <Form.Group className="mb-3" controlId="writing_score">
                             <Form.Label>Writing Score</Form.Label>
                             <Form.Control
                               type="text"
@@ -1483,14 +1343,8 @@ const BasicInputElements = withSwal((props: any) => {
                           </Form.Group>
                         </Col>
                         <Col className="d-flex justify-content-between">
-                          <Form
-                            name="exam_documents"
-                            encType="multipart/form-data"
-                          >
-                            <Form.Group
-                              className="mb-3"
-                              controlId="profileImage"
-                            >
+                          <Form name="exam_documents" encType="multipart/form-data">
+                            <Form.Group className="mb-3" controlId="profileImage">
                               <Form.Label>Upload Score Card</Form.Label>
                               <Form.Control
                                 name="exam_documents"
@@ -1501,10 +1355,9 @@ const BasicInputElements = withSwal((props: any) => {
                                 ref={fileInputRef}
                               />
                               {selectedFileName[index]?.exam_documents && (
-                                // <p style={{ padding: "0%" }} className="mt-2">
-                                //   {selectedFileName[index].exam_documents}
-                                // </p>
-                                <a href={`${baseUrl}/uploads/${selectedFileName[index].exam_documents}`}>{selectedFileName[index].exam_documents}</a>
+                                <a href={`${baseUrl}/uploads/${selectedFileName[index].exam_documents}`}>
+                                  {selectedFileName[index].exam_documents}
+                                </a>
                               )}
                             </Form.Group>
                           </Form>
@@ -1516,10 +1369,7 @@ const BasicInputElements = withSwal((props: any) => {
                               type="date"
                               name="exam_date"
                               // value={data?.exam_date}
-                              value={
-                                moment(data?.exam_date).format("YYYY-MM-DD") ??
-                                moment(data?.exam_date).format("YYYY-MM-DD")
-                              }
+                              value={moment(data?.exam_date).format("YYYY-MM-DD") ?? moment(data?.exam_date).format("YYYY-MM-DD")}
                               onChange={(e) => {
                                 handleLanguageInputChange(index, e);
                               }}
@@ -1529,15 +1379,10 @@ const BasicInputElements = withSwal((props: any) => {
                         <Col md={4} lg={4} className="mt-3">
                           <i
                             className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1"
-                            onClick={(e) =>
-                              handleRemoveLanguageForm(index, e, data.exam_type)
-                            }
+                            onClick={(e) => handleRemoveLanguageForm(index, e, data.exam_type)}
                           ></i>
                           {selectExam && (
-                            <i
-                              className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1"
-                              onClick={handleAddLanguageForm}
-                            ></i>
+                            <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>
                           )}
                         </Col>
                       </Row>
