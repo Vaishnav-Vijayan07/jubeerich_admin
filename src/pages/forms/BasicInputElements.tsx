@@ -1041,6 +1041,25 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
 
                 <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="phone">
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span>Phone
+                    </Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.phone && (
+                      <Form.Text className="text-danger">
+                        {validationErrors.phone}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>
                       <span className="text-danger fs-4">* </span>Lead Type

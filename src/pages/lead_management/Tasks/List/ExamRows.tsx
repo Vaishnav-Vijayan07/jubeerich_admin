@@ -1,6 +1,7 @@
 import React, { useRef, useCallback } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { examtypes } from "../../../forms/data";
+import moment from "moment";
 
 interface ExamForm {
   id?: number;
@@ -31,16 +32,18 @@ const ExamData: React.FC<ExamDataProps> = ({
     fileInputRefs.current[index]?.click();
   }, []);
 
-  const renderExamFields = (item: ExamForm, index: number) => (
+  // const renderExamFields = (item: ExamForm, index: number) => (
+  const renderExamFields = (item: any, index: number) => (
     <Row key={index}>
       <Col md={3} lg={3}>
         <Form.Group className="mb-3">
           <Form.Label>Exam Type</Form.Label>
           <Form.Select
             aria-label="Select exam type"
-            name="exam_name"
+            // name="exam_name"
+            name="exam_type"
             onChange={(e) => handleExamInputChange(index, e)}
-            value={item.exam_name}
+            value={item.exam_type}
           >
             <option value="">Choose..</option>
             {examtypes.map((type) => (
@@ -51,7 +54,7 @@ const ExamData: React.FC<ExamDataProps> = ({
           </Form.Select>
         </Form.Group>
       </Col>
-      <Col md={3} lg={3}>
+      {/* <Col md={3} lg={3}>
         <Form.Group className="mb-3">
           <Form.Label>Exam Score</Form.Label>
           <Form.Control
@@ -59,6 +62,102 @@ const ExamData: React.FC<ExamDataProps> = ({
             name="marks"
             onChange={(e) => handleExamInputChange(index, e)}
             value={item.marks}
+          />
+        </Form.Group>
+      </Col> */}
+      <Col md={3} lg={3}>
+        <Form.Group
+          className="mb-3"
+          controlId="listening_score"
+        >
+          <Form.Label>Listening Score</Form.Label>
+          <Form.Control
+            type="text"
+            name="listening_score"
+            value={item.listening_score}
+            onChange={(e) => {
+              handleExamInputChange(index, e);
+            }}
+          />
+        </Form.Group>
+      </Col>
+      <Col md={4} lg={4}>
+        <Form.Group
+          className="mb-3"
+          controlId="speaking_score"
+        >
+          <Form.Label>Speaking Score</Form.Label>
+          <Form.Control
+            type="text"
+            name="speaking_score"
+            value={item.speaking_score}
+            onChange={(e) => {
+              handleExamInputChange(index, e);
+            }}
+          />
+        </Form.Group>
+      </Col>
+      <Col md={4} lg={4}>
+        <Form.Group
+          className="mb-3"
+          controlId="reading_score"
+        >
+          <Form.Label>Reading Score</Form.Label>
+          <Form.Control
+            type="text"
+            name="reading_score"
+            value={item.reading_score}
+            onChange={(e) => {
+              handleExamInputChange(index, e);
+            }}
+          />
+        </Form.Group>
+      </Col>
+      <Col md={4} lg={4}>
+        <Form.Group
+          className="mb-3"
+          controlId="writing_score"
+        >
+          <Form.Label>Writing Score</Form.Label>
+          <Form.Control
+            type="text"
+            name="writing_score"
+            value={item.writing_score}
+            onChange={(e) => {
+              handleExamInputChange(index, e);
+            }}
+          />
+        </Form.Group>
+      </Col>
+      <Col md={4} lg={4}>
+        <Form.Group className="mb-3" controlId="marks">
+          <Form.Label>Overall Score</Form.Label>
+          <Form.Control
+            type="text"
+            // name="marks"
+            name="overall_score"
+            // value={data.marks}
+            value={item.overall_score}
+            onChange={(e) => {
+              handleExamInputChange(index, e);
+            }}
+          />
+        </Form.Group>
+      </Col>
+      <Col md={4} lg={4}>
+        <Form.Group className="mb-3" controlId="exam_date">
+          <Form.Label>Exam Date</Form.Label>
+          <Form.Control
+            type="date"
+            name="exam_date"
+            // value={data?.exam_date}
+            value={
+              moment(item?.exam_date).format("YYYY-MM-DD") ??
+              moment(item?.exam_date).format("YYYY-MM-DD")
+            }
+            onChange={(e) => {
+              handleExamInputChange(index, e);
+            }}
           />
         </Form.Group>
       </Col>
@@ -80,7 +179,8 @@ const ExamData: React.FC<ExamDataProps> = ({
           </>
         ) : (
           <Form.Group className="mb-3">
-            <Form.Label>Upload File</Form.Label>
+            {/* <Form.Label>Upload File</Form.Label> */}
+            <Form.Label>Upload Score Card</Form.Label>
             <Form.Control
               name="exam_documents"
               type="file"
