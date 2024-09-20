@@ -1,11 +1,19 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
 import swal from "sweetalert2";
-import { showErrorAlert, showSuccessAlert } from "../constants";
+import { AUTH_SESSION_KEY, showErrorAlert, showSuccessAlert } from "../constants";
 import {
   isAllItemsPresentAcademic,
   isAllItemsPresentExam,
 } from "../utils/fieldsChecker";
+
+let userId: any;
+let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+
+if (userInfo) {
+  let { user_id } = JSON.parse(userInfo);
+  userId = user_id
+}
 
 const useSaveStudentAcademicInfo = (
   studentId: number,
@@ -46,6 +54,27 @@ const useSaveStudentAcademicInfo = (
         });
       }
 
+      // if (examForm.length > 0) {
+      //   const validItems = examForm.filter((item: any) =>
+      //     isAllItemsPresentExam(item)
+      //   );
+
+      //   validItems.forEach((item: any, index: number) => {
+      //     const itemId = item.id ?? 0;
+
+      //     newFormData.append(`exam_details[${index}][id]`, itemId);
+      //     newFormData.append(
+      //       `exam_details[${index}][exam_name]`,
+      //       item.exam_name
+      //     );
+      //     newFormData.append(`exam_details[${index}][marks]`, item.marks);
+      //     newFormData.append(`exam_details[${index}][document]`, item.document);
+      //     if (typeof item?.exam_documents === "object") {
+      //       newFormData.append(`exam_documents`, item.exam_documents);
+      //     }
+      //   });
+      // }
+
       if (examForm.length > 0) {
         const validItems = examForm.filter((item: any) =>
           isAllItemsPresentExam(item)
@@ -56,11 +85,17 @@ const useSaveStudentAcademicInfo = (
 
           newFormData.append(`exam_details[${index}][id]`, itemId);
           newFormData.append(
-            `exam_details[${index}][exam_name]`,
-            item.exam_name
+            `exam_details[${index}][exam_type]`,
+            item.exam_type
           );
-          newFormData.append(`exam_details[${index}][marks]`, item.marks);
-          newFormData.append(`exam_details[${index}][document]`, item.document);
+          newFormData.append(`exam_details[${index}][score_card]`, item.document);
+          newFormData.append(`exam_details[${index}][listening_score]`, item.listening_score);
+          newFormData.append(`exam_details[${index}][speaking_score]`, item.speaking_score);
+          newFormData.append(`exam_details[${index}][reading_score]`, item.reading_score);
+          newFormData.append(`exam_details[${index}][writing_score]`, item.writing_score);
+          newFormData.append(`exam_details[${index}][overall_score]`, item.overall_score);
+          newFormData.append(`exam_details[${index}][exam_date]`, item.exam_date);
+          newFormData.append(`exam_details[${index}][updated_by]`, userId);
           if (typeof item?.exam_documents === "object") {
             newFormData.append(`exam_documents`, item.exam_documents);
           }

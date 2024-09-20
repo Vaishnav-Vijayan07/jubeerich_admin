@@ -19,12 +19,25 @@ const initialStateAcademic = {
   backlogs: 0,
 };
 
+// const initialStateExam = {
+//   exam_name: "",
+//   marks: "",
+//   exam_documents: null,
+//   document: null,
+// };
+
 const initialStateExam = {
-  exam_name: "",
-  marks: "",
+  exam_type: "",
+  score_card: "",
+  listening_score: "",
+  speaking_score: "",
+  reading_score: "",
+  writing_score: "",
+  overall_score: "",
+  exam_date: "",
   exam_documents: null,
   document: null,
-};
+}
 
 const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
@@ -194,13 +207,16 @@ const AcademicInfo = withSwal((props: any) => {
             <Row>
               <ExamData
                 examForm={examForm}
+                // addMoreExamForm={() =>
+                //   addFormField(setExamForm, {
+                //     exam_name: "",
+                //     marks: "",
+                //     exam_documents: null,
+                //     document: null,
+                //   })
+                // }
                 addMoreExamForm={() =>
-                  addFormField(setExamForm, {
-                    exam_name: "",
-                    marks: "",
-                    exam_documents: null,
-                    document: null,
-                  })
+                  addFormField(setExamForm, initialStateExam)
                 }
                 removeExamForm={(index, itemId) =>
                   removeFormField(setExamForm, index, itemId, "exam")
