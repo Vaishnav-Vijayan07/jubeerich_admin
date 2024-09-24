@@ -8,7 +8,7 @@ interface ExamForm {
   exam_name: string;
   marks: string;
   exam_documents: File | null;
-  document: string | null;
+  score_card: string | null;
 }
 
 interface ExamDataProps {
@@ -35,7 +35,7 @@ const ExamData: React.FC<ExamDataProps> = ({
   // const renderExamFields = (item: ExamForm, index: number) => (
   const renderExamFields = (item: any, index: number) => (
     <Row key={index}>
-      <Col md={3} lg={3}>
+      <Col md={4} lg={4}>
         <Form.Group className="mb-3">
           <Form.Label>Exam Type</Form.Label>
           <Form.Select
@@ -65,7 +65,7 @@ const ExamData: React.FC<ExamDataProps> = ({
           />
         </Form.Group>
       </Col> */}
-      <Col md={3} lg={3}>
+      <Col md={4} lg={4}>
         <Form.Group
           className="mb-3"
           controlId="listening_score"
@@ -166,9 +166,9 @@ const ExamData: React.FC<ExamDataProps> = ({
         lg={6}
         className="d-flex justify-content-between align-items-center"
       >
-        {item.document ? (
+        {item.score_card ? (
           <>
-            <p onClick={() => triggerFileInput(index)}>{item.document}</p>
+            <p onClick={() => triggerFileInput(index)}>{item.score_card}</p>
             <Form.Control
               name="exam_documents"
               type="file"
