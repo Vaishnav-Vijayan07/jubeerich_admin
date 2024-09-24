@@ -116,6 +116,17 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
               type="file"
               onChange={handleFileChange}
             />
+            {typeof details.mark_sheet === "string" && (
+              <div className="mt-2">
+                <a
+                  href={`${baseUrl}/uploads/educationDocuments/${details.mark_sheet}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="mdi mdi-download me-1"></i> mark_sheet
+                </a>
+              </div>
+            )}
           </Form.Group>
         </Col>
 
@@ -130,6 +141,17 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
               type="file"
               onChange={handleFileChange}
             />
+          {typeof details.certificate === "string" && (
+            <div className="mt-2">
+              <a
+                href={`${baseUrl}/uploads/educationDocuments/${details.certificate}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="mdi mdi-download me-1"></i> certificate
+              </a>
+            </div>
+          )}
           </Form.Group>
         </Col>
 
@@ -144,74 +166,19 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
               type="file"
               onChange={handleFileChange}
             />
+            {typeof details.admit_card === "string" && (
+              <div className="mt-2">
+                <a
+                  href={`${baseUrl}/uploads/educationDocuments/${details.admit_card}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="mdi mdi-download me-1"></i> admit_card
+                </a>
+              </div>
+            )}
           </Form.Group>
         </Col>
-
-        <Row className="mb-2">
-          <Col md={4} className="">
-            {details?.mark_sheet && (
-              <div>
-                <img
-                  src={
-                    details?.id
-                      ? `${baseUrl}/uploads/educationDocuments/${details?.mark_sheet}`
-                      : details?.mark_sheet instanceof File
-                      ? URL.createObjectURL(details?.mark_sheet)
-                      : details?.mark_sheet
-                  } // URL from the API or previously saved file
-                  alt="Uploaded Mark Sheet"
-                  style={{
-                    width: "100px",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }} // Adjust size and style as needed
-                />
-              </div>
-            )}
-          </Col>
-          <Col md={4} className="">
-            {details?.certificate && (
-              <div>
-                <img
-                  src={
-                    details?.id
-                      ? `${baseUrl}/uploads/educationDocuments/${details?.certificate}`
-                      : details?.certificate instanceof File
-                      ? URL.createObjectURL(details?.certificate)
-                      : details?.certificate
-                  } // URL from the API or previously saved file
-                  alt="Uploaded Mark Sheet"
-                  style={{
-                    width: "100px",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }} // Adjust size and style as needed
-                />
-              </div>
-            )}
-          </Col>
-          <Col md={4} className="">
-            {details?.admit_card && (
-              <div>
-                <img
-                  src={
-                    details?.id
-                      ? `${baseUrl}/uploads/educationDocuments/${details?.admit_card}`
-                      : details?.admit_card instanceof File
-                      ? URL.createObjectURL(details?.admit_card)
-                      : details?.admit_card
-                  } // URL from the API or previously saved file
-                  alt="Uploaded Mark Sheet"
-                  style={{
-                    width: "100px",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }} // Adjust size and style as needed
-                />
-              </div>
-            )}
-          </Col>
-        </Row>
       </Row>
     </>
   );

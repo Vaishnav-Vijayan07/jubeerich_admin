@@ -33,6 +33,7 @@ import Attachments from "./Attachments";
 import WorkExpereince from "./WorkExpereince";
 import VisaProcess from "./VisaProcess";
 import EducationDetails from "./EducationDetails";
+import FundPlan from "./FundPlan";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const AcademicInfo = lazy(() => import("./AcademicInfo"));
@@ -605,6 +606,15 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       </Nav.Link>
                     </Nav.Item>
 
+                    <Nav.Item as="li" className="nav-item nav_item_3">
+                      <Nav.Link
+                        eventKey="fund_plan"
+                        className="nav-link cursor-pointer"
+                      >
+                        Fund Plan
+                      </Nav.Link>
+                    </Nav.Item>
+
                     <Nav.Item as="li" className="nav-item nav_item_4">
                       <Nav.Link
                         eventKey="comments"
@@ -636,7 +646,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   <Tab.Content>
                     {/* Conditionally render the content based on the active tab */}
                     {activeTab === "basic_info" && studentId && (
-                      <Suspense fallback={<div>Loading Basic Info...</div>}>
+                      <Suspense fallback={null}>
                         <BasicInfo
                           studentId={studentId}
                           Countries={Countries}
@@ -671,6 +681,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     {activeTab === "study_preference" && studentId && (
                       <Suspense fallback={null}>
                         <StudyPreference studentId={studentId} />
+                      </Suspense>
+                    )}
+
+                    {activeTab === "fund_plan" && studentId && (
+                      <Suspense fallback={null}>
+                        <FundPlan student_id={studentId} />
                       </Suspense>
                     )}
 
