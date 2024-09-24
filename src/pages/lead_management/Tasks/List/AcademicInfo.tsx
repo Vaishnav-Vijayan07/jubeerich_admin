@@ -23,12 +23,11 @@ const initialStateAcademic = {
 //   exam_name: "",
 //   marks: "",
 //   exam_documents: null,
-//   document: null,
+//   score_card: null,
 // };
 
 const initialStateExam = {
   exam_type: "",
-  score_card: "",
   listening_score: "",
   speaking_score: "",
   reading_score: "",
@@ -36,8 +35,8 @@ const initialStateExam = {
   overall_score: "",
   exam_date: "",
   exam_documents: null,
-  document: null,
-}
+  score_card: null,
+};
 
 const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
@@ -107,7 +106,7 @@ const AcademicInfo = withSwal((props: any) => {
       setExamForm((prevData) => {
         const newData = [...prevData];
         newData[index].exam_documents = file;
-        newData[index].document = file.name;
+        newData[index].score_card = file.name;
         return newData;
       });
     }
@@ -212,11 +211,21 @@ const AcademicInfo = withSwal((props: any) => {
                 //     exam_name: "",
                 //     marks: "",
                 //     exam_documents: null,
-                //     document: null,
+                //     score_card: null,
                 //   })
                 // }
                 addMoreExamForm={() =>
-                  addFormField(setExamForm, initialStateExam)
+                  addFormField(setExamForm, {
+                    exam_type: "",
+                    listening_score: "",
+                    speaking_score: "",
+                    reading_score: "",
+                    writing_score: "",
+                    overall_score: "",
+                    exam_date: "",
+                    exam_documents: null,
+                    score_card: null,
+                  })
                 }
                 removeExamForm={(index, itemId) =>
                   removeFormField(setExamForm, index, itemId, "exam")

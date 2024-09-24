@@ -1,7 +1,11 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
 import swal from "sweetalert2";
-import { AUTH_SESSION_KEY, showErrorAlert, showSuccessAlert } from "../constants";
+import {
+  AUTH_SESSION_KEY,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../constants";
 import {
   isAllItemsPresentAcademic,
   isAllItemsPresentExam,
@@ -12,7 +16,7 @@ let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
 if (userInfo) {
   let { user_id } = JSON.parse(userInfo);
-  userId = user_id
+  userId = user_id;
 }
 
 const useSaveStudentAcademicInfo = (
@@ -23,6 +27,7 @@ const useSaveStudentAcademicInfo = (
 
   const saveStudentAcademicInfo = useCallback(
     async (academicInfoFromApi: any[], examForm: any[]) => {
+      console.log(examForm);
       const newFormData = new FormData();
 
       if (academicInfoFromApi.length > 0) {
@@ -88,13 +93,34 @@ const useSaveStudentAcademicInfo = (
             `exam_details[${index}][exam_type]`,
             item.exam_type
           );
-          newFormData.append(`exam_details[${index}][score_card]`, item.document);
-          newFormData.append(`exam_details[${index}][listening_score]`, item.listening_score);
-          newFormData.append(`exam_details[${index}][speaking_score]`, item.speaking_score);
-          newFormData.append(`exam_details[${index}][reading_score]`, item.reading_score);
-          newFormData.append(`exam_details[${index}][writing_score]`, item.writing_score);
-          newFormData.append(`exam_details[${index}][overall_score]`, item.overall_score);
-          newFormData.append(`exam_details[${index}][exam_date]`, item.exam_date);
+          newFormData.append(
+            `exam_details[${index}][score_card]`,
+            item.score_card
+          );
+          newFormData.append(
+            `exam_details[${index}][listening_score]`,
+            item.listening_score
+          );
+          newFormData.append(
+            `exam_details[${index}][speaking_score]`,
+            item.speaking_score
+          );
+          newFormData.append(
+            `exam_details[${index}][reading_score]`,
+            item.reading_score
+          );
+          newFormData.append(
+            `exam_details[${index}][writing_score]`,
+            item.writing_score
+          );
+          newFormData.append(
+            `exam_details[${index}][overall_score]`,
+            item.overall_score
+          );
+          newFormData.append(
+            `exam_details[${index}][exam_date]`,
+            item.exam_date
+          );
           newFormData.append(`exam_details[${index}][updated_by]`, userId);
           if (typeof item?.exam_documents === "object") {
             newFormData.append(`exam_documents`, item.exam_documents);

@@ -22,6 +22,7 @@ const initialStateStudyPreference = {
 const StudyPreference = withSwal((props: any) => {
   const { swal, studentId } = props;
 
+  const [initialLoading, setInitialLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [studyPreferenceData, setStudyPreferenceData] = useState<any[]>([
     initialStateStudyPreference,
@@ -31,6 +32,7 @@ const StudyPreference = withSwal((props: any) => {
   const [studyPreferenceId, setStudyPreferenceId] = useState("");
 
   const getStudyPrefData = async () => {
+    setInitialLoading(true);
     axios
       .get(`/study_preferences_details/${studentId}`)
       .then((res) => {
@@ -45,6 +47,9 @@ const StudyPreference = withSwal((props: any) => {
       })
       .catch((err) => {
         console.error(err);
+      })
+      .finally(() => {
+        setInitialLoading(false);
       });
   };
 
@@ -164,7 +169,7 @@ const StudyPreference = withSwal((props: any) => {
     }
   };
 
-  if (loading || dropDownLoading)
+  if (initialLoading || dropDownLoading)
     return (
       <Spinner
         animation="border"
