@@ -119,7 +119,7 @@ const BasicInputElements = withSwal((props: any) => {
     state,
     country,
     source,
-    categories,
+    leadTypes,
     user,
     cres,
     status,
@@ -292,7 +292,7 @@ const BasicInputElements = withSwal((props: any) => {
       .string()
       .matches(/^[0-9]{10}$/, "Phone number must be a 10-digit number")
       .required("Phone is required"),
-    category_id: yup.string().required("Category is required").nullable(),
+    lead_type_id: yup.string().required("Lead type is required").nullable(),
     source_id: yup.string().required("Source is required").nullable(),
     channel_id: yup.string().required("Channel is required").nullable(),
     office_type: yup.string().required("Office type is required").nullable(),
@@ -310,7 +310,7 @@ const BasicInputElements = withSwal((props: any) => {
     const updatedOffice = office?.filter((office: any) => office.value == item.office_type);
     const updatedRegion = region?.filter((region: any) => region.value == item.region_id);
 
-    const updatedCtegory = categories?.filter((category: any) => category.value == item.category_id);
+    const updatedCtegory = leadTypes?.filter((category: any) => category.value == item.category_id);
     const updatedChannels = channels?.filter((channel: any) => channel.value == item.channel_id);
 
     const updatedCountry = item?.preferredCountries?.map((country: any) => ({
@@ -430,6 +430,9 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
+  console.log("formData ==>", formData);
+  
+
   const handleDropDowns = (selected: any, { name }: any) => {
     // Update form data for all dropdowns except franchise_id and region_id
     if (name !== "franchise_id" && name !== "region_id") {
@@ -447,7 +450,9 @@ const BasicInputElements = withSwal((props: any) => {
         let filteredChannel = channels.filter((data: any) => data.source_id == selected.value);
         setChannelData(filteredChannel);
         break;
-      case "category_id":
+      case "lead_type_id":
+        console.log("here ==>", source);
+        
         setSelectedSource(null);
         setSelectedChannel(null);
         setSelectedCategory(selected);
@@ -1063,7 +1068,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
 
                 <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
+                  <Form.Group className="mb-3" controlId="lead_type_id">
                     <Form.Label>
                       <span className="text-danger fs-4">* </span>Lead Type
                     </Form.Label>
@@ -1071,13 +1076,13 @@ const BasicInputElements = withSwal((props: any) => {
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
-                      name="category_id"
-                      options={categories}
+                      name="lead_type_id"
+                      options={leadTypes}
                       value={selectedCategory}
                       onChange={handleDropDowns}
                     />
-                    {validationErrors.category_id && (
-                      <Form.Text className="text-danger">{validationErrors.category_id}</Form.Text>
+                    {validationErrors.lead_type_id && (
+                      <Form.Text className="text-danger">{validationErrors.lead_type_id}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
@@ -1092,9 +1097,10 @@ const BasicInputElements = withSwal((props: any) => {
                       styles={customStyles}
                       classNamePrefix="react-select"
                       name="source_id"
-                      options={source}
+                      options={sourceData}
                       value={selectedSource}
                       onChange={handleDropDowns}
+                      isDisabled={!selectedCategory}
                     />
                     {validationErrors.source_id && <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>}
                   </Form.Group>
@@ -1113,7 +1119,7 @@ const BasicInputElements = withSwal((props: any) => {
                       options={channelData}
                       value={selectedChannel}
                       onChange={handleDropDowns}
-                      // isDisabled={!selectedSource}
+                      isDisabled={!selectedSource}
                     />
                     {validationErrors.channel_id && <Form.Text className="text-danger">{validationErrors.channel_id}</Form.Text>}
                   </Form.Group>
@@ -1676,7 +1682,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
-                  onClick={() => [openModalWithClass("modal-full-width")]}
+                  onClick={() => [openModalWithClass("modal-full-width"), handleCancelUpdate()]}
                 >
                   <i className="mdi mdi-plus-circle"></i> Add lead
                 </Button>

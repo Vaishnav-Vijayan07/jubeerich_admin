@@ -68,16 +68,7 @@ const Leads = () => {
   }));
 
   useEffect(() => {
-    // dispatch(getCountry());
-    // dispatch(getAdminUsers());
-    // dispatch(getCategory());
-    // dispatch(getChannel());
-    // dispatch(getSource());
-    // dispatch(getStatus());
-    // dispatch(getOfficeTypeData());
-    // dispatch(getRegion());
-    // dispatch(getFranchise());
-    // fetchAllCounsellors()
+    fetchAllCounsellors()
   }, []);
 
   console.log('Region From Lead', region);
@@ -145,7 +136,7 @@ const Leads = () => {
             state={state}
             country={dropdownData.countries || []}
             source={dropdownData.sources|| []}
-            categories={dropdownData.leadTypes || []}
+            leadTypes={dropdownData.leadTypes || []}
             user={user || null}
             cres={cres || []}
             channels={dropdownData.channels || []}
