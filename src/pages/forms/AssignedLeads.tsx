@@ -13,29 +13,15 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
-import {
-  addLeads,
-  deleteLeads,
-  getAdminUsers,
-  getCategory,
-  getChannel,
-  getLead,
-  getLeadAssigned,
-  getStatus,
-  updateLeads,
-} from "../../redux/actions";
+import { addLeads, deleteLeads, getLead, getLeadAssigned, updateLeads } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
 import { AUTH_SESSION_KEY, customStyles, region_id, showErrorAlert, showSuccessAlert } from "../../constants";
-import { getCountry } from "../../redux/country/actions";
-import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import FileUploader from "../../components/FileUploader";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
-import { getLeads } from "../../helpers";
 import { city, examtypes } from "./data";
 import moment from "moment";
 import makeAnimated from "react-select/animated";
-import { getRegion } from "../../redux/regions/actions";
 import useDropdownData from "../../hooks/useDropdownDatas";
 
 interface OptionType {
@@ -76,7 +62,7 @@ const initialState = {
   full_name: "",
   email: "",
   phone: "",
-  category_id: null,
+  lead_type_id: null,
   source_id: null,
   channel_id: null,
   city: "",
@@ -98,7 +84,7 @@ const initialValidationState = {
   full_name: "",
   email: "",
   phone: "",
-  category_id: "",
+  lead_type_id: "",
   source_id: "",
   channel_id: "",
   city: "",
@@ -112,7 +98,7 @@ const initialValidationState = {
   lead_received_date: "",
   ielts: "",
   zipcode: "",
-  region_id: "",
+  region_id: ""
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -122,7 +108,7 @@ const BasicInputElements = withSwal((props: any) => {
     state,
     country,
     source,
-    categories,
+    leadTypes,
     user,
     cres,
     // regions,
@@ -207,7 +193,7 @@ const BasicInputElements = withSwal((props: any) => {
     full_name: yup.string().required("Name is required"),
     email: yup.string().required("Email is required").email("Invalid email"),
     phone: yup.string().required("Phone is required"),
-    category_id: yup.string().required("Category is required"),
+    lead_type_id: yup.string().required("Category is required"),
     source_id: yup.string().required("Source is required"),
     channel_id: yup.string().required("Channel is required"),
     city: yup.string().required("City is required"),
@@ -226,13 +212,17 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
+    console.log("item ==>", item);
+    
     //update source dropdown
     const updatedSource = source?.filter((source: any) => source.value == item.source_id);
     const updatedOffice = office?.filter((office: any) => office.value == item.office_type);
     // const updatedCountry = country?.filter(
     //   (country: any) => country.value == item.preferred_country
     // );
-    const updatedCtegory = categories?.filter((category: any) => category.value == item.category_id);
+    console.log("leadTypes ===>", leadTypes);
+    
+    const updatedCtegory = leadTypes?.filter((category: any) => category.value == item.lead_type_id);
     const updatedChannels = channels?.filter((channel: any) => channel.value == item.channel_id);
 
     const updatedRegion = region?.filter((region: any) => region.value == item.region_id);
@@ -260,7 +250,7 @@ const BasicInputElements = withSwal((props: any) => {
       full_name: item?.full_name || "",
       email: item?.email || "",
       phone: item?.phone || "",
-      category_id: item?.category_id || "",
+      lead_type_id: item?.lead_type_id || "",
       source_id: item?.source_id || "",
       channel_id: item?.channel_id || "",
       city: item?.city || "",
@@ -351,7 +341,7 @@ const BasicInputElements = withSwal((props: any) => {
       case "source_id":
         setSelectedSource(selected);
         break;
-      case "category_id":
+      case "lead_type_id":
         setSelectedCategory(selected);
         break;
       case "preferred_country":
@@ -397,8 +387,7 @@ const BasicInputElements = withSwal((props: any) => {
               formData.full_name,
               formData.email,
               formData.phone,
-              formData.category_id,
-              formData.category_id,
+              formData.lead_type_id,
               formData.source_id,
               formData.channel_id,
               formData.city,
@@ -429,8 +418,7 @@ const BasicInputElements = withSwal((props: any) => {
               formData.full_name,
               formData.email,
               formData.phone,
-              formData.category_id,
-              formData.category_id,
+              formData.lead_type_id,
               formData.source_id,
               formData.channel_id,
               formData.city,
@@ -918,20 +906,6 @@ const BasicInputElements = withSwal((props: any) => {
   const handleFileChange = (index: number, e: any) => {
     let file = e.target.files[0];
 
-    // if (!(isUpdate) && selectedFile.length) {
-    //   // const filteredFile = selectedFile.filter((data: any, i: number) => i !== index);
-    //   // setSelectedFile(filteredFile);
-    //   selectedFile.splice(index, 1, file);
-
-    //   setSelectedFile([...selectedFile])
-    // } else if (isUpdate && selectedFile.length) {
-    //   selectedFile.splice(index, 1, file);
-
-    //   setSelectedFile([...selectedFile]);
-    // } else {
-    //   setSelectedFile((prevData: any) => [...prevData, file]);
-    // }
-
     if (selectedFile.length) {
       selectedFile.splice(index, 1, file);
       setSelectedFile([...selectedFile]);
@@ -1016,6 +990,24 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
 
                 <Col md={4} lg={4}>
+                  <Form.Group className="mb-3" controlId="lead_type_id">
+                    <Form.Label>Lead Type</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="lead_type_id"
+                      options={[{ value: null, label: "None" }, ...leadTypes]}
+                      value={selectedCategory}
+                      onChange={handleDropDowns}
+                    />
+                    {validationErrors.lead_type_id && (
+                      <Form.Text className="text-danger">{validationErrors.lead_type_id}</Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+
+                <Col md={4} lg={4}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Source</Form.Label>
                     <Select
@@ -1028,24 +1020,6 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleDropDowns}
                     />
                     {validationErrors.source_id && <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Category</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="category_id"
-                      options={[{ value: null, label: "None" }, ...categories]}
-                      value={selectedCategory}
-                      onChange={handleDropDowns}
-                    />
-                    {validationErrors.category_id && (
-                      <Form.Text className="text-danger">{validationErrors.category_id}</Form.Text>
-                    )}
                   </Form.Group>
                 </Col>
 
@@ -1544,7 +1518,6 @@ const AssignedLeads = () => {
         console.log(err);
       });
   };
-  
 
   const counsellorsData = useMemo(() => {
     if (!users) return [];
@@ -1573,7 +1546,7 @@ const AssignedLeads = () => {
             state={state}
             country={dropdownData.countries || []}
             source={dropdownData.sources || []}
-            categories={dropdownData.courseTypes || []}
+            leadTypes={dropdownData.leadTypes || []}
             user={user || null}
             cres={dropdownData.cres || []}
             status={dropdownData.statuses || []}

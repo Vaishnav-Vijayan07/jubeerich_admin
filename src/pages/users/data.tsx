@@ -42,7 +42,7 @@ export interface MyInitialState {
   phone: string;
   address: string;
   username: string;
-  password: string;
+  password: string | null;
   updated_by: string;
   role_id: string;
   profile_image_path: string;
@@ -60,7 +60,7 @@ export const initialState = {
   phone: "",
   address: "",
   username: "",
-  password: "",
+  password: null,
   updated_by: "",
   role_id: "",
   country_id: undefined,

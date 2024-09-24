@@ -664,7 +664,7 @@ const BasicInputElements = withSwal((props: any) => {
                             type="text"
                             name="password"
                             placeholder="Enter password"
-                            value={formData.password}
+                            value={formData.password ?? ''}
                             onChange={handleInputChange}
                           />
                           {validationErrors.password && (

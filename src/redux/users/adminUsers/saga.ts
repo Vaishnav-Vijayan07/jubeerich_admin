@@ -33,7 +33,7 @@ interface UsersData {
     phone: string;
     address: string;
     username: string;
-    password: string;
+    password: string | null;
     updated_by: string;
     role_id: string;
     profileImage: File;
