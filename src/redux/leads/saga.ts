@@ -33,7 +33,6 @@ interface LeadsData {
     full_name: string;
     email: string;
     phone: string;
-    category_id: string;
     lead_type_id: string;
     source_id: string;
     channel_id: string;
@@ -139,7 +138,6 @@ function* addLeads({
     full_name,
     email,
     phone,
-    category_id,
     lead_type_id,
     source_id,
     channel_id,
@@ -166,7 +164,6 @@ function* addLeads({
       full_name,
       email,
       phone,
-      category_id,
       lead_type_id,
       source_id,
       channel_id,
@@ -218,7 +215,6 @@ function* updateLeads({
     full_name,
     email,
     phone,
-    category_id,
     lead_type_id,
     source_id,
     channel_id,
@@ -243,7 +239,6 @@ function* updateLeads({
       full_name,
       email,
       phone,
-      category_id,
       lead_type_id,
       source_id,
       channel_id,

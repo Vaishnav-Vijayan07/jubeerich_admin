@@ -1,16 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useMemo, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Modal,
-  Image,
-  Spinner,
-} from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
@@ -22,23 +13,18 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getRoles } from "../../redux/users/roles/actions";
-import {
-  addAdminUsers,
-  deleteAdminUsers,
-  getAdminUsers,
-  getBranches,
-  updateAdminUsers,
-} from "../../redux/actions";
+import { addAdminUsers, deleteAdminUsers, getAdminUsers, getBranches, updateAdminUsers } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
-import { AUTH_SESSION_KEY, baseUrl, branch_counsellor_id, counsellor_id, counsellor_tl_id, customStyles, regional_manager_id } from "../../constants";
 import {
-  MyInitialState,
-  OptionType,
-  TableRecords,
-  initialState,
-  initialValidationState,
-  sizePerPageList,
-} from "./data";
+  AUTH_SESSION_KEY,
+  baseUrl,
+  branch_counsellor_id,
+  counsellor_id,
+  counsellor_tl_id,
+  customStyles,
+  regional_manager_id,
+} from "../../constants";
+import { MyInitialState, OptionType, TableRecords, initialState, initialValidationState, sizePerPageList } from "./data";
 import { APICore } from "../../helpers/api/apiCore";
 import { Link } from "react-router-dom";
 import { getCountry } from "../../redux/country/actions";
@@ -46,16 +32,7 @@ import { getRegion } from "../../redux/regions/actions";
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    swal,
-    state,
-    BranchesData,
-    CountriesData,
-    RolesData,
-    regionData,
-    error,
-    loading,
-  } = props;
+  const { swal, state, BranchesData, CountriesData, RolesData, regionData, error, loading } = props;
 
   const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
@@ -76,34 +53,28 @@ const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
     employee_id: yup.string().required("Employee id is required"),
-    name: yup
-      .string()
-      .required("Name is required")
-      .min(2, "Name must be at least 3 characters long"),
-    email: yup
-      .string()
-      .required("Email is required")
-      .email("Invalid email format"),
+    name: yup.string().required("Name is required").min(2, "Name must be at least 3 characters long"),
+    email: yup.string().required("Email is required").email("Invalid email format"),
     phone: yup
       .string()
       .required("Phone number is required")
       .matches(/^\d{10}$/, "Phone number must be a valid 10-digit number"),
     address: yup.string().required("Address is required"),
-    username: yup
-      .string()
-      .required("Username is required")
-      .min(4, "Username must be at least 4 characters long"),
+    username: yup.string().required("Username is required").min(4, "Username must be at least 4 characters long"),
+    role_id: yup.string().nullable().required("Role is required"),
     password: yup
       .string()
-      .required("Password is required")
-      .min(8, "Password must be at least 8 characters long"),
-    role_id: yup.string().nullable().required("Role is required"),
+      .nullable()
+      .transform((value) => (value === "" ? null : value))
+      .when([], {
+        is: () => !isUpdate,
+        then: yup.string().required("Password is required").min(8, "Password must be at least 8 characters long").nullable(),
+        otherwise: yup.string().nullable().min(8, "Password must be at least 8 characters long"),
+      }),
     // branch_ids: yup.string().nullable().required("Branch is required").min(1, "At least one branch must be selected"),
   });
 
@@ -126,9 +97,7 @@ const BasicInputElements = withSwal((props: any) => {
       label: item.branch_name,
     }));
 
-    const countryArray = item?.countries?.map(
-      (country: any) => country?.id
-    );
+    const countryArray = item?.countries?.map((country: any) => country?.id);
 
     setSelectedBranch(selectedPowerIds);
 
@@ -141,7 +110,7 @@ const BasicInputElements = withSwal((props: any) => {
       phone: item.phone,
       address: item.address,
       username: item.username,
-      // password: item.password,
+      password: null,
       updated_by: item.updated_by,
       branch_ids: item?.branch_ids,
       role_id: item?.role_id,
@@ -188,7 +157,7 @@ const BasicInputElements = withSwal((props: any) => {
 
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value == "" ? null : value,
     }));
   };
 
@@ -198,9 +167,7 @@ const BasicInputElements = withSwal((props: any) => {
   ) => {
     if (Array.isArray(selectedOptions)) {
       setSelectedBranch(selectedOptions);
-      const selectedIdsString = selectedOptions
-        ?.map((option) => option.value)
-        .join(", ");
+      const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
       setFormData((prev) => ({
         ...prev,
         branch_ids: selectedIdsString,
@@ -218,143 +185,92 @@ const BasicInputElements = withSwal((props: any) => {
     try {
       await validationSchema.validate(formData, { abortEarly: false });
       // Validation passed, handle form submission
-      
+
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          if (isUpdate) {
-            // Handle update logic
-            if (userInfo) {
-              const { user_id } = JSON.parse(userInfo);
-              try {
-                dispatch(
-                  updateAdminUsers(
-                    formData.id,
-                    formData.employee_id,
-                    formData.name,
-                    formData.email,
-                    formData.phone,
-                    formData.address,
-                    formData.username,
-                    formData.password,
-                    // formData.updated_by,
-                    user_id,
-                    formData.role_id,
-                    selectedImage,
-                    formData.branch_ids,
-                    formData?.country_id,
-                    formData.role_id == regional_manager_id ? formData.region_id : null,
-                    // formData.role_id == counsellor_tl_id ? formData.branch_id : null,
-                    (formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) ? formData.branch_id : null,
-                    // formData.role_id == branch_counsellor_id ? formData.country_ids : null
-                    null
-                  )
-                );
-              } catch (err) {
-                console.error("error updating", err);
-              }
-            }
-          } else {
-            // Handle add logic
-            if (userInfo) {
-              try {
+        .fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            if (isUpdate) {
+              // Handle update logic
+              if (userInfo) {
                 const { user_id } = JSON.parse(userInfo);
-                dispatch(
-                  addAdminUsers(
-                    formData.employee_id,
-                    formData.name,
-                    formData.email,
-                    formData.phone,
-                    formData.address,
-                    formData.username,
-                    formData.password,
-                    // formData.updated_by,
-                    user_id,
-                    formData.role_id,
-                    selectedImage,
-                    formData.branch_ids,
-                    formData?.country_id,
-                    formData.role_id == regional_manager_id ? formData.region_id : null,
-                    (formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) ? formData.branch_id : null,
-                    // formData.role_id == branch_counsellor_id ? formData.country_ids : null
-                    null
-                  )
-                );
-              } catch (err) {
-                console.error("error adding", err);
-                console.error(err);
+                try {
+                  dispatch(
+                    updateAdminUsers(
+                      formData.id,
+                      formData.employee_id,
+                      formData.name,
+                      formData.email,
+                      formData.phone,
+                      formData.address,
+                      formData.username,
+                      formData.password,
+                      // formData.updated_by,
+                      user_id,
+                      formData.role_id,
+                      selectedImage,
+                      formData.branch_ids,
+                      formData?.country_id,
+                      formData.role_id == regional_manager_id ? formData.region_id : null,
+                      // formData.role_id == counsellor_tl_id ? formData.branch_id : null,
+                      formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
+                        ? formData.branch_id
+                        : null,
+                      // formData.role_id == branch_counsellor_id ? formData.country_ids : null
+                      null
+                    )
+                  );
+                } catch (err) {
+                  console.error("error updating", err);
+                }
+              }
+            } else {
+              // Handle add logic
+              if (userInfo) {
+                try {
+                  const { user_id } = JSON.parse(userInfo);
+                  dispatch(
+                    addAdminUsers(
+                      formData.employee_id,
+                      formData.name,
+                      formData.email,
+                      formData.phone,
+                      formData.address,
+                      formData.username,
+                      formData.password,
+                      // formData.updated_by,
+                      user_id,
+                      formData.role_id,
+                      selectedImage,
+                      formData.branch_ids,
+                      formData?.country_id,
+                      formData.role_id == regional_manager_id ? formData.region_id : null,
+                      formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
+                        ? formData.branch_id
+                        : null,
+                      // formData.role_id == branch_counsellor_id ? formData.country_ids : null
+                      null
+                    )
+                  );
+                } catch (err) {
+                  console.error("error adding", err);
+                  console.error(err);
+                }
               }
             }
           }
-        }
-      }).catch((err: any)=>{
-        console.log(err);
-      })
-
-      // if (isUpdate) {
-      //   // Handle update logic
-      //   if (userInfo) {
-      //     const { user_id } = JSON.parse(userInfo);
-      //     try {
-      //       await dispatch(
-      //         updateAdminUsers(
-      //           formData.id,
-      //           formData.employee_id,
-      //           formData.name,
-      //           formData.email,
-      //           formData.phone,
-      //           formData.address,
-      //           formData.username,
-      //           formData.password,
-      //           // formData.updated_by,
-      //           user_id,
-      //           formData.role_id,
-      //           selectedImage,
-      //           formData.branch_ids,
-      //           formData?.country_id
-      //         )
-      //       );
-      //     } catch (err) {
-      //       console.error("error updating", err);
-      //     }
-      //   }
-      // } else {
-      //   // Handle add logic
-      //   if (userInfo) {
-      //     try {
-      //       const { user_id } = JSON.parse(userInfo);
-      //       await dispatch(
-      //         addAdminUsers(
-      //           formData.employee_id,
-      //           formData.name,
-      //           formData.email,
-      //           formData.phone,
-      //           formData.address,
-      //           formData.username,
-      //           formData.password,
-      //           // formData.updated_by,
-      //           user_id,
-      //           formData.role_id,
-      //           selectedImage,
-      //           formData.branch_ids,
-      //           formData?.country_id
-      //         )
-      //       );
-      //     } catch (err) {
-      //       console.error("error adding", err);
-      //       console.error(err);
-      //     }
-      //   }
-      // }
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
     } catch (validationError) {
       // Handle validation errors
       if (validationError instanceof yup.ValidationError) {
@@ -385,11 +301,7 @@ const BasicInputElements = withSwal((props: any) => {
           <>
             <div className="table-user">
               <img
-                src={
-                  isImage
-                    ? `${baseUrl}/${row.original.profile_image_path}`
-                    : profilePic
-                }
+                src={isImage ? `${baseUrl}/${row.original.profile_image_path}` : profilePic}
                 alt=""
                 className="me-2 rounded-circle"
               />
@@ -431,48 +343,6 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "country_name",
       sort: false,
     },
-    // {
-    //   Header: "Branch",
-    //   accessor: "branches",
-    //   sort: false,
-    //   Cell: ({ row }: any) => (
-    //     <ul className="list-unstyled list-inline">
-    //       {row.original.branches?.map((item: any) => (
-    //         <li className="mb-1">{item.branch_name}</li>
-    //       ))}
-    //     </ul>
-    //   ),
-    // },
-    // {
-    //   Header: "Image",
-    //   accessor: "profile_image_path",
-    //   Cell: ({ row }: any) => (
-    //     <div className="d-flex justify-content-center align-items-center gap-2">
-    //       {row.original.profile_image_path ? (
-    //         <img
-    //           src={`${baseUrl}/${row.original.profile_image_path}`}
-    //           alt="Profile Image"
-    //           width={100}
-    //           height={100}
-    //           className="object-fit-contain"
-    //         />
-    //       ) : (
-    //         <img
-    //           src={profilePic}
-    //           alt="Profile Image"
-    //           width={100}
-    //           height={100}
-    //           className="object-fit-contain"
-    //         />
-    //       )}
-    //     </div>
-    //   ),
-    // },
-    // {
-    //   Header: "Status",
-    //   accessor: "status",
-    //   sort: false,
-    // },
     {
       Header: " ",
       accessor: "",
@@ -509,19 +379,9 @@ const BasicInputElements = withSwal((props: any) => {
     setIsUpdate(false);
     setFormData(initialState);
     setSelectedBranch([]);
-    setSelectedCountry([])
+    setSelectedCountry([]);
     setSelectedImage(null);
   };
-
-  //image upload
-  // const handleImageChange = (event: any) => {
-  //   if (event.target.files && event.target.files.length > 0) {
-  //     const image = event.target.files[0] as File;
-  //     setSelectedImage(image);
-  //   } else {
-  //     setSelectedImage(null);
-  //   }
-  // };
 
   //toggle modal
   const toggle = () => {
@@ -546,9 +406,9 @@ const BasicInputElements = withSwal((props: any) => {
     setFormData(initialState);
     setValidationErrors(initialValidationState);
     setSelectedBranch([]);
-    setSelectedCountry([])
+    setSelectedCountry([]);
     setSelectedImage(null);
-  }
+  };
 
   useEffect(() => {
     // Check for errors and clear the form
@@ -568,9 +428,7 @@ const BasicInputElements = withSwal((props: any) => {
   ) => {
     if (Array.isArray(selectedOptions)) {
       setSelectedCountry(selectedOptions);
-      const selectedIdsArray = selectedOptions?.map((option) =>
-        parseInt(option.value)
-      );
+      const selectedIdsArray = selectedOptions?.map((option) => parseInt(option.value));
       setFormData((prev: any) => ({
         ...prev,
         country_ids: selectedIdsArray,
@@ -581,22 +439,21 @@ const BasicInputElements = withSwal((props: any) => {
   const customStyles2 = {
     option: (provided: any, state: any) => ({
       ...provided,
-      backgroundColor: state.isSelected ? '#a9b3e6e2' : state.isFocused ? '#8a99e2' : '#fff',
-      color: state.isSelected ? '#fff' : state.isFocused ? '#fff' : '#333',
+      backgroundColor: state.isSelected ? "#a9b3e6e2" : state.isFocused ? "#8a99e2" : "#fff",
+      color: state.isSelected ? "#fff" : state.isFocused ? "#fff" : "#333",
       padding: 10,
     }),
     singleValue: (provided: any, state: any) => ({
       ...provided,
-      color: '#333', // Color of the selected option displayed in the select box
+      color: "#333", // Color of the selected option displayed in the select box
     }),
     menu: (provided: any) => ({
       ...provided,
       maxHeight: 200, // Set maxHeight of the menu (change this value as needed)
-      overflowY: 'auto', // Enable scrolling if content overflows
-
+      overflowY: "auto", // Enable scrolling if content overflows
     }),
   };
-  
+
   console.log(CountriesData);
 
   return (
@@ -625,9 +482,7 @@ const BasicInputElements = withSwal((props: any) => {
                           onChange={handleInputChange}
                         />
                         {validationErrors.employee_id && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.employee_id}
-                          </Form.Text>
+                          <Form.Text className="text-danger">{validationErrors.employee_id}</Form.Text>
                         )}
                       </Form.Group>
                     </Col>
@@ -641,11 +496,7 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.name}
                           onChange={handleInputChange}
                         />
-                        {validationErrors.name && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.name}
-                          </Form.Text>
-                        )}
+                        {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>}
                       </Form.Group>
                     </Col>
                   </Row>
@@ -661,11 +512,7 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.email}
                           onChange={handleInputChange}
                         />
-                        {validationErrors.email && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.email}
-                          </Form.Text>
-                        )}
+                        {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                       </Form.Group>
                     </Col>
                     <Col md={6}>
@@ -678,11 +525,7 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.phone}
                           onChange={handleInputChange}
                         />
-                        {validationErrors.phone && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.phone}
-                          </Form.Text>
-                        )}
+                        {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                       </Form.Group>
                     </Col>
                   </Row>
@@ -700,9 +543,7 @@ const BasicInputElements = withSwal((props: any) => {
                             onChange={handleInputChange}
                           />
                           {validationErrors.username && (
-                            <Form.Text className="text-danger">
-                              {validationErrors.username}
-                            </Form.Text>
+                            <Form.Text className="text-danger">{validationErrors.username}</Form.Text>
                           )}
                         </Form.Group>
                       </Row>
@@ -714,13 +555,11 @@ const BasicInputElements = withSwal((props: any) => {
                             type="text"
                             name="password"
                             placeholder="Enter password"
-                            value={formData.password}
+                            value={formData?.password ?? ""}
                             onChange={handleInputChange}
                           />
                           {validationErrors.password && (
-                            <Form.Text className="text-danger">
-                              {validationErrors.password}
-                            </Form.Text>
+                            <Form.Text className="text-danger">{validationErrors.password}</Form.Text>
                           )}
                         </Form.Group>
                       </Row>
@@ -738,31 +577,12 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.address}
                           onChange={handleInputChange}
                         />
-                        {validationErrors.address && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.address}
-                          </Form.Text>
-                        )}
+                        {validationErrors.address && <Form.Text className="text-danger">{validationErrors.address}</Form.Text>}
                       </Form.Group>
                     </Col>
                   </Row>
 
                   <Row>
-                    {/* <Col md={6}>
-                      <Form.Group className="mb-3" controlId="branch_ids">
-                        <Form.Label>Branch</Form.Label>
-                        <Select
-                          closeMenuOnSelect={false}
-                          components={animatedComponents}
-                          isMulti
-                          options={BranchesData}
-                          value={selectedBranch}
-                          onChange={handleBranchChange as any}
-                        />
-
-                        {validationErrors.branch_ids && <Form.Text className="text-danger">{validationErrors.branch_ids}</Form.Text>}
-                      </Form.Group>
-                    </Col> */}
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="role_id">
                         <Form.Label>Role</Form.Label>
@@ -782,11 +602,7 @@ const BasicInputElements = withSwal((props: any) => {
                           ))}
                         </Form.Select>
 
-                        {validationErrors.role_id && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.role_id}
-                          </Form.Text>
-                        )}
+                        {validationErrors.role_id && <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>}
                       </Form.Group>
                     </Col>
                     {(formData?.role_id == counsellor_id || formData.role_id == branch_counsellor_id) && (
@@ -809,11 +625,7 @@ const BasicInputElements = withSwal((props: any) => {
                             ))}
                           </Form.Select>
 
-                          {validationErrors.role_id && (
-                            <Form.Text className="text-danger">
-                              {validationErrors.role_id}
-                            </Form.Text>
-                          )}
+                          {validationErrors.role_id && <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>}
                         </Form.Group>
                       </Col>
                     )}
@@ -837,31 +649,11 @@ const BasicInputElements = withSwal((props: any) => {
                               </option>
                             ))}
                           </Form.Select>
-                        
-                          {validationErrors.role_id && (
-                            <Form.Text className="text-danger">
-                              {validationErrors.role_id}
-                            </Form.Text>
-                          )}
+
+                          {validationErrors.role_id && <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>}
                         </Form.Group>
                       </Col>
                     )}
-
-                    {/* {formData.role_id == branch_counsellor_id && <Col md={4} lg={4}>
-                      <Form.Group className="mb-3" controlId="country_ids">
-                        <Form.Label>Country</Form.Label>
-                        <Select
-                          styles={customStyles2}
-                          className="react-select react-select-container"
-                          classNamePrefix="react-select"
-                          isMulti
-                          name="country_ids"
-                          options={[{ value: null, label: "None" }, ...CountriesData]}
-                          value={selectedCountry}
-                          onChange={handleSelectChange as any}
-                        />
-                      </Form.Group>
-                    </Col>} */}
 
                     {(formData?.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) && (
                       <Col md={6}>
@@ -884,62 +676,15 @@ const BasicInputElements = withSwal((props: any) => {
                           </Form.Select>
 
                           {validationErrors.branch_id && (
-                            <Form.Text className="text-danger">
-                              {validationErrors.branch_id}
-                            </Form.Text>
+                            <Form.Text className="text-danger">{validationErrors.branch_id}</Form.Text>
                           )}
                         </Form.Group>
                       </Col>
                     )}
-
-                    {/* { formData.role_id == branch_counsellor_id && <Col md={4} lg={4}>
-                      <Form.Group className="mb-3" controlId="country_ids">
-                        <Form.Label>Country</Form.Label>
-                        <Select
-                          className="react-select react-select-container"
-                          classNamePrefix="react-select"
-                          isMulti
-                          // styles={customStyles}
-                          name="country_ids"
-                          options={[{ value: null, label: "None" }, ...CountriesData]}
-                          value={selectedCountry}
-                          onChange={handleSelectChange as any}
-                        /> */}
-                        {/* {validationErrors.country_ids && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.preferred_country}
-                          </Form.Text>
-                        )} */}
-                      {/* </Form.Group>
-                    </Col>} */}
                   </Row>
 
-                  {/* <Row>
-                    <Col md={6}>
-                      <Form.Group className="mb-3" controlId="profileImage">
-                        <Form.Label>Image</Form.Label>
-                        <Form.Control type="file" accept="image/*" onChange={handleImageChange} />
-                        {selectedImage && (
-                          <div className="mt-3">
-                            <img src={URL.createObjectURL(selectedImage)} alt="Selected" style={{ maxWidth: "100px" }} />
-                          </div>
-                        )}
-                        {!selectedImage && isUpdate && (
-                          <div className="mt-3">
-                            <img src={`${baseUrl}/${formData.profile_image_path}`} alt="Selected" style={{ maxWidth: "100px" }} />
-                          </div>
-                        )}
-                      </Form.Group>
-                    </Col>
-                  </Row> */}
                   <div className="text-end">
-                    <Button
-                      variant="primary"
-                      id="button-addon2"
-                      className="mt-1 ms-2 me-2"
-                      onClick={() => [handleResetValues()]
-                      }
-                    >
+                    <Button variant="primary" id="button-addon2" className="mt-1 ms-2 me-2" onClick={() => [handleResetValues()]}>
                       Clear
                     </Button>
                     <Button
@@ -1009,21 +754,17 @@ const AdminUsers = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [branchData, setBranchData] = useState([]);
   const [countryData, setCountryData] = useState([]);
-  const [regionData, setRegionData] = useState([])
+  const [regionData, setRegionData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector(
-    (state: RootState) => ({
-      state: state.Users.adminUsers,
-      error: state.Users.error,
-      loading: state.Users.loading,
-      initialLoading: state.Users.initialLoading,
-    })
-  );
+  const { state, error, loading, initialLoading } = useSelector((state: RootState) => ({
+    state: state.Users.adminUsers,
+    error: state.Users.error,
+    loading: state.Users.loading,
+    initialLoading: state.Users.initialLoading,
+  }));
 
-  const Branch = useSelector(
-    (state: RootState) => state?.Branches?.branches?.data
-  );
+  const Branch = useSelector((state: RootState) => state?.Branches?.branches?.data);
 
   const Countries = useSelector((state: RootState) => state?.Country.countries);
 
@@ -1072,12 +813,7 @@ const AdminUsers = () => {
   }, [Countries]);
 
   if (initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      />
-    );
+    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
   }
 
   return (

@@ -9,24 +9,15 @@ import {
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
 import {
-  getAdminUsers,
-  getCategory,
-  getChannel,
   getLead,
   getLeadsTL,
-  getStatus,
 } from "../../redux/actions";
 import {
   AUTH_SESSION_KEY,
 } from "../../constants";
-import { getCountry } from "../../redux/country/actions";
-import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
-import { getRegion } from "../../redux/regions/actions";
-import { getFranchise } from "../../redux/franchise/actions";
 import useDropdownData from "../../hooks/useDropdownDatas";
 
 const Leads = () => {
@@ -46,10 +37,7 @@ const Leads = () => {
     error,
     loading,
     initialLoading,
-    country,
     categories,
-    status,
-    users,
     region,
     franchisees
   } = useSelector((state: RootState) => ({
@@ -59,25 +47,13 @@ const Leads = () => {
     error: state.Leads.error,
     loading: state.Leads.loading,
     initialLoading: state.Leads.initialloading,
-    country: state.Country.countries,
     categories: state.Category.category.data,
-    status: state.Status.status.data,
-    users: state.Users.adminUsers,
     region: state.Region.regions,
     franchisees: state.Franchise.franchiseUsers,
   }));
 
   useEffect(() => {
-    // dispatch(getCountry());
-    // dispatch(getAdminUsers());
-    // dispatch(getCategory());
-    // dispatch(getChannel());
-    // dispatch(getSource());
-    // dispatch(getStatus());
-    // dispatch(getOfficeTypeData());
-    // dispatch(getRegion());
-    // dispatch(getFranchise());
-    // fetchAllCounsellors()
+    fetchAllCounsellors()
   }, []);
 
   console.log('Region From Lead', region);
@@ -117,10 +93,7 @@ const Leads = () => {
       label: item.name,
     }));
   }, [franchisees]);
-
-  console.log("franchiseeData ==>", franchiseeData);
   
-
   if (initialLoading) {
     return (
       <Spinner
@@ -145,7 +118,7 @@ const Leads = () => {
             state={state}
             country={dropdownData.countries || []}
             source={dropdownData.sources|| []}
-            categories={dropdownData.leadTypes || []}
+            leadTypes={dropdownData.leadTypes || []}
             user={user || null}
             cres={cres || []}
             channels={dropdownData.channels || []}
