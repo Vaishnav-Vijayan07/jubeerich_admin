@@ -12,6 +12,13 @@ const useDropdownData = (type: string) => {
     streams: [],
     campuses: [],
     sources: [],
+    leadTypes: [],
+    channels: [],
+    officeTypes: [],
+    regions: [],
+    adminUsers: [],
+    statuses: [],
+    cres: [],
   });
 
   useEffect(() => {
@@ -20,6 +27,8 @@ const useDropdownData = (type: string) => {
       try {
         const { data } = await axios.get(`/dropdown?types=${type}`);
         if (data.status) {
+          console.log("dropdown data ==>", data.data);
+
           setDropdownData(data.data); // Update state with fetched data
         } else {
           // Handle case where status is false
