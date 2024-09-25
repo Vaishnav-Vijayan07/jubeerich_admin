@@ -52,10 +52,6 @@ const BranchDetails = withSwal((props: any) => {
 
     const { swal } = props;
     const { branchId } = useParams();
-
-    console.log("branchId ==>", branchId);
-    
-
     const [branchDetails, setBranchDetails] = useState<any>({});
     const [tableData, setTableData] = useState<any>([]);
     const [showModal, setShowModal] = useState(false);
@@ -66,28 +62,29 @@ const BranchDetails = withSwal((props: any) => {
     const [selectedCountry, setSelectedCountry] = useState<any[]>([]);
     const [isUpdate, setIsUpdate] = useState<boolean>(false)
     const [countryData, setCountryData] = useState([]);
-    const [counsellorTLData, setCounsellorTLData] = useState<any>({});
     const [isTL, setIsTL] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     const dispatch = useDispatch();
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
-    const { state, error, loading, initialLoading } = useSelector(
-        (state: RootState) => ({
-            state: state.Users.adminUsers,
-            error: state.Users.error,
-            loading: state.Users.loading,
-            initialLoading: state.Users.initialLoading,
-        })
-    );
-    
-    const Countries = useSelector((state: RootState) => state?.Country.countries);
-    const Branch = useSelector((state: RootState) => state?.Branches?.branches?.data);
-    const CounsellorData = useSelector((state: RootState) => state?.Users?.branchCounsellor);
-    const CounsellorTLData = useSelector((state: RootState) => state?.Users?.branchCounsellorTL);
-
-    console.log('CounsellorData',CounsellorData);
-    console.log('CounsellorTLData',CounsellorTLData);
+    const {
+        adminUsers: state,
+        error,
+        loading,
+        initialLoading,
+        countries: Countries,
+        branchesData: Branch,
+        branchCounsellor: CounsellorData,
+        branchCounsellorTL: CounsellorTLData
+    } = useSelector((state: RootState) => ({
+        adminUsers: state.Users.adminUsers,
+        error: state.Users.error,
+        loading: state.Users.loading,
+        initialLoading: state.Users.initialLoading,
+        countries: state.Country.countries,
+        branchesData: state.Branches?.branches?.data,
+        branchCounsellor: state.Users?.branchCounsellor,
+        branchCounsellorTL: state.Users?.branchCounsellorTL
+    }));
     
 
     const BranchesData = useMemo(() => {
@@ -235,54 +232,78 @@ const BranchDetails = withSwal((props: any) => {
         setSelectedImage(null);
     };
 
-
     const handleUpdate = (item: any) => {
-        console.log(item?.role_id);
+        const {
+            role_id,
+            country_id,
+            branches,
+            countries,
+            id,
+            employee_id,
+            name,
+            email,
+            phone,
+            address,
+            username,
+            updated_by,
+            branch_ids,
+            region_id,
+            branch_id,
+            profile_image_path
+        } = item;
+    
+        console.log(role_id);
         console.log(counsellor_tl_id);
-        
-        if(item?.role_id == counsellor_tl_id) {
+    
+        // Check if the role_id matches the counsellor_tl_id
+        if (role_id === counsellor_tl_id) {
             setIsTL(true);
         }
-
-        if (item?.country_id) {
+    
+        // Update formData with country_id if it exists
+        if (country_id) {
             setFormData((prev: any) => ({
                 ...prev,
-                country_id: item.country_id,
+                country_id,
             }));
         }
-
-        const selectedPowerIds = item?.branches?.map((item: any) => ({
-            value: item.id?.toString(),
-            label: item.branch_name,
+    
+        // Map branches to get the power ids (for selectedBranch)
+        const selectedPowerIds = branches?.map((branch: any) => ({
+            value: branch.id?.toString(),
+            label: branch.branch_name,
         }));
-
-        const countryArray = item?.countries?.map(
-            (country: any) => country?.id
-        );
-
+    
+        // Map countries to get country IDs
+        const countryArray = countries?.map((country: any) => country?.id);
+    
+        // Update selected branches
         setSelectedBranch(selectedPowerIds);
-
+    
+        // Set the form data with the updated values
         setFormData((prev: any) => ({
             ...prev,
-            id: item.id,
-            employee_id: item.employee_id,
-            name: item.name,
-            email: item.email,
-            phone: item.phone,
-            address: item.address,
-            username: item.username,
-            updated_by: item.updated_by,
-            branch_ids: item?.branch_ids,
-            role_id: item?.role_id,
-            region_id: item?.region_id,
-            branch_id: item?.branch_id,
+            id,
+            employee_id,
+            name,
+            email,
+            phone,
+            address,
+            username,
+            updated_by,
+            branch_ids,
+            role_id,
+            region_id,
+            branch_id,
             country_ids: countryArray,
-            profile_image_path: item?.profile_image_path,
+            profile_image_path,
         }));
-
-        setSelectedCountry(item?.countries);
+    
+        // Update selected countries and set the update flag
+        setSelectedCountry(countries);
         setIsUpdate(true);
     };
+    
 
     const handleDelete = (id: string) => {
         swal
@@ -302,6 +323,17 @@ const BranchDetails = withSwal((props: any) => {
                 }
             });
     };
+
+    const handleInputPhoneChange = (e: any) => {
+        const { name, value } = e.target;
+                
+        if (name === "phone") {
+            setFormData((prevData: any) => ({
+                ...prevData,
+                phone: value?.toString().replace(/\D/g, '').slice(0, 10)
+            }));
+        }    
+    }
 
 
     const handleInputChange = (e: any) => {
@@ -340,39 +372,8 @@ const BranchDetails = withSwal((props: any) => {
         }
     }
 
-    const getBranchWiseCounsellors = async() => {
-        // dispatch(getBranchCounsellors(branchId))
-        try {
-            let { data } = await axios.get(`${baseUrl}/api/get_all_counsellors/${branchId}`);
-            // setTableData(data?.data)
-            setTableData((prev: any) =>([
-                ...prev, ...data?.data
-            ]))
-        } catch (error) {
-            console.log(error);
-            showErrorAlert(error)
-        }
-    }
-
-    const getBranchWiseCounsellorTL = async() => {
-        // dispatch(getBranchCounsellorsTL())
-        try {
-            let { data } = await axios.get(`${baseUrl}/api/get_all_counsellors_tl/${branchId}`);
-            console.log('DATA',data?.data[0]);
-            setTableData((prev: any) =>([
-                ...prev, data?.data[0]
-            ]))
-            // setCounsellorTLData(data?.data[0]);
-        } catch (error) {
-            console.log(error);
-            showErrorAlert(error)
-        }
-    }
-
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        console.log('isTL', isTL);
 
         try {
             await validationSchema.validate(formData, { abortEarly: false });
@@ -414,11 +415,8 @@ const BranchDetails = withSwal((props: any) => {
                                             formData.role_id == branch_counsellor_id ? formData.country_ids : null
                                         )
                                     );
-                                    setTableData([])
                                     handleResetValues();
                                     toggleModal();
-                                    getBranchWiseCounsellors()
-                                    getBranchWiseCounsellorTL()
                                 } catch (err) {
                                     setTableData([])
                                     console.error("error updating", err);
@@ -448,11 +446,8 @@ const BranchDetails = withSwal((props: any) => {
                                             formData.role_id == branch_counsellor_id ? formData.country_ids : null
                                         )
                                     );
-                                    setTableData([])
                                     handleResetValues();
                                     toggleModal();
-                                    getBranchWiseCounsellors()
-                                    getBranchWiseCounsellorTL()
                                 } catch (err) {
                                     setTableData([])
                                     console.error("error adding", err);
@@ -479,11 +474,8 @@ const BranchDetails = withSwal((props: any) => {
     };
     
     useEffect(() => {
-        // setIsLoading(true);
         dispatch(getCountry());
         getBranchDetails();
-        // getBranchWiseCounsellors();
-        // getBranchWiseCounsellorTL();
         dispatch(getBranchCounsellors(branchId))
         dispatch(getBranchCounsellorsTL(branchId))
     }, [branchId])
@@ -551,27 +543,33 @@ const BranchDetails = withSwal((props: any) => {
                                             <strong>Website :</strong>
                                             <span className="ms-2">{branchDetails?.website}</span>
                                         </p>
-                                        {/* <p className="text-muted mb-1 font-13">
-                                            <strong>Social Media :</strong>
-                                            <span className="ms-2">{branchDetails?.social_media}</span>
-                                        </p> */}
                                         <p className="text-muted mb-1 font-13">
                                             <strong>Support Email :</strong>
                                             <span className="ms-2">{branchDetails?.support_mail}</span>
                                         </p>
                                     </div>
+
+                                    <div className='d-flex justify-content-end pt-2 pe-3'>
+                                        <Button className='btn btn-primary' onClick={() => [setShowModal(true), setIsTL(true)]}>Add Branch Counsellor TL</Button>
+                                    </div>
+
                                 </Card.Body>
                             </Card>
                         </Col>
                         <Col md={8} lg={8}>
                             <div className='d-flex justify-content-end pb-2'>
                                 <Button className='btn btn-primary me-2' onClick={() => setShowModal(true)}>Add Branch Counsellor</Button>
-                                <Button className='btn btn-primary' onClick={() => [setShowModal(true), setIsTL(true)]}>Add Branch Counsellor TL</Button>
+                                {/* <Button className='btn btn-primary' onClick={() => [setShowModal(true), setIsTL(true)]}>Add Branch Counsellor TL</Button> */}
                             </div>
+
+                        {(loading) && (
+                            <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "70%" }} />
+                        )}
+
+                        {!loading && 
                             <Table
                                 columns={columns}
                                 data={tableData ? tableData : []}
-                                // data={CounsellorData > 0 ? [...CounsellorData, ...counsellorTLData] : [counsellorTLData]}
                                 pageSize={10}
                                 sizePerPageList={sizePerPageList}
                                 isSortable={true}
@@ -579,6 +577,7 @@ const BranchDetails = withSwal((props: any) => {
                                 isSearchable={true}
                                 tableClass="table-striped dt-responsive nowrap w-100"
                             />
+                        }
                         </Col>
                     </Row>
 
@@ -655,7 +654,7 @@ const BranchDetails = withSwal((props: any) => {
                                                             name="phone"
                                                             placeholder="Enter phone number"
                                                             value={formData.phone}
-                                                            onChange={handleInputChange}
+                                                            onChange={handleInputPhoneChange}
                                                         />
                                                         {validationErrors.phone && (
                                                             <Form.Text className="text-danger">

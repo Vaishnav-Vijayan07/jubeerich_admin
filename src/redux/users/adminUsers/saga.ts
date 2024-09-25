@@ -74,7 +74,6 @@ function* getAllAdminUsers(): SagaIterator {
 function* getAllBranchCounsellors({
   payload: { branchId },
 }: any): SagaIterator {
-  console.log('branchId',branchId);
   try {
     const response = yield call(getBranchCounsellorsAPI, branchId);
     const data = response.data.data;
