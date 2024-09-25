@@ -10,7 +10,6 @@ import { AUTH_SESSION_KEY, cre_tl_id, regional_manager_id } from "../../constant
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
-import { getFranchise } from "../../redux/franchise/actions";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -78,14 +77,6 @@ const Leads = () => {
       console.log("err", err);
     }
   }, []);
-
-  const franchiseeData = useMemo(() => {
-    if (!franchisees) return [];
-    return franchisees?.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.name,
-    }));
-  }, [franchisees]);
 
   if (initialLoading) {
     return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
