@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import axios from "axios";
-import { showErrorAlert, showSuccessAlert } from "../../../../constants";
+import {
+  baseUrl,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../../../../constants";
 import moment from "moment";
 import useSaveGraduationInfo from "../../../../hooks/useSaveGraduationInfo";
 import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
@@ -190,13 +194,17 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                 type="file"
                 onChange={(e) => handleFileChange(e, 0)}
               />
-              {graduationDetails?.[0]?.id !== "0" &&
-                typeof graduationDetails?.[0]?.admit_card !== "object" &&
-                graduationDetails?.[0]?.admit_card && (
-                  <Form.Text className="text-primary">
-                    {graduationDetails?.[0]?.admit_card}
-                  </Form.Text>
-                )}
+              {typeof graduationDetails?.[0]?.admit_card === "string" && (
+                <div className="">
+                  <a
+                    href={`${baseUrl}/uploads/graduationDocuments/${graduationDetails?.[0]?.admit_card}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i className="mdi mdi-download me-1"></i> admit_card
+                  </a>
+                </div>
+              )}
             </Form.Group>
           </Col>
 
@@ -211,13 +219,17 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                 type="file"
                 onChange={(e) => handleFileChange(e, 0)}
               />
-              {graduationDetails?.[0]?.id !== "0" &&
-                typeof graduationDetails?.[0]?.certificate !== "object" &&
-                graduationDetails?.[0]?.certificate && (
-                  <Form.Text className="text-primary">
-                    {graduationDetails?.[0]?.certificate}
-                  </Form.Text>
-                )}
+              {typeof graduationDetails?.[0]?.certificate === "string" && (
+                <div className="">
+                  <a
+                    href={`${baseUrl}/uploads/graduationDocuments/${graduationDetails?.[0]?.certificate}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i className="mdi mdi-download me-1"></i> certificate
+                  </a>
+                </div>
+              )}
             </Form.Group>
           </Col>
 
@@ -235,14 +247,19 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                 type="file"
                 onChange={(e) => handleFileChange(e, 0)}
               />
-              {graduationDetails?.[0]?.id !== "0" &&
-                typeof graduationDetails?.[0]?.registration_certificate !==
-                  "object" &&
-                graduationDetails?.[0]?.registration_certificate && (
-                  <Form.Text className="text-primary">
-                    {graduationDetails?.[0]?.registration_certificate}
-                  </Form.Text>
-                )}
+              {typeof graduationDetails?.[0]?.registration_certificate ===
+                "string" && (
+                <div className="">
+                  <a
+                    href={`${baseUrl}/uploads/graduationDocuments/${graduationDetails?.[0]?.registration_certificate}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i className="mdi mdi-download me-1"></i>{" "}
+                    registration_certificate
+                  </a>
+                </div>
+              )}
             </Form.Group>
           </Col>
 
@@ -260,14 +277,18 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                 type="file"
                 onChange={(e) => handleFileChange(e, 0)}
               />
-              {graduationDetails?.[0]?.id !== "0" &&
-                typeof graduationDetails?.[0]?.grading_scale_info !==
-                  "object" &&
-                graduationDetails?.[0]?.grading_scale_info && (
-                  <Form.Text className="text-primary">
-                    {graduationDetails?.[0]?.grading_scale_info}
-                  </Form.Text>
-                )}
+              {typeof graduationDetails?.[0]?.grading_scale_info ===
+                "string" && (
+                <div className="">
+                  <a
+                    href={`${baseUrl}/uploads/graduationDocuments/${graduationDetails?.[0]?.grading_scale_info}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i className="mdi mdi-download me-1"></i> grading_scale_info
+                  </a>
+                </div>
+              )}
             </Form.Group>
           </Col>
 
@@ -285,14 +306,19 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                 type="file"
                 onChange={(e) => handleFileChange(e, 0)}
               />
-              {graduationDetails?.[0]?.id !== "0" &&
-                typeof graduationDetails?.[0]?.backlog_certificate !==
-                  "object" &&
-                graduationDetails?.[0]?.backlog_certificate && (
-                  <Form.Text className="text-primary">
-                    {graduationDetails?.[0]?.backlog_certificate}
-                  </Form.Text>
-                )}
+              {typeof graduationDetails?.[0]?.backlog_certificate ===
+                "string" && (
+                <div className="mt-1">
+                  <a
+                    href={`${baseUrl}/uploads/graduationDocuments/${graduationDetails?.[0]?.backlog_certificate}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i className="mdi mdi-download me-1"></i>{" "}
+                    backlog_certificate
+                  </a>
+                </div>
+              )}
             </Form.Group>
           </Col>
         </Row>
@@ -417,13 +443,17 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                     type="file"
                     onChange={(e) => handleFileChange(e, index + 1)}
                   />
-                  {item?.id !== "0" &&
-                    typeof item?.admit_card !== "object" &&
-                    item?.admit_card && (
-                      <Form.Text className="text-primary">
-                        {item?.admit_card}
-                      </Form.Text>
-                    )}
+                  {typeof item?.admit_card === "string" && (
+                    <div className="mt-2">
+                      <a
+                        href={`${baseUrl}/uploads/educationDocuments/${item?.admit_card}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <i className="mdi mdi-download me-1"></i> admit_card
+                      </a>
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
 
@@ -438,13 +468,17 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                     type="file"
                     onChange={(e) => handleFileChange(e, index + 1)}
                   />
-                  {item?.id !== "0" &&
-                    typeof item?.certificate !== "object" &&
-                    item?.certificate && (
-                      <Form.Text className="text-primary">
-                        {item?.certificate}
-                      </Form.Text>
-                    )}
+                  {typeof item?.certificate === "string" && (
+                    <div className="mt-2">
+                      <a
+                        href={`${baseUrl}/uploads/educationDocuments/${item?.certificate}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <i className="mdi mdi-download me-1"></i> certificate
+                      </a>
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
               <Col
@@ -461,13 +495,18 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                     type="file"
                     onChange={(e) => handleFileChange(e, index + 1)}
                   />
-                  {item?.id !== "0" &&
-                    typeof item?.registration_certificate !== "object" &&
-                    item?.registration_certificate && (
-                      <Form.Text className="text-primary">
-                        {item?.registration_certificate}
-                      </Form.Text>
-                    )}
+                  {typeof item?.registration_certificate === "string" && (
+                    <div className="mt-2">
+                      <a
+                        href={`${baseUrl}/uploads/educationDocuments/${item?.registration_certificate}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <i className="mdi mdi-download me-1"></i>{" "}
+                        registration_certificate
+                      </a>
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
               <Col
@@ -484,13 +523,18 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                     type="file"
                     onChange={(e) => handleFileChange(e, index + 1)}
                   />
-                  {item?.id !== "0" &&
-                    typeof item?.grading_scale_info !== "object" &&
-                    item?.grading_scale_info && (
-                      <Form.Text className="text-primary">
-                        {item?.grading_scale_info}
-                      </Form.Text>
-                    )}
+                  {typeof item?.grading_scale_info === "string" && (
+                    <div className="mt-2">
+                      <a
+                        href={`${baseUrl}/uploads/educationDocuments/${item?.grading_scale_info}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <i className="mdi mdi-download me-1"></i>{" "}
+                        grading_scale_info
+                      </a>
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
               <Col
@@ -507,13 +551,18 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                     type="file"
                     onChange={(e) => handleFileChange(e, index + 1)}
                   />
-                  {item?.id !== "0" &&
-                    typeof item?.backlog_certificate !== "object" &&
-                    item?.backlog_certificate && (
-                      <Form.Text className="text-primary">
-                        {item?.backlog_certificate}
-                      </Form.Text>
-                    )}
+                  {typeof item?.backlog_certificate === "string" && (
+                    <div className="mt-2">
+                      <a
+                        href={`${baseUrl}/uploads/educationDocuments/${item?.backlog_certificate}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <i className="mdi mdi-download me-1"></i>{" "}
+                        backlog_certificate
+                      </a>
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
             </Row>

@@ -10,6 +10,7 @@ import { AUTH_SESSION_KEY, cre_tl_id, regional_manager_id } from "../../constant
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
+import { getFranchise } from "../../redux/franchise/actions";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -117,7 +118,7 @@ const Leads = () => {
             userData={dropdownData.adminUsers || []}
             region={dropdownData.regions}
             regionData={dropdownData.regions || []}
-            franchisees={franchiseeData}
+            franchisees={dropdownData.franchises || []}
             branchForManager={branchForManager}
           />
         </Col>

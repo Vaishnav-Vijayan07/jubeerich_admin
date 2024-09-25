@@ -340,7 +340,9 @@ const BranchDetails = withSwal((props: any) => {
     const getBranchWiseCounsellorTL = async() => {
         try {
             let { data } = await axios.get(`${baseUrl}/api/get_all_counsellors_tl/${branchId}`);
-            setCounsellorTLData(data?.data[0])
+            console.log('DATA',data?.data[0]);
+            
+            setCounsellorTLData(data?.data[0]);
         } catch (error) {
             console.log(error);
             showErrorAlert(error)
@@ -349,6 +351,8 @@ const BranchDetails = withSwal((props: any) => {
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        console.log('isTL', isTL);
 
         try {
             await validationSchema.validate(formData, { abortEarly: false });
@@ -528,11 +532,13 @@ const BranchDetails = withSwal((props: any) => {
                         </Col>
                         <Col md={8} lg={8}>
                             <div className='d-flex justify-content-end pb-2'>
-                                <Button className='btn btn-primary' onClick={() => setShowModal(true)}>Add Branch Counsellor</Button>
+                                <Button className='btn btn-primary me-2' onClick={() => setShowModal(true)}>Add Branch Counsellor</Button>
+                                <Button className='btn btn-primary' onClick={() => [setShowModal(true), setIsTL(true)]}>Add Branch Counsellor TL</Button>
                             </div>
                             <Table
                                 columns={columns}
-                                data={tableData ? tableData : []}
+                                // data={tableData ? tableData : []}
+                                data={tableData.length > 0 ? [...tableData, counsellorTLData] : [counsellorTLData]}
                                 pageSize={10}
                                 sizePerPageList={sizePerPageList}
                                 isSortable={true}
