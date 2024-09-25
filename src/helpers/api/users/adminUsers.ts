@@ -4,10 +4,21 @@ import { APICore } from "../apiCore";
 const api = new APICore();
 
 const baseUrl = "/admin_users";
+const baseUrlBranchCounsellor = "/get_all_counsellors";
+const baseUrlBranchCounsellorTL = '/get_all_counsellors_tl'
 
 function getAdminUsers() {
   return api.get(`${baseUrl}`, {});
 }
+
+function getBranchCounsellors(branchId: any) {
+  return api.get(`${baseUrlBranchCounsellor}/${branchId}`, {});
+}
+
+function getBranchCounsellorsTL(branchId: any) {
+  return api.get(`${baseUrlBranchCounsellorTL}/${branchId}`, {});
+}
+
 function getFranchiseCounsellors() {
   return api.get(`get_franchise_counsellors`, {});
 }
@@ -81,5 +92,7 @@ export {
   updateAdminUsers,
   deleteAdminUsers,
   updateBranch,
-  getFranchiseCounsellors
+  getFranchiseCounsellors,
+  getBranchCounsellors,
+  getBranchCounsellorsTL
 };

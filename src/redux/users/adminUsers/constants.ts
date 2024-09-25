@@ -6,5 +6,8 @@ export enum AdminUserActionTypes {
     ADD_ADMIN_USERS = "@@admin_users/ADD_ADMIN_USERS",
     UPDATE_ADMIN_USERS = "@@admin_users/UPDATE_ADMIN_USERS",
     DELETE_ADMIN_USERS = "@@admin_users/DELETE_ADMIN_USERS",
+
+    GET_BRANCH_COUNSELLOR = "@@admin_users/GET_BRANCH_COUNSELLOR",
+    GET_BRANCH_COUNSELLOR_TL = "@@admin_users/GET_BRANCH_COUNSELLOR_TL",
   }
   

@@ -7,6 +7,8 @@ import { AdminUserActionTypes } from "./constants";
 
 const INIT_STATE = {
   adminUsers: [],
+  branchCounsellor: [],
+  branchCounsellorTL: [],
   loading: false,
   error: null,
   initialLoading: false,
@@ -33,7 +35,9 @@ export interface SourceActionType {
     | AdminUserActionTypes.GET_ADMIN_USERS
     | AdminUserActionTypes.ADD_ADMIN_USERS
     | AdminUserActionTypes.UPDATE_ADMIN_USERS
-    | AdminUserActionTypes.DELETE_ADMIN_USERS;
+    | AdminUserActionTypes.DELETE_ADMIN_USERS
+    | AdminUserActionTypes.GET_BRANCH_COUNSELLOR
+    | AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL;
   payload: {
     actionType?: string;
     data?: AdminUsersData | {};
@@ -55,6 +59,22 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
           return {
             ...state,
             adminUsers: action.payload.data,
+            loading: false,
+            initialLoading: false,
+          };
+        }
+        case AdminUserActionTypes.GET_BRANCH_COUNSELLOR: {
+          return {
+            ...state,
+            branchCounsellor: action.payload.data,
+            loading: false,
+            initialLoading: false,
+          };
+        }
+        case AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL: {
+          return {
+            ...state,
+            branchCounsellorTL: action.payload.data,
             loading: false,
             initialLoading: false,
           };
@@ -138,6 +158,10 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
       return { ...state, loading: true, error: null };
     case AdminUserActionTypes.UPDATE_ADMIN_USERS:
       return { ...state, loading: true, error: null };
+    case AdminUserActionTypes.GET_BRANCH_COUNSELLOR:
+      return { ...state, loading: true, initialLoading: true };
+    case AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL:
+      return { ...state, loading: true, initialLoading: true };
     default:
       return { ...state };
   }

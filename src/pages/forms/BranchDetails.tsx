@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 import React, { useEffect, useMemo, useState } from 'react'
-import { Button, Card, Col, Form, Modal, Row } from 'react-bootstrap'
+import { Button, Card, Col, Form, Modal, Row, Spinner } from 'react-bootstrap'
 import { Link, useParams } from 'react-router-dom'
 import Table from '../../components/Table';
 import axios from 'axios';
 import { AUTH_SESSION_KEY, baseUrl, branch_counsellor_id, counsellor_id, counsellor_tl_id, regional_manager_id, showErrorAlert } from '../../constants';
 import { useDispatch, useSelector } from 'react-redux';
-import { addAdminUsers, deleteAdminUsers, updateAdminUsers } from '../../redux/actions';
+import { addAdminUsers, deleteAdminUsers, getBranchCounsellors, getBranchCounsellorsTL, updateAdminUsers } from '../../redux/actions';
 import Select from 'react-select/src/Select';
 import { OptionType } from '../users/data';
 import { getCountry } from '../../redux/country/actions';
@@ -67,7 +67,8 @@ const BranchDetails = withSwal((props: any) => {
     const [isUpdate, setIsUpdate] = useState<boolean>(false)
     const [countryData, setCountryData] = useState([]);
     const [counsellorTLData, setCounsellorTLData] = useState<any>({});
-    const [isTL, setIsTL] = useState<boolean>(false)
+    const [isTL, setIsTL] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const dispatch = useDispatch();
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
@@ -79,9 +80,15 @@ const BranchDetails = withSwal((props: any) => {
             initialLoading: state.Users.initialLoading,
         })
     );
-
+    
     const Countries = useSelector((state: RootState) => state?.Country.countries);
     const Branch = useSelector((state: RootState) => state?.Branches?.branches?.data);
+    const CounsellorData = useSelector((state: RootState) => state?.Users?.branchCounsellor);
+    const CounsellorTLData = useSelector((state: RootState) => state?.Users?.branchCounsellorTL);
+
+    console.log('CounsellorData',CounsellorData);
+    console.log('CounsellorTLData',CounsellorTLData);
+    
 
     const BranchesData = useMemo(() => {
         if (!Branch) return [];
@@ -230,6 +237,12 @@ const BranchDetails = withSwal((props: any) => {
 
 
     const handleUpdate = (item: any) => {
+        console.log(item?.role_id);
+        console.log(counsellor_tl_id);
+        
+        if(item?.role_id == counsellor_tl_id) {
+            setIsTL(true);
+        }
 
         if (item?.country_id) {
             setFormData((prev: any) => ({
@@ -328,9 +341,13 @@ const BranchDetails = withSwal((props: any) => {
     }
 
     const getBranchWiseCounsellors = async() => {
+        // dispatch(getBranchCounsellors(branchId))
         try {
             let { data } = await axios.get(`${baseUrl}/api/get_all_counsellors/${branchId}`);
-            setTableData(data?.data)
+            // setTableData(data?.data)
+            setTableData((prev: any) =>([
+                ...prev, ...data?.data
+            ]))
         } catch (error) {
             console.log(error);
             showErrorAlert(error)
@@ -338,11 +355,14 @@ const BranchDetails = withSwal((props: any) => {
     }
 
     const getBranchWiseCounsellorTL = async() => {
+        // dispatch(getBranchCounsellorsTL())
         try {
             let { data } = await axios.get(`${baseUrl}/api/get_all_counsellors_tl/${branchId}`);
             console.log('DATA',data?.data[0]);
-            
-            setCounsellorTLData(data?.data[0]);
+            setTableData((prev: any) =>([
+                ...prev, data?.data[0]
+            ]))
+            // setCounsellorTLData(data?.data[0]);
         } catch (error) {
             console.log(error);
             showErrorAlert(error)
@@ -394,10 +414,13 @@ const BranchDetails = withSwal((props: any) => {
                                             formData.role_id == branch_counsellor_id ? formData.country_ids : null
                                         )
                                     );
+                                    setTableData([])
                                     handleResetValues();
                                     toggleModal();
                                     getBranchWiseCounsellors()
+                                    getBranchWiseCounsellorTL()
                                 } catch (err) {
+                                    setTableData([])
                                     console.error("error updating", err);
                                 }
                             }
@@ -425,10 +448,13 @@ const BranchDetails = withSwal((props: any) => {
                                             formData.role_id == branch_counsellor_id ? formData.country_ids : null
                                         )
                                     );
+                                    setTableData([])
                                     handleResetValues();
                                     toggleModal();
                                     getBranchWiseCounsellors()
+                                    getBranchWiseCounsellorTL()
                                 } catch (err) {
+                                    setTableData([])
                                     console.error("error adding", err);
                                     console.error(err);
                                 }
@@ -451,13 +477,20 @@ const BranchDetails = withSwal((props: any) => {
             }
         }
     };
-
+    
     useEffect(() => {
+        // setIsLoading(true);
         dispatch(getCountry());
         getBranchDetails();
-        getBranchWiseCounsellors();
-        getBranchWiseCounsellorTL();
+        // getBranchWiseCounsellors();
+        // getBranchWiseCounsellorTL();
+        dispatch(getBranchCounsellors(branchId))
+        dispatch(getBranchCounsellorsTL(branchId))
     }, [branchId])
+
+    useEffect(() => {
+        setTableData([...CounsellorTLData, ...CounsellorData])
+    }, [CounsellorTLData, CounsellorData])
 
     useEffect(() => {
         if (Countries) {
@@ -537,8 +570,8 @@ const BranchDetails = withSwal((props: any) => {
                             </div>
                             <Table
                                 columns={columns}
-                                // data={tableData ? tableData : []}
-                                data={tableData.length > 0 ? [...tableData, counsellorTLData] : [counsellorTLData]}
+                                data={tableData ? tableData : []}
+                                // data={CounsellorData > 0 ? [...CounsellorData, ...counsellorTLData] : [counsellorTLData]}
                                 pageSize={10}
                                 sizePerPageList={sizePerPageList}
                                 isSortable={true}
@@ -548,37 +581,6 @@ const BranchDetails = withSwal((props: any) => {
                             />
                         </Col>
                     </Row>
-
-                    {/* <Row className='pt-2'>
-                        <div className='d-flex justify-content-end pb-2'>
-                            <Button onClick={() => [toggleModal(),setIsTL(true)]}>Add Branch Counsellor TL</Button>
-                        </div>
-                        <Card className="text-center border border-2">
-                            <Card.Body>
-                                <div className='d-flex justify-content-center'>
-                                    <h4>Branch Counsellor TL Details</h4>
-                                </div>
-                                <div className="text-start mt-3">
-                                    <p className="text-muted mb-2 font-13">
-                                        <strong>Name :</strong>
-                                        <span className="ms-2">{counsellorTLData?.name}</span>
-                                    </p>
-                                    <p className="text-muted mb-2 font-13">
-                                        <strong>Mobile :</strong>
-                                        <span className="ms-2">{counsellorTLData?.phone}</span>
-                                    </p>
-                                    <p className="text-muted mb-2 font-13">
-                                        <strong>Email :</strong>
-                                        <span className="ms-2 ">{counsellorTLData?.email}</span>
-                                    </p>
-                                    <p className="text-muted mb-1 font-13">
-                                        <strong>Address :</strong>
-                                        <span className="ms-2">{counsellorTLData?.address}</span>
-                                    </p>
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Row> */}
 
                     {/* Modal */}
                     <Row className="justify-content-between px-2">
@@ -771,6 +773,7 @@ const BranchDetails = withSwal((props: any) => {
                                                     onClick={() => {
                                                         if (isUpdate) {
                                                             handleCancelUpdate();
+                                                            setIsTL(false);
                                                             toggleModal();
                                                         } else {
                                                             toggleModal();
