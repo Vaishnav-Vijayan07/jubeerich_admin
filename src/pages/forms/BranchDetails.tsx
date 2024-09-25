@@ -48,11 +48,14 @@ export const initialValidationState = {
 };
 
 
-const UserBox = withSwal((props: any) => {
+const BranchDetails = withSwal((props: any) => {
 
     const { swal } = props;
-
     const { branchId } = useParams();
+
+    console.log("branchId ==>", branchId);
+    
+
     const [branchDetails, setBranchDetails] = useState<any>({});
     const [tableData, setTableData] = useState<any>([]);
     const [showModal, setShowModal] = useState(false);
@@ -794,4 +797,4 @@ const UserBox = withSwal((props: any) => {
     )
 })
 
-export default UserBox
+export default BranchDetails

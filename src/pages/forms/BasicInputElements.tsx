@@ -27,84 +27,9 @@ import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import { examtypes } from "./data";
-
-interface OptionType {
-  value: string;
-  label: string;
-}
-
-interface TableRecords {
-  id: string;
-  source_id: string;
-  channel_name: string;
-  channel_description: string;
-  updated_by: string;
-  status: string;
-}
-
-const sizePerPageList = [
-  {
-    text: "10",
-    value: 10,
-  },
-  {
-    text: "25",
-    value: 25,
-  },
-  {
-    text: "50",
-    value: 50,
-  },
-  {
-    text: "100",
-    value: 100,
-  },
-];
-
-const initialState = {
-  id: "",
-  full_name: "",
-  email: "",
-  phone: "",
-  category_id: null,
-  source_id: null,
-  channel_id: null,
-  city: "",
-  preferred_country: [],
-  office_type: null,
-  updated_by: null,
-  remarks: "",
-  lead_received_date: new Date().toISOString().split("T")[0],
-  ielts: true,
-  exam: "",
-  zipcode: "",
-  region_id: "",
-  franchise_id: "",
-  lead_type_id: "",
-};
-
-const initialValidationState = {
-  full_name: "",
-  email: "",
-  phone: "",
-  category_id: null,
-  source_id: "",
-  channel_id: "",
-  city: "",
-  preferred_country: "",
-  office_type: "",
-  updated_by: "",
-  remarks: "",
-  lead_received_date: "",
-  ielts: true,
-  zipcode: "",
-  region_id: "",
-  lead_type_id: "",
-};
+import { examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
 
 const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
-
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   let userRole: any;
@@ -132,10 +57,8 @@ const BasicInputElements = withSwal((props: any) => {
     region,
     regionData,
     franchisees,
-  } = props;  
-
-  console.log("channel ==>", channels);
-  
+    branchForManager,
+  } = props;
 
   const [sourceData, setSourceData] = useState<any>(source);
   const [channelData, setChannelData] = useState<any>(channels);
@@ -430,9 +353,6 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
-  console.log("formData ==>", formData);
-  
-
   const handleDropDowns = (selected: any, { name }: any) => {
     // Update form data for all dropdowns except franchise_id and region_id
     if (name !== "franchise_id" && name !== "region_id") {
@@ -452,7 +372,7 @@ const BasicInputElements = withSwal((props: any) => {
         break;
       case "lead_type_id":
         console.log("here ==>", source);
-        
+
         setSelectedSource(null);
         setSelectedChannel(null);
         setSelectedCategory(selected);
@@ -850,13 +770,11 @@ const BasicInputElements = withSwal((props: any) => {
         toggleUploadModal();
       } else {
         showErrorAlert(data.message);
-        console.log("data.invalidFileLink", data.invalidFileLink);
         setSelectedFile([]);
         downloadRjectedData(data.invalidFileLink);
         setIsLoading(false);
       }
     } catch (err) {
-      console.log("error ==>", err);
       showErrorAlert(err);
       setSelectedFile([]);
       setIsLoading(false);
@@ -869,13 +787,28 @@ const BasicInputElements = withSwal((props: any) => {
         const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
 
         if (data.status) {
-          if (userRole == 4) {
-            // console.log("getLeadsTL called bulk====>");
-
+          if (userRole == cre_tl_id) {
             dispatch(getLeadsTL());
           } else {
-            // console.log("getLead called bulk==>");
+            dispatch(getLead());
+          }
+          showSuccessAlert("Bulk assignment successful.");
+        }
+      } catch (error) {
+        showErrorAlert(error);
+      }
+    }
+  };
 
+  const handleBranchAssignBulk = async (user_ids: any, branch_id: any) => {
+    if (user_ids.length > 0) {
+      try {
+        const { data } = await axios.post("/assign_counselor_tl", { user_ids, branch_id });
+
+        if (data.status) {
+          if (userRole == cre_tl_id) {
+            dispatch(getLeadsTL());
+          } else {
             dispatch(getLead());
           }
           showSuccessAlert("Bulk assignment successful.");
@@ -893,7 +826,7 @@ const BasicInputElements = withSwal((props: any) => {
           leads_ids: selectedValues,
         });
         if (data.status) {
-          if (userRole == 4) {
+          if (userRole == cre_tl_id) {
             dispatch(getLeadsTL());
           } else {
             dispatch(getLead());
@@ -929,20 +862,6 @@ const BasicInputElements = withSwal((props: any) => {
     setClassName(className);
     setScroll(false);
     toggle();
-  };
-
-  const handleSelectChange = (
-    selectedOptions: OptionType[] | OptionsType<OptionType> | null,
-    actionMeta: ActionMeta<OptionType>
-  ) => {
-    if (Array.isArray(selectedOptions)) {
-      setSelectedCountry(selectedOptions);
-      const selectedIdsArray = selectedOptions?.map((option) => parseInt(option.value));
-      setFormData((prev: any) => ({
-        ...prev,
-        preferred_country: selectedIdsArray,
-      }));
-    }
   };
 
   const handleAddLanguageForm = () => {
@@ -1051,17 +970,8 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Label>
                       <span className="text-danger fs-4">* </span>Phone
                     </Form.Label>
-                    <Form.Control
-                      type="number"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.phone && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.phone}
-                      </Form.Text>
-                    )}
+                    <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
+                    {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -1659,6 +1569,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                 {user?.role == regional_manager_id && (
                   <>
+                    {console.log("branchForManagerbranchForManager ==?", branchForManager)}
                     <Dropdown className="btn-group">
                       <Dropdown.Toggle
                         disabled={selectedValues?.length > 0 ? false : true}
@@ -1668,9 +1579,9 @@ const BasicInputElements = withSwal((props: any) => {
                         <i className="mdi mdi-account-plus"></i> Assign Branch
                       </Dropdown.Toggle>
                       <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
-                        {cres?.map((item: any) => (
-                          <Dropdown.Item key={item.id} onClick={() => handleAssignBulk(selectedValues, item.id)}>
-                            {item.name}
+                        {branchForManager?.map((item: any) => (
+                          <Dropdown.Item key={item.value} onClick={() => handleBranchAssignBulk(selectedValues, item.value)}>
+                            {item.label}
                           </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
@@ -1686,7 +1597,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Button>
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
-              {userRole == 4 ? (
+              {userRole == cre_tl_id || userRole == regional_manager_id ? (
                 <Table
                   columns={columns}
                   data={records ? records : []}

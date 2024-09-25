@@ -19,7 +19,7 @@ import Select from "react-select";
 import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames";
-import UserBox from "./UserBox";
+import UserBox from "./BranchDetails";
 
 interface TableRecords {
   id: string;
@@ -416,7 +416,7 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* View Icon */}
-          <Link to={`/settings/master/branches_detials/${row.original?.id}`} className="action-icon">
+          <Link to={`/settings/master/branch_detials/${row.original?.id}`} className="action-icon">
             <i className="mdi mdi-eye-outline"></i>
           </Link>
           {/* Edit Icon */}
