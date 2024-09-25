@@ -305,12 +305,19 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
+    console.log('ITEM', item);
+    
+    
     //update source dropdown
     const updatedSource = source?.filter((source: any) => source.value == item.source_id);
     const updatedOffice = office?.filter((office: any) => office.value == item.office_type);
     const updatedRegion = region?.filter((region: any) => region.value == item.region_id);
 
-    const updatedCtegory = leadTypes?.filter((category: any) => category.value == item.category_id);
+    // const updatedCtegory = leadTypes?.filter((category: any) => category.value == item.category_id);
+    const updatedCtegory = leadTypes?.filter((category: any) => category.value == item?.lead_type_id);
+
+    console.log('updatedCtegory',updatedCtegory);
+    
     const updatedChannels = channels?.filter((channel: any) => channel.value == item.channel_id);
 
     const updatedCountry = item?.preferredCountries?.map((country: any) => ({
@@ -323,7 +330,7 @@ const BasicInputElements = withSwal((props: any) => {
     const { value } = updatedOffice[0];
     const { franchise_id, region_id: region_id_from_item } = item;
 
-    if (franchise_id && value === franchise_id_from_office) {
+    if (franchise_id && value == franchise_id_from_office) {
       console.log("HERE");
       setIsFranchiseActive(true);
       setActiveRegion(false);
@@ -352,7 +359,8 @@ const BasicInputElements = withSwal((props: any) => {
       full_name: item?.full_name || "",
       email: item?.email || "",
       phone: item?.phone || "",
-      category_id: item?.category_id || null,
+      // category_id: item?.category_id || null,
+      lead_type_id: item?.lead_type_id || null,
       source_id: item?.source_id || "",
       channel_id: item?.channel_id || "",
       city: item?.city || "",
@@ -966,6 +974,9 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleRemoveLanguageForm = async (index: number, e: any, exam_type: string) => {
+
+    let existExamId = languageForm[index]?.id;
+
     const payload = {
       id: formData?.id,
       exam_type: exam_type,
@@ -985,19 +996,26 @@ const BasicInputElements = withSwal((props: any) => {
         })
         .then((result: any) => {
           if (result.isConfirmed) {
-            axios
-              .delete("/exams", { data: payload })
-              .then((res: any) => {
-                const removeFields = languageForm.filter((data: any, i: number) => i !== index);
-                const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
-                setLanguageForm(removeFields);
-                setSelectedFile(removeFiles);
-                showSuccessAlert(res?.data?.message);
-              })
-              .catch((err: any) => {
-                console.log(err);
-                showErrorAlert("Error occured");
-              });
+            if (!existExamId) {
+              const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+              const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
+              setLanguageForm(removeFields);
+              setSelectedFile(removeFiles);
+            } else {
+              axios
+                .delete("/exams", { data: payload })
+                .then((res: any) => {
+                  const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+                  const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
+                  setLanguageForm(removeFields);
+                  setSelectedFile(removeFiles);
+                  showSuccessAlert(res?.data?.message);
+                })
+                .catch((err: any) => {
+                  console.log(err);
+                  showErrorAlert("Error occured");
+                });
+            }
           }
         });
     } catch (error) {

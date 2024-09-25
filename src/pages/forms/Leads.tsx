@@ -19,6 +19,7 @@ import {
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
+import { getFranchise } from "../../redux/franchise/actions";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -54,6 +55,7 @@ const Leads = () => {
 
   useEffect(() => {
     fetchAllCounsellors()
+    // dispatch(getFranchise())
   }, []);
 
   console.log('Region From Lead', region);
@@ -130,7 +132,7 @@ const Leads = () => {
             userData={dropdownData.adminUsers || []}
             region={dropdownData.regions}
             regionData={dropdownData.regions || []}
-            franchisees={franchiseeData}
+            franchisees={dropdownData.franchises || []}
           />
         </Col>
       </Row>

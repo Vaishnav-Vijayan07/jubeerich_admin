@@ -15,7 +15,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
 import { addLeads, deleteLeads, getLead, getLeadAssigned, updateLeads } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
-import { AUTH_SESSION_KEY, customStyles, region_id, showErrorAlert, showSuccessAlert } from "../../constants";
+import { AUTH_SESSION_KEY, baseUrl, customStyles, franchise_id_from_office, region_id, showErrorAlert, showSuccessAlert } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -23,6 +23,7 @@ import { city, examtypes } from "./data";
 import moment from "moment";
 import makeAnimated from "react-select/animated";
 import useDropdownData from "../../hooks/useDropdownDatas";
+import { getFranchise } from "../../redux/franchise/actions";
 
 interface OptionType {
   value: string;
@@ -78,6 +79,7 @@ const initialState = {
   exam: "",
   zipcode: "",
   region_id: "",
+  franchise_id: "",
 };
 
 const initialValidationState = {
@@ -120,6 +122,7 @@ const BasicInputElements = withSwal((props: any) => {
     userData,
     counsellors,
     region,
+    franchisees
   } = props;
 
   console.log("Region from state", region);
@@ -147,7 +150,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedSource, setSelectedSource] = useState<any>(null);
   const [selectedValues, setSelectedValues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [selectedLeadType, setSelectedLeadType] = useState<any>(null);
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [formData, setFormData] = useState(initialState);
@@ -165,6 +168,10 @@ const BasicInputElements = withSwal((props: any) => {
   const fileInputRef = useRef<any>(null);
   const [activeRegion, setActiveRegion] = useState<any>(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
+  const [isFranchiseActive, setIsFranchiseActive] = useState<any>(null);
+  const [selectedFranchisee, setSelectedFranchisee] = useState(null);
+  const [sourceData, setSourceData] = useState<any>(source);
+  const [channelData, setChannelData] = useState<any>(channels);
 
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
@@ -217,10 +224,6 @@ const BasicInputElements = withSwal((props: any) => {
     //update source dropdown
     const updatedSource = source?.filter((source: any) => source.value == item.source_id);
     const updatedOffice = office?.filter((office: any) => office.value == item.office_type);
-    // const updatedCountry = country?.filter(
-    //   (country: any) => country.value == item.preferred_country
-    // );
-    console.log("leadTypes ===>", leadTypes);
     
     const updatedCtegory = leadTypes?.filter((category: any) => category.value == item.lead_type_id);
     const updatedChannels = channels?.filter((channel: any) => channel.value == item.channel_id);
@@ -234,6 +237,17 @@ const BasicInputElements = withSwal((props: any) => {
 
     const countryArray = item?.preferredCountries?.map((country: any) => country?.id);
 
+    const { value } = updatedOffice[0];
+    const { franchise_id, region_id: region_id_from_item } = item;
+
+    if (franchise_id && value == franchise_id_from_office) {
+      console.log("HERE");
+      setIsFranchiseActive(true);
+      setActiveRegion(false);
+      const franchiseValue = franchisees.find((item: any) => item.value == franchise_id);
+      setSelectedFranchisee(franchiseValue);
+    }
+
     console.log("updatedRegion", updatedRegion[0]);
 
     setSelectedSource(updatedSource[0]);
@@ -241,7 +255,7 @@ const BasicInputElements = withSwal((props: any) => {
     // setSelectedCountry(updatedCountry[0]);
     setSelectedCountry(updatedCountry);
     setSelectedRegion(updatedRegion[0]);
-    setSelectedCategory(updatedCtegory[0]);
+    setSelectedLeadType(updatedCtegory[0]);
     setSelectedChannel(updatedChannels[0]);
 
     setFormData((prev) => ({
@@ -264,21 +278,19 @@ const BasicInputElements = withSwal((props: any) => {
       lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
       ielts: item?.ielts || "",
       exam: item?.exam || "",
-      zipcode: item?.zipcode,
+      zipcode: item?.zipcode || "",
       region_id: item?.region_id || "",
+      franchise_id: item?.franchise_id || "",
     }));
 
     setIsUpdate(true);
 
     if (item?.exam_details?.length) {
       setSelectExam(true);
-      setLanguageForm(item?.exam_details);
+      setLanguageForm(item?.exams);
     }
 
     if (item?.exam_documents?.length) {
-      console.log("File", item?.exam_documents);
-
-      // setSelectedFile(item?.exam_documents)
       setSelectedFileName(item?.exam_documents);
     }
 
@@ -331,30 +343,108 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
-  const handleDropDowns = (selected: any, { name }: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: selected.value,
-    }));
+  // const handleDropDowns = (selected: any, { name }: any) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: selected.value,
+  //   }));
 
+  //   switch (name) {
+  //     case "source_id":
+  //       setSelectedSource(selected);
+  //       break;
+  //     case "lead_type_id":
+  //       setSelectedLeadType(selected);
+  //       break;
+  //     case "preferred_country":
+  //       setSelectedCountry(selected);
+  //       break;
+  //     case "office_type":
+  //       setSelectedOffice(selected);
+  //       break;
+  //     case "channel_id":
+  //       setSelectedChannel(selected);
+  //       break;
+  //     case "region_id":
+  //       setSelectedRegion(selected);
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
+
+  const handleDropDowns = (selected: any, { name }: any) => {
+    // Update form data for all dropdowns except franchise_id and region_id
+    if (name !== "franchise_id" && name !== "region_id") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: selected.value,
+      }));
+    }
+
+    // Handle specific dropdown selections
     switch (name) {
       case "source_id":
         setSelectedSource(selected);
+        setSelectedChannel(null);
+        let filteredChannel = channels.filter((data: any) => data.source_id == selected.value);
+        setChannelData(filteredChannel); // Reset to Default
         break;
       case "lead_type_id":
-        setSelectedCategory(selected);
+        console.log("here ==>", source);
+        
+        setSelectedSource(null);
+        setSelectedChannel(null);
+        setSelectedLeadType(selected);
+        let filteredSource = source.filter((data: any) => data.lead_type == selected.value);
+        setSourceData(filteredSource); // Reset to Default
         break;
       case "preferred_country":
         setSelectedCountry(selected);
         break;
       case "office_type":
+        const { value } = selected;
+        if (value !== franchise_id_from_office && value !== region_id) {
+          setFormData((prev: any) => ({
+            ...prev,
+            region_id: null,
+            franchise_id: null,
+          }));
+          setIsFranchiseActive(false);
+          setActiveRegion(false);
+        }
+
+        if (value == franchise_id_from_office) {
+          setIsFranchiseActive(true);
+          setActiveRegion(false);
+        }
+
+        if (value == region_id) {
+          setActiveRegion(true);
+          setIsFranchiseActive(false);
+        }
+
         setSelectedOffice(selected);
         break;
       case "channel_id":
         setSelectedChannel(selected);
+
         break;
       case "region_id":
         setSelectedRegion(selected);
+        setFormData((prev: any) => ({
+          ...prev,
+          region_id: selected.value,
+          franchise_id: null, // Reset franchise_id when region_id changes
+        }));
+        break;
+      case "franchise_id":
+        setSelectedFranchisee(selected);
+        setFormData((prev: any) => ({
+          ...prev,
+          region_id: null, // Reset region_id when franchise_id changes
+          franchise_id: selected.value,
+        }));
         break;
       default:
         break;
@@ -369,7 +459,6 @@ const BasicInputElements = withSwal((props: any) => {
 
     console.log("FORM DATA", formData);
     console.log("EXAM DATA", exam_details);
-    console.log("EXAM FILE", selectedFile);
 
     // Validate the form using yup
     try {
@@ -391,10 +480,8 @@ const BasicInputElements = withSwal((props: any) => {
               formData.source_id,
               formData.channel_id,
               formData.city,
-              // formData.preferred_country,
               JSON.stringify(formData.preferred_country),
               formData.office_type,
-              // null, // Region Nulled
               formData.region_id ? formData.region_id : null,
               null,
               null,
@@ -403,8 +490,9 @@ const BasicInputElements = withSwal((props: any) => {
               formData.lead_received_date,
               formData.ielts,
               formData.zipcode,
-              exam_details[0]?.exam_name ? JSON.stringify(exam_details) : null,
-              selectedFile
+              exam_details[0]?.exam_type ? JSON.stringify(exam_details) : null,
+              selectedFile,
+              formData.franchise_id ? formData.franchise_id : null
             )
           );
           setSelectedFileName([]);
@@ -422,10 +510,8 @@ const BasicInputElements = withSwal((props: any) => {
               formData.source_id,
               formData.channel_id,
               formData.city,
-              // formData.preferred_country,
               JSON.stringify(formData.preferred_country),
               formData.office_type,
-              // null, // Region Nulled
               formData.region_id ? formData.region_id : null,
               null,
               null,
@@ -434,8 +520,9 @@ const BasicInputElements = withSwal((props: any) => {
               formData.lead_received_date,
               formData.ielts,
               formData.zipcode,
-              exam_details[0]?.exam_name ? JSON.stringify(exam_details) : null,
-              selectedFile
+              exam_details[0]?.exam_type ? JSON.stringify(exam_details) : null,
+              selectedFile,
+              formData.franchise_id ? formData.franchise_id : null
             )
           );
         }
@@ -604,7 +691,7 @@ const BasicInputElements = withSwal((props: any) => {
     setFormData(initialState); //clear form data
     // setSelectedCountry(null);
     setSelectedCountry([]);
-    setSelectedCategory(null);
+    setSelectedLeadType(null);
     setSelectedChannel(null);
     setSelectedOffice(null);
     setSelectedSource(null);
@@ -863,10 +950,12 @@ const BasicInputElements = withSwal((props: any) => {
     setLanguageForm(newFields);
   };
 
-  const handleRemoveLanguageForm = async (index: number, e: any, exam_name: string) => {
+  const handleRemoveLanguageForm = async (index: number, e: any, exam_type: string) => {
+    let existExamId = languageForm[index]?.id;
+    
     const payload = {
       id: formData?.id,
-      exam_name: exam_name,
+      exam_type: exam_type,
     };
     console.log("PAYLOAD", payload);
 
@@ -883,19 +972,26 @@ const BasicInputElements = withSwal((props: any) => {
         })
         .then((result: any) => {
           if (result.isConfirmed) {
-            axios
-              .delete("/exams", { data: payload })
-              .then((res: any) => {
-                const removeFields = languageForm.filter((data: any, i: number) => i !== index);
-                const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
-                setLanguageForm(removeFields);
-                setSelectedFile(removeFiles);
-                showSuccessAlert(res.data.message);
-              })
-              .catch((err: any) => {
-                console.log(err);
-                showErrorAlert("Error occured");
-              });
+            if (!existExamId) {
+              const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+              const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
+              setLanguageForm(removeFields);
+              setSelectedFile(removeFiles);
+            } else {
+              axios
+                .delete("/exams", { data: payload })
+                .then((res: any) => {
+                  const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+                  const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
+                  setLanguageForm(removeFields);
+                  setSelectedFile(removeFiles);
+                  showSuccessAlert(res.data.message);
+                })
+                .catch((err: any) => {
+                  console.log(err);
+                  showErrorAlert("Error occured");
+                });
+            }
           }
         });
     } catch (error) {
@@ -915,7 +1011,7 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleAddLanguageForm = () => {
-    setLanguageForm((prevData) => [...prevData, { exam_name: "", marks: "" }]);
+    setLanguageForm((prevData) => [...prevData, { exam_type: "", marks: "" }]);
   };
 
   const handleSelectChange = (
@@ -930,6 +1026,14 @@ const BasicInputElements = withSwal((props: any) => {
         preferred_country: selectedIdsArray,
       }));
     }
+  };
+
+  const handleLanguageMarkInputChange = (index: number, e: any) => {
+    const { name, value } = e.target;
+
+    const newFields = [...languageForm];
+    newFields[index][name] = value.replace(/[^0-9]/g, "");
+    setLanguageForm(newFields);
   };
 
   useEffect(() => {
@@ -998,7 +1102,7 @@ const BasicInputElements = withSwal((props: any) => {
                       classNamePrefix="react-select"
                       name="lead_type_id"
                       options={[{ value: null, label: "None" }, ...leadTypes]}
-                      value={selectedCategory}
+                      value={selectedLeadType}
                       onChange={handleDropDowns}
                     />
                     {validationErrors.lead_type_id && (
@@ -1015,7 +1119,8 @@ const BasicInputElements = withSwal((props: any) => {
                       styles={customStyles}
                       classNamePrefix="react-select"
                       name="source_id"
-                      options={[{ value: null, label: "None" }, ...source]}
+                      // options={[{ value: null, label: "None" }, ...source]}
+                      options={[{ value: null, label: "None" }, ...sourceData]}
                       value={selectedSource}
                       onChange={handleDropDowns}
                     />
@@ -1031,9 +1136,11 @@ const BasicInputElements = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="channel_id"
-                      options={[{ value: null, label: "None" }, ...channels]}
+                      // options={[{ value: null, label: "None" }, ...channels]}
+                      options={[{ value: null, label: "None" }, ...channelData]}
                       value={selectedChannel}
                       onChange={handleDropDowns}
+                      isDisabled={!selectedSource}
                     />
                     {validationErrors.channel_id && <Form.Text className="text-danger">{validationErrors.channel_id}</Form.Text>}
                   </Form.Group>
@@ -1140,6 +1247,26 @@ const BasicInputElements = withSwal((props: any) => {
                   </Col>
                 )}
 
+                {isFranchiseActive && (
+                  <Col md={4} lg={4}>
+                    <Form.Group className="mb-3" controlId="franchise_id">
+                      <Form.Label>
+                        <span className="text-danger fs-4">* </span>Franchisee
+                      </Form.Label>
+                      <Select
+                        styles={customStyles}
+                        className="react-select react-select-container"
+                        classNamePrefix="react-select"
+                        name="franchise_id"
+                        options={[{ value: null, label: "None" }, ...franchisees]}
+                        value={selectedFranchisee}
+                        onChange={handleDropDowns}
+                      />
+                      {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
+                    </Form.Group>
+                  </Col>
+                )}
+
                 <Col md={4} lg={4} className="mt-2">
                   <Form.Group className="mb-3" controlId="source_id">
                     <Form.Label>Have you ever participated in any language exams ?</Form.Label>
@@ -1169,7 +1296,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
               </Row>
 
-              <Row>
+              {/* <Row>
                 {selectExam &&
                   languageForm.map((data, index) => (
                     <Row key={index}>
@@ -1237,6 +1364,151 @@ const BasicInputElements = withSwal((props: any) => {
                           <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>
                         )}
                       </Col>
+                    </Row>
+                  ))}
+              </Row> */}
+
+              <Row>
+                {selectExam &&
+                  languageForm.map((data, index) => (
+                    <Row key={index}>
+                      <Row>
+                        <Col md={4} lg={4}>
+                          <Form.Group className="mb-3" controlId="exam_type">
+                            <Form.Label>Exam Type</Form.Label>
+                            <Form.Select
+                              aria-label="Default select example"
+                              name="exam_type"
+                              value={data.exam_type}
+                              onChange={(e) => handleLanguageInputChange(index, e)}
+                            >
+                              <option value="">Choose..</option>
+                              {examtypes?.map((item: any) => (
+                                <option
+                                  value={item?.name}
+                                  key={item?.name}
+                                  onClick={(e) => handleLanguageInputChange(index, e)}
+                                  defaultValue={item.name === formData.exam ? item.name : undefined}
+                                >
+                                  {item.name}
+                                </option>
+                              ))}
+                            </Form.Select>
+                          </Form.Group>
+                        </Col>
+                        <Col md={4} lg={4}>
+                          <Form.Group className="mb-3" controlId="listening_score">
+                            <Form.Label>Listening Score</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="listening_score"
+                              value={data.listening_score}
+                              onChange={(e) => {
+                                handleLanguageMarkInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={4} lg={4}>
+                          <Form.Group className="mb-3" controlId="speaking_score">
+                            <Form.Label>Speaking Score</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="speaking_score"
+                              value={data.speaking_score}
+                              onChange={(e) => {
+                                handleLanguageMarkInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col md={4} lg={4}>
+                          <Form.Group className="mb-3" controlId="reading_score">
+                            <Form.Label>Reading Score</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="reading_score"
+                              value={data.reading_score}
+                              onChange={(e) => {
+                                handleLanguageMarkInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={4} lg={4}>
+                          <Form.Group className="mb-3" controlId="writing_score">
+                            <Form.Label>Writing Score</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="writing_score"
+                              value={data.writing_score}
+                              onChange={(e) => {
+                                handleLanguageMarkInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={4} lg={4}>
+                          <Form.Group className="mb-3" controlId="marks">
+                            <Form.Label>Overall Score</Form.Label>
+                            <Form.Control
+                              type="text"
+                              // name="marks"
+                              name="overall_score"
+                              // value={data.marks}
+                              value={data.overall_score}
+                              onChange={(e) => {
+                                handleLanguageMarkInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col className="d-flex justify-content-between">
+                          <Form name="exam_documents" encType="multipart/form-data">
+                            <Form.Group className="mb-3" controlId="profileImage">
+                              <Form.Label>Upload Score Card</Form.Label>
+                              <Form.Control
+                                name="exam_documents"
+                                type="file"
+                                onChange={(event) => {
+                                  handleFileChange(index, event);
+                                }}
+                                ref={fileInputRef}
+                              />
+                              {selectedFileName[index]?.exam_documents && (
+                                <a href={`${baseUrl}/uploads/${selectedFileName[index].exam_documents}`}>
+                                  {selectedFileName[index].exam_documents}
+                                </a>
+                              )}
+                            </Form.Group>
+                          </Form>
+                        </Col>
+                        <Col md={4} lg={4}>
+                          <Form.Group className="mb-3" controlId="exam_date">
+                            <Form.Label>Exam Date</Form.Label>
+                            <Form.Control
+                              type="date"
+                              name="exam_date"
+                              // value={data?.exam_date}
+                              value={moment(data?.exam_date).format("YYYY-MM-DD") ?? moment(data?.exam_date).format("YYYY-MM-DD")}
+                              onChange={(e) => {
+                                handleLanguageInputChange(index, e);
+                              }}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={4} lg={4} className="mt-3">
+                          <i
+                            className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1"
+                            onClick={(e) => handleRemoveLanguageForm(index, e, data.exam_type)}
+                          ></i>
+                          {selectExam && (
+                            <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>
+                          )}
+                        </Col>
+                      </Row>
                     </Row>
                   ))}
               </Row>
@@ -1493,17 +1765,19 @@ const AssignedLeads = () => {
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, users } = useSelector((state: RootState) => ({
+  const { user, state, error, loading, initialLoading, users, franchisees } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     state: state.Leads.assignedLeads,
     error: state.Leads.error,
     loading: state.Leads.loading,
     initialLoading: state.Leads.initialloading,
     users: state.Users.adminUsers,
+    franchisees: state.Franchise.franchiseUsers,
   }));
 
   useEffect(() => {
     dispatch(getLeadAssigned());
+    // dispatch(getFranchise())
     fetchAllCounsellors();
   }, []);
 
@@ -1526,6 +1800,14 @@ const AssignedLeads = () => {
       label: item.name,
     }));
   }, [users]);
+
+  const franchiseeData = useMemo(() => {
+    if (!franchisees) return [];
+    return franchisees?.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.name,
+    }));
+  }, [franchisees]);
 
   if (initialLoading) {
     return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
@@ -1557,6 +1839,7 @@ const AssignedLeads = () => {
             loading={loading}
             userData={dropdownData.adminUsers || []}
             region={dropdownData.regions || []}
+            franchisees={dropdownData.franchises || []}
           />
         </Col>
       </Row>
