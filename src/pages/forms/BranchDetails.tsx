@@ -197,7 +197,16 @@ const BranchDetails = withSwal((props: any) => {
       .matches(/^\d{10}$/, "Phone number must be a valid 10-digit number"),
     address: yup.string().required("Address is required"),
     username: yup.string().required("Username is required").min(4, "Username must be at least 4 characters long"),
-    password: yup.string().required("Password is required").min(8, "Password must be at least 8 characters long"),
+    // password: yup.string().required("Password is required").min(8, "Password must be at least 8 characters long"),
+    password: yup
+      .string()
+      .nullable()
+      .transform((value) => (value === "" ? null : value))
+      .when([], {
+        is: () => !isUpdate,
+        then: yup.string().required("Password is required").min(8, "Password must be at least 8 characters long").nullable(),
+        otherwise: yup.string().nullable().min(8, "Password must be at least 8 characters long"),
+      }),
     role_id: yup.string().nullable().required("Role is required"),
   });
 
