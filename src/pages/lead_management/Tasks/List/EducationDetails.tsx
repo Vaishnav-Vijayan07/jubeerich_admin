@@ -10,6 +10,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { useFormState } from "../../../../hooks/useFormState";
 import useSaveEducationDetails from "../../../../hooks/useSavePrimaryEducationDetails";
+import useSaveSecondaryEducationDetails from "../../../../hooks/useSaveSecondaryEducationDetails";
+import validateFields from "../../../../helpers/validateHelper";
 
 const initialPrimaryState = {
   id: null,
@@ -20,6 +22,7 @@ const initialPrimaryState = {
   certificate: null,
   mark_sheet: null,
   admit_card: null,
+  errors: {},
 };
 
 const initialSecondaryState = {
@@ -31,12 +34,13 @@ const initialSecondaryState = {
   certificate: null,
   mark_sheet: null,
   admit_card: null,
+  errors: {},
 };
 
 const initialGraduationState = {
   qualification: "",
-  start_date: "",
-  end_date: "",
+  startDate: "",
+  endDate: "",
   percentage: "",
   conversion_formula: "",
   certificate: null,
@@ -44,6 +48,7 @@ const initialGraduationState = {
   registration_certificate: null,
   backlog_certificate: null,
   grading_scale_info: null,
+  errors: {},
 };
 
 const EducationDetails = withSwal((props: any) => {
@@ -55,39 +60,28 @@ const EducationDetails = withSwal((props: any) => {
     (state: RootState) => state.refreshReducer.refreshing
   );
 
-  const [primaryDetails, setPrimaryDetails] = useState(initialPrimaryState);
-  const [secondaryDetails, setSecondaryDetails] = useState(
+  const [primaryDetails, setPrimaryDetails] =
+    useState<any>(initialPrimaryState);
+  const [secondaryDetails, setSecondaryDetails] = useState<any>(
     initialSecondaryState
   );
 
-  const [graduationDetails, setGraduationDetails] = useState(
+  const [graduationDetails, setGraduationDetails] = useState<any>(
     initialGraduationState
   );
 
-  const primarySchema = Yup.object().shape({
-    startDate: Yup.string().required("Start date is required."),
-    endDate: Yup.string().required("End date is required."),
-    percentage: Yup.string().required("Percentage is required."),
-  });
+  const { primaryLoading, savePrimaryEducationDetails } =
+    useSaveEducationDetails();
 
-  const secondarySchema = Yup.object().shape({
-    startDate: Yup.string().required("Start date is required."),
-    endDate: Yup.string().required("End date is required."),
-    percentage: Yup.string().required("Percentage is required."),
-  });
-
-  const { formErrors: primaryErrors, validateForm: validatePrimary } =
-    useFormState(primaryDetails, primarySchema);
-
-  const { formErrors: secondaryErrors, validateForm: validateSecondary } =
-    useFormState(secondaryDetails, secondarySchema);
-
-  const { loading, saveEducationDetails } = useSaveEducationDetails(studentId);
+  const { saveSecondaryEducationDetails, secondaryLoading } =
+    useSaveSecondaryEducationDetails();
 
   const fetchEducationDetails = async (studentId: string) => {
     setInitialLoading(true);
     try {
       const { data } = await axios.get(`/studentPrimaryEducation/${studentId}`);
+      console.log(data);
+
       setPrimaryDetails(data.primary || initialPrimaryState);
       setSecondaryDetails(data.secondary || initialSecondaryState);
 
@@ -117,64 +111,78 @@ const EducationDetails = withSwal((props: any) => {
 
   // Handlers for primary education state update
   const handlePrimaryChange = (name: string, value: any) => {
-    setPrimaryDetails((prevDetails) => ({ ...prevDetails, [name]: value }));
+    setPrimaryDetails((prevDetails: any) => ({
+      ...prevDetails,
+      [name]: value,
+    }));
   };
 
   // Handlers for secondary education state update
   const handleSecondaryChange = (name: string, value: any) => {
-    setSecondaryDetails((prevDetails) => ({ ...prevDetails, [name]: value }));
+    setSecondaryDetails((prevDetails: any) => ({
+      ...prevDetails,
+      [name]: value,
+    }));
   };
 
   const handleSavePrimary = async () => {
-    const isValid = await validatePrimary();
-    if (isValid) {
-      const formData = new FormData();
-      formData.append("student_id", studentId);
-      formData.append("operation", primaryDetails.id ? "update" : "add");
-      formData.append("primary[qualification]", primaryDetails.qualification);
-      formData.append("primary[startDate]", primaryDetails.startDate);
-      formData.append("primary[endDate]", primaryDetails.endDate);
-      formData.append("primary[percentage]", primaryDetails.percentage);
-      if (primaryDetails.mark_sheet) {
-        formData.append("primary_mark_sheet", primaryDetails.mark_sheet);
-      }
-      if (primaryDetails.certificate) {
-        formData.append("primary_certificate", primaryDetails.certificate);
-      }
-      if (primaryDetails.admit_card) {
-        formData.append("primary_admit_card", primaryDetails.admit_card);
-      }
-      await saveEducationDetails(formData, "primary", studentId);
+    const validationRules = {
+      startDate: { required: true },
+      endDate: { required: true },
+      percentage: { required: true },
+      mark_sheet: { required: true },
+      certificate: { required: true },
+      admit_card: { required: true },
+    };
+
+    const { isValid, errors } = validateFields(
+      [primaryDetails],
+      validationRules
+    );
+
+    console.log(errors);
+
+    if (!isValid) {
+      setPrimaryDetails((prevState: any) => ({
+        ...prevState,
+        errors: errors[0] || {}, // Attach errors to specific fields
+      }));
+      return;
     }
+    await savePrimaryEducationDetails(primaryDetails, "primary", studentId);
   };
 
   const handleSaveSecondary = async () => {
-    const isValid = await validateSecondary();
-    if (isValid) {
-      const formData = new FormData();
-      formData.append("student_id", studentId);
-      formData.append("operation", secondaryDetails.id ? "update" : "add");
-      formData.append(
-        "secondary[qualification]",
-        secondaryDetails.qualification
-      );
-      formData.append("secondary[startDate]", secondaryDetails.startDate);
-      formData.append("secondary[endDate]", secondaryDetails.endDate);
-      formData.append("secondary[percentage]", secondaryDetails.percentage);
-      if (secondaryDetails.mark_sheet) {
-        formData.append("secondary_mark_sheet", secondaryDetails.mark_sheet);
-      }
-      if (secondaryDetails.certificate) {
-        formData.append("secondary_certificate", secondaryDetails.certificate);
-      }
-      if (secondaryDetails.admit_card) {
-        formData.append("secondary_admit_card", secondaryDetails.admit_card);
-      }
-      await saveEducationDetails(formData, "secondary", studentId);
+    const validationRules = {
+      startDate: { required: true },
+      endDate: { required: true },
+      percentage: { required: true },
+      mark_sheet: { required: true },
+      certificate: { required: true },
+      admit_card: { required: true },
+    };
+
+    const { isValid, errors } = validateFields(
+      [secondaryDetails],
+      validationRules
+    );
+
+    if (!isValid) {
+      setSecondaryDetails((prevState: any) => ({
+        ...prevState,
+        errors: errors[0] || {}, // Attach errors to specific fields
+      }));
+      return;
     }
+
+    await saveSecondaryEducationDetails(
+      secondaryDetails,
+      "secondary",
+      studentId
+    );
   };
 
-  if (loading || initialLoading) {
+  if (primaryLoading || secondaryLoading || initialLoading) {
     return (
       <Spinner
         animation="border"
@@ -182,6 +190,8 @@ const EducationDetails = withSwal((props: any) => {
       />
     );
   }
+
+  console.log(primaryDetails);
 
   return (
     <>
@@ -191,12 +201,29 @@ const EducationDetails = withSwal((props: any) => {
           title="Primary Education Details"
           details={primaryDetails}
           onChange={handlePrimaryChange}
-          errors={primaryErrors}
         />
       </Row>
       <Row className="mb-2">
-        <Button variant="primary" className="mt-4" onClick={handleSavePrimary}>
-          Save Primary Info
+        <Button
+          variant="primary"
+          className="mt-4"
+          onClick={handleSavePrimary}
+          disabled={primaryLoading}
+        >
+          {primaryLoading ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              {" Saving..."} {/* Show spinner and text */}
+            </>
+          ) : (
+            "Save Primary Info" // Normal button text when not loading
+          )}
         </Button>
       </Row>
 
@@ -206,7 +233,6 @@ const EducationDetails = withSwal((props: any) => {
             title="Secondary Education Details"
             details={secondaryDetails}
             onChange={handleSecondaryChange}
-            errors={secondaryErrors}
           />
         </Row>
 
@@ -216,8 +242,22 @@ const EducationDetails = withSwal((props: any) => {
             variant="primary"
             className="mt-4"
             onClick={handleSaveSecondary}
+            disabled={secondaryLoading}
           >
-            Save Secondary Info
+            {secondaryLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                {" Saving..."} {/* Show spinner and text */}
+              </>
+            ) : (
+              "Save Secondary Info" // Normal button text when not loading
+            )}
           </Button>
         </Row>
 

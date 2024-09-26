@@ -1,15 +1,33 @@
 import axios from "axios";
 import { useCallback, useState } from "react";
 import { showErrorAlert, showSuccessAlert } from "../constants";
+import { refreshData } from "../redux/countryReducer";
+import { useDispatch } from "react-redux";
 
-const useSaveEducationDetails = (
-  fetchEducationDetails: (id: string) => void
-) => {
-  const [loading, setLoading] = useState(false);
+const useSaveEducationDetails = () => {
+  const [primaryLoading, setPrimaryLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  const saveEducationDetails = useCallback(
-    async (formData: FormData, type: string, studentId: string) => {
-      setLoading(true);
+  const savePrimaryEducationDetails = useCallback(
+    async (primaryDetails, type: string, studentId: string) => {
+      const formData = new FormData();
+      formData.append("student_id", studentId);
+      formData.append("operation", primaryDetails.id ? "update" : "add");
+      formData.append("primary[qualification]", primaryDetails.qualification);
+      formData.append("primary[startDate]", primaryDetails.startDate);
+      formData.append("primary[endDate]", primaryDetails.endDate);
+      formData.append("primary[percentage]", primaryDetails.percentage);
+      if (primaryDetails.mark_sheet) {
+        formData.append("primary_mark_sheet", primaryDetails.mark_sheet);
+      }
+      if (primaryDetails.certificate) {
+        formData.append("primary_certificate", primaryDetails.certificate);
+      }
+      if (primaryDetails.admit_card) {
+        formData.append("primary_admit_card", primaryDetails.admit_card);
+      }
+
+      setPrimaryLoading(true);
       try {
         const { data } = await axios.post(
           `/studentPrimaryEducation/${type}`,
@@ -21,20 +39,20 @@ const useSaveEducationDetails = (
           }
         );
         if (data.status) {
-          fetchEducationDetails(studentId);
+          dispatch(refreshData());
           showSuccessAlert(data.message);
         }
       } catch (error) {
         console.error("Error saving education details:", error);
         showErrorAlert("Failed to save education details");
       } finally {
-        setLoading(false);
+        setPrimaryLoading(false);
       }
     },
-    [fetchEducationDetails]
+    []
   );
 
-  return { saveEducationDetails, loading };
+  return { savePrimaryEducationDetails, primaryLoading };
 };
 
 export default useSaveEducationDetails;

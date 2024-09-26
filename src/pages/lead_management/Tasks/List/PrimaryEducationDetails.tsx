@@ -14,26 +14,17 @@ interface PrimaryEducationDetailsProps {
     mark_sheet: File | null;
     admit_card: File | null;
     percentage: number | string;
+    errors: any;
   };
   onChange: (name: string, value: any) => void;
-  errors: {
-    startDate?: string;
-    endDate?: string;
-    certificates?: string;
-    mark_sheet?: string;
-    admit_card?: string;
-    percentage?: string;
-  };
 }
 
 const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
   title,
   details,
   onChange,
-  errors,
 }) => {
   console.log(details);
-
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.name, e.target.value);
   };
@@ -60,11 +51,11 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
             <FormInput
               type="date"
               name="startDate"
-              value={moment(details.startDate).format("YYYY-MM-DD")}
+              value={moment(details?.startDate).format("YYYY-MM-DD")}
               onChange={handleDateChange}
             />
-            {errors.startDate && (
-              <div className="text-danger">{errors.startDate}</div>
+            {details?.errors?.startDate && (
+              <div className="text-danger">{details?.errors?.startDate}</div>
             )}
           </Form.Group>
         </Col>
@@ -77,11 +68,11 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
             <FormInput
               type="date"
               name="endDate"
-              value={moment(details.endDate).format("YYYY-MM-DD")}
+              value={moment(details?.endDate).format("YYYY-MM-DD")}
               onChange={handleDateChange}
             />
-            {errors.endDate && (
-              <div className="text-danger">{errors.endDate}</div>
+            {details?.errors?.endDate && (
+              <div className="text-danger">{details?.errors?.endDate}</div>
             )}
           </Form.Group>
         </Col>
@@ -95,12 +86,12 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
               type="number"
               name="percentage"
               placeholder="Enter percentage"
-              value={details.percentage}
+              value={details?.percentage}
               onChange={handleDateChange}
               min={0}
             />
-            {errors.percentage && (
-              <div className="text-danger">{errors.percentage}</div>
+            {details?.errors?.percentage && (
+              <div className="text-danger">{details?.errors?.percentage}</div>
             )}
           </Form.Group>
         </Col>
@@ -116,7 +107,10 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
               type="file"
               onChange={handleFileChange}
             />
-            {typeof details.mark_sheet === "string" && (
+            {details?.errors?.mark_sheet && (
+              <div className="text-danger">{details?.errors?.mark_sheet}</div>
+            )}
+            {typeof details?.mark_sheet === "string" && (
               <div className="mt-2">
                 <a
                   href={`${baseUrl}/uploads/educationDocuments/${details.mark_sheet}`}
@@ -141,17 +135,20 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
               type="file"
               onChange={handleFileChange}
             />
-          {typeof details.certificate === "string" && (
-            <div className="mt-2">
-              <a
-                href={`${baseUrl}/uploads/educationDocuments/${details.certificate}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i className="mdi mdi-download me-1"></i> certificate
-              </a>
-            </div>
-          )}
+            {details?.errors?.certificate && (
+              <div className="text-danger">{details?.errors?.certificate}</div>
+            )}
+            {typeof details?.certificate === "string" && (
+              <div className="mt-2">
+                <a
+                  href={`${baseUrl}/uploads/educationDocuments/${details.certificate}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="mdi mdi-download me-1"></i> certificate
+                </a>
+              </div>
+            )}
           </Form.Group>
         </Col>
 
@@ -166,7 +163,10 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
               type="file"
               onChange={handleFileChange}
             />
-            {typeof details.admit_card === "string" && (
+            {details?.errors?.admit_card && (
+              <div className="text-danger">{details?.errors?.admit_card}</div>
+            )}
+            {typeof details?.admit_card === "string" && (
               <div className="mt-2">
                 <a
                   href={`${baseUrl}/uploads/educationDocuments/${details.admit_card}`}

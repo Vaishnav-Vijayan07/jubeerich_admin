@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import axios from "axios";
 import moment from "moment";
@@ -8,12 +8,9 @@ import {
   showErrorAlert,
   showSuccessAlert,
 } from "../../../../constants";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import Select, { ActionMeta, OptionsType } from "react-select";
+import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { withSwal } from "react-sweetalert2";
 
 const validationErrorsInitialState = {
@@ -132,6 +129,7 @@ const BasicInfo = withSwal((props: any) => {
   });
 
   const getBasicInfo = () => {
+    setLoading(true);
     setformData(initialState);
     axios
       .get(`getStudentBasicInfo/${studentId}`)
@@ -176,6 +174,9 @@ const BasicInfo = withSwal((props: any) => {
       })
       .catch((err) => {
         console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
   useEffect(() => {
@@ -296,6 +297,15 @@ const BasicInfo = withSwal((props: any) => {
       }));
     }
   };
+
+  if (loading) {
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "100%", left: "45%" }}
+      />
+    );
+  }
 
   return (
     <>

@@ -5,6 +5,11 @@ import useDropdownData from "../../../../hooks/useDropdownDatas";
 import axios from "axios";
 import StudyPreferenceRow from "./StudyPrefRow";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
+import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
+import useSaveStudyPreferenceData from "../../../../hooks/useSaveStudyPreferenceData";
+import validateFields from "../../../../helpers/validateHelper";
 
 const initialStateStudyPreference = {
   id: null,
@@ -16,6 +21,7 @@ const initialStateStudyPreference = {
   intakeYear: "",
   intakeMonth: "",
   estimatedBudget: "",
+  errors: {},
 };
 
 // const StudyPreference = ({ studentId, Countries }: any) => {
@@ -28,8 +34,15 @@ const StudyPreference = withSwal((props: any) => {
     initialStateStudyPreference,
   ]);
 
+  const refresh = useSelector(
+    (state: RootState) => state.refreshReducer.refreshing
+  );
+
   const [countryName, setCountryName] = useState("");
   const [studyPreferenceId, setStudyPreferenceId] = useState("");
+  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
+  const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
+  const { saveLoading, saveStudyPreferenceData } = useSaveStudyPreferenceData();
 
   const getStudyPrefData = async () => {
     setInitialLoading(true);
@@ -53,8 +66,6 @@ const StudyPreference = withSwal((props: any) => {
       });
   };
 
-  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
-
   useEffect(() => {
     if (
       dropdownData.universities.length > 0 &&
@@ -62,7 +73,7 @@ const StudyPreference = withSwal((props: any) => {
     ) {
       getStudyPrefData();
     }
-  }, [dropdownData.universities.length, dropdownData.campuses.length]);
+  }, [dropdownData.universities.length, dropdownData.campuses.length, refresh]);
 
   const handleStudyPreferenceChange = (
     index: number,
@@ -87,46 +98,9 @@ const StudyPreference = withSwal((props: any) => {
         intakeYear: "",
         intakeMonth: "",
         estimatedBudget: "",
+        errors: {},
       },
     ]);
-  };
-
-  const removeStudyPreferenceData = (id: any, type: string) => {
-    swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Delete",
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          setLoading(true);
-          axios
-            .delete(`basic_info/${type}/${id}`, {
-              headers: {
-                "Content-Type": "application/json", // Assuming no file data is sent
-              },
-            })
-            .then((res) => {
-              console.log("Response: =>", res);
-              setLoading(false);
-              showSuccessAlert(res.data.message);
-              getStudyPrefData();
-            })
-            .catch((err) => {
-              console.log(err);
-              setLoading(false);
-              showErrorAlert("Error occurred");
-            });
-        }
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
   };
 
   const removeStudyPreference = (index: number, itemId: any) => {
@@ -136,37 +110,39 @@ const StudyPreference = withSwal((props: any) => {
       const updatedPrefs = studyPreferenceData.filter((_, i) => i !== index);
       setStudyPreferenceData(updatedPrefs);
     } else {
-      removeStudyPreferenceData(itemId, "studyPreference");
+      removeFromApi(itemId, "studyPreference");
     }
   };
 
-  const saveStudyPreferenceData = async () => {
-    setLoading(true);
-    const modifiedDataToServer = studyPreferenceData?.map((data: any) => ({
-      id: data.id ?? 0,
-      universityId: data.universityId,
-      campusId: data.campusId,
-      courseTypeId: data.courseTypeId,
-      streamId: data.streamId,
-      courseId: data.courseId,
-      intakeYear: data.intakeYear, // Ensure intakeYear is an integer
-      intakeMonth: data.intakeMonth, // Assuming intakeMonth is already in the desired format
-      estimatedBudget: data.estimatedBudget,
-    }));
+  const handleSave = async () => {
+    const validationRules = {
+      universityId: { required: true },
+      campusId: { required: true },
+      courseTypeId: { required: true },
+      streamId: { required: true },
+      courseId: { required: true },
+      intakeYear: { required: true },
+      intakeMonth: { required: true },
+      estimatedBudget: { required: true },
+    };
 
-    try {
-      const response = await axios.post(`study_preferences_details`, {
-        study_preferences: modifiedDataToServer,
-        studyPreferenceId,
-      });
-      showSuccessAlert("Data updated successfully");
-      getStudyPrefData();
-    } catch (error) {
-      console.error("Error saving data", error);
-      showErrorAlert("Error occurred while saving data");
-    } finally {
-      setLoading(false);
+    const { isValid, errors } = validateFields(
+      studyPreferenceData,
+      validationRules
+    );
+
+    console.log(errors);
+
+    if (!isValid) {
+      setStudyPreferenceData((prevState: any) =>
+        prevState.map((exp: any, index: any) => ({
+          ...exp,
+          errors: errors[index] || {},
+        }))
+      );
+      return;
     }
+    saveStudyPreferenceData(studyPreferenceData, studyPreferenceId);
   };
 
   if (initialLoading || dropDownLoading)
@@ -179,25 +155,26 @@ const StudyPreference = withSwal((props: any) => {
 
   return (
     <>
-      <StudyPreferenceRow
-        StudyPreference={studyPreferenceData}
-        countryName={countryName}
-        handleStudyPreferenceChange={handleStudyPreferenceChange}
-        addMoreStudyPreference={addMoreStudyPreference}
-        removeStudyPreference={removeStudyPreference}
-        dropdownData={dropdownData}
-        loading={loading}
-      />
+      <Row className={deleteLoading || saveLoading ? "opacity-25" : ""}>
+        <StudyPreferenceRow
+          StudyPreference={studyPreferenceData}
+          countryName={countryName}
+          handleStudyPreferenceChange={handleStudyPreferenceChange}
+          addMoreStudyPreference={addMoreStudyPreference}
+          removeStudyPreference={removeStudyPreference}
+          dropdownData={dropdownData}
+        />
+      </Row>
 
       <Row>
         <Button
           variant="primary"
           className="mt-4"
           type="submit"
-          onClick={saveStudyPreferenceData}
-          disabled={loading} // Disable button while loading
+          onClick={handleSave}
+          disabled={loading || saveLoading} // Disable button while loading
         >
-          {loading ? (
+          {loading || saveLoading ? (
             <>
               <Spinner
                 as="span"

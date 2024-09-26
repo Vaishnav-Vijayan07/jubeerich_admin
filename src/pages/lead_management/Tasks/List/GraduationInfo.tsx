@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
-import axios from "axios";
-import {
-  baseUrl,
-  showErrorAlert,
-  showSuccessAlert,
-} from "../../../../constants";
+
 import moment from "moment";
 import useSaveGraduationInfo from "../../../../hooks/useSaveGraduationInfo";
 import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
+import ActionButton from "./ActionButton";
+import validateFields from "../../../../helpers/validateHelper";
+import { baseUrl } from "../../../../constants";
 
 interface GraduationDetailsProps {
   title: string; // Title for the section (Primary/Secondary)
@@ -23,6 +21,7 @@ interface GraduationDetailsProps {
     registration_certificate: File | null;
     percentage: number | string;
     conversion_formula: number | string;
+    errors: any;
   };
   student_id: string | number;
 }
@@ -65,6 +64,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
         registration_certificate: null,
         backlog_certificate: null,
         grading_scale_info: null,
+        errors: {},
       },
     ]);
   };
@@ -91,495 +91,325 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
   };
 
   const handleSave = () => {
+    const validatioRules = {
+      qualification: { required: true },
+      start_date: { required: true },
+      end_date: { required: true },
+      percentage: { required: true },
+      certificate: { required: true },
+      admit_card: { required: true },
+      registration_certificate: { required: true },
+      backlog_certificate: { required: true },
+      grading_scale_info: { required: true },
+      conversion_formula: { required: true },
+    };
+
+    const { isValid, errors } = validateFields(
+      graduationDetails,
+      validatioRules
+    );
+
+    if (!isValid) {
+      setGraduationDetails((prevState: any) =>
+        prevState.map((exp: any, index: any) => ({
+          ...exp,
+          errors: errors[index] || {},
+        }))
+      );
+      return;
+    }
     saveStudentGraduationDetails(graduationDetails);
   };
 
+  const renderGraduatonRows = (item: any, index: any) => (
+    <>
+      <Row key={index}>
+        <Col md={4}>
+          <Form.Group className="mb-3" controlId={`${title}_qualification`}>
+            <Form.Label>
+              <span className="text-danger">*</span> Course Type
+            </Form.Label>
+            <FormInput
+              type="text"
+              placeholder="UG/PG.."
+              name="qualification"
+              value={item?.qualification}
+              onChange={(e) => handleFieldChange(e, index)}
+            />
+            {item?.errors?.qualification && (
+              <Form.Text className="text-danger">
+                {item.errors.qualification}
+              </Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col md={4}>
+          <Form.Group className="mb-3" controlId={`${title}_start_date`}>
+            <Form.Label>
+              <span className="text-danger">*</span> Start Date
+            </Form.Label>
+            <FormInput
+              type="date"
+              name="start_date"
+              value={moment(item?.start_date).format("YYYY-MM-DD")}
+              onChange={(e) => handleFieldChange(e, index)}
+            />
+            {item?.errors?.start_date && (
+              <Form.Text className="text-danger">
+                {item.errors.start_date}
+              </Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col md={4}>
+          <Form.Group className="mb-3" controlId={`${title}_end_date`}>
+            <Form.Label>
+              <span className="text-danger">*</span> End Date
+            </Form.Label>
+            <FormInput
+              type="date"
+              name="end_date"
+              value={moment(item?.end_date).format("YYYY-MM-DD")}
+              onChange={(e) => handleFieldChange(e, index)}
+            />
+          </Form.Group>
+        </Col>
+
+        <Col md={4}>
+          <Form.Group className="mb-3">
+            <Form.Label>
+              <span className="text-danger">* </span>Percentage
+            </Form.Label>
+            <FormInput
+              type="number"
+              name="percentage"
+              placeholder="Enter percentage"
+              value={item?.percentage}
+              onChange={(e) => handleFieldChange(e, index)}
+              min={0}
+            />
+            {item?.errors?.percentage && (
+              <Form.Text className="text-danger">
+                {item.errors.percentage}
+              </Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col md={4}>
+          <Form.Group
+            className="mb-3"
+            controlId={`${title}_conversion_formula`}
+          >
+            <Form.Label>
+              <span className="text-danger">*</span> Conversion Formula
+            </Form.Label>
+            <FormInput
+              type="text"
+              name="conversion_formula"
+              value={item?.conversion_formula}
+              onChange={(e) => handleFieldChange(e, index)}
+            />
+            {item?.errors?.conversion_formula && (
+              <Form.Text className="text-danger">
+                {item.errors.conversion_formula}
+              </Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col
+          md={4}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <Form.Group className="mb-3" controlId={`${title}_admit_card`}>
+            <Form.Label>Upload Admit Card</Form.Label>
+            <Form.Control
+              name="admit_card"
+              type="file"
+              onChange={(e) => handleFileChange(e, index)}
+            />
+            {item?.errors?.admit_card && (
+              <Form.Text className="text-danger">
+                {item.errors.admit_card}
+              </Form.Text>
+            )}
+            {typeof item?.admit_card === "string" && (
+              <div className="mt-2">
+                <a
+                  href={`${baseUrl}/uploads/educationDocuments/${item?.admit_card}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="mdi mdi-download me-1"></i> admit_card
+                </a>
+              </div>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col
+          md={4}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <Form.Group className="mb-3" controlId={`${title}_certificate`}>
+            <Form.Label>Upload Certificate</Form.Label>
+            <Form.Control
+              name="certificate"
+              type="file"
+              onChange={(e) => handleFileChange(e, index)}
+            />
+            {item?.errors?.certificate && (
+              <Form.Text className="text-danger">
+                {item.errors.certificate}
+              </Form.Text>
+            )}
+            {typeof item?.certificate === "string" && (
+              <div className="mt-2">
+                <a
+                  href={`${baseUrl}/uploads/educationDocuments/${item?.certificate}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="mdi mdi-download me-1"></i> certificate
+                </a>
+              </div>
+            )}
+          </Form.Group>
+        </Col>
+        <Col
+          md={4}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <Form.Group
+            className="mb-3"
+            controlId={`${title}_registration_certificate `}
+          >
+            <Form.Label>Upload Registration Certification</Form.Label>
+            <Form.Control
+              name="registration_certificate"
+              type="file"
+              onChange={(e) => handleFileChange(e, index)}
+            />
+            {item?.errors?.registration_certificate && (
+              <Form.Text className="text-danger">
+                {item.errors.registration_certificate}
+              </Form.Text>
+            )}
+            {typeof item?.registration_certificate === "string" && (
+              <div className="mt-2">
+                <a
+                  href={`${baseUrl}/uploads/educationDocuments/${item?.registration_certificate}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="mdi mdi-download me-1"></i>{" "}
+                  registration_certificate
+                </a>
+              </div>
+            )}
+          </Form.Group>
+        </Col>
+        <Col
+          md={4}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <Form.Group
+            className="mb-3"
+            controlId={`${title}_grading_scale_info`}
+          >
+            <Form.Label>Upload Gray Scale Info</Form.Label>
+            <Form.Control
+              name="grading_scale_info"
+              type="file"
+              onChange={(e) => handleFileChange(e, index)}
+            />
+            {item?.errors?.grading_scale_info && (
+              <Form.Text className="text-danger">
+                {item.errors.grading_scale_info}
+              </Form.Text>
+            )}
+            {typeof item?.grading_scale_info === "string" && (
+              <div className="mt-2">
+                <a
+                  href={`${baseUrl}/uploads/educationDocuments/${item?.grading_scale_info}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="mdi mdi-download me-1"></i> grading_scale_info
+                </a>
+              </div>
+            )}
+          </Form.Group>
+        </Col>
+        <Col
+          md={4}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <Form.Group
+            className="mb-3"
+            controlId={`${title}_backlog_certificate`}
+          >
+            <Form.Label>Upload Backlog Certificate</Form.Label>
+            <Form.Control
+              name="backlog_certificate"
+              type="file"
+              onChange={(e) => handleFileChange(e, index)}
+            />
+            {item?.errors?.backlog_certificate && (
+              <Form.Text className="text-danger">
+                {item.errors.backlog_certificate}
+              </Form.Text>
+            )}
+            {typeof item?.backlog_certificate === "string" && (
+              <div className="mt-2">
+                <a
+                  href={`${baseUrl}/uploads/educationDocuments/${item?.backlog_certificate}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="mdi mdi-download me-1"></i> backlog_certificate
+                </a>
+              </div>
+            )}
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row className="mb-2">
+        <ActionButton
+          label="Remove"
+          iconClass="mdi mdi-delete"
+          onClick={() => removeGraduationForm(index, item?.id ?? 0)}
+        />
+      </Row>
+    </>
+  );
+
   return (
     <>
-      <Row>
+      <Row className="mb-3 p-2 border-bottom rounded">
         <h5 className="mb-4 text-uppercase">
           <i className="mdi mdi-office-building me-1"></i> {title}
         </h5>
+
+        {console.log(graduationDetails)}
+
+        {graduationDetails?.map((item: any, index: any) =>
+          renderGraduatonRows(item, index)
+        )}
       </Row>
 
       <>
-        <Row>
-          <Col md={4}>
-            <Form.Group className="mb-3" controlId={`${title}_qualification`}>
-              <Form.Label>
-                <span className="text-danger">*</span> Course Type
-              </Form.Label>
-              <FormInput
-                type="text"
-                placeholder="UG/PG.."
-                name="qualification"
-                value={graduationDetails?.[0]?.qualification}
-                onChange={(e) => handleFieldChange(e, 0)}
-              />
-            </Form.Group>
-          </Col>
-          <Col md={4}>
-            <Form.Group className="mb-3" controlId={`${title}_start_date`}>
-              <Form.Label>
-                <span className="text-danger">*</span> Start Date
-              </Form.Label>
-              <FormInput
-                type="date"
-                name="start_date"
-                value={moment(graduationDetails?.[0]?.start_date).format(
-                  "YYYY-MM-DD"
-                )}
-                onChange={(e) => handleFieldChange(e, 0)}
-              />
-            </Form.Group>
-          </Col>
-
-          <Col md={4}>
-            <Form.Group className="mb-3" controlId={`${title}_end_date`}>
-              <Form.Label>
-                <span className="text-danger">*</span> End Date
-              </Form.Label>
-              <FormInput
-                type="date"
-                name="end_date"
-                value={moment(graduationDetails?.[0]?.end_date).format(
-                  "YYYY-MM-DD"
-                )}
-                onChange={(e) => handleFieldChange(e, 0)}
-              />
-            </Form.Group>
-          </Col>
-
-          <Col md={4}>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                <span className="text-danger">* </span>Percentage
-              </Form.Label>
-              <FormInput
-                type="number"
-                name="percentage"
-                placeholder="Enter percentage"
-                value={graduationDetails?.[0]?.percentage}
-                onChange={(e) => handleFieldChange(e, 0)}
-                min={0}
-              />
-            </Form.Group>
-          </Col>
-
-          <Col md={4}>
-            <Form.Group
-              className="mb-3"
-              controlId={`${title}_conversion_formula`}
-            >
-              <Form.Label>
-                <span className="text-danger">*</span> Conversion Formula
-              </Form.Label>
-              <FormInput
-                type="text"
-                name="conversion_formula"
-                value={graduationDetails?.[0]?.conversion_formula}
-                onChange={(e) => handleFieldChange(e, 0)}
-              />
-            </Form.Group>
-          </Col>
-
-          <Col
-            md={4}
-            className="d-flex justify-content-between align-items-center"
-          >
-            <Form.Group className="mb-3" controlId={`${title}_admit_card`}>
-              <Form.Label>Upload Admit Card</Form.Label>
-              <Form.Control
-                name="admit_card"
-                type="file"
-                onChange={(e) => handleFileChange(e, 0)}
-              />
-              {typeof graduationDetails?.[0]?.admit_card === "string" && (
-                <div className="">
-                  <a
-                    href={`${baseUrl}/uploads/graduationDocuments/${graduationDetails?.[0]?.admit_card}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i className="mdi mdi-download me-1"></i> admit_card
-                  </a>
-                </div>
-              )}
-            </Form.Group>
-          </Col>
-
-          <Col
-            md={4}
-            className="d-flex justify-content-between align-items-center"
-          >
-            <Form.Group className="mb-3" controlId={`${title}_certificate`}>
-              <Form.Label>Upload Certificate</Form.Label>
-              <Form.Control
-                name="certificate"
-                type="file"
-                onChange={(e) => handleFileChange(e, 0)}
-              />
-              {typeof graduationDetails?.[0]?.certificate === "string" && (
-                <div className="">
-                  <a
-                    href={`${baseUrl}/uploads/graduationDocuments/${graduationDetails?.[0]?.certificate}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i className="mdi mdi-download me-1"></i> certificate
-                  </a>
-                </div>
-              )}
-            </Form.Group>
-          </Col>
-
-          <Col
-            md={4}
-            className="d-flex justify-content-between align-items-center"
-          >
-            <Form.Group
-              className="mb-3"
-              controlId={`${title}_registration_certificate `}
-            >
-              <Form.Label>Upload Registration Certificate</Form.Label>
-              <Form.Control
-                name="registration_certificate"
-                type="file"
-                onChange={(e) => handleFileChange(e, 0)}
-              />
-              {typeof graduationDetails?.[0]?.registration_certificate ===
-                "string" && (
-                <div className="">
-                  <a
-                    href={`${baseUrl}/uploads/graduationDocuments/${graduationDetails?.[0]?.registration_certificate}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i className="mdi mdi-download me-1"></i>{" "}
-                    registration_certificate
-                  </a>
-                </div>
-              )}
-            </Form.Group>
-          </Col>
-
-          <Col
-            md={4}
-            className="d-flex justify-content-between align-items-center"
-          >
-            <Form.Group
-              className="mb-3"
-              controlId={`${title}_grading_scale_info`}
-            >
-              <Form.Label>Upload Gray Scale Info</Form.Label>
-              <Form.Control
-                name="grading_scale_info"
-                type="file"
-                onChange={(e) => handleFileChange(e, 0)}
-              />
-              {typeof graduationDetails?.[0]?.grading_scale_info ===
-                "string" && (
-                <div className="">
-                  <a
-                    href={`${baseUrl}/uploads/graduationDocuments/${graduationDetails?.[0]?.grading_scale_info}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i className="mdi mdi-download me-1"></i> grading_scale_info
-                  </a>
-                </div>
-              )}
-            </Form.Group>
-          </Col>
-
-          <Col
-            md={4}
-            className="d-flex justify-content-between align-items-center"
-          >
-            <Form.Group
-              className="mb-3"
-              controlId={`${title}_backlog_certificate`}
-            >
-              <Form.Label>Upload Backlog Certificate</Form.Label>
-              <Form.Control
-                name="backlog_certificate"
-                type="file"
-                onChange={(e) => handleFileChange(e, 0)}
-              />
-              {typeof graduationDetails?.[0]?.backlog_certificate ===
-                "string" && (
-                <div className="mt-1">
-                  <a
-                    href={`${baseUrl}/uploads/graduationDocuments/${graduationDetails?.[0]?.backlog_certificate}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i className="mdi mdi-download me-1"></i>{" "}
-                    backlog_certificate
-                  </a>
-                </div>
-              )}
-            </Form.Group>
-          </Col>
-        </Row>
-
-        {graduationDetails.length > 1 && (
-          <Row className="mb-2">
-            <Col className="d-flex align-items-center gap-1">
-              <i
-                className="text-danger mdi mdi-minus-circle-outline fs-3 ps-1"
-                onClick={() => {
-                  const itemId = graduationDetails?.[0]?.id ?? 0;
-                  removeGraduationForm(0, itemId);
-                }}
-              ></i>
-              <span className="text-danger">Remove</span>
-            </Col>
-          </Row>
-        )}
-
         <Row className="mb-2">
-          <Col sm={3} className="d-flex align-items-center gap-1">
-            <i
-              className="text-primary mdi mdi-plus-circle-outline fs-3 ps-1"
-              onClick={addMoreGraduationForm}
-            ></i>
-            <span className="text-primary">Add More</span>
-          </Col>
+          <ActionButton
+            label="Add More"
+            iconClass="mdi mdi-plus"
+            onClick={addMoreGraduationForm}
+          />
         </Row>
       </>
-
-      {graduationDetails.length > 1 &&
-        graduationDetails.slice(1).map((item: any, index: any) => (
-          <>
-            <Row key={index + 1}>
-              <Col md={4}>
-                <Form.Group
-                  className="mb-3"
-                  controlId={`${title}_qualification`}
-                >
-                  <Form.Label>
-                    <span className="text-danger">*</span> Course Type
-                  </Form.Label>
-                  <FormInput
-                    type="text"
-                    placeholder="UG/PG.."
-                    name="qualification"
-                    value={item?.qualification}
-                    onChange={(e) => handleFieldChange(e, index + 1)}
-                  />
-                </Form.Group>
-              </Col>
-
-              <Col md={4}>
-                <Form.Group className="mb-3" controlId={`${title}_start_date`}>
-                  <Form.Label>
-                    <span className="text-danger">*</span> Start Date
-                  </Form.Label>
-                  <FormInput
-                    type="date"
-                    name="start_date"
-                    value={moment(item?.start_date).format("YYYY-MM-DD")}
-                    onChange={(e) => handleFieldChange(e, index + 1)}
-                  />
-                </Form.Group>
-              </Col>
-
-              <Col md={4}>
-                <Form.Group className="mb-3" controlId={`${title}_end_date`}>
-                  <Form.Label>
-                    <span className="text-danger">*</span> End Date
-                  </Form.Label>
-                  <FormInput
-                    type="date"
-                    name="end_date"
-                    value={moment(item?.end_date).format("YYYY-MM-DD")}
-                    onChange={(e) => handleFieldChange(e, index + 1)}
-                  />
-                </Form.Group>
-              </Col>
-
-              <Col md={4}>
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    <span className="text-danger">* </span>Percentage
-                  </Form.Label>
-                  <FormInput
-                    type="number"
-                    name="percentage"
-                    placeholder="Enter percentage"
-                    value={item?.percentage}
-                    onChange={(e) => handleFieldChange(e, index + 1)}
-                    min={0}
-                  />
-                </Form.Group>
-              </Col>
-
-              <Col md={4}>
-                <Form.Group
-                  className="mb-3"
-                  controlId={`${title}_conversion_formula`}
-                >
-                  <Form.Label>
-                    <span className="text-danger">*</span> Conversion Formula
-                  </Form.Label>
-                  <FormInput
-                    type="text"
-                    name="conversion_formula"
-                    value={item?.conversion_formula}
-                    onChange={(e) => handleFieldChange(e, index + 1)}
-                  />
-                </Form.Group>
-              </Col>
-
-              <Col
-                md={4}
-                className="d-flex justify-content-between align-items-center"
-              >
-                <Form.Group className="mb-3" controlId={`${title}_admit_card`}>
-                  <Form.Label>Upload Admit Card</Form.Label>
-                  <Form.Control
-                    name="admit_card"
-                    type="file"
-                    onChange={(e) => handleFileChange(e, index + 1)}
-                  />
-                  {typeof item?.admit_card === "string" && (
-                    <div className="mt-2">
-                      <a
-                        href={`${baseUrl}/uploads/educationDocuments/${item?.admit_card}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i className="mdi mdi-download me-1"></i> admit_card
-                      </a>
-                    </div>
-                  )}
-                </Form.Group>
-              </Col>
-
-              <Col
-                md={4}
-                className="d-flex justify-content-between align-items-center"
-              >
-                <Form.Group className="mb-3" controlId={`${title}_certificate`}>
-                  <Form.Label>Upload Certificate</Form.Label>
-                  <Form.Control
-                    name="certificate"
-                    type="file"
-                    onChange={(e) => handleFileChange(e, index + 1)}
-                  />
-                  {typeof item?.certificate === "string" && (
-                    <div className="mt-2">
-                      <a
-                        href={`${baseUrl}/uploads/educationDocuments/${item?.certificate}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i className="mdi mdi-download me-1"></i> certificate
-                      </a>
-                    </div>
-                  )}
-                </Form.Group>
-              </Col>
-              <Col
-                md={4}
-                className="d-flex justify-content-between align-items-center"
-              >
-                <Form.Group
-                  className="mb-3"
-                  controlId={`${title}_registration_certificate `}
-                >
-                  <Form.Label>Upload Registration Certification</Form.Label>
-                  <Form.Control
-                    name="registration_certificate"
-                    type="file"
-                    onChange={(e) => handleFileChange(e, index + 1)}
-                  />
-                  {typeof item?.registration_certificate === "string" && (
-                    <div className="mt-2">
-                      <a
-                        href={`${baseUrl}/uploads/educationDocuments/${item?.registration_certificate}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i className="mdi mdi-download me-1"></i>{" "}
-                        registration_certificate
-                      </a>
-                    </div>
-                  )}
-                </Form.Group>
-              </Col>
-              <Col
-                md={4}
-                className="d-flex justify-content-between align-items-center"
-              >
-                <Form.Group
-                  className="mb-3"
-                  controlId={`${title}_grading_scale_info`}
-                >
-                  <Form.Label>Upload Gray Scale Info</Form.Label>
-                  <Form.Control
-                    name="grading_scale_info"
-                    type="file"
-                    onChange={(e) => handleFileChange(e, index + 1)}
-                  />
-                  {typeof item?.grading_scale_info === "string" && (
-                    <div className="mt-2">
-                      <a
-                        href={`${baseUrl}/uploads/educationDocuments/${item?.grading_scale_info}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i className="mdi mdi-download me-1"></i>{" "}
-                        grading_scale_info
-                      </a>
-                    </div>
-                  )}
-                </Form.Group>
-              </Col>
-              <Col
-                md={4}
-                className="d-flex justify-content-between align-items-center"
-              >
-                <Form.Group
-                  className="mb-3"
-                  controlId={`${title}_backlog_certificate`}
-                >
-                  <Form.Label>Upload Backlog Certificate</Form.Label>
-                  <Form.Control
-                    name="backlog_certificate"
-                    type="file"
-                    onChange={(e) => handleFileChange(e, index + 1)}
-                  />
-                  {typeof item?.backlog_certificate === "string" && (
-                    <div className="mt-2">
-                      <a
-                        href={`${baseUrl}/uploads/educationDocuments/${item?.backlog_certificate}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i className="mdi mdi-download me-1"></i>{" "}
-                        backlog_certificate
-                      </a>
-                    </div>
-                  )}
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row className="mb-2">
-              <Col className="d-flex align-items-center gap-1">
-                <i
-                  className="text-danger mdi mdi-minus-circle-outline fs-3 ps-1"
-                  onClick={() => {
-                    const itemId = item?.id ?? 0;
-                    removeGraduationForm(index + 1, itemId);
-                  }}
-                ></i>
-                <span className="text-danger">Remove</span>
-              </Col>
-            </Row>
-          </>
-        ))}
 
       <Row className="mb-2">
         <Button variant="primary" className="mt-4" onClick={handleSave}>

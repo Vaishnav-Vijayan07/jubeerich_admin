@@ -2,23 +2,19 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import moment from "moment";
 import { baseUrl } from "../../../../constants";
+import ActionButton from "./ActionButton";
 
 const WorkExpRow = ({
-  workExperience,
+  workExperienceData,
   handleWorkExperienceChange,
   addMoreWorkExperience,
   removeWorkExperience,
 }: any) => {
-  console.log(workExperience);
+  console.log(workExperienceData);
 
-  return (
-    <Row>
-      <h5 className="mb-4 text-uppercase">
-        <i className="mdi mdi-account-circle me-1"></i>Work Experience
-      </h5>
-
-      {/* Initial Education Entry */}
-      <Row>
+  const renderWorkRows = (workExperience: any, index: any) => (
+    <>
+      <Row key={index} className="mb-3 p-2 border-bottom rounded">
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="qualification">
             <Form.Label>Work Experience</Form.Label>
@@ -27,15 +23,15 @@ const WorkExpRow = ({
               name="years"
               placeholder="Enter work experience"
               key="years"
-              value={workExperience?.[0]?.years || ""}
+              value={workExperience?.years || ""}
               onChange={(e) =>
-                handleWorkExperienceChange(e.target.name, e.target.value, 0)
+                handleWorkExperienceChange(e.target.name, e.target.value, index)
               }
               min={0}
             />
-            {workExperience?.[0]?.errors?.years && (
+            {workExperience?.errors?.years && (
               <Form.Text className="text-danger">
-                {workExperience?.[0]?.errors?.years}
+                {workExperience?.errors?.years}
               </Form.Text>
             )}
           </Form.Group>
@@ -49,14 +45,14 @@ const WorkExpRow = ({
               name="company"
               placeholder="Enter company"
               key="company"
-              value={workExperience?.[0]?.company || ""}
+              value={workExperience?.company || ""}
               onChange={(e) =>
-                handleWorkExperienceChange(e.target.name, e.target.value, 0)
+                handleWorkExperienceChange(e.target.name, e.target.value, index)
               }
             />
-            {workExperience?.[0]?.errors?.company && (
+            {workExperience?.errors?.company && (
               <Form.Text className="text-danger">
-                {workExperience?.[0]?.errors?.company}
+                {workExperience?.errors?.company}
               </Form.Text>
             )}
           </Form.Group>
@@ -70,14 +66,14 @@ const WorkExpRow = ({
               name="designation"
               placeholder="Enter designation"
               key="designation"
-              value={workExperience?.[0]?.designation || ""}
+              value={workExperience?.designation || ""}
               onChange={(e) =>
-                handleWorkExperienceChange(e.target.name, e.target.value, 0)
+                handleWorkExperienceChange(e.target.name, e.target.value, index)
               }
             />
-            {workExperience?.[0]?.errors?.designation && (
+            {workExperience?.errors?.designation && (
               <Form.Text className="text-danger">
-                {workExperience?.[0]?.errors?.designation}
+                {workExperience?.errors?.designation}
               </Form.Text>
             )}
           </Form.Group>
@@ -95,20 +91,20 @@ const WorkExpRow = ({
                 handleWorkExperienceChange(
                   e.target.name,
                   e.target.files?.[0],
-                  0
+                  index
                 )
               }
             />
-            {workExperience?.[0]?.errors?.bank_statement && (
+            {workExperience?.errors?.bank_statement && (
               <Form.Text className="text-danger">
-                {workExperience?.[0]?.errors?.bank_statement}
+                {workExperience?.errors?.bank_statement}
               </Form.Text>
             )}
-            {typeof workExperience?.[0]?.bank_statement === "string" && (
+            {typeof workExperience?.bank_statement === "string" && (
               <div className="d-flex align-items-center">
-                <i className="mdi mdi-download text-primary me-2"></i>
+                <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
-                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.[0]?.bank_statement}`}
+                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.bank_statement}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
@@ -132,20 +128,20 @@ const WorkExpRow = ({
                 handleWorkExperienceChange(
                   e.target.name,
                   e.target.files?.[0],
-                  0
+                  index
                 )
               }
             />
-            {workExperience?.[0]?.errors?.job_offer_document && (
+            {workExperience?.errors?.job_offer_document && (
               <Form.Text className="text-danger">
-                {workExperience?.[0]?.errors?.job_offer_document}
+                {workExperience?.errors?.job_offer_document}
               </Form.Text>
             )}
-            {typeof workExperience?.[0]?.job_offer_document === "string" && (
+            {typeof workExperience?.job_offer_document === "string" && (
               <div className="d-flex align-items-center">
-                <i className="mdi mdi-download text-primary me-2"></i>
+                <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
-                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.[0]?.job_offer_document}`}
+                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.job_offer_document}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
@@ -169,20 +165,20 @@ const WorkExpRow = ({
                 handleWorkExperienceChange(
                   e.target.name,
                   e.target.files?.[0],
-                  0
+                  index
                 )
               }
             />
-            {workExperience?.[0]?.errors?.appointment_document && (
+            {workExperience?.errors?.appointment_document && (
               <Form.Text className="text-danger">
-                {workExperience?.[0]?.errors?.appointment_document}
+                {workExperience?.errors?.appointment_document}
               </Form.Text>
             )}
-            {typeof workExperience?.[0]?.appointment_document === "string" && (
+            {typeof workExperience?.appointment_document === "string" && (
               <div className="d-flex align-items-center">
-                <i className="mdi mdi-download text-primary me-2"></i>
+                <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
-                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.[0]?.appointment_document}`}
+                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.appointment_document}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
@@ -206,20 +202,20 @@ const WorkExpRow = ({
                 handleWorkExperienceChange(
                   e.target.name,
                   e.target.files?.[0],
-                  0
+                  index
                 )
               }
             />
-            {workExperience?.[0]?.errors?.payslip_document && (
+            {workExperience?.errors?.payslip_document && (
               <Form.Text className="text-danger">
-                {workExperience?.[0]?.errors?.payslip_document}
+                {workExperience?.errors?.payslip_document}
               </Form.Text>
             )}
-            {typeof workExperience?.[0]?.payslip_document === "string" && (
+            {typeof workExperience?.payslip_document === "string" && (
               <div className="d-flex align-items-center">
-                <i className="mdi mdi-download text-primary me-2"></i>
+                <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
-                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.[0]?.payslip_document}`}
+                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.payslip_document}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
@@ -241,17 +237,15 @@ const WorkExpRow = ({
               name="from"
               placeholder="Select date of birth"
               key="from"
-              defaultValue={moment(workExperience?.[0]?.from).format(
-                "YYYY-MM-DD"
-              )}
-              value={moment(workExperience?.[0]?.from).format("YYYY-MM-DD")}
+              defaultValue={moment(workExperience?.from).format("YYYY-MM-DD")}
+              value={moment(workExperience?.from).format("YYYY-MM-DD")}
               onChange={(e) =>
-                handleWorkExperienceChange(e.target.name, e.target.value, 0)
+                handleWorkExperienceChange(e.target.name, e.target.value, index)
               }
             />
-            {workExperience?.[0]?.errors?.from && (
+            {workExperience?.errors?.from && (
               <Form.Text className="text-danger">
-                {workExperience?.[0]?.errors?.from}
+                {workExperience?.errors?.from}
               </Form.Text>
             )}
           </Form.Group>
@@ -267,345 +261,51 @@ const WorkExpRow = ({
               name="to"
               placeholder="Select date of birth"
               key="to"
-              defaultValue={moment(workExperience?.[0]?.to).format(
-                "YYYY-MM-DD"
-              )}
-              value={moment(workExperience?.[0]?.to).format("YYYY-MM-DD")}
+              defaultValue={moment(workExperience?.to).format("YYYY-MM-DD")}
+              value={moment(workExperience?.to).format("YYYY-MM-DD")}
               onChange={(e) =>
-                handleWorkExperienceChange(e.target.name, e.target.value, 0)
+                handleWorkExperienceChange(e.target.name, e.target.value, index)
               }
             />
-            {workExperience?.[0]?.errors?.to && (
+            {workExperience?.errors?.to && (
               <Form.Text className="text-danger">
-                {workExperience?.[0]?.errors?.to}
+                {workExperience?.errors?.to}
               </Form.Text>
             )}
           </Form.Group>
         </Col>
+
+        {workExperienceData?.length > 1 && (
+          <ActionButton
+            onClick={() => removeWorkExperience(index, workExperience?.id ?? 0)}
+            label="Remove"
+            iconClass="mdi mdi-delete"
+            colorClass="text-danger" // Make it red for "Remove"
+          />
+        )}
+      </Row>
+    </>
+  );
+
+  return (
+    <Row>
+      <h5 className="mb-4 text-uppercase">
+        <i className="mdi mdi-account-circle me-1"></i>Work Experience
+      </h5>
+
+      {workExperienceData?.map((workExperience: any, index: any) =>
+        renderWorkRows(workExperience, index)
+      )}
+
+      <Row>
         <Row className="mb-2">
-          <Col className="d-flex align-items-center gap-1">
-            <i
-              className="text-primary mdi mdi-plus-circle-outline fs-3 ps-1"
-              onClick={addMoreWorkExperience}
-            ></i>
-            <span className="text-primary">Add More</span>
-          </Col>
+          <ActionButton
+            onClick={addMoreWorkExperience}
+            label="Add More"
+            iconClass="mdi mdi-plus"
+          />
         </Row>
       </Row>
-
-      {workExperience?.length > 1 &&
-        workExperience.slice(1).map((item: any, index: any) => (
-          <Row key={index + 1}>
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId="qualification">
-                <Form.Label>Work Experience</Form.Label>
-                <FormInput
-                  type="number"
-                  name="years"
-                  placeholder="Enter work experience"
-                  key="years"
-                  value={item?.years || ""}
-                  onChange={(e) =>
-                    handleWorkExperienceChange(
-                      e.target.name,
-                      e.target.value,
-                      index + 1
-                    )
-                  }
-                  min={0}
-                />
-                {workExperience?.[index + 1]?.errors?.years && (
-                  <Form.Text className="text-danger">
-                    {workExperience?.[index + 1]?.errors?.years}
-                  </Form.Text>
-                )}
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId="company">
-                <Form.Label>Company</Form.Label>
-                <FormInput
-                  type="text"
-                  name="company"
-                  placeholder="Enter company"
-                  key="company"
-                  value={item?.company || ""}
-                  onChange={(e) =>
-                    handleWorkExperienceChange(
-                      e.target.name,
-                      e.target.value,
-                      index + 1
-                    )
-                  }
-                />
-                {workExperience?.[index + 1]?.errors?.company && (
-                  <Form.Text className="text-danger">
-                    {workExperience?.[index + 1]?.errors?.company}
-                  </Form.Text>
-                )}
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId="designation">
-                <Form.Label>Designation</Form.Label>
-                <FormInput
-                  type="text"
-                  name="designation"
-                  placeholder="Enter designation"
-                  key="designation"
-                  value={item?.designation || ""}
-                  onChange={(e) =>
-                    handleWorkExperienceChange(
-                      e.target.name,
-                      e.target.value,
-                      index + 1
-                    )
-                  }
-                />
-                {workExperience?.[index + 1]?.errors?.designation && (
-                  <Form.Text className="text-danger">
-                    {workExperience?.[index + 1]?.errors?.designation}
-                  </Form.Text>
-                )}
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId={`bank_statement`}>
-                <Form.Label>
-                  <span className="text-danger">*</span> Bank Statement
-                </Form.Label>
-                <FormInput
-                  type="file"
-                  name="bank_statement"
-                  onChange={(e) =>
-                    handleWorkExperienceChange(
-                      e.target.name,
-                      e.target.files?.[0],
-                      index + 1
-                    )
-                  }
-                />
-                {workExperience?.[index + 1]?.errors?.bank_statement && (
-                  <Form.Text className="text-danger">
-                    {workExperience?.[index + 1]?.errors?.bank_statement}
-                  </Form.Text>
-                )}
-                {typeof workExperience?.[index + 1]?.bank_statement ===
-                  "string" && (
-                  <div className="d-flex align-items-center">
-                    <i className="mdi mdi-download text-primary me-2"></i>
-                    <a
-                      href={`${baseUrl}/uploads/workDocuments/${
-                        workExperience?.[index + 1]?.bank_statement
-                      }`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-decoration-none"
-                    >
-                      payslip_document
-                    </a>
-                  </div>
-                )}
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId={`job_offer_document`}>
-                <Form.Label>
-                  <span className="text-danger">*</span> Job Offer Document
-                </Form.Label>
-                <FormInput
-                  type="file"
-                  name="job_offer_document"
-                  onChange={(e) =>
-                    handleWorkExperienceChange(
-                      e.target.name,
-                      e.target.files?.[0],
-                      index + 1
-                    )
-                  }
-                />
-                {workExperience?.[index + 1]?.errors?.job_offer_document && (
-                  <Form.Text className="text-danger">
-                    {workExperience?.[index + 1]?.errors?.job_offer_document}
-                  </Form.Text>
-                )}
-
-                {typeof workExperience?.[index + 1]?.job_offer_document ===
-                  "string" && (
-                  <div className="d-flex align-items-center">
-                    <i className="mdi mdi-download text-primary me-2"></i>
-                    <a
-                      href={`${baseUrl}/uploads/workDocuments/${
-                        workExperience?.[index + 1]?.job_offer_document
-                      }`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-decoration-none"
-                    >
-                      job_offer_document
-                    </a>
-                  </div>
-                )}
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId={`appointment_document`}>
-                <Form.Label>
-                  <span className="text-danger">*</span> Appointment Document
-                </Form.Label>
-                <FormInput
-                  type="file"
-                  name="appointment_document"
-                  onChange={(e) =>
-                    handleWorkExperienceChange(
-                      e.target.name,
-                      e.target.files?.[0],
-                      index + 1
-                    )
-                  }
-                />
-                {workExperience?.[index + 1]?.errors?.appointment_document && (
-                  <Form.Text className="text-danger">
-                    {workExperience?.[index + 1]?.errors?.appointment_document}
-                  </Form.Text>
-                )}
-
-                {typeof workExperience?.[index + 1]?.appointment_document ===
-                  "string" && (
-                  <div className="d-flex align-items-center">
-                    <i className="mdi mdi-download text-primary me-2"></i>
-                    <a
-                      href={`${baseUrl}/uploads/workDocuments/${
-                        workExperience?.[index + 1]?.appointment_document
-                      }`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-decoration-none"
-                    >
-                      appointment_document
-                    </a>
-                  </div>
-                )}
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId={`payslip_document`}>
-                <Form.Label>
-                  <span className="text-danger">*</span> Payslip Document
-                </Form.Label>
-                <FormInput
-                  type="file"
-                  name="payslip_document"
-                  onChange={(e) =>
-                    handleWorkExperienceChange(
-                      e.target.name,
-                      e.target.files?.[0],
-                      index + 1
-                    )
-                  }
-                />
-                {workExperience?.[index + 1]?.errors?.payslip_document && (
-                  <Form.Text className="text-danger">
-                    {workExperience?.[index + 1]?.errors?.payslip_document}
-                  </Form.Text>
-                )}
-
-                {typeof workExperience?.[index + 1]?.payslip_document ===
-                  "string" && (
-                  <div className="d-flex align-items-center">
-                    <i className="mdi mdi-download text-primary me-2"></i>
-                    <a
-                      href={`${baseUrl}/uploads/workDocuments/${
-                        workExperience?.[index + 1]?.payslip_document
-                      }`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-decoration-none"
-                    >
-                      payslip_document
-                    </a>
-                  </div>
-                )}
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId="dob">
-                <Form.Label>
-                  <span className="text-danger">*</span> From
-                </Form.Label>
-                <FormInput
-                  type="date"
-                  name="from"
-                  placeholder="Select date of birth"
-                  key="from"
-                  defaultValue={moment(item?.from).format("YYYY-MM-DD")}
-                  value={moment(item?.from).format("YYYY-MM-DD")}
-                  onChange={(e) =>
-                    handleWorkExperienceChange(
-                      e.target.name,
-                      e.target.value,
-                      index + 1
-                    )
-                  }
-                />
-                {workExperience?.[index + 1]?.errors?.from && (
-                  <Form.Text className="text-danger">
-                    {workExperience?.[index + 1]?.errors?.from}
-                  </Form.Text>
-                )}
-              </Form.Group>
-            </Col>
-
-            <Col md={4} lg={4} xl={4} xxl={4}>
-              <Form.Group className="mb-3" controlId="dob">
-                <Form.Label>
-                  <span className="text-danger">*</span> To
-                </Form.Label>
-                <FormInput
-                  type="date"
-                  name="to"
-                  placeholder="Select date of birth"
-                  key="to"
-                  defaultValue={moment(item?.to).format("YYYY-MM-DD")}
-                  value={moment(item?.to).format("YYYY-MM-DD")}
-                  onChange={(e) =>
-                    handleWorkExperienceChange(
-                      e.target.name,
-                      e.target.value,
-                      index + 1
-                    )
-                  }
-                />
-                {workExperience?.[index + 1]?.errors?.to && (
-                  <Form.Text className="text-danger">
-                    {workExperience?.[index + 1]?.errors?.to}
-                  </Form.Text>
-                )}
-              </Form.Group>
-            </Col>
-            {workExperience.length > 1 && (
-              <Row className="mb-2">
-                <Col className="d-flex align-items-center gap-1">
-                  <i
-                    className="text-danger mdi mdi-minus-circle-outline fs-3 ps-1"
-                    onClick={() => {
-                      const itemId = item.id ?? 0;
-                      removeWorkExperience(index + 1, itemId);
-                    }}
-                  ></i>
-                  <span className="text-danger">Remove</span>
-                </Col>
-              </Row>
-            )}
-          </Row>
-        ))}
     </Row>
   );
 };

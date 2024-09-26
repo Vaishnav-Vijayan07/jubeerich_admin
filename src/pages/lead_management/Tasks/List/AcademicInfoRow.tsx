@@ -1,6 +1,7 @@
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import React from "react";
+import ActionButton from "./ActionButton";
 
 interface AcademicInfo {
   id?: number;
@@ -9,12 +10,15 @@ interface AcademicInfo {
   percentage: number;
   year_of_passing: number;
   backlogs?: number;
+  errors?: any;
 }
 
 interface AcademicInfoRowProps {
   academicInfo: AcademicInfo[];
-  handleAcademicInfoChange: (index: number, event: React.ChangeEvent<HTMLInputElement>) => void;
-  validationErrors?: Record<string, string>;
+  handleAcademicInfoChange: (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void;
   addMoreAcademicInfo: () => void;
   removeAcademicInfo: (index: number, id: number) => void;
 }
@@ -22,10 +26,11 @@ interface AcademicInfoRowProps {
 const AcademicInfoRow: React.FC<AcademicInfoRowProps> = ({
   academicInfo,
   handleAcademicInfoChange,
-  validationErrors,
   addMoreAcademicInfo,
   removeAcademicInfo,
 }) => {
+  console.log(academicInfo);
+
   return (
     <Row>
       <h5 className="mb-4 text-uppercase">
@@ -35,7 +40,7 @@ const AcademicInfoRow: React.FC<AcademicInfoRowProps> = ({
       {/* Initial Education Entry */}
       <Row>
         {academicInfo.map((item, index) => (
-          <React.Fragment key={index}>
+          <Row key={index} className="p-2 border-bottom rounded">
             <Col md={4} lg={4} xl={4} xxl={4}>
               <Form.Group className="mb-3">
                 <Form.Label>
@@ -48,6 +53,11 @@ const AcademicInfoRow: React.FC<AcademicInfoRowProps> = ({
                   value={item.qualification || ""}
                   onChange={(e) => handleAcademicInfoChange(index, e)}
                 />
+                {item?.errors && (
+                  <Form.Text className="text-danger">
+                    {item?.errors.qualification}
+                  </Form.Text>
+                )}
               </Form.Group>
             </Col>
 
@@ -63,6 +73,11 @@ const AcademicInfoRow: React.FC<AcademicInfoRowProps> = ({
                   value={item.place || ""}
                   onChange={(e) => handleAcademicInfoChange(index, e)}
                 />
+                {item?.errors && (
+                  <Form.Text className="text-danger">
+                    {item?.errors.place}
+                  </Form.Text>
+                )}
               </Form.Group>
             </Col>
 
@@ -79,6 +94,11 @@ const AcademicInfoRow: React.FC<AcademicInfoRowProps> = ({
                   onChange={(e) => handleAcademicInfoChange(index, e)}
                   min={0}
                 />
+                {item?.errors && (
+                  <Form.Text className="text-danger">
+                    {item?.errors.percentage}
+                  </Form.Text>
+                )}
               </Form.Group>
             </Col>
 
@@ -95,6 +115,11 @@ const AcademicInfoRow: React.FC<AcademicInfoRowProps> = ({
                   onChange={(e) => handleAcademicInfoChange(index, e)}
                   min={0}
                 />
+                {item?.errors && (
+                  <Form.Text className="text-danger">
+                    {item?.errors.year_of_passing}
+                  </Form.Text>
+                )}
               </Form.Group>
             </Col>
 
@@ -105,35 +130,34 @@ const AcademicInfoRow: React.FC<AcademicInfoRowProps> = ({
                   type="number"
                   name="backlogs"
                   placeholder="Enter backlogs"
-                  value={item.backlogs || ""}
+                  value={item.backlogs}
                   onChange={(e) => handleAcademicInfoChange(index, e)}
                 />
+                {item?.errors && (
+                  <Form.Text className="text-danger">
+                    {item?.errors.backlogs}
+                  </Form.Text>
+                )}
               </Form.Group>
             </Col>
 
             {academicInfo.length > 1 && (
-              <Col className="d-flex align-items-center gap-1 mb-2">
-                <i
-                  className="text-danger mdi mdi-minus-circle-outline fs-3 ps-1"
-                  onClick={() => {
-                    const itemId = item.id ?? 0;
-                    removeAcademicInfo(index, itemId);
-                  }}
-                ></i>
-                <span className="text-danger">Remove</span>
-              </Col>
+              <ActionButton
+                onClick={() => removeAcademicInfo(index, item.id ?? 0)}
+                label="Remove"
+                iconClass="mdi mdi-delete"
+                colorClass="text-danger" // Make it red for "Remove"
+              />
             )}
-          </React.Fragment>
+          </Row>
         ))}
 
         <Row className="mb-2">
-          <Col className="d-flex align-items-center gap-1">
-            <i
-              className="text-primary mdi mdi-plus-circle-outline fs-3 ps-1"
-              onClick={addMoreAcademicInfo}
-            ></i>
-            <span className="text-primary">Add More</span>
-          </Col>
+          <ActionButton
+            onClick={addMoreAcademicInfo}
+            label="Add More"
+            iconClass="mdi mdi-plus"
+          />
         </Row>
       </Row>
     </Row>

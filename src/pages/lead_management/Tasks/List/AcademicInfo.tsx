@@ -9,22 +9,16 @@ import useSaveStudentAcademicInfo from "../../../../hooks/useSaveStudentAcademic
 import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import validateFields from "../../../../helpers/validateHelper";
 
 const initialStateAcademic = {
-  id: 0,
   qualification: "",
   place: "",
   percentage: "",
   year_of_passing: "",
   backlogs: 0,
+  errors: {},
 };
-
-// const initialStateExam = {
-//   exam_name: "",
-//   marks: "",
-//   exam_documents: null,
-//   score_card: null,
-// };
 
 const initialStateExam = {
   exam_type: "",
@@ -34,13 +28,14 @@ const initialStateExam = {
   writing_score: "",
   overall_score: "",
   exam_date: "",
-  exam_documents: null,
   score_card: null,
+  errors: {},
 };
 
 const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
   const [loading, setLoading] = useState(false);
+  const [hasExams, setHasExams] = useState("no");
 
   const refresh = useSelector(
     (state: RootState) => state.refreshReducer.refreshing
@@ -51,20 +46,25 @@ const AcademicInfo = withSwal((props: any) => {
   ]);
   const [examForm, setExamForm] = useState<any[]>([initialStateExam]);
   const [selectExam, setSelectExam] = useState<boolean>(true);
+
   const fetchAcademicInfo = useCallback(async () => {
     setLoading(true);
     try {
-      console.log("here");
+      // Fetch both API calls concurrently
+      const [academicResponse, examResponse] = await Promise.all([
+        axios.get(`studentAcademicInfo/${studentId}`),
+        axios.get(`studentExamInfo/${studentId}`),
+      ]);
 
-      const res = await axios.get(`getStudentAcademicInfo/${studentId}`);
-      const { academicValues = [], exam_info = {} } = res.data.data || {};
+      const academicData = academicResponse.data?.data;
+      const examData = examResponse.data?.data;
 
+      // Use helper functions to check the data and set state
       setAcademicInfoFromApi(
-        academicValues.length > 0 ? academicValues : [initialStateAcademic]
+        academicData.length > 0 ? academicData : [initialStateAcademic]
       );
-      setExamForm(
-        exam_info.exam_details ? exam_info.exam_details : [initialStateExam]
-      );
+      setExamForm(examData.length > 0 ? examData : [initialStateExam]);
+      setHasExams(examData.length > 0 ? "yes" : "no");
     } catch (error) {
       console.error("Error fetching academic info:", error);
     } finally {
@@ -72,11 +72,17 @@ const AcademicInfo = withSwal((props: any) => {
     }
   }, [studentId]);
 
-  const { saveStudentAcademicInfo, loading: saveLoading } =
-    useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
+  const {
+    saveStudentAcademicInfo,
+    saveStudentExamInfo,
+    loading: saveLoading,
+  } = useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
   const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
 
   // Fetch academic info using useCallback to memoize the function
+
+  console.log(academicInfoFromApi);
+  console.log(examForm);
 
   useEffect(() => {
     if (studentId) {
@@ -105,8 +111,7 @@ const AcademicInfo = withSwal((props: any) => {
     if (file) {
       setExamForm((prevData) => {
         const newData = [...prevData];
-        newData[index].exam_documents = file;
-        newData[index].score_card = file.name;
+        newData[index].score_card = file;
         return newData;
       });
     }
@@ -117,10 +122,7 @@ const AcademicInfo = withSwal((props: any) => {
     initialState: any
   ) => {
     setter((prevData) => {
-      console.log("Previous Data:", prevData); // Log previous data
-      console.log("Initial State:", initialState); // Log initial state
       const updatedData = [...prevData, initialState];
-      console.log("Updated Data:", updatedData); // Log updated data
       return updatedData;
     });
   };
@@ -138,8 +140,59 @@ const AcademicInfo = withSwal((props: any) => {
     }
   };
 
-  const handleSave = () => {
-    saveStudentAcademicInfo(academicInfoFromApi, examForm);
+  const handleSaveAcademicInfo = () => {
+    console.log(academicInfoFromApi);
+
+    const validationRules = {
+      qualification: { required: true },
+      place: { required: true },
+      percentage: { required: true },
+      year_of_passing: { required: true },
+      backlogs: { required: true },
+    };
+
+    const { isValid, errors } = validateFields(
+      academicInfoFromApi,
+      validationRules
+    );
+
+    console.log(errors);
+
+    if (!isValid) {
+      setAcademicInfoFromApi((prevState: any) =>
+        prevState.map((exp: any, index: any) => ({
+          ...exp,
+          errors: errors[index] || {},
+        }))
+      );
+      return;
+    }
+    saveStudentAcademicInfo(academicInfoFromApi);
+  };
+
+  const handleSaveExamInfo = () => {
+    const validationRules = {
+      exam_type: { required: true },
+      listening_score: { required: true },
+      speaking_score: { required: true },
+      reading_score: { required: true },
+      writing_score: { required: true },
+      overall_score: { required: true },
+      exam_date: { required: true },
+      score_card: { required: true },
+    };
+
+    const { isValid, errors } = validateFields(examForm, validationRules);
+    if (!isValid) {
+      setExamForm((prevState: any) =>
+        prevState.map((exp: any, index: any) => ({
+          ...exp,
+          errors: errors[index] || {},
+        }))
+      );
+      return;
+    }
+    saveStudentExamInfo(examForm);
   };
 
   if (loading) {
@@ -162,12 +215,12 @@ const AcademicInfo = withSwal((props: any) => {
             }
             addMoreAcademicInfo={() =>
               addFormField(setAcademicInfoFromApi, {
-                id: 0,
                 qualification: "",
                 place: "",
                 percentage: "",
                 year_of_passing: "",
                 backlogs: 0,
+                errors: {},
               })
             }
             removeAcademicInfo={(index, item) =>
@@ -176,6 +229,31 @@ const AcademicInfo = withSwal((props: any) => {
           />
 
           <Row>
+            <Button
+              variant="primary"
+              className="mt-4"
+              type="submit"
+              onClick={handleSaveAcademicInfo}
+              disabled={saveLoading || deleteLoading}
+            >
+              {saveLoading || deleteLoading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                  {" Loading..."} {/* Show spinner and text */}
+                </>
+              ) : (
+                "Save Academic Info" // Normal button text when not loading
+              )}
+            </Button>
+          </Row>
+
+          <Row className="mt-3">
             <Col>
               <Form.Group className="mb-3" controlId="source_id">
                 <Form.Label>
@@ -184,16 +262,16 @@ const AcademicInfo = withSwal((props: any) => {
                 <div className="d-flex justify-content-start align-items-center mt-1">
                   <Form.Check
                     type="radio"
-                    name="ielts"
-                    checked={selectExam}
-                    onChange={() => setSelectExam(true)}
+                    name="hasExams"
+                    checked={hasExams === "yes"}
+                    onChange={() => setHasExams("yes")}
                     label={<span className="ps-1 fw-bold">Yes</span>}
                   />
                   <Form.Check
                     type="radio"
-                    name="ielts"
-                    checked={!selectExam}
-                    onChange={() => setSelectExam(false)}
+                    name="hasExams"
+                    checked={hasExams === "no"}
+                    onChange={() => setHasExams("no")}
                     label={<span className="ps-1 fw-bold">No</span>}
                     className="ms-3"
                   />
@@ -206,14 +284,6 @@ const AcademicInfo = withSwal((props: any) => {
             <Row>
               <ExamData
                 examForm={examForm}
-                // addMoreExamForm={() =>
-                //   addFormField(setExamForm, {
-                //     exam_name: "",
-                //     marks: "",
-                //     exam_documents: null,
-                //     score_card: null,
-                //   })
-                // }
                 addMoreExamForm={() =>
                   addFormField(setExamForm, {
                     exam_type: "",
@@ -223,7 +293,6 @@ const AcademicInfo = withSwal((props: any) => {
                     writing_score: "",
                     overall_score: "",
                     exam_date: "",
-                    exam_documents: null,
                     score_card: null,
                   })
                 }
@@ -245,7 +314,7 @@ const AcademicInfo = withSwal((props: any) => {
           variant="primary"
           className="mt-4"
           type="submit"
-          onClick={handleSave}
+          onClick={handleSaveExamInfo}
           disabled={saveLoading || deleteLoading}
         >
           {saveLoading || deleteLoading ? (
@@ -260,7 +329,7 @@ const AcademicInfo = withSwal((props: any) => {
               {" Loading..."} {/* Show spinner and text */}
             </>
           ) : (
-            "Save Details" // Normal button text when not loading
+            "Save Exam Info" // Normal button text when not loading
           )}
         </Button>
       </Row>

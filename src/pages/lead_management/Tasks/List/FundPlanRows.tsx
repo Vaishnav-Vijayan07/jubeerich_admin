@@ -146,7 +146,7 @@ const FundPlanRows = ({
             )}
             {typeof plan.supporting_document === "string" && (
               <div className="d-flex align-items-center">
-                <i className="mdi mdi-download text-primary me-2"></i>
+                <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
                   href={`${baseUrl}/uploads/fundDocuments/${plan?.supporting_document}`}
                   target="_blank"
