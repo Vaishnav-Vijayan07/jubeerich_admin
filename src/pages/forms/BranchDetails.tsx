@@ -78,33 +78,33 @@ const BranchDetails = withSwal((props: any) => {
   const dispatch = useDispatch();
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
-  const {
-    adminUsers: state,
-    error,
-    loading,
-    initialLoading,
-    countries: Countries,
-    branchesData: Branch,
-    branchCounsellor: CounsellorData,
-    branchCounsellorTL: CounsellorTLData,
-  } = useSelector((state: RootState) => ({
-    adminUsers: state.Users.adminUsers,
-    error: state.Users.error,
-    loading: state.Users.loading,
-    initialLoading: state.Users.initialLoading,
-    countries: state.Country.countries,
-    branchesData: state.Branches?.branches?.data,
-    branchCounsellor: state.Users?.branchCounsellor,
-    branchCounsellorTL: state.Users?.branchCounsellorTL,
-  }));
-
-  const BranchesData = useMemo(() => {
-    if (!Branch) return [];
-    return Branch.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.branch_name,
+    const {
+        adminUsers: state,
+        error,
+        loading,
+        initialLoading,
+        countries: Countries,
+        branchesData: Branch,
+        branchCounsellor: CounsellorData,
+        branchCounsellorTL: CounsellorTLData
+    } = useSelector((state: RootState) => ({
+        adminUsers: state.Users.adminUsers,
+        error: state.Users.error,
+        loading: state.Users.loading,
+        initialLoading: state.Users.initialLoading,
+        countries: state.Country.countries,
+        branchesData: state.Branches?.branches?.data,
+        branchCounsellor: state.Users?.branchCounsellor,
+        branchCounsellorTL: state.Users?.branchCounsellorTL
     }));
-  }, [Branch]);
+    
+    const BranchesData = useMemo(() => {
+        if (!Branch) return [];
+        return Branch.map((item: any) => ({
+            value: item.id.toString(),
+            label: item.branch_name,
+        }));
+    }, [Branch]);
 
   const columns = [
     {
@@ -478,19 +478,27 @@ const BranchDetails = withSwal((props: any) => {
     dispatch(getBranchCounsellorsTL(branchId));
   }, [branchId]);
 
-  useEffect(() => {
-    setTableData([...CounsellorTLData, ...CounsellorData]);
-  }, [CounsellorTLData, CounsellorData]);
+    useEffect(() => {
+        setTableData([...CounsellorTLData, ...CounsellorData])
+    }, [CounsellorTLData, CounsellorData])
 
-  useEffect(() => {
-    if (Countries) {
-      const countryArray = Countries?.map((country: any) => ({
-        value: country.id.toString(),
-        label: country.country_name,
-      }));
-      setCountryData(countryArray);
-    }
-  }, [Countries]);
+    // useEffect(() => {
+    //     setTableData([
+    //         ...(CounsellorTLData || []),
+    //         ...(CounsellorData || [])
+    //     ]);
+    // }, [CounsellorTLData, CounsellorData]);
+    
+    useEffect(() => {
+        if (Countries) {
+            const countryArray = Countries?.map((country: any) => ({
+                value: country.id.toString(),
+                label: country.country_name,
+            }));
+            setCountryData(countryArray);
+        }
+    }, [Countries]);
+
 
   return (
     <>

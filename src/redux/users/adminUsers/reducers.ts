@@ -130,6 +130,22 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             initialLoading: false,
           };
         }
+        case AdminUserActionTypes.GET_BRANCH_COUNSELLOR: {
+          return {
+            ...state,
+            branchCounsellor: action.payload.data || [],
+            loading: false,
+            initialLoading: false,
+          };
+        }
+        case AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL: {
+          return {
+            ...state,
+            branchCounsellorTL: action.payload.data || [],
+            loading: false,
+            initialLoading: false,
+          };
+        }
         case AdminUserActionTypes.UPDATE_ADMIN_USERS: {
           showErrorAlert(action.payload.error);
           return {

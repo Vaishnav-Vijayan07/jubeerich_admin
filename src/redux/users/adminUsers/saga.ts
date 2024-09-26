@@ -76,7 +76,7 @@ function* getAllBranchCounsellors({
 }: any): SagaIterator {
   try {
     const response = yield call(getBranchCounsellorsAPI, branchId);
-    const data = response.data.data;
+    const data = response.data.data || [];
 
     // NOTE - You can change this according to response format from your api
     yield put(
@@ -95,7 +95,7 @@ function* getAllBranchCounsellorsTL({
   try {
     const response = yield call(getBranchCounsellorsTLAPI, branchId);
     
-    const data = response.data.data;
+    const data = response.data.data || [];
 
     // NOTE - You can change this according to response format from your api
     yield put(
