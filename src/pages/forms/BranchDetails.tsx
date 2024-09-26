@@ -412,8 +412,6 @@ const BranchDetails = withSwal((props: any) => {
                       formData.role_id == branch_counsellor_id ? formData.country_ids : null
                     )
                   );
-                  handleResetValues();
-                  toggleModal();
                 } catch (err) {
                   setTableData([]);
                   console.error("error updating", err);
@@ -443,8 +441,6 @@ const BranchDetails = withSwal((props: any) => {
                       formData.role_id == branch_counsellor_id ? formData.country_ids : null
                     )
                   );
-                  handleResetValues();
-                  toggleModal();
                 } catch (err) {
                   setTableData([]);
                   console.error("error adding", err);
@@ -470,6 +466,17 @@ const BranchDetails = withSwal((props: any) => {
       }
     }
   };
+
+    useEffect(() => {
+        // Check for errors and clear the form
+        if (!loading && !error) {
+            setShowModal(false)
+            setValidationErrors(initialValidationState); // Clear validation errors
+            setFormData(initialState); //clear form data
+            handleResetValues()
+            // Clear validation errors
+        }
+    }, [loading, error]);
 
   useEffect(() => {
     dispatch(getCountry());
