@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { showErrorAlert } from "../constants";
+import { branch_counsellor_id, showErrorAlert } from "../constants";
 
 const useDropdownData = (type: string) => {
   const [loading, setLoading] = useState(false);
@@ -20,6 +20,7 @@ const useDropdownData = (type: string) => {
     statuses: [],
     cres: [],
     franchises: [],
+    branchCounsellors: [],
   });
 
   useEffect(() => {

@@ -36,6 +36,7 @@ const Leads = () => {
     })
   );
 
+
   useEffect(() => {
     fetchAllCounsellors();
   }, []);
@@ -111,6 +112,7 @@ const Leads = () => {
             regionData={dropdownData.regions || []}
             franchisees={dropdownData.franchises || []}
             branchForManager={branchForManager}
+            branchCounsellors={dropdownData?.branchCounsellors || []}
           />
         </Col>
       </Row>

@@ -33,10 +33,12 @@ const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date:
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   let userRole: any;
+  let userBranchId: any;
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
+    userBranchId = JSON.parse(userInfo)?.branch_id
   }
-  // console.log("user role ==>", userRole);
+
 
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -58,6 +60,7 @@ const BasicInputElements = withSwal((props: any) => {
     regionData,
     franchisees,
     branchForManager,
+    branchCounsellors
   } = props;
 
   const [sourceData, setSourceData] = useState<any>(source);
@@ -85,6 +88,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [isFranchiseActive, setIsFranchiseActive] = useState<any>(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedFranchisee, setSelectedFranchisee] = useState(null);
+  const [branchCounsellorsData, setBranchCounsellorsData] = useState<any[]>([])
 
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
@@ -808,6 +812,25 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+    const handleBranchCounsellorAssignBulk = async (user_ids: any, counsellor_id: any) => {
+    if (user_ids.length > 0) {
+      try {
+        const { data } = await axios.post("/assign_branch_counsellors", { user_ids, counsellor_id });
+
+        if (data.status) {
+          if (userRole == cre_tl_id) {
+            dispatch(getLeadsTL());
+          } else {
+            dispatch(getLead());
+          }
+          showSuccessAlert("Bulk assignment successful.");
+        }
+      } catch (error) {
+        showErrorAlert(error);
+      }
+    }
+  };
+
   const handleBranchAssignBulk = async (user_ids: any, branch_id: any) => {
     if (user_ids.length > 0) {
       try {
@@ -847,6 +870,12 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  useEffect(() => {
+    if (!branchCounsellors.length) return; 
+    const filteredData = branchCounsellors.filter((data: any) => data.branch_id == userBranchId);
+    setBranchCounsellorsData(filteredData);
+  }, [branchCounsellors]); 
+  
   useEffect(() => {
     // Check for errors and clear the form
     if (!loading && !error) {
@@ -1568,6 +1597,27 @@ const BasicInputElements = withSwal((props: any) => {
                         variant="light"
                         className="table-action-btn btn-sm btn-blue"
                       >
+                        <i className="mdi mdi-account-plus"></i> Assign Counsellors
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
+                        {branchCounsellorsData?.map((item: any) => (
+                          <Dropdown.Item key={item.value} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.value)}>
+                            {item.label}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </>
+                )}
+
+                {user?.role == counsellor_tl_id && (
+                  <>
+                    <Dropdown className="btn-group">
+                      <Dropdown.Toggle
+                        disabled={selectedValues?.length > 0 ? false : true}
+                        variant="light"
+                        className="table-action-btn btn-sm btn-blue"
+                      >
                         <i className="mdi mdi-account-plus"></i> Assign CRE's
                       </Dropdown.Toggle>
                       <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
@@ -1615,7 +1665,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </Button>
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
-              {userRole == cre_tl_id || userRole == regional_manager_id ? (
+              {userRole == cre_tl_id || userRole == regional_manager_id || userRole == counsellor_tl_id ? (
                 <Table
                   columns={columns}
                   data={records ? records : []}
