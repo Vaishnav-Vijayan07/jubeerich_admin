@@ -8,7 +8,9 @@ export interface AdminUsersActionType {
     | AdminUserActionTypes.GET_ADMIN_USERS
     | AdminUserActionTypes.ADD_ADMIN_USERS
     | AdminUserActionTypes.UPDATE_ADMIN_USERS
-    | AdminUserActionTypes.DELETE_ADMIN_USERS;
+    | AdminUserActionTypes.DELETE_ADMIN_USERS
+    | AdminUserActionTypes.GET_BRANCH_COUNSELLOR
+    | AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL;
   payload: {} | string;
 }
 
@@ -47,6 +49,18 @@ export const adminUsersApiResponseError = (
 export const getAdminUsers = (): AdminUsersActionType => ({
   type: AdminUserActionTypes.GET_ADMIN_USERS,
   payload: {},
+});
+
+// Update the action creator to accept a branchId parameter
+export const getBranchCounsellors = (branchId: any): AdminUsersActionType => ({
+  type: AdminUserActionTypes.GET_BRANCH_COUNSELLOR,
+  payload: { branchId }, // Pass the branchId in the payload
+});
+
+
+export const getBranchCounsellorsTL = (branchId: any): AdminUsersActionType => ({
+  type: AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL,
+  payload: { branchId },
 });
 
 export const addAdminUsers = (

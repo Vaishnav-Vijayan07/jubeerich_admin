@@ -21,7 +21,6 @@ import {
   branch_counsellor_id,
   counsellor_id,
   counsellor_tl_id,
-  customStyles,
   regional_manager_id,
 } from "../../constants";
 import { MyInitialState, OptionType, TableRecords, initialState, initialValidationState, sizePerPageList } from "./data";

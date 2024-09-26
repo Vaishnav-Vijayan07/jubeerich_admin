@@ -19,6 +19,7 @@ const useDropdownData = (type: string) => {
     adminUsers: [],
     statuses: [],
     cres: [],
+    franchises: [],
   });
 
   useEffect(() => {

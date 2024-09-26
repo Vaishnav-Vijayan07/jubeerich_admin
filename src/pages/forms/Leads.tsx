@@ -1,28 +1,20 @@
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  Row,
-  Col,
-  Spinner,
-} from "react-bootstrap";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Row, Col, Spinner } from "react-bootstrap";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import {
-  getLead,
-  getLeadsTL,
-} from "../../redux/actions";
-import {
-  AUTH_SESSION_KEY,
-} from "../../constants";
+import { getLead, getLeadsTL } from "../../redux/actions";
+import { AUTH_SESSION_KEY, cre_tl_id, regional_manager_id } from "../../constants";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-  const [counsellors, setCounsellors] = useState([])
+  const [counsellors, setCounsellors] = useState([]);
+  const [branchForManager, setBranchForManager] = useState([]);
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
   let userRole: any;
@@ -30,77 +22,64 @@ const Leads = () => {
     userRole = JSON.parse(userInfo)?.role;
   }
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    user,
-    state,
-    cres,
-    error,
-    loading,
-    initialLoading,
-    categories,
-    region,
-    franchisees
-  } = useSelector((state: RootState) => ({
-    user: state.Auth.user,
-    state: state.Leads.leads,
-    cres: state.Leads.allCres,
-    error: state.Leads.error,
-    loading: state.Leads.loading,
-    initialLoading: state.Leads.initialloading,
-    categories: state.Category.category.data,
-    region: state.Region.regions,
-    franchisees: state.Franchise.franchiseUsers,
-  }));
+  const { user, state, cres, error, loading, initialLoading, categories, region, franchisees } = useSelector(
+    (state: RootState) => ({
+      user: state.Auth.user,
+      state: state.Leads.leads,
+      cres: state.Leads.allCres,
+      error: state.Leads.error,
+      loading: state.Leads.loading,
+      initialLoading: state.Leads.initialloading,
+      categories: state.Category.category.data,
+      region: state.Region.regions,
+      franchisees: state.Franchise.franchiseUsers,
+    })
+  );
 
   useEffect(() => {
-    fetchAllCounsellors()
+    fetchAllCounsellors();
   }, []);
 
-  console.log('Region From Lead', region);
-  console.log('Type From Lead', categories);
-  
-
   useEffect(() => {
-    console.log("here");
-    
-    if (userRole == 4) {
+    if (userRole == cre_tl_id) {
       dispatch(getLeadsTL());
     } else {
       dispatch(getLead());
     }
-  }, [userRole])
 
-  const fetchAllCounsellors = () => {
-    axios.get("/get_all_counsellors").then((res) => {
-      const counsellorData = res?.data?.data?.map((item: any) => {
-        return (
-          {
+    if (userRole == regional_manager_id) {
+      fetchBranches();
+    }
+  }, [userRole]);
+
+  const fetchAllCounsellors = useCallback(() => {
+    axios
+      .get("/get_all_counsellors")
+      .then((res) => {
+        const counsellorData = res?.data?.data?.map((item: any) => {
+          return {
             label: item?.name,
-            value: item?.id
-          }
-        )
+            value: item?.id,
+          };
+        });
+        setCounsellors(counsellorData);
       })
-      setCounsellors(counsellorData)
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
-  const franchiseeData = useMemo(() => {
-    if (!franchisees) return [];
-    return franchisees?.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.name,
-    }));
-  }, [franchisees]);
-  
+  const fetchBranches = useCallback(async () => {
+    try {
+      const resposne = await axios.get("list_manager_branches");
+      setBranchForManager(resposne.data.data);
+    } catch (err) {
+      console.log("err", err);
+    }
+  }, []);
+
   if (initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      />
-    );
+    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
   }
 
   return (
@@ -117,7 +96,7 @@ const Leads = () => {
           <BasicInputElements
             state={state}
             country={dropdownData.countries || []}
-            source={dropdownData.sources|| []}
+            source={dropdownData.sources || []}
             leadTypes={dropdownData.leadTypes || []}
             user={user || null}
             cres={cres || []}
@@ -130,7 +109,8 @@ const Leads = () => {
             userData={dropdownData.adminUsers || []}
             region={dropdownData.regions}
             regionData={dropdownData.regions || []}
-            franchisees={franchiseeData}
+            franchisees={dropdownData.franchises || []}
+            branchForManager={branchForManager}
           />
         </Col>
       </Row>

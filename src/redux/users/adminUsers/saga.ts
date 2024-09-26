@@ -18,11 +18,14 @@ import {
   adminUsersApiResponseSuccess,
   adminUsersApiResponseError,
   getAdminUsers,
+  getBranchCounsellors,
+  getBranchCounsellorsTL,
 } from "./actions";
 
 // constants
 import { AdminUserActionTypes } from "./constants";
 import axios from "axios";
+import { getBranchCounsellors as getBranchCounsellorsAPI, getBranchCounsellorsTL as getBranchCounsellorsTLAPI } from "../../../helpers/api/users/adminUsers";
 
 interface UsersData {
   payload: {
@@ -68,6 +71,43 @@ function* getAllAdminUsers(): SagaIterator {
   }
 }
 
+function* getAllBranchCounsellors({
+  payload: { branchId },
+}: any): SagaIterator {
+  try {
+    const response = yield call(getBranchCounsellorsAPI, branchId);
+    const data = response.data.data || [];
+
+    // NOTE - You can change this according to response format from your api
+    yield put(
+      adminUsersApiResponseSuccess(AdminUserActionTypes.GET_BRANCH_COUNSELLOR, data)
+    );
+  } catch (error: any) {
+    yield put(
+      adminUsersApiResponseError(AdminUserActionTypes.GET_BRANCH_COUNSELLOR, error)
+    );
+  }
+}
+
+function* getAllBranchCounsellorsTL({
+  payload: { branchId },
+}: any): SagaIterator {
+  try {
+    const response = yield call(getBranchCounsellorsTLAPI, branchId);
+    
+    const data = response.data.data || [];
+
+    // NOTE - You can change this according to response format from your api
+    yield put(
+      adminUsersApiResponseSuccess(AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL, data)
+    );
+  } catch (error: any) {
+    yield put(
+      adminUsersApiResponseError(AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL, error)
+    );
+  }
+}
+
 function* addAdminUser({
   payload: {
     employee_id,
@@ -107,15 +147,6 @@ function* addAdminUser({
     });
     const data = response.data;
 
-    // const branchArray = branch_ids.split(",").map((item) => parseInt(item.trim(), 10));
-
-    // axios
-    //   .put(`admin_users_branch/${data.data.id}`, { branchIds: branchArray })
-    //   .then((res: any) => {})
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
-
     yield put(
       adminUsersApiResponseSuccess(
         AdminUserActionTypes.ADD_ADMIN_USERS,
@@ -124,6 +155,11 @@ function* addAdminUser({
     );
 
     yield put(getAdminUsers());
+    let branchId = branch_id;
+    if(branch_id){
+      yield put(getBranchCounsellors(branchId))
+      yield put(getBranchCounsellorsTL(branchId))
+    }
   } catch (error: any) {
     yield put(
       adminUsersApiResponseError(AdminUserActionTypes.ADD_ADMIN_USERS, error)
@@ -171,21 +207,18 @@ function* updateAdminUser({
     });
     const data = response.data.message;
 
-    // const branchArray = branch_ids.split(",").map((item) => parseInt(item.trim(), 10));
-
-    // axios
-    //   .put(`admin_users_branch/${id}`, { branchIds: branchArray })
-    //   .then((res: any) => {})
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
-
     yield put(
       adminUsersApiResponseSuccess(
         AdminUserActionTypes.UPDATE_ADMIN_USERS,
         data
       )
     );
+    let branchId = branch_id;
+    if(branch_id){
+      yield put(getBranchCounsellors(branchId))
+      yield put(getBranchCounsellorsTL(branchId))
+    }
+
     yield put(getAdminUsers());
   } catch (error: any) {
     yield put(
@@ -219,6 +252,13 @@ function* deleteAdminUser({ payload: { id } }: UsersData): SagaIterator {
 export function* watchGetAdminUsers() {
   yield takeEvery(AdminUserActionTypes.GET_ADMIN_USERS, getAllAdminUsers);
 }
+export function* watchBranchCounsellor() {
+  yield takeEvery(AdminUserActionTypes.GET_BRANCH_COUNSELLOR, getAllBranchCounsellors);
+}
+
+export function* watchBranchCounsellorTL() {
+  yield takeEvery(AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL, getAllBranchCounsellorsTL);
+}
 
 export function* watchAddAdminUser() {
   yield takeEvery(AdminUserActionTypes.ADD_ADMIN_USERS, addAdminUser);
@@ -238,6 +278,8 @@ function* AdminUserSaga() {
     fork(watchAddAdminUser),
     fork(watchUpdateAdminUser),
     fork(watchDeleteAdminUser),
+    fork(watchBranchCounsellor),
+    fork(watchBranchCounsellorTL)
   ]);
 }
 
