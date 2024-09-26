@@ -157,7 +157,6 @@ function* addLeads({
     franchise_id
   },
 }: LeadsData): SagaIterator {
-  console.log("add leads");
 
   try {
     const response = yield call(addLeadsApi, {
