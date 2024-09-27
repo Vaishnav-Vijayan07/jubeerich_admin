@@ -8,7 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import makeAnimated from "react-select/animated";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
-import { addLeads, deleteLeads, getLead, getLeadsTL, updateLeads } from "../../redux/actions";
+import { addLeads, deleteLeads, getLead, getLeadsByCounsellorTL, getLeadsTL, updateLeads } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
 import {
   AUTH_SESSION_KEY,
@@ -817,8 +817,8 @@ const BasicInputElements = withSwal((props: any) => {
         const { data } = await axios.post("/assign_branch_counselor", { user_ids, counselor_id: counsellor_id });
 
         if (data.status) {
-          if (userRole == cre_tl_id) {
-            dispatch(getLeadsTL());
+          if (userRole == counsellor_tl_id) {
+            dispatch(getLeadsByCounsellorTL());
           } else {
             dispatch(getLead());
           }
@@ -877,7 +877,7 @@ const BasicInputElements = withSwal((props: any) => {
         });
         if (data.status) {
           if (userRole == counsellor_tl_id) {
-            dispatch(getLeadsTL());
+            dispatch(getLeadsByCounsellorTL());
           } else {
             dispatch(getLead());
           }
@@ -1614,7 +1614,7 @@ const BasicInputElements = withSwal((props: any) => {
                       </Dropdown.Toggle>
                       <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                         {branchCounsellors?.map((item: any) => (
-                          <Dropdown.Item key={item.value} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
+                          <Dropdown.Item key={item.id} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
                             {item.name}
                           </Dropdown.Item>
                         ))}
@@ -1623,31 +1623,6 @@ const BasicInputElements = withSwal((props: any) => {
                     
                     <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={handleAutoAssignBranchCounsellors}>
                       <i className="mdi mdi-plus-circle"></i> Auto Assign Counsellors
-                    </Button>
-                  </>
-                )}
-
-                {user?.role == counsellor_tl_id && (
-                  <>
-                    <Dropdown className="btn-group">
-                      <Dropdown.Toggle
-                        disabled={selectedValues?.length > 0 ? false : true}
-                        variant="light"
-                        className="table-action-btn btn-sm btn-blue"
-                      >
-                        <i className="mdi mdi-account-plus"></i> Assign CRE's
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
-                        {cres?.map((item: any) => (
-                          <Dropdown.Item key={item.id} onClick={() => handleAssignBulk(selectedValues, item.id)}>
-                            {item.name}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
-
-                    <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={handleAutoAssign}>
-                      <i className="mdi mdi-plus-circle"></i> Auto Assign
                     </Button>
                   </>
                 )}

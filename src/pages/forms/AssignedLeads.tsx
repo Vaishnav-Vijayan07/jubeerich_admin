@@ -15,7 +15,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
 import { addLeads, deleteLeads, getLead, getLeadAssigned, getLeadAssignedByCounsellorTL, updateLeads } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
-import { AUTH_SESSION_KEY, baseUrl, cre_tl_id, customStyles, franchise_id_from_office, region_id, showErrorAlert, showSuccessAlert } from "../../constants";
+import { AUTH_SESSION_KEY, baseUrl, counsellor_tl_id, cre_tl_id, customStyles, franchise_id_from_office, region_id, showErrorAlert, showSuccessAlert } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -122,7 +122,8 @@ const BasicInputElements = withSwal((props: any) => {
     userData,
     counsellors,
     region,
-    franchisees
+    franchisees,
+    branchCounsellors
   } = props;
 
   console.log("Region from state", region);
@@ -172,6 +173,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedFranchisee, setSelectedFranchisee] = useState(null);
   const [sourceData, setSourceData] = useState<any>(source);
   const [channelData, setChannelData] = useState<any>(channels);
+  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
@@ -217,6 +219,13 @@ const BasicInputElements = withSwal((props: any) => {
     resolver: yupResolver(validationSchema), // Integrate yup with react-hook-form
     defaultValues: initialState,
   });
+
+  let userRole: any;
+  let userBranchId: any;
+  if (userInfo) {
+    userRole = JSON.parse(userInfo)?.role;
+    userBranchId = JSON.parse(userInfo)?.branch_id
+  }
 
   const handleUpdate = (item: any) => {
     console.log("item ==>", item);
@@ -717,6 +726,25 @@ const BasicInputElements = withSwal((props: any) => {
 
         if (data.status) {
           dispatch(getLeadAssigned());
+          showSuccessAlert("Bulk assignment successful.");
+        }
+      } catch (error) {
+        showErrorAlert(error);
+      }
+    }
+  };
+
+  const handleBranchCounsellorAssignBulk = async (user_ids: any, counsellor_id: any) => {
+    if (user_ids.length > 0) {
+      try {
+        const { data } = await axios.post("/assign_branch_counselor", { user_ids, counselor_id: counsellor_id });
+
+        if (data.status) {
+          if (userRole == counsellor_tl_id) {
+            dispatch(getLeadAssignedByCounsellorTL());
+          } else {
+            dispatch(getLead());
+          }
           showSuccessAlert("Bulk assignment successful.");
         }
       } catch (error) {
@@ -1296,78 +1324,6 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
               </Row>
 
-              {/* <Row>
-                {selectExam &&
-                  languageForm.map((data, index) => (
-                    <Row key={index}>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="exam_name">
-                          <Form.Label>Exam Type</Form.Label>
-                          <Form.Select
-                            aria-label="Default select example"
-                            name="exam_name"
-                            value={data.exam_name}
-                            onChange={(e) => handleLanguageInputChange(index, e)}
-                          >
-                            <option value="">Choose..</option>
-                            {examtypes?.map((item: any) => (
-                              <option
-                                value={item?.name}
-                                key={item?.name}
-                                onClick={(e) => handleLanguageInputChange(index, e)}
-                                defaultValue={item.name === formData.exam ? item.name : undefined}
-                              >
-                                {item.name}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="marks">
-                          <Form.Label>Exam Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="marks"
-                            value={data.marks}
-                            onChange={(e) => {
-                              handleLanguageInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-
-                      <Col className="d-flex justify-content-between">
-                        <Form name="exam_documents" encType="multipart/form-data">
-                          <Form.Group className="mb-3" controlId="profileImage">
-                            <Form.Label>Upload File</Form.Label>
-                            <Form.Control
-                              name="exam_documents"
-                              type="file"
-                              onChange={(event) => {
-                                handleFileChange(index, event);
-                              }}
-                              ref={fileInputRef}
-                            />
-                            {selectedFileName[index]?.exam_documents && (
-                              <p style={{ padding: "0%" }} className="mt-2">
-                                {selectedFileName[index].exam_documents}
-                              </p>
-                            )}
-                          </Form.Group>
-                        </Form>
-                        <i
-                          className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1"
-                          onClick={(e) => handleRemoveLanguageForm(index, e, data.exam_name)}
-                        ></i>
-                        {selectExam && (
-                          <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>
-                        )}
-                      </Col>
-                    </Row>
-                  ))}
-              </Row> */}
-
               <Row>
                 {selectExam &&
                   languageForm.map((data, index) => (
@@ -1735,6 +1691,28 @@ const BasicInputElements = withSwal((props: any) => {
                     </Dropdown.Menu>
                   </Dropdown>
                 )}
+
+                
+                {user?.role == 13 && (
+                  <Dropdown className="btn-group">
+                    <Dropdown.Toggle
+                      disabled={selectedValues?.length > 0 ? false : true}
+                      variant="light"
+                      className="table-action-btn btn-sm btn-blue"
+                    >
+                      <i className="mdi mdi-account-plus"></i> Assign Counsellors
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
+                      {branchCounsellors?.map((item: any) => (
+                        <Dropdown.Item key={item.id} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
+                          {item.name}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                )}
+
+
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
               <div className="d-flex flex-wrap justify-content-end"></div>
@@ -1766,7 +1744,7 @@ const AssignedLeads = () => {
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, users, franchisees } = useSelector((state: RootState) => ({
+  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     state: state.Leads.assignedLeads,
     error: state.Leads.error,
@@ -1774,6 +1752,7 @@ const AssignedLeads = () => {
     initialLoading: state.Leads.initialloading,
     users: state.Users.adminUsers,
     franchisees: state.Franchise.franchiseUsers,
+    branchCounsellor: state.Users?.branchCounsellor,
   }));
 
   let userRole: any;
@@ -1852,6 +1831,7 @@ const AssignedLeads = () => {
             userData={dropdownData.adminUsers || []}
             region={dropdownData.regions || []}
             franchisees={dropdownData.franchises || []}
+            branchCounsellors={branchCounsellor || []}
           />
         </Col>
       </Row>

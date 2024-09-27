@@ -122,8 +122,7 @@ const Leads = () => {
             regionData={dropdownData.regions || []}
             franchisees={dropdownData.franchises || []}
             branchForManager={branchForManager}
-            // branchCounsellors={dropdownData?.branchCounsellors || []}
-            branchCounsellors={branchCounsellor}
+            branchCounsellors={branchCounsellor || []}
           />
         </Col>
       </Row>
