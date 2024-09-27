@@ -11,7 +11,9 @@ export interface LeadsActionType {
     | LeadsActionTypes.GET_LEAD_USER
     | LeadsActionTypes.ADD_LEADS
     | LeadsActionTypes.UPDATE_LEADS
-    | LeadsActionTypes.DELETE_LEADS;
+    | LeadsActionTypes.DELETE_LEADS
+    | LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL
+    | LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL;
   payload: {} | string;
 }
 
@@ -66,6 +68,16 @@ export const getLeadsTL = (): LeadsActionType => ({
 
 export const getLeadAssigned = (): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_ASSIGNED,
+  payload: {},
+});
+
+export const getLeadAssignedByCounsellorTL = (): LeadsActionType => ({
+  type: LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
+  payload: {},
+});
+
+export const getLeadsByCounsellorTL = (): LeadsActionType => ({
+  type: LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL,
   payload: {},
 });
 

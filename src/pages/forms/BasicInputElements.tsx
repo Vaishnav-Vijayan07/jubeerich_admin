@@ -88,7 +88,6 @@ const BasicInputElements = withSwal((props: any) => {
   const [isFranchiseActive, setIsFranchiseActive] = useState<any>(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedFranchisee, setSelectedFranchisee] = useState(null);
-  const [branchCounsellorsData, setBranchCounsellorsData] = useState<any[]>([])
 
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
@@ -815,7 +814,7 @@ const BasicInputElements = withSwal((props: any) => {
     const handleBranchCounsellorAssignBulk = async (user_ids: any, counsellor_id: any) => {
     if (user_ids.length > 0) {
       try {
-        const { data } = await axios.post("/assign_branch_counsellors", { user_ids, counsellor_id });
+        const { data } = await axios.post("/assign_branch_counselor", { user_ids, counselor_id: counsellor_id });
 
         if (data.status) {
           if (userRole == cre_tl_id) {
@@ -870,11 +869,25 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  useEffect(() => {
-    if (!branchCounsellors.length) return; 
-    const filteredData = branchCounsellors.filter((data: any) => data.branch_id == userBranchId);
-    setBranchCounsellorsData(filteredData);
-  }, [branchCounsellors]); 
+  const handleAutoAssignBranchCounsellors = async () => {
+    if (selectedValues.length > 0) {
+      try {
+        const { data } = await axios.post("/branch_auto_assign", {
+          leads_ids: selectedValues,
+        });
+        if (data.status) {
+          if (userRole == counsellor_tl_id) {
+            dispatch(getLeadsTL());
+          } else {
+            dispatch(getLead());
+          }
+          showSuccessAlert("Bulk assignment successful.");
+        }
+      } catch (error) {
+        showErrorAlert(error);
+      }
+    }
+  };
   
   useEffect(() => {
     // Check for errors and clear the form
@@ -1600,13 +1613,17 @@ const BasicInputElements = withSwal((props: any) => {
                         <i className="mdi mdi-account-plus"></i> Assign Counsellors
                       </Dropdown.Toggle>
                       <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
-                        {branchCounsellorsData?.map((item: any) => (
-                          <Dropdown.Item key={item.value} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.value)}>
-                            {item.label}
+                        {branchCounsellors?.map((item: any) => (
+                          <Dropdown.Item key={item.value} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
+                            {item.name}
                           </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
                     </Dropdown>
+                    
+                    <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={handleAutoAssignBranchCounsellors}>
+                      <i className="mdi mdi-plus-circle"></i> Auto Assign Counsellors
+                    </Button>
                   </>
                 )}
 

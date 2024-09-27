@@ -25,7 +25,7 @@ import {
 // constants
 import { LeadsActionTypes } from "./constants";
 import { AUTH_SESSION_KEY } from "../../constants";
-import { getAssignedLeadsByCreTl, getLeadsByCreTl } from "../../helpers/api/leads";
+import { getAssignedLeadsByCreTl, getLeadsByCreTl, getAssignedLeadsByCounsellorTL as getAssignedLeadsByCounsellorTLAPI, getLeadsByCounsellorTL } from "../../helpers/api/leads";
 
 interface LeadsData {
   payload: {
@@ -114,6 +114,38 @@ function* getAssignedLeads(): SagaIterator {
     console.log("Error", error);
     yield put(
       LeadsApiResponseError(LeadsActionTypes.GET_LEADS_ASSIGNED, error)
+    );
+  }
+}
+
+function* getLeadsForCounsellorTL(): SagaIterator {
+  try {
+    let response;
+    let data;
+    response = yield call(getLeadsByCounsellorTL);
+    data = response.data;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, { data }));
+  } catch (error: any) {
+    console.log("Error", error);
+    yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, error));
+  }
+}
+
+function* getAssignedLeadsByCounsellorTL(): SagaIterator {
+  try {
+    let response = yield call(getAssignedLeadsByCounsellorTLAPI);
+    let data = response.data;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(
+      LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, { data })
+    );
+  } catch (error: any) {
+    console.log("Error", error);
+    yield put(
+      LeadsApiResponseError(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, error)
     );
   }
 }
@@ -317,6 +349,13 @@ export function* watchGetLeadsForTL() {
 export function* watchGetAssignedLeads() {
   yield takeEvery(LeadsActionTypes.GET_LEADS_ASSIGNED, getAssignedLeads);
 }
+export function* watchGetAssignedLeadsByCounsellorTL() {
+  yield takeEvery(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, getAssignedLeadsByCounsellorTL);
+}
+
+export function* watchGetLeadsByCounsellorTL() {
+  yield takeEvery(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, getLeadsForCounsellorTL);
+}
 
 export function* watchGetLeadUser() {
   yield takeEvery(LeadsActionTypes.GET_LEAD_USER, getLeadUsers);
@@ -339,6 +378,8 @@ function* LeadsSaga() {
     fork(watchGetLeads),
     fork(watchGetLeadsForTL),
     fork(watchGetAssignedLeads),
+    fork(watchGetAssignedLeadsByCounsellorTL),
+    fork(watchGetLeadsByCounsellorTL),
     fork(watchaddLeads),
     fork(watchUpdateLeads),
     fork(watchDeleteLeads),

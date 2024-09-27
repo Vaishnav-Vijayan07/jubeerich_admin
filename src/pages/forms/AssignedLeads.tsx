@@ -13,9 +13,9 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
-import { addLeads, deleteLeads, getLead, getLeadAssigned, updateLeads } from "../../redux/actions";
+import { addLeads, deleteLeads, getLead, getLeadAssigned, getLeadAssignedByCounsellorTL, updateLeads } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
-import { AUTH_SESSION_KEY, baseUrl, customStyles, franchise_id_from_office, region_id, showErrorAlert, showSuccessAlert } from "../../constants";
+import { AUTH_SESSION_KEY, baseUrl, cre_tl_id, customStyles, franchise_id_from_office, region_id, showErrorAlert, showSuccessAlert } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -1760,6 +1760,7 @@ const BasicInputElements = withSwal((props: any) => {
 });
 
 const AssignedLeads = () => {
+  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   const [counsellors, setCounsellors] = useState([]);
 
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
@@ -1775,8 +1776,19 @@ const AssignedLeads = () => {
     franchisees: state.Franchise.franchiseUsers,
   }));
 
+  let userRole: any;
+  let userBranchId: any;
+  if (userInfo) {
+    userRole = JSON.parse(userInfo)?.role;
+    userBranchId = JSON.parse(userInfo)?.branch_id
+  }
+
   useEffect(() => {
-    dispatch(getLeadAssigned());
+    if(userRole == cre_tl_id){
+      dispatch(getLeadAssigned());
+    } else {
+      dispatch(getLeadAssignedByCounsellorTL())
+    }
     // dispatch(getFranchise())
     fetchAllCounsellors();
   }, []);

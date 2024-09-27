@@ -17,6 +17,14 @@ function getAssignedLeadsByCreTl() {
   return api.get("/assigned_leads_cre_tl", {});
 }
 
+function getLeadsByCounsellorTL() {
+  return api.get("/leads_counsellor_tl", {});
+}
+
+function getAssignedLeadsByCounsellorTL() {
+  return api.get("/assigned_leads_counsellor_tl", {});
+}
+
 function getLeadUser() {
   return api.get("/leads_user", {});
 }
@@ -93,4 +101,6 @@ export {
   deleteLeads,
   getLeadsByCreTl,
   getAssignedLeadsByCreTl,
+  getAssignedLeadsByCounsellorTL,
+  getLeadsByCounsellorTL
 };

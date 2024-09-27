@@ -5,8 +5,8 @@ import { Row, Col, Spinner } from "react-bootstrap";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getLead, getLeadsTL } from "../../redux/actions";
-import { AUTH_SESSION_KEY, cre_tl_id, regional_manager_id } from "../../constants";
+import { getBranchCounsellors, getLead, getLeadsByCounsellorTL, getLeadsTL } from "../../redux/actions";
+import { AUTH_SESSION_KEY, counsellor_tl_id, cre_tl_id, regional_manager_id } from "../../constants";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
@@ -18,11 +18,13 @@ const Leads = () => {
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
   let userRole: any;
+  let userBranchId: any;
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
+    userBranchId = JSON.parse(userInfo)?.branch_id
   }
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, cres, error, loading, initialLoading, categories, region, franchisees } = useSelector(
+  const { user, state, cres, error, loading, initialLoading, categories, region, franchisees, branchCounsellor } = useSelector(
     (state: RootState) => ({
       user: state.Auth.user,
       state: state.Leads.leads,
@@ -33,17 +35,25 @@ const Leads = () => {
       categories: state.Category.category.data,
       region: state.Region.regions,
       franchisees: state.Franchise.franchiseUsers,
+      branchCounsellor: state.Users?.branchCounsellor,
     })
   );
 
 
   useEffect(() => {
     fetchAllCounsellors();
+    dispatch(getBranchCounsellors(userBranchId));
   }, []);
 
   useEffect(() => {
+    console.log('userRole',userRole);
+    
     if (userRole == cre_tl_id) {
       dispatch(getLeadsTL());
+    } else if(userRole == counsellor_tl_id) {
+      console.log('Entered');
+      
+      dispatch(getLeadsByCounsellorTL());
     } else {
       dispatch(getLead());
     }
@@ -112,7 +122,8 @@ const Leads = () => {
             regionData={dropdownData.regions || []}
             franchisees={dropdownData.franchises || []}
             branchForManager={branchForManager}
-            branchCounsellors={dropdownData?.branchCounsellors || []}
+            // branchCounsellors={dropdownData?.branchCounsellors || []}
+            branchCounsellors={branchCounsellor}
           />
         </Col>
       </Row>
