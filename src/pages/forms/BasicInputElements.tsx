@@ -510,16 +510,16 @@ const BasicInputElements = withSwal((props: any) => {
        
         <LeadsModal 
           clearLeadModal = {clearLeadModal}
-          country = {country} 
-          source = {source}
-          leadTypes = {leadTypes}
-          user = {user} 
-          office = {office}
-          channels= {channels}
-          loading = {loading}
-          regionData = {regionData}
-          franchisees = {franchisees}
-          region = {region}
+          country = {country || []} 
+          source = {source || []}
+          leadTypes = {leadTypes || []}
+          user = {user || []} 
+          office = {office || []}
+          channels= {channels || []}
+          loading = {loading || []}
+          regionData = {regionData || []}
+          franchisees = {franchisees || []}
+          region = {region || []}
           modal = {modal}
           toggle = {toggle}
           handleUpdateData = {handleUpdateData}
@@ -550,7 +550,7 @@ const BasicInputElements = withSwal((props: any) => {
 
         <Col lg={12} className="p-0 form__card">
        
-          <LeadsFilters changeFilteredItemsData={changeFilteredItemsData} state={state} status={status} source={source} country={country} userData={userData} counsellors={counsellors} cres={cres} />
+          <LeadsFilters changeFilteredItemsData={changeFilteredItemsData} state={state} status={status || []} source={source || []} country={country || []} userData={userData || []} counsellors={counsellors || []} cres={cres || []} />
 
           <Card className="bg-white">
             <Card.Body>
