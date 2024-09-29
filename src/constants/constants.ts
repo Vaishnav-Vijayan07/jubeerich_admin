@@ -23,6 +23,7 @@ export const franchise_counsellor_id = "12"
 export const counsellor_tl_id = "13"
 export const branch_counsellor_id = "14"
 export const counsellor_id  = "7";
+export const cre_reception_id = "5"
 
 //session user
 export const AUTH_SESSION_KEY = "jb_user";

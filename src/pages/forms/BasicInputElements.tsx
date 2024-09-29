@@ -22,12 +22,16 @@ import {
   it_team_id,
   regional_manager_id,
   baseUrl,
+  cre_id,
+  cre_reception_id,
 } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
+import LeadsModal from "./LeadsModal";
+import LeadsFilters from "./LeadsFilters";
 
 const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
 const BasicInputElements = withSwal((props: any) => {
@@ -63,147 +67,40 @@ const BasicInputElements = withSwal((props: any) => {
     branchCounsellors
   } = props;
 
-  const [sourceData, setSourceData] = useState<any>(source);
-  const [channelData, setChannelData] = useState<any>(channels);
-
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);
-  const [selectedSource, setSelectedSource] = useState<any>(null);
   const [selectedValues, setSelectedValues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  const [selectedOffice, setSelectedOffice] = useState<any>(null);
-  const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [formData, setFormData] = useState(initialState);
   const [uploadModal, setUploadModal] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<any>([]);
-  const [selectedFileName, setSelectedFileName] = useState<any>([]);
-  const [selectedStatus, setSelectedStatus] = useState<any>(null);
-  const [selectedSourceFilter, setSelectedSourceFilter] = useState<any>(null);
-  const [selectedAssignedBy, setSelectedAssignedBy] = useState<any>(null);
-  const [selectedCounsellor, setSelectedCounsellor] = useState<any>(null);
-  const [selectedCountryFilter, setSelectedCountryFilter] = useState<any>(null);
-  const [activeRegion, setActiveRegion] = useState<any>(null);
-  const [isFranchiseActive, setIsFranchiseActive] = useState<any>(null);
-  const [selectedRegion, setSelectedRegion] = useState(null);
-  const [selectedFranchisee, setSelectedFranchisee] = useState(null);
-
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
-  const [selectExam, setSelectExam] = useState<boolean>(false);
-  const fileInputRef = useRef<any>(null);
-  const [languageForm, setLanguageForm] = useState<any[]>([{ id: "", exam_type: "", marks: "" }]);
   const [filteredItems, setFilteredItems] = useState<any[]>([]); // Filtered data
-  const [filters, setFilters] = useState({
-    status_id: "",
-    counsiler_id: "",
-    lead_received_date: "",
-    followup_date: "",
-    preferredCountries: "",
-    updated_by: "",
-    source_id: "",
-  });
+  const [handleUpdateData, setHandleUpdateData] = useState<any>({});
+  const [clearLeadModal, setClearLeadModal] = useState<any>(null);
 
   useEffect(() => {
     setFilteredItems(state);
   }, []);
 
-  const records: TableRecords[] = filteredItems;
-
+  let records: TableRecords[] = filteredItems;
+  // const records: TableRecords[] = filteredItems;
+  
   useEffect(() => {
-    applyFilters();
-  }, [filters]);
+    records = filteredItems;
+  }, [filteredItems]);
 
-  const applyFilters = () => {
-    let tempItems = [...state];
-    if (filters.status_id) {
-      tempItems = tempItems.filter((item) => item.status_id == filters.status_id);
-    }
-    if (filters.source_id) {
-      tempItems = tempItems.filter((item) => item.source_id == filters.source_id);
-    }
-    if (filters.updated_by) {
-      tempItems = tempItems.filter((item) => item.updated_by == filters.updated_by);
-    }
-    if (filters.counsiler_id) {
-      tempItems = tempItems.filter((item) => item.counselors.some((counselor: any) => counselor.id == filters.counsiler_id));
-    }
-    if (filters.preferredCountries) {
-      tempItems = tempItems.filter((item) =>
-        item.preferredCountries.some((preferredCountry: any) => preferredCountry.id == filters.preferredCountries)
-      );
-    }
-    if (filters.lead_received_date) {
-      tempItems = tempItems.filter((item) => {
-        const itemDate = new Date(item.lead_received_date).toDateString();
-        const filterDate = new Date(filters.lead_received_date).toDateString();
-        return itemDate === filterDate;
-      });
-    }
-    if (filters.followup_date) {
-      tempItems = tempItems.filter((item) => {
-        const itemDate = new Date(item.followup_date).toDateString();
-        const filterDate = new Date(filters.followup_date).toDateString();
-        return itemDate === filterDate;
-      });
-    }
-    setFilteredItems(tempItems);
-  };
+  const changeFilteredItemsData = (data: any) => {
+    setFilteredItems(data)
+  }
 
-  const handleFilterChange = (selected: any, { name }: any) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: selected?.value,
-    }));
-
-    switch (name) {
-      case "status_id":
-        setSelectedStatus(selected);
-        break;
-      case "source_id":
-        setSelectedSourceFilter(selected);
-        break;
-      case "updated_by":
-        setSelectedAssignedBy(selected);
-        break;
-      case "counsiler_id":
-        setSelectedCounsellor(selected);
-        break;
-      case "preferredCountries":
-        setSelectedCountryFilter(selected);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleFilterDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
-  };
-
-  const handleClear = () => {
-    setFilters({
-      status_id: "",
-      counsiler_id: "",
-      lead_received_date: "",
-      followup_date: "",
-      preferredCountries: "",
-      updated_by: "",
-      source_id: "",
-    });
-    setSelectedStatus(null);
-    setSelectedSourceFilter(null);
-    setSelectedAssignedBy(null);
-    setSelectedCounsellor(null);
-    setSelectedCountryFilter(null);
-  };
+  const handleClearModal = () => {
+    setClearLeadModal((prev: any) => !prev);
+    setHandleUpdateData({})
+  }
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -231,96 +128,8 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
-    console.log('ITEM', item);
-    
-    
-    //update source dropdown
-    const updatedSource = source?.filter((source: any) => source.value == item.source_id);
-    const updatedOffice = office?.filter((office: any) => office.value == item.office_type);
-    const updatedRegion = region?.filter((region: any) => region.value == item.region_id);
-
-    // const updatedCtegory = leadTypes?.filter((category: any) => category.value == item.category_id);
-    const updatedCtegory = leadTypes?.filter((category: any) => category.value == item?.lead_type_id);
-
-    console.log('updatedCtegory',updatedCtegory);
-    
-    const updatedChannels = channels?.filter((channel: any) => channel.value == item.channel_id);
-
-    const updatedCountry = item?.preferredCountries?.map((country: any) => ({
-      value: country?.id,
-      label: country?.country_name,
-    }));
-
-    const countryArray = item?.preferredCountries?.map((country: any) => country?.id);
-
-    const { value } = updatedOffice[0];
-    const { franchise_id, region_id: region_id_from_item } = item;
-
-    if (franchise_id && value == franchise_id_from_office) {
-      console.log("HERE");
-      setIsFranchiseActive(true);
-      setActiveRegion(false);
-      const franchiseValue = franchisees.find((item: any) => item.value == franchise_id);
-      setSelectedFranchisee(franchiseValue);
-    }
-
-    if (region_id_from_item && value === region_id) {
-      setActiveRegion(true);
-      setIsFranchiseActive(false);
-      const regionValue = regionData.find((item: any) => item.value == region_id);
-      setSelectedRegion(regionValue);
-    }
-
-    // const prefferedCountryIds = item?.preffered_country?.map
-    setSelectedSource(updatedSource[0]);
-    setSelectedOffice(updatedOffice[0]);
-    setSelectedRegion(updatedRegion[0]);
-    setSelectedCountry(updatedCountry);
-    setSelectedCategory(updatedCtegory[0]);
-    setSelectedChannel(updatedChannels[0]);
-
-    setFormData((prev) => ({
-      ...prev,
-      id: item?.id || "",
-      full_name: item?.full_name || "",
-      email: item?.email || "",
-      phone: item?.phone || "",
-      // category_id: item?.category_id || null,
-      lead_type_id: item?.lead_type_id || null,
-      source_id: item?.source_id || "",
-      channel_id: item?.channel_id || "",
-      city: item?.city || "",
-      preferred_country: countryArray,
-      office_type: item?.office_type || "",
-      updated_by: item?.updated_by || "",
-      remarks: item?.remarks || "",
-      lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
-      ielts: item?.ielts || false,
-      exam: item?.exam || "",
-      zipcode: item?.zipcode,
-      region_id: item?.region_id || "",
-      franchise_id: item?.franchise_id || "",
-    }));
-
-    setIsUpdate(true);
-
-    if (item?.exam_details?.length) {
-      setSelectExam(true);
-      setLanguageForm(item?.exams);
-    }
-
-    if (item?.exam_documents?.length) {
-      setSelectedFileName(item?.exam_documents);
-    }
-
-    const emptyFile = new File([], "empty.txt", {
-      type: "text/plain",
-    });
-
-    if (Array.isArray(item?.exam_documents)) {
-      for (let i = 0; i < item?.exam_documents.length; i++) {
-        setSelectedFile((prevFile: any) => [...prevFile, emptyFile]);
-      }
+    if(item){
+      setHandleUpdateData(item)
     }
   };
 
@@ -344,195 +153,6 @@ const BasicInputElements = withSwal((props: any) => {
           }
         }
       });
-  };
-
-  //handle onchange function
-  const handleInputChange = (e: any) => {
-    const { name, value, checked } = e.target;
-    if (name == "ielts") {
-      setFormData((prevData) => ({
-        ...prevData,
-        ielts: checked,
-      }));
-      return;
-    }
-    console.log("name");
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleDropDowns = (selected: any, { name }: any) => {
-    // Update form data for all dropdowns except franchise_id and region_id
-    if (name !== "franchise_id" && name !== "region_id") {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: selected.value,
-      }));
-    }
-
-    // Handle specific dropdown selections
-    switch (name) {
-      case "source_id":
-        setSelectedSource(selected);
-        setSelectedChannel(null);
-        let filteredChannel = channels.filter((data: any) => data.source_id == selected.value);
-        setChannelData(filteredChannel);
-        break;
-      case "lead_type_id":
-        console.log("here ==>", source);
-
-        setSelectedSource(null);
-        setSelectedChannel(null);
-        setSelectedCategory(selected);
-        let filteredSource = source.filter((data: any) => data.lead_type == selected.value);
-        setSourceData(filteredSource);
-        break;
-      case "preferred_country":
-        setSelectedCountry(selected);
-        break;
-      case "office_type":
-        const { value } = selected;
-        if (value !== franchise_id_from_office && value !== region_id) {
-          setFormData((prev: any) => ({
-            ...prev,
-            region_id: null,
-            franchise_id: null,
-          }));
-          setIsFranchiseActive(false);
-          setActiveRegion(false);
-        }
-
-        if (value == franchise_id_from_office) {
-          setIsFranchiseActive(true);
-          setActiveRegion(false);
-        }
-
-        if (value == region_id) {
-          setActiveRegion(true);
-          setIsFranchiseActive(false);
-        }
-
-        setSelectedOffice(selected);
-        break;
-      case "channel_id":
-        setSelectedChannel(selected);
-
-        break;
-      case "region_id":
-        setSelectedRegion(selected);
-        setFormData((prev: any) => ({
-          ...prev,
-          region_id: selected.value,
-          franchise_id: null, // Reset franchise_id when region_id changes
-        }));
-        break;
-      case "franchise_id":
-        setSelectedFranchisee(selected);
-        setFormData((prev: any) => ({
-          ...prev,
-          region_id: null, // Reset region_id when franchise_id changes
-          franchise_id: selected.value,
-        }));
-        break;
-      default:
-        break;
-    }
-  };
-
-  //handle form submission
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    let exam_details = languageForm.length ? languageForm : [];
-    try {
-      // await validationSchema.validate(formData, { abortEarly: false });
-
-      swal
-        .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
-        })
-        .then((result: any) => {
-          if (result.isConfirmed) {
-            if (user) {
-              const { user_id } = user;
-              if (isUpdate) {
-                // Handle update logic
-                dispatch(
-                  updateLeads(
-                    formData?.id,
-                    formData.full_name,
-                    formData.email,
-                    formData.phone,
-                    formData.lead_type_id,
-                    formData.source_id,
-                    formData.channel_id,
-                    formData.city,
-                    JSON.stringify(formData.preferred_country),
-                    formData.office_type,
-                    formData.region_id ? formData.region_id : null,
-                    null,
-                    null,
-                    user_id,
-                    formData.remarks,
-                    formData.lead_received_date,
-                    formData.ielts,
-                    formData.zipcode,
-                    exam_details[0]?.exam_type ? JSON.stringify(exam_details) : null,
-                    selectedFile,
-                    formData.franchise_id ? formData.franchise_id : null
-                  )
-                );
-              } else {
-                dispatch(
-                  addLeads(
-                    formData.full_name,
-                    formData.email,
-                    formData.phone,
-                    formData.lead_type_id,
-                    formData.source_id,
-                    formData.channel_id,
-                    formData.city,
-                    JSON.stringify([formData.preferred_country]),
-                    formData.office_type,
-                    formData.region_id ? formData.region_id : null,
-                    null,
-                    null,
-                    user_id,
-                    formData.remarks,
-                    formData.lead_received_date,
-                    formData.ielts,
-                    formData.zipcode,
-                    exam_details[0]?.exam_type ? JSON.stringify(exam_details) : null,
-                    selectedFile,
-                    formData.franchise_id ? formData.franchise_id : null
-                  )
-                );
-              }
-            }
-          }
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
-    } catch (validationError) {
-      if (validationError instanceof yup.ValidationError) {
-        const errors: any = {};
-        validationError.inner.forEach((error) => {
-          if (error.path) {
-            errors[error.path] = error.message;
-          }
-        });
-        setValidationErrors(errors);
-      }
-    }
   };
 
   const columns = [
@@ -596,7 +216,7 @@ const BasicInputElements = withSwal((props: any) => {
         <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>
       ),
     },
-    ...(user?.role == 4
+    ...(user?.role == cre_tl_id
       ? [
           {
             Header: "Assigned CRE",
@@ -605,7 +225,7 @@ const BasicInputElements = withSwal((props: any) => {
           },
         ]
       : []),
-    ...(user?.role == 3
+    ...(user?.role == cre_id
       ? [
           {
             Header: "Assigned by",
@@ -614,7 +234,7 @@ const BasicInputElements = withSwal((props: any) => {
           },
         ]
       : []),
-    ...(user?.role == 3 || user?.role == 4
+    ...(user?.role == cre_id || user?.role == cre_tl_id
       ? [
           {
             Header: "Assign Type",
@@ -635,7 +255,7 @@ const BasicInputElements = withSwal((props: any) => {
           },
         ]
       : []),
-    ...(user?.role == 3 || user?.role == 5
+    ...(user?.role == cre_id || user?.role == cre_reception_id
       ? [
           {
             Header: "Assigned counsellor",
@@ -688,35 +308,6 @@ const BasicInputElements = withSwal((props: any) => {
       ),
     },
   ];
-
-  //handle cancel update section
-  const handleCancelUpdate = () => {
-    setIsUpdate(false);
-    handleResetValues();
-  };
-
-  const handleResetValues = () => {
-    setValidationErrors(initialValidationState); // Clear validation errors
-    setFormData(initialState); //clear form data
-    setSelectedCountry([]);
-    setSelectedCategory(null);
-    setSelectedChannel(null);
-    setSelectedOffice(null);
-    setSelectedRegion(null);
-    setSelectedSource(null);
-    setLanguageForm(languageFormInitialState);
-    setSelectedFile([]);
-    setActiveRegion(false);
-    setIsFranchiseActive(false);
-  };
-
-  const toggleResponsiveModal = () => {
-    setResponsiveModal(!responsiveModal);
-    setValidationErrors(initialValidationState);
-    if (isUpdate) {
-      handleCancelUpdate();
-    }
-  };
 
   const handleSelectedValues = (values: any) => {
     setSelectedValues(values);
@@ -772,7 +363,6 @@ const BasicInputElements = withSwal((props: any) => {
         },
       });
 
-      // console.log(data);
       if (data.status) {
         showSuccessAlert(data.message);
         dispatch(getLead());
@@ -914,514 +504,26 @@ const BasicInputElements = withSwal((props: any) => {
     toggle();
   };
 
-  const handleAddLanguageForm = () => {
-    setLanguageForm((prevData) => [...prevData, { exam_type: "", marks: "" }]);
-  };
-
-  const handleLanguageInputChange = (index: number, e: any) => {
-    const { name, value } = e.target;
-
-    const newFields = [...languageForm];
-    newFields[index][name] = value;
-    setLanguageForm(newFields);
-  };
-
-  const handleLanguageMarkInputChange = (index: number, e: any) => {
-    const { name, value } = e.target;
-
-    const newFields = [...languageForm];
-    newFields[index][name] = value.replace(/[^0-9]/g, "");
-    setLanguageForm(newFields);
-  };
-
-  const handleRemoveLanguageForm = async (index: number, e: any, exam_type: string) => {
-
-    let existExamId = languageForm[index]?.id;
-
-    const payload = {
-      id: formData?.id,
-      exam_type: exam_type,
-    };
-    console.log("PAYLOAD", payload);
-
-    try {
-      swal
-        .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, Delete",
-        })
-        .then((result: any) => {
-          if (result.isConfirmed) {
-            if (!existExamId) {
-              const removeFields = languageForm.filter((data: any, i: number) => i !== index);
-              const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
-              setLanguageForm(removeFields);
-              setSelectedFile(removeFiles);
-            } else {
-              axios
-                .delete("/exams", { data: payload })
-                .then((res: any) => {
-                  const removeFields = languageForm.filter((data: any, i: number) => i !== index);
-                  const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
-                  setLanguageForm(removeFields);
-                  setSelectedFile(removeFiles);
-                  showSuccessAlert(res?.data?.message);
-                })
-                .catch((err: any) => {
-                  console.log(err);
-                  showErrorAlert("Error occured");
-                });
-            }
-          }
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleFileChange = (index: number, e: any) => {
-    let file = e.target.files[0];
-
-    if (selectedFile.length) {
-      selectedFile.splice(index, 1, file);
-      setSelectedFile([...selectedFile]);
-    } else {
-      setSelectedFile((prevData: any) => [...prevData, file]);
-    }
-  };
-
   return (
     <>
       <Row className="justify-content-between px-2">
-        <Modal show={modal} onHide={toggle} dialogClassName={className} scrollable={scroll}>
-          <Form onSubmit={onSubmit} key={"lead-form"}>
-            <Modal.Header closeButton>
-              <h4 className="modal-title">Lead Management</h4>
-            </Modal.Header>
-            <Modal.Body>
-              <Row>
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Full Name
-                    </Form.Label>
-                    <Form.Control type="text" name="full_name" value={formData.full_name} onChange={handleInputChange} />
-                    {validationErrors.full_name && <Form.Text className="text-danger">{validationErrors.full_name}</Form.Text>}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Email
-                    </Form.Label>
-                    <Form.Control type="text" name="email" value={formData.email} onChange={handleInputChange} />
-                    {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="phone">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Phone
-                    </Form.Label>
-                    <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
-                    {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="lead_type_id">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Lead Type
-                    </Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="lead_type_id"
-                      options={leadTypes}
-                      value={selectedCategory}
-                      onChange={handleDropDowns}
-                    />
-                    {validationErrors.lead_type_id && (
-                      <Form.Text className="text-danger">{validationErrors.lead_type_id}</Form.Text>
-                    )}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Source
-                    </Form.Label>
-                    <Select
-                      className="react-select react-select-container"
-                      styles={customStyles}
-                      classNamePrefix="react-select"
-                      name="source_id"
-                      options={sourceData}
-                      value={selectedSource}
-                      onChange={handleDropDowns}
-                      isDisabled={!selectedCategory}
-                    />
-                    {validationErrors.source_id && <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Channel
-                    </Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="channel_id"
-                      options={channelData}
-                      value={selectedChannel}
-                      onChange={handleDropDowns}
-                      isDisabled={!selectedSource}
-                    />
-                    {validationErrors.channel_id && <Form.Text className="text-danger">{validationErrors.channel_id}</Form.Text>}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Country</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="preferred_country"
-                      options={country}
-                      value={selectedCountry}
-                      onChange={handleDropDowns}
-                    />
-                    {validationErrors.preferred_country && (
-                      <Form.Text className="text-danger">{validationErrors.preferred_country}</Form.Text>
-                    )}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Remarks</Form.Label>
-                    <Form.Control type="text" name="remarks" value={formData.remarks} onChange={handleInputChange} />
-                    {validationErrors.remarks && <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>City</Form.Label>
-                    <Form.Control type="text" name="city" value={formData.city} onChange={handleInputChange} />
-                    {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="lead_received_date">
-                    <Form.Label>Lead Received Date</Form.Label>
-                    <Form.Control
-                      type="date"
-                      name="lead_received_date"
-                      value={formData?.lead_received_date}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.lead_received_date && (
-                      <Form.Text className="text-danger">{validationErrors.lead_received_date}</Form.Text>
-                    )}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      <span className="text-danger fs-4"></span>Zipcode
-                    </Form.Label>
-                    <Form.Control type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
-                    {validationErrors.zipcode && <Form.Text className="text-danger">{validationErrors.zipcode}</Form.Text>}
-                  </Form.Group>
-                </Col>
-
-                <Col md={4} lg={4}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>
-                      <span className="text-danger fs-4">* </span>Office Type
-                    </Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="office_type"
-                      options={[{ value: null, label: "None" }, ...office]}
-                      value={selectedOffice}
-                      onChange={handleDropDowns}
-                    />
-                    {validationErrors.office_type && (
-                      <Form.Text className="text-danger">{validationErrors.office_type}</Form.Text>
-                    )}
-                  </Form.Group>
-                </Col>
-
-                {activeRegion && (
-                  <Col md={4} lg={4}>
-                    <Form.Group className="mb-3" controlId="region_id">
-                      <Form.Label>
-                        <span className="text-danger fs-4">* </span>Region
-                      </Form.Label>
-                      <Select
-                        styles={customStyles}
-                        className="react-select react-select-container"
-                        classNamePrefix="react-select"
-                        name="region_id"
-                        options={[{ value: null, label: "None" }, ...regionData]}
-                        value={selectedRegion}
-                        onChange={handleDropDowns}
-                      />
-                      {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
-                    </Form.Group>
-                  </Col>
-                )}
-
-                {isFranchiseActive && (
-                  <Col md={4} lg={4}>
-                    <Form.Group className="mb-3" controlId="franchise_id">
-                      <Form.Label>
-                        <span className="text-danger fs-4">* </span>Franchisee
-                      </Form.Label>
-                      <Select
-                        styles={customStyles}
-                        className="react-select react-select-container"
-                        classNamePrefix="react-select"
-                        name="franchise_id"
-                        options={[{ value: null, label: "None" }, ...franchisees]}
-                        value={selectedFranchisee}
-                        onChange={handleDropDowns}
-                      />
-                      {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
-                    </Form.Group>
-                  </Col>
-                )}
-
-                <Col md={4} lg={4} className="mt-2">
-                  <Form.Group className="mb-3" controlId="source_id">
-                    <Form.Label>Have you ever participated in any language exams ?</Form.Label>
-                    <div className="d-flex justify-content-start align-items-center mt-1">
-                      <div className="d-flex justify-content-start align-items-start me-2">
-                        <Form.Check
-                          type="radio"
-                          id="active-switch"
-                          name="ielts"
-                          onClick={() => setSelectExam(true)}
-                          checked={selectExam}
-                        />
-                        <span className="ps-1 fw-bold">Yes</span>
-                      </div>
-                      <div className="d-flex justify-content-start align-items-start">
-                        <Form.Check
-                          type="radio"
-                          id="active-switch"
-                          name="ielts"
-                          onClick={() => setSelectExam(false)}
-                          checked={!selectExam}
-                        />
-                        <span className="ps-1 fw-bold">No</span>
-                      </div>
-                    </div>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              <Row>
-                {selectExam &&
-                  languageForm.map((data, index) => (
-                    <Row key={index}>
-                      <Row>
-                        <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="exam_type">
-                            <Form.Label>Exam Type</Form.Label>
-                            <Form.Select
-                              aria-label="Default select example"
-                              name="exam_type"
-                              value={data.exam_type}
-                              onChange={(e) => handleLanguageInputChange(index, e)}
-                            >
-                              <option value="">Choose..</option>
-                              {examtypes?.map((item: any) => (
-                                <option
-                                  value={item?.name}
-                                  key={item?.name}
-                                  onClick={(e) => handleLanguageInputChange(index, e)}
-                                  defaultValue={item.name === formData.exam ? item.name : undefined}
-                                >
-                                  {item.name}
-                                </option>
-                              ))}
-                            </Form.Select>
-                          </Form.Group>
-                        </Col>
-                        <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="listening_score">
-                            <Form.Label>Listening Score</Form.Label>
-                            <Form.Control
-                              type="text"
-                              name="listening_score"
-                              value={data.listening_score}
-                              onChange={(e) => {
-                                handleLanguageMarkInputChange(index, e);
-                              }}
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="speaking_score">
-                            <Form.Label>Speaking Score</Form.Label>
-                            <Form.Control
-                              type="text"
-                              name="speaking_score"
-                              value={data.speaking_score}
-                              onChange={(e) => {
-                                handleLanguageMarkInputChange(index, e);
-                              }}
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="reading_score">
-                            <Form.Label>Reading Score</Form.Label>
-                            <Form.Control
-                              type="text"
-                              name="reading_score"
-                              value={data.reading_score}
-                              onChange={(e) => {
-                                handleLanguageMarkInputChange(index, e);
-                              }}
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="writing_score">
-                            <Form.Label>Writing Score</Form.Label>
-                            <Form.Control
-                              type="text"
-                              name="writing_score"
-                              value={data.writing_score}
-                              onChange={(e) => {
-                                handleLanguageMarkInputChange(index, e);
-                              }}
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="marks">
-                            <Form.Label>Overall Score</Form.Label>
-                            <Form.Control
-                              type="text"
-                              // name="marks"
-                              name="overall_score"
-                              // value={data.marks}
-                              value={data.overall_score}
-                              onChange={(e) => {
-                                handleLanguageMarkInputChange(index, e);
-                              }}
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col className="d-flex justify-content-between">
-                          <Form name="exam_documents" encType="multipart/form-data">
-                            <Form.Group className="mb-3" controlId="profileImage">
-                              <Form.Label>Upload Score Card</Form.Label>
-                              <Form.Control
-                                name="exam_documents"
-                                type="file"
-                                onChange={(event) => {
-                                  handleFileChange(index, event);
-                                }}
-                                ref={fileInputRef}
-                              />
-                              {selectedFileName[index]?.exam_documents && (
-                                <a href={`${baseUrl}/uploads/${selectedFileName[index].exam_documents}`}>
-                                  {selectedFileName[index].exam_documents}
-                                </a>
-                              )}
-                            </Form.Group>
-                          </Form>
-                        </Col>
-                        <Col md={4} lg={4}>
-                          <Form.Group className="mb-3" controlId="exam_date">
-                            <Form.Label>Exam Date</Form.Label>
-                            <Form.Control
-                              type="date"
-                              name="exam_date"
-                              // value={data?.exam_date}
-                              value={moment(data?.exam_date).format("YYYY-MM-DD") ?? moment(data?.exam_date).format("YYYY-MM-DD")}
-                              onChange={(e) => {
-                                handleLanguageInputChange(index, e);
-                              }}
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={4} lg={4} className="mt-3">
-                          <i
-                            className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1"
-                            onClick={(e) => handleRemoveLanguageForm(index, e, data.exam_type)}
-                          ></i>
-                          {selectExam && (
-                            <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>
-                          )}
-                        </Col>
-                      </Row>
-                    </Row>
-                  ))}
-              </Row>
-            </Modal.Body>
-
-            <Modal.Footer>
-              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
-                Clear
-              </Button>
-              <Button
-                variant="danger"
-                id="button-addon2"
-                className="mt-1"
-                onClick={() => {
-                  if (isUpdate) {
-                    handleCancelUpdate();
-                    toggle();
-                    setLanguageForm(languageFormInitialState);
-                    setSelectedFile([]);
-                    setSelectedFileName([]);
-                    handleResetValues();
-                  } else {
-                    toggle();
-                    setLanguageForm(languageFormInitialState);
-                    setSelectedFile([]);
-                    setSelectedFileName([]);
-                    handleResetValues();
-                  }
-                }}
-              >
-                {isUpdate ? "Cancel" : "Close"}
-              </Button>
-              <Button type="submit" variant="success" id="button-addon2" className="mt-1" disabled={loading}>
-                {isUpdate ? "Update" : "Submit"}
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Modal>
-
-        {/* </Col> */}
+       
+        <LeadsModal 
+          clearLeadModal = {clearLeadModal}
+          country = {country} 
+          source = {source}
+          leadTypes = {leadTypes}
+          user = {user} 
+          office = {office}
+          channels= {channels}
+          loading = {loading}
+          regionData = {regionData}
+          franchisees = {franchisees}
+          region = {region}
+          modal = {modal}
+          toggle = {toggle}
+          handleUpdateData = {handleUpdateData}
+        />
 
         {user?.role == it_team_id && (
           <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
@@ -1447,131 +549,13 @@ const BasicInputElements = withSwal((props: any) => {
         )}
 
         <Col lg={12} className="p-0 form__card">
-          <Card>
-            <Card.Body>
-              <h4 className="header-title mb-3">Filters</h4>
-              <Row className="mb-3">
-                <Col lg={3} md={4} sm={6} xs={12}>
-                  <Form.Group className="mb-3" controlId="status_id">
-                    <Form.Label>Status</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container select-wrapper"
-                      classNamePrefix="react-select"
-                      name="status_id"
-                      options={[{ value: null, label: "All" }, ...status]}
-                      value={selectedStatus}
-                      onChange={handleFilterChange}
-                    />
-                  </Form.Group>
-                </Col>
+       
+          <LeadsFilters changeFilteredItemsData={changeFilteredItemsData} state={state} status={status} source={source} country={country} userData={userData} counsellors={counsellors} />
 
-                <Col lg={3} md={4} sm={6} xs={12}>
-                  <Form.Group className="mb-3" controlId="source_id">
-                    <Form.Label>Source</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container select-wrapper"
-                      classNamePrefix="react-select"
-                      name="source_id"
-                      options={[{ value: null, label: "All" }, ...source]}
-                      value={selectedSourceFilter}
-                      onChange={handleFilterChange}
-                    />
-                  </Form.Group>
-                </Col>
-
-                {user?.role == 3 || user?.role == 5 ? (
-                  <Col lg={3} md={4} sm={6} xs={12}>
-                    <Form.Group className="mb-3" controlId="updated_by">
-                      <Form.Label>Assigned By</Form.Label>
-                      <Select
-                        styles={customStyles}
-                        className="react-select react-select-container select-wrapper"
-                        classNamePrefix="react-select"
-                        name="updated_by"
-                        options={[{ value: null, label: "All" }, ...userData]}
-                        value={selectedAssignedBy}
-                        onChange={handleFilterChange}
-                      />
-                    </Form.Group>
-                  </Col>
-                ) : (
-                  ""
-                )}
-
-                {user?.role == 3 || user?.role == 5 ? (
-                  <Col lg={3} md={4} sm={6} xs={12}>
-                    <Form.Group className="mb-3" controlId="counsiler_id">
-                      <Form.Label>Counsellors</Form.Label>
-                      <Select
-                        styles={customStyles}
-                        className="react-select react-select-container select-wrapper"
-                        classNamePrefix="react-select"
-                        name="counsiler_id"
-                        options={[{ value: null, label: "All" }, ...counsellors]}
-                        value={selectedCounsellor}
-                        onChange={handleFilterChange}
-                      />
-                    </Form.Group>
-                  </Col>
-                ) : (
-                  ""
-                )}
-
-                <Col lg={3} md={4} sm={6} xs={12}>
-                  <Form.Group className="mb-3" controlId="preferredCountries">
-                    <Form.Label>Country</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container select-wrapper"
-                      classNamePrefix="react-select"
-                      name="preferredCountries"
-                      options={[{ value: null, label: "All" }, ...country]}
-                      value={selectedCountryFilter}
-                      onChange={handleFilterChange}
-                    />
-                  </Form.Group>
-                </Col>
-
-                <Col lg={3} md={4} sm={6} xs={12}>
-                  <Form.Group controlId="lead_received_date" className="cust-date mb-3">
-                    <Form.Label>Lead Received Date</Form.Label>
-                    <Form.Control
-                      type="date"
-                      name="lead_received_date"
-                      value={filters.lead_received_date}
-                      onChange={(e: any) => handleFilterDateChange(e)}
-                    />
-                  </Form.Group>
-                </Col>
-
-                <Col lg={3} md={4} sm={6} xs={12}>
-                  <Form.Group controlId="followup_date" className="cust-date mb-3">
-                    <Form.Label>Followup Date</Form.Label>
-                    <Form.Control
-                      type="date"
-                      name="followup_date"
-                      value={filters.followup_date}
-                      onChange={(e: any) => handleFilterDateChange(e)}
-                    />
-                  </Form.Group>
-                </Col>
-
-                <Col lg={3} md={4} sm={6} xs={12} style={{ alignSelf: "center" }}>
-                  <Form.Group className="align-items-center">
-                    <Button style={{ margin: "auto" }} variant="primary" onClick={handleClear}>
-                      Clear
-                    </Button>
-                  </Form.Group>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
           <Card className="bg-white">
             <Card.Body>
               <div className="d-flex flex-wrap gap-2 justify-content-end">
-                {user.role == 2 && (
+                {user.role == it_team_id && (
                   <Button className="btn-sm btn-blue waves-effect waves-light" onClick={toggleUploadModal}>
                     <i className="mdi mdi-upload"></i> Import Leads
                   </Button>
@@ -1629,7 +613,6 @@ const BasicInputElements = withSwal((props: any) => {
 
                 {user?.role == regional_manager_id && (
                   <>
-                    {console.log("branchForManagerbranchForManager ==?", branchForManager)}
                     <Dropdown className="btn-group">
                       <Dropdown.Toggle
                         disabled={selectedValues?.length > 0 ? false : true}
@@ -1651,7 +634,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
-                  onClick={() => [openModalWithClass("modal-full-width"), handleCancelUpdate()]}
+                  onClick={() => [openModalWithClass("modal-full-width"), handleClearModal()]}
                 >
                   <i className="mdi mdi-plus-circle"></i> Add lead
                 </Button>

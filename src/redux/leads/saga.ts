@@ -20,11 +20,12 @@ import {
   getLead,
   getLeadUser,
   getLeadsTL,
+  getLeadsByCounsellorTL as getLeadsByCounsellorTLAction
 } from "./actions";
 
 // constants
 import { LeadsActionTypes } from "./constants";
-import { AUTH_SESSION_KEY } from "../../constants";
+import { AUTH_SESSION_KEY, counsellor_tl_id, cre_tl_id } from "../../constants";
 import { getAssignedLeadsByCreTl, getLeadsByCreTl, getAssignedLeadsByCounsellorTL as getAssignedLeadsByCounsellorTLAPI, getLeadsByCounsellorTL } from "../../helpers/api/leads";
 
 interface LeadsData {
@@ -223,10 +224,12 @@ function* addLeads({
       const { role } = JSON.parse(userInfo);
 
       console.log("role ==>", role);
-      if (role == 4) {
+      if (role == cre_tl_id) {
         console.log("getLeadsTL called");
         
         yield put(getLeadsTL());
+      } else  if (role == counsellor_tl_id) {
+        yield put(getLeadsByCounsellorTLAction());
       } else {
         console.log("getLead called");
 
@@ -302,8 +305,10 @@ function* updateLeads({
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
 
-      if (role == 4) {
+      if (role == cre_tl_id) {
         yield put(getLeadsTL());
+      } else  if (role == counsellor_tl_id) {
+        yield put(getLeadsByCounsellorTLAction());
       } else {
         yield put(getLead());
       }
@@ -329,6 +334,8 @@ function* deleteLeads({ payload: { id } }: LeadsData): SagaIterator {
 
       if (role == 4) {
         yield put(getLeadsTL());
+      } else  if (role == counsellor_tl_id) {
+        yield put(getLeadsByCounsellorTLAction());
       } else {
         yield put(getLead());
       }
