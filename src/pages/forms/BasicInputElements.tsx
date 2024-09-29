@@ -550,7 +550,7 @@ const BasicInputElements = withSwal((props: any) => {
 
         <Col lg={12} className="p-0 form__card">
        
-          <LeadsFilters changeFilteredItemsData={changeFilteredItemsData} state={state} status={status} source={source} country={country} userData={userData} counsellors={counsellors} />
+          <LeadsFilters changeFilteredItemsData={changeFilteredItemsData} state={state} status={status} source={source} country={country} userData={userData} counsellors={counsellors} cres={cres} />
 
           <Card className="bg-white">
             <Card.Body>
