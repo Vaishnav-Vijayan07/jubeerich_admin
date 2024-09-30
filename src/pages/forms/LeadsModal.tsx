@@ -465,7 +465,7 @@ const LeadsModal = withSwal((props: any) => {
         setSelectedFileName([]);
         setActiveRegion(false);
         setIsFranchiseActive(false);
-        setSelectExam(false)
+        setSelectExam(false);
     };
 
     useEffect(() => {

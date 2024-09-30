@@ -215,95 +215,9 @@ const BasicInputElements = withSwal((props: any) => {
   }
   const handleUpdate = (item: any) => {
     if(item){
-      setHandleUpdateData(item)
+      setHandleUpdateData({...item})
     }
   };
-
-  //   console.log("item ==>", item);
-    
-  //   //update source dropdown
-  //   const updatedSource = source?.filter((source: any) => source.value == item.source_id);
-  //   const updatedOffice = office?.filter((office: any) => office.value == item.office_type);
-    
-  //   const updatedCtegory = leadTypes?.filter((category: any) => category.value == item.lead_type_id);
-  //   const updatedChannels = channels?.filter((channel: any) => channel.value == item.channel_id);
-
-  //   const updatedRegion = region?.filter((region: any) => region.value == item.region_id);
-
-  //   const updatedCountry = item?.preferredCountries?.map((country: any) => ({
-  //     value: country?.id,
-  //     label: country?.country_name,
-  //   }));
-
-  //   const countryArray = item?.preferredCountries?.map((country: any) => country?.id);
-
-  //   const { value } = updatedOffice[0];
-  //   const { franchise_id, region_id: region_id_from_item } = item;
-
-  //   if (franchise_id && value == franchise_id_from_office) {
-  //     console.log("HERE");
-  //     setIsFranchiseActive(true);
-  //     setActiveRegion(false);
-  //     const franchiseValue = franchisees.find((item: any) => item.value == franchise_id);
-  //     setSelectedFranchisee(franchiseValue);
-  //   }
-
-  //   console.log("updatedRegion", updatedRegion[0]);
-
-  //   setSelectedSource(updatedSource[0]);
-  //   setSelectedOffice(updatedOffice[0]);
-  //   // setSelectedCountry(updatedCountry[0]);
-  //   setSelectedCountry(updatedCountry);
-  //   setSelectedRegion(updatedRegion[0]);
-  //   setSelectedLeadType(updatedCtegory[0]);
-  //   setSelectedChannel(updatedChannels[0]);
-
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     id: item?.id || "",
-  //     full_name: item?.full_name || "",
-  //     email: item?.email || "",
-  //     phone: item?.phone || "",
-  //     lead_type_id: item?.lead_type_id || "",
-  //     source_id: item?.source_id || "",
-  //     channel_id: item?.channel_id || "",
-  //     city: item?.city || "",
-  //     preferred_country: countryArray,
-  //     office_type: item?.office_type || "",
-  //     // region_id: item?.region_id || "",
-  //     // counsiler_id: item?.counsiler_id || "",
-  //     // branch_id: item?.branch_id || "",
-  //     updated_by: item?.updated_by || "",
-  //     remarks: item?.remarks || "",
-  //     lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
-  //     ielts: item?.ielts || "",
-  //     exam: item?.exam || "",
-  //     zipcode: item?.zipcode || "",
-  //     region_id: item?.region_id || "",
-  //     franchise_id: item?.franchise_id || "",
-  //   }));
-
-  //   setIsUpdate(true);
-
-  //   if (item?.exam_details?.length) {
-  //     setSelectExam(true);
-  //     setLanguageForm(item?.exams);
-  //   }
-
-  //   if (item?.exam_documents?.length) {
-  //     setSelectedFileName(item?.exam_documents);
-  //   }
-
-  //   const emptyFile = new File([], "empty.txt", {
-  //     type: "text/plain",
-  //   });
-
-  //   if (Array.isArray(item?.exam_documents)) {
-  //     for (let i = 0; i < item?.exam_documents.length; i++) {
-  //       setSelectedFile((prevFile: any) => [...prevFile, emptyFile]);
-  //     }
-  //   }
-  // };
 
   //handle delete function
   const handleDelete = (id: string) => {
