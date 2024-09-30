@@ -59,6 +59,8 @@ const AcademicInfo = withSwal((props: any) => {
       const academicData = academicResponse.data?.data;
       const examData = examResponse.data?.data;
 
+      console.log(examData);
+
       // Use helper functions to check the data and set state
       setAcademicInfoFromApi(
         academicData.length > 0 ? academicData : [initialStateAcademic]
@@ -280,7 +282,7 @@ const AcademicInfo = withSwal((props: any) => {
             </Col>
           </Row>
 
-          {selectExam && (
+          {hasExams == "yes" && (
             <Row>
               <ExamData
                 examForm={examForm}
