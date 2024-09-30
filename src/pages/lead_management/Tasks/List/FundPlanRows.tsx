@@ -2,6 +2,7 @@ import { Row, Col, Form, Button } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import Select from "react-select";
 import { baseUrl } from "../../../../constants";
+import ActionButton from "./ActionButton";
 
 const fundTypeOptions = [
   { value: "loan", label: "Loan" },
@@ -19,7 +20,7 @@ const FundPlanRows = ({
 
   const renderFundRows = (plan: any, index: number) => (
     <>
-      <Row key={index} className="mb-4 p-2 border-rounded ">
+      <Row key={index} className="mb-4 p-2 border-bottom rounded">
         {/* Type */}
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`type-${index}`}>
@@ -159,15 +160,16 @@ const FundPlanRows = ({
             )}
           </Form.Group>
         </Col>
+      <Row>
         {fundPlan.length > 1 && (
-          <Col className="d-flex align-items-center gap-1">
-            <i
-              className="text-danger mdi mdi-minus-circle-outline fs-3 ps-1"
-              onClick={() => removeFundPlan(index, plan.id ?? 0)}
-            ></i>
-            <span className="text-danger">Remove</span>
-          </Col>
+          <ActionButton
+            colorClass="text-danger"
+            onClick={() => removeFundPlan(index, plan.id ?? 0)}
+            iconClass="mdi mdi-delete"
+            label="Remove"
+          />
         )}
+      </Row>
       </Row>
     </>
   );
@@ -183,13 +185,11 @@ const FundPlanRows = ({
       {fundPlan?.map((plan: any, index: number) => renderFundRows(plan, index))}
 
       <Row className="mb-2">
-        <Col className="d-flex align-items-center gap-1">
-          <i
-            className="text-primary mdi mdi-plus-circle-outline fs-3 ps-1"
-            onClick={handleAddMoreFundPlan}
-          ></i>
-          <span className="text-primary">Add More</span>
-        </Col>
+        <ActionButton
+          onClick={handleAddMoreFundPlan}
+          label="Add more"
+          iconClass="mdi mdi-plus"
+        />
       </Row>
     </>
   );

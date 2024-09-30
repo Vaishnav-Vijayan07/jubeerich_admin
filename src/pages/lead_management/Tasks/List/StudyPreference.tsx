@@ -157,7 +157,7 @@ const StudyPreference = withSwal((props: any) => {
     <>
       <Row className={deleteLoading || saveLoading ? "opacity-25" : ""}>
         <StudyPreferenceRow
-          StudyPreference={studyPreferenceData}
+          studyPreference={studyPreferenceData}
           countryName={countryName}
           handleStudyPreferenceChange={handleStudyPreferenceChange}
           addMoreStudyPreference={addMoreStudyPreference}

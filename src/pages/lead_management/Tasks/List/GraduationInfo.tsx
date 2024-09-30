@@ -377,13 +377,15 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
           </Form.Group>
         </Col>
       </Row>
-      <Row className="mb-2">
-        <ActionButton
-          label="Remove"
-          iconClass="mdi mdi-delete"
-          onClick={() => removeGraduationForm(index, item?.id ?? 0)}
-        />
-      </Row>
+      {graduationDetails?.length > 1 && (
+        <Row className="mb-2">
+          <ActionButton
+            label="Remove"
+            iconClass="mdi mdi-delete"
+            onClick={() => removeGraduationForm(index, item?.id ?? 0)}
+          />
+        </Row>
+      )}
     </>
   );
 

@@ -5,13 +5,16 @@ import axios from "axios";
 import moment from "moment";
 import {
   customStyles,
+  franchise_id_from_office,
+  region_id as regionId, // Aliasing region_id to regionId
   showErrorAlert,
   showSuccessAlert,
 } from "../../../../constants";
+
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import * as yup from "yup";
 import { withSwal } from "react-sweetalert2";
+import validateFields from "../../../../helpers/validateHelper";
 
 const validationErrorsInitialState = {
   full_name: "",
@@ -33,53 +36,49 @@ const validationErrorsInitialState = {
   address: "",
 };
 
-const initialState = {
-  full_name: "",
-  email: "",
-  phone: "",
-  city: "",
-  preferred_country: "",
-  office_type: "",
-  remarks: "",
-  lead_received_date: "",
-  passport_no: "",
-  dob: new Date().toISOString().split("T")[0],
-  gender: "",
-  marital_status: "",
-  nationality: "",
-  secondary_number: "",
-  state: "",
-  country: "",
-  address: "",
-};
-
-// const BasicInfo = ({
-//   studentId,
-//   country,
-//   Countries,
-//   OfficeTypes,
-//   MaritalStatus,
-//   basicData,
-//   getBasicInfoApi,
-// }: any) => {
-
 const BasicInfo = withSwal((props: any) => {
   const {
     swal,
     studentId,
-    country,
-    Countries,
-    OfficeTypes,
-    MaritalStatus,
-    basicData,
-    getBasicInfoApi,
     role,
+    officeTypes,
+    regions,
+    franchises,
+    maritalStatus,
   } = props;
 
-  const [formData, setformData] = useState(initialState);
+  const [basicInfo, setBasicInfo] = useState<any>({
+    passport_no: "",
+    dob: null, // You might want to use a date type or string based on your needs
+    gender: "",
+    marital_status: null,
+    nationality: "",
+    secondary_number: "",
+    state: "",
+    country: "",
+    address: "",
+    errors: {},
+  });
+
+  // Initial state for primaryInfo with empty/default values
+  const [primaryInfo, setPrimaryInfo] = useState<any>({
+    id: null,
+    full_name: "",
+    email: "",
+    phone: "",
+    city: "",
+    office_type: null,
+    remarks: "",
+    franchise_id: null,
+    region_id: null,
+    errors: {},
+  });
+
   const [loading, setLoading] = useState(false);
   const [selectedOfficeType, setSelectedOfficeType] = useState<any>(null);
   const [selectedGender, setSelectedGender] = useState<any>(null);
+  const [selectedRegion, setSelectedRegion] = useState<any>(null);
+  const [selectedFranchise, setSelectedFranchise] = useState<any>(null);
   const [selectedMaritialStatus, setSelectedMaritialStatus] =
     useState<any>(null);
   const animatedComponents = makeAnimated();
@@ -88,8 +87,6 @@ const BasicInfo = withSwal((props: any) => {
     validationErrorsInitialState
   );
 
-  console.log("form data =>", formData);
-
   const genderData: any = [
     { value: null, label: "None" },
     { value: "Male", label: "Male" },
@@ -97,204 +94,249 @@ const BasicInfo = withSwal((props: any) => {
     { value: "Other", label: "Other" },
   ];
 
-  const ValidationSchema = yup.object().shape({
-    full_name: yup.string().required("Name cannot be empty"),
-    email: yup
-      .string()
-      .required("Email cannot be empty")
-      .email("Enter a valid email"),
-    phone: yup
-      .string()
-      .required("Password cannot be empty")
-      .matches(/^[0-9]+$/, "Phone number must be digits only")
-      .max(10, "Enter a valid phone number"),
-    city: yup.string().nullable(),
-    preferred_country: yup.array().of(yup.string()).nullable(),
-    office_type: yup.string().required("Office Type cannot be empty"),
-    remarks: yup.string().nullable(),
-    lead_received_date: yup.string().required("Date required"),
-    passport_no: yup.string().nullable(),
-    dob: yup.string().required("DOB is required"),
-    gender: yup.string().required("Gender is required"),
-    marital_status: yup.string().nullable(),
-    nationality: yup.string().nullable(),
-    secondary_number: yup
-      .string()
-      .matches(/^[0-9]+$/, "Phone number must be digits only")
-      .max(10, "Enter a valid phone number")
-      .nullable(),
-    state: yup.string().nullable(),
-    country: yup.string().nullable(),
-    address: yup.string().nullable(),
-  });
-
-  const getBasicInfo = () => {
+  const getBasicInfo = async () => {
     setLoading(true);
-    setformData(initialState);
-    axios
-      .get(`getStudentBasicInfo/${studentId}`)
-      .then((res) => {
-        console.log("res =>", res.data);
-        const countries = res?.data?.data?.preferredCountries?.map(
-          (item: any) => {
-            return {
-              label: item?.country_name,
-              value: item?.id,
-            };
-          }
-        );
-        setSelectedCountry(countries);
+    try {
+      const { data } = await axios.get(`/basicStudentInfo/${studentId}`);
+      const { primaryInfo, basicInfo: basicInfoFromApi } = data.data;
 
-        const updatedOffice = OfficeTypes?.filter(
-          (office: any) => office.value == res?.data?.data?.office_type
-        );
-        setSelectedOfficeType(updatedOffice[0]);
+      console.log("primaryInfo =>", primaryInfo);
+      console.log("basicInfo =>", basicInfoFromApi);
 
-        const updatedGender = genderData?.filter(
-          (gender: any) => gender.value == res?.data?.data?.gender
-        );
-        setSelectedGender(updatedGender[0]);
+      const { preferredCountries, ...rest } = primaryInfo;
 
-        const updatedMaritialStatus = MaritalStatus?.filter(
-          (maritalStatus: any) =>
-            maritalStatus.value == res?.data?.data?.marital_status
-        );
+      setBasicInfo(basicInfoFromApi ? basicInfoFromApi : basicInfo);
+      setPrimaryInfo(rest);
 
-        setSelectedMaritialStatus(updatedMaritialStatus[0]);
-
-        const modifiedData = {
-          ...res.data.data,
-          preferred_country: res?.data?.data?.country_ids,
-          // dob: moment(res?.data?.dob).format("YYYY-MM-DD")
-          dob: moment(res?.data?.data?.dob).format("YYYY-MM-DD"),
+      const countries = primaryInfo?.preferredCountries?.map((item: any) => {
+        return {
+          label: item?.country_name,
+          value: item?.id,
         };
-        console.log("MODIFIED DATE", modifiedData.dob);
-
-        setformData(modifiedData);
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => {
-        setLoading(false);
       });
+      setSelectedCountry(countries);
+
+      const updatedOffice = officeTypes?.filter(
+        (office: any) => office.value == primaryInfo?.office_type
+      );
+
+      setSelectedOfficeType(updatedOffice[0]);
+
+      const updatedGender = genderData?.filter(
+        (gender: any) => gender.value == basicInfo?.gender
+      );
+      setSelectedGender(updatedGender[0]);
+
+      const updatedMaritialStatus = maritalStatus?.filter(
+        (maritalStatus: any) => maritalStatus.value == basicInfo?.marital_status
+      );
+      setSelectedMaritialStatus(updatedMaritialStatus[0]);
+
+      if (primaryInfo?.franchise_id) {
+        const franchise = franchises?.filter(
+          (item: any) => item.value == primaryInfo?.franchise_id
+        );
+        setSelectedFranchise(franchise[0]);
+      }
+
+      if (primaryInfo?.region_id) {
+        const region = regions?.filter(
+          (item: any) => item.value == primaryInfo?.region_id
+        );
+        setSelectedRegion(region[0]);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
+
   useEffect(() => {
-    if (studentId) {
+    if (
+      studentId &&
+      maritalStatus.length > 0 &&
+      officeTypes.length > 0 &&
+      regions.length > 0 &&
+      franchises.length > 0
+    ) {
       getBasicInfo();
     }
-  }, [studentId]);
+  }, [studentId, maritalStatus, officeTypes, regions, franchises]);
 
   // handling input data
-  const handleInputChange = (e: any) => {
-    setformData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+  const handleInputChange = (e: any, field: any, type: any) => {
+    const { value } = e.target;
+
+    if (type === "basic") {
+      setBasicInfo((prev: any) => ({
+        ...prev,
+        [field]: value,
+      }));
+    } else if (type === "primary") {
+      setPrimaryInfo((prev: any) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
   };
 
   // save details api
   const saveStudentBasicInfo = async () => {
-    try {
-      await ValidationSchema.validate(formData, { abortEarly: false });
+    console.log(primaryInfo);
+    console.log(basicInfo);
 
-      swal
-        .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, Save",
-        })
-        .then((result: any) => {
-          if (result.isConfirmed) {
-            setLoading(true);
-            axios
-              .post("saveStudentBasicInfo", {
-                passport_no: formData?.passport_no,
-                dob: formData?.dob,
-                gender: formData?.gender,
-                marital_status: formData?.marital_status,
-                user_id: studentId,
-                full_name: formData?.full_name,
-                email: formData?.email,
-                phone: formData?.phone,
-                preferred_country: formData?.preferred_country,
-                office_type: formData?.office_type,
-                remarks: formData?.remarks,
-                nationality: formData?.nationality,
-                secondary_number: formData?.secondary_number,
-                state: formData?.state,
-                country: formData?.country,
-                address: formData?.address,
-                // counsiler_id: null,
-                // branch_id: formData?.,
-              })
-              .then((res) => {
-                console.log("res: =>", res);
-                setLoading(false);
-                showSuccessAlert(res.data.message);
-                getBasicInfoApi();
-                setValidationErrors(validationErrorsInitialState);
-              })
-              .catch((err) => {
-                console.log(err);
-                setLoading(false);
-                showErrorAlert("Error occured");
-              });
-          }
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
-    } catch (validationError) {
-      if (validationError instanceof yup.ValidationError) {
-        const errors: any = {};
-        validationError.inner.forEach((error) => {
-          if (error.path) {
-            errors[error.path] = error.message;
-          }
-        });
-        setValidationErrors(errors);
-      }
-    }
-  };
+    const basicValidationRules = {
+      passport_no: { required: true },
+      dob: { required: true },
+      gender: { required: true },
+      marital_status: { required: true },
+      nationality: { required: true },
+      secondary_number: { required: true },
+      state: { required: true },
+      country: { required: true },
+      address: { required: true },
+    };
 
-  const handleDropDowns = (selected: any, { name }: any) => {
-    setformData((prev) => ({
-      ...prev,
-      [name]: selected.value,
-    }));
+    const primaryValidationRules = {
+      full_name: { required: true },
+      email: { required: true },
+      phone: { required: true },
+      city: { required: true },
+      office_type: { required: true },
+      remarks: { required: true },
+      franchise_id: { required: primaryInfo?.office_type == 5 },
+      region_id: { required: primaryInfo?.office_type == 4 },
+    };
 
-    switch (name) {
-      case "office_type":
-        setSelectedOfficeType(selected);
-        break;
-      case "gender":
-        setSelectedGender(selected);
-        break;
-      case "marital_status":
-        setSelectedMaritialStatus(selected);
-        break;
-      case "channel_id":
-        // setSelectedChannel(selected);
-        break;
-      default:
-        break;
-    }
-  };
+    const { isValid: primaryValid, errors: primaryErrors } = validateFields(
+      [primaryInfo],
+      primaryValidationRules
+    );
+    const { isValid: basicValid, errors: basicErrors } = validateFields(
+      [basicInfo],
+      basicValidationRules
+    );
 
-  const handleSelectChange = (selectedOptions: any, actionMeta: any) => {
-    if (Array.isArray(selectedOptions)) {
-      setSelectedCountry(selectedOptions);
-      // const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
-      const selectedIdsArray = selectedOptions?.map((option) => option.value);
-      setformData((prev: any) => ({
-        ...prev,
-        preferred_country: selectedIdsArray,
+    console.log(basicErrors);
+    console.log(primaryErrors);
+
+    if (!basicValid) {
+      setBasicInfo((prevState: any) => ({
+        ...prevState,
+        errors: basicErrors[0] || {}, // Attach errors to specific fields
       }));
+    }
+
+    if (!primaryValid) {
+      setPrimaryInfo((prevState: any) => ({
+        ...prevState,
+        errors: primaryErrors[0] || {}, // Attach errors to specific fields
+      }));
+    }
+
+    if (!basicValid || !primaryValid) {
+      return;
+    }
+
+    swal
+      .fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          setLoading(true);
+          axios
+            .post("/basicStudentInfo", {
+              primaryInfo,
+              basicInfo,
+              student_id: studentId,
+            })
+            .then((res) => {
+              console.log("res: =>", res);
+              setLoading(false);
+              showSuccessAlert(res.data.message);
+              getBasicInfo();
+              setValidationErrors(validationErrorsInitialState);
+            })
+            .catch((err) => {
+              console.log(err);
+              setLoading(false);
+              showErrorAlert("Error occured");
+            });
+        }
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+  };
+
+  const handleDropDowns = (
+    selected: any,
+    { name }: any,
+    type: "basic" | "primary"
+  ) => {
+    console.log(selected, name, type);
+
+    if (type === "primary") {
+      setPrimaryInfo((prev: any) => {
+        let updatedPrimary = { ...prev };
+
+        switch (name) {
+          case "office_type":
+            setSelectedOfficeType(selected);
+            updatedPrimary.office_type = selected?.value;
+            if (selected?.value === 6) {
+              updatedPrimary.region_id = null;
+              updatedPrimary.franchise_id = null;
+            }
+            break;
+
+          case "region_id":
+            setSelectedRegion(selected);
+            updatedPrimary.region_id = selected?.value;
+            updatedPrimary.franchise_id = null;
+            break;
+
+          case "franchise_id":
+            setSelectedFranchise(selected);
+            updatedPrimary.franchise_id = selected?.value;
+            updatedPrimary.region_id = null;
+            break;
+
+          default:
+            break;
+        }
+
+        return updatedPrimary;
+      });
+    } else if (type === "basic") {
+      setBasicInfo((prev: any) => {
+        let updatedBasic = { ...prev };
+
+        switch (name) {
+          case "marital_status":
+            setSelectedMaritialStatus(selected);
+            updatedBasic.marital_status = selected?.value;
+            break;
+
+          case "gender":
+            setSelectedGender(selected);
+            updatedBasic.gender = selected?.value;
+            break;
+
+          default:
+            break;
+        }
+
+        return updatedBasic;
+      });
     }
   };
 
@@ -324,13 +366,12 @@ const BasicInfo = withSwal((props: any) => {
                 name="full_name"
                 placeholder="Enter full name"
                 key="full_name"
-                defaultValue={formData?.full_name}
-                value={formData?.full_name}
-                onChange={handleInputChange}
+                value={primaryInfo?.full_name} // Change to primaryInfo
+                onChange={(e) => handleInputChange(e, "full_name", "primary")}
               />
-              {validationErrors.full_name && (
+              {primaryInfo?.errors?.full_name && (
                 <Form.Text className="text-danger">
-                  {validationErrors.full_name}
+                  {primaryInfo?.errors?.full_name}
                 </Form.Text>
               )}
             </Form.Group>
@@ -345,13 +386,13 @@ const BasicInfo = withSwal((props: any) => {
                 type="email"
                 name="email"
                 placeholder="Enter email id"
-                value={formData.email}
+                value={primaryInfo?.email} // Change to primaryInfo
                 key="email"
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange(e, "email", "primary")}
               />
-              {validationErrors.email && (
+              {primaryInfo?.errors?.email && (
                 <Form.Text className="text-danger">
-                  {validationErrors.email}
+                  {primaryInfo?.errors?.email}
                 </Form.Text>
               )}
             </Form.Group>
@@ -367,12 +408,12 @@ const BasicInfo = withSwal((props: any) => {
                 name="phone"
                 placeholder="Enter phone number"
                 key="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
+                value={primaryInfo?.phone} // Change to primaryInfo
+                onChange={(e) => handleInputChange(e, "phone", "primary")}
               />
-              {validationErrors.phone && (
+              {primaryInfo?.errors?.phone && (
                 <Form.Text className="text-danger">
-                  {validationErrors.phone}
+                  {primaryInfo?.errors?.phone}
                 </Form.Text>
               )}
             </Form.Group>
@@ -386,12 +427,12 @@ const BasicInfo = withSwal((props: any) => {
                 name="city"
                 placeholder="Enter city"
                 key="city"
-                value={formData.city}
-                onChange={handleInputChange}
+                value={primaryInfo?.city} // Change to primaryInfo
+                onChange={(e) => handleInputChange(e, "city", "primary")}
               />
-              {validationErrors.city && (
+              {primaryInfo?.errors?.city && (
                 <Form.Text className="text-danger">
-                  {validationErrors.city}
+                  {primaryInfo?.errors?.city}
                 </Form.Text>
               )}
             </Form.Group>
@@ -399,23 +440,15 @@ const BasicInfo = withSwal((props: any) => {
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="channel_name">
-              <Form.Label>Preffered Country</Form.Label>
+              <Form.Label>Preferred Country</Form.Label>
               <Select
                 className="react-select react-select-container"
                 classNamePrefix="react-select"
                 components={animatedComponents}
-                isMulti
                 name="preferred_country"
-                options={[{ value: null, label: "None" }, ...country]}
                 value={selectedCountry}
-                onChange={handleSelectChange as any}
-                isDisabled={role == 7 ? true : false}
+                isDisabled={role === 7 || role === 3}
               />
-              {validationErrors.preferred_country && (
-                <Form.Text className="text-danger">
-                  {validationErrors.preferred_country}
-                </Form.Text>
-              )}
             </Form.Group>
           </Col>
 
@@ -427,19 +460,77 @@ const BasicInfo = withSwal((props: any) => {
                 className="react-select react-select-container"
                 classNamePrefix="react-select"
                 name="office_type"
-                options={[{ value: null, label: "None" }, ...OfficeTypes]}
+                options={officeTypes}
                 value={selectedOfficeType}
-                onChange={handleDropDowns}
+                onChange={(selected) =>
+                  handleDropDowns(selected, { name: "office_type" }, "primary")
+                }
               />
-              {validationErrors.office_type && (
+              {primaryInfo?.errors?.office_type && (
                 <Form.Text className="text-danger">
-                  {validationErrors.office_type}
+                  {primaryInfo?.errors?.office_type}
                 </Form.Text>
               )}
             </Form.Group>
           </Col>
-          {/* </Row>
-            <Row> */}
+        </Row>
+
+        <Row>
+          {primaryInfo?.office_type == Number(regionId) && (
+            <Col xl={6} xxl={4}>
+              <Form.Group className="mb-3" controlId="region_id">
+                <Form.Label>
+                  <span className="text-danger fs-4">* </span>Region
+                </Form.Label>
+                <Select
+                  styles={customStyles}
+                  className="react-select react-select-container"
+                  classNamePrefix="react-select"
+                  name="region_id"
+                  options={regions}
+                  value={selectedRegion}
+                  onChange={(selected) =>
+                    handleDropDowns(selected, { name: "region_id" }, "primary")
+                  }
+                />
+                {primaryInfo?.errors?.region_id && (
+                  <Form.Text className="text-danger">
+                    {primaryInfo?.errors?.region_id}
+                  </Form.Text>
+                )}
+              </Form.Group>
+            </Col>
+          )}
+
+          {primaryInfo?.office_type == franchise_id_from_office && (
+            <Col md={4} lg={4}>
+              <Form.Group className="mb-3" controlId="franchise_id">
+                <Form.Label>
+                  <span className="text-danger fs-4">* </span>Franchisee
+                </Form.Label>
+                <Select
+                  styles={customStyles}
+                  className="react-select react-select-container"
+                  classNamePrefix="react-select"
+                  name="franchise_id"
+                  options={franchises}
+                  value={selectedFranchise}
+                  onChange={(selected) =>
+                    handleDropDowns(
+                      selected,
+                      { name: "franchise_id" },
+                      "primary"
+                    )
+                  }
+                />
+                {primaryInfo?.errors?.franchise_id && (
+                  <Form.Text className="text-danger">
+                    {primaryInfo?.errors?.franchise_id}
+                  </Form.Text>
+                )}
+              </Form.Group>
+            </Col>
+          )}
         </Row>
 
         <Row>
@@ -451,13 +542,12 @@ const BasicInfo = withSwal((props: any) => {
                 name="passport_no"
                 placeholder="Enter passport number"
                 key="passport_no"
-                value={formData?.passport_no}
-                defaultValue={formData?.passport_no}
-                onChange={handleInputChange}
+                value={basicInfo?.passport_no} // Change to basicInfo
+                onChange={(e) => handleInputChange(e, "passport_no", "basic")}
               />
-              {validationErrors.passport_no && (
+              {basicInfo?.errors?.passport_no && (
                 <Form.Text className="text-danger">
-                  {validationErrors.passport_no}
+                  {basicInfo?.errors?.passport_no}
                 </Form.Text>
               )}
             </Form.Group>
@@ -475,11 +565,13 @@ const BasicInfo = withSwal((props: any) => {
                 name="gender"
                 options={genderData}
                 value={selectedGender}
-                onChange={handleDropDowns}
+                onChange={(selected) =>
+                  handleDropDowns(selected, { name: "gender" }, "basic")
+                }
               />
-              {validationErrors.gender && (
+              {basicInfo?.errors?.gender && (
                 <Form.Text className="text-danger">
-                  {validationErrors.gender}
+                  {basicInfo?.errors?.gender}
                 </Form.Text>
               )}
             </Form.Group>
@@ -493,13 +585,15 @@ const BasicInfo = withSwal((props: any) => {
                 classNamePrefix="react-select"
                 name="marital_status"
                 styles={customStyles}
-                options={[{ value: null, label: "None" }, ...MaritalStatus]}
+                options={maritalStatus}
                 value={selectedMaritialStatus}
-                onChange={handleDropDowns}
+                onChange={(selected) =>
+                  handleDropDowns(selected, { name: "marital_status" }, "basic")
+                }
               />
-              {validationErrors.marital_status && (
+              {basicInfo?.errors?.marital_status && (
                 <Form.Text className="text-danger">
-                  {validationErrors.marital_status}
+                  {basicInfo?.errors?.marital_status}
                 </Form.Text>
               )}
             </Form.Group>
@@ -515,13 +609,16 @@ const BasicInfo = withSwal((props: any) => {
                 name="dob"
                 placeholder="Select date of birth"
                 key="dob"
-                defaultValue={moment(formData?.dob).format("YYYY-MM-DD")}
-                value={moment(formData?.dob).format("YYYY-MM-DD")}
-                onChange={handleInputChange}
+                value={
+                  basicInfo?.dob
+                    ? moment(basicInfo.dob).format("YYYY-MM-DD")
+                    : ""
+                } // Change to basicInfo
+                onChange={(e) => handleInputChange(e, "dob", "basic")}
               />
-              {validationErrors.dob && (
+              {basicInfo?.errors?.dob && (
                 <Form.Text className="text-danger">
-                  {validationErrors.dob}
+                  {basicInfo?.errors?.dob}
                 </Form.Text>
               )}
             </Form.Group>
@@ -535,13 +632,12 @@ const BasicInfo = withSwal((props: any) => {
                 name="nationality"
                 placeholder="Enter nationality"
                 key="nationality"
-                defaultValue={formData?.nationality}
-                value={formData?.nationality}
-                onChange={handleInputChange}
+                value={basicInfo?.nationality} // Change to basicInfo
+                onChange={(e) => handleInputChange(e, "nationality", "basic")}
               />
-              {validationErrors.nationality && (
+              {basicInfo?.errors?.nationality && (
                 <Form.Text className="text-danger">
-                  {validationErrors.nationality}
+                  {basicInfo?.errors?.nationality}
                 </Form.Text>
               )}
             </Form.Group>
@@ -555,13 +651,14 @@ const BasicInfo = withSwal((props: any) => {
                 name="secondary_number"
                 placeholder="Enter secondary number"
                 key="secondary_number"
-                defaultValue={formData?.secondary_number}
-                value={formData?.secondary_number}
-                onChange={handleInputChange}
+                value={basicInfo?.secondary_number} // Change to basicInfo
+                onChange={(e) =>
+                  handleInputChange(e, "secondary_number", "basic")
+                }
               />
-              {validationErrors.secondary_number && (
+              {basicInfo?.errors?.secondary_number && (
                 <Form.Text className="text-danger">
-                  {validationErrors.secondary_number}
+                  {basicInfo?.errors?.secondary_number}
                 </Form.Text>
               )}
             </Form.Group>
@@ -571,17 +668,16 @@ const BasicInfo = withSwal((props: any) => {
             <Form.Group className="mb-3" controlId="state">
               <Form.Label>State</Form.Label>
               <FormInput
-                type="tel"
+                type="text"
                 name="state"
                 placeholder="Enter state"
                 key="state"
-                defaultValue={formData?.state}
-                value={formData?.state}
-                onChange={handleInputChange}
+                value={basicInfo?.state} // Change to basicInfo
+                onChange={(e) => handleInputChange(e, "state", "basic")}
               />
-              {validationErrors.state && (
+              {basicInfo?.errors?.state && (
                 <Form.Text className="text-danger">
-                  {validationErrors.state}
+                  {basicInfo?.errors?.state}
                 </Form.Text>
               )}
             </Form.Group>
@@ -595,13 +691,12 @@ const BasicInfo = withSwal((props: any) => {
                 name="country"
                 placeholder="Enter country"
                 key="country"
-                defaultValue={formData?.country}
-                value={formData?.country}
-                onChange={handleInputChange}
+                value={basicInfo?.country} // Change to basicInfo
+                onChange={(e) => handleInputChange(e, "country", "basic")}
               />
-              {validationErrors.country && (
+              {basicInfo?.errors?.country && (
                 <Form.Text className="text-danger">
-                  {validationErrors.country}
+                  {basicInfo?.errors?.country}
                 </Form.Text>
               )}
             </Form.Group>
@@ -616,12 +711,12 @@ const BasicInfo = withSwal((props: any) => {
                 name="address"
                 placeholder="Enter address"
                 key="address"
-                value={formData.address}
-                onChange={handleInputChange}
+                value={basicInfo?.address}
+                onChange={(e) => handleInputChange(e, "address", "basic")}
               />
-              {validationErrors.address && (
+              {basicInfo?.errors?.address && (
                 <Form.Text className="text-danger">
-                  {validationErrors.address}
+                  {basicInfo?.errors?.address}
                 </Form.Text>
               )}
             </Form.Group>
@@ -635,17 +730,19 @@ const BasicInfo = withSwal((props: any) => {
                 name="remarks"
                 placeholder="Enter remarks"
                 key="remarks"
-                value={formData.remarks}
-                onChange={handleInputChange}
+                value={primaryInfo?.remarks}
+                onChange={(e) => handleInputChange(e, "remarks", "primary")}
               />
-              {validationErrors.remarks && (
+              {primaryInfo?.errors?.remarks && (
                 <Form.Text className="text-danger">
-                  {validationErrors.remarks}
+                  {primaryInfo?.errors?.remarks}
                 </Form.Text>
               )}
             </Form.Group>
           </Col>
+        </Row>
 
+        <Row>
           <Button
             variant="primary"
             className="mt-4"

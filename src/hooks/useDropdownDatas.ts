@@ -20,6 +20,7 @@ const useDropdownData = (type: string) => {
     statuses: [],
     cres: [],
     franchises: [],
+    maritalStatus: [],
   });
 
   useEffect(() => {

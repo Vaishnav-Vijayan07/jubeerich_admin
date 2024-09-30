@@ -5,14 +5,14 @@ import { intakeMonthOptions, intakeYearList } from "./data";
 import ActionButton from "./ActionButton";
 
 const StudyPreferenceRow = ({
-  StudyPreference,
+  studyPreference,
   countryName,
   handleStudyPreferenceChange,
   addMoreStudyPreference,
   removeStudyPreference,
   dropdownData,
 }: any) => {
-  console.log(StudyPreference);
+  console.log(studyPreference);
 
   const renderStudyprefRows = (item: any, index: any) => (
     <Row key={index} className="mb-3 p-2 border-bottom rounded">
@@ -286,16 +286,16 @@ const StudyPreferenceRow = ({
           )}
         </Form.Group>
       </Col>
-
-      {/* Add More Button */}
-      <Row className="mb-2">
-        <ActionButton
-          label="Remove"
-          iconClass="mdi mdi-delete"
-          colorClass="text-danger"
-          onClick={() => removeStudyPreference(index, item.id ?? 0)}
-        />
-      </Row>
+      {studyPreference.length > 1 && (
+        <Row className="mb-2">
+          <ActionButton
+            label="Remove"
+            iconClass="mdi mdi-delete"
+            colorClass="text-danger"
+            onClick={() => removeStudyPreference(index, item.id ?? 0)}
+          />
+        </Row>
+      )}
     </Row>
   );
 
@@ -306,7 +306,7 @@ const StudyPreferenceRow = ({
         {countryName}
       </h5>
 
-      {StudyPreference?.map((item: any, index: number) => (
+      {studyPreference?.map((item: any, index: number) => (
         <>{renderStudyprefRows(item, index)}</>
       ))}
       <Row>
@@ -314,7 +314,6 @@ const StudyPreferenceRow = ({
           <ActionButton
             label="Add More"
             iconClass="mdi mdi-plus"
-            colorClass="btn-primary"
             onClick={addMoreStudyPreference}
           />
         </Row>

@@ -25,7 +25,9 @@ const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard3/"));
 // - crm pages
 
 const CRMLeads = React.lazy(() => import("../pages/apps/CRM/Leads/"));
-const OrdinaryTasks = React.lazy(() => import("../pages/lead_management/OrdinaryTasks"));
+const OrdinaryTasks = React.lazy(
+  () => import("../pages/lead_management/OrdinaryTasks")
+);
 
 //Leads
 const CRMLeadsList = React.lazy(
@@ -55,6 +57,7 @@ const Region = React.lazy(() => import("../pages/forms/Region"));
 const Flag = React.lazy(() => import("../pages/forms/Flag"));
 const MaritalStatus = React.lazy(() => import("../pages/forms/MaritalStatus"));
 const Leads = React.lazy(() => import("../pages/forms/Leads"));
+const LeadDetails = React.lazy(() => import("../pages/forms/LeadDetails"));
 const AssignedLeads = React.lazy(() => import("../pages/forms/AssignedLeads"));
 const Country = React.lazy(() => import("../pages/forms/Country"));
 const Branches = React.lazy(() => import("../pages/forms/Branches"));
@@ -75,15 +78,15 @@ const CheckLists = React.lazy(() => import("../pages/forms/CheckLists"));
 // users
 const AccessRoles = React.lazy(() => import("../pages/users/AccessRoles"));
 const AdminUsers = React.lazy(() => import("../pages/users/AdminUsers"));
-const FranchiseCounsellors = React.lazy(() => import("../pages/users/FranchiseCounsellors"));
+const FranchiseCounsellors = React.lazy(
+  () => import("../pages/users/FranchiseCounsellors")
+);
 // tables
 const BasicTables = React.lazy(() => import("../pages/tables/Basic"));
 const AdvancedTables = React.lazy(() => import("../pages/tables/Advanced"));
 const ForbiddenPage = React.lazy(() => import("../pages/errors/ForbiddenPage"));
 
 const ReportsPage = React.lazy(() => import("../pages/reports"));
-
-
 
 export interface RoutesProps {
   path: RouteProps["path"];
@@ -176,14 +179,17 @@ const leadRoutes = {
       route: PrivateRoute,
     },
     {
+      path: "leads/manage/:id",
+      name: "Leads",
+      element: <PrivateRoute roles={["Add Lead"]} component={LeadDetails} />,
+      route: PrivateRoute,
+    },
+    {
       path: "leads/assigned/manage",
       name: "Leads",
       // element: <CRMLeadsList />,
       element: (
-        <PrivateRoute
-          roles={["Assigned Leads"]}
-          component={AssignedLeads}
-        />
+        <PrivateRoute roles={["Assigned Leads"]} component={AssignedLeads} />
       ),
       route: PrivateRoute,
     },
@@ -201,7 +207,10 @@ const leadRoutes = {
       name: "Ordinary Tasks",
       // element: <Tasks />,
       element: (
-        <PrivateRoute roles={["View Task", "Monitor"]} component={OrdinaryTasks} />
+        <PrivateRoute
+          roles={["View Task", "Monitor"]}
+          component={OrdinaryTasks}
+        />
       ),
       route: PrivateRoute,
     },
@@ -319,7 +328,9 @@ const settingsRoutes = {
         {
           path: "/settings/master/franchise",
           name: "franchisees",
-          element: <PrivateRoute roles={["Monitor"]} component={Franchiseees} />,
+          element: (
+            <PrivateRoute roles={["Monitor"]} component={Franchiseees} />
+          ),
           route: PrivateRoute,
         },
         {
@@ -479,7 +490,12 @@ const UserRoutes = {
       path: "/user_management/counsellor_creation",
       name: "Counsellor Creation",
       // element: <AdminUsers />,
-      element: <PrivateRoute roles={["Manage Franchise"]} component={FranchiseCounsellors} />,
+      element: (
+        <PrivateRoute
+          roles={["Manage Franchise"]}
+          component={FranchiseCounsellors}
+        />
+      ),
       route: PrivateRoute,
     },
   ],

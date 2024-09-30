@@ -34,6 +34,8 @@ import WorkExpereince from "./WorkExpereince";
 import VisaProcess from "./VisaProcess";
 import EducationDetails from "./EducationDetails";
 import FundPlan from "./FundPlan";
+import { refreshData } from "../../../../redux/countryReducer";
+import useDropdownData from "../../../../hooks/useDropdownDatas";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const AcademicInfo = lazy(() => import("./AcademicInfo"));
@@ -42,7 +44,6 @@ const StudyPreference = lazy(() => import("./StudyPreference"));
 const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [basicData, setBasicData] = useState<any>([]);
   const [status, setStatus] = useState([]);
-  const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
   const [standard, setStandard] = useState(false);
   const [statusId, setStatusId] = useState(null);
@@ -52,14 +53,20 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [activeTab, setActiveTab] = useState<any>("basic_info");
 
   const dispatch = useDispatch();
-  const { Countries, OfficeTypes, MaritalStatus, user } = useSelector(
+  const { Countries, OfficeTypes, MaritalStatus, user, refresh } = useSelector(
     (state: RootState) => ({
       Countries: state?.Country?.countries,
       OfficeTypes: state?.OfficeTypes?.officeTypes,
       MaritalStatus: state?.MaritalStatus?.maritalStatus,
       user: state.Auth.user,
+      refresh: state.refreshReducer.refreshing,
     })
   );
+
+  const { dropdownData } = useDropdownData(
+    "marital,officeType,franchise,region"
+  );
+  const { officeTypes, regions, franchises, maritalStatus } = dropdownData;
 
   const toggleStandard = () => {
     setStandard(!standard);
@@ -106,7 +113,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       });
 
       showSuccessAlert(data.message);
-      setRefresh(!refresh);
+      dispatch(refreshData());
     }
   };
 
@@ -119,7 +126,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       })
       .then((res) => {
         showSuccessAlert(res.data.message);
-        setRefresh(!refresh);
+        dispatch(refreshData());
         toggleStandard();
       })
       .catch((err) => {
@@ -649,13 +656,11 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       <Suspense fallback={null}>
                         <BasicInfo
                           studentId={studentId}
-                          Countries={Countries}
-                          OfficeTypes={officeData}
-                          country={countryData || []}
-                          MaritalStatus={maritialData}
-                          basicData={basicData}
-                          getBasicInfoApi={getBasicInfo}
                           role={user.role}
+                          officeTypes={officeTypes}
+                          regions={regions}
+                          franchises={franchises}
+                          maritalStatus={maritalStatus}
                         />
                       </Suspense>
                     )}
