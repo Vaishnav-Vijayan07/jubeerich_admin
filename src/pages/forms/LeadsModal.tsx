@@ -462,8 +462,10 @@ const LeadsModal = withSwal((props: any) => {
         setSelectedSource(null);
         setLanguageForm(languageFormInitialState);
         setSelectedFile([]);
+        setSelectedFileName([]);
         setActiveRegion(false);
         setIsFranchiseActive(false);
+        setSelectExam(false)
     };
 
     useEffect(() => {
