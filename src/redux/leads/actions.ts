@@ -18,6 +18,7 @@ export interface LeadsActionType {
 }
 
 interface LeadsData {
+  isAssignedLeads: boolean
   id: string;
   full_name: string;
   email: string;
@@ -87,6 +88,7 @@ export const getLeadUser = (): LeadsActionType => ({
 });
 
 export const addLeads = (
+  isAssignedLeads: boolean,
   full_name: string | null,
   email: string | null,
   phone: string | null,
@@ -111,6 +113,7 @@ export const addLeads = (
 ): LeadsActionType => ({
   type: LeadsActionTypes.ADD_LEADS,
   payload: {
+    isAssignedLeads,
     full_name,
     email,
     phone,
@@ -135,6 +138,7 @@ export const addLeads = (
 });
 
 export const updateLeads = (
+  isAssignedLeads: boolean,
   id: string | null,
   full_name: string | null,
   email: string | null,
@@ -156,10 +160,11 @@ export const updateLeads = (
   zipcode: string | null,
   exam_details?: any,
   exam_documents?: any,
-  franchise_id?: string | null
+  franchise_id?: string | null,
 ): LeadsActionType => ({
   type: LeadsActionTypes.UPDATE_LEADS,
   payload: {
+    isAssignedLeads,
     id,
     full_name,
     email,
@@ -184,7 +189,7 @@ export const updateLeads = (
   },
 });
 
-export const deleteLeads = (id: string): LeadsActionType => ({
+export const deleteLeads = (id: string, isAssignedLeads: boolean = false): LeadsActionType => ({
   type: LeadsActionTypes.DELETE_LEADS,
-  payload: { id },
+  payload: { id, isAssignedLeads },
 });

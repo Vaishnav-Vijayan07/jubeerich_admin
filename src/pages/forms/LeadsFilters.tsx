@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Select, { ActionMeta, OptionsType } from "react-select";
 import { Button, Card, Col, Form, Row } from 'react-bootstrap';
-import { AUTH_SESSION_KEY, cre_id, cre_reception_id, customStyles } from '../../constants';
+import { AUTH_SESSION_KEY, cre_id, cre_reception_id, cre_tl_id, customStyles } from '../../constants';
 
 const LeadsFilters = (props: any) => {
     const {
@@ -12,7 +12,8 @@ const LeadsFilters = (props: any) => {
         counsellors,
         userData,
         cres,
-        changeFilteredItemsData
+        changeFilteredItemsData,
+        isAssignedLeads = false
     } = props;
 
     const [filters, setFilters] = useState({
@@ -23,6 +24,7 @@ const LeadsFilters = (props: any) => {
         preferredCountries: "",
         updated_by: "",
         source_id: "",
+        CRE: ""
     });
     const [selectedStatus, setSelectedStatus] = useState<any>(null);
     const [selectedSourceFilter, setSelectedSourceFilter] = useState<any>(null);
@@ -78,6 +80,9 @@ const LeadsFilters = (props: any) => {
                 return itemDate === filterDate;
             });
         }
+        if (filters.CRE) {
+            tempItems = tempItems.filter((item) => item.assigned_cre == filters.CRE);
+        }
         changeFilteredItemsData(tempItems);
     };
 
@@ -120,12 +125,14 @@ const LeadsFilters = (props: any) => {
             preferredCountries: "",
             updated_by: "",
             source_id: "",
+            CRE: ""
         });
         setSelectedStatus(null);
         setSelectedSourceFilter(null);
         setSelectedAssignedBy(null);
         setSelectedCounsellor(null);
         setSelectedCountryFilter(null);
+        setSelectedCREFilter(null)
     };
 
     const handleFilterDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -192,7 +199,7 @@ const LeadsFilters = (props: any) => {
                             ""
                         )}
 
-                        {user?.role == cre_id || user?.role == cre_reception_id ? (
+                        {(user?.role == cre_tl_id && isAssignedLeads) || (user?.role == cre_reception_id && isAssignedLeads) ? (
                             <Col lg={3} md={4} sm={6} xs={12}>
                                 <Form.Group className="mb-3" controlId="CRE">
                                     <Form.Label>CRE</Form.Label>

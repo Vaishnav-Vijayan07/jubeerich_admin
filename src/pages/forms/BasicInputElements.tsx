@@ -67,6 +67,8 @@ const BasicInputElements = withSwal((props: any) => {
     branchCounsellors
   } = props;
 
+  console.log('CRES', cres);
+  
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);
@@ -515,8 +517,9 @@ const BasicInputElements = withSwal((props: any) => {
           leadTypes = {leadTypes || []}
           user = {user || []} 
           office = {office || []}
-          channels= {channels || []}
-          loading = {loading || []}
+          channels = {channels || []}
+          error = {error}
+          loading = {loading}
           regionData = {regionData || []}
           franchisees = {franchisees || []}
           region = {region || []}

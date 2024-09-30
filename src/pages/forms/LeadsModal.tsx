@@ -30,7 +30,8 @@ const LeadsModal = withSwal((props: any) => {
         toggle,
         modal,
         handleUpdateData,
-        clearLeadModal
+        clearLeadModal,
+        isAssignedLeads = false
     } = props;
 
     const [sourceData, setSourceData] = useState<any>(source);
@@ -198,6 +199,7 @@ const LeadsModal = withSwal((props: any) => {
                                 // Handle update logic
                                 dispatch(
                                     updateLeads(
+                                        isAssignedLeads,
                                         formData?.id,
                                         formData.full_name,
                                         formData.email,
@@ -218,12 +220,13 @@ const LeadsModal = withSwal((props: any) => {
                                         formData.zipcode,
                                         exam_details[0]?.exam_type ? JSON.stringify(exam_details) : null,
                                         selectedFile,
-                                        formData.franchise_id ? formData.franchise_id : null
+                                        formData.franchise_id ? formData.franchise_id : null,
                                     )
                                 );
                             } else {
                                 dispatch(
                                     addLeads(
+                                        isAssignedLeads,
                                         formData.full_name,
                                         formData.email,
                                         formData.phone,
@@ -462,6 +465,14 @@ const LeadsModal = withSwal((props: any) => {
         setActiveRegion(false);
         setIsFranchiseActive(false);
     };
+
+    useEffect(() => {
+        if (!loading && !error) {
+        //   toggle(false);
+          setValidationErrors(initialValidationState); // Clear validation errors
+          setFormData(initialState); //clear form data
+        }
+      }, [loading, error]);
 
     return (
         <>

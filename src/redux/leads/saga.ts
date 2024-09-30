@@ -20,7 +20,9 @@ import {
   getLead,
   getLeadUser,
   getLeadsTL,
-  getLeadsByCounsellorTL as getLeadsByCounsellorTLAction
+  getLeadsByCounsellorTL as getLeadsByCounsellorTLAction,
+  getLeadAssignedByCounsellorTL,
+  getLeadAssigned
 } from "./actions";
 
 // constants
@@ -30,6 +32,7 @@ import { getAssignedLeadsByCreTl, getLeadsByCreTl, getAssignedLeadsByCounsellorT
 
 interface LeadsData {
   payload: {
+    isAssignedLeads: boolean;
     id: string;
     full_name: string;
     email: string;
@@ -168,6 +171,7 @@ function* getLeadUsers(): SagaIterator {
 
 function* addLeads({
   payload: {
+    isAssignedLeads,
     full_name,
     email,
     phone,
@@ -228,9 +232,15 @@ function* addLeads({
         console.log("getLeadsTL called");
         
         yield put(getLeadsTL());
-      } else  if (role == counsellor_tl_id) {
+      }
+      else if(role == counsellor_tl_id && isAssignedLeads){
+        
+        yield put(getLeadAssignedByCounsellorTL())
+      } 
+      else if (role == counsellor_tl_id) {
         yield put(getLeadsByCounsellorTLAction());
-      } else {
+      } 
+      else {
         console.log("getLead called");
 
         yield put(getLead());
@@ -245,6 +255,7 @@ function* addLeads({
 
 function* updateLeads({
   payload: {
+    isAssignedLeads,
     id,
     full_name,
     email,
@@ -305,11 +316,20 @@ function* updateLeads({
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
 
-      if (role == cre_tl_id) {
+      if (role == cre_tl_id && isAssignedLeads) {
+        yield put(getLeadAssigned());
+      } 
+      else if (role == cre_tl_id) {
         yield put(getLeadsTL());
-      } else  if (role == counsellor_tl_id) {
+      } 
+      else if(role == counsellor_tl_id && isAssignedLeads){
+        
+        yield put(getLeadAssignedByCounsellorTL())
+      }
+      else  if (role == counsellor_tl_id) {
         yield put(getLeadsByCounsellorTLAction());
-      } else {
+      }
+      else {
         yield put(getLead());
       }
     }
@@ -319,7 +339,7 @@ function* updateLeads({
   }
 }
 
-function* deleteLeads({ payload: { id } }: LeadsData): SagaIterator {
+function* deleteLeads({ payload: { id, isAssignedLeads } }: LeadsData): SagaIterator {
   try {
     const response = yield call(deleteSourcesApi, id);
     const data = response.data.message;
@@ -332,11 +352,20 @@ function* deleteLeads({ payload: { id } }: LeadsData): SagaIterator {
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
 
-      if (role == 4) {
+      if (role == cre_tl_id && isAssignedLeads) {
+        yield put(getLeadAssigned());
+      } 
+      else if (role == cre_tl_id) {
         yield put(getLeadsTL());
-      } else  if (role == counsellor_tl_id) {
+      } 
+      else if(role == counsellor_tl_id && isAssignedLeads){
+        
+        yield put(getLeadAssignedByCounsellorTL())
+      }
+      else  if (role == counsellor_tl_id) {
         yield put(getLeadsByCounsellorTLAction());
-      } else {
+      } 
+      else {
         yield put(getLead());
       }
     }

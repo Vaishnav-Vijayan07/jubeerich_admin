@@ -219,7 +219,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  // const handleUpdate = (item: any) => {
   //   console.log("item ==>", item);
     
   //   //update source dropdown
@@ -320,7 +319,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteLeads(id));
+          dispatch(deleteLeads(id, true));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -675,21 +674,21 @@ const BasicInputElements = withSwal((props: any) => {
       <Row className="justify-content-between px-2">
         
         <LeadsModal 
-          country = {country} 
-          source = {source}
-          leadTypes = {leadTypes}
-          user = {user} 
-          office = {office}
-          channels= {channels}
+          country = {country || []} 
+          source = {source || []}
+          leadTypes = {leadTypes || []}
+          user = {user || []} 
+          office = {office || []}
+          channels= {channels || []} 
           loading = {loading}
-          regionData = {region}
-          franchisees = {franchisees}
-          region = {region}
+          regionData = {region || []}
+          franchisees = {franchisees || []}
+          region = {region || []}
           modal = {modal}
           toggle = {toggle}
           handleUpdateData = {handleUpdateData}
+          isAssignedLeads={true}
         />
-        {/* </Col> */}
 
         {user?.role == it_team_id && (
           <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
@@ -716,7 +715,7 @@ const BasicInputElements = withSwal((props: any) => {
 
         <Col lg={12} className="p-0 form__card">
 
-          <LeadsFilters changeFilteredItemsData={changeFilteredItemsData} state={state} status={status} source={source} country={country} userData={userData} counsellors={counsellors} cres={cres} />
+          <LeadsFilters changeFilteredItemsData={changeFilteredItemsData} state={state} status={status} source={source} country={country} userData={userData} counsellors={counsellors} cres={cres} isAssignedLeads={true}/>
 
 
           <Card className="bg-white">

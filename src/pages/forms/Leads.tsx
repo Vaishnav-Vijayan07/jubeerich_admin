@@ -39,6 +39,7 @@ const Leads = () => {
     })
   );
 
+  console.log('CRES', cres);
 
   useEffect(() => {
     fetchAllCounsellors();
@@ -110,7 +111,7 @@ const Leads = () => {
             source={dropdownData.sources || []}
             leadTypes={dropdownData.leadTypes || []}
             user={user || null}
-            cres={cres || []}
+            cres={dropdownData.cres || []}
             channels={dropdownData.channels || []}
             office={dropdownData.officeTypes || []}
             error={error}
