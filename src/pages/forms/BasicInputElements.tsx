@@ -148,7 +148,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     if (item) {
-      setHandleUpdateData(item);
+      setHandleUpdateData({ ...item });
     }
   };
 
