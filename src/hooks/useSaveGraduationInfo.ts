@@ -1,9 +1,9 @@
-import { RootState } from "./../redux/store";
+
 import { useState, useCallback } from "react";
 import axios from "axios";
 import swal from "sweetalert2";
 import { showErrorAlert, showSuccessAlert } from "../constants";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import { refreshData } from "../redux/countryReducer";
 
 const useSaveGraduationInfo = (studentId: number | string) => {
