@@ -45,7 +45,9 @@ export interface LeadsActionType {
   | LeadsActionTypes.GET_LEAD_USER
   | LeadsActionTypes.ADD_LEADS
   | LeadsActionTypes.UPDATE_LEADS
-  | LeadsActionTypes.DELETE_LEADS;
+  | LeadsActionTypes.DELETE_LEADS
+  | LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL
+  | LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL;
   payload: {
     actionType?: string;
     data?: any;
@@ -88,6 +90,26 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             ...state,
             assignedLeads: action.payload.data.data.formattedUserPrimaryInfos,
             allCres: action.payload.data.data.allCres,
+            loading: false,
+            initialloading: false,
+          };
+        }
+
+        case LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL: {
+          return {
+            ...state,
+            assignedLeads: action.payload.data.data.formattedUserPrimaryInfos,
+            allCounsellorTLs: action.payload.data.data.allCounsellorTLs,
+            loading: false,
+            initialloading: false,
+          };
+        }
+
+        case LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL: {
+          return {
+            ...state,
+            leads: action.payload.data.data.formattedUserPrimaryInfos,
+            allCounsellorTLs: action.payload.data.data.allCounsellorTLs,
             loading: false,
             initialloading: false,
           };
@@ -155,6 +177,24 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             initialloading: false,
           };
         }
+        case LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL: {
+          return {
+            ...state,
+            assignedLeads: [],
+            error: action.payload.error,
+            loading: false,
+            initialloading: false,
+          };
+        }
+        case LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL: {
+          return {
+            ...state,
+            assignedLeads: [],
+            error: action.payload.error,
+            loading: false,
+            initialloading: false,
+          };
+        }
         case LeadsActionTypes.ADD_LEADS: {
           showErrorAlert(action.payload.error);
           return {
@@ -191,6 +231,10 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
     case LeadsActionTypes.GET_LEADS_TL:
       return { ...state, loading: true, initialloading: true };
     case LeadsActionTypes.GET_LEADS_ASSIGNED:
+      return { ...state, loading: true, initialloading: true };
+    case LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL:
+      return { ...state, loading: true, initialloading: true };
+    case LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL:
       return { ...state, loading: true, initialloading: true };
     case LeadsActionTypes.ADD_LEADS:
       return { ...state, loading: true };

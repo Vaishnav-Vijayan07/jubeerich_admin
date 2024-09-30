@@ -20,15 +20,19 @@ import {
   getLead,
   getLeadUser,
   getLeadsTL,
+  getLeadsByCounsellorTL as getLeadsByCounsellorTLAction,
+  getLeadAssignedByCounsellorTL,
+  getLeadAssigned
 } from "./actions";
 
 // constants
 import { LeadsActionTypes } from "./constants";
-import { AUTH_SESSION_KEY } from "../../constants";
-import { getAssignedLeadsByCreTl, getLeadsByCreTl } from "../../helpers/api/leads";
+import { AUTH_SESSION_KEY, counsellor_tl_id, cre_tl_id } from "../../constants";
+import { getAssignedLeadsByCreTl, getLeadsByCreTl, getAssignedLeadsByCounsellorTL as getAssignedLeadsByCounsellorTLAPI, getLeadsByCounsellorTL } from "../../helpers/api/leads";
 
 interface LeadsData {
   payload: {
+    isAssignedLeads: boolean;
     id: string;
     full_name: string;
     email: string;
@@ -118,6 +122,38 @@ function* getAssignedLeads(): SagaIterator {
   }
 }
 
+function* getLeadsForCounsellorTL(): SagaIterator {
+  try {
+    let response;
+    let data;
+    response = yield call(getLeadsByCounsellorTL);
+    data = response.data;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, { data }));
+  } catch (error: any) {
+    console.log("Error", error);
+    yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, error));
+  }
+}
+
+function* getAssignedLeadsByCounsellorTL(): SagaIterator {
+  try {
+    let response = yield call(getAssignedLeadsByCounsellorTLAPI);
+    let data = response.data;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(
+      LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, { data })
+    );
+  } catch (error: any) {
+    console.log("Error", error);
+    yield put(
+      LeadsApiResponseError(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, error)
+    );
+  }
+}
+
 function* getLeadUsers(): SagaIterator {
   try {
     const response = yield call(getLeadUserApi);
@@ -135,6 +171,7 @@ function* getLeadUsers(): SagaIterator {
 
 function* addLeads({
   payload: {
+    isAssignedLeads,
     full_name,
     email,
     phone,
@@ -191,11 +228,19 @@ function* addLeads({
       const { role } = JSON.parse(userInfo);
 
       console.log("role ==>", role);
-      if (role == 4) {
+      if (role == cre_tl_id) {
         console.log("getLeadsTL called");
         
         yield put(getLeadsTL());
-      } else {
+      }
+      else if(role == counsellor_tl_id && isAssignedLeads){
+        
+        yield put(getLeadAssignedByCounsellorTL())
+      } 
+      else if (role == counsellor_tl_id) {
+        yield put(getLeadsByCounsellorTLAction());
+      } 
+      else {
         console.log("getLead called");
 
         yield put(getLead());
@@ -210,6 +255,7 @@ function* addLeads({
 
 function* updateLeads({
   payload: {
+    isAssignedLeads,
     id,
     full_name,
     email,
@@ -270,9 +316,20 @@ function* updateLeads({
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
 
-      if (role == 4) {
+      if (role == cre_tl_id && isAssignedLeads) {
+        yield put(getLeadAssigned());
+      } 
+      else if (role == cre_tl_id) {
         yield put(getLeadsTL());
-      } else {
+      } 
+      else if(role == counsellor_tl_id && isAssignedLeads){
+        
+        yield put(getLeadAssignedByCounsellorTL())
+      }
+      else  if (role == counsellor_tl_id) {
+        yield put(getLeadsByCounsellorTLAction());
+      }
+      else {
         yield put(getLead());
       }
     }
@@ -282,7 +339,7 @@ function* updateLeads({
   }
 }
 
-function* deleteLeads({ payload: { id } }: LeadsData): SagaIterator {
+function* deleteLeads({ payload: { id, isAssignedLeads } }: LeadsData): SagaIterator {
   try {
     const response = yield call(deleteSourcesApi, id);
     const data = response.data.message;
@@ -295,9 +352,20 @@ function* deleteLeads({ payload: { id } }: LeadsData): SagaIterator {
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
 
-      if (role == 4) {
+      if (role == cre_tl_id && isAssignedLeads) {
+        yield put(getLeadAssigned());
+      } 
+      else if (role == cre_tl_id) {
         yield put(getLeadsTL());
-      } else {
+      } 
+      else if(role == counsellor_tl_id && isAssignedLeads){
+        
+        yield put(getLeadAssignedByCounsellorTL())
+      }
+      else  if (role == counsellor_tl_id) {
+        yield put(getLeadsByCounsellorTLAction());
+      } 
+      else {
         yield put(getLead());
       }
     }
@@ -316,6 +384,13 @@ export function* watchGetLeadsForTL() {
 
 export function* watchGetAssignedLeads() {
   yield takeEvery(LeadsActionTypes.GET_LEADS_ASSIGNED, getAssignedLeads);
+}
+export function* watchGetAssignedLeadsByCounsellorTL() {
+  yield takeEvery(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, getAssignedLeadsByCounsellorTL);
+}
+
+export function* watchGetLeadsByCounsellorTL() {
+  yield takeEvery(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, getLeadsForCounsellorTL);
 }
 
 export function* watchGetLeadUser() {
@@ -339,6 +414,8 @@ function* LeadsSaga() {
     fork(watchGetLeads),
     fork(watchGetLeadsForTL),
     fork(watchGetAssignedLeads),
+    fork(watchGetAssignedLeadsByCounsellorTL),
+    fork(watchGetLeadsByCounsellorTL),
     fork(watchaddLeads),
     fork(watchUpdateLeads),
     fork(watchDeleteLeads),

@@ -11,11 +11,14 @@ export interface LeadsActionType {
     | LeadsActionTypes.GET_LEAD_USER
     | LeadsActionTypes.ADD_LEADS
     | LeadsActionTypes.UPDATE_LEADS
-    | LeadsActionTypes.DELETE_LEADS;
+    | LeadsActionTypes.DELETE_LEADS
+    | LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL
+    | LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL;
   payload: {} | string;
 }
 
 interface LeadsData {
+  isAssignedLeads: boolean
   id: string;
   full_name: string;
   email: string;
@@ -69,12 +72,23 @@ export const getLeadAssigned = (): LeadsActionType => ({
   payload: {},
 });
 
+export const getLeadAssignedByCounsellorTL = (): LeadsActionType => ({
+  type: LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
+  payload: {},
+});
+
+export const getLeadsByCounsellorTL = (): LeadsActionType => ({
+  type: LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL,
+  payload: {},
+});
+
 export const getLeadUser = (): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEAD_USER,
   payload: {},
 });
 
 export const addLeads = (
+  isAssignedLeads: boolean,
   full_name: string | null,
   email: string | null,
   phone: string | null,
@@ -99,6 +113,7 @@ export const addLeads = (
 ): LeadsActionType => ({
   type: LeadsActionTypes.ADD_LEADS,
   payload: {
+    isAssignedLeads,
     full_name,
     email,
     phone,
@@ -123,6 +138,7 @@ export const addLeads = (
 });
 
 export const updateLeads = (
+  isAssignedLeads: boolean,
   id: string | null,
   full_name: string | null,
   email: string | null,
@@ -144,10 +160,11 @@ export const updateLeads = (
   zipcode: string | null,
   exam_details?: any,
   exam_documents?: any,
-  franchise_id?: string | null
+  franchise_id?: string | null,
 ): LeadsActionType => ({
   type: LeadsActionTypes.UPDATE_LEADS,
   payload: {
+    isAssignedLeads,
     id,
     full_name,
     email,
@@ -172,7 +189,7 @@ export const updateLeads = (
   },
 });
 
-export const deleteLeads = (id: string): LeadsActionType => ({
+export const deleteLeads = (id: string, isAssignedLeads: boolean = false): LeadsActionType => ({
   type: LeadsActionTypes.DELETE_LEADS,
-  payload: { id },
+  payload: { id, isAssignedLeads },
 });
