@@ -63,9 +63,7 @@ const VisaProcessRow = ({
                     value={
                       data?.visa_type
                         ? {
-                            label: Visa_Types.find(
-                              (u: any) => u.value === data?.visa_type
-                            )?.label,
+                            label: Visa_Types.find((u: any) => u.value === data?.visa_type)?.label,
                             value: data?.visa_type,
                           }
                         : null
@@ -73,28 +71,7 @@ const VisaProcessRow = ({
                     placeholder="Select Visa Type"
                     name="visa_type"
                     onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(
-                        index,
-                        "visa_type",
-                        selectedOption.value,
-                        visa_decline
-                      )
-                    }
-                  />
-                </Form.Group>
-              </Col>
-
-              <Col md={6} lg={6} xl={6} xxl={4}>
-                <Form.Group className="mb-3" controlId="rejection_reason">
-                  <Form.Label>Rejection Reason</Form.Label>
-                  <FormInput
-                    type="text"
-                    name="rejection_reason"
-                    placeholder="Enter Rejection Reason"
-                    key="rejection_reason"
-                    value={data?.rejection_reason || ""}
-                    onChange={(e) =>
-                      handleVisaInputChange(index, e, visa_decline)
+                      handleVisaSelectChange(index, "visa_type", selectedOption.value, visa_decline)
                     }
                   />
                 </Form.Group>
@@ -110,9 +87,7 @@ const VisaProcessRow = ({
                     value={
                       data?.country_id
                         ? {
-                            label: countries.find(
-                              (u: any) => u.value == data?.country_id
-                            )?.label,
+                            label: countries.find((u: any) => u.value == data?.country_id)?.label,
                             value: data?.country_id,
                           }
                         : null
@@ -120,12 +95,7 @@ const VisaProcessRow = ({
                     placeholder="Select Country"
                     name="country_id"
                     onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(
-                        index,
-                        "country_id",
-                        selectedOption.value,
-                        visa_decline
-                      )
+                      handleVisaSelectChange(index, "country_id", selectedOption.value, visa_decline)
                     }
                   />
                 </Form.Group>
@@ -133,7 +103,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="course_applied">
-                  <Form.Label>Course</Form.Label>
+                  <Form.Label>Course Applied</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -141,9 +111,7 @@ const VisaProcessRow = ({
                     value={
                       data?.course_applied
                         ? {
-                            label: courses.find(
-                              (u: any) => u.value == data?.course_applied
-                            )?.label,
+                            label: courses.find((u: any) => u.value == data?.course_applied)?.label,
                             value: data?.course_applied,
                           }
                         : null
@@ -151,12 +119,7 @@ const VisaProcessRow = ({
                     placeholder="Select Course"
                     name="course_applied"
                     onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(
-                        index,
-                        "course_applied",
-                        selectedOption.value,
-                        visa_decline
-                      )
+                      handleVisaSelectChange(index, "course_applied", selectedOption.value, visa_decline)
                     }
                   />
                 </Form.Group>
@@ -172,9 +135,7 @@ const VisaProcessRow = ({
                     value={
                       data?.university_applied
                         ? {
-                            label: universities.find(
-                              (u: any) => u.value == data?.university_applied
-                            )?.label,
+                            label: universities.find((u: any) => u.value == data?.university_applied)?.label,
                             value: data?.university_applied,
                           }
                         : null
@@ -182,22 +143,30 @@ const VisaProcessRow = ({
                     placeholder="Select University Applied"
                     name="university_applied"
                     onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(
-                        index,
-                        "university_applied",
-                        selectedOption.value,
-                        visa_decline
-                      )
+                      handleVisaSelectChange(index, "university_applied", selectedOption.value, visa_decline)
                     }
+                  />
+                </Form.Group>
+              </Col>
+
+              <Col md={6} lg={6} xl={6} xxl={4}>
+                <Form.Group className="mb-3" controlId="rejection_reason">
+                  <Form.Label>Rejection Reason</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3} // You can adjust the number of rows as needed
+                    name="rejection_reason"
+                    placeholder="Enter Rejection Reason"
+                    key="rejection_reason"
+                    value={data?.rejection_reason || ""}
+                    onChange={(e) => handleVisaInputChange(index, e, visa_decline)}
                   />
                 </Form.Group>
               </Col>
               {visaDeclineData.length > 1 && (
                 <Row className="mb-2">
                   <ActionButton
-                    onClick={() =>
-                      removeVisaForm(index, data.id ?? 0, visa_decline)
-                    }
+                    onClick={() => removeVisaForm(index, data.id ?? 0, visa_decline)}
                     label="Remove"
                     iconClass="mdi mdi-delete"
                     colorClass="text-danger"
@@ -209,11 +178,7 @@ const VisaProcessRow = ({
           ))}
 
         <Row className="mb-2">
-          <ActionButton
-            onClick={() => addMoreVisaForm(visa_decline)}
-            label="Add More"
-            iconClass="mdi mdi-plus"
-          />
+          <ActionButton onClick={() => addMoreVisaForm(visa_decline)} label="Add More" iconClass="mdi mdi-plus" />
         </Row>
         <Button className="mb-3" onClick={() => saveVisaForm(visa_decline)}>
           Save Declined Visa Details
@@ -239,9 +204,7 @@ const VisaProcessRow = ({
                     value={
                       data?.visa_type
                         ? {
-                            label: Visa_Types.find(
-                              (u: any) => u.value == data?.visa_type
-                            )?.label,
+                            label: Visa_Types.find((u: any) => u.value == data?.visa_type)?.label,
                             value: data?.visa_type,
                           }
                         : null
@@ -249,12 +212,7 @@ const VisaProcessRow = ({
                     placeholder="Select Visa Type"
                     name="visa_type"
                     onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(
-                        index,
-                        "visa_type",
-                        selectedOption.value,
-                        visa_approve
-                      )
+                      handleVisaSelectChange(index, "visa_type", selectedOption.value, visa_approve)
                     }
                   />
                 </Form.Group>
@@ -270,9 +228,7 @@ const VisaProcessRow = ({
                     value={
                       data?.country_id
                         ? {
-                            label: countries.find(
-                              (u: any) => u.value == data?.country_id
-                            )?.label,
+                            label: countries.find((u: any) => u.value == data?.country_id)?.label,
                             value: data?.country_id,
                           }
                         : null
@@ -280,12 +236,7 @@ const VisaProcessRow = ({
                     placeholder="Select Country"
                     name="country_id"
                     onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(
-                        index,
-                        "country_id",
-                        selectedOption.value,
-                        visa_approve
-                      )
+                      handleVisaSelectChange(index, "country_id", selectedOption.value, visa_approve)
                     }
                   />
                 </Form.Group>
@@ -301,9 +252,7 @@ const VisaProcessRow = ({
                     value={
                       data?.course_applied
                         ? {
-                            label: courses.find(
-                              (u: any) => u.value == data?.course_applied
-                            )?.label,
+                            label: courses.find((u: any) => u.value == data?.course_applied)?.label,
                             value: data?.course_applied,
                           }
                         : null
@@ -311,12 +260,7 @@ const VisaProcessRow = ({
                     placeholder="Select Course"
                     name="course_applied"
                     onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(
-                        index,
-                        "course_applied",
-                        selectedOption.value,
-                        visa_approve
-                      )
+                      handleVisaSelectChange(index, "course_applied", selectedOption.value, visa_approve)
                     }
                   />
                 </Form.Group>
@@ -332,9 +276,7 @@ const VisaProcessRow = ({
                     value={
                       data?.university_applied
                         ? {
-                            label: universities.find(
-                              (u: any) => u.value == data?.university_applied
-                            )?.label,
+                            label: universities.find((u: any) => u.value == data?.university_applied)?.label,
                             value: data?.university_applied,
                           }
                         : null
@@ -342,12 +284,7 @@ const VisaProcessRow = ({
                     placeholder="Select University Applied"
                     name="university_applied"
                     onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(
-                        index,
-                        "university_applied",
-                        selectedOption.value,
-                        visa_approve
-                      )
+                      handleVisaSelectChange(index, "university_applied", selectedOption.value, visa_approve)
                     }
                   />
                 </Form.Group>
@@ -356,9 +293,7 @@ const VisaProcessRow = ({
                 <Row className="mb-2">
                   <ActionButton
                     label="Remove"
-                    onClick={() =>
-                      removeVisaForm(index, data.id ?? 0, visa_approve)
-                    }
+                    onClick={() => removeVisaForm(index, data.id ?? 0, visa_approve)}
                     iconClass="mdi mdi-delete"
                     colorClass="text-danger"
                   />
@@ -369,11 +304,7 @@ const VisaProcessRow = ({
           ))}
 
         <Row className="mb-2">
-          <ActionButton
-            label="Add More"
-            onClick={() => addMoreVisaForm(visa_approve)}
-            iconClass="mdi mdi-plus"
-          />
+          <ActionButton label="Add More" onClick={() => addMoreVisaForm(visa_approve)} iconClass="mdi mdi-plus" />
         </Row>
         <Button className="mb-3" onClick={() => saveVisaForm(visa_approve)}>
           Save Approved Visa Details
@@ -399,9 +330,7 @@ const VisaProcessRow = ({
                     value={
                       data?.country_id
                         ? {
-                            label: countries.find(
-                              (u: any) => u.value == data?.country_id
-                            )?.label,
+                            label: countries.find((u: any) => u.value == data?.country_id)?.label,
                             value: data?.country_id,
                           }
                         : null
@@ -409,12 +338,7 @@ const VisaProcessRow = ({
                     placeholder="Select Country"
                     name="country_id"
                     onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(
-                        index,
-                        "country_id",
-                        selectedOption.value,
-                        travel_history
-                      )
+                      handleVisaSelectChange(index, "country_id", selectedOption.value, travel_history)
                     }
                   />
                 </Form.Group>
@@ -431,9 +355,7 @@ const VisaProcessRow = ({
                     placeholder="Select start date"
                     key="start_date"
                     value={moment(data?.start_date).format("YYYY-MM-DD")}
-                    onChange={(e) =>
-                      handleVisaInputChange(index, e, travel_history)
-                    }
+                    onChange={(e) => handleVisaInputChange(index, e, travel_history)}
                   />
                 </Form.Group>
               </Col>
@@ -449,9 +371,7 @@ const VisaProcessRow = ({
                     placeholder="Select end date"
                     key="end_date"
                     value={moment(data?.end_date).format("YYYY-MM-DD")}
-                    onChange={(e) =>
-                      handleVisaInputChange(index, e, travel_history)
-                    }
+                    onChange={(e) => handleVisaInputChange(index, e, travel_history)}
                   />
                 </Form.Group>
               </Col>
@@ -465,18 +385,14 @@ const VisaProcessRow = ({
                     placeholder="Enter Purpose of Travel"
                     key="purpose_of_travel"
                     value={data?.purpose_of_travel || ""}
-                    onChange={(e) =>
-                      handleVisaInputChange(index, e, travel_history)
-                    }
+                    onChange={(e) => handleVisaInputChange(index, e, travel_history)}
                   />
                 </Form.Group>
               </Col>
               {travelHistoryData.length > 1 && (
                 <Row className="mb-2">
                   <ActionButton
-                    onClick={() =>
-                      removeVisaForm(index, data.id ?? 0, travel_history)
-                    }
+                    onClick={() => removeVisaForm(index, data.id ?? 0, travel_history)}
                     label="Remove"
                     iconClass="mdi mdi-delete"
                     colorClass="text-danger"
@@ -488,11 +404,7 @@ const VisaProcessRow = ({
           ))}
 
         <Row className="mb-2">
-          <ActionButton
-            onClick={() => addMoreVisaForm(travel_history)}
-            label="Add More"
-            iconClass="mdi mdi-plus"
-          />
+          <ActionButton onClick={() => addMoreVisaForm(travel_history)} label="Add More" iconClass="mdi mdi-plus" />
         </Row>
         <Button className="mb-2" onClick={() => saveVisaForm(travel_history)}>
           Save Travel History

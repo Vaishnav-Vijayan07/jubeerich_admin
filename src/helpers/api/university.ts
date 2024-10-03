@@ -15,6 +15,9 @@ function addUniversitysApi(params: {
   country_id: string;
   website_url: string;
   image_url: string;
+  portal_link: string;
+  username: string;
+  password: string;
   updated_by: string;
 }) {
   return api.create(`${baseUrl}`, params);
@@ -28,6 +31,9 @@ function updateUniversitysApi(
     country_id: string;
     website_url: string;
     image_url: string;
+    portal_link: string;
+    username: string;
+    password: string;
     updated_by: string;
   }
 ) {
