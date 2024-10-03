@@ -36,6 +36,7 @@ import EducationDetails from "./EducationDetails";
 import FundPlan from "./FundPlan";
 import { refreshData } from "../../../../redux/countryReducer";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
+import AdditionalDocuments from "./AdditionalDocuments";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const AcademicInfo = lazy(() => import("./AcademicInfo"));
@@ -648,6 +649,15 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                         Visa Process
                       </Nav.Link>
                     </Nav.Item>
+
+                    <Nav.Item as="li" className="nav-item nav_item_6">
+                      <Nav.Link
+                        eventKey="additional_documents"
+                        className="nav-link cursor-pointer"
+                      >
+                        Additional Documents
+                      </Nav.Link>
+                    </Nav.Item>
                   </Nav>
 
                   <Tab.Content>
@@ -680,6 +690,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     {activeTab === "visa_process" && studentId && (
                       <Suspense fallback={null}>
                         <VisaProcess studentId={studentId} />
+                      </Suspense>
+                    )}
+
+                    {activeTab === "additional_documents" && studentId && (
+                      <Suspense fallback={null}>
+                        <AdditionalDocuments studentId={studentId} />
                       </Suspense>
                     )}
 
