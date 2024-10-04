@@ -3,6 +3,7 @@ import { FormInput } from "../../../../components";
 import Select from "react-select";
 import { baseUrl } from "../../../../constants";
 import ActionButton from "./ActionButton";
+import React from "react";
 
 const fundTypeOptions = [
   { value: "loan", label: "Loan" },
@@ -88,6 +89,79 @@ const FundPlanRows = ({
           </Form.Group>
         </Col>
 
+        {/* Relation with sponsor*/}
+
+        <Col md={4} lg={4} xl={4} xxl={4}>
+          <Form.Group
+            className="mb-3"
+            controlId={`relation_with_sponsor-${index}`}
+          >
+            <Form.Label>Relation with sponsor</Form.Label>
+            <FormInput
+              type="text"
+              name="relation_with_sponsor"
+              placeholder="Enter relation with sponsor"
+              value={plan.relation_with_sponsor || ""}
+              onChange={(e) =>
+                handleFundPlanInputChange(index, e.target.name, e.target.value)
+              }
+            />
+            {plan.errors?.relation_with_sponsor && (
+              <Form.Text className="text-danger">
+                {plan.errors.relation_with_sponsor}
+              </Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+
+        {/* Name of bank */}
+
+        <Col md={4} lg={4} xl={4} xxl={4}>
+          <Form.Group className="mb-3" controlId={`name_of_bank-${index}`}>
+            <Form.Label>Name of bank</Form.Label>
+            <FormInput
+              type="text"
+              name="name_of_bank"
+              placeholder="Enter name of bank"
+              value={plan.name_of_bank || ""}
+              onChange={(e) =>
+                handleFundPlanInputChange(index, e.target.name, e.target.value)
+              }
+            />
+            {plan.errors?.name_of_bank && (
+              <Form.Text className="text-danger">
+                {plan.errors.name_of_bank}
+              </Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+
+        {/* Sponsorship amount */}
+
+        <Col md={4} lg={4} xl={4} xxl={4}>
+          <Form.Group
+            className="mb-3"
+            controlId={`sponsorship_amount-${index}`}
+          >
+            <Form.Label>Sponsorship amount</Form.Label>
+            <FormInput
+              type="number"
+              name="sponsorship_amount"
+              placeholder="Enter sponsorship amount"
+              value={plan.sponsorship_amount || ""}
+              onChange={(e) =>
+                handleFundPlanInputChange(index, e.target.name, e.target.value)
+              }
+              min={0}
+            />
+            {plan.errors?.sponsorship_amount && (
+              <Form.Text className="text-danger">
+                {plan.errors.sponsorship_amount}
+              </Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+
         {/* ITR Status */}
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`itr_status-${index}`}>
@@ -160,16 +234,16 @@ const FundPlanRows = ({
             )}
           </Form.Group>
         </Col>
-      <Row>
-        {fundPlan.length > 1 && (
-          <ActionButton
-            colorClass="text-danger"
-            onClick={() => removeFundPlan(index, plan.id ?? 0)}
-            iconClass="mdi mdi-delete"
-            label="Remove"
-          />
-        )}
-      </Row>
+        <Row>
+          {fundPlan.length > 1 && (
+            <ActionButton
+              colorClass="text-danger"
+              onClick={() => removeFundPlan(index, plan.id ?? 0)}
+              iconClass="mdi mdi-delete"
+              label="Remove"
+            />
+          )}
+        </Row>
       </Row>
     </>
   );

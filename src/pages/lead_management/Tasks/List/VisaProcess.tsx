@@ -26,6 +26,7 @@ const VisaProcess = withSwal((props: any) => {
     course_applied: "",
     university_applied: "",
     rejection_reason: "",
+    rejection_letter: null,
   };
 
   const initialVisaApproveForm = {
@@ -35,6 +36,7 @@ const VisaProcess = withSwal((props: any) => {
     visa_type: "",
     course_applied: "",
     university_applied: "",
+    approve_letter : null
   };
 
   const initialTravelHistoryForm = {

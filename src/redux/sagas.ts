@@ -28,6 +28,7 @@ import CampusSaga from "./campus/saga";
 import CourseTypeSaga from "./course_type/saga";
 import CourseSaga from "./course/saga";
 import StreamSaga from "./stream/saga";
+import dropDownSaga from "./dropDown/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -58,6 +59,7 @@ export default function* rootSaga() {
     CampusSaga(),
     CourseTypeSaga(),
     CourseSaga(),
-    StreamSaga()
+    StreamSaga(),
+    dropDownSaga()
   ]);
 }

@@ -3,6 +3,7 @@ import { FormInput } from "../../../../components";
 import moment from "moment";
 import { baseUrl } from "../../../../constants";
 import ActionButton from "./ActionButton";
+import React from "react";
 
 const WorkExpRow = ({
   workExperienceData,
@@ -110,6 +111,43 @@ const WorkExpRow = ({
                   className="text-decoration-none"
                 >
                   bank_statement
+                </a>
+              </div>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col md={4} lg={4} xl={4} xxl={4}>
+          <Form.Group className="mb-3" controlId={`experience_certificate`}>
+            <Form.Label>
+              <span className="text-danger">*</span> Experience Certificate
+            </Form.Label>
+            <FormInput
+              type="file"
+              name="experience_certificate"
+              onChange={(e) =>
+                handleWorkExperienceChange(
+                  e.target.name,
+                  e.target.files?.[0],
+                  index
+                )
+              }
+            />
+            {workExperience?.errors?.experience_certificate && (
+              <Form.Text className="text-danger">
+                {workExperience?.errors?.experience_certificate}
+              </Form.Text>
+            )}
+            {typeof workExperience?.experience_certificate === "string" && (
+              <div className="d-flex align-items-center">
+                <i className="mdi mdi-eye text-primary me-2"></i>
+                <a
+                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.experience_certificate}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-decoration-none"
+                >
+                  experience_certificate
                 </a>
               </div>
             )}

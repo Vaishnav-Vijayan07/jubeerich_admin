@@ -632,14 +632,14 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       </Nav.Link>
                     </Nav.Item>
 
-                    <Nav.Item as="li" className="nav-item nav_item_5">
+                    {/* <Nav.Item as="li" className="nav-item nav_item_5">
                       <Nav.Link
                         eventKey="attachments"
                         className="nav-link cursor-pointer"
                       >
                         Attachments
                       </Nav.Link>
-                    </Nav.Item>
+                    </Nav.Item> */}
 
                     <Nav.Item as="li" className="nav-item nav_item_6">
                       <Nav.Link

@@ -1,9 +1,8 @@
-
 import { useState, useCallback } from "react";
 import axios from "axios";
 import swal from "sweetalert2";
 import { showErrorAlert, showSuccessAlert } from "../constants";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { refreshData } from "../redux/countryReducer";
 
 const useSaveGraduationInfo = (studentId: number | string) => {
@@ -35,6 +34,14 @@ const useSaveGraduationInfo = (studentId: number | string) => {
         newFormData.append(
           `graduation[${index}][qualification]`,
           detail.qualification
+        );
+        newFormData.append(
+          `graduation[${index}][college_name]`,
+          detail.college_name
+        );
+        newFormData.append(
+          `graduation[${index}][university_name]`,
+          detail.university_name
         );
 
         // Append files with indexed field names for compatibility with multer
@@ -70,6 +77,20 @@ const useSaveGraduationInfo = (studentId: number | string) => {
           newFormData.append(
             `graduation[${index}][grading_scale_info]`,
             detail.grading_scale_info
+          );
+        }
+
+        if (typeof detail?.transcript === "object") {
+          newFormData.append(
+            `graduation[${index}][transcript]`,
+            detail.transcript
+          );
+        }
+
+        if (typeof detail?.individual_marksheet === "object") {
+          newFormData.append(
+            `graduation[${index}][individual_marksheet]`,
+            detail.individual_marksheet
           );
         }
       });

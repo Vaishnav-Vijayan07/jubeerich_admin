@@ -21,7 +21,19 @@ export const countries = [
   { name: "India", code: "IN", isd: "+91" },
 ];
 
-export const examtypes = [{ name: "IELTS" }, { name: "OET" }, { name: "PTE" }];
+export const examtypes = [
+  { name: "IELTS" },
+  { name: "OET" },
+  { name: "PTE" },
+  { name: "TOEFL" },
+  { name: "Duolingo" },
+  { name: "German" },
+  { name: "Spoken English" },
+  { name: "GRE" },
+  { name: "GMAT" },
+  { name: "SAT" },
+  { name: "Others" },
+];
 
 export const city = [
   { name: "Kochi", value: "Kochi" },

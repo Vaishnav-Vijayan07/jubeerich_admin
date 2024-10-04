@@ -3,15 +3,15 @@ import { Row, Col, Form, Button, Spinner } from "react-bootstrap";
 import { withSwal } from "react-sweetalert2";
 import PrimaryEducationDetails from "./PrimaryEducationDetails";
 import GraduationInfo from "./GraduationInfo";
-import * as Yup from "yup";
 import axios from "axios";
-import { showErrorAlert, showSuccessAlert } from "../../../../constants";
+import { showErrorAlert } from "../../../../constants";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { useFormState } from "../../../../hooks/useFormState";
 import useSaveEducationDetails from "../../../../hooks/useSavePrimaryEducationDetails";
 import useSaveSecondaryEducationDetails from "../../../../hooks/useSaveSecondaryEducationDetails";
 import validateFields from "../../../../helpers/validateHelper";
+import GapRow from "./gapRow";
+import GapRows from "./gapRow";
 
 const initialPrimaryState = {
   id: null,
@@ -19,6 +19,8 @@ const initialPrimaryState = {
   startDate: "",
   endDate: "",
   percentage: "",
+  board_name: "",
+  school_name: "",
   certificate: null,
   mark_sheet: null,
   admit_card: null,
@@ -31,6 +33,8 @@ const initialSecondaryState = {
   startDate: "",
   endDate: "",
   percentage: "",
+  board_name: "",
+  school_name: "",
   certificate: null,
   mark_sheet: null,
   admit_card: null,
@@ -39,6 +43,8 @@ const initialSecondaryState = {
 
 const initialGraduationState = {
   qualification: "",
+  university_name: "",
+  college_name: "",
   startDate: "",
   endDate: "",
   percentage: "",
@@ -48,13 +54,25 @@ const initialGraduationState = {
   registration_certificate: null,
   backlog_certificate: null,
   grading_scale_info: null,
+  transcript: null,
+  individual_marksheet: null,
+  errors: {},
+};
+
+const initialGapState = {
+  start_date: "",
+  end_date: "",
+  reason: "",
+  supporting_document: null,
   errors: {},
 };
 
 const EducationDetails = withSwal((props: any) => {
   const { swal, studentId } = props;
   const [hasGraduation, setHasGraduation] = useState("no");
+  const [hasGap, setHasGap] = useState("no");
   const [initialLoading, setInitialLoading] = useState(false);
+  const [gap, setGap] = useState<any>(initialGapState);
 
   const refresh = useSelector(
     (state: RootState) => state.refreshReducer.refreshing
@@ -79,18 +97,27 @@ const EducationDetails = withSwal((props: any) => {
   const fetchEducationDetails = async (studentId: string) => {
     setInitialLoading(true);
     try {
-      const { data } = await axios.get(`/studentPrimaryEducation/${studentId}`);
-      console.log(data);
+      const [educationResponse, gapResponse] = await Promise.all([
+        axios.get(`/studentPrimaryEducation/${studentId}`),
+        axios.get(`gapReason/${studentId}/education`),
+      ]);
 
-      setPrimaryDetails(data.primary || initialPrimaryState);
-      setSecondaryDetails(data.secondary || initialSecondaryState);
+      const educationData = educationResponse.data;
+      const gapData = gapResponse.data.data;
 
-      data.graduation.length > 0
+      setPrimaryDetails(educationData.primary || initialPrimaryState);
+      setSecondaryDetails(educationData.secondary || initialSecondaryState);
+
+      educationData.graduation.length > 0
         ? setHasGraduation("yes")
         : setHasGraduation("no");
       setGraduationDetails(
-        data.graduation.length > 0 ? data.graduation : [initialGraduationState]
+        educationData.graduation.length > 0
+          ? educationData.graduation
+          : [initialGraduationState]
       );
+      setGap(gapData.length > 0 ? gapData : [initialGapState]);
+      setHasGap(gapData.length > 0 ? "yes" : "no");
     } catch (error) {
       console.error("Error fetching student education details:", error);
       showErrorAlert("Failed to fetch education details");
@@ -107,6 +134,10 @@ const EducationDetails = withSwal((props: any) => {
 
   const handleGraduationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHasGraduation(e.target.value);
+  };
+
+  const handleGapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasGap(e.target.value);
   };
 
   // Handlers for primary education state update
@@ -133,6 +164,8 @@ const EducationDetails = withSwal((props: any) => {
       mark_sheet: { required: true },
       certificate: { required: true },
       admit_card: { required: true },
+      board_name: { required: true },
+      school_name: { required: true },
     };
 
     const { isValid, errors } = validateFields(
@@ -160,6 +193,8 @@ const EducationDetails = withSwal((props: any) => {
       mark_sheet: { required: true },
       certificate: { required: true },
       admit_card: { required: true },
+      board_name: { required: true },
+      school_name: { required: true },
     };
 
     const { isValid, errors } = validateFields(
@@ -300,6 +335,45 @@ const EducationDetails = withSwal((props: any) => {
               details={graduationDetails}
               student_id={studentId}
             />
+          </Row>
+        </>
+      )}
+
+      {/* Radio button for Graduation */}
+      <Row className="mt-4">
+        <Col md={12}>
+          <Form.Group className="mb-3">
+            <Form.Label>Have gap in education??</Form.Label>
+            <div>
+              <Form.Check
+                inline
+                label="Yes"
+                type="radio"
+                name="hasGap"
+                value="yes"
+                checked={hasGap === "yes"}
+                onChange={handleGapChange}
+              />
+              <Form.Check
+                inline
+                label="No"
+                type="radio"
+                name="hasGap"
+                value="no"
+                checked={hasGap === "no"}
+                onChange={handleGapChange}
+              />
+            </div>
+          </Form.Group>
+        </Col>
+      </Row>
+
+      {/* Gap Details Section */}
+
+      {hasGap === "yes" && (
+        <>
+          <Row>
+            <GapRows gapData={gap} studentId={studentId} type="education" />
           </Row>
         </>
       )}

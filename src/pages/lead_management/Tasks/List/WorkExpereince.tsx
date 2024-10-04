@@ -9,7 +9,6 @@ import { RootState } from "../../../../redux/store";
 import validateFields from "../../../../helpers/validateHelper";
 import useSaveWorkInfo from "../../../../hooks/useSaveWorkInfo";
 import GapRows from "./gapRow";
-import useSaveGapData from "../../../../hooks/useSaveGapData";
 
 const initialStateWork = {
   years: 0,
@@ -21,10 +20,11 @@ const initialStateWork = {
   job_offer_document: null,
   appointment_document: null,
   payslip_document: null,
+  experience_certificate: null,
   errors: {},
 };
 
-const initialFundPlanState = {
+const initialGapState = {
   start_date: "",
   end_date: "",
   reason: "",
@@ -40,13 +40,11 @@ const WorkExpereince = withSwal((props: any) => {
     (state: RootState) => state.refreshReducer.refreshing
   );
   const [workExperienceFromApi, setWorkExperienceFromApi] = useState<any>(null);
-  const [gap, setGap] = useState<any>([initialFundPlanState]);
-  const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
+  const [gap, setGap] = useState<any>(initialGapState);
   const { saveLoading: workSaveLoading, saveWorkDetails } =
     useSaveWorkInfo(studentId);
 
-  const { saveLoading: gapSaveLoading, saveGapData } =
-    useSaveGapData(studentId);
+  const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
 
   const getAcademicInfo = useCallback(async () => {
     setInitialLoading(true);
@@ -54,7 +52,7 @@ const WorkExpereince = withSwal((props: any) => {
       // Fetch both API calls concurrently
       const [workResponse, gapResponse] = await Promise.all([
         axios.get(`studentWorkInfo/${studentId}`),
-        axios.get(`gapReason/${studentId}`),
+        axios.get(`gapReason/${studentId}/work`),
       ]);
 
       const workData = workResponse.data?.data;
@@ -64,7 +62,7 @@ const WorkExpereince = withSwal((props: any) => {
       setWorkExperienceFromApi(
         workData.length > 0 ? workData : [initialStateWork]
       );
-      setGap(gapData.length > 0 ? gapData : [initialFundPlanState]);
+      setGap(gapData.length > 0 ? gapData : [initialGapState]);
       setHasGap(gapData.length > 0 ? "yes" : "no");
     } catch (error) {
       console.error("Error fetching academic info:", error);
@@ -79,7 +77,7 @@ const WorkExpereince = withSwal((props: any) => {
       getAcademicInfo();
     }
   }, [studentId, refresh, getAcademicInfo]);
-  
+
   const saveWorkData = useCallback(async () => {
     const validationRules = {
       years: { required: true },
@@ -91,6 +89,7 @@ const WorkExpereince = withSwal((props: any) => {
       job_offer_document: { required: true },
       appointment_document: { required: true },
       payslip_document: { required: true },
+      experience_certificate: { required: true },
     };
 
     const { isValid, errors } = validateFields(
@@ -111,88 +110,34 @@ const WorkExpereince = withSwal((props: any) => {
     saveWorkDetails(workExperienceFromApi);
   }, [workExperienceFromApi]);
 
-  const saveGap = useCallback(async () => {
-    
-    const validationRules = {
-      start_date: { required: true },
-      end_date: { required: true },
-      reason: { required: true },
-      supporting_document: { required: true },
-    };
+  const handleWorkExperienceChange = (
+    name: string,
+    value: any,
+    index: number
+  ) => {
+    setWorkExperienceFromApi((prevState: any) =>
+      prevState.map((item: any, i: number) =>
+        i === index ? { ...item, [name]: value } : item
+      )
+    );
+  };
 
-    const { isValid, errors } = validateFields(gap, validationRules);
-
-    if (!isValid) {
-      setGap((prevState: any) =>
-        prevState.map((exp: any, index: any) => ({
-          ...exp,
-          errors: errors[index] || {},
-        }))
-      );
-      return;
-    }
-
-    saveGapData(gap);
-  }, [gap]);
-
-  const handleWorkExperienceChange = useCallback(
-    (name: string, value: any, index: number) => {
-      setWorkExperienceFromApi((prevState: any) =>
-        prevState.map((item: any, i: number) =>
-          i === index ? { ...item, [name]: value } : item
-        )
-      );
-    },
-    []
-  );
-
-  const handleGapChange = useCallback(
-    (index: number, name: string, value: any) => {
-      setGap((prevGap: any) =>
-        prevGap.map((item: any, i: number) =>
-          i === index ? { ...item, [name]: value } : item
-        )
-      );
-    },
-    []
-  );
-
-  const addMoreWorkExperience = useCallback(() => {
+  const addMoreWorkExperience = () => {
     setWorkExperienceFromApi((prevState: any) => [
       ...prevState,
       { ...initialStateWork },
     ]);
-  }, []);
+  };
 
-  const addMoreGap = useCallback(() => {
-    setGap((prevState: any) => [...prevState, { ...initialFundPlanState }]);
-  }, []);
-
-  const removeWorkExperience = useCallback(
-    (index: number, itemId: number) => {
-      if (itemId === 0) {
-        setWorkExperienceFromApi((prevState: any) =>
-          prevState.filter((_: any, i: number) => i !== index)
-        );
-      } else {
-        removeFromApi(itemId, "work");
-      }
-    },
-    [removeFromApi]
-  );
-
-  const removeGap = useCallback(
-    (index: number, itemId: number) => {
-      if (itemId === 0) {
-        setGap((prevState: any) =>
-          prevState.filter((_: any, i: number) => i !== index)
-        );
-      } else {
-        removeFromApi(itemId, "gap");
-      }
-    },
-    [removeFromApi]
-  );
+  const removeWorkExperience = (index: number, itemId: number) => {
+    if (itemId === 0) {
+      setWorkExperienceFromApi((prevState: any) =>
+        prevState.filter((_: any, i: number) => i !== index)
+      );
+    } else {
+      removeFromApi(itemId, "work");
+    }
+  };
 
   if (initialLoading) {
     return (
@@ -205,11 +150,7 @@ const WorkExpereince = withSwal((props: any) => {
 
   return (
     <>
-      <Row
-        className={
-          deleteLoading || workSaveLoading || gapSaveLoading ? "opacity-25" : ""
-        }
-      >
+      <Row className={deleteLoading || workSaveLoading ? "opacity-25" : ""}>
         <WorkExpRow
           workExperienceData={workExperienceFromApi}
           handleWorkExperienceChange={handleWorkExperienceChange}
@@ -223,9 +164,9 @@ const WorkExpereince = withSwal((props: any) => {
           className="mt-4"
           type="submit"
           onClick={saveWorkData}
-          disabled={deleteLoading || workSaveLoading}
+          disabled={workSaveLoading}
         >
-          {deleteLoading || workSaveLoading ? (
+          {workSaveLoading ? (
             <>
               <Spinner
                 as="span"
@@ -269,36 +210,7 @@ const WorkExpereince = withSwal((props: any) => {
       {hasGap === "yes" && (
         <>
           <Row className="mt-4">
-            <GapRows
-              gapData={gap}
-              handleGapChange={handleGapChange}
-              addMoreGap={addMoreGap}
-              removeGap={removeGap}
-            />
-          </Row>
-          <Row>
-            <Button
-              variant="primary"
-              className="mt-4"
-              type="submit"
-              onClick={saveGap}
-              disabled={deleteLoading || gapSaveLoading}
-            >
-              {deleteLoading || gapSaveLoading ? ( // Corrected this line
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                  {" Saving..."}
-                </>
-              ) : (
-                "Save Gap Details"
-              )}
-            </Button>
+            <GapRows gapData={gap} studentId={studentId} type="work" />
           </Row>
         </>
       )}

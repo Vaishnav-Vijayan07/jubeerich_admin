@@ -10,6 +10,8 @@ interface PrimaryEducationDetailsProps {
     id: string | null;
     startDate: string;
     endDate: string;
+    board_name: string;
+    school_name: string;
     certificate: File | null;
     mark_sheet: File | null;
     admit_card: File | null;
@@ -73,6 +75,42 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
             />
             {details?.errors?.endDate && (
               <div className="text-danger">{details?.errors?.endDate}</div>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col md={4} lg={4} xl={4} xxl={4}>
+          <Form.Group className="mb-3">
+            <Form.Label>
+              <span className="text-danger">* </span>School Name
+            </Form.Label>
+            <FormInput
+              type="text"
+              name="school_name"
+              placeholder="Enter school name"
+              value={details?.school_name}
+              onChange={handleDateChange}
+            />
+            {details?.errors?.school_name && (
+              <div className="text-danger">{details?.errors?.school_name}</div>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col md={4} lg={4} xl={4} xxl={4}>
+          <Form.Group className="mb-3">
+            <Form.Label>
+              <span className="text-danger">* </span>Board Name
+            </Form.Label>
+            <FormInput
+              type="text"
+              name="board_name"
+              placeholder="Enter board name"
+              value={details?.board_name}
+              onChange={handleDateChange}
+            />
+            {details?.errors?.board_name && (
+              <div className="text-danger">{details?.errors?.board_name}</div>
             )}
           </Form.Group>
         </Col>

@@ -306,9 +306,9 @@ const StudyPreferenceRow = ({
         {countryName}
       </h5>
 
-      {studyPreference?.map((item: any, index: number) => (
-        <>{renderStudyprefRows(item, index)}</>
-      ))}
+      {studyPreference?.map((item: any, index: number) =>
+        renderStudyprefRows(item, index)
+      )}
       <Row>
         <Row className="mb-2">
           <ActionButton

@@ -19,8 +19,13 @@ interface GraduationDetailsProps {
     admit_card: File | null;
     backlog_certificate: File | null;
     registration_certificate: File | null;
+    transcript: File | null;
+    individual_marksheet: File | null;
     percentage: number | string;
     conversion_formula: number | string;
+    qualification: string;
+    university_name?: string;
+    college_name?: string;
     errors: any;
   };
   student_id: string | number;
@@ -55,6 +60,8 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
       ...graduationDetails,
       {
         qualification: "",
+        university_name: "",
+        college_name: "",
         start_date: "",
         end_date: "",
         percentage: "",
@@ -64,6 +71,8 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
         registration_certificate: null,
         backlog_certificate: null,
         grading_scale_info: null,
+        transcript: null,
+        individual_marksheet: null,
         errors: {},
       },
     ]);
@@ -93,6 +102,8 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
   const handleSave = () => {
     const validatioRules = {
       qualification: { required: true },
+      university_name: { required: true },
+      college_name: { required: true },
       start_date: { required: true },
       end_date: { required: true },
       percentage: { required: true },
@@ -102,6 +113,8 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
       backlog_certificate: { required: true },
       grading_scale_info: { required: true },
       conversion_formula: { required: true },
+      transcript: { required: true },
+      individual_marksheet: { required: true },
     };
 
     const { isValid, errors } = validateFields(
@@ -139,6 +152,46 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
             {item?.errors?.qualification && (
               <Form.Text className="text-danger">
                 {item.errors.qualification}
+              </Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col md={4}>
+          <Form.Group className="mb-3" controlId={`${title}_university_name`}>
+            <Form.Label>
+              <span className="text-danger">*</span> University Name
+            </Form.Label>
+            <FormInput
+              type="text"
+              placeholder="University name"
+              name="university_name"
+              value={item?.university_name}
+              onChange={(e) => handleFieldChange(e, index)}
+            />
+            {item?.errors?.university_name && (
+              <Form.Text className="text-danger">
+                {item.errors.university_name}
+              </Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col md={4}>
+          <Form.Group className="mb-3" controlId={`${title}_college_name`}>
+            <Form.Label>
+              <span className="text-danger">*</span> College Name
+            </Form.Label>
+            <FormInput
+              type="text"
+              placeholder="College name"
+              name="college_name"
+              value={item?.college_name}
+              onChange={(e) => handleFieldChange(e, index)}
+            />
+            {item?.errors?.college_name && (
+              <Form.Text className="text-danger">
+                {item.errors.college_name}
               </Form.Text>
             )}
           </Form.Group>
@@ -239,7 +292,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
             {typeof item?.admit_card === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/educationDocuments/${item?.admit_card}`}
+                  href={`${baseUrl}/uploads/graduationDocuments/${item?.admit_card}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -269,7 +322,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
             {typeof item?.certificate === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/educationDocuments/${item?.certificate}`}
+                  href={`${baseUrl}/uploads/graduationDocuments/${item?.certificate}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -301,7 +354,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
             {typeof item?.registration_certificate === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/educationDocuments/${item?.registration_certificate}`}
+                  href={`${baseUrl}/uploads/graduationDocuments/${item?.registration_certificate}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -334,7 +387,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
             {typeof item?.grading_scale_info === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/educationDocuments/${item?.grading_scale_info}`}
+                  href={`${baseUrl}/uploads/graduationDocuments/${item?.grading_scale_info}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -366,11 +419,73 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
             {typeof item?.backlog_certificate === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/educationDocuments/${item?.backlog_certificate}`}
+                  href={`${baseUrl}/uploads/graduationDocuments/${item?.backlog_certificate}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <i className="mdi mdi-download me-1"></i> backlog_certificate
+                </a>
+              </div>
+            )}
+          </Form.Group>
+        </Col>
+        <Col
+          md={4}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <Form.Group
+            className="mb-3"
+            controlId={`${title}_individual_marksheet`}
+          >
+            <Form.Label>Upload Individual Marksheet</Form.Label>
+            <Form.Control
+              name="individual_marksheet"
+              type="file"
+              onChange={(e) => handleFileChange(e, index)}
+            />
+            {item?.errors?.individual_marksheet && (
+              <Form.Text className="text-danger">
+                {item.errors.individual_marksheet}
+              </Form.Text>
+            )}
+            {typeof item?.individual_marksheet === "string" && (
+              <div className="mt-2">
+                <a
+                  href={`${baseUrl}/uploads/graduationDocuments/${item?.individual_marksheet}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="mdi mdi-download me-1"></i> individual_marksheet
+                </a>
+              </div>
+            )}
+          </Form.Group>
+        </Col>
+
+        <Col
+          md={4}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <Form.Group className="mb-3" controlId={`${title}_transcript`}>
+            <Form.Label>Upload Transcript</Form.Label>
+            <Form.Control
+              name="transcript"
+              type="file"
+              onChange={(e) => handleFileChange(e, index)}
+            />
+            {item?.errors?.transcript && (
+              <Form.Text className="text-danger">
+                {item.errors.transcript}
+              </Form.Text>
+            )}
+            {typeof item?.transcript === "string" && (
+              <div className="mt-2">
+                <a
+                  href={`${baseUrl}/uploads/graduationDocuments/${item?.transcript}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="mdi mdi-download me-1"></i> transcript
                 </a>
               </div>
             )}
@@ -395,8 +510,6 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
         <h5 className="mb-4 text-uppercase">
           <i className="mdi mdi-office-building me-1"></i> {title}
         </h5>
-
-        {console.log(graduationDetails)}
 
         {graduationDetails?.map((item: any, index: any) =>
           renderGraduatonRows(item, index)

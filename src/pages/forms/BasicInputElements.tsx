@@ -47,9 +47,6 @@ import {
 import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
 
-const languageFormInitialState = [
-  { id: "", exam_type: "", marks: "", exam_date: "" },
-];
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   let userRole: any;
@@ -644,12 +641,12 @@ const BasicInputElements = withSwal((props: any) => {
                       >
                         {cres?.map((item: any) => (
                           <Dropdown.Item
-                            key={item.id}
+                            key={item.value}
                             onClick={() =>
-                              handleAssignBulk(selectedValues, item.id)
+                              handleAssignBulk(selectedValues, item.value)
                             }
                           >
-                            {item.name}
+                            {item.label}
                           </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
