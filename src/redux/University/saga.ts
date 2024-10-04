@@ -5,20 +5,11 @@ import { SagaIterator } from "@redux-saga/core";
 import { APICore } from "../../helpers/api/apiCore";
 
 // actions
-import {
-  UniversityApiResponseSuccess,
-  UniversityApiResponseError,
-  getUniversity,
-} from "./actions";
+import { UniversityApiResponseSuccess, UniversityApiResponseError, getUniversity } from "./actions";
 
 // constants
 import { UniversityActionTypes } from "./constants";
-import {
-  addUniversitysApi,
-  deleteUniversitysApi,
-  getUniversitysApi,
-  updateUniversitysApi,
-} from "../../helpers/api/university";
+import { addUniversitysApi, deleteUniversitysApi, getUniversitysApi, updateUniversitysApi } from "../../helpers/api/university";
 
 interface UniversityData {
   payload: {
@@ -28,6 +19,9 @@ interface UniversityData {
     country_id: string;
     website_url: string;
     image_url: string;
+    portal_link: string;
+    username: string;
+    password: string;
     updated_by: string;
   };
   type: string;
@@ -51,21 +45,12 @@ function* getUniversitys(): SagaIterator {
       })
     );
   } catch (error: any) {
-    yield put(
-      UniversityApiResponseError(UniversityActionTypes.GET_UNIVERSITY, error)
-    );
+    yield put(UniversityApiResponseError(UniversityActionTypes.GET_UNIVERSITY, error));
   }
 }
 
 function* addUniversity({
-  payload: {
-    university_name,
-    location,
-    country_id,
-    website_url,
-    image_url,
-    updated_by,
-  },
+  payload: { university_name, location, country_id, website_url, image_url, portal_link, username, password, updated_by },
 }: UniversityData): SagaIterator {
   try {
     const response = yield call(addUniversitysApi, {
@@ -74,32 +59,23 @@ function* addUniversity({
       country_id,
       website_url,
       image_url,
+      portal_link,
+      username,
+      password,
       updated_by,
     });
     const data = response.data.message;
 
-    yield put(
-      UniversityApiResponseSuccess(UniversityActionTypes.ADD_UNIVERSITY, data)
-    );
+    yield put(UniversityApiResponseSuccess(UniversityActionTypes.ADD_UNIVERSITY, data));
 
     yield put(getUniversity());
   } catch (error: any) {
-    yield put(
-      UniversityApiResponseError(UniversityActionTypes.ADD_UNIVERSITY, error)
-    );
+    yield put(UniversityApiResponseError(UniversityActionTypes.ADD_UNIVERSITY, error));
   }
 }
 
 function* updateUniversity({
-  payload: {
-    id,
-    university_name,
-    location,
-    country_id,
-    website_url,
-    image_url,
-    updated_by,
-  },
+  payload: { id, university_name, location, country_id, website_url, image_url, portal_link, username, password, updated_by },
 }: UniversityData): SagaIterator {
   try {
     const response = yield call(updateUniversitysApi, id, {
@@ -108,24 +84,17 @@ function* updateUniversity({
       country_id,
       website_url,
       image_url,
+      portal_link,
+      username,
+      password,
       updated_by,
     });
     const data = response.data.message;
 
-    yield put(
-      UniversityApiResponseSuccess(
-        UniversityActionTypes.UPDATE_UNIVERSITY,
-        data
-      )
-    );
+    yield put(UniversityApiResponseSuccess(UniversityActionTypes.UPDATE_UNIVERSITY, data));
     yield put(getUniversity());
   } catch (error: any) {
-    yield put(
-      UniversityApiResponseSuccess(
-        UniversityActionTypes.UPDATE_UNIVERSITY,
-        error
-      )
-    );
+    yield put(UniversityApiResponseSuccess(UniversityActionTypes.UPDATE_UNIVERSITY, error));
   }
 }
 
@@ -134,17 +103,10 @@ function* deleteUniversity({ payload: { id } }: UniversityData): SagaIterator {
     const response = yield call(deleteUniversitysApi, id);
     const data = response.data.message;
 
-    yield put(
-      UniversityApiResponseSuccess(
-        UniversityActionTypes.DELETE_UNIVERSITY,
-        data
-      )
-    );
+    yield put(UniversityApiResponseSuccess(UniversityActionTypes.DELETE_UNIVERSITY, data));
     yield put(getUniversity());
   } catch (error: any) {
-    yield put(
-      UniversityApiResponseError(UniversityActionTypes.DELETE_UNIVERSITY, error)
-    );
+    yield put(UniversityApiResponseError(UniversityActionTypes.DELETE_UNIVERSITY, error));
   }
 }
 
@@ -165,12 +127,7 @@ export function* watchDeleteUniversity(): any {
 }
 
 function* UniversitySaga() {
-  yield all([
-    fork(watchGetUniversity),
-    fork(watchaddUniversity),
-    fork(watchUpdateUniversity),
-    fork(watchDeleteUniversity),
-  ]);
+  yield all([fork(watchGetUniversity), fork(watchaddUniversity), fork(watchUpdateUniversity), fork(watchDeleteUniversity)]);
 }
 
 export default UniversitySaga;

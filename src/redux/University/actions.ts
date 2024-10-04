@@ -18,22 +18,19 @@ interface UniversityData {
   country_id: string;
   website_url: string;
   image_url: string;
+  portal_link: string;
+  username: string;
+  password: string;
   updated_by: string;
 }
 
 // common success
-export const UniversityApiResponseSuccess = (
-  actionType: string,
-  data: UniversityData | {}
-): UniversityActionType => ({
+export const UniversityApiResponseSuccess = (actionType: string, data: UniversityData | {}): UniversityActionType => ({
   type: UniversityActionTypes.API_RESPONSE_SUCCESS,
   payload: { actionType, data },
 });
 // common error
-export const UniversityApiResponseError = (
-  actionType: string,
-  error: string
-): UniversityActionType => ({
+export const UniversityApiResponseError = (actionType: string, error: string): UniversityActionType => ({
   type: UniversityActionTypes.API_RESPONSE_ERROR,
   payload: { actionType, error },
 });
@@ -49,6 +46,9 @@ export const addUniversity = (
   country_id: string,
   website_url: string,
   image_url: string,
+  portal_link: string,
+  username: string,
+  password: string,
   updated_by: string
 ): UniversityActionType => ({
   type: UniversityActionTypes.ADD_UNIVERSITY,
@@ -58,6 +58,9 @@ export const addUniversity = (
     country_id,
     website_url,
     image_url,
+    portal_link,
+    username,
+    password,
     updated_by,
   },
 });
@@ -69,6 +72,9 @@ export const updateUniversity = (
   country_id: string,
   website_url: string,
   image_url: string,
+  portal_link: string,
+  username: string,
+  password: string,
   updated_by: string
 ): UniversityActionType => ({
   type: UniversityActionTypes.UPDATE_UNIVERSITY,
@@ -79,6 +85,9 @@ export const updateUniversity = (
     country_id,
     website_url,
     image_url,
+    portal_link,
+    username,
+    password,
     updated_by,
   },
 });

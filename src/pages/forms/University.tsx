@@ -1,16 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Dropdown,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Dropdown, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -24,19 +15,9 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
-import {
-  addRegion,
-  deleteRegion,
-  getRegion,
-  updateRegion,
-} from "../../redux/regions/actions";
+import { addRegion, deleteRegion, getRegion, updateRegion } from "../../redux/regions/actions";
 import { getCountry } from "../../redux/country/actions";
-import {
-  addUniversity,
-  deleteUniversity,
-  getUniversity,
-  updateUniversity,
-} from "../../redux/University/actions";
+import { addUniversity, deleteUniversity, getUniversity, updateUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
 import useDropdownData from "../../hooks/useDropdownDatas";
 
@@ -80,6 +61,9 @@ const initialState = {
   country_id: "",
   website_url: "",
   image_url: "",
+  portal_link: "",
+  username: "",
+  password: "",
   updated_by: "",
 };
 
@@ -89,6 +73,9 @@ const initialValidationState = {
   country_id: "",
   website_url: "",
   image_url: "",
+  portal_link: "",
+  username: "",
+  password: "",
   updated_by: "",
 };
 
@@ -104,28 +91,21 @@ const BasicInputElements = withSwal((props: any) => {
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState<OptionType | null>(
-    null
-  );
+  const [selectedCountry, setSelectedCountry] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
     university_name: yup
       .string()
       .required("University name is required")
       .min(3, "University name must be at least 3 characters long"),
-    location: yup
-      .string()
-      .required("Location is required")
-      .min(3, "Location must be at least 3 characters long"),
+    location: yup.string().required("Location is required").min(3, "Location must be at least 3 characters long"),
     country_id: yup.string().required("Country ID is required"),
     // website_url: yup
     //   .string()
@@ -148,9 +128,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedCountry: OptionType[] = country?.filter(
-      (country: any) => country.value == item.country_id
-    );
+    const updatedCountry: OptionType[] = country?.filter((country: any) => country.value == item.country_id);
     setSelectedCountry(updatedCountry[0]);
     setFormData((prev) => ({
       ...prev,
@@ -159,6 +137,9 @@ const BasicInputElements = withSwal((props: any) => {
       location: item?.location,
       website_url: item?.website_url,
       image_url: item?.image_url,
+      portal_link: item?.portal_link,
+      username: item?.username,
+      password: item?.password,
       country_id: item?.country_id,
       updated_by: "",
     }));
@@ -231,6 +212,9 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.country_id,
                     formData.website_url,
                     formData.image_url,
+                    formData.portal_link,
+                    formData.username,
+                    formData.password,
                     user_id
                   )
                 );
@@ -246,6 +230,9 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.country_id,
                     formData.website_url,
                     formData.image_url,
+                    formData.portal_link,
+                    formData.username,
+                    formData.password,
                     user_id
                   )
                 );
@@ -318,11 +305,7 @@ const BasicInputElements = withSwal((props: any) => {
       sort: true,
       Cell: ({ row }: any) => (
         <div className="table-user">
-          <img
-            src={row.original.image_url}
-            alt="university image"
-            className="me-2 rounded-circle"
-          />
+          <img src={row.original.image_url} alt="university image" className="me-2 rounded-circle" />
           <Link to="#" className="text-body fw-semibold">
             {row.original.university_name}
           </Link>
@@ -345,15 +328,33 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
       Cell: ({ row }: any) => (
         <>
-          <a
-            href={row.original.website_url}
-            target="_next"
-            style={{ cursor: "pointer" }}
-          >
+          <a href={row.original.website_url} target="_next" style={{ cursor: "pointer" }}>
             {row.original.website_url}
           </a>
         </>
       ),
+    },
+    {
+      Header: "Portal Link",
+      accessor: "portal_link",
+      sort: false,
+      Cell: ({ row }: any) => (
+        <>
+          <a href={row.original.portal_link} target="_next" style={{ cursor: "pointer" }}>
+            {row.original.portal_link}
+          </a>
+        </>
+      ),
+    },
+    {
+      Header: "Username",
+      accessor: "username",
+      sort: false,
+    },
+    {
+      Header: "Password",
+      accessor: "password",
+      sort: false,
     },
     // {
     //   Header: "Image",
@@ -383,11 +384,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-          >
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -440,103 +437,101 @@ const BasicInputElements = withSwal((props: any) => {
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-lg modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">University Management</h4>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group className="mb-3" controlId="channel_name">
-                <Form.Label>University Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="university_name"
-                  value={formData.university_name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.university_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.university_name}
-                  </Form.Text>
-                )}
-              </Form.Group>
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="channel_name">
+                    <Form.Label>University Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="university_name"
+                      value={formData.university_name}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.university_name && (
+                      <Form.Text className="text-danger">{validationErrors.university_name}</Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
 
-              <Form.Group className="mb-3" controlId="channel_description">
-                <Form.Label>University Location</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.location && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.location}
-                  </Form.Text>
-                )}
-              </Form.Group>
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="channel_description">
+                    <Form.Label>University Location</Form.Label>
+                    <Form.Control type="text" name="location" value={formData.location} onChange={handleInputChange} />
+                    {validationErrors.location && <Form.Text className="text-danger">{validationErrors.location}</Form.Text>}
+                  </Form.Group>
+                </Col>
 
-              <Form.Group className="mb-3" controlId="source_id">
-                <Form.Label>Country</Form.Label>
-                <Select
-                  styles={customStyles}
-                  className="react-select react-select-container"
-                  classNamePrefix="react-select"
-                  name="country_id"
-                  options={[{ value: null, label: "None" }, ...country]}
-                  value={selectedCountry}
-                  onChange={handleSourceChange}
-                />
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="source_id">
+                    <Form.Label>Country</Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="react-select react-select-container"
+                      classNamePrefix="react-select"
+                      name="country_id"
+                      options={country}
+                      value={selectedCountry}
+                      onChange={handleSourceChange}
+                    />
 
-                {validationErrors.country_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.country_id}
-                  </Form.Text>
-                )}
-              </Form.Group>
+                    {validationErrors.country_id && <Form.Text className="text-danger">{validationErrors.country_id}</Form.Text>}
+                  </Form.Group>
+                </Col>
 
-              <Form.Group className="mb-3" controlId="channel_name">
-                <Form.Label>Website URL</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="website_url"
-                  value={formData.website_url}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.website_url && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.website_url}
-                  </Form.Text>
-                )}
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="channel_name">
-                <Form.Label>Image</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="image_url"
-                  value={formData.image_url}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.image_url && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.image_url}
-                  </Form.Text>
-                )}
-              </Form.Group>
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="channel_name">
+                    <Form.Label>Website URL</Form.Label>
+                    <Form.Control type="text" name="website_url" value={formData.website_url} onChange={handleInputChange} />
+                    {validationErrors.website_url && (
+                      <Form.Text className="text-danger">{validationErrors.website_url}</Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="channel_name">
+                    <Form.Label>Image URL</Form.Label>
+                    <Form.Control type="text" name="image_url" value={formData.image_url} onChange={handleInputChange} />
+                    {validationErrors.image_url && <Form.Text className="text-danger">{validationErrors.image_url}</Form.Text>}
+                  </Form.Group>
+                </Col>
+
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="portal_link">
+                    <Form.Label>Portal Link</Form.Label>
+                    <Form.Control type="text" name="portal_link" value={formData.portal_link} onChange={handleInputChange} />
+                    {validationErrors.portal_link && (
+                      <Form.Text className="text-danger">{validationErrors.portal_link}</Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="username">
+                    <Form.Label>Username</Form.Label>
+                    <Form.Control type="text" name="username" value={formData.username} onChange={handleInputChange} />
+                    {validationErrors.username && <Form.Text className="text-danger">{validationErrors.username}</Form.Text>}
+                  </Form.Group>
+                </Col>
+
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="password">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control type="text" name="password" value={formData.password} onChange={handleInputChange} />
+                    {validationErrors.password && <Form.Text className="text-danger">{validationErrors.password}</Form.Text>}
+                  </Form.Group>
+                </Col>
+              </Row>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]}
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
@@ -544,19 +539,12 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1 "
                 onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(), handleResetValues()]
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -567,10 +555,7 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add University
               </Button>
               <h4 className="header-title mb-4">Manage University</h4>
@@ -595,30 +580,22 @@ const BasicInputElements = withSwal((props: any) => {
 const University = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { dropdownData: country, loading: dropDownLoading } =
-    useDropdownData("countries");
+  const { dropdownData: country, loading: dropDownLoading } = useDropdownData("countries");
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector(
-    (state: RootState) => ({
-      state: state.University.universities.data,
-      error: state.University.error,
-      loading: state.University.loading,
-      initialLoading: state.University.initialloading,
-    })
-  );
+  const { state, error, loading, initialLoading } = useSelector((state: RootState) => ({
+    state: state.University.universities.data,
+    error: state.University.error,
+    loading: state.University.loading,
+    initialLoading: state.University.initialloading,
+  }));
 
   useEffect(() => {
     dispatch(getUniversity());
   }, []);
 
   if (initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      />
-    );
+    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
   }
 
   return (
@@ -632,12 +609,7 @@ const University = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            country={country?.countries || []}
-            error={error}
-            loading={loading}
-          />
+          <BasicInputElements state={state} country={country?.countries || []} error={error} loading={loading} />
         </Col>
       </Row>
     </React.Fragment>
