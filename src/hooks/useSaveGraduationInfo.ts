@@ -79,6 +79,20 @@ const useSaveGraduationInfo = (studentId: number | string) => {
             detail.grading_scale_info
           );
         }
+
+        if (typeof detail?.transcript === "object") {
+          newFormData.append(
+            `graduation[${index}][transcript]`,
+            detail.transcript
+          );
+        }
+
+        if (typeof detail?.individual_marksheet === "object") {
+          newFormData.append(
+            `graduation[${index}][individual_marksheet]`,
+            detail.individual_marksheet
+          );
+        }
       });
 
       const result = await swal.fire({

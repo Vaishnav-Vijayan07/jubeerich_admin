@@ -54,6 +54,8 @@ const initialGraduationState = {
   registration_certificate: null,
   backlog_certificate: null,
   grading_scale_info: null,
+  transcript: null,
+  individual_marksheet: null,
   errors: {},
 };
 
