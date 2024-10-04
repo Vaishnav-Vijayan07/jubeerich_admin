@@ -41,11 +41,7 @@ const AdditionalDocuments = (props: any) => {
     };
 
     const handleSubmit = async () => {
-        console.log('documents', documents);
-        console.log('Student ID', studentId);
         try {
-
-            console.log('documents', documents);
 
             const formData = new FormData();
             formData.append('passport_doc', documents.passport_doc)
@@ -67,6 +63,7 @@ const AdditionalDocuments = (props: any) => {
         } catch (error) {
             console.log(error);
             showErrorAlert("Internal Server Error")
+            setIsLoading(false)
         }
     }
 
@@ -92,6 +89,7 @@ const AdditionalDocuments = (props: any) => {
         } catch (error) {
             console.log(error);
             showErrorAlert("Internal Server Error")
+            setIsLoading(false)
         }
     }
 
@@ -105,7 +103,7 @@ const AdditionalDocuments = (props: any) => {
             }
         } catch (error) {
             console.log(error);
-            showErrorAlert("Internal Server Error")
+            // showErrorAlert("Internal Server Error")
             setIsLoading(false)
         }
     }

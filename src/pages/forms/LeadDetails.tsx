@@ -13,6 +13,7 @@ import FundPlan from "../lead_management/Tasks/List/FundPlan";
 import EducationDetails from "../lead_management/Tasks/List/EducationDetails";
 import Comments from "../lead_management/Tasks/List/Comments";
 import Attachments from "../lead_management/Tasks/List/Attachments";
+import AdditionalDocuments from "../lead_management/Tasks/List/AdditionalDocuments";
 
 interface Props {}
 
@@ -122,15 +123,6 @@ const LeadDetails = (props: Props) => {
                       </Nav.Link>
                     </Nav.Item>
 
-                    <Nav.Item as="li" className="nav-item nav_item_5">
-                      <Nav.Link
-                        eventKey="attachments"
-                        className="nav-link cursor-pointer"
-                      >
-                        Attachments
-                      </Nav.Link>
-                    </Nav.Item>
-
                     <Nav.Item as="li" className="nav-item nav_item_6">
                       <Nav.Link
                         eventKey="visa_process"
@@ -139,6 +131,16 @@ const LeadDetails = (props: Props) => {
                         Visa Process
                       </Nav.Link>
                     </Nav.Item>
+
+                    <Nav.Item as="li" className="nav-item nav_item_5">
+                      <Nav.Link
+                        eventKey="additional_documents"
+                        className="nav-link cursor-pointer"
+                      >
+                        Additional Documents
+                      </Nav.Link>
+                    </Nav.Item>
+
                   </Nav>
 
                   <Tab.Content>
@@ -198,9 +200,9 @@ const LeadDetails = (props: Props) => {
                       </Suspense>
                     )}
 
-                    {activeTab === "attachments" && studentId && (
+                    {activeTab === "additional_documents" && studentId && (
                       <Suspense fallback={null}>
-                        <Attachments studentId={studentId} />
+                        <AdditionalDocuments studentId={studentId} />
                       </Suspense>
                     )}
                   </Tab.Content>
