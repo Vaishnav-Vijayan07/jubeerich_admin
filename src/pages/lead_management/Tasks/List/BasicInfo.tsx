@@ -619,14 +619,16 @@ const BasicInfo = withSwal((props: any) => {
               <Form.Label>Emergency Contact Name</Form.Label>
 
               <Form.Control
-                as="textarea"
+                type="text"
                 name="emergency_contact_name"
                 placeholder="Enter Emergency Contact Name"
                 key="emergency_contact_name"
                 value={basicInfo?.emergency_contact_name}
                 onChange={(e) => handleInputChange(e, "emergency_contact_name", "basic")}
               />
-              {basicInfo?.errors?.emergency_contact_name && <Form.Text className="text-danger">{basicInfo?.errors?.emergency_contact_name}</Form.Text>}
+              {basicInfo?.errors?.emergency_contact_name && (
+                <Form.Text className="text-danger">{basicInfo?.errors?.emergency_contact_name}</Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -635,14 +637,24 @@ const BasicInfo = withSwal((props: any) => {
               <Form.Label>Emergency Contact Relationship</Form.Label>
 
               <Form.Control
-                as="textarea"
+                as="select"
                 name="emergency_contact_relationship"
-                placeholder="Enter Emergency Contact Relationship"
                 key="emergency_contact_relationship"
                 value={basicInfo?.emergency_contact_relationship}
                 onChange={(e) => handleInputChange(e, "emergency_contact_relationship", "basic")}
-              />
-              {basicInfo?.errors?.emergency_contact_relationship && <Form.Text className="text-danger">{basicInfo?.errors?.emergency_contact_relationship}</Form.Text>}
+              >
+                <option value="" disabled>
+                  Select Emergency Contact Relationship
+                </option>
+                <option value="Father">Father</option>
+                <option value="Mother">Mother</option>
+                <option value="Brother">Brother</option>
+                <option value="Sister">Sister</option>
+                <option value="Spouse">Spouse</option>
+              </Form.Control>
+              {basicInfo?.errors?.emergency_contact_relationship && (
+                <Form.Text className="text-danger">{basicInfo?.errors?.emergency_contact_relationship}</Form.Text>
+              )}
             </Form.Group>
           </Col>
 
@@ -651,14 +663,16 @@ const BasicInfo = withSwal((props: any) => {
               <Form.Label>Emergency Contact Phone</Form.Label>
 
               <Form.Control
-                as="textarea"
+                type="text"
                 name="emergency_contact_phone"
                 placeholder="Enter Emergency Contact Phone"
                 key="emergency_contact_phone"
                 value={basicInfo?.emergency_contact_phone}
                 onChange={(e) => handleInputChange(e, "emergency_contact_phone", "basic")}
               />
-              {basicInfo?.errors?.emergency_contact_phone && <Form.Text className="text-danger">{basicInfo?.errors?.emergency_contact_phone}</Form.Text>}
+              {basicInfo?.errors?.emergency_contact_phone && (
+                <Form.Text className="text-danger">{basicInfo?.errors?.emergency_contact_phone}</Form.Text>
+              )}
             </Form.Group>
           </Col>
 
