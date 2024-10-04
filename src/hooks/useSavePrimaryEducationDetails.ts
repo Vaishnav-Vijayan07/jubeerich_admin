@@ -15,6 +15,8 @@ const useSaveEducationDetails = () => {
       formData.append("student_id", studentId);
       formData.append("operation", primaryDetails.id ? "update" : "add");
       formData.append("primary[qualification]", primaryDetails.qualification);
+      formData.append("primary[board_name]", primaryDetails.board_name);
+      formData.append("primary[school_name]", primaryDetails.school_name);
       formData.append("primary[startDate]", primaryDetails.startDate);
       formData.append("primary[endDate]", primaryDetails.endDate);
       formData.append("primary[percentage]", primaryDetails.percentage);

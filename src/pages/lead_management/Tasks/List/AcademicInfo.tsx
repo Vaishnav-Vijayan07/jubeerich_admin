@@ -283,57 +283,58 @@ const AcademicInfo = withSwal((props: any) => {
           </Row>
 
           {hasExams == "yes" && (
-            <Row>
-              <ExamData
-                examForm={examForm}
-                addMoreExamForm={() =>
-                  addFormField(setExamForm, {
-                    exam_type: "",
-                    listening_score: "",
-                    speaking_score: "",
-                    reading_score: "",
-                    writing_score: "",
-                    overall_score: "",
-                    exam_date: "",
-                    score_card: null,
-                  })
-                }
-                removeExamForm={(index, itemId) =>
-                  removeFormField(setExamForm, index, itemId, "exam")
-                }
-                handleExamInputChange={(index, event: any) =>
-                  handleInputChange(setExamForm, index, event)
-                }
-                handleExamFileChange={handleFileChange}
-              />
-            </Row>
+            <>
+              <Row>
+                <ExamData
+                  examForm={examForm}
+                  addMoreExamForm={() =>
+                    addFormField(setExamForm, {
+                      exam_type: "",
+                      listening_score: "",
+                      speaking_score: "",
+                      reading_score: "",
+                      writing_score: "",
+                      overall_score: "",
+                      exam_date: "",
+                      score_card: null,
+                    })
+                  }
+                  removeExamForm={(index, itemId) =>
+                    removeFormField(setExamForm, index, itemId, "exam")
+                  }
+                  handleExamInputChange={(index, event: any) =>
+                    handleInputChange(setExamForm, index, event)
+                  }
+                  handleExamFileChange={handleFileChange}
+                />
+              </Row>
+              <Row>
+                <Button
+                  variant="primary"
+                  className="mt-4"
+                  type="submit"
+                  onClick={handleSaveExamInfo}
+                  disabled={saveLoading || deleteLoading}
+                >
+                  {saveLoading || deleteLoading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      {" Loading..."} {/* Show spinner and text */}
+                    </>
+                  ) : (
+                    "Save Exam Info" // Normal button text when not loading
+                  )}
+                </Button>
+              </Row>
+            </>
           )}
         </>
-      </Row>
-
-      <Row>
-        <Button
-          variant="primary"
-          className="mt-4"
-          type="submit"
-          onClick={handleSaveExamInfo}
-          disabled={saveLoading || deleteLoading}
-        >
-          {saveLoading || deleteLoading ? (
-            <>
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-              {" Loading..."} {/* Show spinner and text */}
-            </>
-          ) : (
-            "Save Exam Info" // Normal button text when not loading
-          )}
-        </Button>
       </Row>
     </>
   );

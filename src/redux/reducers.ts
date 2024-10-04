@@ -29,6 +29,8 @@ import CourseType from "./course_type/reducers";
 import Course from "./course/reducers";
 import Stream from "./stream/reducers";
 import refreshReducer from "./countryReducer";
+import DropDownReducer from "./dropDown/reducers";
+
 export default combineReducers({
   Auth,
   Layout,
@@ -58,5 +60,6 @@ export default combineReducers({
   CourseType,
   Course,
   Stream,
-  refreshReducer
+  DropDownReducer,
+  refreshReducer,
 });

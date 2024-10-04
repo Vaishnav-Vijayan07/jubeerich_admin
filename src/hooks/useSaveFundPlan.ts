@@ -29,9 +29,18 @@ const useSaveFundPlan = (studentId: string | number) => {
           fund.approx_annual_income.toString()
         );
         newFormData.append(
-          `fund_details[${index}][itr_status]`,
-          fund.itr_status
+          `fund_details[${index}][relation_with_sponsor]`,
+          fund.relation_with_sponsor
         );
+        newFormData.append(
+          `fund_details[${index}][sponsorship_amount]`,
+          fund.sponsorship_amount.toString()
+        );
+        newFormData.append(
+          `fund_details[${index}][name_of_bank]`,
+          fund.name_of_bank
+        );
+
 
         // Append supporting_document only if it's an object (file)
         if (typeof fund?.supporting_document === "object") {

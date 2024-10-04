@@ -19,7 +19,6 @@ interface Props {}
 const LeadDetails = (props: Props) => {
   const { id: studentId } = useParams();
 
-  console.log(studentId);
 
   const [activeTab, setActiveTab] = useState<any>("basic_info");
 
@@ -38,7 +37,7 @@ const LeadDetails = (props: Props) => {
     return (
       <Spinner
         animation="border"
-        style={{ position: "absolute", top: "50%", left: "65%" }}
+        style={{ position: "absolute", top: "50%", left: "50%" }}
       />
     );
   }

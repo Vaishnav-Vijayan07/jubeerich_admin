@@ -36,6 +36,13 @@ const useSaveWorkInfo = (studentId: number | string) => {
           );
         }
 
+        if (typeof work?.experience_certificate === "object") {
+          newFormData.append(
+            `workExperience[${index}][experience_certificate]`,
+            work.experience_certificate
+          );
+        }
+
         if (typeof work?.job_offer_document === "object") {
           newFormData.append(
             `workExperience[${index}][job_offer_document]`,

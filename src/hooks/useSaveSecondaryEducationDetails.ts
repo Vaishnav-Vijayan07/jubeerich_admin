@@ -18,6 +18,8 @@ const useSaveSecondaryEducationDetails = () => {
         "secondary[qualification]",
         secondaryDetails.qualification
       );
+      formData.append("secondary[board_name]", secondaryDetails.board_name);
+      formData.append("secondary[school_name]", secondaryDetails.school_name);
       formData.append("secondary[startDate]", secondaryDetails.startDate);
       formData.append("secondary[endDate]", secondaryDetails.endDate);
       formData.append("secondary[percentage]", secondaryDetails.percentage);

@@ -17,6 +17,9 @@ const initialFundPlanState = {
   type: "",
   sponsor_name: "",
   approx_annual_income: "",
+  relation_with_sponsor: "",
+  sponsorship_amount: "",
+  name_of_bank: "",
   itr_status: "no",
   supporting_document: null,
   errors: {},
@@ -42,6 +45,9 @@ const FundPlan = ({ student_id }: Props) => {
         approx_annual_income: 0.0,
         itr_status: "no",
         supporting_document: null,
+        relation_with_sponsor: "",
+        sponsorship_amount: 0.0,
+        name_of_bank: "",
         errors: {},
       },
     ]);
@@ -64,8 +70,10 @@ const FundPlan = ({ student_id }: Props) => {
       approx_annual_income: { required: true },
       itr_status: { required: true },
       supporting_document: { required: true },
+      relation_with_sponsor: { required: true },
+      sponsorship_amount: { required: true },
+      name_of_bank: { required: true },
     };
-
     const { isValid, errors } = validateFields(fundPlan, validationRules);
 
     if (!isValid) {
