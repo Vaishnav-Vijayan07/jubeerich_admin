@@ -5,6 +5,7 @@ import moment from "moment";
 import Select from "react-select";
 import { travel_history, visa_approve, visa_decline, Visa_Types } from "./data";
 import ActionButton from "./ActionButton";
+import { baseUrl } from "../../../../constants";
 
 const VisaProcessRow = ({
   visaDecline,
@@ -18,6 +19,7 @@ const VisaProcessRow = ({
   saveVisaForm,
   addMoreVisaForm,
   removeVisaForm,
+  handleFileChange,
 }: any) => {
   const [visaDeclineData, setVisaDeclineData] = useState<any[]>([]);
   const [visaApproveData, setVisaApproveData] = useState<any[]>([]);
@@ -154,7 +156,7 @@ const VisaProcessRow = ({
                   <Form.Label>Rejection Reason</Form.Label>
                   <Form.Control
                     as="textarea"
-                    rows={3} // You can adjust the number of rows as needed
+                    rows={1}
                     name="rejection_reason"
                     placeholder="Enter Rejection Reason"
                     key="rejection_reason"
@@ -163,6 +165,32 @@ const VisaProcessRow = ({
                   />
                 </Form.Group>
               </Col>
+
+              <Col md={6} lg={6} xl={6} xxl={4}>
+                <Form.Group className="mb-2" controlId="decline_letter">
+                  <Form.Label>Rejection Letter</Form.Label>
+                  <FormInput
+                    type="file"
+                    name="decline_letter"
+                    onChange={(e) =>
+                      handleFileChange(e, visa_decline, index)
+                    }
+                  />
+                </Form.Group>
+                <div className='d-flex mb-2'>
+                  {data?.decline_letter && <a
+                    href={`${baseUrl}/uploads/${data?.decline_letter}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
+                  >
+                    <div className='p-1'>
+                      {(data?.decline_letter ? 'Rejection Letter' : "")}
+                    </div>
+                  </a>}
+                </div>
+              </Col>
+
               {visaDeclineData.length > 1 && (
                 <Row className="mb-2">
                   <ActionButton
@@ -289,6 +317,32 @@ const VisaProcessRow = ({
                   />
                 </Form.Group>
               </Col>
+
+              <Col md={6} lg={6} xl={6} xxl={4}>
+                <Form.Group className="mb-2" controlId="approve_letter">
+                  <Form.Label>Approved Letter</Form.Label>
+                  <FormInput
+                    type="file"
+                    name="approve_letter"
+                    onChange={(e) =>
+                      handleFileChange(e, visa_approve, index)
+                    }
+                  />
+                </Form.Group>
+                <div className='d-flex mb-2'>
+                  {data?.approve_letter && <a
+                    href={`${baseUrl}/uploads/${data?.approve_letter}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
+                  >
+                    <div className='p-1'>
+                      {(data?.approve_letter ? 'Approved Letter' : "")}
+                    </div>
+                  </a>}
+                </div>
+              </Col>
+
               {visaApproveData.length > 1 && (
                 <Row className="mb-2">
                   <ActionButton
