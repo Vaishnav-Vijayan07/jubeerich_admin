@@ -14,6 +14,7 @@ import EducationDetails from "../lead_management/Tasks/List/EducationDetails";
 import Comments from "../lead_management/Tasks/List/Comments";
 import Attachments from "../lead_management/Tasks/List/Attachments";
 import AdditionalDocuments from "../lead_management/Tasks/List/AdditionalDocuments";
+import PassportDetails from "../lead_management/Tasks/List/PassportDetails";
 
 interface Props {}
 
@@ -122,6 +123,15 @@ const LeadDetails = (props: Props) => {
                       </Nav.Link>
                     </Nav.Item>
 
+                    <Nav.Item as="li" className="nav-item nav_item_4">
+                      <Nav.Link
+                        eventKey="passport_details"
+                        className="nav-link cursor-pointer"
+                      >
+                        Passport Details
+                      </Nav.Link>
+                    </Nav.Item>
+
                     <Nav.Item as="li" className="nav-item nav_item_6">
                       <Nav.Link
                         eventKey="visa_process"
@@ -204,6 +214,13 @@ const LeadDetails = (props: Props) => {
                         <AdditionalDocuments studentId={studentId} />
                       </Suspense>
                     )}
+
+                    {activeTab === "passport_details" && studentId && (
+                      <Suspense fallback={null}>
+                        <PassportDetails studentId={studentId} />
+                      </Suspense>
+                    )}
+
                   </Tab.Content>
                 </Card.Body>
               </Card>

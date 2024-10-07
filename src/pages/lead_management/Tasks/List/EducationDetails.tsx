@@ -343,7 +343,7 @@ const EducationDetails = withSwal((props: any) => {
       <Row className="mt-4">
         <Col md={12}>
           <Form.Group className="mb-3">
-            <Form.Label>Have gap in education??</Form.Label>
+            <Form.Label>Have gap in education?</Form.Label>
             <div>
               <Form.Check
                 inline
