@@ -600,7 +600,7 @@ const BasicInfo = withSwal((props: any) => {
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="address">
-              <Form.Label>Address</Form.Label>
+              <Form.Label>Current Address</Form.Label>
 
               <Form.Control
                 as="textarea"
@@ -616,12 +616,12 @@ const BasicInfo = withSwal((props: any) => {
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="emergency_contact_name">
-              <Form.Label>Emergency Contact Name</Form.Label>
+              <Form.Label>Primary Contact Name</Form.Label>
 
               <Form.Control
                 type="text"
                 name="emergency_contact_name"
-                placeholder="Enter Emergency Contact Name"
+                placeholder="Enter Primary Contact Name"
                 key="emergency_contact_name"
                 value={basicInfo?.emergency_contact_name}
                 onChange={(e) => handleInputChange(e, "emergency_contact_name", "basic")}
@@ -634,7 +634,7 @@ const BasicInfo = withSwal((props: any) => {
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="emergency_contact_relationship">
-              <Form.Label>Emergency Contact Relationship</Form.Label>
+              <Form.Label>Primary Contact Relationship</Form.Label>
 
               <Form.Control
                 as="select"
@@ -644,7 +644,7 @@ const BasicInfo = withSwal((props: any) => {
                 onChange={(e) => handleInputChange(e, "emergency_contact_relationship", "basic")}
               >
                 <option value="" disabled>
-                  Select Emergency Contact Relationship
+                  Select Primary Contact Relationship
                 </option>
                 <option value="Father">Father</option>
                 <option value="Mother">Mother</option>
@@ -660,12 +660,12 @@ const BasicInfo = withSwal((props: any) => {
 
           <Col xl={6} xxl={4}>
             <Form.Group className="mb-3" controlId="emergency_contact_phone">
-              <Form.Label>Emergency Contact Phone</Form.Label>
+              <Form.Label>Primary Contact Phone</Form.Label>
 
               <Form.Control
                 type="text"
                 name="emergency_contact_phone"
-                placeholder="Enter Emergency Contact Phone"
+                placeholder="Enter Primary Contact Phone"
                 key="emergency_contact_phone"
                 value={basicInfo?.emergency_contact_phone}
                 onChange={(e) => handleInputChange(e, "emergency_contact_phone", "basic")}

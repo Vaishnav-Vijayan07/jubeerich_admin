@@ -145,7 +145,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
       </Col>
 
       {/* Reason */}
-      <Col md={4} lg={4} xl={4} xxl={4}>
+      <Col md={8} lg={8} xl={8} xxl={8}>
         <Form.Group className="mb-3" controlId={`reason-${index}`}>
           <Form.Label>Reason</Form.Label>
           <Form.Control
