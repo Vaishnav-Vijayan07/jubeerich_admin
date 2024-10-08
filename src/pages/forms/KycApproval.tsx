@@ -37,15 +37,11 @@ interface TableRecords {
   status: string;
 }
 
-
 const data = [
   {
     id: 1,
     full_name: "John Doe",
-    preferredCountries: [
-      { country_name: "United States" },
-      { country_name: "Canada" },
-    ],
+    preferredCountries: [{ country_name: "United States" }, { country_name: "Canada" }],
     university_name: "Harvard University",
     course_name: "Computer Science",
     office_type_name: "Main Office",
@@ -57,10 +53,7 @@ const data = [
   {
     id: 2,
     full_name: "Alice Brown",
-    preferredCountries: [
-      { country_name: "United Kingdom" },
-      { country_name: "Australia" },
-    ],
+    preferredCountries: [{ country_name: "United Kingdom" }, { country_name: "Australia" }],
     university_name: "University of Cambridge",
     course_name: "Engineering",
     office_type_name: "Branch Office",
@@ -72,9 +65,7 @@ const data = [
   {
     id: 3,
     full_name: "Michael Green",
-    preferredCountries: [
-      { country_name: "Germany" },
-    ],
+    preferredCountries: [{ country_name: "Germany" }],
     university_name: "Technical University of Munich",
     course_name: "Mechanical Engineering",
     office_type_name: "Main Office",
@@ -86,9 +77,7 @@ const data = [
   {
     id: 4,
     full_name: "Sara White",
-    preferredCountries: [
-      { country_name: "New Zealand" },
-    ],
+    preferredCountries: [{ country_name: "New Zealand" }],
     university_name: "University of Auckland",
     course_name: "Biology",
     office_type_name: "Branch Office",
@@ -98,7 +87,6 @@ const data = [
     status: "Rejected",
   },
 ];
-
 
 const KycApproval = ({ state }: any) => {
   const records: any = data;
@@ -170,15 +158,15 @@ const KycApproval = ({ state }: any) => {
       sort: false,
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
-          {/* Edit Icon */}
-          <Link to="#" className="action-icon">
-            <i className="mdi mdi-eye-outlined"></i>
-          </Link>
-
-          {/* Delete Icon */}
+          {/* Comment Icon */}
           <Link to="#" className="action-icon">
             {/* <i className="mdi mdi-delete"></i> */}
-            <i className="mdi mdi-eye-outlined"></i>
+            <i className="mdi mdi-comment-processing-outline"></i>
+          </Link>
+
+          {/* View Icon */}
+          <Link to="#" className="action-icon">
+            <i className="mdi mdi-eye-settings-outline"></i>
           </Link>
         </div>
       ),
