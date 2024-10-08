@@ -9,6 +9,7 @@ import { RootState } from "../../../../redux/store";
 import validateFields from "../../../../helpers/validateHelper";
 import useSaveWorkInfo from "../../../../hooks/useSaveWorkInfo";
 import GapRows from "./gapRow";
+import EmploymentHistory from "./EmploymentHistory";
 
 const initialStateWork = {
   years: 0,
@@ -214,6 +215,9 @@ const WorkExpereince = withSwal((props: any) => {
           </Row>
         </>
       )}
+      <Row>
+        <EmploymentHistory studentId={studentId} />
+      </Row>
     </>
   );
 });

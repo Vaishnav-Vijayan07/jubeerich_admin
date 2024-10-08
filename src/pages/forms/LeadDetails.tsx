@@ -15,12 +15,12 @@ import Comments from "../lead_management/Tasks/List/Comments";
 import Attachments from "../lead_management/Tasks/List/Attachments";
 import AdditionalDocuments from "../lead_management/Tasks/List/AdditionalDocuments";
 import PassportDetails from "../lead_management/Tasks/List/PassportDetails";
+import FamilyDetails from "../lead_management/Tasks/List/FamilyDetails/FamilyDetails";
 
 interface Props {}
 
 const LeadDetails = (props: Props) => {
   const { id: studentId } = useParams();
-
 
   const [activeTab, setActiveTab] = useState<any>("basic_info");
 
@@ -132,6 +132,15 @@ const LeadDetails = (props: Props) => {
                       </Nav.Link>
                     </Nav.Item>
 
+                    <Nav.Item as="li" className="nav-item nav_item_4">
+                      <Nav.Link
+                        eventKey="family_details"
+                        className="nav-link cursor-pointer"
+                      >
+                        Family Details
+                      </Nav.Link>
+                    </Nav.Item>
+
                     <Nav.Item as="li" className="nav-item nav_item_6">
                       <Nav.Link
                         eventKey="visa_process"
@@ -149,7 +158,6 @@ const LeadDetails = (props: Props) => {
                         Additional Documents
                       </Nav.Link>
                     </Nav.Item>
-
                   </Nav>
 
                   <Tab.Content>
@@ -221,6 +229,11 @@ const LeadDetails = (props: Props) => {
                       </Suspense>
                     )}
 
+                    {activeTab === "family_details" && studentId && (
+                      <Suspense fallback={null}>
+                        <FamilyDetails studentId={studentId} />
+                      </Suspense>
+                    )}
                   </Tab.Content>
                 </Card.Body>
               </Card>
