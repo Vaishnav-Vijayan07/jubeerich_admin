@@ -4,13 +4,27 @@ import { FormInput } from '../../../../components'
 import { baseUrl, showSuccessAlert } from '../../../../constants'
 import axios from 'axios'
 
+const initialDocumentState = {
+  visaPage: '',
+  permitCard: '',
+  salaryAccountStatement: '',
+  supportingDocuments: '',
+}
+
+const initialDocumentNameState = {
+  visa_page: '',
+  permit_card: '',
+  salary_account_statement: '',
+  supporting_documents: '',
+}
+
 const EmploymentHistory = (props: any) => {
   const { studentId } = props;
-  const [noticePeriod, setNoticePeriod] = useState<any>(false)
-  const [terminated, setTerminated] = useState<any>(false)
-  const [relation, setRelation] = useState<any>(false)
-  const [forgotDocuments, setForgotDocuments] = useState<any>(false)
-  const [abroadWork, setAbroadWork] = useState<any>(false)
+  const [noticePeriod, setNoticePeriod] = useState<boolean>(false)
+  const [terminated, setTerminated] = useState<boolean>(false)
+  const [relation, setRelation] = useState<boolean>(false)
+  const [forgotDocuments, setForgotDocuments] = useState<boolean>(false)
+  const [abroadWork, setAbroadWork] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({
     noticePeriod: false,
@@ -21,18 +35,8 @@ const EmploymentHistory = (props: any) => {
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [documents, setDocuments] = useState({
-    visaPage: '',
-    permitCard: '',
-    salaryAccountStatement: '',
-    supportingDocuments: '',
-  });
-  const [documentsName, setDocumentsName] = useState({
-    visa_page: '',
-    permit_card: '',
-    salary_account_statement: '',
-    supporting_documents: '',
-  });
+  const [documents, setDocuments] = useState(initialDocumentState);
+  const [documentsName, setDocumentsName] = useState(initialDocumentNameState);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -76,11 +80,16 @@ const EmploymentHistory = (props: any) => {
 
       if (result) {
         showSuccessAlert("Employment Data Saved Successffully");
+        setDocuments(initialDocumentState)
+        setDocumentsName(initialDocumentNameState)
         getEmploymentHistories();
       }
 
     } catch (error) {
       console.log(error);
+      showSuccessAlert("Something went wrong");
+      setDocuments(initialDocumentState)
+      setDocumentsName(initialDocumentNameState)
     }
   }
 
@@ -91,11 +100,11 @@ const EmploymentHistory = (props: any) => {
       const result = await axios.get(`/employment_history/${studentId}`)
       if (result) {
         // setFormData(result?.data?.data)
-        setNoticePeriod(result?.data?.data?.served_notice_period);
-        setTerminated(result?.data?.data?.terminated_from_company);
-        setRelation(result?.data?.data?.good_relation_with_employers);
-        setForgotDocuments(result?.data?.data?.submitted_forged_documents);
-        setAbroadWork(result?.data?.data?.has_abroad_work_evidence);
+        setNoticePeriod(result?.data?.data?.served_notice_period || false);
+        setTerminated(result?.data?.data?.terminated_from_company || false);
+        setRelation(result?.data?.data?.good_relation_with_employers || false);
+        setForgotDocuments(result?.data?.data?.submitted_forged_documents || false);
+        setAbroadWork(result?.data?.data?.has_abroad_work_evidence || false);
         setDocumentsName(result?.data?.data);
         setIsLoading(false);
       }
@@ -257,8 +266,8 @@ const EmploymentHistory = (props: any) => {
                 id="abroadWork"
                 label="Yes"
                 checked={abroadWork}
-                // onChange={() => setAbroadWork(true)}
-                onChange={handleChange}
+                onChange={() => setAbroadWork(true)}
+                // onChange={handleChange}
                 name="abroadWork"
               />
 
