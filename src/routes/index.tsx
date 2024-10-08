@@ -34,6 +34,7 @@ const CRMLeadsList = React.lazy(
   () => import("../pages/lead_management/Tickets/List")
 );
 const Tasks = React.lazy(() => import("../pages/lead_management/Tasks/List"));
+const KycApproval = React.lazy(() => import("../pages/forms/KycApproval"));
 
 // uikit
 
@@ -131,13 +132,19 @@ const crmAppRoutes = {
   path: "/apps/crm",
   name: "CRM",
   route: PrivateRoute,
-  roles: ["Add Lead", "View Task"],
+  roles: ["Add Lead", "View Task", "KYC Approval"],
   icon: "users",
   children: [
     {
       path: "/apps/crm/leads",
       name: "Leads",
       element: <CRMLeads />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/leads/kyc_approval",
+      name: "KYC Approval",
+      element: <KycApproval />,
       route: PrivateRoute,
     },
   ],

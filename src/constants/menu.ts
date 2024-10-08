@@ -88,6 +88,17 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["View Task"],
   },
 
+  { key: "kyc_approval", label: "KYC Approval", isTitle: true, roles: ["KYC Approval"] },
+
+  {
+    key: "kycApproval",
+    label: "KYC Approval",
+    isTitle: false,
+    icon: "list",
+    url: "/leads/kyc_approval",
+    roles: ["KYC Approval"],
+  },
+
   { key: "settings", label: "Settings", isTitle: true, roles: ["Monitor"] },
 
   {
