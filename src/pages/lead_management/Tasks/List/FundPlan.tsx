@@ -21,6 +21,8 @@ const initialFundPlanState = {
   sponsorship_amount: "",
   name_of_bank: "",
   itr_status: "no",
+  has_min_6_months_backup: "true",
+  source_of_funds: "",
   supporting_document: null,
   errors: {},
 };
@@ -32,9 +34,7 @@ const FundPlan = ({ student_id }: Props) => {
   const { saveFundPlan, saveLoading } = useSaveFundPlan(student_id);
   const { loading, removeFromApi } = useRemoveFromApi();
 
-  const refreshing = useSelector(
-    (state: RootState) => state.refreshReducer.refreshing
-  );
+  const refreshing = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
   const handleAddMoreFundPlan = () => {
     setFundPlan([
@@ -47,6 +47,8 @@ const FundPlan = ({ student_id }: Props) => {
         supporting_document: null,
         relation_with_sponsor: "",
         sponsorship_amount: 0.0,
+        has_min_6_months_backup: "true",
+        source_of_funds: "",
         name_of_bank: "",
         errors: {},
       },
@@ -89,11 +91,7 @@ const FundPlan = ({ student_id }: Props) => {
     saveFundPlan(fundPlan);
   };
 
-  const handleFundPlanInputChange = (
-    index: number,
-    name: string,
-    value: string | number | File
-  ) => {
+  const handleFundPlanInputChange = (index: number, name: string, value: string | number | File) => {
     const newFundPlan = [...fundPlan];
     newFundPlan[index] = {
       ...newFundPlan[index], // Ensure you don't overwrite the whole object
@@ -109,9 +107,7 @@ const FundPlan = ({ student_id }: Props) => {
 
       console.log(data?.data);
 
-      data?.data.length > 0
-        ? setFundPlan(data.data)
-        : setFundPlan([initialFundPlanState]);
+      data?.data.length > 0 ? setFundPlan(data.data) : setFundPlan([initialFundPlanState]);
     } catch (error) {
       console.error("Error fetching fund plan:", error);
       showErrorAlert("Failed to fetch fund plan");
@@ -127,12 +123,7 @@ const FundPlan = ({ student_id }: Props) => {
   }, [student_id, refreshing]);
 
   if (initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "45%" }}
-      />
-    );
+    return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "45%" }} />;
   }
 
   return (
@@ -147,22 +138,10 @@ const FundPlan = ({ student_id }: Props) => {
       </Row>
 
       <Row>
-        <Button
-          variant="primary"
-          className="mt-4"
-          type="submit"
-          onClick={saveFundPlanData}
-          disabled={saveLoading}
-        >
+        <Button variant="primary" className="mt-4" type="submit" onClick={saveFundPlanData} disabled={saveLoading}>
           {saveLoading ? (
             <>
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
+              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
               {" Saving..."} {/* Show spinner and text */}
             </>
           ) : (
