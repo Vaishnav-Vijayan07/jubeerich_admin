@@ -275,8 +275,8 @@ const PassportDetails = ({ studentId }: Props) => {
             <Row>
               {passportDetails?.passports.length > 1 && (
                 <ActionButton
-                  colorClass="text-danger"
                   onClick={() => removePassport(index)}
+                  colorClass="text-danger"
                   iconClass="mdi mdi-delete"
                   label="Remove"
                 />
