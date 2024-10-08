@@ -48,25 +48,34 @@ const EmploymentHistory = (props: any) => {
     }));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, value: any) => {
+    const { name } = e.target;
+    
     setFormData({
       ...formData,
-      [name]: checked,
+      [name]: value,
     });
   };
 
   const onSubmit = async () => {
     try {
       console.log('formData', formData);
+      console.log('Docs',documents);
       
       const formBody = new FormData();
 
-      formBody.append("served_notice_period", JSON.stringify(noticePeriod))
-      formBody.append("terminated_from_company", JSON.stringify(terminated))
-      formBody.append("good_relation_with_employers", JSON.stringify(relation))
-      formBody.append("submitted_forged_documents", JSON.stringify(forgotDocuments))
-      formBody.append("has_abroad_work_evidence", JSON.stringify(abroadWork));
+      formBody.append("served_notice_period", JSON.stringify(formData?.noticePeriod))
+      formBody.append("terminated_from_company", JSON.stringify(formData?.terminated))
+      formBody.append("good_relation_with_employers", JSON.stringify(formData?.relation))
+      formBody.append("submitted_forged_documents", JSON.stringify(formData?.forgotDocuments))
+      formBody.append("has_abroad_work_evidence", JSON.stringify(formData?.abroadWork));
+
+      // formBody.append("served_notice_period", JSON.stringify(noticePeriod))
+      // formBody.append("terminated_from_company", JSON.stringify(terminated))
+      // formBody.append("good_relation_with_employers", JSON.stringify(relation))
+      // formBody.append("submitted_forged_documents", JSON.stringify(forgotDocuments))
+      // formBody.append("has_abroad_work_evidence", JSON.stringify(abroadWork));
+
       formBody.append("visaPage", documents.visaPage)
       formBody.append("permitCard", documents.permitCard)
       formBody.append("salaryAccountStatement", documents.salaryAccountStatement)
@@ -99,12 +108,20 @@ const EmploymentHistory = (props: any) => {
 
       const result = await axios.get(`/employment_history/${studentId}`)
       if (result) {
-        // setFormData(result?.data?.data)
-        setNoticePeriod(result?.data?.data?.served_notice_period || false);
-        setTerminated(result?.data?.data?.terminated_from_company || false);
-        setRelation(result?.data?.data?.good_relation_with_employers || false);
-        setForgotDocuments(result?.data?.data?.submitted_forged_documents || false);
-        setAbroadWork(result?.data?.data?.has_abroad_work_evidence || false);
+        setFormData((prev: any) =>({
+          ...prev,
+          noticePeriod: result?.data?.data?.served_notice_period || false,
+          terminated: result?.data?.data?.terminated_from_company || false,
+          relation: result?.data?.data?.good_relation_with_employers || false,
+          forgotDocuments: result?.data?.data?.submitted_forged_documents || false,
+          abroadWork: result?.data?.data?.has_abroad_work_evidence || false
+        }))
+
+        // setNoticePeriod(result?.data?.data?.served_notice_period || false);
+        // setTerminated(result?.data?.data?.terminated_from_company || false);
+        // setRelation(result?.data?.data?.good_relation_with_employers || false);
+        // setForgotDocuments(result?.data?.data?.submitted_forged_documents || false);
+        // setAbroadWork(result?.data?.data?.has_abroad_work_evidence || false);
         setDocumentsName(result?.data?.data);
         setIsLoading(false);
       }
@@ -140,14 +157,15 @@ const EmploymentHistory = (props: any) => {
               <span className="text-danger">* </span>
               Have you served notice period as per the requirement of your employer during your last resignation
             </Form.Label>
-            <Col className="d-flex gap-2">
+            <Col className="d-flex gap-2 ps-3">
               <Form.Check
                 type="radio"
                 id="noticePeriod"
                 label="Yes"
-                checked={noticePeriod}
-                onChange={() => setNoticePeriod(true)}
-                // onChange={handleChange}
+                // checked={noticePeriod}
+                checked={formData?.noticePeriod}
+                // onChange={() => setNoticePeriod(true)}
+                onChange={(e) => handleChange(e, true)}
                 name="noticePeriod"
               />
 
@@ -155,9 +173,10 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="noticePeriod"
                 label="No"
-                checked={!noticePeriod}
-                onChange={() => setNoticePeriod(false)}
-                // onChange={handleChange}
+                // checked={!noticePeriod}
+                checked={!formData?.noticePeriod}
+                // onChange={() => setNoticePeriod(false)}
+                onChange={(e) => handleChange(e, false)}
                 name="noticePeriod"
               />
             </Col>
@@ -170,14 +189,15 @@ const EmploymentHistory = (props: any) => {
               <span className="text-danger">* </span>
               Did you get terminated from any organization/company
             </Form.Label>
-            <Col className="d-flex gap-2">
+            <Col className="d-flex gap-2 ps-3">
               <Form.Check
                 type="radio"
                 id="terminated"
                 label="Yes"
-                checked={terminated}
-                onChange={() => setTerminated(true)}
-                // onChange={handleChange}
+                // checked={terminated}
+                checked={formData?.terminated}
+                // onChange={() => setTerminated(true)}
+                onChange={(e) => handleChange(e, true)}
                 name="terminated"
               />
 
@@ -185,9 +205,10 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="terminated"
                 label="No"
-                checked={!terminated}
-                onChange={() => setTerminated(false)}
-                // onChange={handleChange}
+                // checked={!terminated}
+                checked={!formData?.terminated}
+                // onChange={() => setTerminated(false)}
+                onChange={(e) => handleChange(e, false)}
                 name="terminated"
               />
             </Col>
@@ -200,14 +221,15 @@ const EmploymentHistory = (props: any) => {
               <span className="text-danger">* </span>
               Are you in very good and friendly relation with all of your previous/current employers
             </Form.Label>
-            <Col className="d-flex gap-2">
+            <Col className="d-flex gap-2 ps-3">
               <Form.Check
                 type="radio"
                 id="relation"
                 label="Yes"
-                checked={relation}
-                onChange={() => setRelation(true)}
-                // onChange={handleChange}
+                // checked={relation}
+                checked={formData?.relation}
+                // onChange={() => setRelation(true)}
+                onChange={(e) => handleChange(e, true)}
                 name="relation"
               />
 
@@ -215,9 +237,10 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="relation"
                 label="No"
-                checked={!relation}
-                onChange={() => setRelation(false)}
-                // onChange={handleChange}
+                // checked={!relation}
+                checked={!formData?.relation}
+                // onChange={() => setRelation(false)}
+                onChange={(e) => handleChange(e, false)}
                 name="relation"
               />
             </Col>
@@ -228,16 +251,17 @@ const EmploymentHistory = (props: any) => {
           <Form.Group className="mb-2" controlId="forgotDocuments">
             <Form.Label>
               <span className="text-danger">* </span>
-              Is there any forged experience or any other documents submitted to us
+              Is there any forget experience or any other documents submitted to us
             </Form.Label>
-            <Col className="d-flex gap-2">
+            <Col className="d-flex gap-2 ps-3">
               <Form.Check
                 type="radio"
                 id="forgotDocuments"
                 label="Yes"
-                checked={forgotDocuments}
-                onChange={() => setForgotDocuments(true)}
-                // onChange={handleChange}
+                // checked={forgotDocuments}
+                checked={formData?.forgotDocuments}
+                // onChange={() => setForgotDocuments(true)}
+                onChange={(e) => handleChange(e, true)}
                 name="forgotDocuments"
               />
 
@@ -245,9 +269,10 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="forgotDocuments"
                 label="No"
-                checked={!forgotDocuments}
-                onChange={() => setForgotDocuments(false)}
-                // onChange={handleChange}
+                // checked={!forgotDocuments}
+                checked={!formData?.forgotDocuments}
+                // onChange={() => setForgotDocuments(false)}
+                onChange={(e) => handleChange(e, false)}
                 name="forgotDocuments"
               />
             </Col>
@@ -260,14 +285,15 @@ const EmploymentHistory = (props: any) => {
               <span className="text-danger">* </span>
               For any abroad work experiences do you still have the visa page, permit card, salary account statement, and all other supporting evidence to prove the same
             </Form.Label>
-            <Col className="d-flex gap-2">
+            <Col className="d-flex gap-2 ps-3">
               <Form.Check
                 type="radio"
                 id="abroadWork"
                 label="Yes"
-                checked={abroadWork}
-                onChange={() => setAbroadWork(true)}
-                // onChange={handleChange}
+                // checked={abroadWork}
+                checked={formData?.abroadWork}
+                // onChange={() => setAbroadWork(true)}
+                onChange={(e) => handleChange(e, true)}
                 name="abroadWork"
               />
 
@@ -275,9 +301,10 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="abroadWork"
                 label="No"
-                checked={!abroadWork}
-                onChange={() => setAbroadWork(false)}
-                // onChange={handleChange}
+                // checked={!abroadWork}
+                checked={!formData?.abroadWork}
+                // onChange={() => setAbroadWork(false)}
+                onChange={(e) => handleChange(e, false)}
                 name="abroadWork"
               />
             </Col>
@@ -287,7 +314,7 @@ const EmploymentHistory = (props: any) => {
         <Col md={6} lg={6} xl={6} xxl={4}>
           <Form.Group className="mb-2" controlId="visaPage">
             <Form.Label>
-              <span className="text-danger">*</span>
+              <span className="text-danger">* </span>
               Visa Page
             </Form.Label>
             <FormInput
@@ -315,7 +342,7 @@ const EmploymentHistory = (props: any) => {
         <Col md={6} lg={6} xl={6} xxl={4}>
           <Form.Group className="mb-2" controlId="permitCard">
             <Form.Label>
-              <span className="text-danger">*</span>
+              <span className="text-danger">* </span>
               Permit Card
             </Form.Label>
             <FormInput
@@ -343,7 +370,7 @@ const EmploymentHistory = (props: any) => {
         <Col md={6} lg={6} xl={6} xxl={4}>
           <Form.Group className="mb-2" controlId="salaryAccountStatement">
             <Form.Label>
-              <span className="text-danger">*</span>
+              <span className="text-danger">* </span>
               Salary Account Statement
             </Form.Label>
             <FormInput
@@ -371,7 +398,7 @@ const EmploymentHistory = (props: any) => {
         <Col md={6} lg={6} xl={6} xxl={4}>
           <Form.Group className="mb-2" controlId="supportingDocuments">
             <Form.Label>
-              <span className="text-danger">*</span>
+              <span className="text-danger">* </span>
               Supporting Documents
             </Form.Label>
             <FormInput
