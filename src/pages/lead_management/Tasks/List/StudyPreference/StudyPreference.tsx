@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Row, Spinner } from "react-bootstrap";
 import { withSwal } from "react-sweetalert2";
-import useDropdownData from "../../../../hooks/useDropdownDatas";
+import useDropdownData from "../../../../../hooks/useDropdownDatas";
 import axios from "axios";
 import StudyPreferenceRow from "./StudyPrefRow";
-import { showErrorAlert, showSuccessAlert } from "../../../../constants";
-import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
+import { showErrorAlert, showSuccessAlert } from "../../../../../constants";
+import useRemoveFromApi from "../../../../../hooks/useRemoveFromApi";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import useSaveStudyPreferenceData from "../../../../hooks/useSaveStudyPreferenceData";
-import validateFields from "../../../../helpers/validateHelper";
+import { RootState } from "../../../../../redux/store";
+import useSaveStudyPreferenceData from "../../../../../hooks/useSaveStudyPreferenceData";
+import validateFields from "../../../../../helpers/validateHelper";
 
 const initialStateStudyPreference = {
   id: null,

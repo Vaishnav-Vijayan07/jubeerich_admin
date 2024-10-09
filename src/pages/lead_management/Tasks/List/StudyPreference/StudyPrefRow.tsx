@@ -1,8 +1,8 @@
 import { Button, Col, Form, Row } from "react-bootstrap";
 import Select from "react-select";
-import { FormInput } from "../../../../components";
-import { intakeMonthOptions, intakeYearList } from "./data";
-import ActionButton from "./ActionButton";
+import { FormInput } from "../../../../../components";
+import { intakeMonthOptions, intakeYearList } from ".././data";
+import ActionButton from ".././ActionButton";
 
 const StudyPreferenceRow = ({
   studyPreference,
@@ -270,7 +270,7 @@ const StudyPreferenceRow = ({
             placeholder="Enter estimated budget"
             key="estimatedBudget"
             value={item?.estimatedBudget || ""}
-            onChange={(e) =>
+            onChange={(e: any) =>
               handleStudyPreferenceChange(
                 index,
                 "estimatedBudget",

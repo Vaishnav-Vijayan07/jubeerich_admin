@@ -1,8 +1,8 @@
 import { Row, Col, Form, Button } from "react-bootstrap";
-import { FormInput } from "../../../../components";
+import { FormInput } from "../../../../../components";
 import Select from "react-select";
-import { baseUrl } from "../../../../constants";
-import ActionButton from "./ActionButton";
+import { baseUrl } from "../../../../../constants";
+import ActionButton from ".././ActionButton";
 import React from "react";
 
 const fundTypeOptions = [

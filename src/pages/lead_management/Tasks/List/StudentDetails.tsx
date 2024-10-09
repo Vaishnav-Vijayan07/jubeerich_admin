@@ -30,17 +30,17 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import Comments from "./Comments";
 import Attachments from "./Attachments";
-import WorkExpereince from "./WorkExpereince";
 import VisaProcess from "./VisaProcess";
 import EducationDetails from "./EducationDetails";
-import FundPlan from "./FundPlan";
+import FundPlan from "./FundPlan/FundPlan";
 import { refreshData } from "../../../../redux/countryReducer";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
 import AdditionalDocuments from "./AdditionalDocuments";
+import WorkExpereince from "./WorkExpereince/WorkExpereince";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const AcademicInfo = lazy(() => import("./AcademicInfo"));
-const StudyPreference = lazy(() => import("./StudyPreference"));
+const StudyPreference = lazy(() => import("./StudyPreference/StudyPreference"));
 
 const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [basicData, setBasicData] = useState<any>([]);

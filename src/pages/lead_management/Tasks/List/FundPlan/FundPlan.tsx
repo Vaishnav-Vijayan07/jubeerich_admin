@@ -1,13 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { showErrorAlert } from "../../../../constants";
+import { showErrorAlert } from "../../../../../constants";
 import { Button, Row, Spinner } from "react-bootstrap";
 import FundPlanRows from "./FundPlanRows";
-import validateFields from "../../../../helpers/validateHelper";
-import useSaveFundPlan from "../../../../hooks/useSaveFundPlan";
+import validateFields from "../../../../../helpers/validateHelper";
+import useSaveFundPlan from "../../../../../hooks/useSaveFundPlan";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
+import { RootState } from "../../../../../redux/store";
+import useRemoveFromApi from "../../../../../hooks/useRemoveFromApi";
 
 interface Props {
   student_id: string | number;
@@ -34,7 +34,9 @@ const FundPlan = ({ student_id }: Props) => {
   const { saveFundPlan, saveLoading } = useSaveFundPlan(student_id);
   const { loading, removeFromApi } = useRemoveFromApi();
 
-  const refreshing = useSelector((state: RootState) => state.refreshReducer.refreshing);
+  const refreshing = useSelector(
+    (state: RootState) => state.refreshReducer.refreshing
+  );
 
   const handleAddMoreFundPlan = () => {
     setFundPlan([
@@ -91,7 +93,11 @@ const FundPlan = ({ student_id }: Props) => {
     saveFundPlan(fundPlan);
   };
 
-  const handleFundPlanInputChange = (index: number, name: string, value: string | number | File) => {
+  const handleFundPlanInputChange = (
+    index: number,
+    name: string,
+    value: string | number | File
+  ) => {
     const newFundPlan = [...fundPlan];
     newFundPlan[index] = {
       ...newFundPlan[index], // Ensure you don't overwrite the whole object
@@ -107,7 +113,9 @@ const FundPlan = ({ student_id }: Props) => {
 
       console.log(data?.data);
 
-      data?.data.length > 0 ? setFundPlan(data.data) : setFundPlan([initialFundPlanState]);
+      data?.data.length > 0
+        ? setFundPlan(data.data)
+        : setFundPlan([initialFundPlanState]);
     } catch (error) {
       console.error("Error fetching fund plan:", error);
       showErrorAlert("Failed to fetch fund plan");
@@ -123,7 +131,12 @@ const FundPlan = ({ student_id }: Props) => {
   }, [student_id, refreshing]);
 
   if (initialLoading) {
-    return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "45%" }} />;
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "100%", left: "45%" }}
+      />
+    );
   }
 
   return (
@@ -138,10 +151,22 @@ const FundPlan = ({ student_id }: Props) => {
       </Row>
 
       <Row>
-        <Button variant="primary" className="mt-4" type="submit" onClick={saveFundPlanData} disabled={saveLoading}>
+        <Button
+          variant="primary"
+          className="mt-4"
+          type="submit"
+          onClick={saveFundPlanData}
+          disabled={saveLoading}
+        >
           {saveLoading ? (
             <>
-              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
               {" Saving..."} {/* Show spinner and text */}
             </>
           ) : (
