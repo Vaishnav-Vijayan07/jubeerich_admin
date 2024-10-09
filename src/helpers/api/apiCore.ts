@@ -28,6 +28,11 @@ axios.interceptors.response.use(
         case 401:
           message = "Invalid credentials";
           break;
+
+        case 400:
+          message = error?.response?.data?.error;
+          break;
+
         case 403:
           message = "Access Forbidden";
           break;

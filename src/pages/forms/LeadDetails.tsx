@@ -6,16 +6,16 @@ import { RootState } from "../../redux/store";
 import { useParams } from "react-router-dom";
 import BasicInfo from "../lead_management/Tasks/List/BasicInfo";
 import AcademicInfo from "../lead_management/Tasks/List/AcademicInfo";
-import WorkExpereince from "../lead_management/Tasks/List/WorkExpereince";
 import VisaProcess from "../lead_management/Tasks/List/VisaProcess";
-import StudyPreference from "../lead_management/Tasks/List/StudyPreference";
-import FundPlan from "../lead_management/Tasks/List/FundPlan";
+import StudyPreference from "../lead_management/Tasks/List/StudyPreference/StudyPreference";
+import FundPlan from "../lead_management/Tasks/List/FundPlan/FundPlan";
 import EducationDetails from "../lead_management/Tasks/List/EducationDetails";
 import Comments from "../lead_management/Tasks/List/Comments";
 import Attachments from "../lead_management/Tasks/List/Attachments";
 import AdditionalDocuments from "../lead_management/Tasks/List/AdditionalDocuments";
 import PassportDetails from "../lead_management/Tasks/List/PassportDetails";
 import FamilyDetails from "../lead_management/Tasks/List/FamilyDetails/FamilyDetails";
+import WorkExpereince from "../lead_management/Tasks/List/WorkExpereince/WorkExpereince";
 
 interface Props {}
 

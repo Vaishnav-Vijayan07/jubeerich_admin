@@ -2,14 +2,15 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { withSwal } from "react-sweetalert2";
-import WorkExpRow from "./WorkExpRow";
-import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
+import WorkExpRow from ".././WorkExpereince/WorkExpRow";
+import useRemoveFromApi from "../../../../../hooks/useRemoveFromApi";
+
+import { RootState } from "../../../../../redux/store";
+import validateFields from "../../../../../helpers/validateHelper";
+import useSaveWorkInfo from "../../../../../hooks/useSaveWorkInfo";
+import GapRows from ".././gapRow";
+import EmploymentHistory from ".././EmploymentHistory";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import validateFields from "../../../../helpers/validateHelper";
-import useSaveWorkInfo from "../../../../hooks/useSaveWorkInfo";
-import GapRows from "./gapRow";
-import EmploymentHistory from "./EmploymentHistory";
 
 const initialStateWork = {
   years: 0,

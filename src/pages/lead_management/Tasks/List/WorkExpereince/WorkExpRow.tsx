@@ -1,8 +1,8 @@
 import { Button, Col, Form, Row } from "react-bootstrap";
-import { FormInput } from "../../../../components";
+import { FormInput } from "../../../../../components";
 import moment from "moment";
-import { baseUrl } from "../../../../constants";
-import ActionButton from "./ActionButton";
+import { baseUrl } from "../../../../../constants";
+import ActionButton from "../ActionButton";
 import React from "react";
 
 const WorkExpRow = ({
