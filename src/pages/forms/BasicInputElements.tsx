@@ -8,14 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import makeAnimated from "react-select/animated";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
-import {
-  addLeads,
-  deleteLeads,
-  getLead,
-  getLeadsByCounsellorTL,
-  getLeadsTL,
-  updateLeads,
-} from "../../redux/actions";
+import { addLeads, deleteLeads, getLead, getLeadsByCounsellorTL, getLeadsTL, updateLeads } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
 import {
   AUTH_SESSION_KEY,
@@ -36,14 +29,7 @@ import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import {
-  examtypes,
-  initialState,
-  initialValidationState,
-  OptionType,
-  sizePerPageList,
-  TableRecords,
-} from "./data";
+import { examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
 import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
 
@@ -120,9 +106,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
     full_name: yup.string().required("Name is required"),
@@ -221,10 +205,7 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "lead_received_date",
       sort: false,
       Cell: ({ row }: any) => (
-        <span>
-          {row.original.lead_received_date &&
-            moment(row.original.lead_received_date).format("DD/MM/YYYY")}
-        </span>
+        <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
       ),
     },
     {
@@ -232,10 +213,7 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "followup_date",
       sort: false,
       Cell: ({ row }: any) => (
-        <span>
-          {row.original.followup_date &&
-            moment(row.original.followup_date).format("DD/MM/YYYY")}
-        </span>
+        <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>
       ),
     },
     ...(user?.role == cre_tl_id
@@ -247,11 +225,49 @@ const BasicInputElements = withSwal((props: any) => {
           },
         ]
       : []),
+    ...(user?.role == counsellor_tl_id
+      ? [
+          {
+            Header: "Status",
+            accessor: "assigned_branch_counselor",
+            sort: true,
+            Cell: ({ row }: any) => (
+              <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
+            ),
+          },
+          {
+            Header: "Assigned Counselor",
+            accessor: "assigned_branch_counselor_name",
+            sort: true,
+          },
+        ]
+      : []),
     ...(user?.role == cre_id
       ? [
           {
             Header: "Assigned by",
             accessor: "updated_by_user",
+            sort: true,
+          },
+        ]
+      : []),
+    ...(user?.role == regional_manager_id
+      ? [
+          {
+            Header: "Branch Assigned",
+            accessor: "assigned_regional_manager",
+            sort: true,
+            Cell: ({ row }: any) => (
+              <>{row?.original.assigned_regional_manager ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
+            ),
+          },
+        ]
+      : []),
+    ...(user?.role == regional_manager_id
+      ? [
+          {
+            Header: "Branch Name",
+            accessor: "branch_name",
             sort: true,
           },
         ]
@@ -288,9 +304,7 @@ const BasicInputElements = withSwal((props: any) => {
               return (
                 <ul style={{ listStyle: "none", padding: 0 }}>
                   {counselors && counselors.length > 0 ? (
-                    counselors.map((item: any) => (
-                      <li key={item?.counselor_name}>{item?.counselor_name}</li>
-                    ))
+                    counselors.map((item: any) => <li key={item?.counselor_name}>{item?.counselor_name}</li>)
                   ) : (
                     <li>Not assigned</li>
                   )}
@@ -328,11 +342,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-          >
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -433,10 +443,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  const handleBranchCounsellorAssignBulk = async (
-    user_ids: any,
-    counsellor_id: any
-  ) => {
+  const handleBranchCounsellorAssignBulk = async (user_ids: any, counsellor_id: any) => {
     if (user_ids.length > 0) {
       try {
         const { data } = await axios.post("/assign_branch_counselor", {
@@ -445,11 +452,7 @@ const BasicInputElements = withSwal((props: any) => {
         });
 
         if (data.status) {
-          if (userRole == counsellor_tl_id) {
-            dispatch(getLeadsByCounsellorTL());
-          } else {
-            dispatch(getLead());
-          }
+          dispatch(getLead());
           showSuccessAlert("Bulk assignment successful.");
         }
       } catch (error) {
@@ -507,11 +510,7 @@ const BasicInputElements = withSwal((props: any) => {
           leads_ids: selectedValues,
         });
         if (data.status) {
-          if (userRole == counsellor_tl_id) {
-            dispatch(getLeadsByCounsellorTL());
-          } else {
-            dispatch(getLead());
-          }
+          dispatch(getLead());
           showSuccessAlert("Bulk assignment successful.");
         }
       } catch (error) {
@@ -567,16 +566,10 @@ const BasicInputElements = withSwal((props: any) => {
         />
 
         {user?.role == it_team_id && (
-          <Modal
-            show={uploadModal}
-            onHide={toggleUploadModal}
-            dialogClassName="modal-dialog-centered"
-          >
+          <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body>
-              <p className="text-muted mb-1 font-small">
-                *Please upload the Excel file following the example format.
-              </p>
+              <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
               <FileUploader
                 onFileUpload={handleOnFileUpload}
                 showPreview={true}
@@ -584,17 +577,10 @@ const BasicInputElements = withSwal((props: any) => {
                 setSelectedFile={setSelectedFile}
               />
               <div className="d-flex gap-2 justify-content-end mt-2">
-                <Button
-                  className="btn-sm btn-blue waves-effect waves-light"
-                  onClick={handleDownloadClick}
-                >
+                <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
                   <i className="mdi mdi-download-circle"></i> Download Sample
                 </Button>
-                <Button
-                  className="btn-sm btn-success waves-effect waves-light"
-                  onClick={handleFileUpload}
-                  disabled={isLoading}
-                >
+                <Button className="btn-sm btn-success waves-effect waves-light" onClick={handleFileUpload} disabled={isLoading}>
                   <i className="mdi mdi-upload"></i> Upload File
                 </Button>
               </div>
@@ -618,10 +604,7 @@ const BasicInputElements = withSwal((props: any) => {
             <Card.Body>
               <div className="d-flex flex-wrap gap-2 justify-content-end">
                 {user.role == it_team_id && (
-                  <Button
-                    className="btn-sm btn-blue waves-effect waves-light"
-                    onClick={toggleUploadModal}
-                  >
+                  <Button className="btn-sm btn-blue waves-effect waves-light" onClick={toggleUploadModal}>
                     <i className="mdi mdi-upload"></i> Import Leads
                   </Button>
                 )}
@@ -636,26 +619,16 @@ const BasicInputElements = withSwal((props: any) => {
                       >
                         <i className="mdi mdi-account-plus"></i> Assign CRE's
                       </Dropdown.Toggle>
-                      <Dropdown.Menu
-                        style={{ maxHeight: "150px", overflow: "auto" }}
-                      >
+                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                         {cres?.map((item: any) => (
-                          <Dropdown.Item
-                            key={item.value}
-                            onClick={() =>
-                              handleAssignBulk(selectedValues, item.value)
-                            }
-                          >
+                          <Dropdown.Item key={item.value} onClick={() => handleAssignBulk(selectedValues, item.value)}>
                             {item.label}
                           </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
                     </Dropdown>
 
-                    <Button
-                      className="btn-sm btn-blue waves-effect waves-light float-end"
-                      onClick={handleAutoAssign}
-                    >
+                    <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={handleAutoAssign}>
                       <i className="mdi mdi-plus-circle"></i> Auto Assign
                     </Button>
                   </>
@@ -669,22 +642,11 @@ const BasicInputElements = withSwal((props: any) => {
                         variant="light"
                         className="table-action-btn btn-sm btn-blue"
                       >
-                        <i className="mdi mdi-account-plus"></i> Assign
-                        Counsellors
+                        <i className="mdi mdi-account-plus"></i> Assign Counsellors
                       </Dropdown.Toggle>
-                      <Dropdown.Menu
-                        style={{ maxHeight: "150px", overflow: "auto" }}
-                      >
+                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                         {branchCounsellors?.map((item: any) => (
-                          <Dropdown.Item
-                            key={item.id}
-                            onClick={() =>
-                              handleBranchCounsellorAssignBulk(
-                                selectedValues,
-                                item.id
-                              )
-                            }
-                          >
+                          <Dropdown.Item key={item.id} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
                             {item.name}
                           </Dropdown.Item>
                         ))}
@@ -695,8 +657,7 @@ const BasicInputElements = withSwal((props: any) => {
                       className="btn-sm btn-blue waves-effect waves-light float-end"
                       onClick={handleAutoAssignBranchCounsellors}
                     >
-                      <i className="mdi mdi-plus-circle"></i> Auto Assign
-                      Counsellors
+                      <i className="mdi mdi-plus-circle"></i> Auto Assign Counsellors
                     </Button>
                   </>
                 )}
@@ -711,16 +672,9 @@ const BasicInputElements = withSwal((props: any) => {
                       >
                         <i className="mdi mdi-account-plus"></i> Assign Branch
                       </Dropdown.Toggle>
-                      <Dropdown.Menu
-                        style={{ maxHeight: "150px", overflow: "auto" }}
-                      >
+                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                         {branchForManager?.map((item: any) => (
-                          <Dropdown.Item
-                            key={item.value}
-                            onClick={() =>
-                              handleBranchAssignBulk(selectedValues, item.value)
-                            }
-                          >
+                          <Dropdown.Item key={item.value} onClick={() => handleBranchAssignBulk(selectedValues, item.value)}>
                             {item.label}
                           </Dropdown.Item>
                         ))}
@@ -731,18 +685,13 @@ const BasicInputElements = withSwal((props: any) => {
 
                 <Button
                   className="btn-sm btn-blue waves-effect waves-light float-end"
-                  onClick={() => [
-                    openModalWithClass("modal-full-width"),
-                    handleClearModal(),
-                  ]}
+                  onClick={() => [openModalWithClass("modal-full-width"), handleClearModal()]}
                 >
                   <i className="mdi mdi-plus-circle"></i> Add lead
                 </Button>
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
-              {userRole == cre_tl_id ||
-              userRole == regional_manager_id ||
-              userRole == counsellor_tl_id ? (
+              {userRole == cre_tl_id || userRole == regional_manager_id || userRole == counsellor_tl_id ? (
                 <Table
                   columns={columns}
                   data={records ? records : []}

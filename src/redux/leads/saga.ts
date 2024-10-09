@@ -237,9 +237,6 @@ function* addLeads({
         
         yield put(getLeadAssignedByCounsellorTL())
       } 
-      else if (role == counsellor_tl_id) {
-        yield put(getLeadsByCounsellorTLAction());
-      } 
       else {
         console.log("getLead called");
 
@@ -326,9 +323,6 @@ function* updateLeads({
         
         yield put(getLeadAssignedByCounsellorTL())
       }
-      else  if (role == counsellor_tl_id) {
-        yield put(getLeadsByCounsellorTLAction());
-      }
       else {
         yield put(getLead());
       }
@@ -362,9 +356,6 @@ function* deleteLeads({ payload: { id, isAssignedLeads } }: LeadsData): SagaIter
         
         yield put(getLeadAssignedByCounsellorTL())
       }
-      else  if (role == counsellor_tl_id) {
-        yield put(getLeadsByCounsellorTLAction());
-      } 
       else {
         yield put(getLead());
       }

@@ -34,6 +34,28 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
           </Form.Group>
         </Col>
 
+        <Col md={4} lg={4} xl={4} xxl={4}>
+          <Form.Group className="mb-3" controlId={`fund_origin-${index}`}>
+            <Form.Label>Fund Origin</Form.Label>
+            <Form.Select
+              name="fund_origin"
+              value={plan.fund_origin || ""}
+              onChange={(e) => handleFundPlanInputChange(index, e.target.name, e.target.value)} // Standard HTML onChange
+            >
+              <option value="" disabled>
+                Select Fund Origin
+              </option>
+              <option key={"Own Funds"} value={"Own Funds"}>
+                Own Funds
+              </option>
+              <option key={"Sponsored Funds"} value={"Sponsored Funds"}>
+                Sponsored Funds
+              </option>
+            </Form.Select>
+            {plan.errors?.fund_origin && <Form.Text className="text-danger">{plan.errors.fund_origin}</Form.Text>}
+          </Form.Group>
+        </Col>
+
         {/* Sponsor Name */}
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`sponsor_name-${index}`}>
@@ -50,7 +72,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         </Col>
 
         {/* Approx Annual Income */}
-        {/* <Col md={4} lg={4} xl={4} xxl={4}>
+        <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`approx_annual_income-${index}`}>
             <Form.Label>Approx Annual Income</Form.Label>
             <FormInput
@@ -65,7 +87,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
               <Form.Text className="text-danger">{plan.errors.approx_annual_income}</Form.Text>
             )}
           </Form.Group>
-        </Col> */}
+        </Col>
 
         {/* Relation with sponsor*/}
 
@@ -209,7 +231,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
                 <Form.Label>Explain the source of funds for FD/Savings.</Form.Label>
                 <Form.Control
                   // type="text"
-                  as={'textarea'}
+                  as={"textarea"}
                   rows={3}
                   name="source_of_funds"
                   placeholder="Explain the source of funds for FD/Savings."

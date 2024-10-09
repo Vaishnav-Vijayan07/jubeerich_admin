@@ -28,7 +28,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "airplay",
     url: "/dashboard-4",
-    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise"],
+    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications"],
   },
 
   // { key: "apps", label: "Apps", isTitle: true },
@@ -87,6 +87,64 @@ const MENU_ITEMS: MenuItemTypes[] = [
     url: "/leads/ordinary_tasks",
     roles: ["View Task"],
   },
+
+  { key: "kyc_details", label: "KYC Approval", isTitle: true, roles: ["KYC Approval"] },
+
+  {
+    key: "kycApproval",
+    label: "KYC Approval",
+    isTitle: false,
+    icon: "list",
+    url: "/kyc_details",
+    roles: ["KYC Approval"],
+  },
+
+  { key: "all_applications", label: "All Applications", isTitle: true, roles: ["Manage Applications"], },
+
+  {
+    key: "pending",
+    label: "Pending",
+    isTitle: false,
+    icon: "file-text",
+    url: "/kyc_details",
+    roles: ["Manage Applications"],
+  },
+  {
+    key: "assigned",
+    label: "Assigned",
+    isTitle: false,
+    icon: "file",
+    url: "/kyc_details",
+    roles: ["Manage Applications"],
+  },
+
+  { key: "my_applications", label: "My Applications", isTitle: true, roles: ["Manage Applications"], },
+
+  {
+    key: "pending",
+    label: "Pending",
+    isTitle: false,
+    icon: "file-text",
+    url: "/kyc_details",
+    roles: ["Manage Applications"],
+  },
+  {
+    key: "submitted",
+    label: "Submitted",
+    isTitle: false,
+    icon: "file",
+    url: "/kyc_details",
+    roles: ["Manage Applications"],
+  },
+  {
+    key: "offer_accepted",
+    label: "Offer Accepted",
+    isTitle: false,
+    icon: "file-plus",
+    url: "/kyc_details",
+    roles: ["Manage Applications"],
+  },
+
 
   { key: "settings", label: "Settings", isTitle: true, roles: ["Monitor"] },
 
