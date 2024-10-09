@@ -35,6 +35,7 @@ const CRMLeadsList = React.lazy(
 );
 const Tasks = React.lazy(() => import("../pages/lead_management/Tasks/List"));
 const KycApproval = React.lazy(() => import("../pages/forms/KycApproval"));
+const KycDetails = React.lazy(() => import("../pages/forms/KycDetails"));
 
 // uikit
 
@@ -119,7 +120,7 @@ const dashboardRoutes: RoutesProps = {
       // element: <Dashboard4 />,
       element: (
         <PrivateRoute
-          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise"]}
+          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications"]}
           component={Dashboard4}
         />
       ),
@@ -142,9 +143,15 @@ const crmAppRoutes = {
       route: PrivateRoute,
     },
     {
-      path: "/leads/kyc_approval",
+      path: "/kyc_details",
       name: "KYC Approval",
       element: <KycApproval />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/kyc_details/:id",
+      name: "KYC Details",
+      element: <KycDetails />,
       route: PrivateRoute,
     },
   ],
