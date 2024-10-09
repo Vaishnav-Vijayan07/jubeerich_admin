@@ -235,6 +235,11 @@ const BasicInputElements = withSwal((props: any) => {
               <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
             ),
           },
+          {
+            Header: "Assigned Counselor",
+            accessor: "assigned_branch_counselor_name",
+            sort: true,
+          },
         ]
       : []),
     ...(user?.role == cre_id
