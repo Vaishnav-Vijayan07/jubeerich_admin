@@ -51,11 +51,13 @@ const Leads = () => {
     
     if (userRole == cre_tl_id) {
       dispatch(getLeadsTL());
-    } else if(userRole == counsellor_tl_id) {
-      console.log('Entered');
+    } 
+    // else if(userRole == counsellor_tl_id) {
+    //   console.log('Entered');
       
-      dispatch(getLeadsByCounsellorTL());
-    } else {
+    //   dispatch(getLeadsByCounsellorTL());
+    // }
+    else {
       dispatch(getLead());
     }
 
