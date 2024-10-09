@@ -571,7 +571,7 @@ const BranchDetails = withSwal((props: any) => {
                   </div>
 
                   <div className="d-flex justify-content-end pt-2 pe-3">
-                    <Button className="btn btn-primary" onClick={() => [setShowModal(true), setIsTL(true)]}>
+                    <Button className="btn btn-primary" onClick={() => [setShowModal(true), setIsTL(true), handleCancelUpdate(), handleResetValues()]}>
                       Add Branch Counsellor TL
                     </Button>
                   </div>
@@ -580,7 +580,7 @@ const BranchDetails = withSwal((props: any) => {
             </Col>
             <Col md={8} lg={8}>
               <div className="d-flex justify-content-end pb-2">
-                <Button className="btn btn-primary me-2" onClick={() => setShowModal(true)}>
+                <Button className="btn btn-primary me-2" onClick={() => [setShowModal(true), handleResetValues(), handleCancelUpdate()]}>
                   Add Branch Counsellor
                 </Button>
                 {/* <Button className='btn btn-primary' onClick={() => [setShowModal(true), setIsTL(true)]}>Add Branch Counsellor TL</Button> */}

@@ -118,7 +118,7 @@ const LeadsModal = withSwal((props: any) => {
             setSelectedFranchisee(franchiseValue);
         }
 
-        if (region_id_from_item && value === region_id) {
+        if (region_id_from_item && value == region_id) {
             setActiveRegion(true);
             setIsFranchiseActive(false);
             const regionValue = regionData.find((item: any) => item.value == region_id);
