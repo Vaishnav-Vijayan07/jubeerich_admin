@@ -317,6 +317,7 @@ const FranchiseDetails = withSwal((props: any) => {
             .then((result: any) => {
                 if (result.isConfirmed) {
                     dispatch(deleteAdminUsers(id));
+                    dispatch(getFranchiseCounsellors(franchiseId))
                     swal.fire("Deleted!", "Your item has been deleted.", "success");
                 }
             });
@@ -523,7 +524,7 @@ const FranchiseDetails = withSwal((props: any) => {
                                     <div className="text-start mt-3">
                                         <p className="text-muted mb-2 font-13">
                                             <strong>Franchise Name :</strong>
-                                            <span className="ms-2">{franchiseDetails?.branch_name}</span>
+                                            <span className="ms-2">{franchiseDetails?.name}</span>
                                         </p>
                                         <p className="text-muted mb-2 font-13">
                                             <strong>Mobile :</strong>

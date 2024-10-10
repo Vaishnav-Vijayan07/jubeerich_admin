@@ -20,6 +20,8 @@ import {
   getAdminUsers,
   getBranchCounsellors,
   getBranchCounsellorsTL,
+  getFranchiseCounsellors,
+  getFranchiseCounsellorsTL,
 } from "./actions";
 
 // constants
@@ -199,9 +201,14 @@ function* addAdminUser({
 
     yield put(getAdminUsers());
     let branchId = branch_id;
+    let franchiseId = franchise_id;
     if(branch_id){
       yield put(getBranchCounsellors(branchId))
       yield put(getBranchCounsellorsTL(branchId))
+    }
+    if(franchiseId){
+      yield put(getFranchiseCounsellors(franchiseId))
+      yield put(getFranchiseCounsellorsTL(franchiseId))
     }
   } catch (error: any) {
     yield put(
@@ -259,9 +266,14 @@ function* updateAdminUser({
       )
     );
     let branchId = branch_id;
+    let franchiseId = franchise_id;
     if(branch_id){
       yield put(getBranchCounsellors(branchId))
       yield put(getBranchCounsellorsTL(branchId))
+    }
+    if(franchiseId){
+      yield put(getFranchiseCounsellors(franchiseId))
+      yield put(getFranchiseCounsellorsTL(franchiseId))
     }
 
     yield put(getAdminUsers());

@@ -329,6 +329,7 @@ const BranchDetails = withSwal((props: any) => {
       .then((result: any) => {
         if (result.isConfirmed) {
           dispatch(deleteAdminUsers(id));
+          dispatch(getBranchCounsellors(branchId))
           swal.fire("Deleted!", "Your item has been deleted.", "success");
         }
       });
