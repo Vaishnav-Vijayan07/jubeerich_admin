@@ -249,9 +249,6 @@ const FranchiseDetails = withSwal((props: any) => {
             profile_image_path,
         } = item;
 
-        console.log(role_id);
-        console.log(franchise_manager_id);
-
         // Check if the role_id matches the counsellor_tl_id
         if (role_id == franchise_manager_id) {
             setIsTL(true);

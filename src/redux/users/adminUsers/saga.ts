@@ -201,12 +201,15 @@ function* addAdminUser({
     );
 
     yield put(getAdminUsers());
+    
     let branchId = branch_id;
     let franchiseId = franchise_id;
+
     if(branch_id){
       yield put(getBranchCounsellors(branchId))
       yield put(getBranchCounsellorsTL(branchId))
     }
+    
     if(franchiseId){
       yield put(getFranchiseCounsellors(franchiseId))
       yield put(getFranchiseCounsellorsTL(franchiseId))
@@ -266,18 +269,21 @@ function* updateAdminUser({
         data
       )
     );
+    yield put(getAdminUsers());
+
     let branchId = branch_id;
     let franchiseId = franchise_id;
+    
     if(branch_id){
       yield put(getBranchCounsellors(branchId))
       yield put(getBranchCounsellorsTL(branchId))
     }
+
     if(franchiseId){
       yield put(getFranchiseCounsellors(franchiseId))
       yield put(getFranchiseCounsellorsTL(franchiseId))
     }
-
-    yield put(getAdminUsers());
+    // yield put(getAdminUsers());
   } catch (error: any) {
     yield put(
       adminUsersApiResponseSuccess(
@@ -290,8 +296,6 @@ function* updateAdminUser({
 
 function* deleteAdminUser({ payload: { id, branch_id, franchise_id } }: UsersData): SagaIterator {
   try {
-    console.log(branch_id);
-    console.log(franchise_id);
     const response = yield call(deleteAdminUsersApi, id);
     const data = response.data.message;
 
@@ -301,19 +305,21 @@ function* deleteAdminUser({ payload: { id, branch_id, franchise_id } }: UsersDat
         data
       )
     );
+    yield put(getAdminUsers());
 
     let branchId = branch_id;
     let franchiseId = franchise_id;
+    
     if(branch_id){
       yield put(getBranchCounsellors(branchId))
       yield put(getBranchCounsellorsTL(branchId))
     }
+
     if(franchiseId){
       yield put(getFranchiseCounsellors(franchiseId))
       yield put(getFranchiseCounsellorsTL(franchiseId))
     }
-
-    yield put(getAdminUsers());
+    // yield put(getAdminUsers());
   } catch (error: any) {
     yield put(
       adminUsersApiResponseError(AdminUserActionTypes.DELETE_ADMIN_USERS, error)

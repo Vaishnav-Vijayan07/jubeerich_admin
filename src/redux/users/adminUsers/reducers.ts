@@ -54,6 +54,8 @@ interface State {
 }
 
 const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any => {
+  console.log(action.type);
+  
   switch (action.type) {
     case AdminUserActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
@@ -209,7 +211,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
     case AdminUserActionTypes.UPDATE_ADMIN_USERS:
       return { ...state, loading: true, error: null };
     case AdminUserActionTypes.DELETE_ADMIN_USERS:
-      return { ...state, loading: true, initialLoading: true, error: null };
+      return { ...state, loading: true, error: null };
     case AdminUserActionTypes.GET_BRANCH_COUNSELLOR:
       return { ...state, loading: true, initialLoading: true };
     case AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL:

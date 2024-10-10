@@ -261,9 +261,6 @@ const BranchDetails = withSwal((props: any) => {
       profile_image_path,
     } = item;
 
-    console.log(role_id);
-    console.log(counsellor_tl_id);
-
     // Check if the role_id matches the counsellor_tl_id
     if (role_id == counsellor_tl_id) {
       setIsTL(true);
