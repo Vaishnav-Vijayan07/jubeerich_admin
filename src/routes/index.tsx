@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Navigate, RouteProps } from "react-router-dom";
+import FranchiseDetails from "../pages/forms/FranchiseDetails";
 
 // components
 import PrivateRoute from "./PrivateRoute";
@@ -11,7 +12,6 @@ const PendingDetails = React.lazy(
 const PendingDetailsByID = React.lazy(
   () => import("../pages/forms/Kyc/PendingDetailsById")
 );
-import FranchiseDetails from "../pages/forms/FranchiseDetails";
 
 // lazy load all the views
 
