@@ -371,9 +371,6 @@ const FranchiseDetails = withSwal((props: any) => {
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(franchiseId);
-        console.log(formData.role_id);
-        console.log(isTL);
         
         try {
             await validationSchema.validate(formData, { abortEarly: false });
@@ -473,8 +470,6 @@ const FranchiseDetails = withSwal((props: any) => {
     };
 
     useEffect(() => {
-        console.log(loading);
-        
         if (!loading && !error) {
             setShowModal(false)
             setValidationErrors(initialValidationState);

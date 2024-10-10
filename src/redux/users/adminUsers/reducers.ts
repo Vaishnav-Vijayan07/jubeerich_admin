@@ -208,6 +208,8 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
       return { ...state, loading: true, error: null };
     case AdminUserActionTypes.UPDATE_ADMIN_USERS:
       return { ...state, loading: true, error: null };
+    case AdminUserActionTypes.DELETE_ADMIN_USERS:
+      return { ...state, loading: true, initialLoading: true, error: null };
     case AdminUserActionTypes.GET_BRANCH_COUNSELLOR:
       return { ...state, loading: true, initialLoading: true };
     case AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL:
