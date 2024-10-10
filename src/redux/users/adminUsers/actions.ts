@@ -156,7 +156,16 @@ export const updateAdminUsers = (
   },
 });
 
-export const deleteAdminUsers = (id: string): AdminUsersActionType => ({
+// export const deleteAdminUsers = (id: string, branch_id?: any, franchise_id?: any): AdminUsersActionType => ({
+//   type: AdminUserActionTypes.DELETE_ADMIN_USERS,
+//   payload: { id, branch_id },
+// });
+
+export const deleteAdminUsers = (id: string, branch_id?: any, franchise_id?: any): AdminUsersActionType => {
+  console.log(branch_id);
+  console.log(franchise_id);
+  return {
   type: AdminUserActionTypes.DELETE_ADMIN_USERS,
-  payload: { id },
-});
+  payload: { id, branch_id, franchise_id }}
+};
+

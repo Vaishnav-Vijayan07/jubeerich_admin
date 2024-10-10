@@ -316,9 +316,9 @@ const FranchiseDetails = withSwal((props: any) => {
             })
             .then((result: any) => {
                 if (result.isConfirmed) {
-                    dispatch(deleteAdminUsers(id));
-                    dispatch(getFranchiseCounsellors(franchiseId))
-                    swal.fire("Deleted!", "Your item has been deleted.", "success");
+                    dispatch(deleteAdminUsers(id, null, franchiseId));
+                    // dispatch(getFranchiseCounsellors(franchiseId))
+                    // swal.fire("Deleted!", "Your item has been deleted.", "success");
                 }
             });
     };

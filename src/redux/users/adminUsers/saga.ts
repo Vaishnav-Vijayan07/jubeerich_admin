@@ -28,6 +28,7 @@ import {
 import { AdminUserActionTypes } from "./constants";
 import axios from "axios";
 import { getBranchCounsellors as getBranchCounsellorsAPI, getBranchCounsellorsTL as getBranchCounsellorsTLAPI, getFranchiseCounsellorsByFranchise, getFranchiseCounsellorsTLByFranchise } from "../../../helpers/api/users/adminUsers";
+import { showSuccessAlert } from "../../../constants";
 
 interface UsersData {
   payload: {
@@ -287,8 +288,10 @@ function* updateAdminUser({
   }
 }
 
-function* deleteAdminUser({ payload: { id } }: UsersData): SagaIterator {
+function* deleteAdminUser({ payload: { id, branch_id, franchise_id } }: UsersData): SagaIterator {
   try {
+    console.log(branch_id);
+    console.log(franchise_id);
     const response = yield call(deleteAdminUsersApi, id);
     const data = response.data.message;
 
@@ -298,6 +301,18 @@ function* deleteAdminUser({ payload: { id } }: UsersData): SagaIterator {
         data
       )
     );
+
+    let branchId = branch_id;
+    let franchiseId = franchise_id;
+    if(branch_id){
+      yield put(getBranchCounsellors(branchId))
+      yield put(getBranchCounsellorsTL(branchId))
+    }
+    if(franchiseId){
+      yield put(getFranchiseCounsellors(franchiseId))
+      yield put(getFranchiseCounsellorsTL(franchiseId))
+    }
+
     yield put(getAdminUsers());
   } catch (error: any) {
     yield put(
