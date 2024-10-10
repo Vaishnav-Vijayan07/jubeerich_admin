@@ -11,6 +11,7 @@ const PendingDetails = React.lazy(
 const PendingDetailsByID = React.lazy(
   () => import("../pages/forms/Kyc/PendingDetailsById")
 );
+import FranchiseDetails from "../pages/forms/FranchiseDetails";
 
 // lazy load all the views
 
@@ -384,6 +385,14 @@ const settingsRoutes = {
           name: "franchisees",
           element: (
             <PrivateRoute roles={["Monitor"]} component={Franchiseees} />
+          ),
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/franchise_details/:franchiseId",
+          name: "franchise_details",
+          element: (
+            <PrivateRoute roles={["Monitor"]} component={FranchiseDetails} />
           ),
           route: PrivateRoute,
         },

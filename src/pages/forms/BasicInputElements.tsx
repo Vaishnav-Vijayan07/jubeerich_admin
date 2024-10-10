@@ -628,7 +628,11 @@ const BasicInputElements = withSwal((props: any) => {
                       </Dropdown.Menu>
                     </Dropdown>
 
-                    <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={handleAutoAssign}>
+                    <Button
+                      className="btn-sm btn-blue waves-effect waves-light float-end"
+                      disabled={selectedValues?.length > 0 ? false : true}
+                      onClick={handleAutoAssign}
+                    >
                       <i className="mdi mdi-plus-circle"></i> Auto Assign
                     </Button>
                   </>
@@ -655,6 +659,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                     <Button
                       className="btn-sm btn-blue waves-effect waves-light float-end"
+                      disabled={selectedValues?.length > 0 ? false : true}
                       onClick={handleAutoAssignBranchCounsellors}
                     >
                       <i className="mdi mdi-plus-circle"></i> Auto Assign Counsellors
