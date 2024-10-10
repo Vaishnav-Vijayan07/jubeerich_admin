@@ -9,5 +9,8 @@ export enum AdminUserActionTypes {
 
     GET_BRANCH_COUNSELLOR = "@@admin_users/GET_BRANCH_COUNSELLOR",
     GET_BRANCH_COUNSELLOR_TL = "@@admin_users/GET_BRANCH_COUNSELLOR_TL",
+
+    GET_FRANCHISE_COUNSELLOR = "@@admin_users/GET_FRANCHISE_COUNSELLOR",
+    GET_FRANCHISE_COUNSELLOR_TL = "@@admin_users/GET_FRANCHISE_COUNSELLOR_TL",
   }
   

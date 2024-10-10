@@ -37,7 +37,9 @@ export interface SourceActionType {
     | AdminUserActionTypes.UPDATE_ADMIN_USERS
     | AdminUserActionTypes.DELETE_ADMIN_USERS
     | AdminUserActionTypes.GET_BRANCH_COUNSELLOR
-    | AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL;
+    | AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL
+    | AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR
+    | AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR_TL;
   payload: {
     actionType?: string;
     data?: AdminUsersData | {};
@@ -75,6 +77,22 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
           return {
             ...state,
             branchCounsellorTL: action.payload.data,
+            loading: false,
+            initialLoading: false,
+          };
+        }
+        case AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR: {
+          return {
+            ...state,
+            franchiseCounsellor: action.payload.data,
+            loading: false,
+            initialLoading: false,
+          };
+        }
+        case AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR_TL: {
+          return {
+            ...state,
+            franchiseCounsellorTL: action.payload.data,
             loading: false,
             initialLoading: false,
           };
@@ -146,6 +164,22 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             initialLoading: false,
           };
         }
+        case AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR: {
+          return {
+            ...state,
+            franchiseCounsellor: action.payload.data || [],
+            loading: false,
+            initialLoading: false,
+          };
+        }
+        case AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR_TL: {
+          return {
+            ...state,
+            franchiseCounsellorTL: action.payload.data || [],
+            loading: false,
+            initialLoading: false,
+          };
+        }
         case AdminUserActionTypes.UPDATE_ADMIN_USERS: {
           showErrorAlert(action.payload.error);
           return {
@@ -177,6 +211,10 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
     case AdminUserActionTypes.GET_BRANCH_COUNSELLOR:
       return { ...state, loading: true, initialLoading: true };
     case AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL:
+      return { ...state, loading: true, initialLoading: true };
+    case AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR:
+      return { ...state, loading: true, initialLoading: true };
+    case AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR_TL:
       return { ...state, loading: true, initialLoading: true };
     default:
       return { ...state };

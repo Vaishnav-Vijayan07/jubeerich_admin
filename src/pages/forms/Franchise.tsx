@@ -408,75 +408,78 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "address",
       sort: false,
     },
-
     {
       Header: "Slug",
       accessor: "slug",
       sort: false,
     },
-    {
-      Header: "Admin User",
-      accessor: "",
-      sort: false,
-      Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
-          {/* Edit Icon */}
+    // {
+    //   Header: "Admin User",
+    //   accessor: "",
+    //   sort: false,
+    //   Cell: ({ row }: any) => (
+    //     <div className="d-flex justify-content-center align-items-center gap-2">
+    //       {/* Edit Icon */}
 
-          {row?.original?.adminUsers.length > 0 ? (
-            <>
-              <span>{row?.original?.adminUsers[0]?.name}</span>
-              <Link
-                to="#"
-                className="action-icon"
-                onClick={() => {
-                  setAdminUserFormData((prev: any) => ({
-                    ...prev,
-                    franchise_id: row?.original?.id,
-                  }));
-                  setIsUpdateAdminUser(true);
-                  handleUpdateAdminUser(row.original?.adminUsers[0]);
-                  toggleResponsiveModalAdminUser();
-                }}
-              >
-                <i className="mdi mdi-account-edit-outline text-primary font-5"></i>
-              </Link>
-            </>
-          ) : (
-            <Link
-              to="#"
-              className="action-icon"
-              onClick={() => {
-                setAdminUserFormData((prev: any) => ({
-                  ...prev,
-                  id: "",
-                  employee_id: "",
-                  name: "",
-                  email: "",
-                  phone: "",
-                  address: "",
-                  username: "",
-                  password: "",
-                  updated_by: "",
-                  role_id: "",
-                  branch_ids: null,
-                  country_id: null,
-                  franchise_id: row?.original?.id,
-                }));
-                toggleResponsiveModalAdminUser();
-              }}
-            >
-              <i className="mdi mdi-account-plus-outline text-primary font-5"></i>
-            </Link>
-          )}
-        </div>
-      ),
-    },
+    //       {row?.original?.adminUsers.length > 0 ? (
+    //         <>
+    //           <span>{row?.original?.adminUsers[0]?.name}</span>
+    //           <Link
+    //             to="#"
+    //             className="action-icon"
+    //             onClick={() => {
+    //               setAdminUserFormData((prev: any) => ({
+    //                 ...prev,
+    //                 franchise_id: row?.original?.id,
+    //               }));
+    //               setIsUpdateAdminUser(true);
+    //               handleUpdateAdminUser(row.original?.adminUsers[0]);
+    //               toggleResponsiveModalAdminUser();
+    //             }}
+    //           >
+    //             <i className="mdi mdi-account-edit-outline text-primary font-5"></i>
+    //           </Link>
+    //         </>
+    //       ) : (
+    //         <Link
+    //           to="#"
+    //           className="action-icon"
+    //           onClick={() => {
+    //             setAdminUserFormData((prev: any) => ({
+    //               ...prev,
+    //               id: "",
+    //               employee_id: "",
+    //               name: "",
+    //               email: "",
+    //               phone: "",
+    //               address: "",
+    //               username: "",
+    //               password: "",
+    //               updated_by: "",
+    //               role_id: "",
+    //               branch_ids: null,
+    //               country_id: null,
+    //               franchise_id: row?.original?.id,
+    //             }));
+    //             toggleResponsiveModalAdminUser();
+    //           }}
+    //         >
+    //           <i className="mdi mdi-account-plus-outline text-primary font-5"></i>
+    //         </Link>
+    //       )}
+    //     </div>
+    //   ),
+    // },
     {
       Header: " ",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
+          {/* View Icon */}
+          <Link to={`/settings/master/franchise_details/${row.original?.id}`} className="action-icon">
+            <i className="mdi mdi-eye-outline"></i>
+          </Link>
           {/* Edit Icon */}
           <Link
             to="#"

@@ -25,7 +25,7 @@ import {
 // constants
 import { AdminUserActionTypes } from "./constants";
 import axios from "axios";
-import { getBranchCounsellors as getBranchCounsellorsAPI, getBranchCounsellorsTL as getBranchCounsellorsTLAPI } from "../../../helpers/api/users/adminUsers";
+import { getBranchCounsellors as getBranchCounsellorsAPI, getBranchCounsellorsTL as getBranchCounsellorsTLAPI, getFranchiseCounsellorsByFranchise, getFranchiseCounsellorsTLByFranchise } from "../../../helpers/api/users/adminUsers";
 
 interface UsersData {
   payload: {
@@ -44,7 +44,8 @@ interface UsersData {
     country_id: any;
     branch_id: string,
     region_id: string,
-    country_ids: string
+    country_ids: string,
+    franchise_id: any
   };
   type: string;
 }
@@ -108,6 +109,46 @@ function* getAllBranchCounsellorsTL({
   }
 }
 
+function* getAllFranchiseCounsellors({
+  payload: { franchiseId },
+}: any): SagaIterator {
+  try {
+    const response = yield call(getFranchiseCounsellorsByFranchise, franchiseId);
+    const data = response?.data?.data || [];
+
+    // NOTE - You can change this according to response format from your api
+    yield put(
+      adminUsersApiResponseSuccess(AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR, data)
+    );
+  } catch (error: any) {
+    yield put(
+      adminUsersApiResponseError(AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR, error)
+    );
+  }
+}
+
+function* getAllFranchiseCounsellorsTL({
+  payload: { franchiseId },
+}: any): SagaIterator {
+  try {
+    const response = yield call(getFranchiseCounsellorsTLByFranchise, franchiseId);
+    const data = response?.data?.data || [];
+
+    console.log(data);
+    
+
+    // NOTE - You can change this according to response format from your api
+    yield put(
+      adminUsersApiResponseSuccess(AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR_TL, data)
+    );
+  } catch (error: any) {
+    yield put(
+      adminUsersApiResponseError(AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR_TL, error)
+    );
+  }
+}
+
+
 function* addAdminUser({
   payload: {
     employee_id,
@@ -124,7 +165,8 @@ function* addAdminUser({
     country_id,
     region_id,
     branch_id,
-    country_ids
+    country_ids,
+    franchise_id
   },
 }: UsersData): SagaIterator {
   try {
@@ -143,7 +185,8 @@ function* addAdminUser({
       country_id,
       region_id,
       branch_id,
-      country_ids
+      country_ids,
+      franchise_id
     });
     const data = response.data;
 
@@ -184,7 +227,8 @@ function* updateAdminUser({
     country_id,
     region_id,
     branch_id,
-    country_ids
+    country_ids,
+    franchise_id
   },
 }: UsersData): SagaIterator {
   try {
@@ -203,7 +247,8 @@ function* updateAdminUser({
       country_id,
       region_id,
       branch_id,
-      country_ids
+      country_ids,
+      franchise_id
     });
     const data = response.data.message;
 
@@ -260,6 +305,14 @@ export function* watchBranchCounsellorTL() {
   yield takeEvery(AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL, getAllBranchCounsellorsTL);
 }
 
+export function* watchFranchiseCounsellor() {
+  yield takeEvery(AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR, getAllFranchiseCounsellors);
+}
+
+export function* watchFranchiseCounsellorTL() {
+  yield takeEvery(AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR_TL, getAllFranchiseCounsellorsTL);
+}
+
 export function* watchAddAdminUser() {
   yield takeEvery(AdminUserActionTypes.ADD_ADMIN_USERS, addAdminUser);
 }
@@ -279,7 +332,9 @@ function* AdminUserSaga() {
     fork(watchUpdateAdminUser),
     fork(watchDeleteAdminUser),
     fork(watchBranchCounsellor),
-    fork(watchBranchCounsellorTL)
+    fork(watchBranchCounsellorTL),
+    fork(watchFranchiseCounsellor),
+    fork(watchFranchiseCounsellorTL)
   ]);
 }
 

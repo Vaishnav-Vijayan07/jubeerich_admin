@@ -21,6 +21,8 @@ import {
   branch_counsellor_id,
   counsellor_id,
   counsellor_tl_id,
+  franchise_counsellor_id,
+  franchise_manager_id,
   regional_manager_id,
 } from "../../constants";
 import { MyInitialState, OptionType, TableRecords, initialState, initialValidationState, sizePerPageList } from "./data";
@@ -28,11 +30,13 @@ import { APICore } from "../../helpers/api/apiCore";
 import { Link } from "react-router-dom";
 import { getCountry } from "../../redux/country/actions";
 import { getRegion } from "../../redux/regions/actions";
+import { getFranchise } from "../../redux/franchise/actions";
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, BranchesData, CountriesData, RolesData, regionData, error, loading } = props;
-
+  const { swal, state, BranchesData, franchiseData, CountriesData, RolesData, regionData, error, loading } = props;
+  console.log(franchiseData);
+  
   const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
 
@@ -117,6 +121,7 @@ const BasicInputElements = withSwal((props: any) => {
       branch_id: item?.branch_id,
       country_ids: countryArray,
       profile_image_path: item?.profile_image_path,
+      franchise_id: item?.franchise_id,
     }));
 
     setSelectedCountry(item?.countries);
@@ -178,7 +183,7 @@ const BasicInputElements = withSwal((props: any) => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(formData.country_id);
+    console.log(formData);
 
     // Validate the form using yup
     try {
@@ -224,7 +229,8 @@ const BasicInputElements = withSwal((props: any) => {
                         ? formData.branch_id
                         : null,
                       // formData.role_id == branch_counsellor_id ? formData.country_ids : null
-                      null
+                      null,
+                      formData?.franchise_id || null
                     )
                   );
                 } catch (err) {
@@ -256,7 +262,8 @@ const BasicInputElements = withSwal((props: any) => {
                         ? formData.branch_id
                         : null,
                       // formData.role_id == branch_counsellor_id ? formData.country_ids : null
-                      null
+                      null,
+                      formData?.franchise_id || null
                     )
                   );
                 } catch (err) {
@@ -452,8 +459,6 @@ const BasicInputElements = withSwal((props: any) => {
       overflowY: "auto", // Enable scrolling if content overflows
     }),
   };
-
-  console.log(CountriesData);
 
   return (
     <>
@@ -654,6 +659,31 @@ const BasicInputElements = withSwal((props: any) => {
                       </Col>
                     )}
 
+                    {(formData?.role_id == franchise_manager_id || formData?.role_id == franchise_counsellor_id) && (
+                      <Col md={6}>
+                        <Form.Group className="mb-3" controlId="franchise_id">
+                          <Form.Label>Franchise</Form.Label>
+                          <Form.Select
+                            aria-label="Default select example"
+                            name="franchise_id"
+                            value={formData.franchise_id}
+                            onChange={handleInputChange}
+                          >
+                            <option value="" disabled selected>
+                              Choose..
+                            </option>
+                            {franchiseData?.map((item: any) => (
+                              <option value={item?.value} key={item?.value}>
+                                {item.label}
+                              </option>
+                            ))}
+                          </Form.Select>
+
+                          {validationErrors.franchise_id && <Form.Text className="text-danger">{validationErrors.franchise_id}</Form.Text>}
+                        </Form.Group>
+                      </Col>
+                    )}
+
                     {(formData?.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="region_id">
@@ -752,6 +782,7 @@ const BasicInputElements = withSwal((props: any) => {
 const AdminUsers = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [branchData, setBranchData] = useState([]);
+  const [franchiseData, setFranchiseData] = useState([]);
   const [countryData, setCountryData] = useState([]);
   const [regionData, setRegionData] = useState([]);
 
@@ -764,6 +795,8 @@ const AdminUsers = () => {
   }));
 
   const Branch = useSelector((state: RootState) => state?.Branches?.branches?.data);
+
+  const Franchises = useSelector((state: RootState) => state?.Franchise?.franchiseUsers);
 
   const Countries = useSelector((state: RootState) => state?.Country.countries);
 
@@ -779,6 +812,7 @@ const AdminUsers = () => {
     dispatch(getCountry());
     dispatch(getRoles());
     dispatch(getRegion());
+    dispatch(getFranchise());
   }, []);
 
   useEffect(() => {
@@ -800,6 +834,16 @@ const AdminUsers = () => {
       setBranchData(branchArray);
     }
   }, [Branch]);
+
+  useEffect(() => {
+    if (Franchises) {
+      const franchiseArray = Franchises?.map((franchise: any) => ({
+        value: franchise.id.toString(),
+        label: franchise.name,
+      }));
+      setFranchiseData(franchiseArray);
+    }
+  }, [Franchises]);
 
   useEffect(() => {
     if (Countries) {
@@ -838,6 +882,7 @@ const AdminUsers = () => {
             loading={loading}
             RolesData={RolesData?.state}
             regionData={regionData}
+            franchiseData={franchiseData}
           />
         </Col>
       </Row>

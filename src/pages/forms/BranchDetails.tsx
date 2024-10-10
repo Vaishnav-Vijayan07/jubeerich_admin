@@ -151,8 +151,8 @@ const BranchDetails = withSwal((props: any) => {
         <React.Fragment>
           <span
             className={classNames("badge", {
-              "badge-soft-success": row.original.status === true,
-              "badge-soft-danger": row.original.status === false,
+              "badge-soft-success": row.original.status == true,
+              "badge-soft-danger": row.original.status == false,
             })}
           >
             {row.original.status ? "active" : "disabled"}
@@ -201,7 +201,7 @@ const BranchDetails = withSwal((props: any) => {
     password: yup
       .string()
       .nullable()
-      .transform((value) => (value === "" ? null : value))
+      .transform((value) => (value == "" ? null : value))
       .when([], {
         is: () => !isUpdate,
         then: yup.string().required("Password is required").min(8, "Password must be at least 8 characters long").nullable(),
@@ -265,8 +265,10 @@ const BranchDetails = withSwal((props: any) => {
     console.log(counsellor_tl_id);
 
     // Check if the role_id matches the counsellor_tl_id
-    if (role_id === counsellor_tl_id) {
+    if (role_id == counsellor_tl_id) {
       setIsTL(true);
+    } else {
+      setIsTL(false)
     }
 
     // Update formData with country_id if it exists
@@ -335,7 +337,7 @@ const BranchDetails = withSwal((props: any) => {
   const handleInputPhoneChange = (e: any) => {
     const { name, value } = e.target;
 
-    if (name === "phone") {
+    if (name == "phone") {
       setFormData((prevData: any) => ({
         ...prevData,
         phone: value?.toString().replace(/\D/g, "").slice(0, 10),
@@ -365,7 +367,7 @@ const BranchDetails = withSwal((props: any) => {
     setSelectedBranch([]);
     setSelectedCountry([]);
     setSelectedImage(null);
-    setIsTL(false);
+    // setIsTL(false);
   };
 
   const getBranchDetails = async () => {
@@ -418,7 +420,8 @@ const BranchDetails = withSwal((props: any) => {
                       formData?.country_id,
                       formData.role_id == regional_manager_id ? formData.region_id : null,
                       branchId,
-                      formData.role_id == branch_counsellor_id ? formData.country_ids : null
+                      formData.role_id == branch_counsellor_id ? formData.country_ids : null,
+                      null
                     )
                   );
                 } catch (err) {
@@ -447,7 +450,8 @@ const BranchDetails = withSwal((props: any) => {
                       formData?.country_id,
                       formData.role_id == regional_manager_id ? formData.region_id : null,
                       branchId,
-                      formData.role_id == branch_counsellor_id ? formData.country_ids : null
+                      formData.role_id == branch_counsellor_id ? formData.country_ids : null,
+                      null
                     )
                   );
                 } catch (err) {
@@ -494,9 +498,12 @@ const BranchDetails = withSwal((props: any) => {
     dispatch(getBranchCounsellorsTL(branchId));
   }, [branchId]);
 
-    useEffect(() => {
-        setTableData([...CounsellorTLData, ...CounsellorData])
-    }, [CounsellorTLData, CounsellorData])
+  useEffect(() => {
+    const tlData = Array.isArray(CounsellorTLData) ? CounsellorTLData : [];
+    const counsellorData = Array.isArray(CounsellorData) ? CounsellorData : [];
+
+    setTableData([...tlData, ...counsellorData])
+  }, [CounsellorTLData, CounsellorData])
 
     // useEffect(() => {
     //     setTableData([
@@ -580,10 +587,9 @@ const BranchDetails = withSwal((props: any) => {
             </Col>
             <Col md={8} lg={8}>
               <div className="d-flex justify-content-end pb-2">
-                <Button className="btn btn-primary me-2" onClick={() => [setShowModal(true), handleResetValues(), handleCancelUpdate()]}>
+                <Button className="btn btn-primary me-2" onClick={() => [setShowModal(true), handleResetValues(), handleCancelUpdate(), setIsTL(false)]}>
                   Add Branch Counsellor
                 </Button>
-                {/* <Button className='btn btn-primary' onClick={() => [setShowModal(true), setIsTL(true)]}>Add Branch Counsellor TL</Button> */}
               </div>
 
               {loading && <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "70%" }} />}
@@ -775,6 +781,7 @@ const BranchDetails = withSwal((props: any) => {
                             } else {
                               toggleModal();
                               handleResetValues();
+                              setIsTL(false);
                             }
                           }}
                         >
