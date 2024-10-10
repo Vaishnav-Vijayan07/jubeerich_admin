@@ -47,6 +47,7 @@ export interface LeadsActionType {
   | LeadsActionTypes.UPDATE_LEADS
   | LeadsActionTypes.DELETE_LEADS
   | LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL
+  | LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER
   | LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL;
   payload: {
     actionType?: string;
@@ -66,6 +67,17 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
     case LeadsActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
         case LeadsActionTypes.GET_LEADS: {
+          return {
+            ...state,
+            leads: action.payload.data.data.formattedUserPrimaryInfos,
+            allCres: action.payload.data.data.allCres,
+            loading: false,
+            initialloading: false,
+          };
+        }
+
+          
+        case LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER: {
           return {
             ...state,
             leads: action.payload.data.data.formattedUserPrimaryInfos,
@@ -159,6 +171,15 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             initialloading: false,
           };
         }
+        case LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER: {
+          return {
+            ...state,
+            leads: [],
+            error: action.payload.error,
+            loading: false,
+            initialloading: false,
+          };
+        }
         case LeadsActionTypes.GET_LEADS_TL: {
           return {
             ...state,
@@ -227,6 +248,8 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
       }
 
     case LeadsActionTypes.GET_LEADS:
+      return { ...state, loading: true, initialloading: true };
+    case LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER:
       return { ...state, loading: true, initialloading: true };
     case LeadsActionTypes.GET_LEADS_TL:
       return { ...state, loading: true, initialloading: true };

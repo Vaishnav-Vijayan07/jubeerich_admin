@@ -13,6 +13,7 @@ export interface LeadsActionType {
     | LeadsActionTypes.UPDATE_LEADS
     | LeadsActionTypes.DELETE_LEADS
     | LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL
+    | LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER
     | LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL;
   payload: {} | string;
 }
@@ -61,6 +62,12 @@ export const getLead = (): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS,
   payload: {},
 });
+
+export const getLeadsRegionalManager = (): LeadsActionType => ({
+  type: LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER,
+  payload: {},
+});
+
 
 export const getLeadsTL = (): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_TL,
@@ -147,7 +154,6 @@ export const updateLeads = (
   source_id: string | null,
   channel_id: string | null,
   city: string | null,
-  // preferred_country: number[] | null,
   preferred_country: any | null,
   office_type: string | null,
   region_id: string | null,

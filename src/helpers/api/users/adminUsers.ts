@@ -6,6 +6,8 @@ const api = new APICore();
 const baseUrl = "/admin_users";
 const baseUrlBranchCounsellor = "/get_all_counsellors";
 const baseUrlBranchCounsellorTL = '/get_all_counsellors_tl'
+const baseUrlFranchiseCounsellor = '/get_all_franchise_counsellors'
+const baseUrlFranchiseCounsellorTL = '/get_all_franchise_counsellors_tl'
 
 function getAdminUsers() {
   return api.get(`${baseUrl}`, {});
@@ -18,6 +20,15 @@ function getBranchCounsellors(branchId: any) {
 function getBranchCounsellorsTL(branchId: any) {
   return api.get(`${baseUrlBranchCounsellorTL}/${branchId}`, {});
 }
+
+function getFranchiseCounsellorsByFranchise(franchiseId: any) {
+  return api.get(`${baseUrlFranchiseCounsellor}/${franchiseId}`, {});
+}
+
+function getFranchiseCounsellorsTLByFranchise(franchiseId: any) {
+  return api.get(`${baseUrlFranchiseCounsellorTL}/${franchiseId}`, {});
+}
+
 
 function getFranchiseCounsellors() {
   return api.get(`get_franchise_counsellors`, {});
@@ -39,7 +50,7 @@ function addAdminUsers(params: {
   franchise_id?: string
   region_id?: string
   branch_id?: string,
-  country_ids?: string
+  country_ids?: string,
 }) {
   if (params.country_id == undefined) {
     params.country_id = null;
@@ -94,5 +105,7 @@ export {
   updateBranch,
   getFranchiseCounsellors,
   getBranchCounsellors,
-  getBranchCounsellorsTL
+  getBranchCounsellorsTL,
+  getFranchiseCounsellorsByFranchise,
+  getFranchiseCounsellorsTLByFranchise
 };

@@ -10,7 +10,9 @@ export interface AdminUsersActionType {
     | AdminUserActionTypes.UPDATE_ADMIN_USERS
     | AdminUserActionTypes.DELETE_ADMIN_USERS
     | AdminUserActionTypes.GET_BRANCH_COUNSELLOR
-    | AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL;
+    | AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL
+    | AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR
+    | AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR_TL;
   payload: {} | string;
 }
 
@@ -27,6 +29,7 @@ interface UsersData {
   role_id: string;
   profileImage: File | null;
   branch_ids: string;
+  franchise_id: any
 }
 
 // common success
@@ -63,6 +66,16 @@ export const getBranchCounsellorsTL = (branchId: any): AdminUsersActionType => (
   payload: { branchId },
 });
 
+export const getFranchiseCounsellors = (franchiseId: any): AdminUsersActionType => ({
+  type: AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR,
+  payload: { franchiseId },
+});
+
+export const getFranchiseCounsellorsTL = (franchiseId: any): AdminUsersActionType => ({
+  type: AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR_TL,
+  payload: { franchiseId },
+});
+
 export const addAdminUsers = (
   employee_id: string,
   name: string,
@@ -78,7 +91,8 @@ export const addAdminUsers = (
   country_id: any,
   region_id: any,
   branch_id: any,
-  country_ids: any
+  country_ids: any,
+  franchise_id: any
 ): AdminUsersActionType => ({
   type: AdminUserActionTypes.ADD_ADMIN_USERS,
   payload: {
@@ -96,7 +110,8 @@ export const addAdminUsers = (
     country_id,
     region_id,
     branch_id,
-    country_ids
+    country_ids,
+    franchise_id
   },
 });
 
@@ -116,7 +131,8 @@ export const updateAdminUsers = (
   country_id: any,
   region_id: any,
   branch_id: any,
-  country_ids: any
+  country_ids: any,
+  franchise_id: any
 ): AdminUsersActionType => ({
   type: AdminUserActionTypes.UPDATE_ADMIN_USERS,
   payload: {
@@ -135,11 +151,21 @@ export const updateAdminUsers = (
     country_id,
     region_id,
     branch_id,
-    country_ids
+    country_ids,
+    franchise_id
   },
 });
 
-export const deleteAdminUsers = (id: string): AdminUsersActionType => ({
+// export const deleteAdminUsers = (id: string, branch_id?: any, franchise_id?: any): AdminUsersActionType => ({
+//   type: AdminUserActionTypes.DELETE_ADMIN_USERS,
+//   payload: { id, branch_id },
+// });
+
+export const deleteAdminUsers = (id: string, branch_id?: any, franchise_id?: any): AdminUsersActionType => {
+  console.log(branch_id);
+  console.log(franchise_id);
+  return {
   type: AdminUserActionTypes.DELETE_ADMIN_USERS,
-  payload: { id },
-});
+  payload: { id, branch_id, franchise_id }}
+};
+

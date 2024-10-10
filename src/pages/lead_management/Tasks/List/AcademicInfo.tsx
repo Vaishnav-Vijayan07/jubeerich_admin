@@ -51,20 +51,16 @@ const AcademicInfo = withSwal((props: any) => {
     setLoading(true);
     try {
       // Fetch both API calls concurrently
-      const [academicResponse, examResponse] = await Promise.all([
+      const [_, examResponse] = await Promise.all([
         axios.get(`studentAcademicInfo/${studentId}`),
         axios.get(`studentExamInfo/${studentId}`),
       ]);
 
-      const academicData = academicResponse.data?.data;
       const examData = examResponse.data?.data;
 
       console.log(examData);
 
       // Use helper functions to check the data and set state
-      setAcademicInfoFromApi(
-        academicData.length > 0 ? academicData : [initialStateAcademic]
-      );
       setExamForm(examData.length > 0 ? examData : [initialStateExam]);
       setHasExams(examData.length > 0 ? "yes" : "no");
     } catch (error) {
@@ -210,7 +206,7 @@ const AcademicInfo = withSwal((props: any) => {
     <>
       <Row className={deleteLoading || saveLoading ? "opacity-25" : ""}>
         <>
-          <AcademicInfoRow
+          {/* <AcademicInfoRow
             academicInfo={academicInfoFromApi}
             handleAcademicInfoChange={(index, event) =>
               handleInputChange(setAcademicInfoFromApi, index, event)
@@ -228,9 +224,9 @@ const AcademicInfo = withSwal((props: any) => {
             removeAcademicInfo={(index, item) =>
               removeFormField(setAcademicInfoFromApi, index, item, "academic")
             }
-          />
+          /> */}
 
-          <Row>
+          {/*     <Row>
             <Button
               variant="primary"
               className="mt-4"
@@ -247,13 +243,13 @@ const AcademicInfo = withSwal((props: any) => {
                     role="status"
                     aria-hidden="true"
                   />
-                  {" Loading..."} {/* Show spinner and text */}
+                  {" Loading..."} 
                 </>
               ) : (
                 "Save Academic Info" // Normal button text when not loading
               )}
             </Button>
-          </Row>
+          </Row> */}
 
           <Row className="mt-3">
             <Col>

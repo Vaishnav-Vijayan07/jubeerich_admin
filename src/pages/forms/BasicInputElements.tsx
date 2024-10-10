@@ -258,7 +258,7 @@ const BasicInputElements = withSwal((props: any) => {
             accessor: "assigned_regional_manager",
             sort: true,
             Cell: ({ row }: any) => (
-              <>{row?.original.assigned_regional_manager ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
+              <>{row?.original.assigned_counsellor_tl  ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
             ),
           },
         ]

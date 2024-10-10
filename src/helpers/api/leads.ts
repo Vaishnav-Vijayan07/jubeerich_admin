@@ -21,6 +21,10 @@ function getLeadsByCounsellorTL() {
   return api.get("/leads_counsellor_tl", {});
 }
 
+function getAssignedLeadsRegionalMangersApi() {
+  return api.get("/assigned_leads_regional_managers", {});
+}
+
 function getAssignedLeadsByCounsellorTL() {
   return api.get("/assigned_leads_counsellor_tl", {});
 }
@@ -102,5 +106,6 @@ export {
   getLeadsByCreTl,
   getAssignedLeadsByCreTl,
   getAssignedLeadsByCounsellorTL,
-  getLeadsByCounsellorTL
+  getLeadsByCounsellorTL,
+  getAssignedLeadsRegionalMangersApi,
 };
