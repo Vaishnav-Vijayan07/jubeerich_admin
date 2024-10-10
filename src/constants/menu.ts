@@ -63,12 +63,21 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Add Lead"],
   },
   {
-    key: "leads",
+    key: "assinged_leads",
     label: "Assigned Leads",
     isTitle: false,
     icon: "award",
     url: "/leads/assigned/manage",
     roles: ["Assigned Leads"],
+  },
+
+  {
+    key: "leads",
+    label: "Assigned Leads",
+    isTitle: false,
+    icon: "award",
+    url: "/leads/assigned_regional_manager",
+    roles: ["Manage Branch"],
   },
 
   {
@@ -125,7 +134,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     label: "Pending",
     isTitle: false,
     icon: "file-text",
-    url: "/kyc_details",
+    url: "/kyc_details/pending",
     roles: ["Manage Applications"],
   },
   {

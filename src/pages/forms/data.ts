@@ -79,6 +79,7 @@ export const initialState = {
   region_id: "",
   franchise_id: "",
   lead_type_id: "",
+  branch_id: "",
 };
 
 export const initialValidationState = {
@@ -113,4 +114,3 @@ export interface TableRecords {
   updated_by: string;
   status: string;
 }
-

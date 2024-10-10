@@ -22,13 +22,19 @@ import {
   getLeadsTL,
   getLeadsByCounsellorTL as getLeadsByCounsellorTLAction,
   getLeadAssignedByCounsellorTL,
-  getLeadAssigned
+  getLeadAssigned,
 } from "./actions";
 
 // constants
 import { LeadsActionTypes } from "./constants";
 import { AUTH_SESSION_KEY, counsellor_tl_id, cre_tl_id } from "../../constants";
-import { getAssignedLeadsByCreTl, getLeadsByCreTl, getAssignedLeadsByCounsellorTL as getAssignedLeadsByCounsellorTLAPI, getLeadsByCounsellorTL } from "../../helpers/api/leads";
+import {
+  getAssignedLeadsByCreTl,
+  getLeadsByCreTl,
+  getAssignedLeadsByCounsellorTL as getAssignedLeadsByCounsellorTLAPI,
+  getLeadsByCounsellorTL,
+  getAssignedLeadsRegionalMangersApi,
+} from "../../helpers/api/leads";
 
 interface LeadsData {
   payload: {
@@ -52,11 +58,11 @@ interface LeadsData {
     ielts: boolean;
     // exam_details?: any[],
     // exam_documents?: any[]
-    zipcode: any,
-    exam_details?: any,
-    exam_documents?: any,
-    franchise_id?:string,
-    changedFiles: any
+    zipcode: any;
+    exam_details?: any;
+    exam_documents?: any;
+    franchise_id?: string;
+    changedFiles: any;
   };
   type: string;
 }
@@ -86,6 +92,25 @@ function* getLeads(): SagaIterator {
   } catch (error: any) {
     console.log("Error", error);
     yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS, error));
+  }
+}
+
+function* getLeadsAssignedByRegionalManager(): SagaIterator {
+  try {
+    let response = yield call(getAssignedLeadsRegionalMangersApi);
+    let data = response.data;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(
+      LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER, {
+        data,
+      })
+    );
+  } catch (error: any) {
+    console.log("Error", error);
+    yield put(
+      LeadsApiResponseError(LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER, error)
+    );
   }
 }
 
@@ -130,10 +155,16 @@ function* getLeadsForCounsellorTL(): SagaIterator {
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
-    yield put(LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, { data }));
+    yield put(
+      LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, {
+        data,
+      })
+    );
   } catch (error: any) {
     console.log("Error", error);
-    yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, error));
+    yield put(
+      LeadsApiResponseError(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, error)
+    );
   }
 }
 
@@ -144,12 +175,18 @@ function* getAssignedLeadsByCounsellorTL(): SagaIterator {
 
     // NOTE - You can change this according to response format from your api
     yield put(
-      LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, { data })
+      LeadsApiResponseSuccess(
+        LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
+        { data }
+      )
     );
   } catch (error: any) {
     console.log("Error", error);
     yield put(
-      LeadsApiResponseError(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, error)
+      LeadsApiResponseError(
+        LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
+        error
+      )
     );
   }
 }
@@ -191,32 +228,35 @@ function* addLeads({
     zipcode,
     exam_details,
     exam_documents,
-    franchise_id
+    franchise_id,
   },
 }: LeadsData): SagaIterator {
-
   try {
-    const response = yield call(addLeadsApi, {
-      full_name,
-      email,
-      phone,
-      lead_type_id,
-      source_id,
-      channel_id,
-      city,
-      preferred_country,
-      office_type,
-      region_id,
-      counsiler_id,
-      branch_id,
-      updated_by,
-      remarks,
-      lead_received_date,
-      ielts,
-      zipcode,
-      exam_details,
-      franchise_id
-    }, exam_documents);
+    const response = yield call(
+      addLeadsApi,
+      {
+        full_name,
+        email,
+        phone,
+        lead_type_id,
+        source_id,
+        channel_id,
+        city,
+        preferred_country,
+        office_type,
+        region_id,
+        counsiler_id,
+        branch_id,
+        updated_by,
+        remarks,
+        lead_received_date,
+        ielts,
+        zipcode,
+        exam_details,
+        franchise_id,
+      },
+      exam_documents
+    );
     const data = response.data.message;
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));
@@ -230,14 +270,11 @@ function* addLeads({
       console.log("role ==>", role);
       if (role == cre_tl_id) {
         console.log("getLeadsTL called");
-        
+
         yield put(getLeadsTL());
-      }
-      else if(role == counsellor_tl_id && isAssignedLeads){
-        
-        yield put(getLeadAssignedByCounsellorTL())
-      } 
-      else {
+      } else if (role == counsellor_tl_id && isAssignedLeads) {
+        yield put(getLeadAssignedByCounsellorTL());
+      } else {
         console.log("getLead called");
 
         yield put(getLead());
@@ -273,35 +310,38 @@ function* updateLeads({
     zipcode,
     exam_details,
     exam_documents,
-    franchise_id
+    franchise_id,
   },
 }: LeadsData): SagaIterator {
   try {
-    console.log('lead_type_id',lead_type_id);
-    
-    const response = yield call(updateLeadsApi, id, {
-      full_name,
-      email,
-      phone,
-      lead_type_id,
-      source_id,
-      channel_id,
-      city,
-      preferred_country,
-      office_type,
-      region_id,
-      counsiler_id,
-      branch_id,
-      updated_by,
-      remarks,
-      lead_received_date,
-      ielts,
-      zipcode,
-      exam_details,
-      franchise_id
-    }, 
-    exam_documents
-  );
+    console.log("lead_type_id", lead_type_id);
+
+    const response = yield call(
+      updateLeadsApi,
+      id,
+      {
+        full_name,
+        email,
+        phone,
+        lead_type_id,
+        source_id,
+        channel_id,
+        city,
+        preferred_country,
+        office_type,
+        region_id,
+        counsiler_id,
+        branch_id,
+        updated_by,
+        remarks,
+        lead_received_date,
+        ielts,
+        zipcode,
+        exam_details,
+        franchise_id,
+      },
+      exam_documents
+    );
     const data = response.data.message;
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.UPDATE_LEADS, data));
@@ -315,25 +355,22 @@ function* updateLeads({
 
       if (role == cre_tl_id && isAssignedLeads) {
         yield put(getLeadAssigned());
-      } 
-      else if (role == cre_tl_id) {
+      } else if (role == cre_tl_id) {
         yield put(getLeadsTL());
-      } 
-      else if(role == counsellor_tl_id && isAssignedLeads){
-        
-        yield put(getLeadAssignedByCounsellorTL())
-      }
-      else {
+      } else if (role == counsellor_tl_id && isAssignedLeads) {
+        yield put(getLeadAssignedByCounsellorTL());
+      } else {
         yield put(getLead());
       }
     }
-
   } catch (error: any) {
     yield put(LeadsApiResponseError(LeadsActionTypes.UPDATE_LEADS, error));
   }
 }
 
-function* deleteLeads({ payload: { id, isAssignedLeads } }: LeadsData): SagaIterator {
+function* deleteLeads({
+  payload: { id, isAssignedLeads },
+}: LeadsData): SagaIterator {
   try {
     const response = yield call(deleteSourcesApi, id);
     const data = response.data.message;
@@ -348,15 +385,11 @@ function* deleteLeads({ payload: { id, isAssignedLeads } }: LeadsData): SagaIter
 
       if (role == cre_tl_id && isAssignedLeads) {
         yield put(getLeadAssigned());
-      } 
-      else if (role == cre_tl_id) {
+      } else if (role == cre_tl_id) {
         yield put(getLeadsTL());
-      } 
-      else if(role == counsellor_tl_id && isAssignedLeads){
-        
-        yield put(getLeadAssignedByCounsellorTL())
-      }
-      else {
+      } else if (role == counsellor_tl_id && isAssignedLeads) {
+        yield put(getLeadAssignedByCounsellorTL());
+      } else {
         yield put(getLead());
       }
     }
@@ -377,11 +410,17 @@ export function* watchGetAssignedLeads() {
   yield takeEvery(LeadsActionTypes.GET_LEADS_ASSIGNED, getAssignedLeads);
 }
 export function* watchGetAssignedLeadsByCounsellorTL() {
-  yield takeEvery(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, getAssignedLeadsByCounsellorTL);
+  yield takeEvery(
+    LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
+    getAssignedLeadsByCounsellorTL
+  );
 }
 
 export function* watchGetLeadsByCounsellorTL() {
-  yield takeEvery(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, getLeadsForCounsellorTL);
+  yield takeEvery(
+    LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL,
+    getLeadsForCounsellorTL
+  );
 }
 
 export function* watchGetLeadUser() {
@@ -400,6 +439,13 @@ export function* watchDeleteLeads(): any {
   yield takeEvery(LeadsActionTypes.DELETE_LEADS, deleteLeads);
 }
 
+export function* watcGetLeadsRegionalmanger(): any {
+  yield takeEvery(
+    LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER,
+    getLeadsAssignedByRegionalManager
+  );
+}
+
 function* LeadsSaga() {
   yield all([
     fork(watchGetLeads),
@@ -411,6 +457,7 @@ function* LeadsSaga() {
     fork(watchUpdateLeads),
     fork(watchDeleteLeads),
     fork(watchGetLeadUser),
+    fork(watcGetLeadsRegionalmanger),
   ]);
 }
 

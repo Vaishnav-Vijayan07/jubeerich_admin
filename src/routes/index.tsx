@@ -5,6 +5,12 @@ import { Route, Navigate, RouteProps } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import { AUTH_SESSION_KEY } from "../constants";
 import UserBox from "../pages/forms/BranchDetails";
+const PendingDetails = React.lazy(
+  () => import("../pages/forms/Kyc/PendingDetails")
+);
+const PendingDetailsByID = React.lazy(
+  () => import("../pages/forms/Kyc/PendingDetailsById")
+);
 
 // lazy load all the views
 
@@ -35,6 +41,7 @@ const CRMLeadsList = React.lazy(
 );
 const Tasks = React.lazy(() => import("../pages/lead_management/Tasks/List"));
 const KycApproval = React.lazy(() => import("../pages/forms/KycApproval"));
+
 const KycDetails = React.lazy(() => import("../pages/forms/KycDetails"));
 
 // uikit
@@ -59,6 +66,9 @@ const Region = React.lazy(() => import("../pages/forms/Region"));
 const Flag = React.lazy(() => import("../pages/forms/Flag"));
 const MaritalStatus = React.lazy(() => import("../pages/forms/MaritalStatus"));
 const Leads = React.lazy(() => import("../pages/forms/Leads"));
+const RegionalManagerAssignedLeads = React.lazy(
+  () => import("../pages/forms/RegionalManagerAssignedLeads")
+);
 const LeadDetails = React.lazy(() => import("../pages/forms/LeadDetails"));
 const AssignedLeads = React.lazy(() => import("../pages/forms/AssignedLeads"));
 const Country = React.lazy(() => import("../pages/forms/Country"));
@@ -120,7 +130,13 @@ const dashboardRoutes: RoutesProps = {
       // element: <Dashboard4 />,
       element: (
         <PrivateRoute
-          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications"]}
+          roles={[
+            "Add Lead",
+            "View Task",
+            "Monitor",
+            "Manage Franchise",
+            "Manage Applications",
+          ]}
           component={Dashboard4}
         />
       ),
@@ -146,6 +162,18 @@ const crmAppRoutes = {
       path: "/kyc_details",
       name: "KYC Approval",
       element: <KycApproval />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/kyc_details/pending",
+      name: "KYC Approval",
+      element: <PendingDetails />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/kyc_details/pending/:id",
+      name: "KYC Approval",
+      element: <PendingDetailsByID />,
       route: PrivateRoute,
     },
     {
@@ -188,6 +216,18 @@ const leadRoutes = {
         <PrivateRoute
           roles={["Add Lead", "View Task", "Monitor"]}
           component={Leads}
+        />
+      ),
+      route: PrivateRoute,
+    },
+    {
+      path: "leads/assigned_regional_manager",
+      name: "Leads",
+      // element: <CRMLeadsList />,
+      element: (
+        <PrivateRoute
+          roles={["Manage Branch"]}
+          component={RegionalManagerAssignedLeads}
         />
       ),
       route: PrivateRoute,
