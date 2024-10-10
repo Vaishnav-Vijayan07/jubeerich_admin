@@ -179,7 +179,7 @@ const KycApproval = ({ state }: any) => {
           { label: "Master", path: "/master/university" },
           { label: "Assigned Leads", path: "/master/university", active: true },
         ]}
-        title={"Kyc Approval"}
+        title={"KYC Approval"}
       />
       <Card className="bg-white">
         <Card.Body>
