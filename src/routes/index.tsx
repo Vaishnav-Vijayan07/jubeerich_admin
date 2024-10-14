@@ -6,12 +6,6 @@ import FranchiseDetails from "../pages/forms/FranchiseDetails";
 import PrivateRoute from "./PrivateRoute";
 import { AUTH_SESSION_KEY } from "../constants";
 import UserBox from "../pages/forms/BranchDetails";
-const PendingDetails = React.lazy(
-  () => import("../pages/forms/Kyc/PendingDetails")
-);
-const PendingDetailsByID = React.lazy(
-  () => import("../pages/forms/Kyc/PendingDetailsById")
-);
 
 // lazy load all the views
 
@@ -41,9 +35,22 @@ const CRMLeadsList = React.lazy(
   () => import("../pages/lead_management/Tickets/List")
 );
 const Tasks = React.lazy(() => import("../pages/lead_management/Tasks/List"));
+
+//KYC
 const KycApproval = React.lazy(() => import("../pages/forms/KycApproval"));
 
 const KycDetails = React.lazy(() => import("../pages/forms/KycDetails"));
+
+const PendingDetails = React.lazy(
+  () => import("../pages/forms/Kyc/PendingDetails")
+);
+const PendingDetailsByID = React.lazy(
+  () => import("../pages/forms/Kyc/PendingDetailsById")
+);
+
+const SubmittedDetails = React.lazy(
+  () => import("../pages/forms/Kyc/SubmittedApplication")
+);
 
 // uikit
 
@@ -175,6 +182,18 @@ const crmAppRoutes = {
       path: "/kyc_details/pending/:id",
       name: "KYC Approval",
       element: <PendingDetailsByID />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/kyc_details/applications/submitted",
+      name: "KYC Approval",
+      element: <SubmittedDetails />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/kyc_details/applications/offer_accepted",
+      name: "KYC Approval",
+      element: <SubmittedDetails />,
       route: PrivateRoute,
     },
     {

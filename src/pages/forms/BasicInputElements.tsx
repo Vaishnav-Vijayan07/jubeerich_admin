@@ -1,20 +1,14 @@
 import * as yup from "yup";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Dropdown, Modal } from "react-bootstrap";
+import { Row, Col, Card,  Button, Dropdown, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import { yupResolver } from "@hookform/resolvers/yup";
-import makeAnimated from "react-select/animated";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
-import { addLeads, deleteLeads, getLead, getLeadsByCounsellorTL, getLeadsTL, updateLeads } from "../../redux/actions";
-import Select, { ActionMeta, OptionsType } from "react-select";
+import { deleteLeads, getLead, getLeadsTL } from "../../redux/actions";
 import {
   AUTH_SESSION_KEY,
-  customStyles,
-  region_id,
-  franchise_id_from_office,
   showErrorAlert,
   showSuccessAlert,
   counsellor_tl_id,
@@ -32,6 +26,7 @@ import moment from "moment";
 import { examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
 import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
+import { AppDispatch } from "../../redux/store";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
