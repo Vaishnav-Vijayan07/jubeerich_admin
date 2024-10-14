@@ -142,7 +142,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     label: "Submitted",
     isTitle: false,
     icon: "file",
-    url: "/kyc_details",
+    url: "/kyc_details/applications/submitted",
     roles: ["Manage Applications"],
   },
   {
@@ -150,7 +150,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     label: "Offer Accepted",
     isTitle: false,
     icon: "file-plus",
-    url: "/kyc_details",
+    url: "/kyc_details/applications/offer_accepted",
     roles: ["Manage Applications"],
   },
 
