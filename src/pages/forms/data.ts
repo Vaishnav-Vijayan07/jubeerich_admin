@@ -80,6 +80,7 @@ export const initialState = {
   franchise_id: "",
   lead_type_id: "",
   branch_id: "",
+  flag: ""
 };
 
 export const initialValidationState = {
@@ -99,6 +100,7 @@ export const initialValidationState = {
   zipcode: "",
   region_id: "",
   lead_type_id: "",
+  flag: ""
 };
 
 export interface OptionType {

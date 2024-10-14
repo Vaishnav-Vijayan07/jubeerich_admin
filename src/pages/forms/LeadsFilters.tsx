@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Select, { ActionMeta, OptionsType } from "react-select";
 import { Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { AUTH_SESSION_KEY, cre_id, cre_reception_id, cre_tl_id, customStyles } from '../../constants';
+import { Visa_Types } from '../lead_management/Tasks/List/data';
 
 const LeadsFilters = (props: any) => {
     const {
@@ -24,7 +25,8 @@ const LeadsFilters = (props: any) => {
         preferredCountries: "",
         updated_by: "",
         source_id: "",
-        CRE: ""
+        CRE: "",
+        visa_types: ""
     });
     const [selectedStatus, setSelectedStatus] = useState<any>(null);
     const [selectedSourceFilter, setSelectedSourceFilter] = useState<any>(null);
@@ -32,6 +34,7 @@ const LeadsFilters = (props: any) => {
     const [selectedCounsellor, setSelectedCounsellor] = useState<any>(null);
     const [selectedCountryFilter, setSelectedCountryFilter] = useState<any>(null);
     const [selectedCREFilter, setSelectedCREFilter] = useState<any>(null);
+    const [selectedVisaTypeFilter, setSelectedVisaTypeFilter] = useState<any>(null);
 
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
     let userRole: any;
@@ -64,6 +67,11 @@ const LeadsFilters = (props: any) => {
         if (filters.preferredCountries) {
             tempItems = tempItems.filter((item) =>
                 item.preferredCountries.some((preferredCountry: any) => preferredCountry.id == filters.preferredCountries)
+            );
+        }
+        if (filters.visa_types) {
+            tempItems = tempItems.filter((item) =>
+                item.preferredCountries.some((visa: any) => visa.visa_type == filters.visa_types)
             );
         }
         if (filters.lead_received_date) {
@@ -108,6 +116,9 @@ const LeadsFilters = (props: any) => {
             case "preferredCountries":
                 setSelectedCountryFilter(selected);
                 break;
+            case 'visa_types':
+                setSelectedVisaTypeFilter(selected);
+                break;
             case "CRE":
                 setSelectedCREFilter(selected);
                 break;
@@ -125,14 +136,16 @@ const LeadsFilters = (props: any) => {
             preferredCountries: "",
             updated_by: "",
             source_id: "",
-            CRE: ""
+            CRE: "",
+            visa_types: ""
         });
         setSelectedStatus(null);
         setSelectedSourceFilter(null);
         setSelectedAssignedBy(null);
         setSelectedCounsellor(null);
         setSelectedCountryFilter(null);
-        setSelectedCREFilter(null)
+        setSelectedCREFilter(null);
+        setSelectedVisaTypeFilter(null);
     };
 
     const handleFilterDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -251,6 +264,21 @@ const LeadsFilters = (props: any) => {
                                 />
                             </Form.Group>
                         </Col>
+
+                        {/* <Col lg={3} md={4} sm={6} xs={12}>
+                            <Form.Group className="mb-3" controlId="visa_types">
+                                <Form.Label>Visa Type</Form.Label>
+                                <Select
+                                    styles={customStyles}
+                                    className="react-select react-select-container select-wrapper"
+                                    classNamePrefix="react-select"
+                                    name="visa_types"
+                                    options={[{ value: null, label: "All" }, ...Visa_Types]}
+                                    value={selectedVisaTypeFilter}
+                                    onChange={handleFilterChange}
+                                />
+                            </Form.Group>
+                        </Col> */}
 
                         <Col lg={3} md={4} sm={6} xs={12}>
                             <Form.Group controlId="lead_received_date" className="cust-date mb-3">

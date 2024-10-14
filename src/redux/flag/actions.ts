@@ -16,6 +16,7 @@ interface FlagData {
   id: string;
   region_name: string;
   region_description: string;
+  color: string;
   updated_by: string;
 }
 
@@ -42,12 +43,14 @@ export const getFlagById = (id: string) => ({
 export const addFlag = (
   flag_name: string,
   flag_description: string,
+  color: string,
   updated_by: string
 ) => ({
   type: FlagActionTypes.ADD_FLAG,
   payload: {
     flag_name,
     flag_description,
+    color,
     updated_by,
   },
 });
@@ -56,6 +59,7 @@ export const updateFlag = (
   id: string,
   flag_name: string,
   flag_description: string,
+  color: string,
   updated_by: string
 ) => ({
   type: FlagActionTypes.UPDATE_FLAG,
@@ -63,6 +67,7 @@ export const updateFlag = (
     id,
     flag_name,
     flag_description,
+    color,
     updated_by,
   },
 });

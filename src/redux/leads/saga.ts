@@ -49,6 +49,7 @@ interface LeadsData {
     city: string;
     preferred_country: string;
     office_type: string;
+    flag_id: string;
     region_id: string | null;
     counsiler_id: string | null;
     branch_id: string | null;
@@ -218,6 +219,7 @@ function* addLeads({
     city,
     preferred_country,
     office_type,
+    flag_id,
     region_id,
     counsiler_id,
     branch_id,
@@ -244,6 +246,7 @@ function* addLeads({
         city,
         preferred_country,
         office_type,
+        flag_id,
         region_id,
         counsiler_id,
         branch_id,
@@ -300,6 +303,7 @@ function* updateLeads({
     city,
     preferred_country,
     office_type,
+    flag_id,
     region_id,
     counsiler_id,
     branch_id,
@@ -329,6 +333,7 @@ function* updateLeads({
         city,
         preferred_country,
         office_type,
+        flag_id,
         region_id,
         counsiler_id,
         branch_id,

@@ -211,6 +211,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
                 <span>{"JBR" + taskDetails?.id}</span>
               </div>
+
               <Col className="d-flex gap-2 float-end">
                 {/* <i className="mdi mdi-close font-18 cursor-pointer" onClick={handleClose}></i> */}
 

@@ -19,6 +19,7 @@ interface FlagData {
     id: string;
     flag_name: string;
     flag_description: string;
+    color: string;
     updated_by: string;
   };
   type: string;
@@ -63,13 +64,14 @@ function* deleteFlagSaga({ payload: { id } }: FlagData): SagaIterator {
   }
 }
 function* addFlagSaga({
-  payload: { flag_name, updated_by, flag_description },
+  payload: { flag_name, updated_by, flag_description, color },
 }: FlagData): SagaIterator {
   try {
     const response = yield call(addFlagsApi, {
       flag_name,
       updated_by,
       flag_description,
+      color
     });
     console.log(response);
     const data = response.message;
@@ -82,13 +84,16 @@ function* addFlagSaga({
   }
 }
 function* updateFlagSaga({
-  payload: { id, flag_description, flag_name, updated_by },
+  payload: { id, flag_description, flag_name, updated_by, color },
 }: FlagData): SagaIterator {
   try {
+    console.log('color',color);
+    
     const response = yield call(updateFlagsApi, id, {
       updated_by,
       flag_description,
       flag_name,
+      color
     });
     console.log(response);
     const data = response.message;

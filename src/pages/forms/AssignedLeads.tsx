@@ -26,6 +26,7 @@ import useDropdownData from "../../hooks/useDropdownDatas";
 import { getFranchise } from "../../redux/franchise/actions";
 import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
+import { getFlag } from "../../redux/flag/actions";
 
 interface OptionType {
   value: string;
@@ -117,6 +118,7 @@ const BasicInputElements = withSwal((props: any) => {
     cres,
     // regions,
     office,
+    flags,
     channels,
     error,
     loading,
@@ -598,6 +600,7 @@ const BasicInputElements = withSwal((props: any) => {
           regionData = {region || []}
           franchisees = {franchisees || []}
           region = {region || []}
+          flags={flags || []}
           modal = {modal}
           toggle = {toggle}
           handleUpdateData = {handleUpdateData}
@@ -711,7 +714,7 @@ const AssignedLeads = () => {
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor } = useSelector((state: RootState) => ({
+  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     state: state.Leads.assignedLeads,
     error: state.Leads.error,
@@ -720,6 +723,7 @@ const AssignedLeads = () => {
     users: state.Users.adminUsers,
     franchisees: state.Franchise.franchiseUsers,
     branchCounsellor: state.Users?.branchCounsellor,
+    flag: state?.Flag?.flags
   }));
 
   let userRole: any;
@@ -730,6 +734,7 @@ const AssignedLeads = () => {
   }
 
   useEffect(() => {
+    dispatch(getFlag())
     if(userRole == cre_tl_id){
       dispatch(getLeadAssigned());
     } else {
@@ -767,6 +772,16 @@ const AssignedLeads = () => {
     }));
   }, [franchisees]);
 
+  const flagsData = useMemo(() => {
+    if(!flag) return [];
+    return flag.map((data: any) => {
+      return {
+        value: data?.id,
+        label: data?.flag_name
+      }
+    })
+  },[flag])
+
   if (initialLoading) {
     return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
   }
@@ -799,6 +814,7 @@ const AssignedLeads = () => {
             region={dropdownData.regions || []}
             franchisees={dropdownData.franchises || []}
             branchCounsellors={branchCounsellor || []}
+            flags={flagsData || []}
           />
         </Col>
       </Row>

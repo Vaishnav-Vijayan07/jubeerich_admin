@@ -13,6 +13,7 @@ interface FlagData {
   id: string;
   flag_name: string;
   flag_description: string;
+  color: string;
   updated_by: string;
 }
 

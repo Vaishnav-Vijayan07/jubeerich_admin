@@ -33,6 +33,7 @@ interface LeadsData {
   company_name: string;
   country: string;
   branch_id: string;
+  flag_id: string;
 }
 
 export interface LeadsActionType {
