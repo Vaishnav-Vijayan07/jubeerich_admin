@@ -59,6 +59,7 @@ const Task = ({
                 borderRadius: "5px",
                 padding: "1px 5px",
                 fontSize: "0.6rem",
+                borderColor: `${task?.student_name?.user_primary_flags?.color}`
               }}
               className={classNames("rounded-pill me-1 ms-2")}
             >
