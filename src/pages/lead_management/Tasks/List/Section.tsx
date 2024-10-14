@@ -66,7 +66,7 @@ const Task = ({
             </small>}
           </div> */}
           <div className="d-flex flex-wrapvgap-2">
-            <small
+            { task?.student_name?.user_primary_flags?.flag_name && <small
               className={classNames(
                 "badge border",
                 {
@@ -89,7 +89,7 @@ const Task = ({
               style={{ fontSize: "8px", padding: "3px", paddingTop: "4px" }}
             >
               {task?.student_name?.user_primary_flags?.flag_name}
-            </small>
+            </small>}
           </div>
 
           <div className="d-flex flex-wrapvgap-2">
