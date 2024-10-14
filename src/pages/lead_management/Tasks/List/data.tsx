@@ -107,6 +107,7 @@ export interface TaskItemTypes {
     status: string
   ) => void;
   pickedDate: Date;
+  student_name?: any;
 }
 
 export interface TaskObjects {

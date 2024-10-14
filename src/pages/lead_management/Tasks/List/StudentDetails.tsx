@@ -1,16 +1,5 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  Dropdown,
-  Form,
-  Modal,
-  Nav,
-  Row,
-  Spinner,
-  Tab,
-} from "react-bootstrap";
+import { Button, Card, Col, Dropdown, Form, Modal, Nav, Row, Spinner, Tab } from "react-bootstrap";
 import classNames from "classnames";
 import { icons } from "../../../../assets/images/icons";
 import { getCountry } from "../../../../redux/country/actions";
@@ -19,28 +8,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { getMaritalStatus } from "../../../../redux/marital_status/actions";
 import axios from "axios";
-import {
-  follow_up_id,
-  future_leads_id,
-  not_responding_id,
-  showErrorAlert,
-  showSuccessAlert,
-} from "../../../../constants";
+import { follow_up_id, future_leads_id, not_responding_id, showErrorAlert, showSuccessAlert } from "../../../../constants";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import Comments from "./Comments";
-import Attachments from "./Attachments";
-import VisaProcess from "./VisaProcess";
-import EducationDetails from "./EducationDetails";
-import FundPlan from "./FundPlan/FundPlan";
 import { refreshData } from "../../../../redux/countryReducer";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
-import AdditionalDocuments from "./AdditionalDocuments";
-import WorkExpereince from "./WorkExpereince/WorkExpereince";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
-const AcademicInfo = lazy(() => import("./AcademicInfo"));
-const StudyPreference = lazy(() => import("./StudyPreference/StudyPreference"));
+const History = lazy(() => import("./History"));
 
 const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [basicData, setBasicData] = useState<any>([]);
@@ -54,19 +30,15 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [activeTab, setActiveTab] = useState<any>("basic_info");
 
   const dispatch = useDispatch();
-  const { Countries, OfficeTypes, MaritalStatus, user, refresh } = useSelector(
-    (state: RootState) => ({
-      Countries: state?.Country?.countries,
-      OfficeTypes: state?.OfficeTypes?.officeTypes,
-      MaritalStatus: state?.MaritalStatus?.maritalStatus,
-      user: state.Auth.user,
-      refresh: state.refreshReducer.refreshing,
-    })
-  );
+  const { Countries, OfficeTypes, MaritalStatus, user, refresh } = useSelector((state: RootState) => ({
+    Countries: state?.Country?.countries,
+    OfficeTypes: state?.OfficeTypes?.officeTypes,
+    MaritalStatus: state?.MaritalStatus?.maritalStatus,
+    user: state.Auth.user,
+    refresh: state.refreshReducer.refreshing,
+  }));
 
-  const { dropdownData } = useDropdownData(
-    "marital,officeType,franchise,region"
-  );
+  const { dropdownData } = useDropdownData("marital,officeType,franchise,region");
   const { officeTypes, regions, franchises, maritalStatus } = dropdownData;
 
   const toggleStandard = () => {
@@ -101,11 +73,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   };
 
   const handleStatusChange = async (status_id: number) => {
-    if (
-      status_id == follow_up_id ||
-      status_id == future_leads_id ||
-      status_id == not_responding_id
-    ) {
+    if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
       toggleStandard();
     } else {
       const { data } = await axios.put("/lead_status", {
@@ -231,12 +199,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   };
 
   if (loading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "65%" }}
-      />
-    );
+    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "65%" }} />;
   }
 
   return (
@@ -248,6 +211,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
                 <span>{"JBR" + taskDetails?.id}</span>
               </div>
+
               <Col className="d-flex gap-2 float-end">
                 {/* <i className="mdi mdi-close font-18 cursor-pointer" onClick={handleClose}></i> */}
 
@@ -268,10 +232,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               <hr className="my-3" />
             </Col>
           </Row>
-          <Row
-            className="dotted-border-bottom"
-            style={{ paddingBottom: "20px" }}
-          >
+          <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
             <Col>
               <h3>{taskDetails?.title}</h3>
               <div className="d-flex">
@@ -299,32 +260,16 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             <div className="grid-container mb-2">
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Name</p>
-                <div
-                  className="d-flex align-items-start"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.user}
-                    alt="date"
-                    className="me-1"
-                    height="16"
-                  />
+                <div className="d-flex align-items-start" style={{ gap: "5px" }}>
+                  <img src={icons.user} alt="date" className="me-1" height="16" />
                   <h5 className="m-0 font-size-14">{basicData?.full_name}</h5>
                 </div>
               </div>
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Phone Number</p>
-                <div
-                  className="d-flex align-items-center outline-none"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.apple}
-                    alt="phone"
-                    className="me-1"
-                    width="16"
-                  />
+                <div className="d-flex align-items-center outline-none" style={{ gap: "5px" }}>
+                  <img src={icons.apple} alt="phone" className="me-1" width="16" />
                   {/* <h5 className="m-0 font-size-14">{taskObject.phone}</h5> */}
                   <input
                     type="tel"
@@ -343,16 +288,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Email</p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.email}
-                    alt="email"
-                    className="me-1"
-                    width="17"
-                  />
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.email} alt="email" className="me-1" width="17" />
                   {/* <h5 className="m-0 font-size-14">{taskObject.email}</h5> */}
                   <input
                     type="text"
@@ -374,50 +311,24 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               <br className="grid-br" />
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Source</p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.cloud}
-                    alt="source icon"
-                    className="me-1"
-                    width="16"
-                  />
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.cloud} alt="source icon" className="me-1" width="16" />
                   <h5 className="m-0 font-size-14">{basicData?.source_name}</h5>
                 </div>
               </div>
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Channel</p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.information}
-                    alt="cahnnel icon"
-                    className="me-1"
-                    width="16"
-                  />
-                  <h5 className="m-0 font-size-14">
-                    {basicData?.channel_name}
-                  </h5>
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.information} alt="cahnnel icon" className="me-1" width="16" />
+                  <h5 className="m-0 font-size-14">{basicData?.channel_name}</h5>
                 </div>
               </div>
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">City</p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.business}
-                    alt="comapny icon"
-                    className="me-1"
-                    width="16"
-                  />
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.business} alt="comapny icon" className="me-1" width="16" />
                   <h5 className="m-0 font-size-14">{basicData?.city}</h5>
                 </div>
               </div>
@@ -427,19 +338,14 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             <div className="grid-container mb-2">
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Status</p>
-                <div
-                  className="d-flex align-items-start"
-                  style={{ gap: "5px" }}
-                >
+                <div className="d-flex align-items-start" style={{ gap: "5px" }}>
                   <Dropdown>
                     <Dropdown.Toggle
                       className="cursor-pointer"
                       variant="light"
                       // disabled={!StudentData?.status}
                     >
-                      {basicData?.status?.status_name
-                        ? basicData?.status?.status_name
-                        : "Change status"}
+                      {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       {(status || [])?.map((item: any) => (
@@ -448,10 +354,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                         <Dropdown.Item
                           eventKey={item.id}
                           key={item.id}
-                          onClick={() => [
-                            handleStatusChange(item?.id),
-                            setStatusId(item?.id),
-                          ]}
+                          onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
                         >
                           {item.status_name}
                         </Dropdown.Item>
@@ -462,25 +365,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               </div>
 
               <div className="">
-                <p className="mt-2 mb-1 text-muted fw-light">
-                  Lead Received Date
-                </p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.calender_time}
-                    alt="phone"
-                    className="me-1"
-                    width="16"
-                  />
+                <p className="mt-2 mb-1 text-muted fw-light">Lead Received Date</p>
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
                   <input
                     type="tel"
-                    value={
-                      basicData?.lead_received_date &&
-                      moment(basicData?.lead_received_date).format("DD/MM/YYYY")
-                    }
+                    value={basicData?.lead_received_date && moment(basicData?.lead_received_date).format("DD/MM/YYYY")}
                     style={{
                       border: "none",
                       outline: "none",
@@ -494,22 +384,11 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Followup Date</p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.calender_time}
-                    alt="phone"
-                    className="me-1"
-                    width="16"
-                  />
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
                   <input
                     type="tel"
-                    value={
-                      basicData?.followup_date &&
-                      moment(basicData?.followup_date).format("DD/MM/YYYY")
-                    }
+                    value={basicData?.followup_date && moment(basicData?.followup_date).format("DD/MM/YYYY")}
                     style={{
                       border: "none",
                       outline: "none",
@@ -527,10 +406,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             <Row>
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Add New Country</p>
-                <div
-                  className="d-flex align-items-start"
-                  style={{ gap: "5px" }}
-                >
+                <div className="d-flex align-items-start" style={{ gap: "5px" }}>
                   <Dropdown>
                     <Dropdown.Toggle className="cursor-pointer" variant="light">
                       Choose Country
@@ -539,11 +415,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       {(countryData || [])?.map((item: any) => (
                         // Check if the item is visible before rendering the Dropdown.Item
 
-                        <Dropdown.Item
-                          eventKey={item.value}
-                          key={item.value}
-                          onClick={() => addNewCountry(item.value)}
-                        >
+                        <Dropdown.Item eventKey={item.value} key={item.value} onClick={() => addNewCountry(item.value)}>
                           {item.label}
                         </Dropdown.Item>
                       ))}
@@ -558,104 +430,25 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       <Card>
         <Card.Body>
           <Row>
-            <Tab.Container
-              activeKey={activeTab}
-              onSelect={(tab) => setActiveTab(tab)}
-            >
+            <Tab.Container activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
               <Card>
                 <Card.Body>
-                  <Nav
-                    variant="pills"
-                    as="ul"
-                    className="nav nav-pills nav-fill navtab-bg row-gap-1"
-                  >
+                  <Nav variant="pills" as="ul" className="nav nav-pills nav-fill navtab-bg row-gap-1">
                     <Nav.Item as="li" className="nav-item nav_item_1">
-                      <Nav.Link
-                        eventKey="basic_info"
-                        className="nav-link cursor-pointer"
-                      >
+                      <Nav.Link eventKey="basic_info" className="nav-link cursor-pointer">
                         Basic Info
                       </Nav.Link>
                     </Nav.Item>
 
-                    <Nav.Item as="li" className="nav-item nav_item_2">
-                      <Nav.Link
-                        eventKey="academic_info"
-                        className="nav-link cursor-pointer"
-                      >
-                        Academic Info
-                      </Nav.Link>
-                    </Nav.Item>
-
-                    <Nav.Item as="li" className="nav-item nav_item_2">
-                      <Nav.Link
-                        eventKey="work_info"
-                        className="nav-link cursor-pointer"
-                      >
-                        Work Experience
-                      </Nav.Link>
-                    </Nav.Item>
-
-                    <Nav.Item as="li" className="nav-item nav_item_3">
-                      <Nav.Link
-                        eventKey="study_preference"
-                        className="nav-link cursor-pointer"
-                      >
-                        Study Preference
-                      </Nav.Link>
-                    </Nav.Item>
-
-                    <Nav.Item as="li" className="nav-item nav_item_3">
-                      <Nav.Link
-                        eventKey="education_details"
-                        className="nav-link cursor-pointer"
-                      >
-                        Education Details
-                      </Nav.Link>
-                    </Nav.Item>
-
-                    <Nav.Item as="li" className="nav-item nav_item_3">
-                      <Nav.Link
-                        eventKey="fund_plan"
-                        className="nav-link cursor-pointer"
-                      >
-                        Fund Plan
-                      </Nav.Link>
-                    </Nav.Item>
-
                     <Nav.Item as="li" className="nav-item nav_item_4">
-                      <Nav.Link
-                        eventKey="comments"
-                        className="nav-link cursor-pointer"
-                      >
+                      <Nav.Link eventKey="comments" className="nav-link cursor-pointer">
                         Comments
                       </Nav.Link>
                     </Nav.Item>
 
-                    {/* <Nav.Item as="li" className="nav-item nav_item_5">
-                      <Nav.Link
-                        eventKey="attachments"
-                        className="nav-link cursor-pointer"
-                      >
-                        Attachments
-                      </Nav.Link>
-                    </Nav.Item> */}
-
-                    <Nav.Item as="li" className="nav-item nav_item_6">
-                      <Nav.Link
-                        eventKey="visa_process"
-                        className="nav-link cursor-pointer"
-                      >
-                        Visa Process
-                      </Nav.Link>
-                    </Nav.Item>
-
-                    <Nav.Item as="li" className="nav-item nav_item_6">
-                      <Nav.Link
-                        eventKey="additional_documents"
-                        className="nav-link cursor-pointer"
-                      >
-                        Additional Documents
+                    <Nav.Item as="li" className="nav-item nav_item_3">
+                      <Nav.Link eventKey="history" className="nav-link cursor-pointer">
+                        History
                       </Nav.Link>
                     </Nav.Item>
                   </Nav>
@@ -675,57 +468,15 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       </Suspense>
                     )}
 
-                    {activeTab === "academic_info" && studentId && (
-                      <Suspense fallback={null}>
-                        <AcademicInfo studentId={studentId} />
-                      </Suspense>
-                    )}
-
-                    {activeTab === "work_info" && studentId && (
-                      <Suspense fallback={null}>
-                        <WorkExpereince studentId={studentId} />
-                      </Suspense>
-                    )}
-
-                    {activeTab === "visa_process" && studentId && (
-                      <Suspense fallback={null}>
-                        <VisaProcess studentId={studentId} />
-                      </Suspense>
-                    )}
-
-                    {activeTab === "additional_documents" && studentId && (
-                      <Suspense fallback={null}>
-                        <AdditionalDocuments studentId={studentId} />
-                      </Suspense>
-                    )}
-
-                    {activeTab === "study_preference" && studentId && (
-                      <Suspense fallback={null}>
-                        <StudyPreference studentId={studentId} />
-                      </Suspense>
-                    )}
-
-                    {activeTab === "fund_plan" && studentId && (
-                      <Suspense fallback={null}>
-                        <FundPlan student_id={studentId} />
-                      </Suspense>
-                    )}
-
-                    {activeTab === "education_details" && studentId && (
-                      <Suspense fallback={null}>
-                        <EducationDetails studentId={studentId} />
-                      </Suspense>
-                    )}
-
                     {activeTab === "comments" && studentId && (
                       <Suspense fallback={null}>
                         <Comments studentId={studentId} />
                       </Suspense>
                     )}
 
-                    {activeTab === "attachments" && studentId && (
+                    {activeTab === "history" && studentId && (
                       <Suspense fallback={null}>
-                        <Attachments studentId={studentId} />
+                        <History studentId={studentId} />
                       </Suspense>
                     )}
                   </Tab.Content>
@@ -736,12 +487,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         </Card.Body>
       </Card>
 
-      <Modal
-        show={standard}
-        centered
-        onHide={toggleStandard}
-        dialogClassName="modal-calendar-width"
-      >
+      <Modal show={standard} centered onHide={toggleStandard} dialogClassName="modal-calendar-width">
         <Modal.Header onHide={toggleStandard} closeButton>
           <h4 className="modal-title">Choose Followup Date</h4>
         </Modal.Header>
@@ -763,11 +509,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             <Button variant="danger" className="me-1" onClick={toggleStandard}>
               Cancel
             </Button>
-            <Button
-              variant="success"
-              type="submit"
-              onClick={handleFollowUpDate}
-            >
+            <Button variant="success" type="submit" onClick={handleFollowUpDate}>
               Submit
             </Button>
           </div>

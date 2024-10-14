@@ -49,6 +49,20 @@ const Task = ({
               {task.next_status_name}
             </small> */}
           </div>
+          <div>
+            {task?.student_name?.user_primary_flags?.flag_name && <small
+              style={{
+                backgroundColor: "#9dd3f5",
+                color: "#122d3d",
+                border: `1px solid #122d3d`,
+                borderRadius: "5px",
+                padding: "1px 5px",
+              }}
+              className={classNames("rounded-pill fs-6 me-1 ms-2")}
+            >
+              {task?.student_name?.user_primary_flags?.flag_name}
+            </small>}
+          </div>
 
           <div className="d-flex flex-wrapvgap-2">
             {/* <small

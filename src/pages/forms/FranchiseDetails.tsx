@@ -531,19 +531,22 @@ const FranchiseDetails = withSwal((props: any) => {
                                             <span className="ms-2">{franchiseDetails?.address}</span>
                                         </p>
                                     </div>
-
-                                    <div className="d-flex justify-content-end pt-2 pe-3">
-                                        <Button className="btn btn-primary" onClick={() => [setShowModal(true), setIsTL(true), handleCancelUpdate(), handleResetValues()]}>
-                                            Add Franchise Manager
-                                        </Button>
-                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
                         <Col md={8} lg={8}>
                             <div className="d-flex justify-content-end pb-2">
                                 <Button className="btn btn-primary me-2" onClick={() => [setShowModal(true), handleResetValues(), handleCancelUpdate(), setIsTL(false)]}>
-                                    Add Franchise Counsellor
+                                    <i className="mdi mdi-plus-circle"></i>
+                                    <span className="ms-1">
+                                        Franchise Counsellor
+                                    </span>
+                                </Button>
+                                <Button className="btn btn-primary" onClick={() => [setShowModal(true), setIsTL(true), handleCancelUpdate(), handleResetValues()]}>
+                                    <i className="mdi mdi-plus-circle"></i>
+                                    <span className="ms-1">
+                                        Franchise Manager
+                                    </span>
                                 </Button>
                             </div>
 

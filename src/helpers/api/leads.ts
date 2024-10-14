@@ -44,6 +44,7 @@ function addLeads(
     city: string;
     preferred_country: string;
     office_type: string;
+    flag_id: string;
     region_id: string | null;
     counsiler_id: string | null;
     branch_id: string | null;
@@ -73,6 +74,7 @@ function updateLeads(
     city: string;
     preferred_country: string;
     office_type: string;
+    flag_id: string;
     region_id: string | null;
     counsiler_id: string | null;
     branch_id: string | null;

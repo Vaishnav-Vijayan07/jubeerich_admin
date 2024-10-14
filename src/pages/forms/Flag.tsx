@@ -29,6 +29,7 @@ import {
   updateFlag,
 } from "../../redux/flag/actions";
 import { Link } from "react-router-dom";
+import InputColor from "react-input-color";
 
 interface OptionType {
   value: string;
@@ -67,12 +68,14 @@ const initialState = {
   id: "",
   flag_name: "",
   flag_description: "",
+  color: "",
   updated_by: "",
 };
 
 const initialValidationState = {
   flag_name: "",
   flag_description: "",
+  color: "",
   source_id: "",
 };
 
@@ -90,6 +93,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedSource, setSelectedSource] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
+  const [updateColor, setupdateColor] = useState<string | null>(null);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -171,13 +175,12 @@ const BasicInputElements = withSwal((props: any) => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log(formData);
+    
     // Validate the form using yup
     try {
       await validationSchema.validate(formData, { abortEarly: false });
-
       // Validation passed, handle form submission
-
-      
       swal
       .fire({
         title: "Are you sure?",
@@ -199,6 +202,7 @@ const BasicInputElements = withSwal((props: any) => {
                   formData.id,
                   formData.flag_name,
                   formData.flag_description,
+                  formData.color,
                   user_id
                 )
               );
@@ -206,7 +210,7 @@ const BasicInputElements = withSwal((props: any) => {
             } else {
               // Handle add logic
               dispatch(
-                addFlag(formData.flag_name, formData.flag_description, user_id)
+                addFlag(formData.flag_name, formData.flag_description, formData.color, user_id)
               );
             }
           }
@@ -266,6 +270,20 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "flag_description",
       sort: false,
     },
+    {
+      Header: "Color",
+      accessor: "color",
+      sort: false,
+      Cell: ({ row }: any) => (
+        <div
+          style={{
+            width: "40px",
+            height: "15px",
+            backgroundColor: `${row.original.color}`,
+          }}
+        />
+      ),
+    },
     // {
     //   Header: "Source",
     //   accessor: "source_name",
@@ -291,7 +309,6 @@ const BasicInputElements = withSwal((props: any) => {
             handleDelete(row.original.id)
           }>
             <i className="mdi mdi-delete-outline"></i>
-            {/* <i className="mdi mdi-delete"></i> */}
           </Link>
         </div>
       ),
@@ -365,6 +382,22 @@ const BasicInputElements = withSwal((props: any) => {
                     {validationErrors.flag_name}
                   </Form.Text>
                 )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="color">
+                <Form.Label>Color</Form.Label>
+                <br />
+                <InputColor
+                  initialValue={updateColor ? updateColor : "#5e72e4"}
+                  onChange={(e) =>
+                    setFormData((prevData: any) => ({
+                      ...prevData,
+                      color: e.rgba,
+                    }))
+                  }
+                  placement="right"
+                />
+                {/* {validationErrors.color && <Form.Text className="text-danger">{validationErrors.color}</Form.Text>} */}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="channel_description">

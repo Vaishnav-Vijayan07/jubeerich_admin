@@ -54,6 +54,7 @@ const BasicInputElements = withSwal((props: any) => {
     counsellors,
     userData,
     region,
+    flags,
     regionData,
     franchisees,
     branchForManager,
@@ -161,22 +162,26 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Name",
       accessor: "full_name",
       sort: true,
+      minWidth: 150,
     },
     {
       Header: "Email",
       accessor: "email",
       sort: true,
+      minWidth: 150,
     },
     {
       Header: "City",
       accessor: "city",
       sort: true,
+      minWidth: 75,
     },
     {
       Header: "Country",
       accessor: "preferredCountries",
       filter: "includes",
       sort: false,
+      minWidth: 100,
       Cell: ({ row }: any) => (
         <ul style={{ listStyle: "none" }}>
           {row.original.preferredCountries.map((item: any) => (
@@ -217,6 +222,7 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Assigned CRE",
             accessor: "cre_name",
             sort: true,
+            minWidth: 150,
           },
         ]
       : []),
@@ -226,6 +232,7 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Status",
             accessor: "assigned_branch_counselor",
             sort: true,
+            minWidth: 150,
             Cell: ({ row }: any) => (
               <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
             ),
@@ -234,6 +241,7 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Assigned Counselor",
             accessor: "assigned_branch_counselor_name",
             sort: true,
+            minWidth: 150,
           },
         ]
       : []),
@@ -252,6 +260,7 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Branch Assigned",
             accessor: "assigned_regional_manager",
             sort: true,
+            minWidth: 150,
             Cell: ({ row }: any) => (
               <>{row?.original.assigned_counsellor_tl  ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
             ),
@@ -273,6 +282,7 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Assign Type",
             accessor: "assign_type",
             sort: true,
+            minWidth: 150,
             Cell: ({ row }: any) => {
               const assignType = row.original.assign_type;
 
@@ -555,6 +565,7 @@ const BasicInputElements = withSwal((props: any) => {
           regionData={regionData || []}
           franchisees={franchisees || []}
           region={region || []}
+          flags={flags || []}
           modal={modal}
           toggle={toggle}
           handleUpdateData={handleUpdateData}

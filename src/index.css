@@ -2,7 +2,7 @@
   cursor: pointer;
 }
 
-*{
+* {
   box-sizing: border-box;
 }
 
@@ -274,7 +274,8 @@ th {
   border-color: #00ce64;
 }
 
-ul.tl li .item-title {}
+ul.tl li .item-title {
+}
 
 ul.tl li .item-detail {
   color: rgba(0, 0, 0, 0.5);
@@ -352,7 +353,7 @@ ul.tl li .timestamp {
   padding: 8px;
 }
 
-.table-striped>tbody>tr:nth-of-type(odd)>* {
+.table-striped > tbody > tr:nth-of-type(odd) > * {
   --ct-table-accent-bg: rgb(51 100 241 / 9%);
   color: var(--ct-table-striped-color);
 }
@@ -365,7 +366,7 @@ ul.tl li .timestamp {
 }
 
 .menu .menu-item .sub-menu .menu-text {
-  font-size: calc(var(--ct-menu-item-font-size)* 1);
+  font-size: calc(var(--ct-menu-item-font-size) * 1);
 }
 
 /* Hide increment and decrement arrows in WebKit browsers */
@@ -392,55 +393,61 @@ input[type="number"] {
   margin: auto;
 }
 
-.content-page{
+.content-page {
   overflow-x: hidden;
 }
 
-
-.nav-pills .nav_item_1 .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav_item_1 .nav-link.active,
+.nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
   background-color: #4f55c7dc;
 }
 
-.nav-pills .nav_item_1 .nav-link:hover, .nav-pills .show > .nav-link {
+.nav-pills .nav_item_1 .nav-link:hover,
+.nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
   background-color: #4f55c7dc !important;
 }
 
-.nav-pills .nav_item_2 .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav_item_2 .nav-link.active,
+.nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
   background-color: #4760dde2;
 }
 
-.nav-pills .nav_item_2 .nav-link:hover, .nav-pills .show > .nav-link {
+.nav-pills .nav_item_2 .nav-link:hover,
+.nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
   background-color: #4760dde2;
 }
 
-.nav-pills .nav_item_3 .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav_item_3 .nav-link.active,
+.nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
   background-color: #684dc9dc;
 }
 
-.nav-pills .nav_item_3 .nav-link:hover, .nav-pills .show > .nav-link {
+.nav-pills .nav_item_3 .nav-link:hover,
+.nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
   background-color: #684dc9dc;
 }
 
-.nav-pills .nav_item_4 .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav_item_4 .nav-link.active,
+.nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
   background-color: #635692dc;
 }
 
-.nav-pills .nav_item_4 .nav-link:hover, .nav-pills .show > .nav-link {
+.nav-pills .nav_item_4 .nav-link:hover,
+.nav-pills .show > .nav-link {
   color: var(--ct-nav-pills-link-active-color);
   background-color: #635692dc;
 }
 
-.nav-link{
+.nav-link {
   color: #6c757d;
 }
-
 
 /* .select-wrapper{
   min-width: 200px !important;
@@ -451,7 +458,6 @@ input[type="number"] {
   min-width: 200px !important;
   max-width: 200px !important;
 } */
-
 
 select {
   background-color: white; /* Background color of the select box */
@@ -465,4 +471,54 @@ select {
 /* For styling the dropdown arrow */
 select::-ms-expand {
   display: none;
+}
+
+/* ------------------------- Time line ------------------------ */
+.history-tl-container {
+  font-family: "Nunito", sans-serif;
+  width: 100%;
+  /* margin: auto; */
+  display: block;
+  position: relative;
+}
+.history-tl-container ul.tl {
+  margin: 20px 0;
+  padding: 0;
+  display: inline-block;
+}
+.history-tl-container ul.tl li {
+  list-style: none;
+  margin: auto;
+  margin-left: 20px;
+  min-height: 50px;
+  /*background: rgba(255,255,0,0.1);*/
+  border-left: 1px dashed #86d6ff;
+  padding: 0 0 50px 30px;
+  position: relative;
+}
+.history-tl-container ul.tl li:last-child {
+  border-left: 0;
+  margin-left: 21px;
+}
+.history-tl-container ul.tl li::before {
+  position: absolute;
+  left: -7px;
+  content: " ";
+  border: 6px solid rgba(255, 255, 255, 0.74);
+  border-radius: 500%;
+  background: #007fc8;
+  height: 10px;
+  width: 10px;
+  transition: all 500ms ease-in-out;
+}
+.history-tl-container ul.tl li:first-child::before {
+  border-color: #00ce64;
+}
+
+.history-tl-container ul.tl li:hover::before {
+  border-color: #0771ae;
+  transition: all 1000ms ease-in-out;
+}
+.history-tl-container ul.tl li:first-child:hover::before {
+  border-color: #00ce64;
 }
