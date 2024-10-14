@@ -49,11 +49,13 @@ const Task = ({
               {task.next_status_name}
             </small> */}
           </div>
-          <div>
+          {/* <div>
             {task?.student_name?.user_primary_flags?.flag_name && <small
               style={{
-                backgroundColor: "#9dd3f5",
-                color: "#122d3d",
+                // backgroundColor: "#9dd3f5",
+                backgroundColor: `${task?.student_name?.user_primary_flags?.color}`,
+                // color: "#122d3d",
+                color: "white",
                 border: `1px solid #122d3d`,
                 borderRadius: "5px",
                 padding: "1px 5px",
@@ -62,6 +64,32 @@ const Task = ({
             >
               {task?.student_name?.user_primary_flags?.flag_name}
             </small>}
+          </div> */}
+          <div className="d-flex flex-wrapvgap-2">
+            <small
+              className={classNames(
+                "badge border",
+                {
+                  "badge-soft-danger border-danger": task?.student_name?.user_primary_flags?.flag_name == "HOT",
+                  "badge-soft-info border-info": task?.student_name?.user_primary_flags?.flag_name == "COLD",
+                  "badge-soft-success border-success": task?.student_name?.user_primary_flags?.flag_name == "MID",
+                  // "badge-soft-warning border-warning": task?.student_name?.user_primary_flags?.flag_name == "COMPETETOR ENDURE",
+                  // "badge-soft-primary border-primary": task?.student_name?.user_primary_flags?.flag_name == "HIGH PROFILE",
+                },
+                "me-1"
+              )}
+              // className={classNames(
+              //   "border border",
+              //   {
+              //     [task?.student_name?.user_primary_flags?.color]: task?.student_name?.user_primary_flags?.color,
+              //   },
+              //   "me-1"
+              // )}
+              
+              style={{ fontSize: "8px", padding: "3px", paddingTop: "4px" }}
+            >
+              {task?.student_name?.user_primary_flags?.flag_name}
+            </small>
           </div>
 
           <div className="d-flex flex-wrapvgap-2">
