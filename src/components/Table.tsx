@@ -301,7 +301,7 @@ const Table = (props: TableProps) => {
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top"
                       >
-                        <span className="d-inline-block text-truncate" style={{ maxWidth: '90%', textOverflow: 'ellipsis' }}>
+                        <span className="truncate-text">
                           {cell.render("Cell")}
                         </span>
                       </td>

@@ -59,6 +59,18 @@
     }
 }
 
+.truncate-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 90%;
+}
+.truncate-text:has(.no-truncate-text){
+    overflow: visible;
+    background-color: #3e4954;
+}
+
 // Dark Mode light and dark table
 html[data-bs-theme="dark"] {
     .table-light {

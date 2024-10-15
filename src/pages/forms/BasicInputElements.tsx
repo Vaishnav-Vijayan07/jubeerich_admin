@@ -437,96 +437,162 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleAssignBulk = async (user_ids: any, cre_id: any) => {
-    if (user_ids.length > 0) {
-      try {
-        const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
 
-        if (data.status) {
-          if (userRole == cre_tl_id) {
-            dispatch(getLeadsTL());
-          } else {
-            dispatch(getLead());
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Assign",
+    });
+
+    if (result.isConfirmed) {    
+      if (user_ids.length > 0) {
+        try {
+          const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
+  
+          if (data.status) {
+            if (userRole == cre_tl_id) {
+              dispatch(getLeadsTL());
+            } else {
+              dispatch(getLead());
+            }
+            showSuccessAlert("Bulk assignment successful.");
           }
-          showSuccessAlert("Bulk assignment successful.");
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
   };
 
   const handleBranchCounsellorAssignBulk = async (user_ids: any, counsellor_id: any) => {
-    if (user_ids.length > 0) {
-      try {
-        const { data } = await axios.post("/assign_branch_counselor", {
-          user_ids,
-          counselor_id: counsellor_id,
-        });
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Assign",
+    });
 
-        if (data.status) {
-          dispatch(getLead());
-          showSuccessAlert("Bulk assignment successful.");
+    if (result.isConfirmed) {    
+      if (user_ids.length > 0) {
+        try {
+          const { data } = await axios.post("/assign_branch_counselor", {
+            user_ids,
+            counselor_id: counsellor_id,
+          });
+  
+          if (data.status) {
+            dispatch(getLead());
+            showSuccessAlert("Bulk assignment successful.");
+          }
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
+
   };
 
   const handleBranchAssignBulk = async (user_ids: any, branch_id: any) => {
-    if (user_ids.length > 0) {
-      try {
-        const { data } = await axios.post("/assign_counselor_tl", {
-          user_ids,
-          branch_id,
-        });
 
-        if (data.status) {
-          if (userRole == cre_tl_id) {
-            dispatch(getLeadsTL());
-          } else {
-            dispatch(getLead());
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Assign",
+    });
+
+    if (result.isConfirmed) {
+      if (user_ids.length > 0) {
+        try {
+          const { data } = await axios.post("/assign_counselor_tl", {
+            user_ids,
+            branch_id,
+          });
+  
+          if (data.status) {
+            if (userRole == cre_tl_id) {
+              dispatch(getLeadsTL());
+            } else {
+              dispatch(getLead());
+            }
+            showSuccessAlert("Bulk assignment successful.");
           }
-          showSuccessAlert("Bulk assignment successful.");
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
+    
   };
 
   const handleAutoAssign = async () => {
-    if (selectedValues.length > 0) {
-      try {
-        const { data } = await axios.post("/auto_assign", {
-          leads_ids: selectedValues,
-        });
-        if (data.status) {
-          if (userRole == cre_tl_id) {
-            dispatch(getLeadsTL());
-          } else {
-            dispatch(getLead());
+
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Assign",
+    });
+
+    if (result.isConfirmed) { 
+      if (selectedValues.length > 0) {
+        try {
+          const { data } = await axios.post("/auto_assign", {
+            leads_ids: selectedValues,
+          });
+          if (data.status) {
+            if (userRole == cre_tl_id) {
+              dispatch(getLeadsTL());
+            } else {
+              dispatch(getLead());
+            }
+            showSuccessAlert("Bulk assignment successful.");
           }
-          showSuccessAlert("Bulk assignment successful.");
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
   };
 
   const handleAutoAssignBranchCounsellors = async () => {
-    if (selectedValues.length > 0) {
-      try {
-        const { data } = await axios.post("/branch_auto_assign", {
-          leads_ids: selectedValues,
-        });
-        if (data.status) {
-          dispatch(getLead());
-          showSuccessAlert("Bulk assignment successful.");
+
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Assign",
+    });
+
+    if (result.isConfirmed) {      
+      if (selectedValues.length > 0) {
+        try {
+          const { data } = await axios.post("/branch_auto_assign", {
+            leads_ids: selectedValues,
+          });
+          if (data.status) {
+            dispatch(getLead());
+            showSuccessAlert("Bulk assignment successful.");
+          }
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
   };
