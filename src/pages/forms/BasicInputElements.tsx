@@ -155,7 +155,7 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "No",
       accessor: "id",
-      sort: true,
+      sort: false,
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
@@ -167,13 +167,13 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Email",
       accessor: "email",
-      sort: true,
+      sort: false,
       minWidth: 150,
     },
     {
       Header: "City",
       accessor: "city",
-      sort: true,
+      sort: false,
       minWidth: 75,
     },
     {
@@ -193,17 +193,20 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Office",
       accessor: "office_type_name",
-      sort: true,
+      sort: false,
+      minWidth: 75,
     },
     {
       Header: "Source",
       accessor: "source_name",
-      sort: true,
+      sort: false,
+      minWidth: 75,
     },
     {
       Header: "Lead Received Date",
       accessor: "lead_received_date",
       sort: false,
+      minWidth: 150,
       Cell: ({ row }: any) => (
         <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
       ),
@@ -212,6 +215,7 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Followup Date",
       accessor: "followup_date",
       sort: false,
+      minWidth: 150,
       Cell: ({ row }: any) => (
         <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>
       ),
@@ -221,7 +225,7 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Assigned CRE",
             accessor: "cre_name",
-            sort: true,
+            sort: false,
             minWidth: 150,
           },
         ]
@@ -231,7 +235,7 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Status",
             accessor: "assigned_branch_counselor",
-            sort: true,
+            sort: false,
             minWidth: 150,
             Cell: ({ row }: any) => (
               <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
@@ -240,7 +244,7 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Assigned Counselor",
             accessor: "assigned_branch_counselor_name",
-            sort: true,
+            sort: false,
             minWidth: 150,
           },
         ]
@@ -250,7 +254,8 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Assigned by",
             accessor: "updated_by_user",
-            sort: true,
+            sort: false,
+            minWidth: 150,
           },
         ]
       : []),
@@ -259,7 +264,7 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Branch Assigned",
             accessor: "assigned_regional_manager",
-            sort: true,
+            sort: false,
             minWidth: 150,
             Cell: ({ row }: any) => (
               <>{row?.original.assigned_counsellor_tl  ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
@@ -272,7 +277,8 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Branch Name",
             accessor: "branch_name",
-            sort: true,
+            sort: false,
+            minWidth: 150,
           },
         ]
       : []),
@@ -281,7 +287,7 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Assign Type",
             accessor: "assign_type",
-            sort: true,
+            sort: false,
             minWidth: 150,
             Cell: ({ row }: any) => {
               const assignType = row.original.assign_type;
@@ -304,6 +310,7 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Assigned counsellor",
             accessor: "counselors",
             sort: false,
+            minWidth: 150,
             Cell: ({ row }: any) => {
               const counselors = row?.original.counselors;
               return (
@@ -322,7 +329,7 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Status",
       accessor: "status",
-      sort: true,
+      sort: false,
     },
     {
       Header: " ",

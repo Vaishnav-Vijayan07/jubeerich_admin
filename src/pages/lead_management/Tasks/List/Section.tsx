@@ -36,18 +36,6 @@ const Task = ({
               &nbsp; &nbsp;
               <b>{task.title}</b>
             </label>
-            {/* <small
-              className={classNames("badge rounded-pill", "p-1 px-2 me-1")}
-              // style={{ height: "max-content", fontSize: "9px", color }}
-              style={{
-                backgroundColor: setColorOpacity(task.next_status_color),
-                color: task.next_status_color,
-                border: `1px solid ${task.next_status_color}`,
-                borderRadius: "5px",
-              }}
-            >
-              {task.next_status_name}
-            </small> */}
           </div>
           <div>
             {task?.student_name?.user_primary_flags?.flag_name && <small

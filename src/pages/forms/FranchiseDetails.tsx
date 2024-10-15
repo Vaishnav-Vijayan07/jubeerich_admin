@@ -99,13 +99,13 @@ const FranchiseDetails = withSwal((props: any) => {
         {
             Header: "No",
             accessor: "id",
-            sort: true,
+            sort: false,
             Cell: ({ row }: any) => <span>{row.index + 1}</span>,
         },
         {
             Header: "ID",
             accessor: "employee_id",
-            sort: false,
+            sort: true,
         },
         {
             Header: "Email",
