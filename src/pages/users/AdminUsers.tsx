@@ -346,7 +346,7 @@ const BasicInputElements = withSwal((props: any) => {
     },
     {
       Header: "Country",
-      accessor: "country_name",
+      accessor: "country.country_name",
       sort: false,
     },
     {

@@ -29,6 +29,10 @@ const StudyPreference = withSwal((props: any) => {
   const { swal, studentId } = props;
 
   const [initialLoading, setInitialLoading] = useState(false);
+
+  //create state for item
+  const [item, setItem] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [studyPreferenceData, setStudyPreferenceData] = useState<any[]>([
     initialStateStudyPreference,
@@ -38,32 +42,22 @@ const StudyPreference = withSwal((props: any) => {
     (state: RootState) => state.refreshReducer.refreshing
   );
 
-  const [countryName, setCountryName] = useState("");
-  const [studyPreferenceId, setStudyPreferenceId] = useState("");
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
-  const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
-  const { saveLoading, saveStudyPreferenceData } = useSaveStudyPreferenceData();
 
   const getStudyPrefData = async () => {
     setInitialLoading(true);
-    axios
-      .get(`/study_preferences_details/${studentId}`)
-      .then((res) => {
-        setStudyPreferenceId(res.data.data?.id);
-        setCountryName(res.data.data?.country?.country_name);
 
-        setStudyPreferenceData(
-          res.data.data?.studyPreferenceDetails.length > 0
-            ? res.data.data.studyPreferenceDetails
-            : [initialStateStudyPreference]
-        );
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => {
-        setInitialLoading(false);
-      });
+    try {
+      const { data } = await axios.get(
+        `/study_preferences_details/${studentId}`
+      );
+
+      setItem(data.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setInitialLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -75,76 +69,6 @@ const StudyPreference = withSwal((props: any) => {
     }
   }, [dropdownData.universities.length, dropdownData.campuses.length, refresh]);
 
-  const handleStudyPreferenceChange = (
-    index: number,
-    field: string,
-    value: any
-  ) => {
-    const updatedPrefs = [...studyPreferenceData];
-    updatedPrefs[index][field] = value;
-    setStudyPreferenceData(updatedPrefs);
-  };
-
-  const addMoreStudyPreference = () => {
-    setStudyPreferenceData([
-      ...studyPreferenceData,
-      {
-        id: null,
-        universityId: "",
-        campusId: "",
-        courseTypeId: "",
-        streamId: "",
-        courseId: "",
-        intakeYear: "",
-        intakeMonth: "",
-        estimatedBudget: "",
-        errors: {},
-      },
-    ]);
-  };
-
-  const removeStudyPreference = (index: number, itemId: any) => {
-    console.log(itemId);
-
-    if (itemId === 0) {
-      const updatedPrefs = studyPreferenceData.filter((_, i) => i !== index);
-      setStudyPreferenceData(updatedPrefs);
-    } else {
-      removeFromApi(itemId, "studyPreference");
-    }
-  };
-
-  const handleSave = async () => {
-    const validationRules = {
-      universityId: { required: true },
-      campusId: { required: true },
-      courseTypeId: { required: true },
-      streamId: { required: true },
-      courseId: { required: true },
-      intakeYear: { required: true },
-      intakeMonth: { required: true },
-      estimatedBudget: { required: true },
-    };
-
-    const { isValid, errors } = validateFields(
-      studyPreferenceData,
-      validationRules
-    );
-
-    console.log(errors);
-
-    if (!isValid) {
-      setStudyPreferenceData((prevState: any) =>
-        prevState.map((exp: any, index: any) => ({
-          ...exp,
-          errors: errors[index] || {},
-        }))
-      );
-      return;
-    }
-    saveStudyPreferenceData(studyPreferenceData, studyPreferenceId);
-  };
-
   if (initialLoading || dropDownLoading)
     return (
       <Spinner
@@ -155,40 +79,22 @@ const StudyPreference = withSwal((props: any) => {
 
   return (
     <>
-      <Row className={deleteLoading || saveLoading ? "opacity-25" : ""}>
-        <StudyPreferenceRow
-          studyPreference={studyPreferenceData}
-          countryName={countryName}
-          handleStudyPreferenceChange={handleStudyPreferenceChange}
-          addMoreStudyPreference={addMoreStudyPreference}
-          removeStudyPreference={removeStudyPreference}
-          dropdownData={dropdownData}
-        />
-      </Row>
-
       <Row>
-        <Button
-          variant="primary"
-          className="mt-4"
-          type="submit"
-          onClick={handleSave}
-          disabled={loading || saveLoading} // Disable button while loading
-        >
-          {loading || saveLoading ? (
-            <>
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-              {"Saving..."} {/* Show spinner and text */}
-            </>
-          ) : (
-            "Save Details" // Normal button text when not loading
-          )}
-        </Button>
+        {item &&
+          item?.map((values: any, index: any) => (
+            <StudyPreferenceRow
+              studyPreference={
+                values?.studyDetails.length > 0
+                  ? values?.studyDetails
+                  : [initialStateStudyPreference]
+              }
+              parentIndex={index}
+              countryName={values?.country_name}
+              studyPreferenceId={values?.studyPreferenceId}
+              dropdownData={dropdownData}
+              isEditable={values?.isEditable}
+            />
+          ))}
       </Row>
     </>
   );

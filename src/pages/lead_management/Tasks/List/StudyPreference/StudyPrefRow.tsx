@@ -1,20 +1,30 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
 import Select from "react-select";
 import { FormInput } from "../../../../../components";
 import { intakeMonthOptions, intakeYearList } from ".././data";
 import ActionButton from ".././ActionButton";
+import { useState } from "react";
+import useRemoveFromApi from "../../../../../hooks/useRemoveFromApi";
+import useSaveStudyPreferenceData from "../../../../../hooks/useSaveStudyPreferenceData";
+import validateFields from "../../../../../helpers/validateHelper";
 
 const StudyPreferenceRow = ({
   studyPreference,
   countryName,
-  handleStudyPreferenceChange,
-  addMoreStudyPreference,
-  removeStudyPreference,
   dropdownData,
+  studyPreferenceId,
+  isEditable,
 }: any) => {
-  console.log(studyPreference);
+  const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
+  const { saveLoading, saveStudyPreferenceData } = useSaveStudyPreferenceData();
 
-  const renderStudyprefRows = (item: any, index: any) => (
+  const [studyPreferenceData, setStudyPreferenceData] =
+    useState<any>(studyPreference);
+
+  console.log(studyPreference.length);
+  console.log(studyPreferenceData.length);
+
+  const renderStudyprefRows = (item: any, index: any, readOnly: boolean) => (
     <Row key={index} className="mb-3 p-2 border-bottom rounded">
       <Col xl={6} xxl={4}>
         <Form.Group className="mb-3" controlId="universityId">
@@ -22,6 +32,7 @@ const StudyPreferenceRow = ({
           <Select
             className="react-select react-select-container"
             classNamePrefix="react-select"
+            isDisabled={!readOnly}
             options={dropdownData?.universities}
             value={
               item?.universityId
@@ -57,6 +68,7 @@ const StudyPreferenceRow = ({
           <Select
             className="react-select react-select-container"
             classNamePrefix="react-select"
+            isDisabled={!readOnly}
             options={dropdownData?.campuses}
             value={
               item?.campusId
@@ -92,6 +104,7 @@ const StudyPreferenceRow = ({
           <Select
             className="react-select react-select-container"
             classNamePrefix="react-select"
+            isDisabled={!readOnly}
             options={dropdownData?.courseTypes}
             value={
               item?.courseTypeId
@@ -127,6 +140,7 @@ const StudyPreferenceRow = ({
           <Select
             className="react-select react-select-container"
             classNamePrefix="react-select"
+            isDisabled={!readOnly}
             options={dropdownData?.streams}
             value={
               item?.streamId
@@ -162,6 +176,7 @@ const StudyPreferenceRow = ({
           <Select
             className="react-select react-select-container"
             classNamePrefix="react-select"
+            isDisabled={!readOnly}
             options={dropdownData?.courses}
             value={
               item?.courseId
@@ -197,6 +212,7 @@ const StudyPreferenceRow = ({
           <Select
             className="react-select react-select-container"
             classNamePrefix="react-select"
+            isDisabled={!readOnly}
             options={intakeYearList}
             value={
               item.intakeYear
@@ -232,6 +248,7 @@ const StudyPreferenceRow = ({
           <Select
             className="react-select react-select-container"
             classNamePrefix="react-select"
+            isDisabled={!readOnly}
             options={intakeMonthOptions}
             value={
               item?.intakeMonth
@@ -269,6 +286,7 @@ const StudyPreferenceRow = ({
             name="estimatedBudget"
             placeholder="Enter estimated budget"
             key="estimatedBudget"
+            readOnly={!readOnly}
             value={item?.estimatedBudget || ""}
             onChange={(e: any) =>
               handleStudyPreferenceChange(
@@ -286,7 +304,7 @@ const StudyPreferenceRow = ({
           )}
         </Form.Group>
       </Col>
-      {studyPreference.length > 1 && (
+      {isEditable && studyPreferenceData.length > 1 && (
         <Row className="mb-2">
           <ActionButton
             label="Remove"
@@ -299,26 +317,128 @@ const StudyPreferenceRow = ({
     </Row>
   );
 
-  return (
-    <Row>
-      <h5 className="mb-4 text-uppercase">
-        <i className="mdi mdi-account-circle me-1"></i> Study Preference Info -
-        {countryName}
-      </h5>
+  const addMoreStudyPreference = () => {
+    setStudyPreferenceData([
+      ...studyPreferenceData,
+      {
+        id: null,
+        universityId: "",
+        campusId: "",
+        courseTypeId: "",
+        streamId: "",
+        courseId: "",
+        intakeYear: "",
+        intakeMonth: "",
+        estimatedBudget: "",
+        errors: {},
+      },
+    ]);
+  };
 
-      {studyPreference?.map((item: any, index: number) =>
-        renderStudyprefRows(item, index)
-      )}
-      <Row>
-        <Row className="mb-2">
-          <ActionButton
-            label="Add More"
-            iconClass="mdi mdi-plus"
-            onClick={addMoreStudyPreference}
-          />
+  const removeStudyPreference = (index: number, itemId: any) => {
+    console.log(itemId);
+
+    if (itemId === 0) {
+      const updatedPrefs = studyPreferenceData.filter(
+        (_: any, i: any) => i !== index
+      );
+      setStudyPreferenceData(updatedPrefs);
+    } else {
+      removeFromApi(itemId, "studyPreference");
+    }
+  };
+
+  const handleStudyPreferenceChange = (
+    index: number,
+    field: string,
+    value: any
+  ) => {
+    const updatedPrefs = [...studyPreferenceData];
+    updatedPrefs[index][field] = value;
+    setStudyPreferenceData(updatedPrefs);
+  };
+
+  const handleSave = async () => {
+    const validationRules = {
+      universityId: { required: true },
+      campusId: { required: true },
+      courseTypeId: { required: true },
+      streamId: { required: true },
+      courseId: { required: true },
+      intakeYear: { required: true },
+      intakeMonth: { required: true },
+      estimatedBudget: { required: true },
+    };
+
+    const { isValid, errors } = validateFields(
+      studyPreferenceData,
+      validationRules
+    );
+
+    if (!isValid) {
+      setStudyPreferenceData((prevState: any) =>
+        prevState.map((exp: any, index: any) => ({
+          ...exp,
+          errors: errors[index] || {},
+        }))
+      );
+      return;
+    }
+    saveStudyPreferenceData(studyPreferenceData, studyPreferenceId);
+  };
+
+  return (
+    <>
+      <Row className="mb-2">
+        <Row>
+          <h5 className="mb-4 text-uppercase">
+            <i className="mdi mdi-account-circle me-1"></i> Study Preference
+            Info -{countryName}
+          </h5>
+
+          {studyPreferenceData?.map((item: any, index: number) => {
+            console.log("Study Preference Item:", item, index); // Log the item
+            return renderStudyprefRows(item, index, isEditable);
+          })}
+          {isEditable && (
+            <Row>
+              <Row className="mb-2">
+                <ActionButton
+                  label="Add More"
+                  iconClass="mdi mdi-plus"
+                  onClick={addMoreStudyPreference}
+                />
+              </Row>
+            </Row>
+          )}
+        </Row>
+
+        <Row>
+          <Button
+            variant="primary"
+            className="mt-4"
+            type="submit"
+            onClick={handleSave}
+            disabled={saveLoading || !isEditable} // Disable button while loading
+          >
+            {saveLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                {"Saving..."} {/* Show spinner and text */}
+              </>
+            ) : (
+              "Save Details" // Normal button text when not loading
+            )}
+          </Button>
         </Row>
       </Row>
-    </Row>
+    </>
   );
 };
 
