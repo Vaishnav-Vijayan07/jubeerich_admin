@@ -11,7 +11,7 @@ interface ConfigTypes {
 const getLayoutConfigs = (layoutWidth: string | boolean | null) => {
   // add property to change in particular layoutWidth
   let config: ConfigTypes = {
-    leftSideBarType: SideBarTypes.LEFT_SIDEBAR_TYPE_DEFAULT,
+    leftSideBarType: SideBarTypes.LEFT_SIDEBAR_TYPE_CONDENSED,
   };
 
   switch (layoutWidth) {

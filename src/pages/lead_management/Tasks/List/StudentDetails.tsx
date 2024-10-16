@@ -299,7 +299,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
             <Col md={9}>
               <h3 className="m-0 mb-1">{taskDetails?.title}</h3>
-              <p className="mb-2">Mr. Austin Stephen from Aluva, has applied for admission in Russia.</p>
+              <p className="mb-2">{taskDetails?.description}</p>
               <div className="d-flex">
                 {basicData?.country_names?.map((country: any) => (
                   <small

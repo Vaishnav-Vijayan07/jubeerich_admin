@@ -30,7 +30,7 @@ const INIT_STATE = {
   layoutWidth: LayoutWidth.LAYOUT_WIDTH_FLUID,
   menuPosition: MenuPositions.MENU_POSITION_FIXED,
   leftSideBarTheme: SideBarTheme.LEFT_SIDEBAR_THEME_LIGHT,
-  leftSideBarType: SideBarTypes.LEFT_SIDEBAR_TYPE_DEFAULT,
+  leftSideBarType: SideBarTypes.LEFT_SIDEBAR_TYPE_CONDENSED,
   showTwoToneIcons: false,
   showSidebarUserInfo: false,
   topbarTheme: TopbarTheme.TOPBAR_THEME_DARK,

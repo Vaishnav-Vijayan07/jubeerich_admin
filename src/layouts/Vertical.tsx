@@ -63,10 +63,10 @@ const VerticalLayout = ({ children }: VerticalLayoutProps) => {
 
   useEffect(() => {
     if (width < 1140) {
-      dispatch(changeSidebarType(SideBarTypes.LEFT_SIDEBAR_TYPE_FULL));
+      dispatch(changeSidebarType(SideBarTypes.LEFT_SIDEBAR_TYPE_CONDENSED));
       // document.getElementsByTagName('html')[0].classList.add('sidebar-enable')
     } else if (width >= 1140) {
-      dispatch(changeSidebarType(SideBarTypes.LEFT_SIDEBAR_TYPE_DEFAULT));
+      dispatch(changeSidebarType(SideBarTypes.LEFT_SIDEBAR_TYPE_CONDENSED));
       document
         .getElementsByTagName("html")[0]
         .classList.remove("sidebar-enable");

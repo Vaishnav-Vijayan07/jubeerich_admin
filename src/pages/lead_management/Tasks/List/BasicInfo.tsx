@@ -1029,7 +1029,7 @@ const BasicInfo = withSwal((props: any) => {
                 </div>
               </Form.Group>
             </Col>
-            {basicInfo?.concern_on_medical_condition && (
+            {/* {basicInfo?.concern_on_medical_condition && ( */}
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Please provide details</Form.Label>
@@ -1050,7 +1050,7 @@ const BasicInfo = withSwal((props: any) => {
                   />
                 </Form.Group>
               </Col>
-            )}
+            {/* )} */}
           </Row>
         </Row>
 
@@ -1098,7 +1098,7 @@ const BasicInfo = withSwal((props: any) => {
                 </div>
               </Form.Group>
             </Col>
-            {basicInfo?.criminal_offence && (
+            {/* {basicInfo?.criminal_offence && ( */}
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Please provide details</Form.Label>
@@ -1115,7 +1115,7 @@ const BasicInfo = withSwal((props: any) => {
                   />
                 </Form.Group>
               </Col>
-            )}
+            {/* )} */}
           </Row>
         </Row>
 

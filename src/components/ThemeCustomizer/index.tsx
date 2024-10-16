@@ -387,11 +387,11 @@ const ThemeCustomizer = () => {
         </div>
 
         {/* Layouts */}
-        <LayoutTypes
+        {/* <LayoutTypes
           changeLayoutType={changeLayoutType}
           layoutType={layoutType}
           layoutConstants={layoutConstants.LayoutTypes}
-        />
+        /> */}
 
         {/* Layout Modes */}
         {disableLayoutMode && (
