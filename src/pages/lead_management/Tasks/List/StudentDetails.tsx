@@ -396,34 +396,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Row>
             <div className="grid-container mb-2">
               <div className="">
-                <p className="mt-2 mb-1 text-muted fw-light">Status</p>
-                <div className="d-flex align-items-start" style={{ gap: "5px" }}>
-                  <Dropdown>
-                    <Dropdown.Toggle
-                      className="cursor-pointer"
-                      variant="light"
-                      // disabled={!StudentData?.status}
-                    >
-                      {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      {(status || [])?.map((item: any) => (
-                        // Check if the item is visible before rendering the Dropdown.Item
-
-                        <Dropdown.Item
-                          eventKey={item.id}
-                          key={item.id}
-                          onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
-                        >
-                          {item.status_name}
-                        </Dropdown.Item>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div>
-              </div>
-
-              <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Lead Received Date</p>
                 <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                   <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
@@ -462,6 +434,68 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           </Row>
         </Card.Body>
       </Card>
+      <Row>
+        <Col md={6}>
+          <Card>
+            <Card.Body>
+              <h4 className="text-secondary m-0">Status</h4>
+              <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p>
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="cursor-pointer"
+                  variant="light"
+                  // disabled={!StudentData?.status}
+                >
+                  {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {(status || [])?.map((item: any) => (
+                    // Check if the item is visible before rendering the Dropdown.Item
+
+                    <Dropdown.Item
+                      eventKey={item.id}
+                      key={item.id}
+                      onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                    >
+                      {item.status_name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6}>
+          <Card>
+            <Card.Body>
+              <h4 className="text-secondary m-0">Flag</h4>
+              <p className="mt-2 mb-2 text-muted fw-light">Change flag</p>
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="cursor-pointer"
+                  variant="light"
+                  // disabled={!StudentData?.status}
+                >
+                  {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {(status || [])?.map((item: any) => (
+                    // Check if the item is visible before rendering the Dropdown.Item
+
+                    <Dropdown.Item
+                      eventKey={item.id}
+                      key={item.id}
+                      onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                    >
+                      {item.status_name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
       {user.role == 7 && (
         <Card>
           <Card.Body>
