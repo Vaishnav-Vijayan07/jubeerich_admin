@@ -8,7 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { getMaritalStatus } from "../../../../redux/marital_status/actions";
 import axios from "axios";
-import { follow_up_id, future_leads_id, not_responding_id, showErrorAlert, showSuccessAlert } from "../../../../constants";
+import {
+  follow_up_id,
+  future_leads_id,
+  handleDateFormat,
+  not_responding_id,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../../../../constants";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import Comments from "./Comments";
@@ -280,9 +287,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   onClick={handleFinishTask}
                 >
                   <div className="round-circle" />
-                  {taskDetails?.isCompleted ? "Finished" : "Finish"}
-
-                  {console.log("taskDetails?.isCompleted ======>", taskDetails)}
+                  {taskDetails?.isCompleted ? "Task Completed" : "Mark As Completed"}
                 </Button>
               </Col>
 
@@ -292,8 +297,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             </Col>
           </Row>
           <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
-            <Col>
-              <h3>{taskDetails?.title}</h3>
+            <Col md={9}>
+              <h3 className="m-0 mb-1">{taskDetails?.title}</h3>
+              <p className="mb-2">Mr. Austin Stephen from Aluva, has applied for admission in Russia.</p>
               <div className="d-flex">
                 {basicData?.country_names?.map((country: any) => (
                   <small
@@ -309,6 +315,11 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     {country}
                   </small>
                 ))}
+              </div>
+            </Col>
+            <Col md={3}>
+              <div className="text-end text-nowrap">
+                <b>Lead Date: {handleDateFormat(basicData?.lead_received_date)}</b>
               </div>
             </Col>
           </Row>

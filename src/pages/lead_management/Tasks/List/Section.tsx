@@ -36,24 +36,45 @@ const Task = ({
               &nbsp; &nbsp;
               <b>{task.title}</b>
             </label>
+
+            {task?.student_name?.user_primary_flags?.flag_name && (
+              <small
+                style={{
+                  opacity: 0.7,
+                  backgroundColor: `${task?.student_name?.user_primary_flags?.color}`,
+                  color: "white",
+                  border: `1px solid #122d3d`,
+                  borderRadius: "5px",
+                  padding: "2px 12px",
+                  fontSize: "0.7rem",
+                  borderColor: `${task?.student_name?.user_primary_flags?.color}`,
+                  height: "max-content",
+                }}
+                className={classNames("rounded-pill me-1 ms-2")}
+              >
+                {task?.student_name?.user_primary_flags?.flag_name}
+              </small>
+            )}
           </div>
-          <div>
-            {task?.student_name?.user_primary_flags?.flag_name && <small
-              style={{
-                opacity: 0.7,
-                backgroundColor: `${task?.student_name?.user_primary_flags?.color}`,
-                color: "white",
-                border: `1px solid #122d3d`,
-                borderRadius: "5px",
-                padding: "1px 5px",
-                fontSize: "0.6rem",
-                borderColor: `${task?.student_name?.user_primary_flags?.color}`
-              }}
-              className={classNames("rounded-pill me-1 ms-2")}
-            >
-              {task?.student_name?.user_primary_flags?.flag_name}
-            </small>}
-          </div>
+          {/* <div>
+            {task?.student_name?.user_primary_flags?.flag_name && (
+              <small
+                style={{
+                  opacity: 0.7,
+                  backgroundColor: `${task?.student_name?.user_primary_flags?.color}`,
+                  color: "white",
+                  border: `1px solid #122d3d`,
+                  borderRadius: "5px",
+                  padding: "1px 5px",
+                  fontSize: "0.6rem",
+                  borderColor: `${task?.student_name?.user_primary_flags?.color}`,
+                }}
+                className={classNames("rounded-pill me-1 ms-2")}
+              >
+                {task?.student_name?.user_primary_flags?.flag_name}
+              </small>
+            )}
+          </div> */}
         </Col>
       </Row>
     </>
