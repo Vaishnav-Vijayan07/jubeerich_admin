@@ -1,20 +1,14 @@
 import * as yup from "yup";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Dropdown, Modal } from "react-bootstrap";
+import { Row, Col, Card,  Button, Dropdown, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import { yupResolver } from "@hookform/resolvers/yup";
-import makeAnimated from "react-select/animated";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
-import { addLeads, deleteLeads, getLead, getLeadsByCounsellorTL, getLeadsTL, updateLeads } from "../../redux/actions";
-import Select, { ActionMeta, OptionsType } from "react-select";
+import { deleteLeads, getLead, getLeadsTL } from "../../redux/actions";
 import {
   AUTH_SESSION_KEY,
-  customStyles,
-  region_id,
-  franchise_id_from_office,
   showErrorAlert,
   showSuccessAlert,
   counsellor_tl_id,
@@ -32,6 +26,7 @@ import moment from "moment";
 import { examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
 import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
+import { AppDispatch } from "../../redux/store";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -59,6 +54,7 @@ const BasicInputElements = withSwal((props: any) => {
     counsellors,
     userData,
     region,
+    flags,
     regionData,
     franchisees,
     branchForManager,
@@ -159,29 +155,33 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "No",
       accessor: "id",
-      sort: true,
+      sort: false,
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
       Header: "Name",
       accessor: "full_name",
       sort: true,
+      minWidth: 150,
     },
     {
       Header: "Email",
       accessor: "email",
-      sort: true,
+      sort: false,
+      minWidth: 150,
     },
     {
       Header: "City",
       accessor: "city",
-      sort: true,
+      sort: false,
+      minWidth: 75,
     },
     {
       Header: "Country",
       accessor: "preferredCountries",
       filter: "includes",
       sort: false,
+      minWidth: 100,
       Cell: ({ row }: any) => (
         <ul style={{ listStyle: "none" }}>
           {row.original.preferredCountries.map((item: any) => (
@@ -193,17 +193,20 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Office",
       accessor: "office_type_name",
-      sort: true,
+      sort: false,
+      minWidth: 75,
     },
     {
       Header: "Source",
       accessor: "source_name",
-      sort: true,
+      sort: false,
+      minWidth: 75,
     },
     {
       Header: "Lead Received Date",
       accessor: "lead_received_date",
       sort: false,
+      minWidth: 150,
       Cell: ({ row }: any) => (
         <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
       ),
@@ -212,6 +215,7 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Followup Date",
       accessor: "followup_date",
       sort: false,
+      minWidth: 150,
       Cell: ({ row }: any) => (
         <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>
       ),
@@ -221,7 +225,8 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Assigned CRE",
             accessor: "cre_name",
-            sort: true,
+            sort: false,
+            minWidth: 150,
           },
         ]
       : []),
@@ -230,7 +235,8 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Status",
             accessor: "assigned_branch_counselor",
-            sort: true,
+            sort: false,
+            minWidth: 150,
             Cell: ({ row }: any) => (
               <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
             ),
@@ -238,7 +244,8 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Assigned Counselor",
             accessor: "assigned_branch_counselor_name",
-            sort: true,
+            sort: false,
+            minWidth: 150,
           },
         ]
       : []),
@@ -247,7 +254,8 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Assigned by",
             accessor: "updated_by_user",
-            sort: true,
+            sort: false,
+            minWidth: 150,
           },
         ]
       : []),
@@ -256,7 +264,8 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Branch Assigned",
             accessor: "assigned_regional_manager",
-            sort: true,
+            sort: false,
+            minWidth: 150,
             Cell: ({ row }: any) => (
               <>{row?.original.assigned_counsellor_tl  ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
             ),
@@ -268,7 +277,8 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Branch Name",
             accessor: "branch_name",
-            sort: true,
+            sort: false,
+            minWidth: 150,
           },
         ]
       : []),
@@ -277,7 +287,8 @@ const BasicInputElements = withSwal((props: any) => {
           {
             Header: "Assign Type",
             accessor: "assign_type",
-            sort: true,
+            sort: false,
+            minWidth: 150,
             Cell: ({ row }: any) => {
               const assignType = row.original.assign_type;
 
@@ -299,6 +310,7 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Assigned counsellor",
             accessor: "counselors",
             sort: false,
+            minWidth: 150,
             Cell: ({ row }: any) => {
               const counselors = row?.original.counselors;
               return (
@@ -317,7 +329,7 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Status",
       accessor: "status",
-      sort: true,
+      sort: false,
     },
     {
       Header: " ",
@@ -425,96 +437,162 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleAssignBulk = async (user_ids: any, cre_id: any) => {
-    if (user_ids.length > 0) {
-      try {
-        const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
 
-        if (data.status) {
-          if (userRole == cre_tl_id) {
-            dispatch(getLeadsTL());
-          } else {
-            dispatch(getLead());
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Assign",
+    });
+
+    if (result.isConfirmed) {    
+      if (user_ids.length > 0) {
+        try {
+          const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
+  
+          if (data.status) {
+            if (userRole == cre_tl_id) {
+              dispatch(getLeadsTL());
+            } else {
+              dispatch(getLead());
+            }
+            showSuccessAlert("Bulk assignment successful.");
           }
-          showSuccessAlert("Bulk assignment successful.");
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
   };
 
   const handleBranchCounsellorAssignBulk = async (user_ids: any, counsellor_id: any) => {
-    if (user_ids.length > 0) {
-      try {
-        const { data } = await axios.post("/assign_branch_counselor", {
-          user_ids,
-          counselor_id: counsellor_id,
-        });
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Assign",
+    });
 
-        if (data.status) {
-          dispatch(getLead());
-          showSuccessAlert("Bulk assignment successful.");
+    if (result.isConfirmed) {    
+      if (user_ids.length > 0) {
+        try {
+          const { data } = await axios.post("/assign_branch_counselor", {
+            user_ids,
+            counselor_id: counsellor_id,
+          });
+  
+          if (data.status) {
+            dispatch(getLead());
+            showSuccessAlert("Bulk assignment successful.");
+          }
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
+
   };
 
   const handleBranchAssignBulk = async (user_ids: any, branch_id: any) => {
-    if (user_ids.length > 0) {
-      try {
-        const { data } = await axios.post("/assign_counselor_tl", {
-          user_ids,
-          branch_id,
-        });
 
-        if (data.status) {
-          if (userRole == cre_tl_id) {
-            dispatch(getLeadsTL());
-          } else {
-            dispatch(getLead());
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Assign",
+    });
+
+    if (result.isConfirmed) {
+      if (user_ids.length > 0) {
+        try {
+          const { data } = await axios.post("/assign_counselor_tl", {
+            user_ids,
+            branch_id,
+          });
+  
+          if (data.status) {
+            if (userRole == cre_tl_id) {
+              dispatch(getLeadsTL());
+            } else {
+              dispatch(getLead());
+            }
+            showSuccessAlert("Bulk assignment successful.");
           }
-          showSuccessAlert("Bulk assignment successful.");
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
+    
   };
 
   const handleAutoAssign = async () => {
-    if (selectedValues.length > 0) {
-      try {
-        const { data } = await axios.post("/auto_assign", {
-          leads_ids: selectedValues,
-        });
-        if (data.status) {
-          if (userRole == cre_tl_id) {
-            dispatch(getLeadsTL());
-          } else {
-            dispatch(getLead());
+
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Assign",
+    });
+
+    if (result.isConfirmed) { 
+      if (selectedValues.length > 0) {
+        try {
+          const { data } = await axios.post("/auto_assign", {
+            leads_ids: selectedValues,
+          });
+          if (data.status) {
+            if (userRole == cre_tl_id) {
+              dispatch(getLeadsTL());
+            } else {
+              dispatch(getLead());
+            }
+            showSuccessAlert("Bulk assignment successful.");
           }
-          showSuccessAlert("Bulk assignment successful.");
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
   };
 
   const handleAutoAssignBranchCounsellors = async () => {
-    if (selectedValues.length > 0) {
-      try {
-        const { data } = await axios.post("/branch_auto_assign", {
-          leads_ids: selectedValues,
-        });
-        if (data.status) {
-          dispatch(getLead());
-          showSuccessAlert("Bulk assignment successful.");
+
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Assign",
+    });
+
+    if (result.isConfirmed) {      
+      if (selectedValues.length > 0) {
+        try {
+          const { data } = await axios.post("/branch_auto_assign", {
+            leads_ids: selectedValues,
+          });
+          if (data.status) {
+            dispatch(getLead());
+            showSuccessAlert("Bulk assignment successful.");
+          }
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
   };
@@ -560,6 +638,7 @@ const BasicInputElements = withSwal((props: any) => {
           regionData={regionData || []}
           franchisees={franchisees || []}
           region={region || []}
+          flags={flags || []}
           modal={modal}
           toggle={toggle}
           handleUpdateData={handleUpdateData}

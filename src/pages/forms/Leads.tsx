@@ -10,6 +10,7 @@ import { AUTH_SESSION_KEY, counsellor_tl_id, cre_tl_id, regional_manager_id } fr
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
+import { getFlag } from "../../redux/flag/actions";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -24,7 +25,7 @@ const Leads = () => {
     userBranchId = JSON.parse(userInfo)?.branch_id
   }
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, cres, error, loading, initialLoading, categories, region, franchisees, branchCounsellor } = useSelector(
+  const { user, state, cres, error, loading, initialLoading, categories, region, flag, franchisees, branchCounsellor } = useSelector(
     (state: RootState) => ({
       user: state.Auth.user,
       state: state.Leads.leads,
@@ -36,13 +37,15 @@ const Leads = () => {
       region: state.Region.regions,
       franchisees: state.Franchise.franchiseUsers,
       branchCounsellor: state.Users?.branchCounsellor,
+      flag: state?.Flag?.flags
     })
   );
 
-  console.log('CRES', cres);
+  console.log('flag', flag);
 
   useEffect(() => {
     fetchAllCounsellors();
+    dispatch(getFlag())
     dispatch(getBranchCounsellors(userBranchId));
   }, []);
 
@@ -85,6 +88,16 @@ const Leads = () => {
         console.log(err);
       });
   }, []);
+
+  const flagsData = useMemo(() => {
+    if(!flag) return [];
+    return flag.map((data: any) => {
+      return {
+        value: data?.id,
+        label: data?.flag_name
+      }
+    })
+  },[flag])
 
   const fetchBranches = useCallback(async () => {
     try {
@@ -129,6 +142,7 @@ const Leads = () => {
             franchisees={dropdownData.franchises || []}
             branchForManager={branchForManager}
             branchCounsellors={branchCounsellor || []}
+            flags={flagsData || []}
           />
         </Col>
       </Row>

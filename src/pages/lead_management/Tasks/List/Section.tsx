@@ -36,37 +36,23 @@ const Task = ({
               &nbsp; &nbsp;
               <b>{task.title}</b>
             </label>
-            {/* <small
-              className={classNames("badge rounded-pill", "p-1 px-2 me-1")}
-              // style={{ height: "max-content", fontSize: "9px", color }}
-              style={{
-                backgroundColor: setColorOpacity(task.next_status_color),
-                color: task.next_status_color,
-                border: `1px solid ${task.next_status_color}`,
-                borderRadius: "5px",
-              }}
-            >
-              {task.next_status_name}
-            </small> */}
           </div>
-
-          <div className="d-flex flex-wrapvgap-2">
-            {/* <small
-              className={classNames(
-                "badge border",
-                {
-                  "badge-soft-danger border-danger": task.flag_name === "HIGH PRIORITY",
-                  "badge-soft-info border-info": task.flag_name === "GOV. PROJECTS",
-                  "badge-soft-success border-success": task.flag_name === "LOW BUDGET",
-                  "badge-soft-warning border-warning": task.flag_name === "COMPETETOR ENDURE",
-                  "badge-soft-primary border-primary": task.flag_name === "HIGH PROFILE",
-                },
-                "me-1"
-              )}
-              style={{ fontSize: "8px", padding: "3px", paddingTop: "4px" }}
+          <div>
+            {task?.student_name?.user_primary_flags?.flag_name && <small
+              style={{
+                opacity: 0.7,
+                backgroundColor: `${task?.student_name?.user_primary_flags?.color}`,
+                color: "white",
+                border: `1px solid #122d3d`,
+                borderRadius: "5px",
+                padding: "1px 5px",
+                fontSize: "0.6rem",
+                borderColor: `${task?.student_name?.user_primary_flags?.color}`
+              }}
+              className={classNames("rounded-pill me-1 ms-2")}
             >
-              {task.flag_name}
-            </small> */}
+              {task?.student_name?.user_primary_flags?.flag_name}
+            </small>}
           </div>
         </Col>
       </Row>

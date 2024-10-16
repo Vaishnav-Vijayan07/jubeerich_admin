@@ -78,10 +78,24 @@ const Login = () => {
     dispatch(loginUser(formData["username"], formData["password"]));
   };
 
+  let userInfo = sessionStorage.getItem("jb_user");
+  let userTaskAccess;
+  if(userInfo){
+    userTaskAccess = JSON.parse(userInfo)?.power_names?.includes("View Task");
+  }
+  
+
   const location = useLocation();
   //
   // const redirectUrl = location.state && location.state.from ? location.state.from.pathname : '/';
-  const redirectUrl = location?.search?.slice(6) || "/";
+  // const redirectUrl = location?.search?.slice(6) || "/";
+  
+  let redirectUrl;
+  if(userTaskAccess){
+    redirectUrl = location?.search?.slice(6) || "/leads/tasks";
+  } else {
+    redirectUrl = location?.search?.slice(6) || "/";
+  }
 
   return (
     <>

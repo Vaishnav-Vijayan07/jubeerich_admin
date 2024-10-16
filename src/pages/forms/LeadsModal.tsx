@@ -49,6 +49,7 @@ const LeadsModal = withSwal((props: any) => {
     regionData,
     franchisees,
     region,
+    flags,
     toggle,
     modal,
     handleUpdateData,
@@ -62,6 +63,7 @@ const LeadsModal = withSwal((props: any) => {
   const [selectedSource, setSelectedSource] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
+  const [selectedFlag, setSelectedFlag] = useState<any>(null);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<any>([]);
   const [selectedFileName, setSelectedFileName] = useState<any>([]);
@@ -128,6 +130,10 @@ const LeadsModal = withSwal((props: any) => {
       (region: any) => region.value == item?.region_id
     );
 
+    const updatedFlag = flags?.filter(
+      (flag: any) => flag.value == item?.flag_id
+    );
+
     const updatedCtegory = leadTypes?.filter(
       (category: any) => category.value == item?.lead_type_id
     );
@@ -170,6 +176,7 @@ const LeadsModal = withSwal((props: any) => {
 
     setSelectedSource(updatedSource[0]);
     setSelectedOffice(updatedOffice[0]);
+    setSelectedFlag(updatedFlag[0]);
     setSelectedRegion(updatedRegion[0]);
     setSelectedCountry(updatedCountry);
     setSelectedCategory(updatedCtegory[0]);
@@ -198,6 +205,7 @@ const LeadsModal = withSwal((props: any) => {
       branch_id: item?.branch_id || "",
       region_id: item?.region_id || "",
       franchise_id: item?.franchise_id || "",
+      flag: item?.flag_id || "",
     }));
 
     setIsUpdate(true);
@@ -225,7 +233,7 @@ const LeadsModal = withSwal((props: any) => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(user);
+    console.log('formData',formData);
 
     let exam_details = languageForm.length ? languageForm : [];
     try {
@@ -259,6 +267,7 @@ const LeadsModal = withSwal((props: any) => {
                     formData.city,
                     JSON.stringify(formData.preferred_country),
                     formData.office_type,
+                    formData.flag ? formData.flag : null,
                     formData.region_id ? formData.region_id : null,
                     null,
                     user.role == regional_manager_id
@@ -289,6 +298,7 @@ const LeadsModal = withSwal((props: any) => {
                     formData.city,
                     JSON.stringify([formData.preferred_country]),
                     formData.office_type,
+                    formData.flag ? formData.flag : null,
                     formData.region_id ? formData.region_id : null,
                     null,
                     null,
@@ -397,6 +407,9 @@ const LeadsModal = withSwal((props: any) => {
         }
 
         setSelectedOffice(selected);
+        break;
+      case "flag":
+        setSelectedFlag(selected);
         break;
       case "channel_id":
         setSelectedChannel(selected);
@@ -527,6 +540,7 @@ const LeadsModal = withSwal((props: any) => {
     setSelectedCategory(null);
     setSelectedChannel(null);
     setSelectedOffice(null);
+    setSelectedFlag(null);
     setSelectedRegion(null);
     setSelectedSource(null);
     setLanguageForm(languageFormInitialState);
@@ -769,6 +783,29 @@ const LeadsModal = withSwal((props: any) => {
                   {validationErrors.zipcode && (
                     <Form.Text className="text-danger">
                       {validationErrors.zipcode}
+                    </Form.Text>
+                  )}
+                </Form.Group>
+              </Col>
+              
+              <Col md={4} lg={4}>
+                <Form.Group className="mb-3" controlId="flag">
+                  <Form.Label>
+                    {/* <span className="text-danger fs-4">* </span> Flag */}
+                    Flag
+                  </Form.Label>
+                  <Select
+                    styles={customStyles}
+                    className="react-select react-select-container"
+                    classNamePrefix="react-select"
+                    name="flag"
+                    options={[{ value: null, label: "None" }, ...flags]}
+                    value={selectedFlag}
+                    onChange={handleDropDowns}
+                  />
+                  {validationErrors.flag && (
+                    <Form.Text className="text-danger">
+                      {validationErrors.flag}
                     </Form.Text>
                   )}
                 </Form.Group>

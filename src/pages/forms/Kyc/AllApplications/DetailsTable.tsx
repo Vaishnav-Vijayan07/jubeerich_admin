@@ -3,187 +3,74 @@ import { Link } from "react-router-dom";
 import Table from "../../../../components/Table";
 import { sizePerPageList } from "../../data";
 
-interface Props {}
+type IconData = {
+  id?: number;
+  icon: string;
+  color: string;
+  link: (rowId: number) => string;
+  isLink: boolean;
+  tooltip: string;
+};
 
-const DetailsTable = (props: Props) => {
-  const columns = [
-    {
-      Header: "No",
-      accessor: "id",
-      sort: true,
-    },
-    {
-      Header: "Name",
-      accessor: "full_name",
-      sort: true,
-    },
-    {
-      Header: "Country",
-      accessor: "country_name",
-      sort: true,
-    },
-    {
-      Header: "University",
-      accessor: "university_name",
-      sort: true,
-    },
-    {
-      Header: "Course",
-      accessor: "course_name",
-      sort: true,
-    },
-    {
-      Header: "Office",
-      accessor: "office_type_name",
-      sort: true,
-    },
-    {
-      Header: "Source",
-      accessor: "source_name",
-      sort: true,
-    },
-    {
-      Header: "Lead Received",
-      accessor: "lead_received_date",
-      sort: true,
-    },
-    {
-      Header: "Assigned by",
-      accessor: "assigned_by",
-      sort: true,
-    },
-    {
-      Header: "Assigned type",
-      accessor: "assign_type",
-      sort: true,
-    },
-    {
-      Header: "Assigned",
-      accessor: "assigned_to",
-      sort: true,
-    },
-    {
-      Header: "Employee",
-      accessor: "employee_name",
-      sort: true,
-    },
-    {
-      Header: "Status",
-      accessor: "status",
-      sort: true,
-    },
-    {
-      Header: "Action",
-      accessor: "",
-      sort: false,
-      Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
-          {/* Edit Icon */}
-          <Link to={`/kyc_details/pending/1`} className="action-icon">
-            <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
-          </Link>
+interface Props {
+  data: any;
+  icons: IconData[];
+}
 
-          <Link to="#" className="action-icon">
-            <i className="mdi mdi-square-edit-outline"></i>
-          </Link>
+const DetailsTable = ({ data, icons }: Props) => {
+  const dynamicColumns = Object.keys(data[0] || {}).map((key) => ({
+    Header: key
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" "),
+    accessor: key,
+    sort: true,
+  }));
 
-          {/* Delete Icon */}
-          <Link to="#" className="action-icon">
-            {/* <i className="mdi mdi-delete"></i> */}
-            <i className="mdi mdi-delete-outline"></i>
-          </Link>
-        </div>
-      ),
-    },
-  ];
+  // Add the Action column manually
+  const actionColumn = {
+    Header: "Action",
+    accessor: "",
+    sort: false,
+    Cell: ({ row }: any) => (
+      <div className="d-flex justify-content-center align-items-center gap-2">
+        {icons.map((action: IconData) =>
+          action.isLink ? (
+            <Link
+              key={action.id}
+              to={action.link(row?.original?.id)}
+              className="action-icon"
+              title={action.tooltip}
+            >
+              <i
+                className={`mdi ${action.icon}`}
+                style={{ color: action.color }}
+              ></i>
+            </Link>
+          ) : (
+            <span
+              key={action.id}
+              className="action-icon"
+              title={action.tooltip}
+              style={{ cursor: "pointer" }}
+            >
+              <i
+                className={`mdi ${action.icon}`}
+                style={{ color: action.color }}
+              ></i>
+            </span>
+          )
+        )}
+      </div>
+    ),
+  };
 
-  const dummyData = [
-    {
-      id: 1,
-      full_name: "John Doe",
-      country_name: "India",
-      university_name: "University of Mumbai",
-      course_name: "B.Tech",
-      office_type_name: "Mumbai",
-      source_name: "Walkin",
-      lead_received_date: "2021-01-10 18:30:00",
-      date: "2021-01-12 18:30:00",
-      assigned_by: "Counsellor",
-      assign_type: "Assigned",
-      assigned_to: "John Smith",
-      employee_name: "John Doe",
-      status: "In Progress",
-    },
-    {
-      id: 2,
-      full_name: "John Doe",
-      country_name: "India",
-      university_name: "University of Mumbai",
-      course_name: "B.Tech",
-      office_type_name: "Mumbai",
-      source_name: "Walkin",
-      lead_received_date: "2021-01-10 18:30:00",
-      date: "2021-01-12 18:30:00",
-      assigned_by: "Counsellor",
-      assign_type: "Assigned",
-      assigned_to: "John Smith",
-      employee_name: "John Doe",
-      status: "In Progress",
-    },
-    {
-      id: 3,
-      full_name: "John Doe",
-      country_name: "India",
-      university_name: "University of Mumbai",
-      course_name: "B.Tech",
-      office_type_name: "Mumbai",
-      source_name: "Walkin",
-      lead_received_date: "2021-01-10 18:30:00",
-      date: "2021-01-12 18:30:00",
-      assigned_by: "Counsellor",
-      assign_type: "Assigned",
-      assigned_to: "John Smith",
-      employee_name: "John Doe",
-      status: "In Progress",
-    },
-    {
-      id: 4,
-      full_name: "John Doe",
-      country_name: "India",
-      university_name: "University of Mumbai",
-      course_name: "B.Tech",
-      office_type_name: "Mumbai",
-      source_name: "Walkin",
-      lead_received_date: "2021-01-10 18:30:00",
-      date: "2021-01-12 18:30:00",
-      assigned_by: "Counsellor",
-      assign_type: "Assigned",
-      assigned_to: "John Smith",
-      employee_name: "John Doe",
-      status: "In Progress",
-    },
-    {
-      id: 5,
-      full_name: "John Doe",
-      country_name: "India",
-      university_name: "University of Mumbai",
-      course_name: "B.Tech",
-      office_type_name: "Mumbai",
-      source_name: "Walkin",
-      lead_received_date: "2021-01-10 18:30:00",
-      date: "2021-01-12 18:30:00",
-      assigned_by: "Counsellor",
-      assign_type: "Assigned",
-      assigned_to: "John Smith",
-      employee_name: "John Doe",
-      status: "In Progress",
-    },
-  ];
+  const columns = [...dynamicColumns, actionColumn];
 
   return (
     <Table
       columns={columns}
-      data={dummyData}
+      data={data}
       pageSize={10}
       sizePerPageList={sizePerPageList}
       isSortable={true}

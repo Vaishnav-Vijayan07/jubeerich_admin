@@ -253,6 +253,7 @@ const Table = (props: TableProps) => {
                     {...column.getHeaderProps(
                       column.sort && column.getSortByToggleProps()
                     )}
+                    style={{ ...(column.minWidth && { minWidth: column.minWidth }), ...(column.maxWidth && { maxWidth: column.maxWidth }) }}
                     className={classNames("text-secondary", {
                       sorting_desc: column.isSortedDesc === true,
                       sorting_asc: column.isSortedDesc === false,
@@ -286,16 +287,23 @@ const Table = (props: TableProps) => {
               dataTable.prepareRow(row);
               return (
                 <tr {...row.getRowProps()}>
-                  {(row.cells || []).map((cell: any) => {
+                  {(row.cells || []).map((cell: any) => {  
                     return (
                       <td
                         {...cell.getCellProps([
                           {
-                            className: cell.column.className,
+                            // className: cell.column.className,
+                            className: `${cell.column.className} cursor-pointer`,
                           },
                         ])}
+                        style={{ ...(cell.minWidth && { minWidth: cell.minWidth }), ...(cell.maxWidth && { maxWidth: cell.maxWidth }) }}
+                        title={cell.value}
+                        data-bs-toggle="tooltip" 
+                        data-bs-placement="top"
                       >
-                        {cell.render("Cell")}
+                        <span className="truncate-text">
+                          {cell.render("Cell")}
+                        </span>
                       </td>
                     );
                   })}

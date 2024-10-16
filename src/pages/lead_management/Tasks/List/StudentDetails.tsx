@@ -272,6 +272,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
                 <span>{"JBR" + taskDetails?.id}</span>
               </div>
+
               <Col className="d-flex gap-2 float-end">
                 <Button
                   className="d-flex align-items-center btn-light"

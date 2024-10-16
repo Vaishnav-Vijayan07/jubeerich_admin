@@ -200,7 +200,7 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "ID",
       accessor: "id",
-      sort: true,
+      sort: false,
     },
     {
       Header: "Role Name",

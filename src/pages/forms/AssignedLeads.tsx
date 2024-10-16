@@ -26,6 +26,8 @@ import useDropdownData from "../../hooks/useDropdownDatas";
 import { getFranchise } from "../../redux/franchise/actions";
 import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
+import { getFlag } from "../../redux/flag/actions";
+import Swal from "sweetalert2";
 
 interface OptionType {
   value: string;
@@ -117,6 +119,7 @@ const BasicInputElements = withSwal((props: any) => {
     cres,
     // regions,
     office,
+    flags,
     channels,
     error,
     loading,
@@ -241,6 +244,26 @@ const BasicInputElements = withSwal((props: any) => {
       });
   };
 
+  const UserColumn = ({ row }: any) => {
+    console.log('row',row);
+    return (
+      <>
+        <Dropdown className="btn-group" style={{ maxHeight: "150px", overflow: "visible !important" }}>
+          <Dropdown.Toggle variant="light" className="table-action-btn btn-sm">
+            Test Assign
+          </Dropdown.Toggle>
+          <Dropdown.Menu style={{ maxHeight: "150px", overflow: "visible" }}>
+            {cres.map((item: any) => (
+              <Dropdown.Item key={item?.value} onClick={() => handleAssignBulk([row.original.id], item.value)}>
+                {item.label}
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      </>
+    );
+  };
+
   const columns = [
     {
       Header: "No",
@@ -252,21 +275,25 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Name",
       accessor: "full_name",
       sort: true,
+      minWidth: 150
     },
     {
       Header: "Email",
       accessor: "email",
       sort: true,
+      minWidth: 150
     },
     {
       Header: "City",
       accessor: "city",
       sort: false,
+      minWidth: 100
     },
     {
       Header: "Country",
       accessor: "preferredCountries",
       sort: false,
+      minWidth: 100,
       Cell: ({ row }: any) => (
         <ul style={{ listStyle: "none" }}>
           {row.original.preferredCountries.map((item: any) => (
@@ -279,16 +306,19 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Office",
       accessor: "office_type_name",
       sort: false,
+      minWidth: 100,
     },
     {
       Header: "Source",
       accessor: "source_name",
       sort: false,
+      minWidth: 100,
     },
     {
       Header: "Lead Received Date",
       accessor: "lead_received_date",
       sort: false,
+      minWidth: 150,
       Cell: ({ row }: any) => (
         <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
       ),
@@ -297,9 +327,17 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Followup Date",
       accessor: "followup_date",
       sort: false,
+      minWidth: 100,
       Cell: ({ row }: any) => (
         <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>
       ),
+    },
+    {
+      Header: "Assigned To",
+      accessor: "assigned_user",
+      // Cell: UserColumn,
+      Cell: ({ row }: any) => <span className="no-truncate-text"><UserColumn row={row}/></span>,
+      minWidth: 100,
     },
     ...(user?.role == cre_tl_id
       ? [
@@ -384,35 +422,62 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleAssignBulk = async (user_ids: any, cre_id: any) => {
     if (user_ids.length > 0) {
-      try {
-        const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
 
-        if (data.status) {
-          dispatch(getLeadAssigned());
-          showSuccessAlert("Bulk assignment successful.");
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Assign",
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
+
+          if (data.status) {
+            dispatch(getLeadAssigned());
+            showSuccessAlert("Bulk assignment successful.");
+          }
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
     }
   };
 
   const handleBranchCounsellorAssignBulk = async (user_ids: any, counsellor_id: any) => {
     if (user_ids.length > 0) {
-      try {
-        const { data } = await axios.post("/assign_branch_counselor", { user_ids, counselor_id: counsellor_id });
 
-        if (data.status) {
-          if (userRole == counsellor_tl_id) {
-            dispatch(getLeadAssignedByCounsellorTL());
-          } else {
-            dispatch(getLead());
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Assign",
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const { data } = await axios.post("/assign_branch_counselor", { user_ids, counselor_id: counsellor_id });
+  
+          if (data.status) {
+            if (userRole == counsellor_tl_id) {
+              dispatch(getLeadAssignedByCounsellorTL());
+            } else {
+              dispatch(getLead());
+            }
+            showSuccessAlert("Bulk assignment successful.");
           }
-          showSuccessAlert("Bulk assignment successful.");
+        } catch (error) {
+          showErrorAlert(error);
         }
-      } catch (error) {
-        showErrorAlert(error);
       }
+
     }
   };
 
@@ -598,6 +663,7 @@ const BasicInputElements = withSwal((props: any) => {
           regionData = {region || []}
           franchisees = {franchisees || []}
           region = {region || []}
+          flags={flags || []}
           modal = {modal}
           toggle = {toggle}
           handleUpdateData = {handleUpdateData}
@@ -648,7 +714,7 @@ const BasicInputElements = withSwal((props: any) => {
                       variant="light"
                       className="table-action-btn btn-sm btn-blue"
                     >
-                      <i className="mdi mdi-account-plus"></i> Assign CRE's
+                      <i className="mdi mdi-account-plus"></i> Re-Assign CRE's
                     </Dropdown.Toggle>
                     <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                       {cres?.map((item: any) => (
@@ -711,7 +777,7 @@ const AssignedLeads = () => {
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor } = useSelector((state: RootState) => ({
+  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     state: state.Leads.assignedLeads,
     error: state.Leads.error,
@@ -720,6 +786,7 @@ const AssignedLeads = () => {
     users: state.Users.adminUsers,
     franchisees: state.Franchise.franchiseUsers,
     branchCounsellor: state.Users?.branchCounsellor,
+    flag: state?.Flag?.flags
   }));
 
   let userRole: any;
@@ -730,6 +797,7 @@ const AssignedLeads = () => {
   }
 
   useEffect(() => {
+    dispatch(getFlag())
     if(userRole == cre_tl_id){
       dispatch(getLeadAssigned());
     } else {
@@ -767,6 +835,16 @@ const AssignedLeads = () => {
     }));
   }, [franchisees]);
 
+  const flagsData = useMemo(() => {
+    if(!flag) return [];
+    return flag.map((data: any) => {
+      return {
+        value: data?.id,
+        label: data?.flag_name
+      }
+    })
+  },[flag])
+
   if (initialLoading) {
     return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
   }
@@ -799,6 +877,7 @@ const AssignedLeads = () => {
             region={dropdownData.regions || []}
             franchisees={dropdownData.franchises || []}
             branchCounsellors={branchCounsellor || []}
+            flags={flagsData || []}
           />
         </Col>
       </Row>

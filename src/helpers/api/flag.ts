@@ -17,6 +17,7 @@ function getFlagByidApi(id: string) {
 function addFlagsApi(params: {
   flag_name: string;
   flag_description: string;
+  color: string
   updated_by: string;
 }) {
   return api.create(`${url}`, params);
@@ -28,9 +29,12 @@ function updateFlagsApi(
   params: {
     flag_name: string;
     flag_description: string;
+    color: string;
     updated_by: string;
   }
 ) {
+  console.log('Params',params);
+  
   return api.update(`${url}/${id}`, params);
 }
 
