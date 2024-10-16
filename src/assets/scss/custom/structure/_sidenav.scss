@@ -273,7 +273,7 @@ html[data-sidenav-size="condensed"]:not([data-layout="horizontal"]) {
     .app-menu {
         width: $leftbar-width-sm;
         min-width: $leftbar-width-sm;
-        min-height: $leftbar-condensed-height;
+        // min-height: $leftbar-condensed-height;
 
         .simplebar-mask,
         .simplebar-content-wrapper {
