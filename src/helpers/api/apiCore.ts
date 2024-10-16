@@ -14,6 +14,7 @@ axios.interceptors.response.use(
   },
   (error) => {
     console.log(error);
+    console.log(error?.response?.status);
 
     let message;
 
@@ -30,7 +31,8 @@ axios.interceptors.response.use(
           break;
 
         case 400:
-          message = error?.response?.data?.error;
+          message =
+            error?.response?.data?.error || error?.response?.data?.message;
           break;
 
         case 403:

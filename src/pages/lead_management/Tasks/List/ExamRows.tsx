@@ -3,6 +3,7 @@ import { Col, Form, Row } from "react-bootstrap";
 import { examtypes } from "../../../forms/data";
 import moment from "moment";
 import { baseUrl } from "../../../../constants";
+import ActionButton from "./ActionButton";
 
 interface ExamForm {
   id?: number;
@@ -202,13 +203,12 @@ const ExamData: React.FC<ExamDataProps> = ({
       </Col>
       {examForm.length > 1 && (
         <Row className="mb-2">
-          <Col className="d-flex align-items-center gap-1">
-            <i
-              className="text-danger mdi mdi-minus-circle-outline fs-3 ps-1"
-              onClick={() => removeExamForm(index, item.id ?? 0)}
-            ></i>
-            <span className="text-danger">Remove</span>
-          </Col>
+          <ActionButton
+            label="Remove"
+            onClick={() => removeExamForm(index, item.id ?? 0)}
+            colorClass="text-danger"
+            iconClass="mdi mdi-delete"
+          />
         </Row>
       )}
     </Row>
@@ -218,13 +218,11 @@ const ExamData: React.FC<ExamDataProps> = ({
     <>
       {examForm.map((item, index) => renderExamFields(item, index))}
       <Row className="mb-2">
-        <Col sm={3} className="d-flex align-items-center gap-1">
-          <i
-            className="text-primary mdi mdi-plus-circle-outline fs-3 ps-1"
-            onClick={addMoreExamForm}
-          ></i>
-          <span className="text-primary">Add More</span>
-        </Col>
+        <ActionButton
+          onClick={addMoreExamForm}
+          label="Add More"
+          iconClass="mdi mdi-plus-circle-outline"
+        />
       </Row>
     </>
   );
