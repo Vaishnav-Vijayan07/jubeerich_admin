@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Select, { ActionMeta, OptionsType } from "react-select";
-import { Button, Card, Col, Form, Row } from 'react-bootstrap';
+import { Button, Card, Col, Collapse, Form, Row } from 'react-bootstrap';
 import { AUTH_SESSION_KEY, cre_id, cre_reception_id, cre_tl_id, customStyles } from '../../constants';
 import { Visa_Types } from '../lead_management/Tasks/List/data';
 
@@ -35,6 +35,7 @@ const LeadsFilters = (props: any) => {
     const [selectedCountryFilter, setSelectedCountryFilter] = useState<any>(null);
     const [selectedCREFilter, setSelectedCREFilter] = useState<any>(null);
     const [selectedVisaTypeFilter, setSelectedVisaTypeFilter] = useState<any>(null);
+    const [open, setOpen] = useState<boolean>(false);
 
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
     let userRole: any;
@@ -160,112 +161,128 @@ const LeadsFilters = (props: any) => {
     return (
         <>
             <Card>
-                <Card.Body>
-                    <h4 className="header-title mb-3">Filters</h4>
-                    <Row className="mb-3">
-                        <Col lg={3} md={4} sm={6} xs={12}>
-                            <Form.Group className="mb-3" controlId="status_id">
-                                <Form.Label>Status</Form.Label>
-                                <Select
-                                    styles={customStyles}
-                                    className="react-select react-select-container select-wrapper"
-                                    classNamePrefix="react-select"
-                                    name="status_id"
-                                    options={[{ value: null, label: "All" }, ...status]}
-                                    value={selectedStatus}
-                                    onChange={handleFilterChange}
-                                />
-                            </Form.Group>
-                        </Col>
+                <Row>
+                    <Col className='d-flex justify-content-start align-items-center'>
+                        <span className='mt-3 ms-3 w-full'>
+                            <h4 className="header-title mb-3 fs-3">Filters</h4>
+                        </span>
+                    </Col>
+                    <Col className='d-flex justify-content-end align-items-center'>
+                        <span className='ms-3 me-3' onClick={() => setOpen(!open)}
+                            aria-controls="example-collapse-text"
+                            aria-expanded={open}>
+                            {open && <i className='mdi mdi-arrow-up-drop-circle-outline fs-2'></i>}
+                            {!open && <i className='mdi mdi-arrow-down-drop-circle-outline fs-2'></i>}
+                        </span>
+                    </Col>
+                </Row>
 
-                        <Col lg={3} md={4} sm={6} xs={12}>
-                            <Form.Group className="mb-3" controlId="source_id">
-                                <Form.Label>Source</Form.Label>
-                                <Select
-                                    styles={customStyles}
-                                    className="react-select react-select-container select-wrapper"
-                                    classNamePrefix="react-select"
-                                    name="source_id"
-                                    options={[{ value: null, label: "All" }, ...source]}
-                                    value={selectedSourceFilter}
-                                    onChange={handleFilterChange}
-                                />
-                            </Form.Group>
-                        </Col>
-
-                        {user?.role == cre_id || user?.role == cre_reception_id ? (
+                <Collapse in={open}>
+                    <Card.Body>
+                        <Row className="mb-3">
                             <Col lg={3} md={4} sm={6} xs={12}>
-                                <Form.Group className="mb-3" controlId="updated_by">
-                                    <Form.Label>Assigned By</Form.Label>
+                                <Form.Group className="mb-3" controlId="status_id">
+                                    <Form.Label>Status</Form.Label>
                                     <Select
                                         styles={customStyles}
                                         className="react-select react-select-container select-wrapper"
                                         classNamePrefix="react-select"
-                                        name="updated_by"
-                                        options={[{ value: null, label: "All" }, ...userData]}
-                                        value={selectedAssignedBy}
+                                        name="status_id"
+                                        options={[{ value: null, label: "All" }, ...status]}
+                                        value={selectedStatus}
                                         onChange={handleFilterChange}
                                     />
                                 </Form.Group>
                             </Col>
-                        ) : (
-                            ""
-                        )}
 
-                        {(user?.role == cre_tl_id && isAssignedLeads) || (user?.role == cre_reception_id && isAssignedLeads) ? (
                             <Col lg={3} md={4} sm={6} xs={12}>
-                                <Form.Group className="mb-3" controlId="CRE">
-                                    <Form.Label>CRE</Form.Label>
+                                <Form.Group className="mb-3" controlId="source_id">
+                                    <Form.Label>Source</Form.Label>
                                     <Select
                                         styles={customStyles}
                                         className="react-select react-select-container select-wrapper"
                                         classNamePrefix="react-select"
-                                        name="CRE"
-                                        options={[{ value: null, label: "All" }, ...cres]}
-                                        value={selectedCREFilter}
+                                        name="source_id"
+                                        options={[{ value: null, label: "All" }, ...source]}
+                                        value={selectedSourceFilter}
                                         onChange={handleFilterChange}
                                     />
                                 </Form.Group>
                             </Col>
-                        ) : (
-                            ""
-                        )}
 
-                        {user?.role == cre_id || user?.role == cre_reception_id ? (
+                            {user?.role == cre_id || user?.role == cre_reception_id ? (
+                                <Col lg={3} md={4} sm={6} xs={12}>
+                                    <Form.Group className="mb-3" controlId="updated_by">
+                                        <Form.Label>Assigned By</Form.Label>
+                                        <Select
+                                            styles={customStyles}
+                                            className="react-select react-select-container select-wrapper"
+                                            classNamePrefix="react-select"
+                                            name="updated_by"
+                                            options={[{ value: null, label: "All" }, ...userData]}
+                                            value={selectedAssignedBy}
+                                            onChange={handleFilterChange}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            ) : (
+                                ""
+                            )}
+
+                            {(user?.role == cre_tl_id && isAssignedLeads) || (user?.role == cre_reception_id && isAssignedLeads) ? (
+                                <Col lg={3} md={4} sm={6} xs={12}>
+                                    <Form.Group className="mb-3" controlId="CRE">
+                                        <Form.Label>CRE</Form.Label>
+                                        <Select
+                                            styles={customStyles}
+                                            className="react-select react-select-container select-wrapper"
+                                            classNamePrefix="react-select"
+                                            name="CRE"
+                                            options={[{ value: null, label: "All" }, ...cres]}
+                                            value={selectedCREFilter}
+                                            onChange={handleFilterChange}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            ) : (
+                                ""
+                            )}
+
+                            {user?.role == cre_id || user?.role == cre_reception_id ? (
+                                <Col lg={3} md={4} sm={6} xs={12}>
+                                    <Form.Group className="mb-3" controlId="counsiler_id">
+                                        <Form.Label>Counsellors</Form.Label>
+                                        <Select
+                                            styles={customStyles}
+                                            className="react-select react-select-container select-wrapper"
+                                            classNamePrefix="react-select"
+                                            name="counsiler_id"
+                                            options={[{ value: null, label: "All" }, ...counsellors]}
+                                            value={selectedCounsellor}
+                                            onChange={handleFilterChange}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            ) : (
+                                ""
+                            )}
+
                             <Col lg={3} md={4} sm={6} xs={12}>
-                                <Form.Group className="mb-3" controlId="counsiler_id">
-                                    <Form.Label>Counsellors</Form.Label>
+                                <Form.Group className="mb-3" controlId="preferredCountries">
+                                    <Form.Label>Country</Form.Label>
                                     <Select
                                         styles={customStyles}
                                         className="react-select react-select-container select-wrapper"
                                         classNamePrefix="react-select"
-                                        name="counsiler_id"
-                                        options={[{ value: null, label: "All" }, ...counsellors]}
-                                        value={selectedCounsellor}
+                                        name="preferredCountries"
+                                        options={[{ value: null, label: "All" }, ...country]}
+                                        value={selectedCountryFilter}
                                         onChange={handleFilterChange}
                                     />
                                 </Form.Group>
                             </Col>
-                        ) : (
-                            ""
-                        )}
 
-                        <Col lg={3} md={4} sm={6} xs={12}>
-                            <Form.Group className="mb-3" controlId="preferredCountries">
-                                <Form.Label>Country</Form.Label>
-                                <Select
-                                    styles={customStyles}
-                                    className="react-select react-select-container select-wrapper"
-                                    classNamePrefix="react-select"
-                                    name="preferredCountries"
-                                    options={[{ value: null, label: "All" }, ...country]}
-                                    value={selectedCountryFilter}
-                                    onChange={handleFilterChange}
-                                />
-                            </Form.Group>
-                        </Col>
-
-                        {/* <Col lg={3} md={4} sm={6} xs={12}>
+                            {/* <Col lg={3} md={4} sm={6} xs={12}>
                             <Form.Group className="mb-3" controlId="visa_types">
                                 <Form.Label>Visa Type</Form.Label>
                                 <Select
@@ -280,39 +297,40 @@ const LeadsFilters = (props: any) => {
                             </Form.Group>
                         </Col> */}
 
-                        <Col lg={3} md={4} sm={6} xs={12}>
-                            <Form.Group controlId="lead_received_date" className="cust-date mb-3">
-                                <Form.Label>Lead Received Date</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    name="lead_received_date"
-                                    value={filters.lead_received_date}
-                                    onChange={(e: any) => handleFilterDateChange(e)}
-                                />
-                            </Form.Group>
-                        </Col>
+                            <Col lg={3} md={4} sm={6} xs={12}>
+                                <Form.Group controlId="lead_received_date" className="cust-date mb-3">
+                                    <Form.Label>Lead Received Date</Form.Label>
+                                    <Form.Control
+                                        type="date"
+                                        name="lead_received_date"
+                                        value={filters.lead_received_date}
+                                        onChange={(e: any) => handleFilterDateChange(e)}
+                                    />
+                                </Form.Group>
+                            </Col>
 
-                        <Col lg={3} md={4} sm={6} xs={12}>
-                            <Form.Group controlId="followup_date" className="cust-date mb-3">
-                                <Form.Label>Followup Date</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    name="followup_date"
-                                    value={filters.followup_date}
-                                    onChange={(e: any) => handleFilterDateChange(e)}
-                                />
-                            </Form.Group>
-                        </Col>
+                            <Col lg={3} md={4} sm={6} xs={12}>
+                                <Form.Group controlId="followup_date" className="cust-date mb-3">
+                                    <Form.Label>Followup Date</Form.Label>
+                                    <Form.Control
+                                        type="date"
+                                        name="followup_date"
+                                        value={filters.followup_date}
+                                        onChange={(e: any) => handleFilterDateChange(e)}
+                                    />
+                                </Form.Group>
+                            </Col>
 
-                        <Col lg={3} md={4} sm={6} xs={12} style={{ alignSelf: "center" }}>
-                            <Form.Group className="align-items-center">
-                                <Button style={{ margin: "auto" }} variant="primary" onClick={handleClear}>
-                                    Clear
-                                </Button>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                </Card.Body>
+                            <Col lg={3} md={4} sm={6} xs={12} style={{ alignSelf: "center" }}>
+                                <Form.Group className="align-items-center">
+                                    <Button style={{ margin: "auto" }} variant="primary" onClick={handleClear}>
+                                        Clear
+                                    </Button>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                    </Card.Body>
+                </Collapse>
             </Card>
         </>
     )

@@ -38,27 +38,17 @@ axios.interceptors.response.use(
         case 403:
           message = "Access Forbidden";
           break;
-        case 404:
-          message = "Sorry! The data you are looking for could not be found";
-          break;
+        // case 404:
+        //   message = error.response.data?.message || "Sorry! The data you are looking for could not be found.";
+        //   break;
         default: {
           // Check if the error response contains a "message" field
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.message
-          ) {
+          if (error.response && error.response.data && error.response.data.message) {
             message = error.response.data.message;
-          } else if (
-            error.response &&
-            error.response.data &&
-            Array.isArray(error.response.data.errors)
-          ) {
+          } else if (error.response && error.response.data && Array.isArray(error.response.data.errors)) {
             // Check if the error response contains an "errors" array (validation errors)
             const validationErrors = error.response.data.errors;
-            message = validationErrors
-              .map((error: any) => error.msg)
-              .join(", ");
+            message = validationErrors.map((error: any) => error.msg).join(", ");
           } else {
             message = "An error occurred";
           }
@@ -266,8 +256,7 @@ class APICore {
   };
 
   setLoggedInUser = (session: any) => {
-    if (session)
-      sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
+    if (session) sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
     else {
       sessionStorage.removeItem(AUTH_SESSION_KEY);
       sessionStorage.removeItem("branch_id");

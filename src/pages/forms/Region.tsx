@@ -245,7 +245,7 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "No",
       accessor: "id",
-      sort: true,
+      sort: false,
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {

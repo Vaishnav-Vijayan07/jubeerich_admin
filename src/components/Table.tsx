@@ -287,7 +287,7 @@ const Table = (props: TableProps) => {
               dataTable.prepareRow(row);
               return (
                 <tr {...row.getRowProps()}>
-                  {(row.cells || []).map((cell: any) => {                    
+                  {(row.cells || []).map((cell: any) => {  
                     return (
                       <td
                         {...cell.getCellProps([
@@ -301,7 +301,9 @@ const Table = (props: TableProps) => {
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top"
                       >
-                        {cell.render("Cell")}
+                        <span className="truncate-text">
+                          {cell.render("Cell")}
+                        </span>
                       </td>
                     );
                   })}

@@ -8,12 +8,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { getMaritalStatus } from "../../../../redux/marital_status/actions";
 import axios from "axios";
-import { follow_up_id, future_leads_id, not_responding_id, showErrorAlert, showSuccessAlert } from "../../../../constants";
+import {
+  follow_up_id,
+  future_leads_id,
+  handleDateFormat,
+  not_responding_id,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../../../../constants";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import Comments from "./Comments";
 import { refreshData } from "../../../../redux/countryReducer";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
+import swal from "sweetalert2";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const History = lazy(() => import("./History"));
@@ -182,20 +190,80 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
   console.log("basicData ==>", basicData);
 
-  const addNewCountry = (newCountryId: number) => {
-    axios
-      .put("assign_new_country", {
-        id: taskId,
-        newCountryId: newCountryId,
-      })
-      .then((res) => {
-        showSuccessAlert(res.data.message);
-        getTaskDetails();
-      })
-      .catch((err) => {
-        console.log("error:", err);
-        showErrorAlert(err);
+  // const addNewCountry = async (newCountryId: number) => {
+  //   try {
+  //     const result = await swal.fire({
+  //       title: "Are you sure?",
+  //       text: "This action cannot be undone.",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#3085d6",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, Save",
+  //     });
+
+  //     if (result.isConfirmed) {
+  //       setLoading(true);
+  //       const response = await axios.put("assign_new_country", {
+  //         id: taskId,
+  //         newCountryId: newCountryId,
+  //       });
+  //       showSuccessAlert(response?.data?.message);
+  //       getTaskDetails();
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     showErrorAlert(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const addNewCountry = async (newCountryId: number) => {
+    try {
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
       });
+
+      if (result.isConfirmed) {
+        setLoading(true);
+        const response = await axios.put("assign_new_country", {
+          id: taskId,
+          newCountryId: newCountryId,
+        });
+
+        showSuccessAlert(response?.data?.message); // Display success message
+        getTaskDetails(); // Refresh task details
+      }
+    } catch (error: any) {
+      console.error("Error:", error);
+
+      // Display the error message from the backend
+      if (error.response) {
+        const errorMessage = error.response.data?.message || "An unexpected error occurred.";
+        await swal.fire({
+          title: "Error",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
+        await swal.fire({
+          title: "Error",
+          text: "Network error or server is unreachable.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -213,17 +281,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               </div>
 
               <Col className="d-flex gap-2 float-end">
-                {/* <i className="mdi mdi-close font-18 cursor-pointer" onClick={handleClose}></i> */}
-
                 <Button
                   className="d-flex align-items-center btn-light"
                   disabled={taskDetails?.isCompleted ? true : false}
                   onClick={handleFinishTask}
                 >
                   <div className="round-circle" />
-                  {taskDetails?.isCompleted ? "Finished" : "Finish"}
-
-                  {console.log("taskDetails?.isCompleted ======>", taskDetails)}
+                  {taskDetails?.isCompleted ? "Task Completed" : "Mark As Completed"}
                 </Button>
               </Col>
 
@@ -233,8 +297,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             </Col>
           </Row>
           <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
-            <Col>
-              <h3>{taskDetails?.title}</h3>
+            <Col md={9}>
+              <h3 className="m-0 mb-1">{taskDetails?.title}</h3>
+              <p className="mb-2">Mr. Austin Stephen from Aluva, has applied for admission in Russia.</p>
               <div className="d-flex">
                 {basicData?.country_names?.map((country: any) => (
                   <small
@@ -250,6 +315,11 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     {country}
                   </small>
                 ))}
+              </div>
+            </Col>
+            <Col md={3}>
+              <div className="text-end text-nowrap">
+                <b>Lead Date: {handleDateFormat(basicData?.lead_received_date)}</b>
               </div>
             </Col>
           </Row>
@@ -337,34 +407,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Row>
             <div className="grid-container mb-2">
               <div className="">
-                <p className="mt-2 mb-1 text-muted fw-light">Status</p>
-                <div className="d-flex align-items-start" style={{ gap: "5px" }}>
-                  <Dropdown>
-                    <Dropdown.Toggle
-                      className="cursor-pointer"
-                      variant="light"
-                      // disabled={!StudentData?.status}
-                    >
-                      {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      {(status || [])?.map((item: any) => (
-                        // Check if the item is visible before rendering the Dropdown.Item
-
-                        <Dropdown.Item
-                          eventKey={item.id}
-                          key={item.id}
-                          onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
-                        >
-                          {item.status_name}
-                        </Dropdown.Item>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div>
-              </div>
-
-              <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Lead Received Date</p>
                 <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                   <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
@@ -401,11 +443,79 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               </div>
             </div>
           </Row>
+        </Card.Body>
+      </Card>
+      <Row>
+        <Col md={6}>
+          <Card>
+            <Card.Body>
+              <h4 className="text-secondary m-0">Status</h4>
+              <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p>
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="cursor-pointer"
+                  variant="light"
+                  // disabled={!StudentData?.status}
+                >
+                  {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {(status || [])?.map((item: any) => (
+                    // Check if the item is visible before rendering the Dropdown.Item
 
-          {user.role == 7 && (
+                    <Dropdown.Item
+                      eventKey={item.id}
+                      key={item.id}
+                      onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                    >
+                      {item.status_name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6}>
+          <Card>
+            <Card.Body>
+              <h4 className="text-secondary m-0">Flag</h4>
+              <p className="mt-2 mb-2 text-muted fw-light">Change flag</p>
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="cursor-pointer"
+                  variant="light"
+                  // disabled={!StudentData?.status}
+                >
+                  {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {(status || [])?.map((item: any) => (
+                    // Check if the item is visible before rendering the Dropdown.Item
+
+                    <Dropdown.Item
+                      eventKey={item.id}
+                      key={item.id}
+                      onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                    >
+                      {item.status_name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      {user.role == 7 && (
+        <Card>
+          <Card.Body>
             <Row>
               <div className="">
-                <p className="mt-2 mb-1 text-muted fw-light">Add New Country</p>
+                <h4 className="text-secondary">Add New Country</h4>
+                <p className="mt-2 mb-2 text-muted fw-light">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                </p>
                 <div className="d-flex align-items-start" style={{ gap: "5px" }}>
                   <Dropdown>
                     <Dropdown.Toggle className="cursor-pointer" variant="light">
@@ -413,8 +523,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       {(countryData || [])?.map((item: any) => (
-                        // Check if the item is visible before rendering the Dropdown.Item
-
                         <Dropdown.Item eventKey={item.value} key={item.value} onClick={() => addNewCountry(item.value)}>
                           {item.label}
                         </Dropdown.Item>
@@ -424,9 +532,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                 </div>
               </div>
             </Row>
-          )}
-        </Card.Body>
-      </Card>
+          </Card.Body>
+        </Card>
+      )}
       <Card>
         <Card.Body>
           <Row>
