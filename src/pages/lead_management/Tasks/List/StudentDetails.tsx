@@ -14,6 +14,7 @@ import moment from "moment";
 import Comments from "./Comments";
 import { refreshData } from "../../../../redux/countryReducer";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
+import swal from "sweetalert2";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const History = lazy(() => import("./History"));
@@ -182,20 +183,80 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
   console.log("basicData ==>", basicData);
 
-  const addNewCountry = (newCountryId: number) => {
-    axios
-      .put("assign_new_country", {
-        id: taskId,
-        newCountryId: newCountryId,
-      })
-      .then((res) => {
-        showSuccessAlert(res.data.message);
-        getTaskDetails();
-      })
-      .catch((err) => {
-        console.log("error:", err);
-        showErrorAlert(err);
+  // const addNewCountry = async (newCountryId: number) => {
+  //   try {
+  //     const result = await swal.fire({
+  //       title: "Are you sure?",
+  //       text: "This action cannot be undone.",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#3085d6",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, Save",
+  //     });
+
+  //     if (result.isConfirmed) {
+  //       setLoading(true);
+  //       const response = await axios.put("assign_new_country", {
+  //         id: taskId,
+  //         newCountryId: newCountryId,
+  //       });
+  //       showSuccessAlert(response?.data?.message);
+  //       getTaskDetails();
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     showErrorAlert(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const addNewCountry = async (newCountryId: number) => {
+    try {
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
       });
+
+      if (result.isConfirmed) {
+        setLoading(true);
+        const response = await axios.put("assign_new_country", {
+          id: taskId,
+          newCountryId: newCountryId,
+        });
+
+        showSuccessAlert(response?.data?.message); // Display success message
+        getTaskDetails(); // Refresh task details
+      }
+    } catch (error: any) {
+      console.error("Error:", error);
+
+      // Display the error message from the backend
+      if (error.response) {
+        const errorMessage = error.response.data?.message || "An unexpected error occurred.";
+        await swal.fire({
+          title: "Error",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
+        await swal.fire({
+          title: "Error",
+          text: "Network error or server is unreachable.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -212,8 +273,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                 <span>{"JBR" + taskDetails?.id}</span>
               </div>
               <Col className="d-flex gap-2 float-end">
-                {/* <i className="mdi mdi-close font-18 cursor-pointer" onClick={handleClose}></i> */}
-
                 <Button
                   className="d-flex align-items-center btn-light"
                   disabled={taskDetails?.isCompleted ? true : false}
@@ -400,11 +459,17 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               </div>
             </div>
           </Row>
-
-          {user.role == 7 && (
+        </Card.Body>
+      </Card>
+      {user.role == 7 && (
+        <Card>
+          <Card.Body>
             <Row>
               <div className="">
-                <p className="mt-2 mb-1 text-muted fw-light">Add New Country</p>
+                <h4 className="text-secondary">Add New Country</h4>
+                <p className="mt-2 mb-2 text-muted fw-light">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                </p>
                 <div className="d-flex align-items-start" style={{ gap: "5px" }}>
                   <Dropdown>
                     <Dropdown.Toggle className="cursor-pointer" variant="light">
@@ -412,8 +477,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       {(countryData || [])?.map((item: any) => (
-                        // Check if the item is visible before rendering the Dropdown.Item
-
                         <Dropdown.Item eventKey={item.value} key={item.value} onClick={() => addNewCountry(item.value)}>
                           {item.label}
                         </Dropdown.Item>
@@ -423,9 +486,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                 </div>
               </div>
             </Row>
-          )}
-        </Card.Body>
-      </Card>
+          </Card.Body>
+        </Card>
+      )}
       <Card>
         <Card.Body>
           <Row>

@@ -522,3 +522,8 @@ select::-ms-expand {
 .history-tl-container ul.tl li:first-child:hover::before {
   border-color: #00ce64;
 }
+
+.dropdown-menu.show {
+  max-height: 300px;
+  overflow: auto;
+}
