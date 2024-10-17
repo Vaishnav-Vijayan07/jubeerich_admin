@@ -358,7 +358,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
                   name="lead_type_id"
-                  options={[{ value: null, label: "None" }, ...leadType]}
+                  options={leadType}
                   value={selectedLeadType}
                   onChange={handleDropDowns}
                 />

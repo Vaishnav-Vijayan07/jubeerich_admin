@@ -92,13 +92,12 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
-
     const selectedStatus = item?.statuses?.map((status: any) => ({
       value: status.id,
       label: status.status_name,
     }));
 
-    const statusIds = item?.statuses?.map((item: any) => item.id)
+    const statusIds = item?.statuses?.map((item: any) => item.id);
 
     setSelectedStatus(selectedStatus);
     setFormData({
@@ -111,55 +110,55 @@ const BasicInputElements = withSwal((props: any) => {
 
   console.log("form data ==>", formData);
 
-
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validate the form using yup
     try {
-      console.log('Entered');
-      
+      console.log("Entered");
+
       await validationSchema.validate(formData, { abortEarly: false });
       console.log("here");
 
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          axios
-          .put(`/status_config`, {
-            access_role_id: formData.access_role_id,
-            status_ids: formData?.status_ids
-          })
-          .then((res) => {
-            showSuccessAlert(res.data.message);
-            dispatch(getStatusConfig());
-  
-            // Clear validation errors
-            setValidationErrors(initialValidationState);
-  
-            //clear form data
-            setFormData(initialState);
-            setSelectedStatus(null);
-            toggleResponsiveModal()
-          })
-          .catch((err) => {
-            console.error(err);
-            showErrorAlert(err.message);
-          });
-        }
-      }).catch((err: any)=>{
-        console.log(err);
-      })
+        .fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            axios
+              .put(`/status_config`, {
+                access_role_id: formData.access_role_id,
+                status_ids: formData?.status_ids,
+              })
+              .then((res) => {
+                showSuccessAlert(res.data.message);
+                dispatch(getStatusConfig());
+
+                // Clear validation errors
+                setValidationErrors(initialValidationState);
+
+                //clear form data
+                setFormData(initialState);
+                setSelectedStatus(null);
+                toggleResponsiveModal();
+              })
+              .catch((err) => {
+                console.error(err);
+                showErrorAlert(err.message);
+              });
+          }
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
 
       // axios
       //   .put(`/status_config`, {
@@ -263,7 +262,7 @@ const BasicInputElements = withSwal((props: any) => {
     setResponsiveModal(!responsiveModal);
     setValidationErrors(initialValidationState);
     if (isUpdate) {
-      handleCancelUpdate()
+      handleCancelUpdate();
     }
   };
 
@@ -271,7 +270,7 @@ const BasicInputElements = withSwal((props: any) => {
     setFormData(initialState);
     setValidationErrors(initialValidationState);
     setSelectedStatus(null);
-  }
+  };
 
   return (
     <>
@@ -292,29 +291,24 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   name="status_ids"
                   classNamePrefix="react-select"
-                  options={[{ value: null, label: "None" }, ...statusData]}
+                  options={statusData}
                   value={selectedStatus}
                   onChange={handleStatusChange as any}
                 />
-
                 {validationErrors.status_ids && <Form.Text className="text-danger">{validationErrors.status_ids}</Form.Text>}
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]
-                }
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 "
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
+                onClick={() =>
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
+                }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -329,11 +323,18 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
+              {/* <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Configure Status
-              </Button>
+              </Button> */}
               <h4 className="header-title mb-4">Manage Status Configuration</h4>
-              <Table columns={columns} data={records ? records : []} pageSize={10} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
+              <Table
+                columns={columns}
+                data={records ? records : []}
+                pageSize={10}
+                sizePerPageList={sizePerPageList}
+                isSortable={true}
+                pagination={true}
+                isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
               />
             </Card.Body>
@@ -351,16 +352,14 @@ const StatusConfiguration = () => {
   //Fetch data from redux store
   // const Status = useSelector((state: RootState) => state.Status.status.data);
 
-  const { StatusConfig, Status, loading, success, error, initialConfigloading } = useSelector(
-    (state: RootState) => ({
-      StatusConfig: state.Status.statusConfig?.data,
-      Status: state.Status.status.data,
-      loading: state.Status.loading,
-      success: state.Status.success,
-      error: state.Status.error,
-      initialConfigloading: state.Status.initialConfigloading,
-    })
-  );
+  const { StatusConfig, Status, loading, success, error, initialConfigloading } = useSelector((state: RootState) => ({
+    StatusConfig: state.Status.statusConfig?.data,
+    Status: state.Status.status.data,
+    loading: state.Status.loading,
+    success: state.Status.success,
+    error: state.Status.error,
+    initialConfigloading: state.Status.initialConfigloading,
+  }));
   const SubStatus = useSelector((state: RootState) => state.SubStatus.subStatus.data);
   useEffect(() => {
     dispatch(getStatusConfig());
@@ -391,7 +390,14 @@ const StatusConfiguration = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={StatusConfig} statusData={statusData} loading={loading} success={success} error={error} initialConfigloading={initialConfigloading} />
+          <BasicInputElements
+            state={StatusConfig}
+            statusData={statusData}
+            loading={loading}
+            success={success}
+            error={error}
+            initialConfigloading={initialConfigloading}
+          />
         </Col>
       </Row>
     </React.Fragment>

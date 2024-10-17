@@ -243,24 +243,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       }
     } catch (error: any) {
       console.error("Error:", error);
-
-      // Display the error message from the backend
-      if (error.response) {
-        const errorMessage = error.response.data?.message || "An unexpected error occurred.";
-        await swal.fire({
-          title: "Error",
-          text: errorMessage,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        await swal.fire({
-          title: "Error",
-          text: "Network error or server is unreachable.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
+      showErrorAlert(error);
     } finally {
       setLoading(false);
     }

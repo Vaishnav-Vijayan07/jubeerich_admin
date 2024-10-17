@@ -274,7 +274,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   name="status_id"
                   classNamePrefix="react-select"
-                  options={[{ value: null, label: "None" }, ...statusData]}
+                  options={statusData}
                   value={selectedOptions}
                   onChange={handleOptionsChange}
                 />
@@ -291,7 +291,7 @@ const BasicInputElements = withSwal((props: any) => {
                   className="react-select react-select-container"
                   name="next_status"
                   classNamePrefix="react-select"
-                  options={[{ value: null, label: "None" }, ...subStatusData]}
+                  options={subStatusData}
                   value={selectedSubStatus}
                   onChange={handleSubStatusChange as any}
                 />
@@ -323,7 +323,15 @@ const BasicInputElements = withSwal((props: any) => {
                 <i className="mdi mdi-plus-circle"></i> Add Sub Status
               </Button>
               <h4 className="header-title mb-4">Manage Sub Status</h4>
-              <Table columns={columns} data={records ? records : []} pageSize={10} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true} />
+              <Table
+                columns={columns}
+                data={records ? records : []}
+                pageSize={10}
+                sizePerPageList={sizePerPageList}
+                isSortable={true}
+                pagination={true}
+                isSearchable={true}
+              />
             </Card.Body>
           </Card>
         </Col>
