@@ -40,7 +40,6 @@ const Task = ({
             {task?.student_name?.user_primary_flags?.flag_name && (
               <small
                 style={{
-                  opacity: 0.7,
                   backgroundColor: `${task?.student_name?.user_primary_flags?.color}`,
                   color: "white",
                   border: `1px solid #122d3d`,
@@ -67,7 +66,7 @@ const Task = ({
                   borderRadius: "5px",
                   padding: "4px 10px",
                 }}
-                className={classNames("rounded-pill me-1 ms-2")}
+                className={classNames("rounded-pill me-1 ms-0")}
               >
                 {country?.country_name}
               </small>

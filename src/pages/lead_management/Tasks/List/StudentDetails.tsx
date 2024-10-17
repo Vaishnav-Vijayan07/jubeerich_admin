@@ -543,8 +543,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     {(status || [])?.map((item: any) => (
-                      // Check if the item is visible before rendering the Dropdown.Item
-
                       <Dropdown.Item
                         eventKey={item.id}
                         key={item.id}
@@ -577,11 +575,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     color: "white",
                     border: `1px solid #122d3d`,
                     borderRadius: "5px",
-                    padding: "12px 24px",
+                    padding: "5px 14px",
                     fontSize: "0.7rem",
                     borderColor: `${basicData?.user_primary_flags?.color}`,
                     height: "max-content",
-                  }}></p>
+                  }}>
+                    {basicData?.user_primary_flags?.flag_name}
+                  </p>
                 </span>
               </div>
               <Dropdown>
