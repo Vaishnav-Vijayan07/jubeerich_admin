@@ -1,16 +1,15 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import PageTitle from '../../../components/PageTitle'
-import { Button, Card, Col, Nav, Row, Spinner, Tab } from 'react-bootstrap'
+import { Button, Card, Col, Form, Nav, Row, Spinner, Tab } from 'react-bootstrap'
 import { FormInput } from '../../../components'
 import TaskTodoList from './TaskTodoList'
 import axios from 'axios'
-import { priority, status } from './data'
 import { showErrorAlert, showSuccessAlert } from '../../../constants'
-import { Prev } from 'react-bootstrap/lib/Pagination'
-
+import * as yup from 'yup';
 
 const TaskTodo = () => {
 
+    const taskNameSchema = yup.string().min(4, "Minimum 4 characters needed").required('Task Name is required');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [taskName, setTaskName] = useState<string>('')
     const [activeTab, setActiveTab] = useState<any>('all');
@@ -19,6 +18,8 @@ const TaskTodo = () => {
     const [completedTask, setCompletedTask] = useState([]);
     const [expiredTask, setExpiredTask] = useState([]);
     const [allTask, setAllTask] = useState([]);
+    const [validationErrors, setValidationErrors] = useState({ name: '' });
+
 
     const getAllTasks = async () => {
         setIsLoading(true)
@@ -36,16 +37,29 @@ const TaskTodo = () => {
         }
     };
 
-    const addNewTask = async() => {
+    const addNewTask = async () => {
         try {
-            const result = await axios.post('/ordinary_task', { title: taskName});
-            if(result){
+            await taskNameSchema.validate(taskName, { abortEarly: false });
+
+            const result = await axios.post('/ordinary_task', { title: taskName });
+            if (result) {
                 showSuccessAlert("Created New Task");
-                getAllTasks()
-            }            
-        } catch (error) {
-            console.log(error);
+                getAllTasks();
+                setTaskName('');
+                setValidationErrors({name: ''});
+            }
+        } catch (validationError) {
             showErrorAlert("Creation Failed")
+            if (validationError instanceof yup.ValidationError) {
+                const errors: any = {};
+                validationError.inner.forEach((error) => {
+                    error.path = 'name';
+                    if (error.path) {
+                        errors[error.path] = error.message;
+                    }
+                });
+                setValidationErrors(errors);
+            }
         }
     }
 
@@ -72,12 +86,13 @@ const TaskTodo = () => {
                 title={"Tasks Todo"}
             />
             <Row>
-                <Col xl={10}>
+                <Col xl={12}>
                     <Card>
                         <Card.Body>
                             <Row>
                                 <Col md={10} lg={10} xl={10}>
-                                    <FormInput name='Task' autoComplete='false' placeholder='New task ...' type='text' className="form-control" value={taskName} onChange={(e: any) => setTaskName(e?.target?.value)}/>
+                                    <FormInput name='Task' autoComplete='false' placeholder='New task ...' type='text' className="form-control" value={taskName} onChange={(e: any) => setTaskName(e?.target?.value)} />
+                                    {validationErrors.name && (<Form.Text className="text-danger">{validationErrors.name}</Form.Text>)}
                                 </Col>
                                 <Col md={2} lg={2} xl={2}>
                                     <Button onClick={(e) => addNewTask()}>Add</Button>
@@ -129,32 +144,32 @@ const TaskTodo = () => {
                                         <Row className='mt-4'>
                                             <Tab.Content>
                                                 <Col md={12} lg={12} xl={12}>
-                                                {activeTab === "all" && (
+                                                    {activeTab === "all" && (
                                                         <Suspense fallback={null}>
                                                             <TaskTodoList tasks={allTask} setTasks={setAllTask} getAllTasks={getAllTasks} />
                                                         </Suspense>
                                                     )}
                                                     {activeTab === "today" && (
                                                         <Suspense fallback={null}>
-                                                            <TaskTodoList tasks={todayTask} setTasks={setTodayTask} getAllTasks={getAllTasks}/>
+                                                            <TaskTodoList tasks={todayTask} setTasks={setTodayTask} getAllTasks={getAllTasks} />
                                                         </Suspense>
                                                     )}
 
                                                     {activeTab === "upcoming" && (
                                                         <Suspense fallback={null}>
-                                                            <TaskTodoList tasks={upcomingTask} setTasks={setUpcomingTask} getAllTasks={getAllTasks}/>
+                                                            <TaskTodoList tasks={upcomingTask} setTasks={setUpcomingTask} getAllTasks={getAllTasks} />
                                                         </Suspense>
                                                     )}
 
                                                     {activeTab === "pending" && (
                                                         <Suspense fallback={null}>
-                                                            <TaskTodoList tasks={expiredTask} setTasks={setExpiredTask} getAllTasks={getAllTasks}/>
+                                                            <TaskTodoList tasks={expiredTask} setTasks={setExpiredTask} getAllTasks={getAllTasks} />
                                                         </Suspense>
                                                     )}
 
                                                     {activeTab === "completed" && (
                                                         <Suspense fallback={null}>
-                                                            <TaskTodoList tasks={completedTask} setTasks={setCompletedTask} getAllTasks={getAllTasks}/>
+                                                            <TaskTodoList tasks={completedTask} setTasks={setCompletedTask} getAllTasks={getAllTasks} />
                                                         </Suspense>
                                                     )}
                                                 </Col>
