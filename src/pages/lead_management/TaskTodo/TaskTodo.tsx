@@ -77,7 +77,7 @@ const TaskTodo = () => {
                         <Card.Body>
                             <Row>
                                 <Col md={10} lg={10} xl={10}>
-                                    <FormInput name='Task' placeholder='New task ...' type='text' className="form-control" value={taskName} onChange={(e: any) => setTaskName(e?.target?.value)}/>
+                                    <FormInput name='Task' autoComplete='false' placeholder='New task ...' type='text' className="form-control" value={taskName} onChange={(e: any) => setTaskName(e?.target?.value)}/>
                                 </Col>
                                 <Col md={2} lg={2} xl={2}>
                                     <Button onClick={(e) => addNewTask()}>Add</Button>
@@ -93,31 +93,31 @@ const TaskTodo = () => {
                                     <Tab.Container activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
                                         <Row className='ms-3'>
                                             <Col md={10} lg={10} xl={10}>
-                                                <Nav variant="tabs" as="ul" className="nav nav-pills nav-fill navtab-bg row-gap-1">
-                                                <Nav.Item as="li" className="nav-item nav_item_4">
+                                                <Nav variant="tabs" as="ul" className="nav nav-fill row-gap-1 navtab-native-bg">
+                                                    <Nav.Item as="li" className="nav-item">
                                                         <Nav.Link eventKey="all" className="nav-link cursor-pointer">
                                                             All
                                                         </Nav.Link>
                                                     </Nav.Item>
-                                                    <Nav.Item as="li" className="nav-item nav_item_4">
+                                                    <Nav.Item as="li" className="nav-item ">
                                                         <Nav.Link eventKey="today" className="nav-link cursor-pointer">
                                                             Today
                                                         </Nav.Link>
                                                     </Nav.Item>
 
-                                                    <Nav.Item as="li" className="nav-item nav_item_3">
+                                                    <Nav.Item as="li" className="nav-item ">
                                                         <Nav.Link eventKey="upcoming" className="nav-link cursor-pointer">
                                                             Upcoming
                                                         </Nav.Link>
                                                     </Nav.Item>
 
-                                                    <Nav.Item as="li" className="nav-item nav_item_3">
+                                                    <Nav.Item as="li" className="nav-item ">
                                                         <Nav.Link eventKey="pending" className="nav-link cursor-pointer">
                                                             Pending
                                                         </Nav.Link>
                                                     </Nav.Item>
 
-                                                    <Nav.Item as="li" className="nav-item nav_item_3">
+                                                    <Nav.Item as="li" className="nav-item ">
                                                         <Nav.Link eventKey="completed" className="nav-link cursor-pointer">
                                                             Completed
                                                         </Nav.Link>
