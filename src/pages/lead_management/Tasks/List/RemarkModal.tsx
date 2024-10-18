@@ -10,6 +10,7 @@ import axios from 'axios';
 import { showErrorAlert, showSuccessAlert } from '../../../../constants';
 import { refreshData } from '../../../../redux/countryReducer';
 import classNames from 'classnames';
+import { setColorOpacityRGB } from '../../../../utils/setColorOpacity';
 
 const initialFormState = {
     id: '',
@@ -136,8 +137,9 @@ const RemarkModal = withSwal((props: any) => {
                                                     <small
                                                         style={{
                                                             opacity: 0.7,
-                                                            backgroundColor: `${remark?.color}`,
-                                                            color: "white",
+                                                            // backgroundColor: `${remark?.color}`,
+                                                            backgroundColor: setColorOpacityRGB(remark?.color),
+                                                            color: "black",
                                                             border: `1px solid #122d3d`,
                                                             borderRadius: "5px",
                                                             padding: "2px 12px",

@@ -30,7 +30,7 @@ interface OptionType {
 }
 
 const statusTypes = [
-  { label: "None", value: null },
+  // { label: "None", value: null },
   { label: "Potential", value: 0 },
   { label: "Spam", value: 1 },
 ];
@@ -394,7 +394,7 @@ const StatusModal = ({ modal, setModal }: modalType) => {
                   className="react-select react-select-container"
                   name="status_type"
                   classNamePrefix="react-select"
-                  options={[{ value: null, label: "None" }, ...statusTypes]}
+                  options={statusTypes}
                   value={selectedOptions}
                   onChange={handleOptionsChange}
                 />
@@ -409,7 +409,7 @@ const StatusModal = ({ modal, setModal }: modalType) => {
                   className="react-select react-select-container"
                   name="is_substatus"
                   classNamePrefix="react-select"
-                  options={[{ value: null, label: "None" }, ...isSubStatus]}
+                  options={isSubStatus}
                   value={subStatusType}
                   onChange={handleSubStatusChange}
                 />

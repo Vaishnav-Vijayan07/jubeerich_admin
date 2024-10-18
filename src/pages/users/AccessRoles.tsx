@@ -393,7 +393,7 @@ const BasicInputElements = withSwal((props: any) => {
                   closeMenuOnSelect={false}
                   components={animatedComponents}
                   isMulti
-                  options={[{ value: null, label: "None" }, ...powersData]}
+                  options={powersData}
                   value={selectedOptions}
                   onChange={handleSelectChange as any}
                   error={validationErrors.power_ids}

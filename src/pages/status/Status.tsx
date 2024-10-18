@@ -365,7 +365,7 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={(e) => {
                     setFormData((prevData: any) => ({
                       ...prevData,
-                      color: e.hex,
+                      color: e.rgba,
                     }))
                   }
                   }
