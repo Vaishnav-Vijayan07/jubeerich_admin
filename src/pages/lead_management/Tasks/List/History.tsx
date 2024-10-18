@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { showErrorAlert } from "../../../../constants";
-import { Spinner } from "react-bootstrap";
+import { Badge, Spinner } from "react-bootstrap";
 
 const History = ({ studentId }: { studentId: number }) => {
   const [userHistory, setUserHistory] = React.useState<any[]>([]);
@@ -38,12 +38,10 @@ const History = ({ studentId }: { studentId: number }) => {
   return (
     <div className="history-tl-container">
       <ul className="tl">
-        {/* <li className="tl-item">
-          <div className="item-title">All History</div>
-        </li> */}
         {userHistory?.map((item) => (
           <li key={item.id} className="tl-item">
             <div className="item-title">{item.action}</div>
+            <Badge>{item?.country ? item?.country?.country_name : null}</Badge>
             <div className="timestamp">
               {new Date(item.updated_on).toLocaleString()}
             </div>

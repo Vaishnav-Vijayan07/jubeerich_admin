@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Col, Row, Spinner } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { Badge, Col, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import FeatherIcons from "feather-icons-react";
 import axios from "axios";
@@ -13,6 +13,8 @@ import {
 } from "../../../../constants";
 
 const Comments = ({ studentId }: any) => {
+  const commentBox = useRef<any>(null);
+
   const [isUpdate, setisUpdate] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [commentArray, setCommentArray] = useState([]);
@@ -24,7 +26,18 @@ const Comments = ({ studentId }: any) => {
     user: state.Auth.user,
   }));
 
-  console.log("user ==> ", user);
+  const scrollToTextarea = () => {
+    console.log("outside");
+    if (commentBox?.current) {
+      console.log("here");
+
+      commentBox.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "nearest",
+      });
+    }
+  };
 
   const fetchAllComments = async () => {
     setLoading(true);
@@ -73,8 +86,9 @@ const Comments = ({ studentId }: any) => {
       showErrorAlert("An error occured");
     }
   };
-
+  
   const handleCommentUpdate = (comment: any) => {
+    scrollToTextarea();
     setisUpdate(true);
     setCommentText(comment.comment);
     setCommentId(comment.id);
@@ -130,7 +144,9 @@ const Comments = ({ studentId }: any) => {
                     </span>
                     {comment?.user}
                   </h5>
-
+                  <Badge>
+                    {comment?.country ? comment?.country?.country_name : null}
+                  </Badge>
                   <p className="mt-1 mb-0 text-muted">{comment.comment}</p>
                 </div>
               </div>
@@ -142,7 +158,7 @@ const Comments = ({ studentId }: any) => {
 
       <Row className="mt-3">
         <Col>
-          <div className="border rounded">
+          <div className="border rounded" ref={commentBox}>
             <form onSubmit={handleSubmit}>
               <textarea
                 rows={3}
