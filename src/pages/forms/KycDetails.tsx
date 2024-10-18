@@ -1,6 +1,6 @@
 import React from "react";
 import PageTitle from "../../components/PageTitle";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Accordion, Button, Card, Col, Row } from "react-bootstrap";
 import profileImg from "../../assets/images/users/user-2.jpg";
 import { Link } from "react-router-dom";
 import { icons } from "../../assets/images/icons";
@@ -271,7 +271,7 @@ const KycDetails = () => {
       visaType: "F-1 Student Visa",
     },
   ];
-  
+
   const policeClearance = [
     {
       convicted: "No",
@@ -377,530 +377,526 @@ const KycDetails = () => {
           </Card.Body>
         </Card>
       </Row>
-      <Row>
-        <Col md={6} lg={6}>
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-account-circle me-1 text-white"></i> PERSONAL DETAILS
-              </h5>
+      <Accordion defaultActiveKey="0">
+        <Row>
+          <Col md={6} lg={6}>
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-account-circle me-1 text-white"></i> PERSONAL DETAILS
+                    </h5>
+                  </Accordion.Header>
 
-              <div className="text-start mt-2">
-                {fields.map((field, index) => (
-                  <p key={index} className={`mb-0 p-2 ps-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}>
-                    <strong>{field.label}:</strong>
-                    <span className="ms-2">{field.value}</span>
-                  </p>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
+                  <Accordion.Body>
+                    <div className="text-start mt-2">
+                      {fields.map((field, index) => (
+                        <p key={index} className={`mb-0 p-2 ps-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}>
+                          <strong>{field.label}:</strong>
+                          <span className="ms-2">{field.value}</span>
+                        </p>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
 
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-account-multiple me-1"></i> FAMILY INFORMATION
-              </h5>
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="1">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-account-multiple me-1"></i> FAMILY INFORMATION
+                    </h5>
+                  </Accordion.Header>
 
-              <div className="text-start mt-2 ps-1">
-                {familyFields.map((field, index) => (
-                  <p
-                    key={index}
-                    className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <strong>{field.label}:</strong>
-                    <span className="ms-2">{field.value}</span>
-                  </p>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
+                  <Accordion.Body>
+                    <div className="text-start mt-2 ps-1">
+                      {familyFields.map((field, index) => (
+                        <p
+                          key={index}
+                          className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <strong>{field.label}:</strong>
+                          <span className="ms-2">{field.value}</span>
+                        </p>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
 
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-currency-usd me-1"></i> FUND PLAN
-              </h5>
-              <div className="text-start mt-2 ps-1">
-                {financialDetails.map((data, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <p className="mb-1 font-15">
-                      <strong>Type of funds:</strong>
-                      <span className="ms-2">{data.typeOfFunds}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Own funds/sponsored funds?</strong>
-                      <span className="ms-2">{data.ownOrSponsored}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Relation with sponsor:</strong>
-                      <span className="ms-2">{data.relationWithSponsor}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Sponsorship amount:</strong>
-                      <span className="ms-2">{data.sponsorshipAmount}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Name of the bank:</strong>
-                      <span className="ms-2">{data.bankName}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="2">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-currency-usd me-1"></i> FUND PLAN
+                    </h5>
+                  </Accordion.Header>
 
-              <h5 className="font-weight-bold text-danger">Other Information:</h5>
+                  <Accordion.Body>
+                    <div className="text-start mt-2 ps-1">
+                      {financialDetails.map((data, index) => (
+                        <div
+                          key={index}
+                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <p className="mb-1 font-15">
+                            <strong>Type of funds:</strong>
+                            <span className="ms-2">{data.typeOfFunds}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Own funds/sponsored funds?</strong>
+                            <span className="ms-2">{data.ownOrSponsored}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Relation with sponsor:</strong>
+                            <span className="ms-2">{data.relationWithSponsor}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Sponsorship amount:</strong>
+                            <span className="ms-2">{data.sponsorshipAmount}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Name of the bank:</strong>
+                            <span className="ms-2">{data.bankName}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
 
-              <div className="text-start mt-2">
-                <p className={`mb-0 p-2 ps-2 font-15 bg-light`}>
-                  <strong>{"If FD or Savings does the funds have min 6 months back up and proper source to prove?"}:</strong>
-                  <span className="ms-2">{"Yes"}</span>
-                </p>
+                    <h5 className="font-weight-bold text-danger">Other Information:</h5>
 
-                <p className={`mb-0 p-2 ps-2 font-15`}>
-                  <strong>{"Explain the source of funds for FD/Savings etc"}:</strong>
-                  <span className="ms-2">{"Lorem ipsum dolor sit amet"}</span>
-                </p>
-              </div>
-            </Card.Body>
-          </Card>
+                    <div className="text-start mt-2">
+                      <p className={`mb-0 p-2 ps-2 font-15 bg-light`}>
+                        <strong>
+                          {"If FD or Savings does the funds have min 6 months back up and proper source to prove?"}:
+                        </strong>
+                        <span className="ms-2">{"Yes"}</span>
+                      </p>
 
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-book-open me-1"></i> ENGLISH LANGUAGE PROFICIENCY
-              </h5>
-              <div className="text-start mt-2 ps-1">
-                {englishProficiencyData.map((test, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <p className="mb-1 font-15">
-                      <strong>Type of Test:</strong>
-                      <span className="ms-2">{test.testType}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Date of Exam:</strong>
-                      <span className="ms-2">{test.dateOfExam}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Listening Score (L):</strong>
-                      <span className="ms-2">{test.scores.Listening}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Speaking Score (S):</strong>
-                      <span className="ms-2">{test.scores.Speaking}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Reading Score (R):</strong>
-                      <span className="ms-2">{test.scores.Reading}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Writing Score (W):</strong>
-                      <span className="ms-2">{test.scores.Writing}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Overall Score (O.V):</strong>
-                      <span className="ms-2">{test.scores.Overall}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
+                      <p className={`mb-0 p-2 ps-2 font-15`}>
+                        <strong>{"Explain the source of funds for FD/Savings etc"}:</strong>
+                        <span className="ms-2">{"Lorem ipsum dolor sit amet"}</span>
+                      </p>
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
 
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-medical-bag me-1"></i> MEDICAL DECLARATION
-              </h5>
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="3">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-book-open me-1"></i> ENGLISH LANGUAGE PROFICIENCY
+                    </h5>
+                  </Accordion.Header>
 
-              <div className="text-start mt-1 ps-1">
-                <h5 className="font-weight-bold text-danger">Medical Declaration:</h5>
-                <div
-                  className={`mb-3 bg-light`}
-                  style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                >
-                  <p className="mb-1 font-15">
-                    <strong>Are there any medical conditions or health concerns that we should be aware of?</strong>
-                  </p>
-                  <p className="font-15">
-                    <span className="ms-2">{medicalDeclaration ? medicalDeclaration : "No"}</span>
-                  </p>
-                </div>
-                <p className="font-15">
-                  <em>
-                    This information is necessary for regulatory compliance and will be treated with the utmost confidentiality.
-                  </em>
-                </p>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
+                  <Accordion.Body>
+                    <div className="text-start mt-2 ps-1">
+                      {englishProficiencyData.map((test, index) => (
+                        <div
+                          key={index}
+                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <p className="mb-1 font-15">
+                            <strong>Type of Test:</strong>
+                            <span className="ms-2">{test.testType}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Date of Exam:</strong>
+                            <span className="ms-2">{test.dateOfExam}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Listening Score (L):</strong>
+                            <span className="ms-2">{test.scores.Listening}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Speaking Score (S):</strong>
+                            <span className="ms-2">{test.scores.Speaking}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Reading Score (R):</strong>
+                            <span className="ms-2">{test.scores.Reading}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Writing Score (W):</strong>
+                            <span className="ms-2">{test.scores.Writing}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Overall Score (O.V):</strong>
+                            <span className="ms-2">{test.scores.Overall}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
 
-        <Col>
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-school me-1"></i> EDUCATIONAL QUALIFICATION
-              </h5>
-              <div className="text-start mt-2 ps-1">
-                <h5 className="font-weight-bold text-danger">Qualifications:</h5>
-                {qualifications.map((qual, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <p className="mb-1 font-15">
-                      <strong>Qualification:</strong>
-                      <span className="ms-2">{qual.level}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Name of the College & University:</strong>
-                      <span className="ms-2">{qual.college}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Start Date:</strong>
-                      <span className="ms-2">{qual.startDate}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>End Date:</strong>
-                      <span className="ms-2">{qual.endDate}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Percentage:</strong>
-                      <span className="ms-2">{qual.percentage}</span>
-                    </p>
-                  </div>
-                ))}
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="1">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-medical-bag me-1"></i> MEDICAL DECLARATION
+                    </h5>
+                  </Accordion.Header>
 
-                <h5 className="font-weight-bold text-danger">Periods of Gap:</h5>
-                {gaps.map((gap, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <p className="mb-1 font-15">
-                      <strong>Period of Gap:</strong>
-                      <span className="ms-2">{gap.period}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Reason:</strong>
-                      <span className="ms-2">{gap.reason}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Supporting Documents:</strong>
-                      <span className="ms-2">{gap.documents}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
+                  <Accordion.Body>
+                    <div className="text-start mt-1 ps-1">
+                      <h5 className="font-weight-bold text-danger">Medical Declaration:</h5>
+                      <div
+                        className={`mb-3 bg-light`}
+                        style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                      >
+                        <p className="mb-1 font-15">
+                          <strong>Are there any medical conditions or health concerns that we should be aware of?</strong>
+                        </p>
+                        <p className="font-15">
+                          <span className="ms-2">{medicalDeclaration ? medicalDeclaration : "No"}</span>
+                        </p>
+                      </div>
+                      <p className="font-15">
+                        <em>
+                          This information is necessary for regulatory compliance and will be treated with the utmost
+                          confidentiality.
+                        </em>
+                      </p>
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
 
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-passport me-1"></i> PASSPORT INFORMATION
-              </h5>
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="11">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-shield-alert me-1"></i> POLICE CLEARANCE CERTIFICATE
+                    </h5>
+                  </Accordion.Header>
 
-              <div className="text-start mt-2">
-                {passportFields.map((field, index) => (
-                  <p
-                    key={index}
-                    className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <strong>{field.label}:</strong>
-                    <span className="ms-2">{field.value}</span>
-                  </p>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
+                  <Accordion.Body>
+                    <div className="text-start mt-1 ps-1">
+                      <h5 className="font-weight-bold text-danger">Police Clearance Information:</h5>
+                      {policeClearance.map((info, index) => (
+                        <div
+                          key={index}
+                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <p className="mb-1 font-15">
+                            <strong>Have you ever been convicted of a criminal offense?</strong>
+                            <span className="ms-2">{info.convicted}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Countries for Police Clearance Certificate:</strong>
+                            <span className="ms-2">{info.countries}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Duration of Stay in Each Country:</strong>
+                            <span className="ms-2">{info.duration}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
+          </Col>
 
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-briefcase me-1"></i> WORK EXPERIENCE
-              </h5>
+          <Col>
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="5">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-school me-1"></i> EDUCATIONAL QUALIFICATION
+                    </h5>
+                  </Accordion.Header>
 
-              <div className="text-start mt-2 ps-1">
-                {experiences.map((exp, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <p className="mb-1 font-15">
-                      <strong>Name of Company:</strong>
-                      <span className="ms-2">{exp.company}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Start and End Date:</strong>
-                      <span className="ms-2">
-                        {exp.startDate} - {exp.endDate}
-                      </span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Designation:</strong>
-                      <span className="ms-2">{exp.designation}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Work Experience Certificate Available:</strong>
-                      <span className="ms-2">{exp.certificateAvailable}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Bank Statement Attached:</strong>
-                      <span className="ms-2">{exp.bankStatementAttached}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
+                  <Accordion.Body>
+                    <div className="text-start mt-2 ps-1">
+                      <h5 className="font-weight-bold text-danger">Qualifications:</h5>
+                      {qualifications.map((qual, index) => (
+                        <div
+                          key={index}
+                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <p className="mb-1 font-15">
+                            <strong>Qualification:</strong>
+                            <span className="ms-2">{qual.level}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Name of the College & University:</strong>
+                            <span className="ms-2">{qual.college}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Start Date:</strong>
+                            <span className="ms-2">{qual.startDate}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>End Date:</strong>
+                            <span className="ms-2">{qual.endDate}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Percentage:</strong>
+                            <span className="ms-2">{qual.percentage}</span>
+                          </p>
+                        </div>
+                      ))}
 
-              <div className="text-start mt-2 ps-1">
-                <h5 className="font-weight-bold text-danger">Other Information:</h5>
-                {otherWorkInformationFields.map((info, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <p className="mb-1 font-15">
-                      <strong>{info.label}</strong>
-                      <span className="ms-2">{info.value}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
+                      <h5 className="font-weight-bold text-danger">Periods of Gap:</h5>
+                      {gaps.map((gap, index) => (
+                        <div
+                          key={index}
+                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <p className="mb-1 font-15">
+                            <strong>Period of Gap:</strong>
+                            <span className="ms-2">{gap.period}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Reason:</strong>
+                            <span className="ms-2">{gap.reason}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Supporting Documents:</strong>
+                            <span className="ms-2">{gap.documents}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
 
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-cancel me-1"></i> PREVIOUS VISA DECLINE
-              </h5>
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="6">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-passport me-1"></i> PASSPORT INFORMATION
+                    </h5>
+                  </Accordion.Header>
 
-              <div className="text-start mt-1 ps-1">
-                <h5 className="font-weight-bold text-danger">Previous Visa Decline (If Any):</h5>
-                {previousVisaDecline.map((visa, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <p className="mb-1 font-15">
-                      <strong>Country Name:</strong>
-                      <span className="ms-2">{visa.countryName}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Course and Institute Applied For:</strong>
-                      <span className="ms-2">{visa.courseAndInstitute}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Reason for Rejection:</strong>
-                      <span className="ms-2">{visa.reasonForRejection}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
+                  <Accordion.Body>
+                    <div className="text-start mt-2">
+                      {passportFields.map((field, index) => (
+                        <p
+                          key={index}
+                          className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <strong>{field.label}:</strong>
+                          <span className="ms-2">{field.value}</span>
+                        </p>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
 
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-check-circle me-1"></i> PREVIOUS VISA APPROVAL
-              </h5>
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="7">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-briefcase me-1"></i> WORK EXPERIENCE
+                    </h5>
+                  </Accordion.Header>
 
-              <div className="text-start mt-1 ps-1">
-                <h5 className="font-weight-bold text-danger">Previous Visa Approval (If Any):</h5>
-                {previousVisaApproval.map((visa, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <p className="mb-1 font-15">
-                      <strong>Country Name:</strong>
-                      <span className="ms-2">{visa.countryName}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Course and Institute Applied For:</strong>
-                      <span className="ms-2">{visa.courseAndInstitute}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Duration of Stay:</strong>
-                      <span className="ms-2">{visa.durationOfStay}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Visa Type:</strong>
-                      <span className="ms-2">{visa.visaType}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
+                  <Accordion.Body>
+                    <div className="text-start mt-2 ps-1">
+                      {experiences.map((exp, index) => (
+                        <div
+                          key={index}
+                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <p className="mb-1 font-15">
+                            <strong>Name of Company:</strong>
+                            <span className="ms-2">{exp.company}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Start and End Date:</strong>
+                            <span className="ms-2">
+                              {exp.startDate} - {exp.endDate}
+                            </span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Designation:</strong>
+                            <span className="ms-2">{exp.designation}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Work Experience Certificate Available:</strong>
+                            <span className="ms-2">{exp.certificateAvailable}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Bank Statement Attached:</strong>
+                            <span className="ms-2">{exp.bankStatementAttached}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
 
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-airplane me-1"></i> PREVIOUS TRAVEL HISTORY
-              </h5>
+                    <div className="text-start mt-2 ps-1">
+                      <h5 className="font-weight-bold text-danger">Other Information:</h5>
+                      {otherWorkInformationFields.map((info, index) => (
+                        <div
+                          key={index}
+                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <p className="mb-1 font-15">
+                            <strong>{info.label}</strong>
+                            <span className="ms-2">{info.value}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
 
-              <div className="text-start mt-1 ps-1">
-                <h5 className="font-weight-bold text-danger">Previous Travel History (If Any):</h5>
-                {previousTravelHistory.map((travel, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <p className="mb-1 font-15">
-                      <strong>Country Name:</strong>
-                      <span className="ms-2">{travel.countryName}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Period of Stay:</strong>
-                      <span className="ms-2">{travel.periodOfStay}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Purpose of Travel:</strong>
-                      <span className="ms-2">{travel.purposeOfTravel}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="8">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-cancel me-1"></i> PREVIOUS VISA DECLINE
+                    </h5>
+                  </Accordion.Header>
 
-          <Card>
-            <Card.Body>
-              <h5
-                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
-                style={{
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
-                  padding: "10px", // Padding for better visual spacing
-                  borderRadius: "5px", // Optional: Rounded corners for a softer look
-                }}
-              >
-                <i className="mdi mdi-shield-alert me-1"></i> POLICE CLEARANCE CERTIFICATE
-              </h5>
+                  <Accordion.Body>
+                    <div className="text-start mt-1 ps-1">
+                      <h5 className="font-weight-bold text-danger">Previous Visa Decline (If Any):</h5>
+                      {previousVisaDecline.map((visa, index) => (
+                        <div
+                          key={index}
+                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <p className="mb-1 font-15">
+                            <strong>Country Name:</strong>
+                            <span className="ms-2">{visa.countryName}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Course and Institute Applied For:</strong>
+                            <span className="ms-2">{visa.courseAndInstitute}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Reason for Rejection:</strong>
+                            <span className="ms-2">{visa.reasonForRejection}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
 
-              <div className="text-start mt-1 ps-1">
-                <h5 className="font-weight-bold text-danger">Police Clearance Information:</h5>
-                {policeClearance.map((info, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
-                  >
-                    <p className="mb-1 font-15">
-                      <strong>Have you ever been convicted of a criminal offense?</strong>
-                      <span className="ms-2">{info.convicted}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Countries for Police Clearance Certificate:</strong>
-                      <span className="ms-2">{info.countries}</span>
-                    </p>
-                    <p className="mb-1 font-15">
-                      <strong>Duration of Stay in Each Country:</strong>
-                      <span className="ms-2">{info.duration}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="9">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-check-circle me-1"></i> PREVIOUS VISA APPROVAL
+                    </h5>
+                  </Accordion.Header>
+
+                  <Accordion.Body>
+                    <div className="text-start mt-1 ps-1">
+                      <h5 className="font-weight-bold text-danger">Previous Visa Approval (If Any):</h5>
+                      {previousVisaApproval.map((visa, index) => (
+                        <div
+                          key={index}
+                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <p className="mb-1 font-15">
+                            <strong>Country Name:</strong>
+                            <span className="ms-2">{visa.countryName}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Course and Institute Applied For:</strong>
+                            <span className="ms-2">{visa.courseAndInstitute}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Duration of Stay:</strong>
+                            <span className="ms-2">{visa.durationOfStay}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Visa Type:</strong>
+                            <span className="ms-2">{visa.visaType}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
+
+            <Card>
+              <Card.Body>
+                <Accordion.Item eventKey="10">
+                  <Accordion.Header className="mt-0 text-white">
+                    <h5 className="text-uppercase text-white">
+                      <i className="mdi mdi-airplane me-1"></i> PREVIOUS TRAVEL HISTORY
+                    </h5>
+                  </Accordion.Header>
+
+                  <Accordion.Body>
+                    <div className="text-start mt-1 ps-1">
+                      <h5 className="font-weight-bold text-danger">Previous Travel History (If Any):</h5>
+                      {previousTravelHistory.map((travel, index) => (
+                        <div
+                          key={index}
+                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        >
+                          <p className="mb-1 font-15">
+                            <strong>Country Name:</strong>
+                            <span className="ms-2">{travel.countryName}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Period of Stay:</strong>
+                            <span className="ms-2">{travel.periodOfStay}</span>
+                          </p>
+                          <p className="mb-1 font-15">
+                            <strong>Purpose of Travel:</strong>
+                            <span className="ms-2">{travel.purposeOfTravel}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Accordion>
     </div>
   );
 };
