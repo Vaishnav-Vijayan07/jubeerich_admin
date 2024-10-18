@@ -90,7 +90,7 @@ const TaskTodo = () => {
                     <Card>
                         <Card.Body>
                             <Row className='mb-4'>
-                                <Col md={12} lg={12} xl={12} style={{overflowX: 'hidden'}}>
+                                <Col md={12} lg={12} xl={12}>
                                     <Tab.Container activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
                                         <Row className='ms-3'>
                                             <Col md={10} lg={10} xl={10}>

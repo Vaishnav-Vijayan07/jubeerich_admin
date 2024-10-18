@@ -33,6 +33,7 @@ import Comments from "./Comments";
 import { refreshData } from "../../../../redux/countryReducer";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
 import swal from "sweetalert2";
+import RemarkModal from "./RemarkModal";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const History = lazy(() => import("./History"));
@@ -45,19 +46,33 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [statusId, setStatusId] = useState(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [taskDetails, setTaskDetails] = useState<any>({});
+  const [ShowRemarkModal, setShowRemarkModal] = useState<boolean>(false);
+  const [remarkData, setRemarkData] = useState<any>(null);
+  const [viewOnly, setViewOnly] = useState<boolean>(false);
 
   const [activeTab, setActiveTab] = useState<any>("basic_info");
 
   const dispatch = useDispatch();
-  const { Countries, OfficeTypes, MaritalStatus, user, refresh } = useSelector(
+  const { Countries, OfficeTypes, MaritalStatus, user, refresh, flags } = useSelector(
     (state: RootState) => ({
       Countries: state?.Country?.countries,
       OfficeTypes: state?.OfficeTypes?.officeTypes,
       MaritalStatus: state?.MaritalStatus?.maritalStatus,
       user: state.Auth.user,
       refresh: state.refreshReducer.refreshing,
+      flags: state.Flag.flags,
     })
   );
+
+  const flagsData = useMemo(() => {
+    if (!flags) return [];
+    return flags.map((data: any) => {
+      return {
+        value: data?.id,
+        label: data?.flag_name
+      }
+    })
+  },[flags])
 
   const { dropdownData } = useDropdownData(
     "marital,officeType,franchise,region"
@@ -105,13 +120,28 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     ) {
       toggleStandard();
     } else {
-      const { data } = await axios.put("/lead_status", {
-        lead_id: studentId,
-        status_id,
-      });
 
-      showSuccessAlert(data.message);
-      dispatch(refreshData());
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      })
+
+      if (result.isConfirmed) {
+        setShowRemarkModal(true)
+
+        const { data } = await axios.put("/lead_status", {
+          lead_id: studentId,
+          status_id,
+        });
+  
+        showSuccessAlert(data.message);
+        dispatch(refreshData());
+      }
     }
   };
 
@@ -123,8 +153,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         followup_date: selectedDate,
       })
       .then((res) => {
+        setShowRemarkModal(true);
         showSuccessAlert(res.data.message);
-        dispatch(refreshData());
+        // dispatch(refreshData());
         toggleStandard();
       })
       .catch((err) => {
@@ -159,6 +190,56 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       getBasicInfo();
     }
   }, [studentId, refresh]);
+
+  useEffect(() => {
+    getRemarks()
+  }, [studentId, taskId]);
+
+  const updateFlagStatus = async(flag_id: string) => {
+    try {
+
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.put(`/update_flag_status/${studentId}`, { flag_id: flag_id });
+        if(res){
+          showSuccessAlert('Flag Changed Successfully');
+          getRemarks();
+          dispatch(refreshData())
+        }
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getRemarks = async() => {
+    try {
+      const result = await axios.get(`/followup_remark/${studentId}`)
+      console.log(result.data?.data);
+      
+      if(result){
+        setRemarkData(result.data?.data)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const callGetRemark = () => {
+    getRemarks();
+    setSelectedDate(null);
+    setStatusId(null);
+  }
 
   useEffect(() => {
     dispatch(getCountry());
@@ -347,10 +428,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           >
             <Col md={9}>
               <h3 className="m-0 mb-1">{taskDetails?.title}</h3>
-              <p className="mb-2">
-                Mr. Austin Stephen from Aluva, has applied for admission in
-                Russia.
-              </p>
+              <p className="mb-2">{taskDetails?.description}</p>
               <div className="d-flex">
                 {basicData?.country_names?.map((country: any) => (
                   <small
@@ -577,44 +655,41 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Card>
             <Card.Body>
               <h4 className="text-secondary m-0">Status</h4>
-              <p className="mt-2 mb-2 text-muted fw-light">
-                Change the lead status
-              </p>
-              <Dropdown>
-                <Dropdown.Toggle
-                  className="cursor-pointer"
-                  variant="light"
-                  // disabled={!StudentData?.status}
-                >
-                  {console.log(basicData)}
-                  {basicData?.status?.status_name
-                    ? basicData?.status?.status_name
-                    : "Change status"}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {(status || [])?.map((item: any) => (
-                    // Check if the item is visible before rendering the Dropdown.Item
+              <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p>
+              <div className="d-flex justify-content-between align-items-center">
+                <Dropdown>
+                  <Dropdown.Toggle
+                    className="cursor-pointer"
+                    variant="light"
+                    // disabled={!StudentData?.status}
+                  >
+                    {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    {(status || [])?.map((item: any) => (
+                      // Check if the item is visible before rendering the Dropdown.Item
 
-                    <Dropdown.Item
-                      eventKey={item.id}
-                      key={item.id}
-                      onClick={() => [
-                        handleStatusChange(item?.id),
-                        setStatusId(item?.id),
-                      ]}
-                    >
-                      {item.status_name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
+                      <Dropdown.Item
+                        eventKey={item.id}
+                        key={item.id}
+                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                      >
+                        {item.status_name}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+                <span>
+                  <i className="mdi mdi-comment-eye-outline fs-2" title="View Comments" data-bs-toggle="tooltip" data-bs-placement="top" onClick={() => [setShowRemarkModal(true), setViewOnly(true)]}></i>
+                </span>
+              </div>
             </Card.Body>
           </Card>
         </Col>
         <Col md={6}>
           <Card>
             <Card.Body>
-              <div className="d-flex justify-content-between align-items-center">
+            <div className="d-flex justify-content-between align-items-center">
                 <span>
                   <h4 className="text-secondary m-0">Flag</h4>
                   <p className="mt-2 mb-2 text-muted fw-light">Change flag</p>
@@ -626,13 +701,11 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     color: "white",
                     border: `1px solid #122d3d`,
                     borderRadius: "5px",
-                    padding: "5px 14px",
+                    padding: "12px 24px",
                     fontSize: "0.7rem",
                     borderColor: `${basicData?.user_primary_flags?.color}`,
                     height: "max-content",
-                  }}>
-                    {basicData?.user_primary_flags?.flag_name}
-                  </p>
+                  }}></p>
                 </span>
               </div>
               <Dropdown>
@@ -641,23 +714,19 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   variant="light"
                   // disabled={!StudentData?.status}
                 >
-                  {basicData?.status?.status_name
-                    ? basicData?.status?.status_name
-                    : "Change Flag"}
+                {basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Change Flag"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {(status || [])?.map((item: any) => (
+                  {(flagsData || [])?.map((item: any) => (
                     // Check if the item is visible before rendering the Dropdown.Item
 
                     <Dropdown.Item
-                      eventKey={item.id}
-                      key={item.id}
-                      onClick={() => [
-                        handleStatusChange(item?.id),
-                        setStatusId(item?.id),
-                      ]}
+                      eventKey={item.value}
+                      key={item.value}
+                      // onClick={() => [handleStatusChange(item?.value), setStatusId(item?.value)]}
+                      onClick={() => [updateFlagStatus(item.value)]}
                     >
-                      {item.status_name}
+                      {item.label}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
@@ -815,6 +884,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           </div>
         </Modal.Footer>
       </Modal>
+
+      <RemarkModal viewOnly={viewOnly} setViewOnly={setViewOnly} showModal={ShowRemarkModal} toggleRemarkModal={setShowRemarkModal} studentId={studentId} statusId={statusId} followup={selectedDate} remarkData={remarkData} callGetRemark={callGetRemark}/>
     </>
   );
 };
