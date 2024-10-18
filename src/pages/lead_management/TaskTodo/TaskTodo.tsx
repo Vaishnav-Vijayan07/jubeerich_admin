@@ -41,7 +41,8 @@ const TaskTodo = () => {
             const result = await axios.post('/ordinary_task', { title: taskName});
             if(result){
                 showSuccessAlert("Created New Task");
-                getAllTasks()
+                getAllTasks();
+                setTaskName('');
             }            
         } catch (error) {
             console.log(error);
@@ -89,7 +90,7 @@ const TaskTodo = () => {
                     <Card>
                         <Card.Body>
                             <Row className='mb-4'>
-                                <Col md={12} lg={12} xl={12}>
+                                <Col md={12} lg={12} xl={12} style={{overflowX: 'hidden'}}>
                                     <Tab.Container activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
                                         <Row className='ms-3'>
                                             <Col md={10} lg={10} xl={10}>

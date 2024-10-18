@@ -56,10 +56,10 @@ const TaskTodoList = withSwal((props: any) => {
                 title: "Are you sure?",
                 text: "This action cannot be undone.",
                 icon: "warning",
-                showCancelButton: false,
+                showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Save",
+                confirmButtonText: "Yes, delete",
             });
             if (confirmResult.isConfirmed) {
                 const result = await axios.delete(`/ordinary_task/${id}`);
@@ -94,7 +94,7 @@ const TaskTodoList = withSwal((props: any) => {
     return (
         <>
             <Row>
-                {tasks.length > 0 ?
+                {tasks?.length > 0 ?
                     <Col md={10} lg={10} xl={10}>
                         <ReactSortable className="row" list={formData ? formData : []} setList={setFormData}>
                             {formData && formData.map(((data: any, index: number) => (

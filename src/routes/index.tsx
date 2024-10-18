@@ -280,20 +280,20 @@ const leadRoutes = {
       ),
       route: PrivateRoute,
     },
+    // {
+    //   path: "leads/ordinary_tasks",
+    //   name: "Ordinary Tasks",
+    //   // element: <Tasks />,
+    //   element: (
+    //     <PrivateRoute
+    //       roles={["View Task", "Monitor"]}
+    //       component={OrdinaryTasks}
+    //     />
+    //   ),
+    //   route: PrivateRoute,
+    // },
     {
       path: "leads/ordinary_tasks",
-      name: "Ordinary Tasks",
-      // element: <Tasks />,
-      element: (
-        <PrivateRoute
-          roles={["View Task", "Monitor"]}
-          component={OrdinaryTasks}
-        />
-      ),
-      route: PrivateRoute,
-    },
-    {
-      path: "leads/ordinary_tasks_Todo",
       name: "Ordinary Tasks",
       // element: <Tasks />,
       element: (
@@ -304,6 +304,18 @@ const leadRoutes = {
       ),
       route: PrivateRoute,
     },
+    // {
+    //   path: "leads/ordinary_tasks_Todo",
+    //   name: "Ordinary Tasks",
+    //   // element: <Tasks />,
+    //   element: (
+    //     <PrivateRoute
+    //       roles={["View Task", "Monitor"]}
+    //       component={TasksTodo}
+    //     />
+    //   ),
+    //   route: PrivateRoute,
+    // },
   ],
 };
 
