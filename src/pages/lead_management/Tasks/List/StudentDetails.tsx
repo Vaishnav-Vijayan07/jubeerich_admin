@@ -607,7 +607,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   variant="light"
                   // disabled={!StudentData?.status}
                 >
-                  {basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Change status"}
+                  {basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Change Flag"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   {(flagsData || [])?.map((item: any) => (
