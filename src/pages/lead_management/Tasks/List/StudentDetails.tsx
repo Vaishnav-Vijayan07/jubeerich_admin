@@ -1,5 +1,16 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import { Button, Card, Col, Dropdown, Form, Modal, Nav, Row, Spinner, Tab } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Dropdown,
+  Form,
+  Modal,
+  Nav,
+  Row,
+  Spinner,
+  Tab,
+} from "react-bootstrap";
 import classNames from "classnames";
 import { icons } from "../../../../assets/images/icons";
 import { getCountry } from "../../../../redux/country/actions";
@@ -22,8 +33,6 @@ import Comments from "./Comments";
 import { refreshData } from "../../../../redux/countryReducer";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
 import swal from "sweetalert2";
-import { getFlag } from "../../../../redux/flag/actions";
-import RemarkModal from "./RemarkModal";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const History = lazy(() => import("./History"));
@@ -36,39 +45,29 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [statusId, setStatusId] = useState(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [taskDetails, setTaskDetails] = useState<any>({});
-  const [ShowRemarkModal, setShowRemarkModal] = useState<boolean>(false);
-  const [remarkData, setRemarkData] = useState<any>(null);
-  const [viewOnly, setViewOnly] = useState<boolean>(false);
 
   const [activeTab, setActiveTab] = useState<any>("basic_info");
 
   const dispatch = useDispatch();
-  const { Countries, OfficeTypes, MaritalStatus, user, refresh, flags } = useSelector((state: RootState) => ({
-    Countries: state?.Country?.countries,
-    OfficeTypes: state?.OfficeTypes?.officeTypes,
-    MaritalStatus: state?.MaritalStatus?.maritalStatus,
-    user: state.Auth.user,
-    refresh: state.refreshReducer.refreshing,
-    flags: state.Flag.flags,
-  }));
-
-  const flagsData = useMemo(() => {
-    if(!flags) return [];
-    return flags.map((data: any) => {
-      return {
-        value: data?.id,
-        label: data?.flag_name
-      }
+  const { Countries, OfficeTypes, MaritalStatus, user, refresh } = useSelector(
+    (state: RootState) => ({
+      Countries: state?.Country?.countries,
+      OfficeTypes: state?.OfficeTypes?.officeTypes,
+      MaritalStatus: state?.MaritalStatus?.maritalStatus,
+      user: state.Auth.user,
+      refresh: state.refreshReducer.refreshing,
     })
-  },[flags])
+  );
 
-  const { dropdownData } = useDropdownData("marital,officeType,franchise,region");
+  const { dropdownData } = useDropdownData(
+    "marital,officeType,franchise,region"
+  );
   const { officeTypes, regions, franchises, maritalStatus } = dropdownData;
 
   const toggleStandard = () => {
     setStandard(!standard);
-    // setSelectedDate(null);
-    // setStatusId(null);
+    setSelectedDate(null);
+    setStatusId(null);
   };
 
   const handleDateChange = (date: any) => {
@@ -87,6 +86,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     axios
       .get(`getStudentBasicInfo/${studentId}`)
       .then((res) => {
+        console.log(res.data);
+
         setBasicData(res.data.data);
         setLoading(false);
       })
@@ -97,65 +98,38 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   };
 
   const handleStatusChange = async (status_id: number) => {
-    if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
+    if (
+      status_id == follow_up_id ||
+      status_id == future_leads_id ||
+      status_id == not_responding_id
+    ) {
       toggleStandard();
     } else {
-
-      const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+      const { data } = await axios.put("/lead_status", {
+        lead_id: studentId,
+        status_id,
       });
 
-      if (result.isConfirmed) {
-        setShowRemarkModal(true)
-
-        const { data } = await axios.put("/lead_status", {
-          lead_id: studentId,
-          status_id,
-        });
-  
-        showSuccessAlert(data.message);
-        // setShowRemarkModal(true)
-        // dispatch(refreshData());
-      }
+      showSuccessAlert(data.message);
+      dispatch(refreshData());
     }
   };
 
-  const handleFollowUpDate = async() => {
-    const result = await swal.fire({
-      title: "Are you sure?",
-      text: "This action cannot be undone.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Save",
-    });
-
-    if (result.isConfirmed) {
-      setShowRemarkModal(true)
-
-      axios
+  const handleFollowUpDate = () => {
+    axios
       .put("/lead_status", {
         lead_id: studentId,
         status_id: statusId,
-        followup_date: selectedDate ,
+        followup_date: selectedDate,
       })
       .then((res) => {
-        // setShowRemarkModal(true)
         showSuccessAlert(res.data.message);
-        // dispatch(refreshData());
+        dispatch(refreshData());
         toggleStandard();
-        })
-        .catch((err) => {
-          console.log("err", err);
-        });
-    }
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
   };
 
   const getTaskDetails = () => {
@@ -169,10 +143,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         console.log("err", err);
       });
   };
-
-  useEffect(() => {
-    getRemarks()
-  }, [studentId, taskId]);
 
   useEffect(() => {
     getTaskDetails();
@@ -194,7 +164,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     dispatch(getCountry());
     dispatch(getOfficeTypeData());
     dispatch(getMaritalStatus());
-    dispatch(getFlag());
   }, []);
 
   const countryData = useMemo(() => {
@@ -221,23 +190,39 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     }));
   }, [MaritalStatus]);
 
-  // Finish Task
-  const handleFinishTask = () => {
-    axios
-      .put("finish_task", {
-        isCompleted: true,
-        id: taskId,
-      })
-      .then((res) => {
+  const handleFinishTask = async () => {
+    try {
+      // Await the user's confirmation
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+      });
+
+      // If the user confirms, proceed with the API call
+      if (result.isConfirmed) {
+        const res = await axios.put("finish_task", {
+          isCompleted: true,
+          id: taskId,
+        });
+
         console.log("res ==>", res.data);
 
+        // Fetch updated task details and list
         getTaskDetails();
         getTaskList();
+
+        // Show success alert
         showSuccessAlert(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      }
+    } catch (err) {
+      console.log("Error during task completion:", err);
+      // Optionally, you can handle the error more gracefully (e.g., showing an alert)
+    }
   };
 
   console.log("basicData ==>", basicData);
@@ -295,60 +280,37 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       }
     } catch (error: any) {
       console.error("Error:", error);
-      showErrorAlert(error);
+
+      // Display the error message from the backend
+      if (error.response) {
+        const errorMessage =
+          error.response.data?.message || "An unexpected error occurred.";
+        await swal.fire({
+          title: "Error",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
+        await swal.fire({
+          title: "Error",
+          text: "Network error or server is unreachable.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const updateFlagStatus = async(flag_id: string) => {
-    try {
-
-      const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
-      });
-
-      if (result.isConfirmed) {
-        const res = await axios.put(`/update_flag_status/${studentId}`, { flag_id: flag_id });
-        if(res){
-          showSuccessAlert('Flag Changed Successfully');
-          getRemarks();
-          dispatch(refreshData())
-        }
-      }
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const getRemarks = async() => {
-    try {
-      const result = await axios.get(`/followup_remark/${studentId}`)
-      console.log(result.data?.data);
-      
-      if(result){
-        setRemarkData(result.data?.data)
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const callGetRemark = () => {
-    getRemarks();
-    setSelectedDate(null);
-    setStatusId(null);
-  }
-
   if (loading) {
-    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "65%" }} />;
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "50%", left: "65%" }}
+      />
+    );
   }
 
   return (
@@ -368,7 +330,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   onClick={handleFinishTask}
                 >
                   <div className="round-circle" />
-                  {taskDetails?.isCompleted ? "Task Completed" : "Mark As Completed"}
+                  {taskDetails?.isCompleted
+                    ? "Task Completed"
+                    : "Mark As Completed"}
                 </Button>
               </Col>
 
@@ -377,10 +341,16 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               <hr className="my-3" />
             </Col>
           </Row>
-          <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
+          <Row
+            className="dotted-border-bottom"
+            style={{ paddingBottom: "20px" }}
+          >
             <Col md={9}>
               <h3 className="m-0 mb-1">{taskDetails?.title}</h3>
-              <p className="mb-2">{taskDetails?.description}</p>
+              <p className="mb-2">
+                Mr. Austin Stephen from Aluva, has applied for admission in
+                Russia.
+              </p>
               <div className="d-flex">
                 {basicData?.country_names?.map((country: any) => (
                   <small
@@ -400,7 +370,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             </Col>
             <Col md={3}>
               <div className="text-end text-nowrap">
-                <b>Lead Date: {handleDateFormat(basicData?.lead_received_date)}</b>
+                <b>
+                  Lead Date: {handleDateFormat(basicData?.lead_received_date)}
+                </b>
               </div>
             </Col>
           </Row>
@@ -411,16 +383,32 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             <div className="grid-container mb-2">
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Name</p>
-                <div className="d-flex align-items-start" style={{ gap: "5px" }}>
-                  <img src={icons.user} alt="date" className="me-1" height="16" />
+                <div
+                  className="d-flex align-items-start"
+                  style={{ gap: "5px" }}
+                >
+                  <img
+                    src={icons.user}
+                    alt="date"
+                    className="me-1"
+                    height="16"
+                  />
                   <h5 className="m-0 font-size-14">{basicData?.full_name}</h5>
                 </div>
               </div>
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Phone Number</p>
-                <div className="d-flex align-items-center outline-none" style={{ gap: "5px" }}>
-                  <img src={icons.apple} alt="phone" className="me-1" width="16" />
+                <div
+                  className="d-flex align-items-center outline-none"
+                  style={{ gap: "5px" }}
+                >
+                  <img
+                    src={icons.apple}
+                    alt="phone"
+                    className="me-1"
+                    width="16"
+                  />
                   {/* <h5 className="m-0 font-size-14">{taskObject.phone}</h5> */}
                   <input
                     type="tel"
@@ -439,8 +427,16 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Email</p>
-                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                  <img src={icons.email} alt="email" className="me-1" width="17" />
+                <div
+                  className="d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                  <img
+                    src={icons.email}
+                    alt="email"
+                    className="me-1"
+                    width="17"
+                  />
                   {/* <h5 className="m-0 font-size-14">{taskObject.email}</h5> */}
                   <input
                     type="text"
@@ -462,24 +458,50 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               <br className="grid-br" />
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Source</p>
-                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                  <img src={icons.cloud} alt="source icon" className="me-1" width="16" />
+                <div
+                  className="d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                  <img
+                    src={icons.cloud}
+                    alt="source icon"
+                    className="me-1"
+                    width="16"
+                  />
                   <h5 className="m-0 font-size-14">{basicData?.source_name}</h5>
                 </div>
               </div>
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Channel</p>
-                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                  <img src={icons.information} alt="cahnnel icon" className="me-1" width="16" />
-                  <h5 className="m-0 font-size-14">{basicData?.channel_name}</h5>
+                <div
+                  className="d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                  <img
+                    src={icons.information}
+                    alt="cahnnel icon"
+                    className="me-1"
+                    width="16"
+                  />
+                  <h5 className="m-0 font-size-14">
+                    {basicData?.channel_name}
+                  </h5>
                 </div>
               </div>
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">City</p>
-                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                  <img src={icons.business} alt="comapny icon" className="me-1" width="16" />
+                <div
+                  className="d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                  <img
+                    src={icons.business}
+                    alt="comapny icon"
+                    className="me-1"
+                    width="16"
+                  />
                   <h5 className="m-0 font-size-14">{basicData?.city}</h5>
                 </div>
               </div>
@@ -488,12 +510,25 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Row>
             <div className="grid-container mb-2">
               <div className="">
-                <p className="mt-2 mb-1 text-muted fw-light">Lead Received Date</p>
-                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                  <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
+                <p className="mt-2 mb-1 text-muted fw-light">
+                  Lead Received Date
+                </p>
+                <div
+                  className="d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                  <img
+                    src={icons.calender_time}
+                    alt="phone"
+                    className="me-1"
+                    width="16"
+                  />
                   <input
                     type="tel"
-                    value={basicData?.lead_received_date && moment(basicData?.lead_received_date).format("DD/MM/YYYY")}
+                    value={
+                      basicData?.lead_received_date &&
+                      moment(basicData?.lead_received_date).format("DD/MM/YYYY")
+                    }
                     style={{
                       border: "none",
                       outline: "none",
@@ -507,11 +542,22 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Followup Date</p>
-                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                  <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
+                <div
+                  className="d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                  <img
+                    src={icons.calender_time}
+                    alt="phone"
+                    className="me-1"
+                    width="16"
+                  />
                   <input
                     type="tel"
-                    value={basicData?.followup_date && moment(basicData?.followup_date).format("DD/MM/YYYY")}
+                    value={
+                      basicData?.followup_date &&
+                      moment(basicData?.followup_date).format("DD/MM/YYYY")
+                    }
                     style={{
                       border: "none",
                       outline: "none",
@@ -531,32 +577,37 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Card>
             <Card.Body>
               <h4 className="text-secondary m-0">Status</h4>
-              <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p>
-              <div className="d-flex justify-content-between align-items-center">
-                <Dropdown>
-                  <Dropdown.Toggle
-                    className="cursor-pointer"
-                    variant="light"
-                    // disabled={!StudentData?.status}
-                  >
-                    {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {(status || [])?.map((item: any) => (
-                      <Dropdown.Item
-                        eventKey={item.id}
-                        key={item.id}
-                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
-                      >
-                        {item.status_name}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-                <span>
-                  <i className="mdi mdi-comment-eye-outline fs-2" title="View Comments" data-bs-toggle="tooltip" data-bs-placement="top" onClick={() => [setShowRemarkModal(true), setViewOnly(true)]}></i>
-                </span>
-              </div>
+              <p className="mt-2 mb-2 text-muted fw-light">
+                Change the lead status
+              </p>
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="cursor-pointer"
+                  variant="light"
+                  // disabled={!StudentData?.status}
+                >
+                  {console.log(basicData)}
+                  {basicData?.status?.status_name
+                    ? basicData?.status?.status_name
+                    : "Change status"}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {(status || [])?.map((item: any) => (
+                    // Check if the item is visible before rendering the Dropdown.Item
+
+                    <Dropdown.Item
+                      eventKey={item.id}
+                      key={item.id}
+                      onClick={() => [
+                        handleStatusChange(item?.id),
+                        setStatusId(item?.id),
+                      ]}
+                    >
+                      {item.status_name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
             </Card.Body>
           </Card>
         </Col>
@@ -590,17 +641,23 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   variant="light"
                   // disabled={!StudentData?.status}
                 >
-                  {basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Change status"}
+                  {basicData?.status?.status_name
+                    ? basicData?.status?.status_name
+                    : "Change Flag"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {(flagsData || [])?.map((item: any) => (
+                  {(status || [])?.map((item: any) => (
+                    // Check if the item is visible before rendering the Dropdown.Item
+
                     <Dropdown.Item
-                      eventKey={item.value}
-                      key={item.value}
-                      // onClick={() => [handleStatusChange(item?.value), setStatusId(item?.value)]}
-                      onClick={() => [updateFlagStatus(item.value)]}
+                      eventKey={item.id}
+                      key={item.id}
+                      onClick={() => [
+                        handleStatusChange(item?.id),
+                        setStatusId(item?.id),
+                      ]}
                     >
-                      {item.label}
+                      {item.status_name}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
@@ -616,16 +673,24 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               <div className="">
                 <h4 className="text-secondary">Add New Country</h4>
                 <p className="mt-2 mb-2 text-muted fw-light">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt
                 </p>
-                <div className="d-flex align-items-start" style={{ gap: "5px" }}>
+                <div
+                  className="d-flex align-items-start"
+                  style={{ gap: "5px" }}
+                >
                   <Dropdown>
                     <Dropdown.Toggle className="cursor-pointer" variant="light">
                       Choose Country
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       {(countryData || [])?.map((item: any) => (
-                        <Dropdown.Item eventKey={item.value} key={item.value} onClick={() => addNewCountry(item.value)}>
+                        <Dropdown.Item
+                          eventKey={item.value}
+                          key={item.value}
+                          onClick={() => addNewCountry(item.value)}
+                        >
                           {item.label}
                         </Dropdown.Item>
                       ))}
@@ -640,24 +705,40 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       <Card>
         <Card.Body>
           <Row>
-            <Tab.Container activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
+            <Tab.Container
+              activeKey={activeTab}
+              onSelect={(tab) => setActiveTab(tab)}
+            >
               <Card>
                 <Card.Body>
-                  <Nav variant="pills" as="ul" className="nav nav-pills nav-fill navtab-bg row-gap-1">
+                  <Nav
+                    variant="pills"
+                    as="ul"
+                    className="nav nav-pills nav-fill navtab-bg row-gap-1"
+                  >
                     <Nav.Item as="li" className="nav-item nav_item_1">
-                      <Nav.Link eventKey="basic_info" className="nav-link cursor-pointer">
+                      <Nav.Link
+                        eventKey="basic_info"
+                        className="nav-link cursor-pointer"
+                      >
                         Basic Info
                       </Nav.Link>
                     </Nav.Item>
 
                     <Nav.Item as="li" className="nav-item nav_item_4">
-                      <Nav.Link eventKey="comments" className="nav-link cursor-pointer">
+                      <Nav.Link
+                        eventKey="comments"
+                        className="nav-link cursor-pointer"
+                      >
                         Comments
                       </Nav.Link>
                     </Nav.Item>
 
                     <Nav.Item as="li" className="nav-item nav_item_3">
-                      <Nav.Link eventKey="history" className="nav-link cursor-pointer">
+                      <Nav.Link
+                        eventKey="history"
+                        className="nav-link cursor-pointer"
+                      >
                         History
                       </Nav.Link>
                     </Nav.Item>
@@ -697,7 +778,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         </Card.Body>
       </Card>
 
-      <Modal show={standard} centered onHide={toggleStandard} dialogClassName="modal-calendar-width">
+      <Modal
+        show={standard}
+        centered
+        onHide={toggleStandard}
+        dialogClassName="modal-calendar-width"
+      >
         <Modal.Header onHide={toggleStandard} closeButton>
           <h4 className="modal-title">Choose Followup Date</h4>
         </Modal.Header>
@@ -719,14 +805,16 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             <Button variant="danger" className="me-1" onClick={toggleStandard}>
               Cancel
             </Button>
-            <Button variant="success" type="submit" onClick={handleFollowUpDate}>
+            <Button
+              variant="success"
+              type="submit"
+              onClick={handleFollowUpDate}
+            >
               Submit
             </Button>
           </div>
         </Modal.Footer>
       </Modal>
-
-      <RemarkModal viewOnly={viewOnly} setViewOnly={setViewOnly} showModal={ShowRemarkModal} toggleRemarkModal={setShowRemarkModal} studentId={studentId} statusId={statusId} followup={selectedDate} remarkData={remarkData} callGetRemark={callGetRemark}/>
     </>
   );
 };

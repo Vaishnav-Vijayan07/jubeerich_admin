@@ -15,7 +15,7 @@ import DetachedLayout from "../layouts/Detached";
 import HorizontalLayout from "../layouts/Horizontal/";
 import TwoColumnLayout from "../layouts/TwoColumn/";
 
-import { authProtectedFlattenRoutes, publicProtectedFlattenRoutes } from "./index";
+import { authProtectedFlattenRoutes, publicProtectedFlattenRoutes } from ".";
 import { APICore } from "../helpers/api/apiCore";
 
 interface IRoutesProps {}
