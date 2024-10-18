@@ -37,13 +37,9 @@ const AcademicInfo = withSwal((props: any) => {
   const [loading, setLoading] = useState(false);
   const [hasExams, setHasExams] = useState("no");
 
-  const refresh = useSelector(
-    (state: RootState) => state.refreshReducer.refreshing
-  );
+  const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
-  const [academicInfoFromApi, setAcademicInfoFromApi] = useState<any[]>([
-    initialStateAcademic,
-  ]);
+  const [academicInfoFromApi, setAcademicInfoFromApi] = useState<any[]>([initialStateAcademic]);
   const [examForm, setExamForm] = useState<any[]>([initialStateExam]);
   const [selectExam, setSelectExam] = useState<boolean>(true);
 
@@ -101,10 +97,7 @@ const AcademicInfo = withSwal((props: any) => {
     });
   };
 
-  const handleFileChange = (
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setExamForm((prevData) => {
@@ -115,10 +108,7 @@ const AcademicInfo = withSwal((props: any) => {
     }
   };
 
-  const addFormField = (
-    setter: React.Dispatch<React.SetStateAction<any[]>>,
-    initialState: any
-  ) => {
+  const addFormField = (setter: React.Dispatch<React.SetStateAction<any[]>>, initialState: any) => {
     setter((prevData) => {
       const updatedData = [...prevData, initialState];
       return updatedData;
@@ -149,10 +139,7 @@ const AcademicInfo = withSwal((props: any) => {
       backlogs: { required: true },
     };
 
-    const { isValid, errors } = validateFields(
-      academicInfoFromApi,
-      validationRules
-    );
+    const { isValid, errors } = validateFields(academicInfoFromApi, validationRules);
 
     console.log(errors);
 
@@ -194,12 +181,7 @@ const AcademicInfo = withSwal((props: any) => {
   };
 
   if (loading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "45%" }}
-      />
-    );
+    return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "45%" }} />;
   }
 
   return (
@@ -250,13 +232,14 @@ const AcademicInfo = withSwal((props: any) => {
               )}
             </Button>
           </Row> */}
+          <h5 className="mb-2 text-uppercase">
+            <i className="mdi mdi-file-document-outline me-1"></i> Exam Details
+          </h5>
 
           <Row className="mt-3">
             <Col>
               <Form.Group className="mb-3" controlId="source_id">
-                <Form.Label>
-                  Have you ever participated in any language exams?
-                </Form.Label>
+                <Form.Label>Have you ever participated in any language exams?</Form.Label>
                 <div className="d-flex justify-content-start align-items-center mt-1">
                   <Form.Check
                     type="radio"
@@ -295,12 +278,8 @@ const AcademicInfo = withSwal((props: any) => {
                       score_card: null,
                     })
                   }
-                  removeExamForm={(index, itemId) =>
-                    removeFormField(setExamForm, index, itemId, "exam")
-                  }
-                  handleExamInputChange={(index, event: any) =>
-                    handleInputChange(setExamForm, index, event)
-                  }
+                  removeExamForm={(index, itemId) => removeFormField(setExamForm, index, itemId, "exam")}
+                  handleExamInputChange={(index, event: any) => handleInputChange(setExamForm, index, event)}
                   handleExamFileChange={handleFileChange}
                 />
               </Row>
@@ -314,13 +293,7 @@ const AcademicInfo = withSwal((props: any) => {
                 >
                   {saveLoading || deleteLoading ? (
                     <>
-                      <Spinner
-                        as="span"
-                        animation="border"
-                        size="sm"
-                        role="status"
-                        aria-hidden="true"
-                      />
+                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
                       {" Loading..."} {/* Show spinner and text */}
                     </>
                   ) : (

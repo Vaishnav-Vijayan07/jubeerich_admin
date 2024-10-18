@@ -614,8 +614,27 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         <Col md={6}>
           <Card>
             <Card.Body>
-              <h4 className="text-secondary m-0">Flag</h4>
-              <p className="mt-2 mb-2 text-muted fw-light">Change flag</p>
+              <div className="d-flex justify-content-between align-items-center">
+                <span>
+                  <h4 className="text-secondary m-0">Flag</h4>
+                  <p className="mt-2 mb-2 text-muted fw-light">Change flag</p>
+                </span>
+                <span>
+                  <p style={{
+                    opacity: 0.7,
+                    backgroundColor: `${basicData?.user_primary_flags?.color}`,
+                    color: "white",
+                    border: `1px solid #122d3d`,
+                    borderRadius: "5px",
+                    padding: "5px 14px",
+                    fontSize: "0.7rem",
+                    borderColor: `${basicData?.user_primary_flags?.color}`,
+                    height: "max-content",
+                  }}>
+                    {basicData?.user_primary_flags?.flag_name}
+                  </p>
+                </span>
+              </div>
               <Dropdown>
                 <Dropdown.Toggle
                   className="cursor-pointer"
