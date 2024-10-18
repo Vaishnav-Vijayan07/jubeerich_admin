@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, Card, Col, Row, Spinner } from 'react-bootstrap'
+import { Accordion, Card, Col, Form, Row, Spinner } from 'react-bootstrap'
 import { ReactSortable } from 'react-sortablejs'
 import { FormInput } from '../../../components'
 import Select from "react-select";
@@ -9,12 +9,15 @@ import { withSwal } from "react-sweetalert2";
 import axios from 'axios';
 import { showErrorAlert, showSuccessAlert } from '../../../constants';
 import moment from 'moment';
+import * as yup from 'yup';
 
 const TaskTodoList = withSwal((props: any) => {
     const { swal, tasks, setTasks, getAllTasks } = props;
 
+    const taskNameSchema = yup.string().min(4, "Minimum 4 characters needed").required('Task Name is required');
     const [formData, setFormData] = useState<IFormState[]>([initialFormState]);
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [validationErrors, setValidationErrors] = useState({ name: '' });
 
     const handleInputChange = (index: number, e: any) => {
         const { name, value } = e.target;
@@ -32,21 +35,33 @@ const TaskTodoList = withSwal((props: any) => {
     };
 
     const handleUpdate = async (e: any, data: any) => {
-        setIsLoading(true);
-        e.preventDefault();
-
         try {
+            await taskNameSchema.validate(data?.title, { abortEarly: false });
+
+            setIsLoading(true);
+            e.preventDefault();
+        
             const result = await axios.put(`/ordinary_task/${data?.id}`, data);
             if (result) {
                 showSuccessAlert('Task Updated Successfully');
                 getAllTasks();
                 setIsLoading(false);
-
+                setValidationErrors({name: ''});
             }
-        } catch (error) {
-            console.log(error);
+        } catch (validationError) {
+            console.log(validationError);
             showErrorAlert('Task Updation Failed');
             setIsLoading(false);
+            if (validationError instanceof yup.ValidationError) {
+                const errors: any = {};
+                validationError.inner.forEach((error) => {
+                    error.path = 'name';
+                    if (error.path) {
+                        errors[error.path] = error.message;
+                    }
+                });
+                setValidationErrors(errors);
+            }
         }
     }
 
@@ -114,6 +129,7 @@ const TaskTodoList = withSwal((props: any) => {
                                                     <Row>
                                                         <Col>
                                                             <FormInput name='title' type='text' label='Task Name' value={data?.title} onChange={(e) => handleInputChange(index, e)} />
+                                                            {validationErrors.name && (<Form.Text className="text-danger">{validationErrors.name}</Form.Text>)}
                                                         </Col>
                                                         <Col>
                                                             <FormInput name='description' type='text' label='Description' value={data?.description} onChange={(e) => handleInputChange(index, e)} />

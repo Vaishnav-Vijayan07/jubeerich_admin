@@ -18,10 +18,8 @@ const initialFormState = {
 }
 
 const RemarkModal = withSwal((props: any) => {
-    const { swal, showModal, toggleRemarkModal, studentId, followup, statusId, remarkData, callGetRemark, setViewOnly, viewOnly = false } = props
-    const [remarkId, setRemarkId] = useState<any>('')
-
-    console.log('remarkData', remarkData);
+    const { swal, showModal, toggleRemarkModal, studentId, followup, statusId, remarkData, callGetRemark, setViewOnly, viewOnly = false, setIsCancelModal } = props
+    const [remarkId, setRemarkId] = useState<any>('');
 
     const dispatch = useDispatch();
     const [isUpdate, setIsUpdate] = useState<boolean>(false);
@@ -102,7 +100,8 @@ const RemarkModal = withSwal((props: any) => {
 
     const handleCancelUpdate = () => {
         setRemarkForm(initialFormState);
-        setIsUpdate(false)
+        setIsUpdate(false);
+        setIsCancelModal();
     }
 
     return (
@@ -200,7 +199,7 @@ const RemarkModal = withSwal((props: any) => {
                     </Row>}
 
                     <Modal.Footer>
-                        <Button className="bg-danger" onClick={() => [toggleRemarkModal(), handleCancelUpdate(), setViewOnly(!viewOnly)]}>Close</Button>
+                        <Button className="bg-danger" onClick={() => [toggleRemarkModal(), handleCancelUpdate(), setViewOnly(false)]}>Close</Button>
                     </Modal.Footer>
                 </Modal.Body>
             </Modal>
