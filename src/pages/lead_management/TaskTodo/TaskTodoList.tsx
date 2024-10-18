@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, Card, Col, Row } from 'react-bootstrap'
+import { Accordion, Card, Col, Row, Spinner } from 'react-bootstrap'
 import { ReactSortable } from 'react-sortablejs'
 import { FormInput } from '../../../components'
 import Select from "react-select";
@@ -14,6 +14,7 @@ const TaskTodoList = withSwal((props: any) => {
     const { swal, tasks, setTasks, getAllTasks } = props;
 
     const [formData, setFormData] = useState<IFormState[]>([initialFormState]);
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const handleInputChange = (index: number, e: any) => {
         const { name, value } = e.target;
@@ -28,33 +29,34 @@ const TaskTodoList = withSwal((props: any) => {
         const newFields: any = [...formData];
         newFields[index][name] = value;
         setFormData(newFields);
-        console.log('formData',formData);
     };
 
-    const handleUpdate = async(e: any, data: any) => {
+    const handleUpdate = async (e: any, data: any) => {
+        setIsLoading(true);
         e.preventDefault();
 
-        console.log('data',data);
-        
         try {
             const result = await axios.put(`/ordinary_task/${data?.id}`, data);
-            if(result){
+            if (result) {
                 showSuccessAlert('Task Updated Successfully');
                 getAllTasks();
+                setIsLoading(false);
+
             }
         } catch (error) {
             console.log(error);
-            showErrorAlert('Task Updation Failed')
+            showErrorAlert('Task Updation Failed');
+            setIsLoading(false);
         }
     }
 
-    const deleteTodo = async(id: string) => {
+    const deleteTodo = async (id: string) => {
         try {
             const confirmResult = await swal.fire({
                 title: "Are you sure?",
                 text: "This action cannot be undone.",
                 icon: "warning",
-                showCancelButton: true,
+                showCancelButton: false,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Yes, Save",
@@ -80,102 +82,110 @@ const TaskTodoList = withSwal((props: any) => {
         handlePatchData(tasks)
     }, [tasks])
 
-return (
-    <>
-        <Row>
-            {console.log(formData)}
-            {tasks.length > 0 ?
-                <Col md={10} lg={10} xl={10}>
-                    <ReactSortable className="row" list={tasks ? tasks : []} setList={setTasks}>
-                        {formData && formData.map(((data: any, index: number) => (
-                            <Accordion key={index} className='ms-4'>
-                                <Accordion.Item eventKey={index.toString()} className='mb-4'>
-                                    <Accordion.Header className='w-100 d-flex justify-content-start align-items-center pt-0 mt-0'>
-                                        <span className='p-1'>
-                                            <h4 className='fs-8'>{data?.title}</h4>
-                                        </span>
-                                    </Accordion.Header>
-                                    <Accordion.Body>
-                                        <Card>
-                                            <Card.Body style={{ paddingTop: "0px" }}>
-                                                <div className='d-flex justify-content-end align-items-center mt-0 pt-0'>
-                                                    <i className='mdi mdi-delete-outline fs-3 mb-2' onClick={(e) => deleteTodo(data?.id)}></i>
-                                                </div>
-                                                <Row>
-                                                    <Col>
-                                                        <FormInput name='title' type='text' label='Task Name' value={data?.title} onChange={(e) => handleInputChange(index, e)} />
-                                                    </Col>
-                                                    <Col>
-                                                        <FormInput name='description' type='text' label='Description' value={data?.description} onChange={(e) => handleInputChange(index, e)} />
-                                                    </Col>
-                                                </Row>
-                                                <Row>
-                                                    <Col className='mt-2'>
-                                                        <FormInput name='due_date' type='date' label='Due Date' value={moment(data?.due_date).format('YYYY-MM-DD')} onChange={(e) => handleInputChange(index, e)} />
-                                                    </Col>
-                                                    <Col className='mt-2'>
-                                                        <label htmlFor="status">Status</label>
-                                                        <Select
-                                                            className="react-select react-select-container mt-1"
-                                                            classNamePrefix="react-select"
-                                                            options={status}
-                                                            value={
-                                                                data?.status
-                                                                    ? {
-                                                                        label: status.find((u: any) => u.value == data?.status)?.label,
-                                                                        value: data?.status,
-                                                                    }
-                                                                    : null
-                                                            }
-                                                            placeholder="Select status"
-                                                            name="status"
-                                                            onChange={(e) => handleDropDown(index, e, 'status')}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                                <Row>
-                                                    <Col className='mt-2'>
-                                                        <label htmlFor="priority">Priority</label>
-                                                        <Select
-                                                            className="react-select react-select-container mt-1"
-                                                            classNamePrefix="react-select"
-                                                            options={priority}
-                                                            value={
-                                                                data?.priority
-                                                                    ? {
-                                                                        label: priority.find((u: any) => u.value == data?.priority)?.label,
-                                                                        value: data?.priority,
-                                                                    }
-                                                                    : null
-                                                            }
-                                                            placeholder="Select priority"
-                                                            name="priority"
-                                                            onChange={(e) => handleDropDown(index, e, 'priority')}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                                <Row>
-                                                    <Col className='d-flex justify-content-end mt-2'>
-                                                        <Button onClick={(e) => handleUpdate(e, data)}>Save</Button>
-                                                    </Col>
-                                                </Row>
-                                            </Card.Body>
-                                        </Card>
-                                    </Accordion.Body>
-                                </Accordion.Item>
-                            </Accordion>
-                        )))}
-                    </ReactSortable>
-                </Col>
-                :
-                <Col>
-                <div className='d-flex justify-content-center align-items-center'>
-                    <h2 className='text-muted'>No Todo Found</h2>
-                </div>
-                </Col>
-            }
-        </Row></>
-)
+    if (isLoading) {
+        return (
+            <Spinner
+                animation="border"
+                style={{ position: "absolute", top: "50%", left: "50%" }}
+            />
+        );
+    }
+
+    return (
+        <>
+            <Row>
+                {tasks.length > 0 ?
+                    <Col md={10} lg={10} xl={10}>
+                        <ReactSortable className="row" list={formData ? formData : []} setList={setFormData}>
+                            {formData && formData.map(((data: any, index: number) => (
+                                <Accordion key={index} className='ms-4'>
+                                    <Accordion.Item eventKey={index.toString()} className='mb-4'>
+                                        <Accordion.Header className='w-100 d-flex justify-content-start align-items-center pt-0 mt-0'>
+                                            <span className='p-1'>
+                                                <h4 className='fs-8'>{data?.title}</h4>
+                                            </span>
+                                        </Accordion.Header>
+                                        <Accordion.Body>
+                                            <Card>
+                                                <Card.Body style={{ paddingTop: "0px" }}>
+                                                    <div className='d-flex justify-content-end align-items-center mt-0 pt-0'>
+                                                        <i className='mdi mdi-delete-outline fs-3 mb-2' onClick={(e) => deleteTodo(data?.id)}></i>
+                                                    </div>
+                                                    <Row>
+                                                        <Col>
+                                                            <FormInput name='title' type='text' label='Task Name' value={data?.title} onChange={(e) => handleInputChange(index, e)} />
+                                                        </Col>
+                                                        <Col>
+                                                            <FormInput name='description' type='text' label='Description' value={data?.description} onChange={(e) => handleInputChange(index, e)} />
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <Col className='mt-2'>
+                                                            <FormInput name='due_date' type='date' label='Due Date' value={moment(data?.due_date).format('YYYY-MM-DD')} onChange={(e) => handleInputChange(index, e)} />
+                                                        </Col>
+                                                        <Col className='mt-2'>
+                                                            <label htmlFor="status">Status</label>
+                                                            <Select
+                                                                className="react-select react-select-container mt-1"
+                                                                classNamePrefix="react-select"
+                                                                options={status}
+                                                                value={
+                                                                    data?.status
+                                                                        ? {
+                                                                            label: status.find((u: any) => u.value == data?.status)?.label,
+                                                                            value: data?.status,
+                                                                        }
+                                                                        : null
+                                                                }
+                                                                placeholder="Select status"
+                                                                name="status"
+                                                                onChange={(e) => handleDropDown(index, e, 'status')}
+                                                            />
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <Col className='mt-2'>
+                                                            <label htmlFor="priority">Priority</label>
+                                                            <Select
+                                                                className="react-select react-select-container mt-1"
+                                                                classNamePrefix="react-select"
+                                                                options={priority}
+                                                                value={
+                                                                    data?.priority
+                                                                        ? {
+                                                                            label: priority.find((u: any) => u.value == data?.priority)?.label,
+                                                                            value: data?.priority,
+                                                                        }
+                                                                        : null
+                                                                }
+                                                                placeholder="Select priority"
+                                                                name="priority"
+                                                                onChange={(e) => handleDropDown(index, e, 'priority')}
+                                                            />
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <Col className='d-flex justify-content-end mt-2'>
+                                                            <Button disabled={isLoading} onClick={(e) => handleUpdate(e, data)}>Save</Button>
+                                                        </Col>
+                                                    </Row>
+                                                </Card.Body>
+                                            </Card>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
+                            )))}
+                        </ReactSortable>
+                    </Col>
+                    :
+                    <Col>
+                        <div className='d-flex justify-content-center align-items-center'>
+                            <h2 className='text-muted'>No Todo Found</h2>
+                        </div>
+                    </Col>
+                }
+            </Row></>
+    )
 })
 
 export default TaskTodoList
