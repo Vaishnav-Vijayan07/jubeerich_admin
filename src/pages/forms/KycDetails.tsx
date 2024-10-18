@@ -3,6 +3,7 @@ import PageTitle from "../../components/PageTitle";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import profileImg from "../../assets/images/users/user-2.jpg";
 import { Link } from "react-router-dom";
+import { icons } from "../../assets/images/icons";
 
 const KycDetails = () => {
   const fields = [
@@ -126,6 +127,166 @@ const KycDetails = () => {
     },
   ];
 
+  const otherWorkInformationFields = [
+    {
+      label: "Have you served notice period as per the requirement of your employer during your last resignation?",
+      value: "Yes",
+    },
+    { label: "Did you get terminated from any organization/company?", value: "No" },
+    { label: "Are you in very good and friendly relation with all of your previous/current employers?", value: "Yes" },
+    { label: "Is there any forged experience or any other documents submitted to us?", value: "No" },
+    {
+      label:
+        "For any abroad work experiences do you still have the visa page, permit card, salary account statement and all other supporting evidences to prove the same?",
+      value: "Yes",
+    },
+  ];
+
+  const financialDetails = [
+    {
+      typeOfFunds: "Education loan",
+      ownOrSponsored: "Sponsored",
+      relationWithSponsor: "Father",
+      sponsorshipAmount: "$20,000",
+      bankName: "ABC Bank",
+    },
+    {
+      typeOfFunds: "Savings",
+      ownOrSponsored: "Own",
+      relationWithSponsor: "N/A",
+      sponsorshipAmount: "$5,000",
+      bankName: "XYZ Bank",
+    },
+    {
+      typeOfFunds: "Fixed Deposit (FD)",
+      ownOrSponsored: "Sponsored",
+      relationWithSponsor: "Uncle",
+      sponsorshipAmount: "$10,000",
+      bankName: "DEF Bank",
+    },
+    {
+      typeOfFunds: "Salary",
+      ownOrSponsored: "Own",
+      relationWithSponsor: "N/A",
+      sponsorshipAmount: "$15,000",
+      bankName: "GHI Bank",
+    },
+  ];
+
+  const previousVisaDecline = [
+    {
+      countryName: "United Kingdom",
+      courseAndInstitute: "Bachelor of Science - University of London",
+      reasonForRejection: "Insufficient financial documentation",
+    },
+    {
+      countryName: "Canada",
+      courseAndInstitute: "Master of Computer Science - University of Toronto",
+      reasonForRejection: "Lack of study purpose clarity",
+    },
+    {
+      countryName: "Australia",
+      courseAndInstitute: "Diploma in Business Management - Melbourne Institute of Technology",
+      reasonForRejection: "Incorrect visa application form",
+    },
+  ];
+
+  const previousTravelHistory = [
+    {
+      countryName: "France",
+      periodOfStay: "01/05/2019 - 15/05/2019",
+      purposeOfTravel: "Vacation",
+    },
+    {
+      countryName: "India",
+      periodOfStay: "01/01/2021 - 01/02/2021",
+      purposeOfTravel: "Family Visit",
+    },
+    {
+      countryName: "Japan",
+      periodOfStay: "01/08/2022 - 20/08/2022",
+      purposeOfTravel: "Business Conference",
+    },
+  ];
+
+  const englishProficiencyData = [
+    {
+      testType: "IELTS",
+      dateOfExam: "15/08/2023",
+      scores: {
+        Listening: "8.0",
+        Speaking: "7.5",
+        Reading: "8.0",
+        Writing: "7.0",
+        Overall: "7.5",
+      },
+    },
+    {
+      testType: "PTE",
+      dateOfExam: "22/09/2023",
+      scores: {
+        Listening: "75",
+        Speaking: "70",
+        Reading: "72",
+        Writing: "68",
+        Overall: "72",
+      },
+    },
+    {
+      testType: "OET",
+      dateOfExam: "30/10/2023",
+      scores: {
+        Listening: "B",
+        Speaking: "B",
+        Reading: "B",
+        Writing: "B",
+        Overall: "B",
+      },
+    },
+  ];
+
+  const previousVisaApproval = [
+    {
+      countryName: "Canada",
+      courseAndInstitute: "Computer Science at University of Toronto",
+      durationOfStay: "1 year",
+      visaType: "Study Permit",
+    },
+    {
+      countryName: "Australia",
+      courseAndInstitute: "Business Management at University of Sydney",
+      durationOfStay: "2 years",
+      visaType: "Student Visa",
+    },
+    {
+      countryName: "UK",
+      courseAndInstitute: "MBA at London Business School",
+      durationOfStay: "1 year",
+      visaType: "Tier 4 Student Visa",
+    },
+    {
+      countryName: "USA",
+      courseAndInstitute: "Engineering at MIT",
+      durationOfStay: "4 years",
+      visaType: "F-1 Student Visa",
+    },
+  ];
+  
+  const policeClearance = [
+    {
+      convicted: "No",
+      countries: "USA, Canada, UAE",
+      duration: "USA (2 years), Canada (1 year), UAE (3 years)",
+    },
+    {
+      convicted: "Yes",
+      countries: "India, Australia",
+      duration: "India (5 years), Australia (8 months)",
+    },
+  ];
+
+  const medicalDeclaration = "Yes, I have asthma and a mild allergy to pollen.";
+
   return (
     <div>
       <PageTitle
@@ -135,66 +296,93 @@ const KycDetails = () => {
         ]}
         title={"KYC Details"}
       />
-      <Row>
-        <Col md={3} lg={3} className="">
-          <Card className="text-center">
-            <Card.Body>
-              <img src={profileImg} className="rounded-circle avatar-lg img-thumbnail" alt="" />
-              <h4 className="mb-0">Geneva McKnight</h4>
-
-              <div className="text-center mt-3">
-                <p className="text-muted mb-2 font-13">
-                  <strong>Full Name :</strong>
-                  <span className="ms-2">Geneva D. McKnight</span>
-                </p>
-
-                <p className="text-muted mb-2 font-13">
-                  <strong>Mobile :</strong>
-                  <span className="ms-2">(123) 123 1234</span>
-                </p>
-
-                <p className="text-muted mb-2 font-13">
-                  <strong>Email :</strong>
-                  <span className="ms-2 ">user@email.domain</span>
-                </p>
-
-                <p className="text-muted mb-1 font-13">
-                  <strong>Address :</strong>
-                  <span className="ms-2">123 Maple Street, Springfield, IL 62704</span>
-                </p>
+      <Row className="p-2 pb-0">
+        <Card>
+          <Card.Body>
+            <Row className="mt-1">
+              <h4 className="text-secondary mt-0">Basic Details</h4>
+            </Row>
+            <div className="mb-2 grid-container">
+              <div className="">
+                <p className="mt-2 mb-1 text-muted fw-light">Name</p>
+                <div className="d-flex align-items-start" style={{ gap: "5px" }}>
+                  <img src={icons.user} alt="date" className="me-1" height="16" />
+                  <h5 className="m-0 font-size-14">{"Geneva D. McKnight"}</h5>
+                </div>
               </div>
-              <ul className="social-list list-inline mt-3 mb-0">
-                <li className="list-inline-item">
-                  <Link to="#" className="social-list-item border-primary text-primary">
-                    <i className="mdi mdi-facebook"></i>
-                  </Link>
-                </li>
-                <li className="list-inline-item">
-                  <Link to="#" className="social-list-item border-danger text-danger">
-                    <i className="mdi mdi-google"></i>
-                  </Link>
-                </li>
-                <li className="list-inline-item">
-                  <Link to="#" className="social-list-item border-info text-info">
-                    <i className="mdi mdi-twitter"></i>
-                  </Link>
-                </li>
-                <li className="list-inline-item">
-                  <Link to="#" className="social-list-item border-secondary text-secondary">
-                    <i className="mdi mdi-github"></i>
-                  </Link>
-                </li>
-              </ul>
-            </Card.Body>
-          </Card>
-        </Col>
 
-        <Col md={9} lg={9}>
+              <div className="">
+                <p className="mt-2 mb-1 text-muted fw-light">Phone Number</p>
+                <div className="d-flex align-items-center outline-none" style={{ gap: "5px" }}>
+                  <img src={icons.apple} alt="phone" className="me-1" width="16" />
+                  {/* <h5 className="m-0 font-size-14">{taskObject.phone}</h5> */}
+                  <input
+                    type="tel"
+                    value={"8666898834"}
+                    style={{
+                      border: "none",
+                      outline: "none",
+                      width: "100%",
+                      fontSize: "16px",
+                      fontWeight: 600,
+                    }}
+                  />
+                </div>
+                {/* <Form.Text className="text-danger">{phoneNumberError}</Form.Text> */}
+              </div>
+
+              <div className="">
+                <p className="mt-2 mb-1 text-muted fw-light">Email</p>
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.email} alt="email" className="me-1" width="17" />
+                  {/* <h5 className="m-0 font-size-14">{taskObject.email}</h5> */}
+                  <input
+                    type="text"
+                    value={"geneva@gmail.com"}
+                    style={{
+                      border: "none",
+                      outline: "none",
+                      fontSize: "16px",
+                      fontWeight: 600,
+                      width: "100%",
+                    }}
+                  />
+                </div>
+              </div>
+              <br className="grid-br" />
+              <div className="">
+                <p className="mt-2 mb-1 text-muted fw-light">Source</p>
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.cloud} alt="source icon" className="me-1" width="16" />
+                  <h5 className="m-0 font-size-14">{"Direct"}</h5>
+                </div>
+              </div>
+
+              <div className="">
+                <p className="mt-2 mb-1 text-muted fw-light">Channel</p>
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.information} alt="cahnnel icon" className="me-1" width="16" />
+                  <h5 className="m-0 font-size-14">{"Meta"}</h5>
+                </div>
+              </div>
+
+              <div className="">
+                <p className="mt-2 mb-1 text-muted fw-light">City</p>
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.business} alt="comapny icon" className="me-1" width="16" />
+                  <h5 className="m-0 font-size-14">{"Kochi"}</h5>
+                </div>
+              </div>
+            </div>
+          </Card.Body>
+        </Card>
+      </Row>
+      <Row>
+        <Col md={6} lg={6}>
           <Card>
             <Card.Body>
-              <h4 className="header-title">KYC Details</h4>
               <h5
-                className="mb-4 mt-4 text-uppercase bg-secondary text-white"
+                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
                 style={{
                   boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
                   padding: "10px", // Padding for better visual spacing
@@ -225,11 +413,11 @@ const KycDetails = () => {
                   borderRadius: "5px", // Optional: Rounded corners for a softer look
                 }}
               >
-                <i className="mdi mdi-account-circle me-1"></i> PASSPORT INFORMATION
+                <i className="mdi mdi-account-multiple me-1"></i> FAMILY INFORMATION
               </h5>
 
-              <div className="text-start mt-2">
-                {passportFields.map((field, index) => (
+              <div className="text-start mt-2 ps-1">
+                {familyFields.map((field, index) => (
                   <p
                     key={index}
                     className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}
@@ -253,7 +441,156 @@ const KycDetails = () => {
                   borderRadius: "5px", // Optional: Rounded corners for a softer look
                 }}
               >
-                <i className="mdi mdi-account-circle me-1"></i> EDUCATIONAL QUALIFICATION
+                <i className="mdi mdi-currency-usd me-1"></i> FUND PLAN
+              </h5>
+              <div className="text-start mt-2 ps-1">
+                {financialDetails.map((data, index) => (
+                  <div
+                    key={index}
+                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                  >
+                    <p className="mb-1 font-15">
+                      <strong>Type of funds:</strong>
+                      <span className="ms-2">{data.typeOfFunds}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Own funds/sponsored funds?</strong>
+                      <span className="ms-2">{data.ownOrSponsored}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Relation with sponsor:</strong>
+                      <span className="ms-2">{data.relationWithSponsor}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Sponsorship amount:</strong>
+                      <span className="ms-2">{data.sponsorshipAmount}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Name of the bank:</strong>
+                      <span className="ms-2">{data.bankName}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <h5 className="font-weight-bold text-danger">Other Information:</h5>
+
+              <div className="text-start mt-2">
+                <p className={`mb-0 p-2 ps-2 font-15 bg-light`}>
+                  <strong>{"If FD or Savings does the funds have min 6 months back up and proper source to prove?"}:</strong>
+                  <span className="ms-2">{"Yes"}</span>
+                </p>
+
+                <p className={`mb-0 p-2 ps-2 font-15`}>
+                  <strong>{"Explain the source of funds for FD/Savings etc"}:</strong>
+                  <span className="ms-2">{"Lorem ipsum dolor sit amet"}</span>
+                </p>
+              </div>
+            </Card.Body>
+          </Card>
+
+          <Card>
+            <Card.Body>
+              <h5
+                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
+                style={{
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
+                  padding: "10px", // Padding for better visual spacing
+                  borderRadius: "5px", // Optional: Rounded corners for a softer look
+                }}
+              >
+                <i className="mdi mdi-book-open me-1"></i> ENGLISH LANGUAGE PROFICIENCY
+              </h5>
+              <div className="text-start mt-2 ps-1">
+                {englishProficiencyData.map((test, index) => (
+                  <div
+                    key={index}
+                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                  >
+                    <p className="mb-1 font-15">
+                      <strong>Type of Test:</strong>
+                      <span className="ms-2">{test.testType}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Date of Exam:</strong>
+                      <span className="ms-2">{test.dateOfExam}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Listening Score (L):</strong>
+                      <span className="ms-2">{test.scores.Listening}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Speaking Score (S):</strong>
+                      <span className="ms-2">{test.scores.Speaking}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Reading Score (R):</strong>
+                      <span className="ms-2">{test.scores.Reading}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Writing Score (W):</strong>
+                      <span className="ms-2">{test.scores.Writing}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Overall Score (O.V):</strong>
+                      <span className="ms-2">{test.scores.Overall}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </Card.Body>
+          </Card>
+
+          <Card>
+            <Card.Body>
+              <h5
+                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
+                style={{
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
+                  padding: "10px", // Padding for better visual spacing
+                  borderRadius: "5px", // Optional: Rounded corners for a softer look
+                }}
+              >
+                <i className="mdi mdi-medical-bag me-1"></i> MEDICAL DECLARATION
+              </h5>
+
+              <div className="text-start mt-1 ps-1">
+                <h5 className="font-weight-bold text-danger">Medical Declaration:</h5>
+                <div
+                  className={`mb-3 bg-light`}
+                  style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                >
+                  <p className="mb-1 font-15">
+                    <strong>Are there any medical conditions or health concerns that we should be aware of?</strong>
+                  </p>
+                  <p className="font-15">
+                    <span className="ms-2">{medicalDeclaration ? medicalDeclaration : "No"}</span>
+                  </p>
+                </div>
+                <p className="font-15">
+                  <em>
+                    This information is necessary for regulatory compliance and will be treated with the utmost confidentiality.
+                  </em>
+                </p>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card>
+            <Card.Body>
+              <h5
+                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
+                style={{
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
+                  padding: "10px", // Padding for better visual spacing
+                  borderRadius: "5px", // Optional: Rounded corners for a softer look
+                }}
+              >
+                <i className="mdi mdi-school me-1"></i> EDUCATIONAL QUALIFICATION
               </h5>
               <div className="text-start mt-2 ps-1">
                 <h5 className="font-weight-bold text-danger">Qualifications:</h5>
@@ -321,7 +658,35 @@ const KycDetails = () => {
                   borderRadius: "5px", // Optional: Rounded corners for a softer look
                 }}
               >
-                <i className="mdi mdi-account-circle me-1"></i> WORK EXPERIENCE
+                <i className="mdi mdi-passport me-1"></i> PASSPORT INFORMATION
+              </h5>
+
+              <div className="text-start mt-2">
+                {passportFields.map((field, index) => (
+                  <p
+                    key={index}
+                    className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}
+                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                  >
+                    <strong>{field.label}:</strong>
+                    <span className="ms-2">{field.value}</span>
+                  </p>
+                ))}
+              </div>
+            </Card.Body>
+          </Card>
+
+          <Card>
+            <Card.Body>
+              <h5
+                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
+                style={{
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
+                  padding: "10px", // Padding for better visual spacing
+                  borderRadius: "5px", // Optional: Rounded corners for a softer look
+                }}
+              >
+                <i className="mdi mdi-briefcase me-1"></i> WORK EXPERIENCE
               </h5>
 
               <div className="text-start mt-2 ps-1">
@@ -356,6 +721,22 @@ const KycDetails = () => {
                   </div>
                 ))}
               </div>
+
+              <div className="text-start mt-2 ps-1">
+                <h5 className="font-weight-bold text-danger">Other Information:</h5>
+                {otherWorkInformationFields.map((info, index) => (
+                  <div
+                    key={index}
+                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                  >
+                    <p className="mb-1 font-15">
+                      <strong>{info.label}</strong>
+                      <span className="ms-2">{info.value}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
             </Card.Body>
           </Card>
 
@@ -369,19 +750,151 @@ const KycDetails = () => {
                   borderRadius: "5px", // Optional: Rounded corners for a softer look
                 }}
               >
-                <i className="mdi mdi-account-circle me-1"></i> FAMILY INFORMATION
+                <i className="mdi mdi-cancel me-1"></i> PREVIOUS VISA DECLINE
               </h5>
 
-              <div className="text-start mt-2 ps-1">
-                {familyFields.map((field, index) => (
-                  <p
+              <div className="text-start mt-1 ps-1">
+                <h5 className="font-weight-bold text-danger">Previous Visa Decline (If Any):</h5>
+                {previousVisaDecline.map((visa, index) => (
+                  <div
                     key={index}
-                    className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}
+                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
                     style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
                   >
-                    <strong>{field.label}:</strong>
-                    <span className="ms-2">{field.value}</span>
-                  </p>
+                    <p className="mb-1 font-15">
+                      <strong>Country Name:</strong>
+                      <span className="ms-2">{visa.countryName}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Course and Institute Applied For:</strong>
+                      <span className="ms-2">{visa.courseAndInstitute}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Reason for Rejection:</strong>
+                      <span className="ms-2">{visa.reasonForRejection}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </Card.Body>
+          </Card>
+
+          <Card>
+            <Card.Body>
+              <h5
+                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
+                style={{
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
+                  padding: "10px", // Padding for better visual spacing
+                  borderRadius: "5px", // Optional: Rounded corners for a softer look
+                }}
+              >
+                <i className="mdi mdi-check-circle me-1"></i> PREVIOUS VISA APPROVAL
+              </h5>
+
+              <div className="text-start mt-1 ps-1">
+                <h5 className="font-weight-bold text-danger">Previous Visa Approval (If Any):</h5>
+                {previousVisaApproval.map((visa, index) => (
+                  <div
+                    key={index}
+                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                  >
+                    <p className="mb-1 font-15">
+                      <strong>Country Name:</strong>
+                      <span className="ms-2">{visa.countryName}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Course and Institute Applied For:</strong>
+                      <span className="ms-2">{visa.courseAndInstitute}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Duration of Stay:</strong>
+                      <span className="ms-2">{visa.durationOfStay}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Visa Type:</strong>
+                      <span className="ms-2">{visa.visaType}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </Card.Body>
+          </Card>
+
+          <Card>
+            <Card.Body>
+              <h5
+                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
+                style={{
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
+                  padding: "10px", // Padding for better visual spacing
+                  borderRadius: "5px", // Optional: Rounded corners for a softer look
+                }}
+              >
+                <i className="mdi mdi-airplane me-1"></i> PREVIOUS TRAVEL HISTORY
+              </h5>
+
+              <div className="text-start mt-1 ps-1">
+                <h5 className="font-weight-bold text-danger">Previous Travel History (If Any):</h5>
+                {previousTravelHistory.map((travel, index) => (
+                  <div
+                    key={index}
+                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                  >
+                    <p className="mb-1 font-15">
+                      <strong>Country Name:</strong>
+                      <span className="ms-2">{travel.countryName}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Period of Stay:</strong>
+                      <span className="ms-2">{travel.periodOfStay}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Purpose of Travel:</strong>
+                      <span className="ms-2">{travel.purposeOfTravel}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </Card.Body>
+          </Card>
+
+          <Card>
+            <Card.Body>
+              <h5
+                className="mb-4 mt-2 text-uppercase bg-secondary text-white"
+                style={{
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Light shadow
+                  padding: "10px", // Padding for better visual spacing
+                  borderRadius: "5px", // Optional: Rounded corners for a softer look
+                }}
+              >
+                <i className="mdi mdi-shield-alert me-1"></i> POLICE CLEARANCE CERTIFICATE
+              </h5>
+
+              <div className="text-start mt-1 ps-1">
+                <h5 className="font-weight-bold text-danger">Police Clearance Information:</h5>
+                {policeClearance.map((info, index) => (
+                  <div
+                    key={index}
+                    className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
+                    style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                  >
+                    <p className="mb-1 font-15">
+                      <strong>Have you ever been convicted of a criminal offense?</strong>
+                      <span className="ms-2">{info.convicted}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Countries for Police Clearance Certificate:</strong>
+                      <span className="ms-2">{info.countries}</span>
+                    </p>
+                    <p className="mb-1 font-15">
+                      <strong>Duration of Stay in Each Country:</strong>
+                      <span className="ms-2">{info.duration}</span>
+                    </p>
+                  </div>
                 ))}
               </div>
             </Card.Body>
