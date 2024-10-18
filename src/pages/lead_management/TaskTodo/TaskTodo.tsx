@@ -73,7 +73,7 @@ const TaskTodo = () => {
                 title={"Tasks Todo"}
             />
             <Row>
-                <Col xl={10}>
+                <Col xl={12}>
                     <Card>
                         <Card.Body>
                             <Row>
