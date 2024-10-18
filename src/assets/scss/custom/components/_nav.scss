@@ -36,6 +36,16 @@
     }
 }
 
+.navtab-native-bg {
+    .nav-link {
+        background-color: var(--#{$prefix}light);
+        margin: 0 5px;
+    }
+    a.active {
+        border-bottom: 2px solid red !important;
+    }
+}
+
 // Nav bordered
 
 .nav-bordered {

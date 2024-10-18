@@ -433,8 +433,6 @@ const Status = () => {
   useEffect(() => {
     dispatch(getStatus());
   }, []);
-
-  console.log("initil oadin", initialloading);
   
 
   if (initialloading) {

@@ -21,13 +21,17 @@ const LockScreen2 = React.lazy(() => import("../pages/auth/LockScreen"));
 const SignInSignUp2 = React.lazy(() => import("../pages/auth/SignInSignUp"));
 
 // dashboard
-const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard3/"));
+const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard3"));
 
 // - crm pages
 
-const CRMLeads = React.lazy(() => import("../pages/apps/CRM/Leads/"));
+const CRMLeads = React.lazy(() => import("../pages/apps/CRM/Leads"));
 const OrdinaryTasks = React.lazy(
   () => import("../pages/lead_management/OrdinaryTasks")
+);
+
+const TasksTodo = React.lazy(
+  () => import("../pages/lead_management/TaskTodo/TaskTodo")
 );
 
 //Leads
@@ -276,6 +280,18 @@ const leadRoutes = {
       ),
       route: PrivateRoute,
     },
+    // {
+    //   path: "leads/ordinary_tasks",
+    //   name: "Ordinary Tasks",
+    //   // element: <Tasks />,
+    //   element: (
+    //     <PrivateRoute
+    //       roles={["View Task", "Monitor"]}
+    //       component={OrdinaryTasks}
+    //     />
+    //   ),
+    //   route: PrivateRoute,
+    // },
     {
       path: "leads/ordinary_tasks",
       name: "Ordinary Tasks",
@@ -283,11 +299,23 @@ const leadRoutes = {
       element: (
         <PrivateRoute
           roles={["View Task", "Monitor"]}
-          component={OrdinaryTasks}
+          component={TasksTodo}
         />
       ),
       route: PrivateRoute,
     },
+    // {
+    //   path: "leads/ordinary_tasks_Todo",
+    //   name: "Ordinary Tasks",
+    //   // element: <Tasks />,
+    //   element: (
+    //     <PrivateRoute
+    //       roles={["View Task", "Monitor"]}
+    //       component={TasksTodo}
+    //     />
+    //   ),
+    //   route: PrivateRoute,
+    // },
   ],
 };
 

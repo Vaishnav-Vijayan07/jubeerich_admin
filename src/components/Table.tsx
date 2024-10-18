@@ -225,6 +225,21 @@ const Table = (props: TableProps) => {
     }
   }, [dataTable?.state?.selectedRowIds]);
 
+  const formatCellValue = (value: any): string => {
+    if (!value) return '';
+  
+    if (typeof value === 'string') {
+      return value;
+    }
+  
+    if (Array.isArray(value)) {
+      return value.map((data: any) => data.country_name).join(',');
+    }
+  
+    return String(value);
+  };
+  
+
   return (
     <>
       {isSearchable && (
@@ -297,7 +312,8 @@ const Table = (props: TableProps) => {
                           },
                         ])}
                         style={{ ...(cell.minWidth && { minWidth: cell.minWidth }), ...(cell.maxWidth && { maxWidth: cell.maxWidth }) }}
-                        title={cell.value}
+                        // title={cell.value}
+                        title={`${formatCellValue(cell.value)}`}
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top"
                       >

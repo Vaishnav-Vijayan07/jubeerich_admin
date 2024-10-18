@@ -15,7 +15,20 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { getSource } from "../../redux/sources/actions";
 import { addLeads, deleteLeads, getLead, getLeadAssigned, getLeadAssignedByCounsellorTL, updateLeads } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
-import { AUTH_SESSION_KEY, baseUrl, counsellor_tl_id, cre_id, cre_reception_id, cre_tl_id, customStyles, franchise_id_from_office, it_team_id, region_id, showErrorAlert, showSuccessAlert } from "../../constants";
+import {
+  AUTH_SESSION_KEY,
+  baseUrl,
+  counsellor_tl_id,
+  cre_id,
+  cre_reception_id,
+  cre_tl_id,
+  customStyles,
+  franchise_id_from_office,
+  it_team_id,
+  region_id,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -104,7 +117,7 @@ const initialValidationState = {
   lead_received_date: "",
   ielts: "",
   zipcode: "",
-  region_id: ""
+  region_id: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -128,7 +141,7 @@ const BasicInputElements = withSwal((props: any) => {
     counsellors,
     region,
     franchisees,
-    branchCounsellors
+    branchCounsellors,
   } = props;
 
   console.log("Region from state", region);
@@ -178,7 +191,7 @@ const BasicInputElements = withSwal((props: any) => {
     lead_received_date: "",
     followup_date: "",
   });
-  const [handleUpdateData, setHandleUpdateData] = useState<any>({})
+  const [handleUpdateData, setHandleUpdateData] = useState<any>({});
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -214,11 +227,11 @@ const BasicInputElements = withSwal((props: any) => {
   let userBranchId: any;
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
-    userBranchId = JSON.parse(userInfo)?.branch_id
+    userBranchId = JSON.parse(userInfo)?.branch_id;
   }
   const handleUpdate = (item: any) => {
-    if(item){
-      setHandleUpdateData({...item})
+    if (item) {
+      setHandleUpdateData({ ...item });
     }
   };
 
@@ -245,7 +258,7 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const UserColumn = ({ row }: any) => {
-    console.log('row',row);
+    console.log("row", row);
     return (
       <>
         <Dropdown className="btn-group" style={{ maxHeight: "150px", overflow: "visible !important" }}>
@@ -275,19 +288,19 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Name",
       accessor: "full_name",
       sort: true,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Email",
       accessor: "email",
       sort: true,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "City",
       accessor: "city",
       sort: false,
-      minWidth: 100
+      minWidth: 100,
     },
     {
       Header: "Country",
@@ -336,7 +349,11 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Assigned To",
       accessor: "assigned_user",
       // Cell: UserColumn,
-      Cell: ({ row }: any) => <span className="no-truncate-text"><UserColumn row={row}/></span>,
+      Cell: ({ row }: any) => (
+        <span className="no-truncate-text">
+          <UserColumn row={row} />
+        </span>
+      ),
       minWidth: 100,
     },
     ...(user?.role == cre_tl_id
@@ -383,6 +400,9 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
+          <Link to={`/leads/manage/${row.original.id}`} className="action-icon">
+            <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
+          </Link>
           {/* Edit Icon */}
           <Link
             to="#"
@@ -422,7 +442,6 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleAssignBulk = async (user_ids: any, cre_id: any) => {
     if (user_ids.length > 0) {
-
       const result = await swal.fire({
         title: "Are you sure?",
         text: "This action cannot be undone.",
@@ -450,7 +469,6 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleBranchCounsellorAssignBulk = async (user_ids: any, counsellor_id: any) => {
     if (user_ids.length > 0) {
-
       const result = await swal.fire({
         title: "Are you sure?",
         text: "This action cannot be undone.",
@@ -464,7 +482,7 @@ const BasicInputElements = withSwal((props: any) => {
       if (result.isConfirmed) {
         try {
           const { data } = await axios.post("/assign_branch_counselor", { user_ids, counselor_id: counsellor_id });
-  
+
           if (data.status) {
             if (userRole == counsellor_tl_id) {
               dispatch(getLeadAssignedByCounsellorTL());
@@ -477,7 +495,6 @@ const BasicInputElements = withSwal((props: any) => {
           showErrorAlert(error);
         }
       }
-
     }
   };
 
@@ -636,8 +653,8 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const changeFilteredItemsData = (data: any) => {
-    setTableData(data)
-  }
+    setTableData(data);
+  };
 
   useEffect(() => {
     if (selectedOffice?.value == region_id) {
@@ -651,22 +668,21 @@ const BasicInputElements = withSwal((props: any) => {
   return (
     <>
       <Row className="justify-content-between px-2">
-        
-        <LeadsModal 
-          country = {country || []} 
-          source = {source || []}
-          leadTypes = {leadTypes || []}
-          user = {user || []} 
-          office = {office || []}
-          channels= {channels || []} 
-          loading = {loading}
-          regionData = {region || []}
-          franchisees = {franchisees || []}
-          region = {region || []}
+        <LeadsModal
+          country={country || []}
+          source={source || []}
+          leadTypes={leadTypes || []}
+          user={user || []}
+          office={office || []}
+          channels={channels || []}
+          loading={loading}
+          regionData={region || []}
+          franchisees={franchisees || []}
+          region={region || []}
           flags={flags || []}
-          modal = {modal}
-          toggle = {toggle}
-          handleUpdateData = {handleUpdateData}
+          modal={modal}
+          toggle={toggle}
+          handleUpdateData={handleUpdateData}
           isAssignedLeads={true}
         />
 
@@ -694,9 +710,17 @@ const BasicInputElements = withSwal((props: any) => {
         )}
 
         <Col lg={12} className="p-0 form__card">
-
-          <LeadsFilters changeFilteredItemsData={changeFilteredItemsData} state={state} status={status} source={source} country={country} userData={userData} counsellors={counsellors} cres={cres} isAssignedLeads={true}/>
-
+          <LeadsFilters
+            changeFilteredItemsData={changeFilteredItemsData}
+            state={state}
+            status={status}
+            source={source}
+            country={country}
+            userData={userData}
+            counsellors={counsellors}
+            cres={cres}
+            isAssignedLeads={true}
+          />
 
           <Card className="bg-white">
             <Card.Body>
@@ -726,7 +750,6 @@ const BasicInputElements = withSwal((props: any) => {
                   </Dropdown>
                 )}
 
-                
                 {user?.role == counsellor_tl_id && (
                   <Dropdown className="btn-group">
                     <Dropdown.Toggle
@@ -745,8 +768,6 @@ const BasicInputElements = withSwal((props: any) => {
                     </Dropdown.Menu>
                   </Dropdown>
                 )}
-
-
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
               <div className="d-flex flex-wrap justify-content-end"></div>
@@ -777,31 +798,33 @@ const AssignedLeads = () => {
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag } = useSelector((state: RootState) => ({
-    user: state.Auth.user,
-    state: state.Leads.assignedLeads,
-    error: state.Leads.error,
-    loading: state.Leads.loading,
-    initialLoading: state.Leads.initialloading,
-    users: state.Users.adminUsers,
-    franchisees: state.Franchise.franchiseUsers,
-    branchCounsellor: state.Users?.branchCounsellor,
-    flag: state?.Flag?.flags
-  }));
+  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag } = useSelector(
+    (state: RootState) => ({
+      user: state.Auth.user,
+      state: state.Leads.assignedLeads,
+      error: state.Leads.error,
+      loading: state.Leads.loading,
+      initialLoading: state.Leads.initialloading,
+      users: state.Users.adminUsers,
+      franchisees: state.Franchise.franchiseUsers,
+      branchCounsellor: state.Users?.branchCounsellor,
+      flag: state?.Flag?.flags,
+    })
+  );
 
   let userRole: any;
   let userBranchId: any;
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
-    userBranchId = JSON.parse(userInfo)?.branch_id
+    userBranchId = JSON.parse(userInfo)?.branch_id;
   }
 
   useEffect(() => {
-    dispatch(getFlag())
-    if(userRole == cre_tl_id){
+    dispatch(getFlag());
+    if (userRole == cre_tl_id) {
       dispatch(getLeadAssigned());
     } else {
-      dispatch(getLeadAssignedByCounsellorTL())
+      dispatch(getLeadAssignedByCounsellorTL());
     }
     // dispatch(getFranchise())
     fetchAllCounsellors();
@@ -836,14 +859,14 @@ const AssignedLeads = () => {
   }, [franchisees]);
 
   const flagsData = useMemo(() => {
-    if(!flag) return [];
+    if (!flag) return [];
     return flag.map((data: any) => {
       return {
         value: data?.id,
-        label: data?.flag_name
-      }
-    })
-  },[flag])
+        label: data?.flag_name,
+      };
+    });
+  }, [flag]);
 
   if (initialLoading) {
     return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
