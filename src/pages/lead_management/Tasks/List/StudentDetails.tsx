@@ -49,6 +49,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [ShowRemarkModal, setShowRemarkModal] = useState<boolean>(false);
   const [remarkData, setRemarkData] = useState<any>(null);
   const [viewOnly, setViewOnly] = useState<boolean>(false);
+  const [isFollowupLoading, setIsFollowupLoading] = useState<boolean>(false)
 
   const [activeTab, setActiveTab] = useState<any>("basic_info");
 
@@ -132,20 +133,21 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       })
 
       if (result.isConfirmed) {
-        setShowRemarkModal(true)
 
         const { data } = await axios.put("/lead_status", {
           lead_id: studentId,
           status_id,
         });
   
+        setShowRemarkModal(true)
         showSuccessAlert(data.message);
-        dispatch(refreshData());
+        // dispatch(refreshData());
       }
     }
   };
 
   const handleFollowUpDate = () => {
+    setIsFollowupLoading(true)
     axios
       .put("/lead_status", {
         lead_id: studentId,
@@ -153,13 +155,16 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         followup_date: selectedDate,
       })
       .then((res) => {
+        setLoading(false)
         setShowRemarkModal(true);
         showSuccessAlert(res.data.message);
-        // dispatch(refreshData());
+        dispatch(refreshData());
         toggleStandard();
+        setIsFollowupLoading(false)
       })
       .catch((err) => {
         console.log("err", err);
+        setIsFollowupLoading(false)
       });
   };
 
@@ -385,6 +390,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     }
   };
 
+  const isCancelModal = () => {
+    dispatch(refreshData());
+    getRemarks();
+    setStandard(false);
+    setViewOnly(false)
+  }
+  
   if (loading) {
     return (
       <Spinner
@@ -875,6 +887,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               Cancel
             </Button>
             <Button
+              disabled={isFollowupLoading}
               variant="success"
               type="submit"
               onClick={handleFollowUpDate}
@@ -885,7 +898,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         </Modal.Footer>
       </Modal>
 
-      <RemarkModal viewOnly={viewOnly} setViewOnly={setViewOnly} showModal={ShowRemarkModal} toggleRemarkModal={setShowRemarkModal} studentId={studentId} statusId={statusId} followup={selectedDate} remarkData={remarkData} callGetRemark={callGetRemark}/>
+      <RemarkModal setIsCancelModal={isCancelModal} viewOnly={viewOnly} setViewOnly={setViewOnly} showModal={ShowRemarkModal} toggleRemarkModal={setShowRemarkModal} studentId={studentId} statusId={statusId} followup={selectedDate} remarkData={remarkData} callGetRemark={callGetRemark}/>
     </>
   );
 };
