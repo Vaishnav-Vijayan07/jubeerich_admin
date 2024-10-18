@@ -171,7 +171,7 @@ const LeadDetails = (props: Props) => {
 
                     <Nav.Item as="li" className="nav-item nav_item_2">
                       <Nav.Link eventKey="academic_info" className="nav-link cursor-pointer">
-                        Academic Info
+                        Exam Details
                       </Nav.Link>
                     </Nav.Item>
 
