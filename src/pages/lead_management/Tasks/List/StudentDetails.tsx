@@ -14,17 +14,14 @@ import {
 import classNames from "classnames";
 import { icons } from "../../../../assets/images/icons";
 import { getCountry } from "../../../../redux/country/actions";
-import { getOfficeTypeData } from "../../../../redux/OfficeType/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { getMaritalStatus } from "../../../../redux/marital_status/actions";
 import axios from "axios";
 import {
   follow_up_id,
   future_leads_id,
   handleDateFormat,
   not_responding_id,
-  showErrorAlert,
   showSuccessAlert,
 } from "../../../../constants";
 import DatePicker from "react-datepicker";
@@ -54,31 +51,21 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [activeTab, setActiveTab] = useState<any>("basic_info");
 
   const dispatch = useDispatch();
-  const { Countries, OfficeTypes, MaritalStatus, user, refresh, flags } = useSelector(
+  const { Countries, OfficeTypes, MaritalStatus, user, refresh } = useSelector(
     (state: RootState) => ({
       Countries: state?.Country?.countries,
       OfficeTypes: state?.OfficeTypes?.officeTypes,
       MaritalStatus: state?.MaritalStatus?.maritalStatus,
       user: state.Auth.user,
       refresh: state.refreshReducer.refreshing,
-      flags: state.Flag.flags,
     })
   );
-
-  const flagsData = useMemo(() => {
-    if (!flags) return [];
-    return flags.map((data: any) => {
-      return {
-        value: data?.id,
-        label: data?.flag_name
-      }
-    })
-  },[flags])
 
   const { dropdownData } = useDropdownData(
-    "marital,officeType,franchise,region"
+    "marital,officeType,franchise,region,flags"
   );
-  const { officeTypes, regions, franchises, maritalStatus } = dropdownData;
+  const { officeTypes, regions, franchises, maritalStatus, flags } =
+    dropdownData;
 
   const toggleStandard = () => {
     setStandard(!standard);
@@ -121,7 +108,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     ) {
       toggleStandard();
     } else {
-
       const result = await swal.fire({
         title: "Are you sure?",
         text: "This action cannot be undone.",
@@ -130,7 +116,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, Save",
-      })
+      });
 
       if (result.isConfirmed) {
 
@@ -197,12 +183,11 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   }, [studentId, refresh]);
 
   useEffect(() => {
-    getRemarks()
+    getRemarks();
   }, [studentId, taskId]);
 
-  const updateFlagStatus = async(flag_id: string) => {
+  const updateFlagStatus = async (flag_id: string) => {
     try {
-
       const result = await swal.fire({
         title: "Are you sure?",
         text: "This action cannot be undone.",
@@ -214,42 +199,41 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       });
 
       if (result.isConfirmed) {
-        const res = await axios.put(`/update_flag_status/${studentId}`, { flag_id: flag_id });
-        if(res){
-          showSuccessAlert('Flag Changed Successfully');
+        const res = await axios.put(`/update_flag_status/${studentId}`, {
+          flag_id: flag_id,
+        });
+        if (res) {
+          showSuccessAlert("Flag Changed Successfully");
           getRemarks();
-          dispatch(refreshData())
+          dispatch(refreshData());
         }
       }
-
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const getRemarks = async() => {
+  const getRemarks = async () => {
     try {
-      const result = await axios.get(`/followup_remark/${studentId}`)
+      const result = await axios.get(`/followup_remark/${studentId}`);
       console.log(result.data?.data);
-      
-      if(result){
-        setRemarkData(result.data?.data)
+
+      if (result) {
+        setRemarkData(result.data?.data);
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const callGetRemark = () => {
     getRemarks();
     setSelectedDate(null);
     setStatusId(null);
-  }
+  };
 
   useEffect(() => {
     dispatch(getCountry());
-    dispatch(getOfficeTypeData());
-    dispatch(getMaritalStatus());
   }, []);
 
   const countryData = useMemo(() => {
@@ -259,22 +243,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       label: item.country_name,
     }));
   }, [Countries]);
-
-  const officeData = useMemo(() => {
-    if (!OfficeTypes) return [];
-    return OfficeTypes.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.office_type_name,
-    }));
-  }, [OfficeTypes]);
-
-  const maritialData = useMemo(() => {
-    if (!MaritalStatus) return [];
-    return MaritalStatus.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.marital_status_name,
-    }));
-  }, [MaritalStatus]);
 
   const handleFinishTask = async () => {
     try {
@@ -667,7 +635,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Card>
             <Card.Body>
               <h4 className="text-secondary m-0">Status</h4>
-              <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p>
+              <p className="mt-2 mb-2 text-muted fw-light">
+                Change the lead status
+              </p>
               <div className="d-flex justify-content-between align-items-center">
                 <Dropdown>
                   <Dropdown.Toggle
@@ -675,7 +645,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     variant="light"
                     // disabled={!StudentData?.status}
                   >
-                    {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
+                    {basicData?.status?.status_name
+                      ? basicData?.status?.status_name
+                      : "Change status"}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     {(status || [])?.map((item: any) => (
@@ -684,7 +656,10 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       <Dropdown.Item
                         eventKey={item.id}
                         key={item.id}
-                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                        onClick={() => [
+                          handleStatusChange(item?.id),
+                          setStatusId(item?.id),
+                        ]}
                       >
                         {item.status_name}
                       </Dropdown.Item>
@@ -692,7 +667,16 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   </Dropdown.Menu>
                 </Dropdown>
                 <span>
-                  <i className="mdi mdi-comment-eye-outline fs-2" title="View Comments" data-bs-toggle="tooltip" data-bs-placement="top" onClick={() => [setShowRemarkModal(true), setViewOnly(true)]}></i>
+                  <i
+                    className="mdi mdi-comment-eye-outline fs-2"
+                    title="View Comments"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    onClick={() => [
+                      setShowRemarkModal(true),
+                      setViewOnly(true),
+                    ]}
+                  ></i>
                 </span>
               </div>
             </Card.Body>
@@ -701,23 +685,25 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         <Col md={6}>
           <Card>
             <Card.Body>
-            <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex justify-content-between align-items-center">
                 <span>
                   <h4 className="text-secondary m-0">Flag</h4>
                   <p className="mt-2 mb-2 text-muted fw-light">Change flag</p>
                 </span>
                 <span>
-                  <p style={{
-                    opacity: 0.7,
-                    backgroundColor: `${basicData?.user_primary_flags?.color}`,
-                    color: "white",
-                    border: `1px solid #122d3d`,
-                    borderRadius: "5px",
-                    padding: "12px 24px",
-                    fontSize: "0.7rem",
-                    borderColor: `${basicData?.user_primary_flags?.color}`,
-                    height: "max-content",
-                  }}></p>
+                  <p
+                    style={{
+                      opacity: 0.7,
+                      backgroundColor: `${basicData?.user_primary_flags?.color}`,
+                      color: "white",
+                      border: `1px solid #122d3d`,
+                      borderRadius: "5px",
+                      padding: "12px 24px",
+                      fontSize: "0.7rem",
+                      borderColor: `${basicData?.user_primary_flags?.color}`,
+                      height: "max-content",
+                    }}
+                  ></p>
                 </span>
               </div>
               <Dropdown>
@@ -726,10 +712,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   variant="light"
                   // disabled={!StudentData?.status}
                 >
-                {basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Change Flag"}
+                  {basicData?.user_primary_flags?.flag_name
+                    ? basicData?.user_primary_flags?.flag_name
+                    : "Change Flag"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {(flagsData || [])?.map((item: any) => (
+                  {(flags || [])?.map((item: any) => (
                     // Check if the item is visible before rendering the Dropdown.Item
 
                     <Dropdown.Item
@@ -752,11 +740,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Card.Body>
             <Row>
               <div className="">
-                <h4 className="text-secondary">Add New Country</h4>
-                <p className="mt-2 mb-2 text-muted fw-light">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt
-                </p>
+                <h4 className="text-secondary">Country</h4>
+                <p className="mt-2 mb-2 text-muted fw-light">Add New Country</p>
                 <div
                   className="d-flex align-items-start"
                   style={{ gap: "5px" }}
