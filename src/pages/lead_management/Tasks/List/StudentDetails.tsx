@@ -139,9 +139,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           status_id,
         });
   
-        setShowRemarkModal(true)
+        dispatch(refreshData());
         showSuccessAlert(data.message);
-        // dispatch(refreshData());
+        setShowRemarkModal(true)
       }
     }
   };
@@ -155,12 +155,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         followup_date: selectedDate,
       })
       .then((res) => {
-        setLoading(false)
-        setShowRemarkModal(true);
-        showSuccessAlert(res.data.message);
-        dispatch(refreshData());
         toggleStandard();
+        dispatch(refreshData());
+        setLoading(false)
+        showSuccessAlert(res.data.message);
         setIsFollowupLoading(false)
+        setShowRemarkModal(true);
       })
       .catch((err) => {
         console.log("err", err);

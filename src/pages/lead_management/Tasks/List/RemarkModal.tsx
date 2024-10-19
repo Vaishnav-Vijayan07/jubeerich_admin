@@ -101,7 +101,7 @@ const RemarkModal = withSwal((props: any) => {
     const handleCancelUpdate = () => {
         setRemarkForm(initialFormState);
         setIsUpdate(false);
-        setIsCancelModal();
+        // setIsCancelModal();
     }
 
     return (
