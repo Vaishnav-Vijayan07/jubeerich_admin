@@ -528,7 +528,7 @@ select::-ms-expand {
   overflow: auto;
 }
 
-button.accordion-button {
+.custom-accordion button.accordion-button {
   padding: 0 15px;
   background-color: rgb(104, 106, 112) !important;
 }

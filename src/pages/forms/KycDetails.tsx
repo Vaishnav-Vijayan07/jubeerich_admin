@@ -377,7 +377,7 @@ const KycDetails = () => {
           </Card.Body>
         </Card>
       </Row>
-      <Accordion defaultActiveKey="0">
+      <Accordion defaultActiveKey="0" className="custom-accordion">
         <Row>
           <Col md={6} lg={6}>
             <Card>
