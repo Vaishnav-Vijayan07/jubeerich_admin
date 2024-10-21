@@ -11,17 +11,20 @@ export const meeting_scheduled_id = "37";
 export const spam_id = "45";
 export const lost_id = "44";
 export const region_id = "4";
-export const franchise_manager_id = "11";
-export const cre_id = "3";
-export const it_team_id = "2";
-export const cre_tl_id = "4";
-export const regional_manager_id = "10";
 export const franchise_id_from_office = "5";
+
+// role ids
+export const it_team_id = "2";
+export const cre_id = "3";
+export const cre_tl_id = "4";
+export const cre_reception_id = "5";
+export const counsellor_id = "7";
+export const regional_manager_id = "10";
+export const franchise_manager_id = "11";
 export const franchise_counsellor_id = "12";
 export const counsellor_tl_id = "13";
 export const branch_counsellor_id = "14";
-export const counsellor_id = "7";
-export const cre_reception_id = "5";
+export const country_manager_id = "15";
 
 //session user
 export const AUTH_SESSION_KEY = "jb_user";

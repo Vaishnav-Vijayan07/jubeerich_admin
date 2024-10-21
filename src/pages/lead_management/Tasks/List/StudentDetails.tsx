@@ -1,16 +1,5 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  Dropdown,
-  Form,
-  Modal,
-  Nav,
-  Row,
-  Spinner,
-  Tab,
-} from "react-bootstrap";
+import { Button, Card, Col, Dropdown, Form, Modal, Nav, Row, Spinner, Tab } from "react-bootstrap";
 import classNames from "classnames";
 import { icons } from "../../../../assets/images/icons";
 import { getCountry } from "../../../../redux/country/actions";
@@ -18,7 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import axios from "axios";
 import {
+  branch_counsellor_id,
+  counsellor_id,
+  country_manager_id,
+  cre_id,
   follow_up_id,
+  franchise_counsellor_id,
   future_leads_id,
   handleDateFormat,
   not_responding_id,
@@ -36,6 +30,10 @@ const BasicInfo = lazy(() => import("./BasicInfo"));
 const History = lazy(() => import("./History"));
 
 const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
+  const { userRole } = useSelector((state: RootState) => ({
+    userRole: state?.Auth.user.role,
+  }));
+
   const [basicData, setBasicData] = useState<any>([]);
   const [status, setStatus] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -46,26 +44,21 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [ShowRemarkModal, setShowRemarkModal] = useState<boolean>(false);
   const [remarkData, setRemarkData] = useState<any>(null);
   const [viewOnly, setViewOnly] = useState<boolean>(false);
-  const [isFollowupLoading, setIsFollowupLoading] = useState<boolean>(false)
+  const [isFollowupLoading, setIsFollowupLoading] = useState<boolean>(false);
 
   const [activeTab, setActiveTab] = useState<any>("basic_info");
 
   const dispatch = useDispatch();
-  const { Countries, OfficeTypes, MaritalStatus, user, refresh } = useSelector(
-    (state: RootState) => ({
-      Countries: state?.Country?.countries,
-      OfficeTypes: state?.OfficeTypes?.officeTypes,
-      MaritalStatus: state?.MaritalStatus?.maritalStatus,
-      user: state.Auth.user,
-      refresh: state.refreshReducer.refreshing,
-    })
-  );
+  const { Countries, OfficeTypes, MaritalStatus, user, refresh } = useSelector((state: RootState) => ({
+    Countries: state?.Country?.countries,
+    OfficeTypes: state?.OfficeTypes?.officeTypes,
+    MaritalStatus: state?.MaritalStatus?.maritalStatus,
+    user: state.Auth.user,
+    refresh: state.refreshReducer.refreshing,
+  }));
 
-  const { dropdownData } = useDropdownData(
-    "marital,officeType,franchise,region,flags"
-  );
-  const { officeTypes, regions, franchises, maritalStatus, flags } =
-    dropdownData;
+  const { dropdownData } = useDropdownData("marital,officeType,franchise,region,flags");
+  const { officeTypes, regions, franchises, maritalStatus, flags } = dropdownData;
 
   const toggleStandard = () => {
     setStandard(!standard);
@@ -101,11 +94,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   };
 
   const handleStatusChange = async (status_id: number) => {
-    if (
-      status_id == follow_up_id ||
-      status_id == future_leads_id ||
-      status_id == not_responding_id
-    ) {
+    if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
       toggleStandard();
     } else {
       const result = await swal.fire({
@@ -119,21 +108,20 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       });
 
       if (result.isConfirmed) {
-
         const { data } = await axios.put("/lead_status", {
           lead_id: studentId,
           status_id,
         });
-  
+
         dispatch(refreshData());
         showSuccessAlert(data.message);
-        setShowRemarkModal(true)
+        setShowRemarkModal(true);
       }
     }
   };
 
   const handleFollowUpDate = () => {
-    setIsFollowupLoading(true)
+    setIsFollowupLoading(true);
     axios
       .put("/lead_status", {
         lead_id: studentId,
@@ -143,14 +131,14 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       .then((res) => {
         toggleStandard();
         dispatch(refreshData());
-        setLoading(false)
+        setLoading(false);
         showSuccessAlert(res.data.message);
-        setIsFollowupLoading(false)
+        setIsFollowupLoading(false);
         setShowRemarkModal(true);
       })
       .catch((err) => {
         console.log("err", err);
-        setIsFollowupLoading(false)
+        setIsFollowupLoading(false);
       });
   };
 
@@ -279,37 +267,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     }
   };
 
-  console.log("basicData ==>", basicData);
-
-  // const addNewCountry = async (newCountryId: number) => {
-  //   try {
-  //     const result = await swal.fire({
-  //       title: "Are you sure?",
-  //       text: "This action cannot be undone.",
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonColor: "#3085d6",
-  //       cancelButtonColor: "#d33",
-  //       confirmButtonText: "Yes, Save",
-  //     });
-
-  //     if (result.isConfirmed) {
-  //       setLoading(true);
-  //       const response = await axios.put("assign_new_country", {
-  //         id: taskId,
-  //         newCountryId: newCountryId,
-  //       });
-  //       showSuccessAlert(response?.data?.message);
-  //       getTaskDetails();
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     showErrorAlert(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const addNewCountry = async (newCountryId: number) => {
     try {
       const result = await swal.fire({
@@ -337,8 +294,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
       // Display the error message from the backend
       if (error.response) {
-        const errorMessage =
-          error.response.data?.message || "An unexpected error occurred.";
+        const errorMessage = error.response.data?.message || "An unexpected error occurred.";
         await swal.fire({
           title: "Error",
           text: errorMessage,
@@ -362,16 +318,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     dispatch(refreshData());
     getRemarks();
     setStandard(false);
-    setViewOnly(false)
-  }
-  
+    setViewOnly(false);
+  };
+
+  console.log("userRole ==>", userRole);
+
   if (loading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "65%" }}
-      />
-    );
+    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "65%" }} />;
   }
 
   return (
@@ -384,28 +337,38 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                 <span>{"JBR" + taskDetails?.id}</span>
               </div>
 
-              <Col className="d-flex gap-2 float-end">
-                <Button
-                  className="d-flex align-items-center btn-light"
-                  disabled={taskDetails?.isCompleted ? true : false}
-                  onClick={handleFinishTask}
-                >
-                  <div className="round-circle" />
-                  {taskDetails?.isCompleted
-                    ? "Task Completed"
-                    : "Mark As Completed"}
-                </Button>
-              </Col>
+              {(userRole == cre_id) && (
+                <Col className="d-flex gap-2 float-end">
+                  <Button
+                    className="d-flex align-items-center btn-light"
+                    disabled={taskDetails?.isCompleted ? true : false}
+                    onClick={handleFinishTask}
+                  >
+                    <div className="round-circle" />
+                    {taskDetails?.isCompleted ? "Task Completed" : "Mark As Completed"}
+                  </Button>
+                </Col>
+              )}
+
+              {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                <Col className="d-flex gap-2 float-end">
+                  <Button
+                    className="d-flex align-items-center btn-light"
+                    // disabled={taskDetails?.isCompleted ? true : false}
+                    // onClick={handleFinishTask}
+                  >
+                    <div className="round-circle" />
+                    Proceed to KYC
+                  </Button>
+                </Col>
+              )}
 
               <div className="clearfix"></div>
 
               <hr className="my-3" />
             </Col>
           </Row>
-          <Row
-            className="dotted-border-bottom"
-            style={{ paddingBottom: "20px" }}
-          >
+          <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
             <Col md={9}>
               <h3 className="m-0 mb-1">{taskDetails?.title}</h3>
               <p className="mb-2">{taskDetails?.description}</p>
@@ -428,9 +391,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             </Col>
             <Col md={3}>
               <div className="text-end text-nowrap">
-                <b>
-                  Lead Date: {handleDateFormat(basicData?.lead_received_date)}
-                </b>
+                <b>Lead Date: {handleDateFormat(basicData?.lead_received_date)}</b>
               </div>
             </Col>
           </Row>
@@ -441,32 +402,16 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             <div className="grid-container mb-2">
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Name</p>
-                <div
-                  className="d-flex align-items-start"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.user}
-                    alt="date"
-                    className="me-1"
-                    height="16"
-                  />
+                <div className="d-flex align-items-start" style={{ gap: "5px" }}>
+                  <img src={icons.user} alt="date" className="me-1" height="16" />
                   <h5 className="m-0 font-size-14">{basicData?.full_name}</h5>
                 </div>
               </div>
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Phone Number</p>
-                <div
-                  className="d-flex align-items-center outline-none"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.apple}
-                    alt="phone"
-                    className="me-1"
-                    width="16"
-                  />
+                <div className="d-flex align-items-center outline-none" style={{ gap: "5px" }}>
+                  <img src={icons.apple} alt="phone" className="me-1" width="16" />
                   {/* <h5 className="m-0 font-size-14">{taskObject.phone}</h5> */}
                   <input
                     type="tel"
@@ -485,16 +430,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Email</p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.email}
-                    alt="email"
-                    className="me-1"
-                    width="17"
-                  />
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.email} alt="email" className="me-1" width="17" />
                   {/* <h5 className="m-0 font-size-14">{taskObject.email}</h5> */}
                   <input
                     type="text"
@@ -516,50 +453,24 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               <br className="grid-br" />
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Source</p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.cloud}
-                    alt="source icon"
-                    className="me-1"
-                    width="16"
-                  />
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.cloud} alt="source icon" className="me-1" width="16" />
                   <h5 className="m-0 font-size-14">{basicData?.source_name}</h5>
                 </div>
               </div>
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Channel</p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.information}
-                    alt="cahnnel icon"
-                    className="me-1"
-                    width="16"
-                  />
-                  <h5 className="m-0 font-size-14">
-                    {basicData?.channel_name}
-                  </h5>
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.information} alt="cahnnel icon" className="me-1" width="16" />
+                  <h5 className="m-0 font-size-14">{basicData?.channel_name}</h5>
                 </div>
               </div>
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">City</p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.business}
-                    alt="comapny icon"
-                    className="me-1"
-                    width="16"
-                  />
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.business} alt="comapny icon" className="me-1" width="16" />
                   <h5 className="m-0 font-size-14">{basicData?.city}</h5>
                 </div>
               </div>
@@ -568,25 +479,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Row>
             <div className="grid-container mb-2">
               <div className="">
-                <p className="mt-2 mb-1 text-muted fw-light">
-                  Lead Received Date
-                </p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.calender_time}
-                    alt="phone"
-                    className="me-1"
-                    width="16"
-                  />
+                <p className="mt-2 mb-1 text-muted fw-light">Lead Received Date</p>
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
                   <input
                     type="tel"
-                    value={
-                      basicData?.lead_received_date &&
-                      moment(basicData?.lead_received_date).format("DD/MM/YYYY")
-                    }
+                    value={basicData?.lead_received_date && moment(basicData?.lead_received_date).format("DD/MM/YYYY")}
                     style={{
                       border: "none",
                       outline: "none",
@@ -600,22 +498,11 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Followup Date</p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ gap: "5px" }}
-                >
-                  <img
-                    src={icons.calender_time}
-                    alt="phone"
-                    className="me-1"
-                    width="16"
-                  />
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
                   <input
                     type="tel"
-                    value={
-                      basicData?.followup_date &&
-                      moment(basicData?.followup_date).format("DD/MM/YYYY")
-                    }
+                    value={basicData?.followup_date && moment(basicData?.followup_date).format("DD/MM/YYYY")}
                     style={{
                       border: "none",
                       outline: "none",
@@ -635,9 +522,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Card>
             <Card.Body>
               <h4 className="text-secondary m-0">Status</h4>
-              <p className="mt-2 mb-2 text-muted fw-light">
-                Change the lead status
-              </p>
+              <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p>
               <div className="d-flex justify-content-between align-items-center">
                 <Dropdown>
                   <Dropdown.Toggle
@@ -645,9 +530,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     variant="light"
                     // disabled={!StudentData?.status}
                   >
-                    {basicData?.status?.status_name
-                      ? basicData?.status?.status_name
-                      : "Change status"}
+                    {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     {(status || [])?.map((item: any) => (
@@ -656,10 +539,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       <Dropdown.Item
                         eventKey={item.id}
                         key={item.id}
-                        onClick={() => [
-                          handleStatusChange(item?.id),
-                          setStatusId(item?.id),
-                        ]}
+                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
                       >
                         {item.status_name}
                       </Dropdown.Item>
@@ -672,10 +552,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     title="View Comments"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
-                    onClick={() => [
-                      setShowRemarkModal(true),
-                      setViewOnly(true),
-                    ]}
+                    onClick={() => [setShowRemarkModal(true), setViewOnly(true)]}
                   ></i>
                 </span>
               </div>
@@ -712,9 +589,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   variant="light"
                   // disabled={!StudentData?.status}
                 >
-                  {basicData?.user_primary_flags?.flag_name
-                    ? basicData?.user_primary_flags?.flag_name
-                    : "Change Flag"}
+                  {basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Change Flag"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   {(flags || [])?.map((item: any) => (
@@ -742,21 +617,14 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               <div className="">
                 <h4 className="text-secondary">Country</h4>
                 <p className="mt-2 mb-2 text-muted fw-light">Add New Country</p>
-                <div
-                  className="d-flex align-items-start"
-                  style={{ gap: "5px" }}
-                >
+                <div className="d-flex align-items-start" style={{ gap: "5px" }}>
                   <Dropdown>
                     <Dropdown.Toggle className="cursor-pointer" variant="light">
                       Choose Country
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       {(countryData || [])?.map((item: any) => (
-                        <Dropdown.Item
-                          eventKey={item.value}
-                          key={item.value}
-                          onClick={() => addNewCountry(item.value)}
-                        >
+                        <Dropdown.Item eventKey={item.value} key={item.value} onClick={() => addNewCountry(item.value)}>
                           {item.label}
                         </Dropdown.Item>
                       ))}
@@ -771,40 +639,24 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       <Card>
         <Card.Body>
           <Row>
-            <Tab.Container
-              activeKey={activeTab}
-              onSelect={(tab) => setActiveTab(tab)}
-            >
+            <Tab.Container activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
               <Card>
                 <Card.Body>
-                  <Nav
-                    variant="pills"
-                    as="ul"
-                    className="nav nav-pills nav-fill navtab-bg row-gap-1"
-                  >
+                  <Nav variant="pills" as="ul" className="nav nav-pills nav-fill navtab-bg row-gap-1">
                     <Nav.Item as="li" className="nav-item nav_item_1">
-                      <Nav.Link
-                        eventKey="basic_info"
-                        className="nav-link cursor-pointer"
-                      >
+                      <Nav.Link eventKey="basic_info" className="nav-link cursor-pointer">
                         Basic Info
                       </Nav.Link>
                     </Nav.Item>
 
                     <Nav.Item as="li" className="nav-item nav_item_4">
-                      <Nav.Link
-                        eventKey="comments"
-                        className="nav-link cursor-pointer"
-                      >
+                      <Nav.Link eventKey="comments" className="nav-link cursor-pointer">
                         Comments
                       </Nav.Link>
                     </Nav.Item>
 
                     <Nav.Item as="li" className="nav-item nav_item_3">
-                      <Nav.Link
-                        eventKey="history"
-                        className="nav-link cursor-pointer"
-                      >
+                      <Nav.Link eventKey="history" className="nav-link cursor-pointer">
                         History
                       </Nav.Link>
                     </Nav.Item>
@@ -844,12 +696,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         </Card.Body>
       </Card>
 
-      <Modal
-        show={standard}
-        centered
-        onHide={toggleStandard}
-        dialogClassName="modal-calendar-width"
-      >
+      <Modal show={standard} centered onHide={toggleStandard} dialogClassName="modal-calendar-width">
         <Modal.Header onHide={toggleStandard} closeButton>
           <h4 className="modal-title">Choose Followup Date</h4>
         </Modal.Header>
@@ -871,19 +718,25 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             <Button variant="danger" className="me-1" onClick={toggleStandard}>
               Cancel
             </Button>
-            <Button
-              disabled={isFollowupLoading}
-              variant="success"
-              type="submit"
-              onClick={handleFollowUpDate}
-            >
+            <Button disabled={isFollowupLoading} variant="success" type="submit" onClick={handleFollowUpDate}>
               Submit
             </Button>
           </div>
         </Modal.Footer>
       </Modal>
 
-      <RemarkModal setIsCancelModal={isCancelModal} viewOnly={viewOnly} setViewOnly={setViewOnly} showModal={ShowRemarkModal} toggleRemarkModal={setShowRemarkModal} studentId={studentId} statusId={statusId} followup={selectedDate} remarkData={remarkData} callGetRemark={callGetRemark}/>
+      <RemarkModal
+        setIsCancelModal={isCancelModal}
+        viewOnly={viewOnly}
+        setViewOnly={setViewOnly}
+        showModal={ShowRemarkModal}
+        toggleRemarkModal={setShowRemarkModal}
+        studentId={studentId}
+        statusId={statusId}
+        followup={selectedDate}
+        remarkData={remarkData}
+        callGetRemark={callGetRemark}
+      />
     </>
   );
 };
