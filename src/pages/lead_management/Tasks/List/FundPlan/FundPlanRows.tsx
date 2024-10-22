@@ -5,7 +5,7 @@ import { baseUrl } from "../../../../../constants";
 import ActionButton from ".././ActionButton";
 import React from "react";
 
-const fundTypeOptions = [
+export const fundTypeOptions = [
   { value: "loan", label: "Loan" },
   { value: "savings", label: "Savings" },
   { value: "fd", label: "FD" },

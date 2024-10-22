@@ -19,6 +19,7 @@ import WorkExpereince from "../lead_management/Tasks/List/WorkExpereince/WorkExp
 import axios from "axios";
 import { icons } from "../../assets/images/icons";
 import moment from "moment";
+import DocumentsOverview from "../lead_management/Tasks/List/DocumentsOverview/DocumentsOverview";
 
 interface Props {}
 
@@ -228,6 +229,12 @@ const LeadDetails = (props: Props) => {
                         Additional Documents
                       </Nav.Link>
                     </Nav.Item>
+
+                    <Nav.Item as="li" className="nav-item nav_item_5">
+                      <Nav.Link eventKey="documents_overview" className="nav-link cursor-pointer">
+                        Documents Overview
+                      </Nav.Link>
+                    </Nav.Item>
                   </Nav>
 
                   <Tab.Content>
@@ -302,6 +309,12 @@ const LeadDetails = (props: Props) => {
                     {activeTab === "family_details" && studentId && (
                       <Suspense fallback={null}>
                         <FamilyDetails studentId={studentId} />
+                      </Suspense>
+                    )}
+
+                    {activeTab === "documents_overview" && studentId && (
+                      <Suspense fallback={null}>
+                        <DocumentsOverview studentId={studentId} />
                       </Suspense>
                     )}
                   </Tab.Content>
