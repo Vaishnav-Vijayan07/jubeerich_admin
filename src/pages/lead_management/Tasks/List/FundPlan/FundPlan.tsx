@@ -15,13 +15,14 @@ interface Props {
 
 const initialFundPlanState = {
   type: "",
+  fund_origin: "",
   sponsor_name: "",
   approx_annual_income: "",
   relation_with_sponsor: "",
   sponsorship_amount: "",
   name_of_bank: "",
   itr_status: "no",
-  has_min_6_months_backup: "true",
+  has_min_6_months_backup: "no",
   source_of_funds: "",
   supporting_document: null,
   errors: {},
@@ -43,15 +44,16 @@ const FundPlan = ({ student_id }: Props) => {
       ...fundPlan,
       {
         type: "",
+        fund_origin: "",
         sponsor_name: "",
-        approx_annual_income: 0.0,
-        itr_status: "no",
-        supporting_document: null,
+        approx_annual_income: "",
         relation_with_sponsor: "",
-        sponsorship_amount: 0.0,
-        has_min_6_months_backup: "true",
-        source_of_funds: "",
+        sponsorship_amount: "",
         name_of_bank: "",
+        itr_status: "no",
+        has_min_6_months_backup: "no",
+        source_of_funds: "",
+        supporting_document: null,
         errors: {},
       },
     ]);
@@ -68,8 +70,15 @@ const FundPlan = ({ student_id }: Props) => {
   };
 
   const saveFundPlanData = () => {
+
+    console.log(fundPlan);
+    
+
     const validationRules = {
       type: { required: true },
+      fund_origin: { required: true },
+      has_min_6_months_backup : { required: true },
+      source_of_funds: { required: true },
       sponsor_name: { required: true },
       approx_annual_income: { required: true },
       itr_status: { required: true },
@@ -78,18 +87,18 @@ const FundPlan = ({ student_id }: Props) => {
       sponsorship_amount: { required: true },
       name_of_bank: { required: true },
     };
-    const { isValid, errors } = validateFields(fundPlan, validationRules);
+    // const { isValid, errors } = validateFields(fundPlan, validationRules);
 
-    if (!isValid) {
-      // Ensure validation errors are displayed
-      setFundPlan((prevState: any) =>
-        prevState.map((exp: any, index: any) => ({
-          ...exp,
-          errors: errors[index] || {}, // Attach errors to specific fields
-        }))
-      );
-      return;
-    }
+    // if (!isValid) {
+    //   // Ensure validation errors are displayed
+    //   setFundPlan((prevState: any) =>
+    //     prevState.map((exp: any, index: any) => ({
+    //       ...exp,
+    //       errors: errors[index] || {}, // Attach errors to specific fields
+    //     }))
+    //   );
+    //   return;
+    // }
     saveFundPlan(fundPlan);
   };
 

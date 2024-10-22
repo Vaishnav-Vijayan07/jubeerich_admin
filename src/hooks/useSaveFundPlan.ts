@@ -20,17 +20,50 @@ const useSaveFundPlan = (studentId: string | number) => {
         newFormData.append(`fund_details[${index}][id]`, itemId.toString());
 
         newFormData.append(`fund_details[${index}][type]`, fund.type);
-        newFormData.append(`fund_details[${index}][sponsor_name]`, fund.sponsor_name);
-        newFormData.append(`fund_details[${index}][approx_annual_income]`, fund.approx_annual_income.toString());
-        newFormData.append(`fund_details[${index}][relation_with_sponsor]`, fund.relation_with_sponsor);
-        newFormData.append(`fund_details[${index}][sponsorship_amount]`, fund.sponsorship_amount.toString());
-        newFormData.append(`fund_details[${index}][name_of_bank]`, fund.name_of_bank);
-        newFormData.append(`fund_details[${index}][has_min_6_months_backup]`, fund.has_min_6_months_backup);
-        newFormData.append(`fund_details[${index}][source_of_funds]`, fund.source_of_funds);
+        newFormData.append(
+          `fund_details[${index}][fund_origin]`,
+          fund.fund_origin
+        );
+        newFormData.append(
+          `fund_details[${index}][sponsor_name]`,
+          fund.sponsor_name
+        );
+        newFormData.append(
+          `fund_details[${index}][approx_annual_income]`,
+          fund.approx_annual_income.toString()
+        );
+        newFormData.append(
+          `fund_details[${index}][relation_with_sponsor]`,
+          fund.relation_with_sponsor
+        );
+        newFormData.append(
+          `fund_details[${index}][sponsorship_amount]`,
+          fund.sponsorship_amount.toString()
+        );
+        newFormData.append(
+          `fund_details[${index}][name_of_bank]`,
+          fund.name_of_bank
+        );
+        newFormData.append(
+          `fund_details[${index}][itr_status]`,
+          fund.itr_status
+        );
+
+        newFormData.append(
+          `fund_details[${index}][has_min_6_months_backup]`,
+          fund.has_min_6_months_backup
+        );
+        newFormData.append(
+          `fund_details[${index}][source_of_funds]`,
+          fund.source_of_funds
+        );
 
         // Append supporting_document only if it's an object (file)
         if (typeof fund?.supporting_document === "object") {
-          newFormData.append(`fund_details[${index}][supporting_document]`, fund.supporting_document);
+          newFormData.append(
+            `fund_details[${index}][supporting_document]`,
+            fund.supporting_document
+          );
         }
       });
 
