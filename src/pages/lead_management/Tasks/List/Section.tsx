@@ -119,15 +119,17 @@ const TaskSection = ({ title, tasks, selectTask, initialTaskId }: TaskSectionSta
             </span>
           </h5>
         </div>
-        <div className="d-flex align-items-center justify-content-end">
-          <img src={calender} alt="date logo" width={16.3} className="calender-img" />
-          <ReactDatePicker
-            onChange={handleDateChange}
-            selected={new Date()}
-            dateFormat={"dd-MM-yyyy"}
-            className="custom-react-date-picker"
-          />
-        </div>
+        {title !== "Completed Task" && (
+          <div className="d-flex align-items-center justify-content-end">
+            <img src={calender} alt="date logo" width={16.3} className="calender-img" />
+            <ReactDatePicker
+              onChange={handleDateChange}
+              selected={new Date()}
+              dateFormat={"dd-MM-yyyy"}
+              className="custom-react-date-picker"
+            />
+          </div>
+        )}
       </div>
 
       {taskList.length > 0 ? (

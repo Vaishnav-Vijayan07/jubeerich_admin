@@ -50,10 +50,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const [activeTab, setActiveTab] = useState<any>("basic_info");
 
   const dispatch = useDispatch();
-  const { Countries, OfficeTypes, MaritalStatus, user, refresh } = useSelector((state: RootState) => ({
+  const { Countries, user, refresh } = useSelector((state: RootState) => ({
     Countries: state?.Country?.countries,
-    OfficeTypes: state?.OfficeTypes?.officeTypes,
-    MaritalStatus: state?.MaritalStatus?.maritalStatus,
     user: state.Auth.user,
     refresh: state.refreshReducer.refreshing,
   }));
@@ -195,6 +193,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           showSuccessAlert("Flag Changed Successfully");
           getRemarks();
           dispatch(refreshData());
+          getTaskList();
         }
       }
     } catch (error) {
@@ -289,6 +288,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
         showSuccessAlert(response?.data?.message); // Display success message
         getTaskDetails(); // Refresh task details
+        getTaskList();
       }
     } catch (error: any) {
       console.error("Error:", error);
@@ -561,26 +561,25 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         <Col md={6}>
           <Card>
             <Card.Body>
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex justify-content-between">
                 <span>
                   <h4 className="text-secondary m-0">Flag</h4>
                   <p className="mt-2 mb-2 text-muted fw-light">Change flag</p>
                 </span>
-                <span>
-                  <p
-                    style={{
-                      opacity: 0.7,
-                      backgroundColor: `${basicData?.user_primary_flags?.color}`,
-                      color: "white",
-                      border: `1px solid #122d3d`,
-                      borderRadius: "5px",
-                      padding: "12px 24px",
-                      fontSize: "0.7rem",
-                      borderColor: `${basicData?.user_primary_flags?.color}`,
-                      height: "max-content",
-                    }}
-                  ></p>
-                </span>
+
+                <small
+                  style={{
+                    backgroundColor: `${basicData?.user_primary_flags?.color}`,
+                    color: "white",
+                    border: `1px solid ${basicData?.user_primary_flags?.color}`,
+                    borderRadius: "5px",
+                    padding: "6px 18px",
+                    height: "fit-content",
+                  }}
+                  className={classNames("rounded-pill me-1")}
+                >
+                  {basicData?.user_primary_flags?.flag_name}
+                </small>
               </div>
               <Dropdown>
                 <Dropdown.Toggle
