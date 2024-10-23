@@ -42,6 +42,6 @@ export const customStyles = {
   }),
   singleValue: (provided: any, state: any) => ({
     ...provided,
-    color: "#333", // Color of the selected option displayed in the select box
+    color: "#333",
   }),
 };

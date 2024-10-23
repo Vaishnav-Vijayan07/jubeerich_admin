@@ -418,7 +418,7 @@ const KycDetails = () => {
                         <p
                           key={index}
                           className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <strong>{field.label}:</strong>
                           <span className="ms-2">{field.value}</span>
@@ -445,7 +445,7 @@ const KycDetails = () => {
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <p className="mb-1 font-15">
                             <strong>Type of funds:</strong>
@@ -506,7 +506,7 @@ const KycDetails = () => {
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <p className="mb-1 font-15">
                             <strong>Type of Test:</strong>
@@ -558,7 +558,7 @@ const KycDetails = () => {
                       <h5 className="font-weight-bold text-danger">Medical Declaration:</h5>
                       <div
                         className={`mb-3 bg-light`}
-                        style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                        style={{ padding: "10px", borderRadius: "4px" }}
                       >
                         <p className="mb-1 font-15">
                           <strong>Are there any medical conditions or health concerns that we should be aware of?</strong>
@@ -595,7 +595,7 @@ const KycDetails = () => {
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <p className="mb-1 font-15">
                             <strong>Have you ever been convicted of a criminal offense?</strong>
@@ -635,7 +635,7 @@ const KycDetails = () => {
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <p className="mb-1 font-15">
                             <strong>Qualification:</strong>
@@ -665,7 +665,7 @@ const KycDetails = () => {
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <p className="mb-1 font-15">
                             <strong>Period of Gap:</strong>
@@ -702,7 +702,7 @@ const KycDetails = () => {
                         <p
                           key={index}
                           className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <strong>{field.label}:</strong>
                           <span className="ms-2">{field.value}</span>
@@ -729,7 +729,7 @@ const KycDetails = () => {
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <p className="mb-1 font-15">
                             <strong>Name of Company:</strong>
@@ -763,7 +763,7 @@ const KycDetails = () => {
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <p className="mb-1 font-15">
                             <strong>{info.label}</strong>
@@ -793,7 +793,7 @@ const KycDetails = () => {
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <p className="mb-1 font-15">
                             <strong>Country Name:</strong>
@@ -831,7 +831,7 @@ const KycDetails = () => {
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <p className="mb-1 font-15">
                             <strong>Country Name:</strong>
@@ -873,7 +873,7 @@ const KycDetails = () => {
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }} // Optional: inline styles for padding and rounded corners
+                          style={{ padding: "10px", borderRadius: "4px" }}
                         >
                           <p className="mb-1 font-15">
                             <strong>Country Name:</strong>
