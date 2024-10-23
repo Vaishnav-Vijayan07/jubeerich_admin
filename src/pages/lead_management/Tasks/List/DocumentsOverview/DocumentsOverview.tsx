@@ -84,23 +84,33 @@ const DocumentsOverview = (props: any) => {
         const ext = parts.pop();
         return ext ? ext.toLowerCase() : '';
     }
-
+    
     const getFileName = (fileName: string) => {
-        if (!fileName) return ''
+        if (!fileName) return '';
         const parts = fileName.split(".");
-        parts.pop();
-        const name = parts.join(".");
-        if (name.length > 25) {
-            return name.slice(0, 25) + "...";
+        const extension = parts.pop();
+        let name = parts.join(".");
+    
+        const hyphenCount = (name.match(/-/g) || []).length;
+    
+        if (hyphenCount === 3) {
+            const hyphenIndex = name.indexOf("-");
+            if (hyphenIndex !== -1) {
+                name = name.slice(hyphenIndex + 1).trim();
+            }
         }
+    
+        if (name.length > 25) {
+            name = name.slice(0, 25) + "...";
+        }
+    
         return name;
     }
+    
+    
 
     const FileDisplay = (props: any) => {
         const { fileName, filePath } = props
-
-        console.log('fileName', fileName);
-        console.log('filePath', filePath);
 
         return (
             <>
@@ -163,9 +173,9 @@ const DocumentsOverview = (props: any) => {
                                     <Form.Label className='fs-4 mt-1 text-white'>Additional Documents</Form.Label>
                                 </span>
                                 <Row className='ms-3'>
-                                    <Col md={6} lg={6} xl={6} xxl={4} className='mt-2'>
+                                    <Col md={6} lg={6} xl={6} xxl={4} >
                                         <div className="d-flex">
-                                            <Col className='mt-3'>
+                                            <Col className='mt-2'>
                                                 <Form.Group className="mb-2" controlId="visa_type">
                                                     <Form.Label>
                                                         Visa Type
@@ -176,9 +186,9 @@ const DocumentsOverview = (props: any) => {
                                         </div>
                                     </Col>
 
-                                    <Col md={6} lg={6} xl={6} xxl={4} className='mt-2'>
+                                    <Col md={6} lg={6} xl={6} xxl={4} >
                                         <div className="d-flex">
-                                            <Col className='mt-3'>
+                                            <Col className='mt-2'>
                                                 <Form.Group className="mb-2" controlId="updated_cv">
                                                     <Form.Label>
                                                         Updated CV
@@ -190,9 +200,9 @@ const DocumentsOverview = (props: any) => {
                                     </Col>
                                 </Row>
                                 <Row className='ms-3'>
-                                    <Col md={6} lg={6} xl={6} xxl={4} className='mt-3'>
+                                    <Col md={6} lg={6} xl={6} xxl={4} >
                                         <div className="d-flex">
-                                            <Col className='mt-3'>
+                                            <Col className='mt-2'>
                                                 <Form.Group className="mb-2" controlId="updated_cv">
                                                     <Form.Label>
                                                         Profile Assessment
@@ -203,9 +213,9 @@ const DocumentsOverview = (props: any) => {
                                         </div>
                                     </Col>
 
-                                    <Col md={6} lg={6} xl={6} xxl={4} className='mt-3'>
+                                    <Col md={6} lg={6} xl={6} xxl={4} >
                                         <div className="d-flex">
-                                            <Col className='mt-3'>
+                                            <Col className='mt-2'>
                                                 <Form.Group className="mb-2" controlId="lor">
                                                     <Form.Label>
                                                         Letter of recommendation
@@ -217,9 +227,9 @@ const DocumentsOverview = (props: any) => {
                                     </Col>
                                 </Row>
                                 <Row className='ms-3'>
-                                    <Col md={6} lg={6} xl={6} xxl={4} className='mt-3'>
+                                    <Col md={6} lg={6} xl={6} xxl={4} >
                                         <div className="d-flex">
-                                            <Col className='mt-3'>
+                                            <Col className='mt-2'>
                                                 <Form.Group className="mb-2" controlId="sop">
                                                     <Form.Label>
                                                         Statement of Purpose
@@ -230,9 +240,9 @@ const DocumentsOverview = (props: any) => {
                                         </div>
                                     </Col>
 
-                                    <Col md={6} lg={6} xl={6} xxl={4} className='mt-3'>
+                                    <Col md={6} lg={6} xl={6} xxl={4} >
                                         <div className="d-flex">
-                                            <Col className='mt-3'>
+                                            <Col className='mt-2'>
                                                 <Form.Group className="mb-2" controlId="gte_form">
                                                     <Form.Label>
                                                         Application/GTE Form
@@ -247,26 +257,28 @@ const DocumentsOverview = (props: any) => {
 
                             {/* Visa Approvals */}
 
-                            <Row className='ms-4 mt-3'>
+                            <Row className='ms-4 mt-2'>
                                 <span className='border bg-secondary rounded-2'>
                                     <Form.Label className='fs-4 mt-1 text-white' >Previous Visa Approval</Form.Label>
                                 </span>
                                 {visaApprovals && visaApprovals.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
-                                        <Row md={6} lg={6} xl={6} xxl={4} className='mt-3'>
+                                        <Row  className='mt-3'>
                                             <Form.Group className="mb-2" controlId="visa_type">
                                                 <Form.Label>
                                                     {`Visa Type`} - {formatVisaName(data?.visa_type)} 
                                                 </Form.Label>
                                             </Form.Group>
                                         </Row>
-                                        <Row className='mt-3'>
+                                        <Row >
+                                            <Col md={6} lg={6} xl={6} xxl={4}>
                                             <Form.Group className="mb-2" controlId="approved_letter">
                                                 <Form.Label>
                                                     Approved Letter
                                                 </Form.Label>
                                                 <FileDisplay fileName={data?.approved_letter} filePath={''} />
                                             </Form.Group>
+                                            </Col>
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
@@ -274,26 +286,28 @@ const DocumentsOverview = (props: any) => {
                             </Row>
 
                             {/* Visa Declines */}
-                            <Row className='ms-4 mt-3'>
+                            <Row className='ms-4 mt-2'>
                                 <span className='border bg-secondary rounded-2'>
                                     <Form.Label className='fs-4 mt-1 text-white' >Previous Visa Declines</Form.Label>
                                 </span>
                                 {visaDeclines && visaDeclines.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
-                                        <Row md={6} lg={6} xl={6} xxl={4} className='mt-3'>
+                                        <Row className='mt-3'>
                                             <Form.Group className="mb-2" controlId="visa_type">
                                                 <Form.Label>
                                                    {`Visa Type`} - {formatVisaName(data?.visa_type)}
                                                 </Form.Label>
                                             </Form.Group>
                                         </Row>
-                                        <Row style={{ paddingTop: "1rem" }}>
-                                            <Form.Group className="mb-2" controlId="declined_letter">
+                                        <Row>
+                                        <Col md={6} lg={6} xl={6} xxl={4}>
+                                            <Form.Group className="mb-1" controlId="declined_letter">
                                                 <Form.Label>
                                                     Declined Letter
                                                 </Form.Label>
                                                 <FileDisplay fileName={data?.declined_letter} filePath={''} />
                                             </Form.Group>
+                                            </Col>
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
@@ -309,20 +323,22 @@ const DocumentsOverview = (props: any) => {
                                 </span>
                                 {fundPlan && fundPlan.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
-                                        <Row md={6} lg={6} xl={6} xxl={4} className='mt-3'>
+                                        <Row md={6} lg={6} xl={6} xxl={4} className='mt-2'>
                                             <Form.Group className="mb-2" controlId="type">
                                                 <Form.Label>
                                                     {'Type'} - {formatFundName(data?.type)}
                                                 </Form.Label>
                                             </Form.Group>
                                         </Row>
-                                        <Row style={{ paddingTop: "1rem" }}>
+                                        <Row >
+                                        <Col md={6} lg={6} xl={6} xxl={4}>
                                             <Form.Group className="mb-2" controlId="supporting_document">
                                                 <Form.Label>
                                                     Supporting Document
                                                 </Form.Label>
-                                                <FileDisplay fileName={data?.supporting_document} filePath={'fundDocuments'} />
+                                                <FileDisplay fileName={data?.supporting_document} filePath={'fundDocuments'}/>
                                             </Form.Group>
+                                            </Col>
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
@@ -364,7 +380,7 @@ const DocumentsOverview = (props: any) => {
                                             </Col>
                                         </Row>
                                         <Row>
-                                            <Col>
+                                        <Col md={6} lg={6} xl={6} xxl={4}>
                                                 <Form.Group className="mb-2" controlId="certificate">
                                                     <Form.Label>
                                                         Admit Card
@@ -386,7 +402,7 @@ const DocumentsOverview = (props: any) => {
                                 </span>
                                 {workInfoDocs && workInfoDocs.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
-                                            <Col md={6} lg={6} xl={6} xxl={4} className='mt-3'>
+                                            <Col md={6} lg={6} xl={6} xxl={4} className='mt-2'>
                                                 <Form.Group className="mb-2" controlId="type">
                                                     <Form.Label>
                                                         {'Company'} - {data?.company}
@@ -394,7 +410,7 @@ const DocumentsOverview = (props: any) => {
                                                 </Form.Group>
                                             </Col>
                                         <Row>
-                                            <Col style={{ paddingTop: "1rem" }}>
+                                            <Col>
                                                 <Form.Group className="mb-2" controlId="bank_statement">
                                                     <Form.Label>
                                                         Bank Statement
@@ -402,7 +418,7 @@ const DocumentsOverview = (props: any) => {
                                                     <FileDisplay fileName={data?.bank_statement} filePath={'workDocuments'} />
                                                 </Form.Group>
                                             </Col>
-                                            <Col style={{ paddingTop: "1rem" }}>
+                                            <Col >
                                                 <Form.Group className="mb-2" controlId="job_offer_document">
                                                     <Form.Label>
                                                         Job Offer Document
@@ -430,7 +446,7 @@ const DocumentsOverview = (props: any) => {
                                             </Col>
                                         </Row>
                                         <Row>
-                                            <Col style={{ paddingTop: "1rem" }}>
+                                        <Col md={6} lg={6} xl={6} xxl={4} style={{ paddingTop: "1rem" }}>
                                                 <Form.Group className="mb-2" controlId="payslip_document">
                                                     <Form.Label>
                                                         Pay Slip
@@ -452,14 +468,14 @@ const DocumentsOverview = (props: any) => {
                                 </span>
                                 {examDocs && examDocs.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
-                                        <Row md={4} lg={4} xl={4} xxl={4}>
+                                        <Row >
                                             <Form.Group className="mb-2" controlId="exam_type">
                                                 <Form.Label>
                                                     {'Exam Type'} - {data?.exam_type}
                                                 </Form.Label>
                                             </Form.Group>
                                         </Row>
-                                        <Row md={4} lg={4} xl={4} xxl={4}>
+                                        <Row >
                                             <Form.Group className="mb-2" controlId="overall_score">
                                                 <Form.Label>
                                                     {'Overall Score'} - {data?.overall_score}
@@ -467,12 +483,14 @@ const DocumentsOverview = (props: any) => {
                                             </Form.Group>
                                         </Row>
                                         <Row>
+                                        <Col md={6} lg={6} xl={6} xxl={4}>                                            
                                             <Form.Group className="mb-2" controlId="score_card">
                                                 <Form.Label>
                                                     Score Card
                                                 </Form.Label>
                                                 <FileDisplay fileName={data?.score_card} filePath={'examDocuments'} />
                                             </Form.Group>
+                                            </Col>
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
@@ -488,20 +506,22 @@ const DocumentsOverview = (props: any) => {
                                 </span>
                                 {policeDocs && policeDocs.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
-                                        <Row md={6} lg={6} xl={6} xxl={4} className='mt-3'>
+                                        <Row className='mt-2'>
                                             <Form.Group className="mb-2" controlId="country_name">
                                                 <Form.Label>
                                                     {'Country'} - {data?.country_name}
                                                 </Form.Label>
                                             </Form.Group>
                                         </Row>
-                                        <Row style={{ paddingTop: "1rem" }}>
+                                        <Row >
+                                        <Col md={6} lg={6} xl={6} xxl={4}>  
                                             <Form.Group className="mb-2" controlId="score_card">
                                                 <Form.Label>
                                                     Police Clearence Certificate
                                                 </Form.Label>
                                                 <FileDisplay fileName={data?.certificate} filePath={'policeClearenceDocuments'} />
                                             </Form.Group>
+                                            </Col>
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
