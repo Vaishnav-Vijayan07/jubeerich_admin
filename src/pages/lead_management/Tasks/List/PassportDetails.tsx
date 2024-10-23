@@ -38,7 +38,6 @@ const PassportDetails = ({ studentId }: Props) => {
     try {
       const { data } = await axios.get(`passport_details/${studentId}`);
 
-      console.log("Passport details:", data);
       data.data
         ? setPassportDetails(data.data)
         : setPassportDetails(initialPassportState);

@@ -44,6 +44,13 @@ const validationErrorsInitialState = {
   emergency_contact_phone: "",
 };
 
+const genderData: any = [
+  { value: null, label: "None" },
+  { value: "Male", label: "Male" },
+  { value: "Female", label: "Female" },
+  { value: "Other", label: "Other" },
+];
+
 const BasicInfo = withSwal((props: any) => {
   const { swal, studentId, role, officeTypes, regions, franchises, maritalStatus } = props;
 
@@ -104,13 +111,6 @@ const BasicInfo = withSwal((props: any) => {
     refresh: state.refreshReducer.refreshing,
   }));
 
-  const genderData: any = [
-    { value: null, label: "None" },
-    { value: "Male", label: "Male" },
-    { value: "Female", label: "Female" },
-    { value: "Other", label: "Other" },
-  ];
-
   const getBasicInfo = async () => {
     setLoading(true);
     try {
@@ -137,12 +137,11 @@ const BasicInfo = withSwal((props: any) => {
 
       setSelectedOfficeType(updatedOffice[0]);
 
-      const updatedGender = genderData?.filter((gender: any) => gender.value == basicInfo?.gender);
+      const updatedGender = genderData?.filter((gender: any) => gender.value == basicInfoFromApi?.gender);
       setSelectedGender(updatedGender[0]);
 
-      const updatedMaritialStatus = maritalStatus?.filter(
-        (maritalStatus: any) => maritalStatus.value == basicInfo?.marital_status
-      );
+      const updatedMaritialStatus = maritalStatus?.filter((maritalStatus: any) => maritalStatus.value == basicInfoFromApi?.marital_status);
+
       setSelectedMaritialStatus(updatedMaritialStatus[0]);
 
       if (primaryInfo?.franchise_id) {
@@ -528,7 +527,7 @@ const BasicInfo = withSwal((props: any) => {
                 components={animatedComponents}
                 name="preferred_country"
                 value={selectedCountry}
-                isDisabled={role === 7 || role === 3}
+                isDisabled={true}
               />
             </Form.Group>
           </Col>
@@ -545,9 +544,7 @@ const BasicInfo = withSwal((props: any) => {
                 value={selectedOfficeType}
                 onChange={(selected) => handleDropDowns(selected, { name: "office_type" }, "primary")}
               />
-              {primaryInfo?.errors?.office_type && (
-                <Form.Text className="text-danger">{primaryInfo?.errors?.office_type}</Form.Text>
-              )}
+              {primaryInfo?.errors?.office_type && <Form.Text className="text-danger">{primaryInfo?.errors?.office_type}</Form.Text>}
             </Form.Group>
           </Col>
         </Row>
@@ -568,9 +565,7 @@ const BasicInfo = withSwal((props: any) => {
                   value={selectedRegion}
                   onChange={(selected) => handleDropDowns(selected, { name: "region_id" }, "primary")}
                 />
-                {primaryInfo?.errors?.region_id && (
-                  <Form.Text className="text-danger">{primaryInfo?.errors?.region_id}</Form.Text>
-                )}
+                {primaryInfo?.errors?.region_id && <Form.Text className="text-danger">{primaryInfo?.errors?.region_id}</Form.Text>}
               </Form.Group>
             </Col>
           )}
@@ -590,9 +585,7 @@ const BasicInfo = withSwal((props: any) => {
                   value={selectedFranchise}
                   onChange={(selected) => handleDropDowns(selected, { name: "franchise_id" }, "primary")}
                 />
-                {primaryInfo?.errors?.franchise_id && (
-                  <Form.Text className="text-danger">{primaryInfo?.errors?.franchise_id}</Form.Text>
-                )}
+                {primaryInfo?.errors?.franchise_id && <Form.Text className="text-danger">{primaryInfo?.errors?.franchise_id}</Form.Text>}
               </Form.Group>
             </Col>
           )}
@@ -644,9 +637,7 @@ const BasicInfo = withSwal((props: any) => {
                 value={selectedMaritialStatus}
                 onChange={(selected) => handleDropDowns(selected, { name: "marital_status" }, "basic")}
               />
-              {basicInfo?.errors?.marital_status && (
-                <Form.Text className="text-danger">{basicInfo?.errors?.marital_status}</Form.Text>
-              )}
+              {basicInfo?.errors?.marital_status && <Form.Text className="text-danger">{basicInfo?.errors?.marital_status}</Form.Text>}
             </Form.Group>
           </Col>
 
@@ -693,9 +684,7 @@ const BasicInfo = withSwal((props: any) => {
                 value={basicInfo?.secondary_number} // Change to basicInfo
                 onChange={(e) => handleInputChange(e, "secondary_number", "basic")}
               />
-              {basicInfo?.errors?.secondary_number && (
-                <Form.Text className="text-danger">{basicInfo?.errors?.secondary_number}</Form.Text>
-              )}
+              {basicInfo?.errors?.secondary_number && <Form.Text className="text-danger">{basicInfo?.errors?.secondary_number}</Form.Text>}
             </Form.Group>
           </Col>
 
@@ -831,8 +820,8 @@ const BasicInfo = withSwal((props: any) => {
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>
-                  Are there any medical conditions or health concerns that we should be aware of? This information is necessary
-                  for regulatory compliance and will be treated with the utmost confidentiality
+                  Are there any medical conditions or health concerns that we should be aware of? This information is necessary for regulatory
+                  compliance and will be treated with the utmost confidentiality
                 </Form.Label>
                 <div>
                   <Form.Check
@@ -893,8 +882,8 @@ const BasicInfo = withSwal((props: any) => {
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>
-                  Have you ever been convicted of a criminal offense? This information is necessary for regulatory compliance and
-                  will be treated with the utmost confidentiality
+                  Have you ever been convicted of a criminal offense? This information is necessary for regulatory compliance and will be treated with
+                  the utmost confidentiality
                 </Form.Label>
                 <div>
                   <Form.Check
@@ -950,8 +939,8 @@ const BasicInfo = withSwal((props: any) => {
         <Row className="mt-2">
           <Row>
             <Form.Label className="mb-2 ">
-              Can you provide Police Clearance Certificate from all those countries (including GCC, Middle East countries) where
-              you lived more than 6 months in the past 10 years, if applicable?
+              Can you provide Police Clearance Certificate from all those countries (including GCC, Middle East countries) where you lived more than 6
+              months in the past 10 years, if applicable?
             </Form.Label>
           </Row>
 

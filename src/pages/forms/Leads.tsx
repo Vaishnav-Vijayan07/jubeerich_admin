@@ -5,8 +5,18 @@ import { Row, Col, Spinner } from "react-bootstrap";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getBranchCounsellors, getLead, getLeadsByCounsellorTL, getLeadsTL } from "../../redux/actions";
-import { AUTH_SESSION_KEY, counsellor_tl_id, cre_tl_id, regional_manager_id } from "../../constants";
+import {
+  getBranchCounsellors,
+  getLead,
+  getLeadsByCounsellorTL,
+  getLeadsTL,
+} from "../../redux/actions";
+import {
+  AUTH_SESSION_KEY,
+  counsellor_tl_id,
+  cre_tl_id,
+  regional_manager_id,
+} from "../../constants";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
@@ -22,52 +32,42 @@ const Leads = () => {
   let userBranchId: any;
   if (userInfo) {
     userRole = JSON.parse(userInfo)?.role;
-    userBranchId = JSON.parse(userInfo)?.branch_id
+    userBranchId = JSON.parse(userInfo)?.branch_id;
   }
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, cres, error, loading, initialLoading, categories, region, flag, franchisees, branchCounsellor } = useSelector(
-    (state: RootState) => ({
+  const { user, state, error, loading, initialLoading, branchCounsellor } =
+    useSelector((state: RootState) => ({
       user: state.Auth.user,
       state: state.Leads.leads,
-      cres: state.Leads.allCres,
       error: state.Leads.error,
       loading: state.Leads.loading,
       initialLoading: state.Leads.initialloading,
-      categories: state.Category.category.data,
-      region: state.Region.regions,
-      franchisees: state.Franchise.franchiseUsers,
       branchCounsellor: state.Users?.branchCounsellor,
-      flag: state?.Flag?.flags
-    })
-  );
-
-  console.log('flag', flag);
+    }));
 
   useEffect(() => {
     fetchAllCounsellors();
-    dispatch(getFlag())
-    dispatch(getBranchCounsellors(userBranchId));
   }, []);
 
   useEffect(() => {
-    console.log('userRole',userRole);
-    
+    console.log("userRole", userRole);
+
     if (userRole == cre_tl_id) {
-      console.log('userRole',userRole);
+      console.log("userRole", userRole);
       dispatch(getLeadsTL());
-    } 
+    }
     // else if(userRole == counsellor_tl_id) {
-      //   console.log('Entered');
-      
-      //   dispatch(getLeadsByCounsellorTL());
-      // }
-      else {
-      console.log('userRole',userRole);
+    //   console.log('Entered');
+
+    //   dispatch(getLeadsByCounsellorTL());
+    // }
+    else {
+      console.log("userRole", userRole);
       dispatch(getLead());
     }
-    
+
     if (userRole == regional_manager_id) {
-      console.log('userRole',userRole);
+      console.log("userRole", userRole);
       fetchBranches();
     }
   }, [userRole]);
@@ -89,16 +89,6 @@ const Leads = () => {
       });
   }, []);
 
-  const flagsData = useMemo(() => {
-    if(!flag) return [];
-    return flag.map((data: any) => {
-      return {
-        value: data?.id,
-        label: data?.flag_name
-      }
-    })
-  },[flag])
-
   const fetchBranches = useCallback(async () => {
     try {
       const resposne = await axios.get("list_manager_branches");
@@ -109,7 +99,12 @@ const Leads = () => {
   }, []);
 
   if (initialLoading) {
-    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "50%", left: "50%" }}
+      />
+    );
   }
 
   return (
@@ -142,7 +137,7 @@ const Leads = () => {
             franchisees={dropdownData.franchises || []}
             branchForManager={branchForManager}
             branchCounsellors={branchCounsellor || []}
-            flags={flagsData || []}
+            flags={dropdownData.flags || []}
           />
         </Col>
       </Row>
