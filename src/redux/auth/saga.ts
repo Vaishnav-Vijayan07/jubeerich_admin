@@ -33,7 +33,13 @@ function* login({ payload: { username, password }, type }: UserData): SagaIterat
   try {
     const response = yield call(loginApi, { username, password });
     const user = response.data;
-
+    
+    const userTaskAccess = user?.power_names?.includes("View Task");
+    if (userTaskAccess) {
+      window.location.href = "/leads/tasks/";
+    } else {
+      window.location.href = "/";
+    }
 
     // NOTE - You can change this according to response format from your api
     api.setLoggedInUser(user);
@@ -57,7 +63,7 @@ function* logout(): SagaIterator {
     yield put(authApiResponseSuccess(AuthActionTypes.LOGOUT_USER, {}));
   } catch (error: any) {
     yield put(authApiResponseError(AuthActionTypes.LOGOUT_USER, error));
-    throw error
+    throw error;
   }
 }
 
@@ -72,7 +78,7 @@ function* signup({ payload: { fullname, email, password } }: UserData): SagaIter
     yield put(authApiResponseError(AuthActionTypes.SIGNUP_USER, error));
     api.setLoggedInUser(null);
     setAuthorization(null);
-    throw error
+    throw error;
   }
 }
 
@@ -82,7 +88,7 @@ function* forgotPassword({ payload: { username } }: UserData): SagaIterator {
     yield put(authApiResponseSuccess(AuthActionTypes.FORGOT_PASSWORD, response.data));
   } catch (error: any) {
     yield put(authApiResponseError(AuthActionTypes.FORGOT_PASSWORD, error));
-    throw error
+    throw error;
   }
 }
 export function* watchLoginUser() {

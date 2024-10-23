@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Row, Col, Card,  Button, Dropdown, Modal } from "react-bootstrap";
+import { Row, Col, Card, Button, Dropdown, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -183,7 +183,7 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
       minWidth: 100,
       Cell: ({ row }: any) => (
-        <ul style={{ listStyle: "none" }}>
+        <ul style={{ listStyle: "none",  margin: "0" }}>
           {row.original.preferredCountries.map((item: any) => (
             <li>{item?.country_name}</li>
           ))}
@@ -267,7 +267,7 @@ const BasicInputElements = withSwal((props: any) => {
             sort: false,
             minWidth: 150,
             Cell: ({ row }: any) => (
-              <>{row?.original.assigned_counsellor_tl  ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
+              <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
             ),
           },
         ]
@@ -437,7 +437,6 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleAssignBulk = async (user_ids: any, cre_id: any) => {
-
     const result = await swal.fire({
       title: "Are you sure?",
       text: "This action cannot be undone.",
@@ -448,11 +447,11 @@ const BasicInputElements = withSwal((props: any) => {
       confirmButtonText: "Yes, Assign",
     });
 
-    if (result.isConfirmed) {    
+    if (result.isConfirmed) {
       if (user_ids.length > 0) {
         try {
           const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
-  
+
           if (data.status) {
             if (userRole == cre_tl_id) {
               dispatch(getLeadsTL());
@@ -479,14 +478,14 @@ const BasicInputElements = withSwal((props: any) => {
       confirmButtonText: "Yes, Assign",
     });
 
-    if (result.isConfirmed) {    
+    if (result.isConfirmed) {
       if (user_ids.length > 0) {
         try {
           const { data } = await axios.post("/assign_branch_counselor", {
             user_ids,
             counselor_id: counsellor_id,
           });
-  
+
           if (data.status) {
             dispatch(getLead());
             showSuccessAlert("Bulk assignment successful.");
@@ -496,11 +495,9 @@ const BasicInputElements = withSwal((props: any) => {
         }
       }
     }
-
   };
 
   const handleBranchAssignBulk = async (user_ids: any, branch_id: any) => {
-
     const result = await swal.fire({
       title: "Are you sure?",
       text: "This action cannot be undone.",
@@ -518,7 +515,7 @@ const BasicInputElements = withSwal((props: any) => {
             user_ids,
             branch_id,
           });
-  
+
           if (data.status) {
             if (userRole == cre_tl_id) {
               dispatch(getLeadsTL());
@@ -532,11 +529,9 @@ const BasicInputElements = withSwal((props: any) => {
         }
       }
     }
-    
   };
 
   const handleAutoAssign = async () => {
-
     const result = await swal.fire({
       title: "Are you sure?",
       text: "This action cannot be undone.",
@@ -547,7 +542,7 @@ const BasicInputElements = withSwal((props: any) => {
       confirmButtonText: "Yes, Assign",
     });
 
-    if (result.isConfirmed) { 
+    if (result.isConfirmed) {
       if (selectedValues.length > 0) {
         try {
           const { data } = await axios.post("/auto_assign", {
@@ -569,7 +564,6 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleAutoAssignBranchCounsellors = async () => {
-
     const result = await swal.fire({
       title: "Are you sure?",
       text: "This action cannot be undone.",
@@ -580,7 +574,7 @@ const BasicInputElements = withSwal((props: any) => {
       confirmButtonText: "Yes, Assign",
     });
 
-    if (result.isConfirmed) {      
+    if (result.isConfirmed) {
       if (selectedValues.length > 0) {
         try {
           const { data } = await axios.post("/branch_auto_assign", {
