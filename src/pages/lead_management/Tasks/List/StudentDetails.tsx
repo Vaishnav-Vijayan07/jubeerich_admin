@@ -28,6 +28,7 @@ import RemarkModal from "./RemarkModal";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const History = lazy(() => import("./History"));
+const StudyPreference = lazy(() => import("./StudyPreference/StudyPreference"));
 
 const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   const { userRole } = useSelector((state: RootState) => ({
@@ -321,8 +322,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     setViewOnly(false);
   };
 
-  console.log("userRole ==>", userRole);
-
   if (loading) {
     return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "65%" }} />;
   }
@@ -337,7 +336,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                 <span>{"JBR" + taskDetails?.id}</span>
               </div>
 
-              {(userRole == cre_id) && (
+              {userRole == cre_id && (
                 <Col className="d-flex gap-2 float-end">
                   <Button
                     className="d-flex align-items-center btn-light"
@@ -660,6 +659,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                         History
                       </Nav.Link>
                     </Nav.Item>
+
+                    <Nav.Item as="li" className="nav-item nav_item_3">
+                      <Nav.Link eventKey="study_preference" className="nav-link cursor-pointer">
+                        Study Preference Info
+                      </Nav.Link>
+                    </Nav.Item>
                   </Nav>
 
                   <Tab.Content>
@@ -686,6 +691,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     {activeTab === "history" && studentId && (
                       <Suspense fallback={null}>
                         <History studentId={studentId} />
+                      </Suspense>
+                    )}
+
+                    {activeTab === "study_preference" && studentId && (
+                      <Suspense fallback={null}>
+                        <StudyPreference studentId={studentId} />
                       </Suspense>
                     )}
                   </Tab.Content>
