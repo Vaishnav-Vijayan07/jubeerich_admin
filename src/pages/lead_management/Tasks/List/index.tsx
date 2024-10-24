@@ -15,11 +15,13 @@ import StudentDetails from "./StudentDetails";
 const TaskList = () => {
   const [TaskArray, setTaskArray] = useState<TaskItemTypes[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(TaskArray[0]);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [initialLoading, setLoading] = useState(false);
-  const [pendingTasks, setpendingTasks] = useState<any[]>([]);
+  const [pendingTasks, setPendingTasks] = useState<any[]>([]);
 
   const selectTask = (task: TaskItemTypes) => {
     setSelectedTask(task);
+    setSelectedTaskId(task?.id);
   };
 
   const getTaskList = () => {
@@ -36,12 +38,17 @@ const TaskList = () => {
             completedArray.push(item);
           }
         });
-        // setSelectedTask(res.data.data[0]);
-        // setTaskArray(res.data.data);
-        // setpendingTasks(res.data.data);
-        setpendingTasks(pendingArray);
+
+        setPendingTasks(pendingArray);
         setTaskArray(completedArray);
-        setSelectedTask(pendingArray[0]);
+
+        if (selectedTaskId) {
+          const pendingSelected = pendingArray?.filter((item: any) => item.id == selectedTaskId);
+          const completedSelected = completedArray?.filter((item: any) => item.id == selectedTaskId);
+          setSelectedTask(pendingSelected[0] || completedSelected[0]);
+        } else {
+          setSelectedTask(pendingArray[0]);
+        }
       })
       .catch((err) => console.error(err))
       .finally(() => {
@@ -53,15 +60,8 @@ const TaskList = () => {
     getTaskList();
   }, []);
 
-  console.log("selectedTask========>", selectedTask);
-
   if (initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      />
-    );
+    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
   }
 
   return (
@@ -89,9 +89,7 @@ const TaskList = () => {
                           tasks={pendingTasks}
                           selectTask={selectTask}
                           date={""}
-                          setSelectedDate={function (
-                            value: React.SetStateAction<string>
-                          ): void {
+                          setSelectedDate={function (value: React.SetStateAction<string>): void {
                             throw new Error("Function not implemented.");
                           }}
                         ></TaskSection>
@@ -105,9 +103,7 @@ const TaskList = () => {
                             tasks={TaskArray}
                             selectTask={selectTask}
                             date={""}
-                            setSelectedDate={function (
-                              value: React.SetStateAction<string>
-                            ): void {
+                            setSelectedDate={function (value: React.SetStateAction<string>): void {
                               throw new Error("Function not implemented.");
                             }}
                           ></TaskSection>
@@ -127,6 +123,7 @@ const TaskList = () => {
               studentId={selectedTask?.studentId}
               taskId={selectedTask?.id}
               getTaskList={getTaskList}
+              setPendingTasks={setPendingTasks}
             />
           )}
         </Col>

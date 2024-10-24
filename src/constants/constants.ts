@@ -1,5 +1,5 @@
-// export const baseUrl = "https://crm.intersmarthosting.in/jubeerich/";
-export const baseUrl = "http://localhost:7700";
+export const baseUrl = "https://crm.intersmarthosting.in/jubeerich/";
+// export const baseUrl = "http://localhost:7700";
 
 export const follow_up_id = 9;
 export const not_responding_id = 7;
@@ -42,6 +42,6 @@ export const customStyles = {
   }),
   singleValue: (provided: any, state: any) => ({
     ...provided,
-    color: "#333", // Color of the selected option displayed in the select box
+    color: "#333",
   }),
 };

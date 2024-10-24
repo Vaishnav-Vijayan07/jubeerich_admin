@@ -72,25 +72,6 @@ const Task = ({
               </small>
             ))}
           </div>
-          {/* <div>
-            {task?.student_name?.user_primary_flags?.flag_name && (
-              <small
-                style={{
-                  opacity: 0.7,
-                  backgroundColor: `${task?.student_name?.user_primary_flags?.color}`,
-                  color: "white",
-                  border: `1px solid #122d3d`,
-                  borderRadius: "5px",
-                  padding: "1px 5px",
-                  fontSize: "0.6rem",
-                  borderColor: `${task?.student_name?.user_primary_flags?.color}`,
-                }}
-                className={classNames("rounded-pill me-1 ms-2")}
-              >
-                {task?.student_name?.user_primary_flags?.flag_name}
-              </small>
-            )}
-          </div> */}
         </Col>
       </Row>
     </>
@@ -123,6 +104,10 @@ const TaskSection = ({ title, tasks, selectTask, initialTaskId }: TaskSectionSta
     setSelectedTaskId(initialTaskId);
   }, [initialTaskId]);
 
+  const handleDateChange = (date: Date) => {};
+
+  const date = new Date();
+
   return (
     <>
       <div className="d-flex justify-content-between pb-3 mx-2">
@@ -134,10 +119,17 @@ const TaskSection = ({ title, tasks, selectTask, initialTaskId }: TaskSectionSta
             </span>
           </h5>
         </div>
-        {/* <div className="d-flex align-items-center justify-content-end">
-          <img src={calender} alt="date logo" width={16.3} className="calender-img" />
-          <ReactDatePicker onChange={handleDateChange} selected={new Date(DateReverse(date))} dateFormat={"dd-MM-yyyy"} className="custom-react-date-picker" />
-        </div> */}
+        {title !== "Completed Task" && (
+          <div className="d-flex align-items-center justify-content-end">
+            <img src={calender} alt="date logo" width={16.3} className="calender-img" />
+            <ReactDatePicker
+              onChange={handleDateChange}
+              selected={new Date()}
+              dateFormat={"dd-MM-yyyy"}
+              className="custom-react-date-picker"
+            />
+          </div>
+        )}
       </div>
 
       {taskList.length > 0 ? (

@@ -21,6 +21,7 @@ import {
   branch_counsellor_id,
   counsellor_id,
   counsellor_tl_id,
+  country_manager_id,
   franchise_counsellor_id,
   franchise_manager_id,
   regional_manager_id,
@@ -609,7 +610,7 @@ const BasicInputElements = withSwal((props: any) => {
                         {validationErrors.role_id && <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>}
                       </Form.Group>
                     </Col>
-                    {(formData?.role_id == counsellor_id || formData.role_id == branch_counsellor_id) && (
+                    {(formData?.role_id == counsellor_id || formData.role_id == branch_counsellor_id || formData.role_id == country_manager_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="role_id">
                           <Form.Label>Country</Form.Label>
