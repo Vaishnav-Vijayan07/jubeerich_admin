@@ -536,3 +536,11 @@ select::-ms-expand {
 .accordion-button:not(.collapsed){
   color: #ffffff !important;
 }
+
+.custom-accordion2 button.accordion-button2 {
+  padding: 0 15px;
+}
+
+.accordion-button2:not(.collapsed){
+  color: #ff0000 !important;
+}

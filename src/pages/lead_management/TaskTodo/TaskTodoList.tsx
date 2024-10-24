@@ -10,6 +10,7 @@ import axios from 'axios';
 import { showErrorAlert, showSuccessAlert } from '../../../constants';
 import moment from 'moment';
 import * as yup from 'yup';
+import classNames from 'classnames';
 
 const TaskTodoList = withSwal((props: any) => {
     const { swal, tasks, setTasks, getAllTasks } = props;
@@ -99,6 +100,20 @@ const TaskTodoList = withSwal((props: any) => {
         return selected?.[0]?.label || '';
     }
 
+    const BGColor = (statusName: any) => {
+        if (!statusName) return 'white';
+        switch (statusName) {
+            case 'pending':
+                return 'rgb(249, 84, 84)'
+            case 'in_progress':
+                return 'rgb(13, 146, 244)'
+            case 'completed':
+                return 'rgb(52, 121, 40)'
+            default:
+                break;
+        }
+    }
+
     useEffect(() => {
         handlePatchData(tasks)
     }, [tasks])
@@ -119,14 +134,28 @@ const TaskTodoList = withSwal((props: any) => {
                     <Col md={10} lg={10} xl={10}>
                         <ReactSortable className="row" list={formData ? formData : []} setList={setFormData}>
                             {formData && formData.map(((data: any, index: number) => (
-                                <Accordion key={index} className='ms-4'>
+                                <Accordion key={index} className='ms-4 custom-accordion3'>
                                     <Accordion.Item eventKey={index.toString()} className='mb-4'>
                                         <Accordion.Header className='w-100 d-flex justify-content-start align-items-center pt-0 mt-0'>
                                             <span className='p-1'>
                                                 <h4 className='fs-8'>{data?.title}</h4>
                                             </span>
-                                            <span className='ps-3'>
-                                                <h4 className='fs-8'>{filterDisplayStatus(data?.status)}</h4>
+                                            <span className='ps-2'>
+                                                <small
+                                                    style={{
+                                                        backgroundColor: `${BGColor(data?.status)}`,
+                                                        color: "white",
+                                                        border: `1px solid #122d3d`,
+                                                        borderRadius: "5px",
+                                                        padding: "2px 12px",
+                                                        fontSize: "0.7rem",
+                                                        borderColor: `${BGColor(data?.status)}`,
+                                                        height: "max-content",
+                                                    }}
+                                                    className={classNames("rounded-pill me-1")}
+                                                >
+                                                    {filterDisplayStatus(data?.status)}
+                                                </small>
                                             </span>
                                         </Accordion.Header>
                                         <Accordion.Body>
