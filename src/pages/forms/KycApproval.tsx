@@ -1,9 +1,12 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Table from "../../components/Table";
 import PageTitle from "../../components/PageTitle";
-import { Card } from "react-bootstrap";
+import { Card, Spinner } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../redux/store";
+import { getPendingKYC } from "../../redux/KYC/actions";
 
 const sizePerPageList = [
   {
@@ -37,59 +40,19 @@ interface TableRecords {
   status: string;
 }
 
-const data = [
-  {
-    id: 1,
-    full_name: "John Doe",
-    preferredCountries: [{ country_name: "United States" }, { country_name: "Canada" }],
-    university_name: "Harvard University",
-    course_name: "Computer Science",
-    office_type_name: "Main Office",
-    source_name: "Website",
-    lead_received_date: "2023-07-25",
-    assigned_counsellor: "Jane Smith",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    full_name: "Alice Brown",
-    preferredCountries: [{ country_name: "United Kingdom" }, { country_name: "Australia" }],
-    university_name: "University of Cambridge",
-    course_name: "Engineering",
-    office_type_name: "Branch Office",
-    source_name: "Referral",
-    lead_received_date: "2023-08-15",
-    assigned_counsellor: "Robert Johnson",
-    status: "Accepted",
-  },
-  {
-    id: 3,
-    full_name: "Michael Green",
-    preferredCountries: [{ country_name: "Germany" }],
-    university_name: "Technical University of Munich",
-    course_name: "Mechanical Engineering",
-    office_type_name: "Main Office",
-    source_name: "Social Media",
-    lead_received_date: "2023-09-10",
-    assigned_counsellor: "Emily Davis",
-    status: "In Progress",
-  },
-  {
-    id: 4,
-    full_name: "Sara White",
-    preferredCountries: [{ country_name: "New Zealand" }],
-    university_name: "University of Auckland",
-    course_name: "Biology",
-    office_type_name: "Branch Office",
-    source_name: "Event",
-    lead_received_date: "2023-07-30",
-    assigned_counsellor: "Mark Lee",
-    status: "Rejected",
-  },
-];
+const KycApproval = () => {
+  const dispatch = useDispatch();
 
-const KycApproval = ({ state }: any) => {
-  const records: any = data;
+  const { records, user, initialloading } = useSelector((state: RootState) => ({
+    user: state.Auth.user,
+    records: state.KYC.KYCSPending.data,
+    initialloading: state.KYC.initialloading,
+  }));
+
+  useEffect(() => {
+    dispatch(getPendingKYC());
+  }, []);
+
   const columns = [
     {
       Header: "No",
@@ -99,68 +62,76 @@ const KycApproval = ({ state }: any) => {
     },
     {
       Header: "Name",
-      accessor: "full_name",
+      accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.full_name",
       sort: true,
     },
     {
       Header: "Country",
-      accessor: "preferredCountries",
+      accessor: "studyPreferenceDetails.studyPreference.country.country_name", // Corrected for nested structure
       sort: false,
-      Cell: ({ row }: any) => (
-        <ul style={{ listStyle: "none" }}>
-          {row.original.preferredCountries.map((item: any) => (
-            <li>{item?.country_name}</li>
-          ))}
-        </ul>
-      ),
     },
     {
       Header: "University",
-      accessor: "university_name",
+      accessor: "studyPreferenceDetails.preferred_university.university_name", // Corrected accessor
       sort: false,
     },
     {
       Header: "Course",
-      accessor: "course_name",
+      accessor: "studyPreferenceDetails.preferred_courses.course_name", // Corrected accessor
       sort: false,
     },
     {
       Header: "Office",
-      accessor: "office_type_name",
+      accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.office_type_name.office_type_name", // Corrected accessor
       sort: false,
     },
     {
       Header: "Source",
-      accessor: "source_name",
+      accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.source_name.source_name", // Corrected accessor
       sort: false,
     },
     {
       Header: "Lead Received Date",
-      accessor: "lead_received_date",
+      accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.lead_received_date",
       sort: false,
       Cell: ({ row }: any) => (
-        <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
+        <span>
+          {row.original.studyPreferenceDetails.studyPreference.userPrimaryInfo.lead_received_date &&
+            moment(row.original.studyPreferenceDetails.studyPreference.userPrimaryInfo.lead_received_date).format("DD/MM/YYYY")}
+        </span>
       ),
     },
     {
-      Header: "Assigned Counselor",
-      accessor: "assigned_counsellor",
+      Header: "Assigned Type",
+      accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.assign_type", // Corrected accessor for assigned counselor
       sort: false,
+    },
+    {
+      Header: "Assigned Counselor",
+      accessor: "", // You can fill in this accessor if needed for sorting, etc.
+      sort: false,
+      Cell: ({ row }: any) => {
+        // Safely access the properties and find the assigned counselor
+        const assignedCounselor = row?.original?.studyPreferenceDetails?.studyPreference?.userPrimaryInfo?.counselors?.find(
+          (counselor: any) => counselor?.country_id === row?.original?.studyPreferenceDetails?.studyPreference?.countryId
+        );
+
+        return <span>{assignedCounselor ? assignedCounselor.name : "No counselor assigned"}</span>;
+      },
     },
     {
       Header: "Status",
-      accessor: "status",
+      accessor: "studyPreferenceDetails.kyc_status", // Corrected accessor for status
       sort: false,
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Comment Icon */}
           <Link to="#" className="action-icon">
-            {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-comment-processing-outline"></i>
           </Link>
 
@@ -172,6 +143,13 @@ const KycApproval = ({ state }: any) => {
       ),
     },
   ];
+
+  console.log(records);
+
+  if (initialloading) {
+    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
+  }
+
   return (
     <>
       <PageTitle
@@ -185,7 +163,7 @@ const KycApproval = ({ state }: any) => {
         <Card.Body>
           <Table
             columns={columns}
-            data={records ? records : []}
+            data={records ?? []}
             pageSize={25}
             sizePerPageList={sizePerPageList}
             isSortable={true}

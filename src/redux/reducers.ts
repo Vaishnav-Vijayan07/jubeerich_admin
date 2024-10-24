@@ -30,6 +30,7 @@ import Course from "./course/reducers";
 import Stream from "./stream/reducers";
 import refreshReducer from "./countryReducer";
 import DropDownReducer from "./dropDown/reducers";
+import KYC from "./KYC/reducers";
 
 export default combineReducers({
   Auth,
@@ -61,5 +62,6 @@ export default combineReducers({
   Course,
   Stream,
   DropDownReducer,
+  KYC,
   refreshReducer,
 });

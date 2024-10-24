@@ -1,0 +1,6 @@
+export enum KYCActionTypes {
+  API_RESPONSE_SUCCESS = "@@kyc/API_RESPONSE_SUCCESS",
+  API_RESPONSE_ERROR = "@@kyc/API_RESPONSE_ERROR",
+
+  GET_PENDING = "@@kyc/GET_PENDING"
+}
