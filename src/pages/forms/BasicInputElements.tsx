@@ -667,7 +667,7 @@ const BasicInputElements = withSwal((props: any) => {
             cres={cres || []}
           />
 
-          <Card className="bg-white">
+          <Card className="bg-white py-3">
             <Card.Body>
               <div className="d-flex flex-wrap gap-2 justify-content-end">
                 {user.role == it_team_id && (
