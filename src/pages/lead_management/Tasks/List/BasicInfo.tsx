@@ -527,6 +527,7 @@ const BasicInfo = withSwal((props: any) => {
                 components={animatedComponents}
                 name="preferred_country"
                 value={selectedCountry}
+                isMulti={true}
                 isDisabled={true}
               />
             </Form.Group>

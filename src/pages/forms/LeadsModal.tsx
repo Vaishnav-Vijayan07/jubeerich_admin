@@ -708,6 +708,7 @@ const LeadsModal = withSwal((props: any) => {
                     name="preferred_country"
                     options={country}
                     value={selectedCountry}
+                    isMulti={isUpdate ? true : false} // Enable multi-select
                     onChange={handleDropDowns}
                   />
                   {validationErrors.preferred_country && (
@@ -799,7 +800,7 @@ const LeadsModal = withSwal((props: any) => {
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
                     name="flag"
-                    options={[{ value: null, label: "None" }, ...flags]}
+                    options={flags}
                     value={selectedFlag}
                     onChange={handleDropDowns}
                   />
@@ -821,7 +822,7 @@ const LeadsModal = withSwal((props: any) => {
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
                     name="office_type"
-                    options={[{ value: null, label: "None" }, ...office]}
+                    options={office}
                     value={selectedOffice}
                     onChange={handleDropDowns}
                   />
@@ -844,7 +845,7 @@ const LeadsModal = withSwal((props: any) => {
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
                       name="region_id"
-                      options={[{ value: null, label: "None" }, ...regionData]}
+                      options={regionData}
                       value={selectedRegion}
                       onChange={handleDropDowns}
                     />

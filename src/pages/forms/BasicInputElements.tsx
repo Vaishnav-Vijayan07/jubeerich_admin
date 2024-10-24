@@ -65,14 +65,11 @@ const BasicInputElements = withSwal((props: any) => {
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);
   const [selectedValues, setSelectedValues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const [uploadModal, setUploadModal] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<any>([]);
-  const [className, setClassName] = useState<string>("");
-  const [scroll, setScroll] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [filteredItems, setFilteredItems] = useState<any[]>([]); // Filtered data
   const [handleUpdateData, setHandleUpdateData] = useState<any>({});
@@ -597,7 +594,6 @@ const BasicInputElements = withSwal((props: any) => {
       setResponsiveModal(false);
       setValidationErrors(initialValidationState); // Clear validation errors
       setFormData(initialState); //clear form data
-      setSelectedCountry([]);
       // Clear validation errors
     }
   }, [loading, error]);
@@ -611,8 +607,6 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const openModalWithClass = (className: string) => {
-    setClassName(className);
-    setScroll(false);
     toggle();
   };
 
