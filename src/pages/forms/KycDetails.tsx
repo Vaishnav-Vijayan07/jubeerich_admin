@@ -331,22 +331,20 @@ const KycDetails = () => {
         setChildrensInfo(data?.familyDetails?.[0]?.children_info);
         setPassportsInfo(data?.passportDetails?.[0]?.passports);
 
-        const filteredCourses = data?.studyPreferences?.[0]?.studyPreferenceDetails?.map((data: any) => {
-          return data?.preferred_courses?.course_name;
-        })
-
-        // let filteredCourses = '';
-        // data?.studyPreferences?.[0]?.studyPreferenceDetails?.forEach((data: any) => {
-        //   filteredCampus += data?.preferred_courses?.course_name;
-        // })
-
-        const filteredCampus = data?.studyPreferences?.[0]?.studyPreferenceDetails?.map((data: any) => {
-          return data?.preferred_campus?.campus_name;
-        })
-
-        const filteredPoliceCountries = data?.basicInfoDetails?.police_clearance_docs?.map((data: any) => {
-          return data?.country_name;
-        })
+        const filteredCourses = data?.studyPreferences?.[0]?.studyPreferenceDetails
+        .map((item: any) => item?.preferred_courses?.course_name)
+        .filter(Boolean)
+        .join(', ');
+      
+      const filteredCampus = data?.studyPreferences?.[0]?.studyPreferenceDetails
+        .map((item: any) => item?.preferred_campus?.campus_name)
+        .filter(Boolean)
+        .join(', ');
+      
+      const filteredPoliceCountries = data?.basicInfoDetails?.police_clearance_docs
+        ?.map((doc: any) => doc?.country_name)
+        .filter(Boolean)
+        .join(', ');
 
         if(preferredCourses) setPreferredCourses(filteredCourses);
         if(filteredCampus) setPreferredCampus(filteredCampus);
