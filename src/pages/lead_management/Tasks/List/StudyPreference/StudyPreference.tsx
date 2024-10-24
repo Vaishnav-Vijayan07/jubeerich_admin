@@ -42,7 +42,7 @@ const StudyPreference = withSwal((props: any) => {
     (state: RootState) => state.refreshReducer.refreshing
   );
 
-  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
+  const { loading: dropDownLoading, dropdownData } = useDropdownData("universities,courses,streams,campuses,courseTypes");
 
   const getStudyPrefData = async () => {
     setInitialLoading(true);

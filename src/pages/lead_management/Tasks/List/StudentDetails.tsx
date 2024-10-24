@@ -321,6 +321,10 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     setViewOnly(false);
   };
 
+  const handleProccedToKyc = () => {
+    
+  };
+
   console.log("userRole ==>", userRole);
 
   if (loading) {
@@ -337,7 +341,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                 <span>{"JBR" + taskDetails?.id}</span>
               </div>
 
-              {(userRole == cre_id) && (
+              {userRole == cre_id && (
                 <Col className="d-flex gap-2 float-end">
                   <Button
                     className="d-flex align-items-center btn-light"
@@ -355,7 +359,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   <Button
                     className="d-flex align-items-center btn-light"
                     // disabled={taskDetails?.isCompleted ? true : false}
-                    // onClick={handleFinishTask}
+                    onClick={handleProccedToKyc}
                   >
                     <div className="round-circle" />
                     Proceed to KYC
@@ -536,11 +540,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     {(status || [])?.map((item: any) => (
                       // Check if the item is visible before rendering the Dropdown.Item
 
-                      <Dropdown.Item
-                        eventKey={item.id}
-                        key={item.id}
-                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
-                      >
+                      <Dropdown.Item eventKey={item.id} key={item.id} onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}>
                         {item.status_name}
                       </Dropdown.Item>
                     ))}
