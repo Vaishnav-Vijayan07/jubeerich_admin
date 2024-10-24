@@ -1,6 +1,6 @@
 import React from "react";
 import PageTitle from "../../components/PageTitle";
-import { Accordion, Button, Card, Col, Row } from "react-bootstrap";
+import { Accordion, Button, Card, Col, Form, Row } from "react-bootstrap";
 import profileImg from "../../assets/images/users/user-2.jpg";
 import { Link } from "react-router-dom";
 import { icons } from "../../assets/images/icons";
@@ -556,10 +556,7 @@ const KycDetails = () => {
                   <Accordion.Body>
                     <div className="text-start mt-1 ps-1">
                       <h5 className="font-weight-bold text-danger">Medical Declaration:</h5>
-                      <div
-                        className={`mb-3 bg-light`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div className={`mb-3 bg-light`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Are there any medical conditions or health concerns that we should be aware of?</strong>
                         </p>
@@ -897,6 +894,29 @@ const KycDetails = () => {
           </Col>
         </Row>
       </Accordion>
+
+      <Row>
+        <Col>
+          <Form.Group className="mb-3" controlId="remarks">
+            <Form.Label className="fs-9">Remarks</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              name="remarks"
+              // value={remarks}
+              // onChange={handleRemarksChange}
+              placeholder="Enter remarks here"
+            />
+          </Form.Group>
+        </Col>
+
+        <div className="d-flex justify-content-end gap-3">
+          <Button variant="danger">Reject</Button>
+          <Button variant="success">
+            Proceed to application
+          </Button>
+        </div>
+      </Row>
     </div>
   );
 };
