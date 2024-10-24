@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Badge, Card, Col, Form, OverlayTrigger, Row, Spinner, Tooltip } from 'react-bootstrap';
-import { baseUrl } from '../../../../../constants';
+import { baseUrl, showErrorAlert } from '../../../../../constants';
 import { boolean } from 'yup';
 import axios from 'axios';
 import { FormInput } from '../../../../../components';
@@ -8,12 +8,14 @@ import { Visa_Types } from '../data';
 import { fundTypeOptions } from '../FundPlan/FundPlanRows';
 import { Link } from 'react-router-dom';
 import noFile from '../../../../../assets/images/icons/file_not_found.svg'
+import { error } from 'console';
 
 const DocumentsOverview = (props: any) => {
     const { studentId } = props
     console.log('studentId', studentId);
 
 
+    const [notFound, setNotFound] = useState<any>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [visaApprovals, setVisaApprovals] = useState<any>([]);
     const [visaDeclines, setVisaDeclines] = useState<any>([]);
@@ -54,6 +56,8 @@ const DocumentsOverview = (props: any) => {
 
         } catch (error) {
             console.log(error);
+            setNotFound(true)
+            showErrorAlert('Something went wrong')
             setIsLoading(false)
         }
     }
@@ -106,8 +110,19 @@ const DocumentsOverview = (props: any) => {
     
         return name;
     }
+
     
+    if (isLoading) {
+        return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "50%" }} />;
+    }
     
+    if (notFound) {
+        return (
+          <div className="d-flex justify-content-center align-items-center mt-5">
+            <h2 className="fs-2 text-muted">No Data Found</h2>
+          </div>
+        );
+      }
 
     const FileDisplay = (props: any) => {
         const { fileName, filePath } = props
@@ -153,9 +168,6 @@ const DocumentsOverview = (props: any) => {
         )
     }
 
-    if (isLoading) {
-        return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "50%" }} />;
-    }
 
     return (
         <>

@@ -416,21 +416,6 @@ const BasicInputElements = withSwal((props: any) => {
                 )}
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="channel_description">
-                <Form.Label>Flag Status</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  name="status"
-                  value={formData.flag_description}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.flag_description && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.flag_description}
-                  </Form.Text>
-                )}
-              </Form.Group>
             </Modal.Body>
 
             <Modal.Footer>

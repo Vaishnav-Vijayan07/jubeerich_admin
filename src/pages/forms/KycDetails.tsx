@@ -2,14 +2,18 @@ import React, { useEffect, useMemo, useState } from "react";
 import PageTitle from "../../components/PageTitle";
 import { Accordion, Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
 import profileImg from "../../assets/images/users/user-2.jpg";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { icons } from "../../assets/images/icons";
 import axios from "axios";
 import moment from "moment";
 import { fdValue, fundTypeOptions, savingsValue } from "../lead_management/Tasks/List/FundPlan/FundPlanRows";
 import { Visa_Types } from "../lead_management/Tasks/List/data";
+import { showErrorAlert } from "../../constants";
 
 const KycDetails = () => {
+  const { id } = useParams();
+  console.log('id', id);
+
   const fields = [
     { label: "Student Name", value: "Geneva D. McKnight" },
     { label: "Mobile", value: "(123) 123 1234" },
@@ -306,17 +310,18 @@ const KycDetails = () => {
   const [preferredCampus, setPreferredCampus] = useState<any>([]);
   const [clearenceCountries, setClearenceCountries] = useState<any>([]);
   const [passportsInfo, setPassportsInfo] = useState<any>([]);
+  const [notFound, setNotFound] = useState<boolean>(false);
 
   const medicalDeclaration = "Yes, I have asthma and a mild allergy to pollen.";
 
-  const fetchDetails = async() => {
+  const fetchDetails = async () => {
     try {
       setIsLoading(true);
-      let { data } = await axios.get('/kyc_details/82', {
+      let { data } = await axios.get(`/kyc_details/${id}`, {
         timeout: 4000
       });
 
-      if(data){
+      if (data) {
         setResponse(data);
         setFundDetails(data?.fundPlan);
         setExamDetails(data?.exams);
@@ -332,39 +337,41 @@ const KycDetails = () => {
         setPassportsInfo(data?.passportDetails?.[0]?.passports);
 
         const filteredCourses = data?.studyPreferences?.[0]?.studyPreferenceDetails
-        .map((item: any) => item?.preferred_courses?.course_name)
-        .filter(Boolean)
-        .join(', ');
-      
-      const filteredCampus = data?.studyPreferences?.[0]?.studyPreferenceDetails
-        .map((item: any) => item?.preferred_campus?.campus_name)
-        .filter(Boolean)
-        .join(', ');
-      
-      const filteredPoliceCountries = data?.basicInfoDetails?.police_clearance_docs
-        ?.map((doc: any) => doc?.country_name)
-        .filter(Boolean)
-        .join(', ');
+          .map((item: any) => item?.preferred_courses?.course_name)
+          .filter(Boolean)
+          .join(', ');
 
-        if(preferredCourses) setPreferredCourses(filteredCourses);
-        if(filteredCampus) setPreferredCampus(filteredCampus);
-        if(filteredPoliceCountries) setClearenceCountries(filteredPoliceCountries);
+        const filteredCampus = data?.studyPreferences?.[0]?.studyPreferenceDetails
+          .map((item: any) => item?.preferred_campus?.campus_name)
+          .filter(Boolean)
+          .join(', ');
+
+        const filteredPoliceCountries = data?.basicInfoDetails?.police_clearance_docs
+          ?.map((doc: any) => doc?.country_name)
+          .filter(Boolean)
+          .join(', ');
+
+        if (preferredCourses) setPreferredCourses(filteredCourses);
+        if (filteredCampus) setPreferredCampus(filteredCampus);
+        if (filteredPoliceCountries) setClearenceCountries(filteredPoliceCountries);
 
         setIsLoading(false);
       }
     } catch (error) {
       console.log(error);
       setIsLoading(false);
+      setNotFound(true);
+      showErrorAlert('Something went wrong');
     }
   }
 
   const personalDetails = useMemo(() => response ? [
     { label: "Student Name", value: response?.personalDetails?.full_name || 'N/A' },
-    { label: "Mobile", value: response?.personalDetails?.phone || 'N/A'},
+    { label: "Mobile", value: response?.personalDetails?.phone || 'N/A' },
     { label: "Email", value: response?.personalDetails?.email || 'N/A' },
-    { label: "DOB", value: response?.basicInfoDetails?.dob  || 'N/A'},
+    { label: "DOB", value: response?.basicInfoDetails?.dob || 'N/A' },
     { label: "Current Address", value: response?.basicInfoDetails?.address || 'N/A' },
-    { label: "Primary Point of Contact",value: `${response?.basicInfoDetails?.emergency_contact_name} - ${response?.basicInfoDetails?.emergency_contact_relationship}`  || 'N/A'},
+    { label: "Primary Point of Contact", value: `${response?.basicInfoDetails?.emergency_contact_name} - ${response?.basicInfoDetails?.emergency_contact_relationship}` || 'N/A' },
     { label: "Marital Status", value: response?.basicInfoDetails?.marital_status_details?.marital_status_name || 'N/A' },
     { label: "Source of Lead", value: response?.leadSource?.source_name || 'N/A' },
     { label: "Preferred Course", value: preferredCourses },
@@ -374,42 +381,42 @@ const KycDetails = () => {
     { label: "Branch", value: response?.branches || 'N/A' },
   ] : [], [response]);
 
-  const  familyDetails = useMemo(() => response ? [
+  const familyDetails = useMemo(() => response ? [
     { label: "Father’s Name", value: response?.familyDetails?.[0]?.father?.name || 'N/A' },
     { label: "Occupation of Father", value: response?.familyDetails?.[0]?.father?.occupation || 'N/A' },
     { label: "Nature of Occupation", value: response?.familyDetails?.[0]?.father?.nature_of_occupation || 'N/A' },
     { label: "Name of the Organization/ Business", value: response?.familyDetails?.[0]?.father?.organization || 'N/A' },
-    { label: "Annual Income of Father", value: response?.familyDetails?.[0]?.father?.annual_income|| 'N/A'  },
-    { label: "Income Tax payee or not?", value: (response?.familyDetails?.[0]?.father?.income_tax_payer) ? 'Yes': 'No' },
-    { label: "Mother’s Name", value: response?.familyDetails?.[0]?.mother?.name ||'N/A' },
-    { label: "Occupation of Mother", value: response?.familyDetails?.[0]?.mother?.occupation ||'N/A' },
-    { label: "Nature of Occupation", value: response?.familyDetails?.[0]?.mother?.nature_of_occupation ||'N/A' },
-    { label: "Name of the Organization/ Business", value: response?.familyDetails?.[0]?.mother?.organization ||'N/A' },
-    { label: "Annual Income of Mother", value: response?.familyDetails?.[0]?.mother?.annual_income ||'N/A' },
-    { label: "Income Tax payee or not?", value: (response?.familyDetails?.[0]?.mother?.income_tax_payer) ? 'Yes': 'No'},
-    { label: "If Married, Name of Spouse", value: response?.familyDetails?.[0]?.spouse?.name ||'N/A' },
-    { label: "Occupation of Spouse", value: response?.familyDetails?.[0]?.spouse?.occupation ||'N/A'},
+    { label: "Annual Income of Father", value: response?.familyDetails?.[0]?.father?.annual_income || 'N/A' },
+    { label: "Income Tax payee or not?", value: (response?.familyDetails?.[0]?.father?.income_tax_payer) ? 'Yes' : 'No' },
+    { label: "Mother’s Name", value: response?.familyDetails?.[0]?.mother?.name || 'N/A' },
+    { label: "Occupation of Mother", value: response?.familyDetails?.[0]?.mother?.occupation || 'N/A' },
+    { label: "Nature of Occupation", value: response?.familyDetails?.[0]?.mother?.nature_of_occupation || 'N/A' },
+    { label: "Name of the Organization/ Business", value: response?.familyDetails?.[0]?.mother?.organization || 'N/A' },
+    { label: "Annual Income of Mother", value: response?.familyDetails?.[0]?.mother?.annual_income || 'N/A' },
+    { label: "Income Tax payee or not?", value: (response?.familyDetails?.[0]?.mother?.income_tax_payer) ? 'Yes' : 'No' },
+    { label: "If Married, Name of Spouse", value: response?.familyDetails?.[0]?.spouse?.name || 'N/A' },
+    { label: "Occupation of Spouse", value: response?.familyDetails?.[0]?.spouse?.occupation || 'N/A' },
     { label: "Name of the company in which your Spouse is currently working", value: response?.familyDetails?.[0]?.spouse?.organization || 'N/A' },
     { label: "Location in which your Spouse is working", value: response?.familyDetails?.[0]?.spouse?.name || 'N/A' },
-    { label: "Annual income of spouse", value: response?.familyDetails?.[0]?.spouse?.annual_income  || 'N/A'},
+    { label: "Annual income of spouse", value: response?.familyDetails?.[0]?.spouse?.annual_income || 'N/A' },
     { label: "Income Tax payee or not?", value: response?.familyDetails?.[0]?.spouse?.income_tax_payer ? 'Yes' : 'No' },
-    { label: "Is your spouse accompanying along with you during studies?", value: response?.familyDetails?.[0]?.accompanying_spouse || 'N/A' },
+    { label: "Is your spouse accompanying along with you during studies?", value: (response?.familyDetails?.[0]?.accompanying_spouse) ? 'Yes' : 'No' },
     { label: "No. of children", value: response?.familyDetails?.[0]?.number_of_children || 'N/A' },
     { label: "No. of Siblings", value: response?.familyDetails?.[0]?.number_of_siblings || 'N/A' },
-    { label: "Are your kids accompanying along with you during studies?", value: response?.familyDetails?.[0]?.accompanying_child || 'N/A' },
+    { label: "Are your kids accompanying along with you during studies?", value: (response?.familyDetails?.[0]?.accompanying_child) ? 'Yes' : 'No' },
     { label: "Do you have any relatives/friends from Govt. service, Police, Political party, Media?", value: response?.familyDetails?.[0]?.relatives_info || 'N/A' },
   ] : [], [response]);
 
-  const passportDetails = useMemo(() => 
-    response ? 
+  const passportDetails = useMemo(() =>
+    response ?
       response?.passportDetails?.map((data: any) => [
         { label: "Number of passport/s", value: data?.number_of_passports || 'N/A' },
-        { label: "Do you have all your original passports in hand?", value: (data?.original_passports_in_hand) ? 'Yes' : 'No'},
+        { label: "Do you have all your original passports in hand?", value: (data?.original_passports_in_hand) ? 'Yes' : 'No' },
         { label: "If not, reason for the same", value: data?.missing_passport_reason || 'N/A' },
-        { label: "Any visa stamping/ immigration history in the current and previous passport?", value: (data?.visa_immigration_history) ? 'Yes' : 'No'},
+        { label: "Any visa stamping/ immigration history in the current and previous passport?", value: (data?.visa_immigration_history) ? 'Yes' : 'No' },
         { label: "Name change (if any) when compared to other documents", value: data?.name_change || 'N/A' },
-      ]) 
-    : [], 
+      ])
+      : [],
     [response]
   );
 
@@ -424,27 +431,27 @@ const KycDetails = () => {
     {
       label:
         "For any abroad work experiences do you still have the visa page, permit card, salary account statement and all other supporting evidences to prove the same?",
-        value: (response?.userEmploymentHistories?.has_abroad_work_evidence) ? 'Yes' : 'No',
+      value: (response?.userEmploymentHistories?.has_abroad_work_evidence) ? 'Yes' : 'No',
     }] : [], [response]);
 
-  console.log(response);  
+  console.log(response);
 
   useEffect(() => {
     fetchDetails();
   }, [])
 
   const formatFundName = (name: any) => {
-    if(!name) return '';
+    if (!name) return '';
     const selected: any = fundTypeOptions.filter((data: any) => name == data?.value);
     return selected?.[0]?.label || ''
   }
 
   const formatVisaTypeName = (name: any) => {
-    if(!name) return '';
+    if (!name) return '';
     const selected: any = Visa_Types.filter((data: any) => name == data?.value);
     return selected?.[0]?.label || ''
   }
-  
+
 
   if (isLoading) {
     return (
@@ -452,6 +459,14 @@ const KycDetails = () => {
         animation="border"
         style={{ position: "absolute", top: "50%", left: "50%" }}
       />
+    );
+  }
+
+  if (notFound) {
+    return (
+      <div className="d-flex justify-content-center align-items-center mt-5">
+        <h2 className="fs-2 text-muted">No Data Found</h2>
+      </div>
     );
   }
 
@@ -475,7 +490,7 @@ const KycDetails = () => {
                 <p className="mt-2 mb-1 text-muted fw-light">Name</p>
                 <div className="d-flex align-items-start" style={{ gap: "5px" }}>
                   <img src={icons.user} alt="date" className="me-1" height="16" />
-                  <h5 className="m-0 font-size-14">{"Geneva D. McKnight"}</h5>
+                  <h5 className="m-0 font-size-14">{response?.personalDetails?.full_name}</h5>
                 </div>
               </div>
 
@@ -483,10 +498,9 @@ const KycDetails = () => {
                 <p className="mt-2 mb-1 text-muted fw-light">Phone Number</p>
                 <div className="d-flex align-items-center outline-none" style={{ gap: "5px" }}>
                   <img src={icons.apple} alt="phone" className="me-1" width="16" />
-                  {/* <h5 className="m-0 font-size-14">{taskObject.phone}</h5> */}
                   <input
                     type="tel"
-                    value={"8666898834"}
+                    value={response?.personalDetails?.phone}
                     style={{
                       border: "none",
                       outline: "none",
@@ -496,17 +510,15 @@ const KycDetails = () => {
                     }}
                   />
                 </div>
-                {/* <Form.Text className="text-danger">{phoneNumberError}</Form.Text> */}
               </div>
 
               <div className="">
                 <p className="mt-2 mb-1 text-muted fw-light">Email</p>
                 <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                   <img src={icons.email} alt="email" className="me-1" width="17" />
-                  {/* <h5 className="m-0 font-size-14">{taskObject.email}</h5> */}
                   <input
                     type="text"
-                    value={"geneva@gmail.com"}
+                    value={response?.personalDetails?.email}
                     style={{
                       border: "none",
                       outline: "none",
@@ -522,7 +534,7 @@ const KycDetails = () => {
                 <p className="mt-2 mb-1 text-muted fw-light">Source</p>
                 <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                   <img src={icons.cloud} alt="source icon" className="me-1" width="16" />
-                  <h5 className="m-0 font-size-14">{"Direct"}</h5>
+                  <h5 className="m-0 font-size-14">{response?.leadSource?.source_name}</h5>
                 </div>
               </div>
 
@@ -530,7 +542,7 @@ const KycDetails = () => {
                 <p className="mt-2 mb-1 text-muted fw-light">Channel</p>
                 <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                   <img src={icons.information} alt="cahnnel icon" className="me-1" width="16" />
-                  <h5 className="m-0 font-size-14">{"Meta"}</h5>
+                  <h5 className="m-0 font-size-14">{response?.channel_name?.channel_name}</h5>
                 </div>
               </div>
 
@@ -538,7 +550,7 @@ const KycDetails = () => {
                 <p className="mt-2 mb-1 text-muted fw-light">City</p>
                 <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                   <img src={icons.business} alt="comapny icon" className="me-1" width="16" />
-                  <h5 className="m-0 font-size-14">{"Kochi"}</h5>
+                  <h5 className="m-0 font-size-14">{response?.personalDetails?.city}</h5>
                 </div>
               </div>
             </div>
@@ -592,7 +604,7 @@ const KycDetails = () => {
                           <span className="ms-2">{field?.value}</span>
                         </p>
                       ))}
-                    
+
                       <h5 className="font-weight-bold text-danger mt-3">Siblings Info:</h5>
 
                       {siblingsInfo?.map((data: any, index: any) => (
@@ -615,7 +627,7 @@ const KycDetails = () => {
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Income Tax payee or not?</strong>
-                            <span className="ms-2">{(data?.income_tax_payer) ? 'Yes': 'No'}</span>
+                            <span className="ms-2">{(data?.income_tax_payer) ? 'Yes' : 'No'}</span>
                           </p>
                         </div>
                       ))}
@@ -642,7 +654,7 @@ const KycDetails = () => {
                           </p>
                         </div>
                       ))}
-                      
+
                     </div>
 
                   </Accordion.Body>
@@ -725,7 +737,7 @@ const KycDetails = () => {
 
                   <Accordion.Body>
                     <div className="text-start mt-2 ps-1">
-                                            
+
                       {examDetails?.map((test: any, index: number) => (
                         <div
                           key={index}
@@ -738,7 +750,7 @@ const KycDetails = () => {
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Date of Exam:</strong>
-                            <span className="ms-2">{(test?.exam_date) ? moment(test?.exam_date).format('DD-MM-YYYY') : 'N/A'}</span>
+                            <span className="ms-2">{(test?.exam_date) ? moment(test?.exam_date).format('DD/MM/YYYY') : 'N/A'}</span>
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Listening Score (L):</strong>
@@ -813,22 +825,19 @@ const KycDetails = () => {
                     <div className="text-start mt-1 ps-1">
                       <h5 className="font-weight-bold text-danger">Police Clearance Information:</h5>
 
-                      {policeClearence?.map((info: any, index: number) => (
-                        <div
-                          key={index}
-                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }}
-                        >
-                          <p className="mb-1 font-15">
-                            <strong>Have you ever been convicted of a criminal offense?</strong>
-                            <span className="ms-2">{(response?.basicInfoDetails?.criminal_offence) ? 'Yes':'No'}</span>
-                          </p>
-                          <p className="mb-1 font-15">
-                            <strong>Countries for Police Clearance Certificate:</strong>
-                            <span className="ms-2">{clearenceCountries}</span>
-                          </p>
-                        </div>
-                      ))}
+                      <div
+                        className={`mb-3 bg-light`}
+                        style={{ padding: "10px", borderRadius: "4px" }}
+                      >
+                        <p className="mb-1 font-15">
+                          <strong>Have you ever been convicted of a criminal offense?</strong>
+                          <span className="ms-2">{(response?.basicInfoDetails?.criminal_offence) ? 'Yes' : 'No'}</span>
+                        </p>
+                        <p className="mb-1 font-15">
+                          <strong>Countries for Police Clearance Certificate:</strong>
+                          <span className="ms-2">{clearenceCountries}</span>
+                        </p>
+                      </div>
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
@@ -866,11 +875,11 @@ const KycDetails = () => {
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Start Date:</strong>
-                            <span className="ms-2">{qual?.start_date ? moment(qual?.start_date).format('DD-MM-YYYY') : 'N/A'}</span>
+                            <span className="ms-2">{qual?.start_date ? moment(qual?.start_date).format('DD/MM/YYYY') : 'N/A'}</span>
                           </p>
                           <p className="mb-1 font-15">
                             <strong>End Date:</strong>
-                            <span className="ms-2">{qual?.end_date ? moment(qual?.end_date).format('DD-MM-YYYY') : 'N/A'}</span>
+                            <span className="ms-2">{qual?.end_date ? moment(qual?.end_date).format('DD/MM/YYYY') : 'N/A'}</span>
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Percentage:</strong>
@@ -890,7 +899,7 @@ const KycDetails = () => {
                         >
                           <p className="mb-1 font-15">
                             <strong>Period of Gap:</strong>
-                            <span className="ms-2">{`${(gap?.start_date) ? moment(gap?.start_date).format('DD-MM-YYYY'): 'N/A'} - ${(gap?.end_date) ? moment(gap?.end_date).format('DD-MM-YYYY'): 'N/A'}`}</span>
+                            <span className="ms-2">{`${(gap?.start_date) ? moment(gap?.start_date).format('DD/MM/YYYY') : 'N/A'} - ${(gap?.end_date) ? moment(gap?.end_date).format('DD/MM/YYYY') : 'N/A'}`}</span>
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Reason:</strong>
@@ -898,7 +907,7 @@ const KycDetails = () => {
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Supporting Documents:</strong>
-                            <span className="ms-2">{gap?.type}</span>
+                            <span className="ms-2">{gap?.type.toUpperCase()}</span>
                           </p>
                         </div>
                       ))}
@@ -932,7 +941,7 @@ const KycDetails = () => {
                       ))}
 
                       <h5 className="font-weight-bold text-danger pt-2">Passport Details:</h5>
-                      
+
                       {passportsInfo?.map((data: any, index: any) => (
                         <div
                           key={index}
@@ -945,7 +954,7 @@ const KycDetails = () => {
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Date of Expiry:</strong>
-                            <span className="ms-2">{(data?.date_of_expiry) ? moment(data?.date_of_expiry).format('DD-MM-YYYY'): 'N/A'}</span>
+                            <span className="ms-2">{(data?.date_of_expiry) ? moment(data?.date_of_expiry).format('DD/MM/YYYY') : 'N/A'}</span>
                           </p>
                         </div>
                       ))}
@@ -979,7 +988,7 @@ const KycDetails = () => {
                           <p className="mb-1 font-15">
                             <strong>Start and End Date:</strong>
                             <span className="ms-2">
-                              {(exp?.from) ? moment(exp?.from).format('DD-MM-YYYY') : 'N/A'} - {(exp?.to) ? moment(exp?.from).format('DD-MM-YYYY'): 'N/A'}
+                              {(exp?.from) ? moment(exp?.from).format('DD/MM/YYYY') : 'N/A'} - {(exp?.to) ? moment(exp?.from).format('DD/MM/YYYY') : 'N/A'}
                             </span>
                           </p>
                           <p className="mb-1 font-15">
@@ -992,7 +1001,7 @@ const KycDetails = () => {
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Bank Statement Attached:</strong>
-                            <span className="ms-2">{(exp?.bank_statement && exp?.bank_statement?.trim() != '') ? 'Yes': 'No'}</span>
+                            <span className="ms-2">{(exp?.bank_statement && exp?.bank_statement?.trim() != '') ? 'Yes' : 'No'}</span>
                           </p>
                         </div>
                       ))}
@@ -1000,7 +1009,7 @@ const KycDetails = () => {
 
                     <div className="text-start mt-2 ps-1">
                       <h5 className="font-weight-bold text-danger">Other Information:</h5>
-                      
+
                       {employementHistoriesDetails?.map((info: any, index: number) => (
                         <div
                           key={index}
@@ -1086,10 +1095,6 @@ const KycDetails = () => {
                             <span className="ms-2">{visa?.approved_course?.course_name} - {visa?.approved_university_applied?.university_name}</span>
                           </p>
                           <p className="mb-1 font-15">
-                            <strong>Duration of Stay:</strong>
-                            <span className="ms-2">{visa?.durationOfStay}</span>
-                          </p>
-                          <p className="mb-1 font-15">
                             <strong>Visa Type:</strong>
                             <span className="ms-2">{formatVisaTypeName(visa?.visa_type)}</span>
                           </p>
@@ -1126,7 +1131,7 @@ const KycDetails = () => {
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Period of Stay:</strong>
-                            <span className="ms-2">{ travel?.start_date ? moment(travel?.start_date).format('DD-MM-YYYY') : 'N/A'} - {travel?.end_date ? moment(travel?.end_date).format('DD-MM-YYYY') : 'N/A'}</span>
+                            <span className="ms-2">{travel?.start_date ? moment(travel?.start_date).format('DD/MM/YYYY') : 'N/A'} - {travel?.end_date ? moment(travel?.end_date).format('DD/MM/YYYY') : 'N/A'}</span>
                           </p>
                           <p className="mb-1 font-15">
                             <strong>Purpose of Travel:</strong>
