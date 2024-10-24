@@ -77,7 +77,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   useEffect(() => {
     setFilteredItems(state);
-  }, []);
+  }, [state]);
 
   let records: TableRecords[] = filteredItems;
   // const records: TableRecords[] = filteredItems;

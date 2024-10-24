@@ -627,7 +627,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
             <Row>
               <div className="">
                 <h4 className="text-secondary">Country</h4>
-                <p className="mt-2 mb-2 text-muted fw-light">Add New Country</p>
+                <p className="mt-2 mb-2 text-muted fw-light">Use this option to assign lead to another country counselor.</p>
                 <div className="d-flex align-items-start" style={{ gap: "5px" }}>
                   <Dropdown>
                     <Dropdown.Toggle className="cursor-pointer" variant="light">
