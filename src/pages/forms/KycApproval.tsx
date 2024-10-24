@@ -43,6 +43,14 @@ interface TableRecords {
 const KycApproval = () => {
   const dispatch = useDispatch();
 
+  const [uploadModal, setUploadModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Function to toggle the upload modal visibility
+  const toggleUploadModal = () => {
+    setUploadModal(prevState => !prevState);
+  };
+
   const { records, user, initialloading } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     records: state.KYC.KYCSPending.data,
