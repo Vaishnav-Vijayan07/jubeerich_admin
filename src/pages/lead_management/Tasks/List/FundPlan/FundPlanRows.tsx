@@ -13,6 +13,9 @@ export const fundTypeOptions = [
   { value: "pf", label: "PF" },
 ];
 
+export const fdValue = 'fd';
+export const savingsValue = 'savings'
+
 const fundOriginTypes = [
   { value: "own funds", label: "Own funds" },
   { value: "sponsored funds", label: "Sponsored funds" },

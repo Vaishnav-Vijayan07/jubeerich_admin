@@ -322,6 +322,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     setViewOnly(false);
   };
 
+  const handleProccedToKyc = () => {
+    
+  };
+
+  console.log("userRole ==>", userRole);
+
   if (loading) {
     return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "65%" }} />;
   }
@@ -354,7 +360,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   <Button
                     className="d-flex align-items-center btn-light"
                     // disabled={taskDetails?.isCompleted ? true : false}
-                    // onClick={handleFinishTask}
+                    onClick={handleProccedToKyc}
                   >
                     <div className="round-circle" />
                     Proceed to KYC
@@ -535,11 +541,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     {(status || [])?.map((item: any) => (
                       // Check if the item is visible before rendering the Dropdown.Item
 
-                      <Dropdown.Item
-                        eventKey={item.id}
-                        key={item.id}
-                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
-                      >
+                      <Dropdown.Item eventKey={item.id} key={item.id} onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}>
                         {item.status_name}
                       </Dropdown.Item>
                     ))}
