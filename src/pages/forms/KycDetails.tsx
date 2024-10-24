@@ -14,285 +14,6 @@ const KycDetails = () => {
   const { id } = useParams();
   console.log('id', id);
 
-  const fields = [
-    { label: "Student Name", value: "Geneva D. McKnight" },
-    { label: "Mobile", value: "(123) 123 1234" },
-    { label: "Email", value: "user@email.domain" },
-    { label: "DOB", value: "16/02/1994" },
-    { label: "Current Address", value: "123 Maple Street, Springfield, IL 62704" },
-    { label: "Primary Point of Contact", value: "Father - James McKnight" },
-    { label: "Marital Status", value: "Single" },
-    { label: "Source of Lead", value: "Online Ad" },
-    { label: "Preferred Course", value: "Master of Business Administration (MBA)" },
-    { label: "Preferred Institute", value: "Harvard Business School" },
-    { label: "Intake Applying For", value: "Fall 2025" },
-    { label: "Course Link", value: "https://www.harvard.edu/mba" },
-    { label: "Counselor Name", value: "Sarah Johnson" },
-    { label: "Branch", value: "Chicago Branch" },
-    { label: "New/Duplicate Application", value: "New Application" },
-  ];
-
-  const passportFields = [
-    { label: "Number of passport/s", value: "2" },
-    { label: "Passport Number/s", value: "A12345678, B98765432" },
-    { label: "Date/s of expiry", value: "01/01/2025, 15/06/2024" },
-    { label: "Do you have all your original passports in hand?", value: "Yes" },
-    { label: "If not, reason for the same", value: "N/A" },
-    { label: "Any visa stamping/ immigration history in the current and previous passport?", value: "Yes" },
-    { label: "Name change (if any) when compared to other documents", value: "No" },
-  ];
-
-  const familyFields = [
-    { label: "Father’s Name", value: "John McKnight" },
-    { label: "Occupation of Father", value: "Engineer" },
-    { label: "Nature of Occupation", value: "Self-employed" },
-    { label: "Name of the Organization/ Business", value: "Tech Solutions" },
-    { label: "Annual Income of Father", value: "$80,000" },
-    { label: "Income Tax payee or not?", value: "Yes" },
-    { label: "Mother’s Name", value: "Jane McKnight" },
-    { label: "Occupation of Mother", value: "Teacher" },
-    { label: "Nature of Occupation", value: "Salaried" },
-    { label: "Name of the Organization/ Business", value: "Springfield High School" },
-    { label: "Annual Income of Mother", value: "$50,000" },
-    { label: "Income Tax payee or not?", value: "Yes" },
-    { label: "No. of Siblings", value: "2" },
-    { label: "Occupation of Siblings", value: "Doctor, Artist" },
-    { label: "Annual Income of Siblings", value: "$100,000, $30,000" },
-    { label: "Income Tax payee or not?", value: "Yes, No" },
-    { label: "If Married, Name of Spouse", value: "Michael Smith" },
-    { label: "Occupation of Spouse", value: "Consultant" },
-    { label: "Name of the company in which your Spouse is currently working", value: "Global Corp" },
-    { label: "Location in which your Spouse is working", value: "New York, NY" },
-    { label: "Annual income of spouse", value: "$90,000" },
-    { label: "Income Tax payee or not?", value: "Yes" },
-    { label: "Is your spouse accompanying along with you during studies?", value: "Yes" },
-    { label: "No. of children, Gender and their age", value: "1, Male, 5 years" },
-    { label: "No. of Siblings", value: "2" },
-    { label: "Are your kids accompanying along with you during studies?", value: "No" },
-    { label: "Do you have any relatives/friends from Govt. service, Police, Political party, Media?", value: "Yes" },
-  ];
-
-  const qualifications = [
-    {
-      level: "10th Std",
-      college: "Springfield High School",
-      startDate: "01/09/2005",
-      endDate: "31/05/2006",
-      percentage: "85%",
-    },
-    {
-      level: "12th Std",
-      college: "Springfield College",
-      startDate: "01/09/2007",
-      endDate: "31/05/2008",
-      percentage: "88%",
-    },
-    {
-      level: "Bachelor's Degree",
-      college: "State University",
-      startDate: "01/09/2009",
-      endDate: "31/05/2013",
-      percentage: "75%",
-    },
-    {
-      level: "Master's Degree",
-      college: "National University",
-      startDate: "01/09/2014",
-      endDate: "31/05/2016",
-      percentage: "90%",
-    },
-  ];
-
-  const gaps = [
-    {
-      period: "01/06/2006 - 31/08/2007",
-      reason: "Family Relocation",
-      documents: "Relocation Letter",
-    },
-    {
-      period: "01/06/2013 - 31/08/2014",
-      reason: "Health Issues",
-      documents: "Medical Certificates",
-    },
-  ];
-
-  const experiences = [
-    {
-      company: "Tech Solutions Inc.",
-      startDate: "01/01/2018",
-      endDate: "31/12/2020",
-      designation: "Software Engineer",
-      certificateAvailable: "Yes",
-      bankStatementAttached: "Yes",
-    },
-    {
-      company: "Creative Designs Ltd.",
-      startDate: "01/02/2021",
-      endDate: "31/08/2023",
-      designation: "Senior Designer",
-      certificateAvailable: "Yes",
-      bankStatementAttached: "No",
-    },
-  ];
-
-  const otherWorkInformationFields = [
-    {
-      label: "Have you served notice period as per the requirement of your employer during your last resignation?",
-      value: "Yes",
-    },
-    { label: "Did you get terminated from any organization/company?", value: "No" },
-    { label: "Are you in very good and friendly relation with all of your previous/current employers?", value: "Yes" },
-    { label: "Is there any forged experience or any other documents submitted to us?", value: "No" },
-    {
-      label:
-        "For any abroad work experiences do you still have the visa page, permit card, salary account statement and all other supporting evidences to prove the same?",
-      value: "Yes",
-    },
-  ];
-
-  const financialDetails = [
-    {
-      typeOfFunds: "Education loan",
-      ownOrSponsored: "Sponsored",
-      relationWithSponsor: "Father",
-      sponsorshipAmount: "$20,000",
-      bankName: "ABC Bank",
-    },
-    {
-      typeOfFunds: "Savings",
-      ownOrSponsored: "Own",
-      relationWithSponsor: "N/A",
-      sponsorshipAmount: "$5,000",
-      bankName: "XYZ Bank",
-    },
-    {
-      typeOfFunds: "Fixed Deposit (FD)",
-      ownOrSponsored: "Sponsored",
-      relationWithSponsor: "Uncle",
-      sponsorshipAmount: "$10,000",
-      bankName: "DEF Bank",
-    },
-    {
-      typeOfFunds: "Salary",
-      ownOrSponsored: "Own",
-      relationWithSponsor: "N/A",
-      sponsorshipAmount: "$15,000",
-      bankName: "GHI Bank",
-    },
-  ];
-
-  const previousVisaDecline = [
-    {
-      countryName: "United Kingdom",
-      courseAndInstitute: "Bachelor of Science - University of London",
-      reasonForRejection: "Insufficient financial documentation",
-    },
-    {
-      countryName: "Canada",
-      courseAndInstitute: "Master of Computer Science - University of Toronto",
-      reasonForRejection: "Lack of study purpose clarity",
-    },
-    {
-      countryName: "Australia",
-      courseAndInstitute: "Diploma in Business Management - Melbourne Institute of Technology",
-      reasonForRejection: "Incorrect visa application form",
-    },
-  ];
-
-  const previousTravelHistory = [
-    {
-      countryName: "France",
-      periodOfStay: "01/05/2019 - 15/05/2019",
-      purposeOfTravel: "Vacation",
-    },
-    {
-      countryName: "India",
-      periodOfStay: "01/01/2021 - 01/02/2021",
-      purposeOfTravel: "Family Visit",
-    },
-    {
-      countryName: "Japan",
-      periodOfStay: "01/08/2022 - 20/08/2022",
-      purposeOfTravel: "Business Conference",
-    },
-  ];
-
-  const englishProficiencyData = [
-    {
-      testType: "IELTS",
-      dateOfExam: "15/08/2023",
-      scores: {
-        Listening: "8.0",
-        Speaking: "7.5",
-        Reading: "8.0",
-        Writing: "7.0",
-        Overall: "7.5",
-      },
-    },
-    {
-      testType: "PTE",
-      dateOfExam: "22/09/2023",
-      scores: {
-        Listening: "75",
-        Speaking: "70",
-        Reading: "72",
-        Writing: "68",
-        Overall: "72",
-      },
-    },
-    {
-      testType: "OET",
-      dateOfExam: "30/10/2023",
-      scores: {
-        Listening: "B",
-        Speaking: "B",
-        Reading: "B",
-        Writing: "B",
-        Overall: "B",
-      },
-    },
-  ];
-
-  const previousVisaApproval = [
-    {
-      countryName: "Canada",
-      courseAndInstitute: "Computer Science at University of Toronto",
-      durationOfStay: "1 year",
-      visaType: "Study Permit",
-    },
-    {
-      countryName: "Australia",
-      courseAndInstitute: "Business Management at University of Sydney",
-      durationOfStay: "2 years",
-      visaType: "Student Visa",
-    },
-    {
-      countryName: "UK",
-      courseAndInstitute: "MBA at London Business School",
-      durationOfStay: "1 year",
-      visaType: "Tier 4 Student Visa",
-    },
-    {
-      countryName: "USA",
-      courseAndInstitute: "Engineering at MIT",
-      durationOfStay: "4 years",
-      visaType: "F-1 Student Visa",
-    },
-  ];
-
-  const policeClearance = [
-    {
-      convicted: "No",
-      countries: "USA, Canada, UAE",
-      duration: "USA (2 years), Canada (1 year), UAE (3 years)",
-    },
-    {
-      convicted: "Yes",
-      countries: "India, Australia",
-      duration: "India (5 years), Australia (8 months)",
-    },
-  ];
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<any>({});
   const [fundDetails, setFundDetails] = useState<any>([]);
@@ -336,18 +57,15 @@ const KycDetails = () => {
         setChildrensInfo(data?.familyDetails?.[0]?.children_info);
         setPassportsInfo(data?.passportDetails?.[0]?.passports);
 
-        const filteredCourses = data?.studyPreferences?.[0]?.studyPreferenceDetails
-          .map((item: any) => item?.preferred_courses?.course_name)
+        const filteredCourses = data?.studyPreferences?.[0]?.studyPreferenceDetails?.map((item: any) => item?.preferred_courses?.course_name)
           .filter(Boolean)
           .join(', ');
 
-        const filteredCampus = data?.studyPreferences?.[0]?.studyPreferenceDetails
-          .map((item: any) => item?.preferred_campus?.campus_name)
+        const filteredCampus = data?.studyPreferences?.[0]?.studyPreferenceDetails?.map((item: any) => item?.preferred_campus?.campus_name)
           .filter(Boolean)
           .join(', ');
 
-        const filteredPoliceCountries = data?.basicInfoDetails?.police_clearance_docs
-          ?.map((doc: any) => doc?.country_name)
+        const filteredPoliceCountries = data?.basicInfoDetails?.police_clearance_docs?.map((doc: any) => doc?.country_name)
           .filter(Boolean)
           .join(', ');
 
@@ -374,11 +92,11 @@ const KycDetails = () => {
     { label: "Primary Point of Contact", value: `${response?.basicInfoDetails?.emergency_contact_name} - ${response?.basicInfoDetails?.emergency_contact_relationship}` || 'N/A' },
     { label: "Marital Status", value: response?.basicInfoDetails?.marital_status_details?.marital_status_name || 'N/A' },
     { label: "Source of Lead", value: response?.leadSource?.source_name || 'N/A' },
-    { label: "Preferred Course", value: preferredCourses },
-    { label: "Preferred Institute", value: preferredCampus },
+    { label: "Preferred Course", value: preferredCourses }, //
+    { label: "Preferred Institute", value: preferredCampus }, //
     { label: "Course Link", value: "https://www.harvard.edu/mba" }, //
-    { label: "Counselor Name", value: response?.assignedCounselor || 'N/A' },
-    { label: "Branch", value: response?.branches || 'N/A' },
+    { label: "Counselor Name", value: response?.assignedCounselor?.name || 'N/A' },
+    { label: "Branch", value: response?.branches?.branch_name || 'N/A' },
   ] : [], [response]);
 
   const familyDetails = useMemo(() => response ? [
@@ -1156,8 +874,6 @@ const KycDetails = () => {
               as="textarea"
               rows={3}
               name="remarks"
-              // value={remarks}
-              // onChange={handleRemarksChange}
               placeholder="Enter remarks here"
             />
           </Form.Group>
