@@ -93,6 +93,12 @@ const TaskTodoList = withSwal((props: any) => {
         setFormData(data);
     }
 
+    const filterDisplayStatus = (statusName: any) => {
+        if(!status) return '';
+        const selected = status?.filter((data: any) => data?.value == statusName);
+        return selected?.[0]?.label || '';
+    }
+
     useEffect(() => {
         handlePatchData(tasks)
     }, [tasks])
@@ -118,6 +124,9 @@ const TaskTodoList = withSwal((props: any) => {
                                         <Accordion.Header className='w-100 d-flex justify-content-start align-items-center pt-0 mt-0'>
                                             <span className='p-1'>
                                                 <h4 className='fs-8'>{data?.title}</h4>
+                                            </span>
+                                            <span className='ps-3'>
+                                                <h4 className='fs-8'>{filterDisplayStatus(data?.status)}</h4>
                                             </span>
                                         </Accordion.Header>
                                         <Accordion.Body>
