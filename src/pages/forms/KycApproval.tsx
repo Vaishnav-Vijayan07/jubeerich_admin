@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Table from "../../components/Table";
 import PageTitle from "../../components/PageTitle";
-import { Card } from "react-bootstrap";
+import { Button, Card, Modal } from "react-bootstrap";
 
 const sizePerPageList = [
   {
@@ -89,6 +89,14 @@ const data = [
 ];
 
 const KycApproval = ({ state }: any) => {
+  const [uploadModal, setUploadModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Function to toggle the upload modal visibility
+  const toggleUploadModal = () => {
+    setUploadModal((prevState) => !prevState);
+  };
+
   const records: any = data;
   const columns = [
     {
@@ -159,7 +167,7 @@ const KycApproval = ({ state }: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Comment Icon */}
-          <Link to="#" className="action-icon">
+          <Link to="#" className="action-icon" onClick={() => setUploadModal(true)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-comment-processing-outline"></i>
           </Link>
@@ -195,6 +203,18 @@ const KycApproval = ({ state }: any) => {
           />
         </Card.Body>
       </Card>
+
+      <Modal show={uploadModal} onHide={toggleUploadModal} size="lg" dialogClassName="modal-dialog-centered">
+        <Modal.Header closeButton>
+          <h3>Remarks</h3>
+        </Modal.Header>
+        <Modal.Body></Modal.Body>
+        <Modal.Footer>
+          <Button className="btn-sm btn-danger waves-effect waves-light" onClick={toggleUploadModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

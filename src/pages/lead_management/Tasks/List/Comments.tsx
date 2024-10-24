@@ -98,14 +98,14 @@ const Comments = ({ studentId }: any) => {
     fetchAllComments();
   }, []);
 
-  if (loading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "50%" }}
-      />
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "100%", left: "50%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <div>

@@ -937,14 +937,14 @@ const Franchise = () => {
     dispatch(getFranchise());
   }, []);
 
-  if (initialloading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      />
-    );
-  }
+  // if (initialloading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "50%", left: "50%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <React.Fragment>

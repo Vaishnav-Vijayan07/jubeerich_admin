@@ -103,14 +103,14 @@ const TaskTodoList = withSwal((props: any) => {
         handlePatchData(tasks)
     }, [tasks])
 
-    if (isLoading) {
-        return (
-            <Spinner
-                animation="border"
-                style={{ position: "absolute", top: "50%", left: "50%" }}
-            />
-        );
-    }
+    // if (isLoading) {
+    //     return (
+    //         <Spinner
+    //             animation="border"
+    //             style={{ position: "absolute", top: "50%", left: "50%" }}
+    //         />
+    //     );
+    // }
 
     return (
         <>

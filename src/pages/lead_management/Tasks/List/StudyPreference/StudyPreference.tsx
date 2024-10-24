@@ -69,13 +69,13 @@ const StudyPreference = withSwal((props: any) => {
     }
   }, [dropdownData.universities.length, dropdownData.campuses.length, refresh]);
 
-  if (initialLoading || dropDownLoading)
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "50%" }}
-      />
-    );
+  // if (initialLoading || dropDownLoading)
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "100%", left: "50%" }}
+  //     />
+  //   );
 
   return (
     <>

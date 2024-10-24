@@ -467,14 +467,14 @@ const VisaProcess = withSwal((props: any) => {
     }
 };
 
-  if (loading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "45%" }}
-      />
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "100%", left: "45%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <>

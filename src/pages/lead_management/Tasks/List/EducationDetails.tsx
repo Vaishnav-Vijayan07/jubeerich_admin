@@ -217,14 +217,14 @@ const EducationDetails = withSwal((props: any) => {
     );
   };
 
-  if (primaryLoading || secondaryLoading || initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "45%" }}
-      />
-    );
-  }
+  // if (primaryLoading || secondaryLoading || initialLoading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "100%", left: "45%" }}
+  //     />
+  //   );
+  // }
 
   console.log(primaryDetails);
 

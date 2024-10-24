@@ -266,14 +266,14 @@ const FamilyDetails = ({ studentId }: Props) => {
     });
   };
 
-  if (initialLoading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "45%" }}
-      />
-    );
-  }
+  // if (initialLoading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "100%", left: "45%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <>

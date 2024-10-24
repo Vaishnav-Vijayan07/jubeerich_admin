@@ -26,14 +26,14 @@ const History = ({ studentId }: { studentId: number }) => {
     }
   }, [studentId]);
 
-  if (loading) {
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "45%" }}
-      />
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "100%", left: "45%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <div className="history-tl-container">

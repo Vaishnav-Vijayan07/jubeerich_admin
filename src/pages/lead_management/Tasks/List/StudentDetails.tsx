@@ -25,6 +25,7 @@ import { refreshData } from "../../../../redux/countryReducer";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
 import swal from "sweetalert2";
 import RemarkModal from "./RemarkModal";
+import { Link } from "react-router-dom";
 
 const BasicInfo = lazy(() => import("./BasicInfo"));
 const History = lazy(() => import("./History"));
@@ -322,15 +323,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     setViewOnly(false);
   };
 
-  const handleProccedToKyc = () => {
-    
-  };
+  const handleProccedToKyc = () => {};
 
   console.log("userRole ==>", userRole);
 
-  if (loading) {
-    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "65%" }} />;
-  }
+  // if (loading) {
+  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "65%" }} />;
+  // }
 
   return (
     <>
@@ -402,7 +401,15 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           </Row>
           <Row className="mb-3">
             <Row className="mt-3">
-              <h4 className="text-secondary mt-1">Task Details</h4>
+              <Col>
+                <h4 className="text-secondary mt-1">Task Details</h4>
+              </Col>
+              <Col>
+                <Link to={`/leads/manage/${studentId}`} className="action-icon d-flex justify-content-end align-items-center">
+                  <i className="mdi mdi-eye-outline me-1"></i> {/* View icon */}
+                  View All Details
+                </Link>
+              </Col>
             </Row>
             <div className="grid-container mb-2">
               <div className="">
@@ -541,7 +548,11 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     {(status || [])?.map((item: any) => (
                       // Check if the item is visible before rendering the Dropdown.Item
 
-                      <Dropdown.Item eventKey={item.id} key={item.id} onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}>
+                      <Dropdown.Item
+                        eventKey={item.id}
+                        key={item.id}
+                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                      >
                         {item.status_name}
                       </Dropdown.Item>
                     ))}

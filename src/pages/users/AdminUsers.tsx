@@ -856,9 +856,9 @@ const AdminUsers = () => {
     }
   }, [Countries]);
 
-  if (initialLoading) {
-    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
-  }
+  // if (initialLoading) {
+  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
+  // }
 
   return (
     <React.Fragment>

@@ -180,9 +180,9 @@ const AcademicInfo = withSwal((props: any) => {
     saveStudentExamInfo(examForm);
   };
 
-  if (loading) {
-    return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "45%" }} />;
-  }
+  // if (loading) {
+  //   return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "45%" }} />;
+  // }
 
   return (
     <>
