@@ -145,7 +145,8 @@ const KycApproval = () => {
           </Link>
 
           {/* View Icon */}
-          <Link to={`/kyc_details/${row.original.id}`} className="action-icon">
+          {/* <Link to={`/kyc_details/${row.original.id}`} className="action-icon"> */}
+          <Link to={`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}`} className="action-icon">
             <i className="mdi mdi-eye-settings-outline"></i>
           </Link>
         </div>

@@ -16,6 +16,7 @@ import {
   future_leads_id,
   handleDateFormat,
   not_responding_id,
+  showErrorAlert,
   showSuccessAlert,
 } from "../../../../constants";
 import DatePicker from "react-datepicker";
@@ -323,7 +324,31 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     setViewOnly(false);
   };
 
-  const handleProccedToKyc = () => {};
+  const handleProccedToKyc = async() => {
+    try {
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Assign",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.post(`/proceed_kyc`, { student_id: studentId });
+        console.log(res);
+        if(res){
+          showSuccessAlert('Proceeded KYC Successfully')
+        }
+      }
+      
+    } catch (error) {
+      console.log(error);
+      showErrorAlert('Something went wrong')
+    }
+  };
 
   console.log("userRole ==>", userRole);
 
@@ -551,7 +576,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       <Dropdown.Item
                         eventKey={item.id}
                         key={item.id}
-                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id), setViewOnly(false)]}
                       >
                         {item.status_name}
                       </Dropdown.Item>

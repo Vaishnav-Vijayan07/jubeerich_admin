@@ -72,8 +72,6 @@ const RemarkModal = withSwal((props: any) => {
         remark_id: remarkId,
       };
     }
-    console.log("payload", payload);
-
     try {
       if (!isUpdate) {
         result = await axios.post("/followup_remark", payload);
@@ -86,12 +84,12 @@ const RemarkModal = withSwal((props: any) => {
         callGetRemark();
         dispatch(refreshData());
         setRemarkForm(initialFormState);
-        setIsLoading(true);
+        setIsLoading(false);
       }
     } catch (error) {
       console.log(error);
       showErrorAlert("Something went wrong");
-      setIsLoading(true);
+      setIsLoading(false);
     }
   };
 
@@ -208,7 +206,7 @@ const RemarkModal = withSwal((props: any) => {
                             <i className="mdi mdi-cancel me-1"></i>Cancel
                           </button>
                         )}
-                        <button type="submit" className="btn btn-sm btn-success">
+                        <button type="submit" className="btn btn-sm btn-success" disabled={isLoading}>
                           <i className="mdi mdi-send me-1"></i>
                           {isUpdate ? "Update" : "Submit"}
                         </button>
