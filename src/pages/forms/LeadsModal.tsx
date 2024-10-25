@@ -235,6 +235,12 @@ const LeadsModal = withSwal((props: any) => {
 
     console.log('formData',formData);
 
+    let countries: any;
+
+    if(isUpdate) {
+      countries = selectedCountry.map((data: any) => data?.value);
+    }
+
     let exam_details = languageForm.length ? languageForm : [];
     try {
       await validationSchema.validate(formData, { abortEarly: false });
@@ -265,7 +271,8 @@ const LeadsModal = withSwal((props: any) => {
                     formData.source_id,
                     formData.channel_id,
                     formData.city,
-                    JSON.stringify(formData.preferred_country),
+                    // JSON.stringify(formData.preferred_country),
+                    JSON.stringify(countries),
                     formData.office_type,
                     formData.flag ? formData.flag : null,
                     formData.region_id ? formData.region_id : null,
@@ -352,6 +359,7 @@ const LeadsModal = withSwal((props: any) => {
   };
 
   const handleDropDowns = (selected: any, { name }: any) => {
+    console.log('ssss', selected.value);
     // Update form data for all dropdowns except franchise_id and region_id
     if (name !== "franchise_id" && name !== "region_id") {
       setFormData((prev) => ({
@@ -553,7 +561,7 @@ const LeadsModal = withSwal((props: any) => {
 
   useEffect(() => {
     if (!loading && !error) {
-      //   toggle(false);
+        toggle(false);
       setValidationErrors(initialValidationState); // Clear validation errors
       setFormData(initialState); //clear form data
     }

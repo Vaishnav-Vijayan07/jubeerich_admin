@@ -12,7 +12,6 @@ import { showErrorAlert } from "../../constants";
 
 const KycDetails = () => {
   const { id } = useParams();
-  console.log('id', id);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<any>({});
@@ -83,18 +82,19 @@ const KycDetails = () => {
     }
   }
 
+
   const personalDetails = useMemo(() => response ? [
     { label: "Student Name", value: response?.personalDetails?.full_name || 'N/A' },
     { label: "Mobile", value: response?.personalDetails?.phone || 'N/A' },
     { label: "Email", value: response?.personalDetails?.email || 'N/A' },
     { label: "DOB", value: response?.basicInfoDetails?.dob || 'N/A' },
     { label: "Current Address", value: response?.basicInfoDetails?.address || 'N/A' },
-    { label: "Primary Point of Contact", value: `${response?.basicInfoDetails?.emergency_contact_name} - ${response?.basicInfoDetails?.emergency_contact_relationship}` || 'N/A' },
+    { label: "Primary Point of Contact", value: `${(response?.basicInfoDetails?.emergency_contact_name) ? response?.basicInfoDetails?.emergency_contact_name : 'N/A'} - ${(response?.basicInfoDetails?.emergency_contact_relationship) ? response?.basicInfoDetails?.emergency_contact_relationship : 'N/A'}` },
     { label: "Marital Status", value: response?.basicInfoDetails?.marital_status_details?.marital_status_name || 'N/A' },
     { label: "Source of Lead", value: response?.leadSource?.source_name || 'N/A' },
-    { label: "Preferred Course", value: preferredCourses }, //
-    { label: "Preferred Institute", value: preferredCampus }, //
-    { label: "Course Link", value: "https://www.harvard.edu/mba" }, //
+    { label: "Preferred Course", value: response?.studyPreferences?.[0]?.studyPreferenceDetails?.[0]?.preferred_courses?.course_name || 'N/A' },
+    { label: "Preferred Institute", value: response?.studyPreferences?.[0]?.studyPreferenceDetails?.[0]?.preferred_campus?.campus_name || 'N/A'}, 
+    { label: "Course Link", value: response?.studyPreferences?.[0]?.studyPreferenceDetails?.[0]?.preferred_courses?.campuses?.[0]?.campus_course?.course_link },
     { label: "Counselor Name", value: response?.assignedCounselor?.name || 'N/A' },
     { label: "Branch", value: response?.branches?.branch_name || 'N/A' },
   ] : [], [response]);
@@ -391,8 +391,10 @@ const KycDetails = () => {
 
                   <Accordion.Body>
                     <div className="text-start mt-2 ps-1">
+                      {console.log(fundDetails)
+                      }
 
-                      {fundDetails?.map((data: any, index: any) => (
+                      {fundDetails.length > 0 ? fundDetails?.map((data: any, index: any) => (
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
@@ -437,7 +439,11 @@ const KycDetails = () => {
                             </div>
                           </div>}
                         </div>
-                      ))}
+                      )) : 
+                      <div className="d-flex justify-content-center">
+                        <h3 className="fs-4 text-muted">No Data Found</h3>
+                      </div>
+                      }
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
@@ -456,7 +462,7 @@ const KycDetails = () => {
                   <Accordion.Body>
                     <div className="text-start mt-2 ps-1">
 
-                      {examDetails?.map((test: any, index: number) => (
+                      {examDetails.length > 0 ? examDetails?.map((test: any, index: number) => (
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 == 0 ? "bg-light" : ""}`}
@@ -491,7 +497,11 @@ const KycDetails = () => {
                             <span className="ms-2">{test?.overall_score}</span>
                           </p>
                         </div>
-                      ))}
+                      )):
+                      <div className="d-flex justify-content-center">
+                        <h3 className="fs-4 text-muted">No Data Found</h3>
+                      </div>
+                      }
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
