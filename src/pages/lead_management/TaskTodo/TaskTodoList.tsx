@@ -134,7 +134,7 @@ const TaskTodoList = withSwal((props: any) => {
                     <Col md={10} lg={10} xl={10}>
                         <ReactSortable className="row" list={formData ? formData : []} setList={setFormData}>
                             {formData && formData.map(((data: any, index: number) => (
-                                <Accordion key={index} className='ms-4 custom-accordion3'>
+                                <Accordion key={index} className='ms-4 custom-accordion2'>
                                     <Accordion.Item eventKey={index.toString()} className='mb-4'>
                                         <Accordion.Header className='w-100 d-flex justify-content-start align-items-center pt-0 mt-0'>
                                             <span className='p-1'>

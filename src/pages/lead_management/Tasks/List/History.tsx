@@ -1,54 +1,113 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { showErrorAlert } from "../../../../constants";
-import { Badge, Spinner } from "react-bootstrap";
+import { Badge, Col, Dropdown, Row, Spinner } from "react-bootstrap";
+import classNames from "classnames";
 
-const History = ({ studentId }: { studentId: number }) => {
-  const [userHistory, setUserHistory] = React.useState<any[]>([]);
-  const [loading, setLoading] = React.useState(false);
+const History = ({ studentId }: any) => {
+  const [userHistory, setUserHistory] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("all"); // Default to "all"
+  const [loading, setLoading] = useState(false);
+  const [dropdownLabel, setDropdownLabel] = useState("Choose Country");
 
-  const fetchDetails = async () => {
+  const fetchDetails = async (countryId: any) => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`lead_history/${studentId}`);
-      setUserHistory(data.data); // Assuming the API response structure is { success: true, data: [...] }
+      console.log(`Fetching details for country ID: ${countryId}`);
+      const { data } = await axios.get(`lead_history/${studentId}/${countryId}`);
+      setUserHistory(data.data.leadHistory);
+      if (countryId === "all") setCountries(data.data.countries); // Set countries only on initial load
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching lead history:", error);
       showErrorAlert(error);
     } finally {
       setLoading(false);
     }
   };
 
+  console.log(studentId);
+
+  // Fetch all countries and history initially
   useEffect(() => {
-    if (studentId) {
-      fetchDetails();
-    }
+    fetchDetails("all");
   }, [studentId]);
 
-  // if (loading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "100%", left: "45%" }}
-  //     />
-  //   );
-  // }
+  console.log(selectedCountry);
+  console.log("userHistory", userHistory);
+
+  // Re-fetch history when selected country changes
+  useEffect(() => {
+    console.log(selectedCountry);
+
+    if (selectedCountry) {
+      console.log("inside filter effect");
+
+      fetchDetails(selectedCountry);
+    }
+  }, [selectedCountry]);
+
+  // Update selected country and dropdown label
+  const handleCountryWiseHistory = (countryId: any, countryName: any) => {
+    console.log(countryId, countryName);
+
+    setSelectedCountry(countryId);
+    setDropdownLabel(countryName);
+    console.log(selectedCountry);
+  };
 
   return (
-    <div className="history-tl-container">
-      <ul className="tl">
-        {userHistory?.map((item) => (
-          <li key={item.id} className="tl-item">
-            <div className="item-title">{item.action}</div>
-            <Badge>{item?.country ? item?.country?.country_name : null}</Badge>
-            <div className="timestamp">
-              {new Date(item.updated_on).toLocaleString()}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <Row className="mb-3 mt-3">
+        <Col md={6}>
+          <div className="d-flex flex-wrap">
+            <small
+              style={{
+                backgroundColor: selectedCountry === "all" ? "#00ce64" : "#9dd3f5",
+                color: "#122d3d",
+                padding: "4px 10px",
+              }}
+              className={classNames("rounded-pill fs-6 me-1 cursor-pointer")}
+              onClick={() => handleCountryWiseHistory("all", "All Countries")}
+            >
+              All Countries
+            </small>
+            {countries.map((country: any) => (
+              <small
+                key={country.id}
+                style={{
+                  backgroundColor: selectedCountry === country.id ? "#00ce64" : "#9dd3f5",
+                  color: "#122d3d",
+                  padding: "4px 10px",
+                }}
+                className={classNames("rounded-pill fs-6 me-1 cursor-pointer")}
+                onClick={() => handleCountryWiseHistory(country.id, country.country)}
+              >
+                {country.country}
+              </small>
+            ))}
+          </div>
+        </Col>
+      </Row>
+
+      <Row>
+        <div className="history-tl-container">
+          <ul className="tl">
+            {userHistory.length > 0 ? (
+              userHistory.map((item: any) => (
+                <li key={item.id} className="tl-item">
+                  <div className="item-title">{item.action}</div>
+                  <Badge>{item?.country ? item.country.country_name : ""}</Badge>
+                  <div className="timestamp">{new Date(item.updated_on).toLocaleString()}</div>
+                </li>
+              ))
+            ) : (
+              <p>No lead history available for this filter.</p>
+            )}
+          </ul>
+        </div>
+      </Row>
+    </>
   );
 };
 

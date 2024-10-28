@@ -7,4 +7,12 @@ function getPendingKycsApi() {
   return api.get(`/kyc_pending`, {});
 }
 
-export { getPendingKycsApi };
+function getRejectedKycsApi() {
+  return api.get(`/kyc_rejected`, {});
+}
+
+function getApprovedKycsApi() {
+  return api.get(`/kyc_approved`, {});
+}
+
+export { getPendingKycsApi, getRejectedKycsApi, getApprovedKycsApi };

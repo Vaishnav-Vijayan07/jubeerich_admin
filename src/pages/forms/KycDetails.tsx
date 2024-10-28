@@ -2,17 +2,21 @@ import React, { useEffect, useMemo, useState } from "react";
 import PageTitle from "../../components/PageTitle";
 import { Accordion, Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
 import profileImg from "../../assets/images/users/user-2.jpg";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { icons } from "../../assets/images/icons";
 import axios from "axios";
 import moment from "moment";
 import { fdValue, fundTypeOptions, savingsValue } from "../lead_management/Tasks/List/FundPlan/FundPlanRows";
 import { Visa_Types } from "../lead_management/Tasks/List/data";
-import { showErrorAlert } from "../../constants";
+import { showErrorAlert, showSuccessAlert } from "../../constants";
+import { withSwal } from "react-sweetalert2";
 
-const KycDetails = () => {
-  const { id } = useParams();
-  console.log('id', id);
+const KycDetails = withSwal((props: any) => {
+  const navigate = useNavigate();
+  const { id, application_id } = useParams();
+  const hideFooter = new URLSearchParams(useLocation()?.search)?.get("hideFooter");
+  
+  const { swal } = props;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<any>({});
@@ -32,14 +36,13 @@ const KycDetails = () => {
   const [clearenceCountries, setClearenceCountries] = useState<any>([]);
   const [passportsInfo, setPassportsInfo] = useState<any>([]);
   const [notFound, setNotFound] = useState<boolean>(false);
-
-  const medicalDeclaration = "Yes, I have asthma and a mild allergy to pollen.";
+  const [remarkForm, setRemarkForm] = useState<any>('')
 
   const fetchDetails = async () => {
     try {
       setIsLoading(true);
       let { data } = await axios.get(`/kyc_details/${id}`, {
-        timeout: 4000
+        timeout: 10000
       });
 
       if (data) {
@@ -83,18 +86,19 @@ const KycDetails = () => {
     }
   }
 
+
   const personalDetails = useMemo(() => response ? [
     { label: "Student Name", value: response?.personalDetails?.full_name || 'N/A' },
     { label: "Mobile", value: response?.personalDetails?.phone || 'N/A' },
     { label: "Email", value: response?.personalDetails?.email || 'N/A' },
     { label: "DOB", value: response?.basicInfoDetails?.dob || 'N/A' },
     { label: "Current Address", value: response?.basicInfoDetails?.address || 'N/A' },
-    { label: "Primary Point of Contact", value: `${response?.basicInfoDetails?.emergency_contact_name} - ${response?.basicInfoDetails?.emergency_contact_relationship}` || 'N/A' },
+    { label: "Primary Point of Contact", value: `${(response?.basicInfoDetails?.emergency_contact_name) ? response?.basicInfoDetails?.emergency_contact_name : 'N/A'} - ${(response?.basicInfoDetails?.emergency_contact_relationship) ? response?.basicInfoDetails?.emergency_contact_relationship : 'N/A'}` },
     { label: "Marital Status", value: response?.basicInfoDetails?.marital_status_details?.marital_status_name || 'N/A' },
     { label: "Source of Lead", value: response?.leadSource?.source_name || 'N/A' },
-    { label: "Preferred Course", value: preferredCourses }, //
-    { label: "Preferred Institute", value: preferredCampus }, //
-    { label: "Course Link", value: "https://www.harvard.edu/mba" }, //
+    { label: "Preferred Course", value: response?.studyPreferences?.[0]?.studyPreferenceDetails?.[0]?.preferred_courses?.course_name || 'N/A' },
+    { label: "Preferred Institute", value: response?.studyPreferences?.[0]?.studyPreferenceDetails?.[0]?.preferred_campus?.campus_name || 'N/A'}, 
+    { label: "Course Link", value: response?.studyPreferences?.[0]?.studyPreferenceDetails?.[0]?.preferred_courses?.campuses?.[0]?.campus_course?.course_link },
     { label: "Counselor Name", value: response?.assignedCounselor?.name || 'N/A' },
     { label: "Branch", value: response?.branches?.branch_name || 'N/A' },
   ] : [], [response]);
@@ -170,15 +174,67 @@ const KycDetails = () => {
     return selected?.[0]?.label || ''
   }
 
+  const rejectKYC = async() => {
+    try {
 
-  // if (isLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
+      let payload = {
+        student_id: response?.personalDetails?.id,
+        remarks: remarkForm,
+        application_id: application_id
+      }
+
+      console.log(payload);
+
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Reject",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.post('/kyc_reject', payload)   
+        if(res) {
+          showSuccessAlert('KYC Rejected');
+          navigate(`/kyc_details`);
+        }   
+      }
+
+    } catch (error) {
+      console.log(error);
+      showErrorAlert('Something went wrong')
+    }
+  }
+
+  const approveKYC = async() => {
+    try {
+
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Approve",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.post('/approve_kyc', { application_id: application_id })   
+        if(res) {
+          showSuccessAlert('KYC Rejected');
+          navigate(`/kyc_details`);
+        }   
+      }
+
+    } catch (error) {
+      console.log(error);
+      showErrorAlert('Something went wrong')
+    }
+  }
 
   if (notFound) {
     return (
@@ -391,8 +447,10 @@ const KycDetails = () => {
 
                   <Accordion.Body>
                     <div className="text-start mt-2 ps-1">
+                      {console.log(fundDetails)
+                      }
 
-                      {fundDetails?.map((data: any, index: any) => (
+                      {fundDetails.length > 0 ? fundDetails?.map((data: any, index: any) => (
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
@@ -437,7 +495,11 @@ const KycDetails = () => {
                             </div>
                           </div>}
                         </div>
-                      ))}
+                      )) : 
+                      <div className="d-flex justify-content-center">
+                        <h3 className="fs-4 text-muted">No Data Found</h3>
+                      </div>
+                      }
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
@@ -456,7 +518,7 @@ const KycDetails = () => {
                   <Accordion.Body>
                     <div className="text-start mt-2 ps-1">
 
-                      {examDetails?.map((test: any, index: number) => (
+                      {examDetails.length > 0 ? examDetails?.map((test: any, index: number) => (
                         <div
                           key={index}
                           className={`mb-3 ${index % 2 == 0 ? "bg-light" : ""}`}
@@ -491,7 +553,11 @@ const KycDetails = () => {
                             <span className="ms-2">{test?.overall_score}</span>
                           </p>
                         </div>
-                      ))}
+                      )):
+                      <div className="d-flex justify-content-center">
+                        <h3 className="fs-4 text-muted">No Data Found</h3>
+                      </div>
+                      }
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
@@ -866,7 +932,7 @@ const KycDetails = () => {
         </Row>
       </Accordion>
 
-      <Row>
+      {!hideFooter && <Row>
         <Col>
           <Form.Group className="mb-3" controlId="remarks">
             <Form.Label className="fs-9">Remarks</Form.Label>
@@ -875,19 +941,20 @@ const KycDetails = () => {
               rows={3}
               name="remarks"
               placeholder="Enter remarks here"
+              onChange={(e) => setRemarkForm(e?.target?.value)}
             />
           </Form.Group>
         </Col>
 
         <div className="d-flex justify-content-end gap-3">
-          <Button variant="danger">Reject</Button>
-          <Button variant="success">
+          <Button variant="danger" onClick={rejectKYC}>Reject</Button>
+          <Button variant="success" onClick={approveKYC}>
             Proceed to application
           </Button>
         </div>
-      </Row>
+      </Row>}
     </div>
   );
-};
+});
 
 export default KycDetails;

@@ -16,6 +16,7 @@ import {
   future_leads_id,
   handleDateFormat,
   not_responding_id,
+  showErrorAlert,
   showSuccessAlert,
 } from "../../../../constants";
 import DatePicker from "react-datepicker";
@@ -324,7 +325,31 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     setViewOnly(false);
   };
 
-  const handleProccedToKyc = () => {};
+  const handleProccedToKyc = async () => {
+    try {
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Assign",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.post(`/proceed_kyc`, { student_id: studentId });
+        if(res){
+          showSuccessAlert('Proceeded KYC Successfully');
+          getTaskDetails();
+          getTaskList();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      showErrorAlert("Something went wrong");
+    }
+  };
 
   console.log("userRole ==>", userRole);
 
@@ -358,6 +383,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
                 <Col className="d-flex gap-2 float-end">
                   <Button
+                    disabled = {taskDetails?.is_proceed_to_kyc}
                     className="d-flex align-items-center btn-light"
                     // disabled={taskDetails?.isCompleted ? true : false}
                     onClick={handleProccedToKyc}
@@ -528,6 +554,15 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               </div>
             </div>
           </Row>
+          {taskDetails?.is_rejected && <Row className="mt-3">
+            <div className="">
+              <p className="mt-2 mb-1 text-danger fw-bold fs-4">Remarks</p>
+              <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                <img src={icons.information} alt="comapny icon" className="me-1" width="16" />
+                <h5 className="m-0 font-size-14">{taskDetails?.kyc_remarks?.[0]?.remark}</h5>
+              </div>
+            </div>
+          </Row>}
         </Card.Body>
       </Card>
       <Row>
@@ -552,7 +587,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                       <Dropdown.Item
                         eventKey={item.id}
                         key={item.id}
-                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id)]}
+                        onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id), setViewOnly(false)]}
                       >
                         {item.status_name}
                       </Dropdown.Item>
@@ -651,7 +686,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       <Card>
         <Card.Body>
           <Row>
-            <Tab.Container activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
+            <Tab.Container
+              activeKey={activeTab}
+              onSelect={(tab) => {
+                console.log("Selected Tab:", tab); // Log the selected tab
+                setActiveTab(tab);
+              }}
+            >
               <Card>
                 <Card.Body>
                   <Nav variant="pills" as="ul" className="nav nav-pills nav-fill navtab-bg row-gap-1">
@@ -696,15 +737,23 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     )}
 
                     {activeTab === "comments" && studentId && (
-                      <Suspense fallback={null}>
-                        <Comments studentId={studentId} />
-                      </Suspense>
+                      <>
+                        {console.log(studentId)}
+                        <Suspense fallback={null}>
+                          <Comments studentId={studentId} />
+                        </Suspense>
+                      </>
                     )}
 
+                    {console.log("activeTab", activeTab)}
+
                     {activeTab === "history" && studentId && (
-                      <Suspense fallback={null}>
-                        <History studentId={studentId} />
-                      </Suspense>
+                      <>
+                        {console.log(studentId)}
+                        <Suspense fallback={null}>
+                          <History studentId={studentId} />
+                        </Suspense>
+                      </>
                     )}
 
                     {activeTab === "study_preference" && studentId && (

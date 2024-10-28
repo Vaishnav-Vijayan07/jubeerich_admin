@@ -80,6 +80,8 @@ export interface TaskItemTypes {
   enquiry: string;
   status: string;
   flag_name: string;
+  is_proceed_to_kyc: boolean;
+  is_rejected: boolean;
   status_id: string;
   phone: string;
   channel_name: string;
