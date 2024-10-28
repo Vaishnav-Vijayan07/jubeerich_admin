@@ -263,7 +263,7 @@ const BasicInputElements = withSwal((props: any) => {
       <>
         <Dropdown className="btn-group" style={{ maxHeight: "150px", overflow: "visible !important" }}>
           <Dropdown.Toggle variant="light" className="table-action-btn btn-sm">
-            Test Assign
+            {"Assign"}
           </Dropdown.Toggle>
           <Dropdown.Menu style={{ maxHeight: "150px", overflow: "visible" }}>
             {cres.map((item: any) => (
