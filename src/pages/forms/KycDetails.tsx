@@ -2,16 +2,21 @@ import React, { useEffect, useMemo, useState } from "react";
 import PageTitle from "../../components/PageTitle";
 import { Accordion, Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
 import profileImg from "../../assets/images/users/user-2.jpg";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { icons } from "../../assets/images/icons";
 import axios from "axios";
 import moment from "moment";
 import { fdValue, fundTypeOptions, savingsValue } from "../lead_management/Tasks/List/FundPlan/FundPlanRows";
 import { Visa_Types } from "../lead_management/Tasks/List/data";
-import { showErrorAlert } from "../../constants";
+import { showErrorAlert, showSuccessAlert } from "../../constants";
+import { withSwal } from "react-sweetalert2";
 
-const KycDetails = () => {
-  const { id } = useParams();
+const KycDetails = withSwal((props: any) => {
+  const navigate = useNavigate();
+  const { id, application_id } = useParams();
+  const hideFooter = new URLSearchParams(useLocation()?.search)?.get("hideFooter");
+  
+  const { swal } = props;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<any>({});
@@ -31,14 +36,13 @@ const KycDetails = () => {
   const [clearenceCountries, setClearenceCountries] = useState<any>([]);
   const [passportsInfo, setPassportsInfo] = useState<any>([]);
   const [notFound, setNotFound] = useState<boolean>(false);
-
-  const medicalDeclaration = "Yes, I have asthma and a mild allergy to pollen.";
+  const [remarkForm, setRemarkForm] = useState<any>('')
 
   const fetchDetails = async () => {
     try {
       setIsLoading(true);
       let { data } = await axios.get(`/kyc_details/${id}`, {
-        timeout: 4000
+        timeout: 10000
       });
 
       if (data) {
@@ -170,15 +174,67 @@ const KycDetails = () => {
     return selected?.[0]?.label || ''
   }
 
+  const rejectKYC = async() => {
+    try {
 
-  // if (isLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
+      let payload = {
+        student_id: response?.personalDetails?.id,
+        remarks: remarkForm,
+        application_id: application_id
+      }
+
+      console.log(payload);
+
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Reject",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.post('/kyc_reject', payload)   
+        if(res) {
+          showSuccessAlert('KYC Rejected');
+          navigate(`/kyc_details`);
+        }   
+      }
+
+    } catch (error) {
+      console.log(error);
+      showErrorAlert('Something went wrong')
+    }
+  }
+
+  const approveKYC = async() => {
+    try {
+
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Approve",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.post('/approve_kyc', { application_id: application_id })   
+        if(res) {
+          showSuccessAlert('KYC Rejected');
+          navigate(`/kyc_details`);
+        }   
+      }
+
+    } catch (error) {
+      console.log(error);
+      showErrorAlert('Something went wrong')
+    }
+  }
 
   if (notFound) {
     return (
@@ -876,7 +932,7 @@ const KycDetails = () => {
         </Row>
       </Accordion>
 
-      <Row>
+      {!hideFooter && <Row>
         <Col>
           <Form.Group className="mb-3" controlId="remarks">
             <Form.Label className="fs-9">Remarks</Form.Label>
@@ -885,19 +941,20 @@ const KycDetails = () => {
               rows={3}
               name="remarks"
               placeholder="Enter remarks here"
+              onChange={(e) => setRemarkForm(e?.target?.value)}
             />
           </Form.Group>
         </Col>
 
         <div className="d-flex justify-content-end gap-3">
-          <Button variant="danger">Reject</Button>
-          <Button variant="success">
+          <Button variant="danger" onClick={rejectKYC}>Reject</Button>
+          <Button variant="success" onClick={approveKYC}>
             Proceed to application
           </Button>
         </div>
-      </Row>
+      </Row>}
     </div>
   );
-};
+});
 
 export default KycDetails;
