@@ -6,6 +6,8 @@ import FranchiseDetails from "../pages/forms/FranchiseDetails";
 import PrivateRoute from "./PrivateRoute";
 import { AUTH_SESSION_KEY } from "../constants";
 import UserBox from "../pages/forms/BranchDetails";
+import KycRejected from "../pages/forms/KycRejected";
+import KycApproved from "../pages/forms/KycApproved";
 
 // lazy load all the views
 
@@ -177,6 +179,18 @@ const crmAppRoutes = {
       route: PrivateRoute,
     },
     {
+      path: "/kyc_rejected_details",
+      name: "KYC Rejected",
+      element: <KycRejected />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/kyc_approved_details",
+      name: "KYC Approved",
+      element: <KycApproved />,
+      route: PrivateRoute,
+    },
+    {
       path: "/kyc_details/pending",
       name: "KYC Approval",
       element: <PendingDetails />,
@@ -201,11 +215,17 @@ const crmAppRoutes = {
       route: PrivateRoute,
     },
     {
-      path: "/kyc_details/:id",
+      path: "/kyc_details/:id/:application_id",
       name: "KYC Details",
       element: <KycDetails />,
       route: PrivateRoute,
     },
+    // {
+    //   path: "/kyc_rejected_details/:id/:application_id",
+    //   name: "KYC Rejected",
+    //   element: <KycDetails />,
+    //   route: PrivateRoute,
+    // },
   ],
 };
 

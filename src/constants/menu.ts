@@ -85,6 +85,24 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["KYC Approval"],
   },
 
+  {
+    key: "kycRejected",
+    label: "KYC Rejected",
+    isTitle: false,
+    icon: "check-square",
+    url: "/kyc_rejected_details",
+    roles: ["KYC Approval"],
+  },
+
+  {
+    key: "kycApproved",
+    label: "KYC Approved",
+    isTitle: false,
+    icon: "check-square",
+    url: "/kyc_approved_details",
+    roles: ["KYC Approval"],
+  },
+
   { key: "all_applications", label: "All Applications", isTitle: true, roles: ["Manage Applications"] },
 
   {

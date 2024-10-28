@@ -6,7 +6,7 @@ import PageTitle from "../../components/PageTitle";
 import { Button, Card, Spinner, Modal } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
-import { getPendingKYC } from "../../redux/KYC/actions";
+import { getApprovedKYC, getPendingKYC, getRejectedKYC } from "../../redux/KYC/actions";
 
 const sizePerPageList = [
   {
@@ -40,7 +40,7 @@ interface TableRecords {
   status: string;
 }
 
-const KycApproval = () => {
+const KycApproved = () => {
   const dispatch = useDispatch();
 
   const [uploadModal, setUploadModal] = useState(false);
@@ -53,12 +53,15 @@ const KycApproval = () => {
 
   const { records, user, initialloading } = useSelector((state: RootState) => ({
     user: state.Auth.user,
-    records: state.KYC.KYCSPending.data,
+    records: state.KYC.KYCSApproved?.data,
     initialloading: state.KYC.initialloading,
   }));
 
+  console.log(records);
+  
+
   useEffect(() => {
-    dispatch(getPendingKYC());
+    dispatch(getApprovedKYC());
   }, []);
 
   const columns = [
@@ -108,13 +111,13 @@ const KycApproval = () => {
       Header: "Lead Received Date",
       accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.lead_received_date",
       sort: false,
+      minWidth: 150,
       Cell: ({ row }: any) => (
         <span>
           {row.original.studyPreferenceDetails.studyPreference.userPrimaryInfo.lead_received_date &&
             moment(row.original.studyPreferenceDetails.studyPreference.userPrimaryInfo.lead_received_date).format("DD/MM/YYYY")}
         </span>
       ),
-      minWidth: 150
     },
     {
       Header: "Assigned Type",
@@ -126,6 +129,7 @@ const KycApproval = () => {
       Header: "Assigned Counselor",
       accessor: "", // You can fill in this accessor if needed for sorting, etc.
       sort: false,
+      minWidth: 150,
       Cell: ({ row }: any) => {
         // Safely access the properties and find the assigned counselor
         const assignedCounselor = row?.original?.studyPreferenceDetails?.studyPreference?.userPrimaryInfo?.counselors?.find(
@@ -134,7 +138,6 @@ const KycApproval = () => {
 
         return <span>{assignedCounselor ? assignedCounselor.name : "No counselor assigned"}</span>;
       },
-      minWidth: 150
     },
     {
       Header: "Status",
@@ -146,6 +149,7 @@ const KycApproval = () => {
       Header: "Actions",
       accessor: "",
       sort: false,
+      minWidth: 150,
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Comment Icon */}
@@ -156,12 +160,11 @@ const KycApproval = () => {
 
           {/* View Icon */}
           {/* <Link to={`/kyc_details/${row.original.id}`} className="action-icon"> */}
-          <Link to={`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}/${row.original?.id}`} className="action-icon">
+          <Link to={`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}/${row.original?.id}?hideFooter=true`} className="action-icon">
             <i className="mdi mdi-eye-settings-outline"></i>
           </Link>
         </div>
       ),
-      minWidth: 150
     },
   ];
 
@@ -176,9 +179,9 @@ const KycApproval = () => {
       <PageTitle
         breadCrumbItems={[
           { label: "Master", path: "/master/university" },
-          { label: "Assigned Leads", path: "/master/university", active: true },
+          { label: "KYC Approved", path: "/master/university", active: true },
         ]}
-        title={"KYC Approval"}
+        title={"KYC Approved"}
       />
       <Card className="bg-white">
         <Card.Body>
@@ -210,4 +213,4 @@ const KycApproval = () => {
   );
 };
 
-export default KycApproval;
+export default KycApproved;

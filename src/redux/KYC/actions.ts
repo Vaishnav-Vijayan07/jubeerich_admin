@@ -2,7 +2,7 @@
 import { KYCActionTypes } from "./constants";
 
 export interface KYCActionType {
-  type: KYCActionTypes.API_RESPONSE_SUCCESS | KYCActionTypes.API_RESPONSE_ERROR | KYCActionTypes.GET_PENDING;
+  type: KYCActionTypes.API_RESPONSE_SUCCESS | KYCActionTypes.API_RESPONSE_ERROR | KYCActionTypes.GET_PENDING | KYCActionTypes.GET_REJECTED | KYCActionTypes.GET_APPROVED;
 
   payload: {} | string;
 }
@@ -20,5 +20,15 @@ export const KYCApiResponseError = (actionType: string, error: any): KYCActionTy
 
 export const getPendingKYC = (): KYCActionType => ({
   type: KYCActionTypes.GET_PENDING,
+  payload: {},
+});
+
+export const getRejectedKYC = (): KYCActionType => ({
+  type: KYCActionTypes.GET_REJECTED,
+  payload: {},
+});
+
+export const getApprovedKYC = (): KYCActionType => ({
+  type: KYCActionTypes.GET_APPROVED,
   payload: {},
 });

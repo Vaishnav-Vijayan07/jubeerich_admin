@@ -338,9 +338,10 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
       if (result.isConfirmed) {
         const res = await axios.post(`/proceed_kyc`, { student_id: studentId });
-        console.log(res);
-        if (res) {
-          showSuccessAlert("Proceeded KYC Successfully");
+        if(res){
+          showSuccessAlert('Proceeded KYC Successfully');
+          getTaskDetails();
+          getTaskList();
         }
       }
     } catch (error) {
@@ -381,6 +382,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
                 <Col className="d-flex gap-2 float-end">
                   <Button
+                    disabled = {taskDetails?.is_proceed_to_kyc}
                     className="d-flex align-items-center btn-light"
                     // disabled={taskDetails?.isCompleted ? true : false}
                     onClick={handleProccedToKyc}
@@ -551,6 +553,15 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               </div>
             </div>
           </Row>
+          {taskDetails?.is_rejected && <Row className="mt-3">
+            <div className="">
+              <p className="mt-2 mb-1 text-danger fw-bold fs-4">Remarks</p>
+              <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                <img src={icons.information} alt="comapny icon" className="me-1" width="16" />
+                <h5 className="m-0 font-size-14">{taskDetails?.kyc_remarks?.[0]?.remark}</h5>
+              </div>
+            </div>
+          </Row>}
         </Card.Body>
       </Card>
       <Row>

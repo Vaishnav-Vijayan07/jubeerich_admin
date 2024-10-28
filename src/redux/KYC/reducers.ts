@@ -17,7 +17,7 @@ interface CategoryData {
 }
 
 interface KYCActionType {
-  type: KYCActionTypes.API_RESPONSE_SUCCESS | KYCActionTypes.API_RESPONSE_ERROR | KYCActionTypes.GET_PENDING;
+  type: KYCActionTypes.API_RESPONSE_SUCCESS | KYCActionTypes.API_RESPONSE_ERROR | KYCActionTypes.GET_PENDING | KYCActionTypes.GET_REJECTED | KYCActionTypes.GET_APPROVED;
   payload: {
     actionType?: string;
     data?: CategoryData | {};
@@ -44,6 +44,25 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
           };
         }
 
+        case KYCActionTypes.GET_REJECTED: {
+          return {
+            ...state,
+            KYCSRejected: action.payload.data,
+            loading: false,
+            initialloading: false,
+          };
+        }
+
+        case KYCActionTypes.GET_APPROVED: {
+          return {
+            ...state,
+            KYCSApproved: action.payload.data,
+            loading: false,
+            initialloading: false,
+          };
+        }
+
+
         default:
           return { ...state };
       }
@@ -59,11 +78,34 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
           };
         }
 
+        case KYCActionTypes.GET_REJECTED: {
+          return {
+            ...state,
+            error: action.payload.error,
+            loading: false,
+            initialloading: false,
+          };
+        }
+
+        case KYCActionTypes.GET_APPROVED: {
+          return {
+            ...state,
+            error: action.payload.error,
+            loading: false,
+            initialloading: false,
+          };
+        }
+
+
         default:
           return { ...state };
       }
 
     case KYCActionTypes.GET_PENDING:
+      return { ...state, loading: true, initialloading: true };
+    case KYCActionTypes.GET_REJECTED:
+      return { ...state, loading: true, initialloading: true };
+    case KYCActionTypes.GET_APPROVED:
       return { ...state, loading: true, initialloading: true };
     default:
       return { ...state };

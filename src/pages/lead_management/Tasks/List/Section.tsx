@@ -20,6 +20,7 @@ const Task = ({
   selectTask: (task: TaskItemTypes) => void;
   selectedTaskId: number | null; // Track selected task's ID
 }) => {
+
   return (
     <>
       <Row
@@ -49,9 +50,27 @@ const Task = ({
                   borderColor: `${task?.student_name?.user_primary_flags?.color}`,
                   height: "max-content",
                 }}
-                className={classNames("rounded-pill me-1 ms-2")}
+                className={classNames("rounded-pill ms-2")}
               >
                 {task?.student_name?.user_primary_flags?.flag_name}
+              </small>
+            )}
+
+            {task?.is_rejected && (
+              <small
+                style={{
+                  backgroundColor: `red`,
+                  color: "white",
+                  border: `1px solid #122d3d`,
+                  borderRadius: "5px",
+                  padding: "2px 12px",
+                  fontSize: "0.7rem",
+                  borderColor: `red`,
+                  height: "max-content",
+                }}
+                className={classNames("rounded-pill me-1")}
+              >
+                Rejected
               </small>
             )}
           </div>
