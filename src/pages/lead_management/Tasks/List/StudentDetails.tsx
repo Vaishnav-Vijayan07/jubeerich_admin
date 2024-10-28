@@ -324,7 +324,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
     setViewOnly(false);
   };
 
-  const handleProccedToKyc = async() => {
+  const handleProccedToKyc = async () => {
     try {
       const result = await swal.fire({
         title: "Are you sure?",
@@ -339,14 +339,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       if (result.isConfirmed) {
         const res = await axios.post(`/proceed_kyc`, { student_id: studentId });
         console.log(res);
-        if(res){
-          showSuccessAlert('Proceeded KYC Successfully')
+        if (res) {
+          showSuccessAlert("Proceeded KYC Successfully");
         }
       }
-      
     } catch (error) {
       console.log(error);
-      showErrorAlert('Something went wrong')
+      showErrorAlert("Something went wrong");
     }
   };
 
@@ -675,7 +674,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
       <Card>
         <Card.Body>
           <Row>
-            <Tab.Container activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
+            <Tab.Container
+              activeKey={activeTab}
+              onSelect={(tab) => {
+                console.log("Selected Tab:", tab); // Log the selected tab
+                setActiveTab(tab);
+              }}
+            >
               <Card>
                 <Card.Body>
                   <Nav variant="pills" as="ul" className="nav nav-pills nav-fill navtab-bg row-gap-1">
@@ -720,15 +725,23 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                     )}
 
                     {activeTab === "comments" && studentId && (
-                      <Suspense fallback={null}>
-                        <Comments studentId={studentId} />
-                      </Suspense>
+                      <>
+                        {console.log(studentId)}
+                        <Suspense fallback={null}>
+                          <Comments studentId={studentId} />
+                        </Suspense>
+                      </>
                     )}
 
+                    {console.log("activeTab", activeTab)}
+
                     {activeTab === "history" && studentId && (
-                      <Suspense fallback={null}>
-                        <History studentId={studentId} />
-                      </Suspense>
+                      <>
+                        {console.log(studentId)}
+                        <Suspense fallback={null}>
+                          <History studentId={studentId} />
+                        </Suspense>
+                      </>
                     )}
 
                     {activeTab === "study_preference" && studentId && (

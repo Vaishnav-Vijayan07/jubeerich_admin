@@ -22,7 +22,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
     <Row key={index} className="mb-3 p-2 border-bottom rounded">
       {item?.application_status && item?.kyc_status && (
         <Row>
-          <Col xl={6} xxl={4}>
+          <Col md={6}>
             <div className="d-flex gap-2 p-3" style={{ backgroundColor: "#F8F8F8" }}>
               <div className="d-flex gap-2 align-content-center justify-content-center">
                 <strong>Application Status:</strong>
