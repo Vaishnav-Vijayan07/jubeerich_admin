@@ -1,12 +1,12 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Table from "../../components/Table";
-import PageTitle from "../../components/PageTitle";
+import { Link, useLocation } from "react-router-dom";
 import { Button, Card, Spinner, Modal } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../redux/store";
-import { getPendingKYC } from "../../redux/KYC/actions";
+import { getPendingKYC } from "../../../../redux/KYC/actions";
+import { RootState } from "../../../../redux/store";
+import PageTitle from "../../../../components/PageTitle";
+import Table from "../../../../components/Table";
 
 const sizePerPageList = [
   {
@@ -40,15 +40,22 @@ interface TableRecords {
   status: string;
 }
 
-const KycApproval = () => {
+const AllPending = () => {
   const dispatch = useDispatch();
+
+
+const location = useLocation();
+const currentUrl = location.pathname;
+
+const isApplicationManager =  currentUrl == "kyc_details/all/pending"
+
 
   const [uploadModal, setUploadModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // Function to toggle the upload modal visibility
   const toggleUploadModal = () => {
-    setUploadModal(prevState => !prevState);
+    setUploadModal((prevState) => !prevState);
   };
 
   const { records, user, initialloading } = useSelector((state: RootState) => ({
@@ -58,7 +65,7 @@ const KycApproval = () => {
   }));
 
   useEffect(() => {
-    dispatch(getPendingKYC("country_manager"));
+    dispatch(getPendingKYC("application_manager"));
   }, []);
 
   const columns = [
@@ -72,37 +79,37 @@ const KycApproval = () => {
       Header: "Name",
       accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.full_name",
       sort: true,
-      minWidth: 200
+      minWidth: 200,
     },
     {
       Header: "Country",
       accessor: "studyPreferenceDetails.studyPreference.country.country_name", // Corrected for nested structure
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "University",
       accessor: "studyPreferenceDetails.preferred_university.university_name", // Corrected accessor
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Course",
       accessor: "studyPreferenceDetails.preferred_courses.course_name", // Corrected accessor
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Office",
       accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.office_type_name.office_type_name", // Corrected accessor
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Source",
       accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.source_name.source_name", // Corrected accessor
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Lead Received Date",
@@ -114,13 +121,13 @@ const KycApproval = () => {
             moment(row.original.studyPreferenceDetails.studyPreference.userPrimaryInfo.lead_received_date).format("DD/MM/YYYY")}
         </span>
       ),
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Assigned Type",
       accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.assign_type", // Corrected accessor for assigned counselor
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Assigned Counselor",
@@ -134,13 +141,13 @@ const KycApproval = () => {
 
         return <span>{assignedCounselor ? assignedCounselor.name : "No counselor assigned"}</span>;
       },
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Status",
       accessor: "studyPreferenceDetails.kyc_status", // Corrected accessor for status
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Actions",
@@ -156,12 +163,15 @@ const KycApproval = () => {
 
           {/* View Icon */}
           {/* <Link to={`/kyc_details/${row.original.id}`} className="action-icon"> */}
-          <Link to={`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}/${row.original?.id}`} className="action-icon">
+          <Link
+            to={`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}/${row.original?.id}`}
+            className="action-icon"
+          >
             <i className="mdi mdi-eye-settings-outline"></i>
           </Link>
         </div>
       ),
-      minWidth: 150
+      minWidth: 150,
     },
   ];
 
@@ -210,4 +220,4 @@ const KycApproval = () => {
   );
 };
 
-export default KycApproval;
+export default AllPending;

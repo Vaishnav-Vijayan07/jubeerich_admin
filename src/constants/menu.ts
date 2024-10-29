@@ -110,14 +110,14 @@ const MENU_ITEMS: MenuItemTypes[] = [
     label: "Pending",
     isTitle: false,
     icon: "clock", // Pending status
-    url: "/kyc_details",
+    url: "/kyc_details/all/pending",
     roles: ["Manage Applications"],
   },
   {
     key: "assigned",
     label: "Assigned",
     isTitle: false,
-    icon: "file-user", // File assigned to user
+    icon: "clock", // File assigned to user
     url: "/kyc_details",
     roles: ["Manage Applications"],
   },
@@ -128,7 +128,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "pending",
     label: "Pending",
     isTitle: false,
-    icon: "file-clock", // Pending application
+    icon: "clock", // Pending application
     url: "/kyc_details/pending",
     roles: ["Manage Applications"],
   },
@@ -136,7 +136,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "submitted",
     label: "Submitted",
     isTitle: false,
-    icon: "file-check", // Submitted application
+    icon: "clock", // Submitted application
     url: "/kyc_details/applications/submitted",
     roles: ["Manage Applications"],
   },

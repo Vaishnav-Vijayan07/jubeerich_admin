@@ -4,9 +4,9 @@ import { KYCActionTypes } from "./constants";
 import { KYCApiResponseError, KYCApiResponseSuccess } from "./actions";
 import { getPendingKycsApi, getRejectedKycsApi, getApprovedKycsApi } from "../../helpers/api/kyc";
 
-function* getPendingKYCs(): SagaIterator {
+function* getPendingKYCs({ payload: { type } }: any): SagaIterator {
   try {
-    const response = yield call(getPendingKycsApi);
+    const response = yield call(getPendingKycsApi, type);
     console.log(response.data);
 
     const data = response.data.data;
