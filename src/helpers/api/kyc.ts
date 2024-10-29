@@ -3,8 +3,8 @@ import { APICore } from "./apiCore";
 const api = new APICore();
 
 //
-function getPendingKycsApi() {
-  return api.get(`/kyc_pending`, {});
+function getPendingKycsApi(type: string) {
+  return api.get(`/kyc_pending`, { type });
 }
 
 function getRejectedKycsApi() {

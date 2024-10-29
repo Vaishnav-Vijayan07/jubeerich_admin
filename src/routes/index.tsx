@@ -44,6 +44,8 @@ const Tasks = React.lazy(() => import("../pages/lead_management/Tasks/List"));
 
 //KYC
 const KycApproval = React.lazy(() => import("../pages/forms/KycApproval"));
+const ApplicationAllPending = React.lazy(() => import("../pages/forms/Kyc/Application Manager/AllPending"));
+
 
 const KycDetails = React.lazy(() => import("../pages/forms/KycDetails"));
 
@@ -176,6 +178,12 @@ const crmAppRoutes = {
       path: "/kyc_details",
       name: "KYC Approval",
       element: <KycApproval />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/kyc_details/all/pending",
+      name: "KYC Approval",
+      element: <ApplicationAllPending />,
       route: PrivateRoute,
     },
     {
