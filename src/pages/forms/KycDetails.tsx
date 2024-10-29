@@ -566,7 +566,7 @@ const KycDetails = withSwal((props: any) => {
 
             <Card>
               <Card.Body>
-                <Accordion.Item eventKey="1">
+                <Accordion.Item eventKey="4">
                   <Accordion.Header className="mt-0 text-white">
                     <h5 className="text-uppercase text-white">
                       <i className="mdi mdi-medical-bag me-1"></i> MEDICAL DECLARATION
@@ -598,7 +598,7 @@ const KycDetails = withSwal((props: any) => {
 
             <Card>
               <Card.Body>
-                <Accordion.Item eventKey="11">
+                <Accordion.Item eventKey="5">
                   <Accordion.Header className="mt-0 text-white">
                     <h5 className="text-uppercase text-white">
                       <i className="mdi mdi-shield-alert me-1"></i> POLICE CLEARANCE CERTIFICATE
@@ -632,7 +632,7 @@ const KycDetails = withSwal((props: any) => {
           <Col>
             <Card>
               <Card.Body>
-                <Accordion.Item eventKey="5">
+                <Accordion.Item eventKey="6">
                   <Accordion.Header className="mt-0 text-white">
                     <h5 className="text-uppercase text-white">
                       <i className="mdi mdi-school me-1"></i> EDUCATIONAL QUALIFICATION
@@ -703,7 +703,7 @@ const KycDetails = withSwal((props: any) => {
 
             <Card>
               <Card.Body>
-                <Accordion.Item eventKey="6">
+                <Accordion.Item eventKey="7">
                   <Accordion.Header className="mt-0 text-white">
                     <h5 className="text-uppercase text-white">
                       <i className="mdi mdi-passport me-1"></i> PASSPORT INFORMATION
@@ -750,7 +750,7 @@ const KycDetails = withSwal((props: any) => {
 
             <Card>
               <Card.Body>
-                <Accordion.Item eventKey="7">
+                <Accordion.Item eventKey="8">
                   <Accordion.Header className="mt-0 text-white">
                     <h5 className="text-uppercase text-white">
                       <i className="mdi mdi-briefcase me-1"></i> WORK EXPERIENCE
@@ -814,7 +814,7 @@ const KycDetails = withSwal((props: any) => {
 
             <Card>
               <Card.Body>
-                <Accordion.Item eventKey="8">
+                <Accordion.Item eventKey="9">
                   <Accordion.Header className="mt-0 text-white">
                     <h5 className="text-uppercase text-white">
                       <i className="mdi mdi-cancel me-1"></i> PREVIOUS VISA DECLINE
@@ -853,7 +853,7 @@ const KycDetails = withSwal((props: any) => {
 
             <Card>
               <Card.Body>
-                <Accordion.Item eventKey="9">
+                <Accordion.Item eventKey="10">
                   <Accordion.Header className="mt-0 text-white">
                     <h5 className="text-uppercase text-white">
                       <i className="mdi mdi-check-circle me-1"></i> PREVIOUS VISA APPROVAL
@@ -892,7 +892,7 @@ const KycDetails = withSwal((props: any) => {
 
             <Card>
               <Card.Body>
-                <Accordion.Item eventKey="10">
+                <Accordion.Item eventKey="11">
                   <Accordion.Header className="mt-0 text-white">
                     <h5 className="text-uppercase text-white">
                       <i className="mdi mdi-airplane me-1"></i> PREVIOUS TRAVEL HISTORY
