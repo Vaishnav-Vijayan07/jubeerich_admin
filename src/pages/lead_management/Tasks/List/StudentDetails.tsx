@@ -334,7 +334,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Assign",
+        confirmButtonText: "Yes, Proceed to KYC",
       });
 
       if (result.isConfirmed) {
