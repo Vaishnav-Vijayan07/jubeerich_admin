@@ -62,8 +62,6 @@ const BasicInputElements = withSwal((props: any) => {
     branchCounsellors,
   } = props;
 
-  console.log("CRES", cres);
-
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedValues, setSelectedValues] = useState([]);
@@ -630,6 +628,7 @@ const BasicInputElements = withSwal((props: any) => {
           region={region || []}
           flags={flags || []}
           modal={modal}
+          setModal={setModal}
           toggle={toggle}
           handleUpdateData={handleUpdateData}
         />

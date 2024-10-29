@@ -5,14 +5,7 @@ import { useDispatch } from "react-redux";
 import Select, { ActionMeta, OptionsType } from "react-select";
 import { withSwal } from "react-sweetalert2";
 import { AppDispatch } from "../../redux/store";
-import {
-  addLeads,
-  deleteLeads,
-  getLead,
-  getLeadAssigned,
-  getLeadAssignedByCounsellorTL,
-  updateLeads,
-} from "../../redux/actions";
+import { addLeads, deleteLeads, getLead, getLeadAssigned, getLeadAssignedByCounsellorTL, updateLeads } from "../../redux/actions";
 import {
   baseUrl,
   customStyles,
@@ -22,14 +15,7 @@ import {
   showErrorAlert,
   showSuccessAlert,
 } from "../../constants";
-import {
-  examtypes,
-  initialState,
-  initialValidationState,
-  OptionType,
-  sizePerPageList,
-  TableRecords,
-} from "./data";
+import { examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
 import axios from "axios";
 import moment from "moment";
 import { useForm } from "react-hook-form";
@@ -54,6 +40,7 @@ const LeadsModal = withSwal((props: any) => {
     modal,
     handleUpdateData,
     clearLeadModal,
+    setModal,
     isAssignedLeads = false,
   } = props;
 
@@ -72,21 +59,15 @@ const LeadsModal = withSwal((props: any) => {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedFranchisee, setSelectedFranchisee] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
   // const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
   const [selectExam, setSelectExam] = useState<boolean>(false);
   const fileInputRef = useRef<any>(null);
-  const [languageForm, setLanguageForm] = useState<any[]>([
-    { id: "", exam_type: "", marks: "" },
-  ]);
+  const [languageForm, setLanguageForm] = useState<any[]>([{ id: "", exam_type: "", marks: "" }]);
   const [formData, setFormData] = useState(initialState);
-  const languageFormInitialState = [
-    { id: "", exam_type: "", marks: "", exam_date: "" },
-  ];
+  const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
   const dispatch = useDispatch<AppDispatch>();
 
   const validationSchema = yup.object().shape({
@@ -120,38 +101,22 @@ const LeadsModal = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedSource = source?.filter(
-      (source: any) => source.value == item?.source_id
-    );
-    const updatedOffice = office?.filter(
-      (office: any) => office.value == item?.office_type
-    );
-    const updatedRegion = region?.filter(
-      (region: any) => region.value == item?.region_id
-    );
+    const updatedSource = source?.filter((source: any) => source.value == item?.source_id);
+    const updatedOffice = office?.filter((office: any) => office.value == item?.office_type);
+    const updatedRegion = region?.filter((region: any) => region.value == item?.region_id);
 
-    const updatedFlag = flags?.filter(
-      (flag: any) => flag.value == item?.flag_id
-    );
+    const updatedFlag = flags?.filter((flag: any) => flag.value == item?.flag_id);
 
-    const updatedCtegory = leadTypes?.filter(
-      (category: any) => category.value == item?.lead_type_id
-    );
+    const updatedCtegory = leadTypes?.filter((category: any) => category.value == item?.lead_type_id);
 
-    console.log("updatedCtegory", updatedCtegory);
-
-    const updatedChannels = channels?.filter(
-      (channel: any) => channel.value == item.channel_id
-    );
+    const updatedChannels = channels?.filter((channel: any) => channel.value == item.channel_id);
 
     const updatedCountry = item?.preferredCountries?.map((country: any) => ({
       value: country?.id,
       label: country?.country_name,
     }));
 
-    const countryArray = item?.preferredCountries?.map(
-      (country: any) => country?.id
-    );
+    const countryArray = item?.preferredCountries?.map((country: any) => country?.id);
 
     const { value } = updatedOffice[0];
     const { franchise_id, region_id: region_id_from_item } = item;
@@ -159,18 +124,14 @@ const LeadsModal = withSwal((props: any) => {
     if (franchise_id && value == franchise_id_from_office) {
       setIsFranchiseActive(true);
       setActiveRegion(false);
-      const franchiseValue = franchisees.find(
-        (item: any) => item.value == franchise_id
-      );
+      const franchiseValue = franchisees.find((item: any) => item.value == franchise_id);
       setSelectedFranchisee(franchiseValue);
     }
 
     if (region_id_from_item && value == region_id) {
       setActiveRegion(true);
       setIsFranchiseActive(false);
-      const regionValue = regionData.find(
-        (item: any) => item.value == region_id
-      );
+      const regionValue = regionData.find((item: any) => item.value == region_id);
       setSelectedRegion(regionValue);
     }
 
@@ -196,9 +157,7 @@ const LeadsModal = withSwal((props: any) => {
       office_type: item?.office_type || "",
       updated_by: item?.updated_by || "",
       remarks: item?.remarks || "",
-      lead_received_date:
-        moment(item?.lead_received_date).format("YYYY-MM-DD") ||
-        new Date()?.toISOString().split("T")[0],
+      lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
       ielts: item?.ielts || false,
       exam: item?.exam || "",
       zipcode: item?.zipcode,
@@ -233,11 +192,9 @@ const LeadsModal = withSwal((props: any) => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log('formData',formData);
-
     let countries: any;
 
-    if(isUpdate) {
+    if (isUpdate) {
       countries = selectedCountry.map((data: any) => data?.value);
     }
 
@@ -277,17 +234,13 @@ const LeadsModal = withSwal((props: any) => {
                     formData.flag ? formData.flag : null,
                     formData.region_id ? formData.region_id : null,
                     null,
-                    user.role == regional_manager_id
-                      ? formData.branch_id
-                      : null,
+                    user.role == regional_manager_id ? formData.branch_id : null,
                     user_id,
                     formData.remarks,
                     formData.lead_received_date,
                     formData.ielts,
                     formData.zipcode,
-                    exam_details[0]?.exam_type
-                      ? JSON.stringify(exam_details)
-                      : null,
+                    exam_details[0]?.exam_type ? JSON.stringify(exam_details) : null,
                     selectedFile,
                     formData.franchise_id ? formData.franchise_id : null
                   )
@@ -314,9 +267,7 @@ const LeadsModal = withSwal((props: any) => {
                     formData.lead_received_date,
                     formData.ielts,
                     formData.zipcode,
-                    exam_details[0]?.exam_type
-                      ? JSON.stringify(exam_details)
-                      : null,
+                    exam_details[0]?.exam_type ? JSON.stringify(exam_details) : null,
                     selectedFile,
                     formData.franchise_id ? formData.franchise_id : null
                   )
@@ -350,7 +301,6 @@ const LeadsModal = withSwal((props: any) => {
       }));
       return;
     }
-    console.log("name");
 
     setFormData((prevData) => ({
       ...prevData,
@@ -359,7 +309,6 @@ const LeadsModal = withSwal((props: any) => {
   };
 
   const handleDropDowns = (selected: any, { name }: any) => {
-    console.log('ssss', selected.value);
     // Update form data for all dropdowns except franchise_id and region_id
     if (name !== "franchise_id" && name !== "region_id") {
       setFormData((prev) => ({
@@ -373,20 +322,14 @@ const LeadsModal = withSwal((props: any) => {
       case "source_id":
         setSelectedSource(selected);
         setSelectedChannel(null);
-        let filteredChannel = channels.filter(
-          (data: any) => data.source_id == selected.value
-        );
+        let filteredChannel = channels.filter((data: any) => data.source_id == selected.value);
         setChannelData(filteredChannel);
         break;
       case "lead_type_id":
-        console.log("here ==>", source);
-
         setSelectedSource(null);
         setSelectedChannel(null);
         setSelectedCategory(selected);
-        let filteredSource = source.filter(
-          (data: any) => data.lead_type == selected.value
-        );
+        let filteredSource = source.filter((data: any) => data.lead_type == selected.value);
         setSourceData(filteredSource);
         break;
       case "preferred_country":
@@ -464,18 +407,13 @@ const LeadsModal = withSwal((props: any) => {
     setLanguageForm(newFields);
   };
 
-  const handleRemoveLanguageForm = async (
-    index: number,
-    e: any,
-    exam_type: string
-  ) => {
+  const handleRemoveLanguageForm = async (index: number, e: any, exam_type: string) => {
     let existExamId = languageForm[index]?.id;
 
     const payload = {
       id: formData?.id,
       exam_type: exam_type,
     };
-    console.log("PAYLOAD", payload);
 
     try {
       swal
@@ -491,24 +429,16 @@ const LeadsModal = withSwal((props: any) => {
         .then((result: any) => {
           if (result.isConfirmed) {
             if (!existExamId) {
-              const removeFields = languageForm.filter(
-                (data: any, i: number) => i !== index
-              );
-              const removeFiles = selectedFile.filter(
-                (data: any, i: number) => i !== index
-              );
+              const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+              const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
               setLanguageForm(removeFields);
               setSelectedFile(removeFiles);
             } else {
               axios
                 .delete("/exams", { data: payload })
                 .then((res: any) => {
-                  const removeFields = languageForm.filter(
-                    (data: any, i: number) => i !== index
-                  );
-                  const removeFiles = selectedFile.filter(
-                    (data: any, i: number) => i !== index
-                  );
+                  const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+                  const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
                   setLanguageForm(removeFields);
                   setSelectedFile(removeFiles);
                   showSuccessAlert(res?.data?.message);
@@ -560,8 +490,8 @@ const LeadsModal = withSwal((props: any) => {
   };
 
   useEffect(() => {
-    if (!loading && !error) {
-        toggle(false);
+    if (!loading && !error) {      
+      setModal(false)
       setValidationErrors(initialValidationState); // Clear validation errors
       setFormData(initialState); //clear form data
     }
@@ -569,12 +499,7 @@ const LeadsModal = withSwal((props: any) => {
 
   return (
     <>
-      <Modal
-        show={modal}
-        onHide={toggle}
-        dialogClassName={"modal-full-width"}
-        scrollable={scroll}
-      >
+      <Modal show={modal} onHide={toggle} dialogClassName={"modal-full-width"} scrollable={scroll}>
         <Form onSubmit={onSubmit} key={"lead-form"}>
           <Modal.Header closeButton>
             <h4 className="modal-title">Lead Management</h4>
@@ -586,17 +511,8 @@ const LeadsModal = withSwal((props: any) => {
                   <Form.Label>
                     <span className="text-danger fs-4">* </span>Full Name
                   </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="full_name"
-                    value={formData.full_name}
-                    onChange={handleInputChange}
-                  />
-                  {validationErrors.full_name && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.full_name}
-                    </Form.Text>
-                  )}
+                  <Form.Control type="text" name="full_name" value={formData.full_name} onChange={handleInputChange} />
+                  {validationErrors.full_name && <Form.Text className="text-danger">{validationErrors.full_name}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -605,17 +521,8 @@ const LeadsModal = withSwal((props: any) => {
                   <Form.Label>
                     <span className="text-danger fs-4">* </span>Email
                   </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                  />
-                  {validationErrors.email && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.email}
-                    </Form.Text>
-                  )}
+                  <Form.Control type="text" name="email" value={formData.email} onChange={handleInputChange} />
+                  {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -624,17 +531,8 @@ const LeadsModal = withSwal((props: any) => {
                   <Form.Label>
                     <span className="text-danger fs-4">* </span>Phone
                   </Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                  />
-                  {validationErrors.phone && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.phone}
-                    </Form.Text>
-                  )}
+                  <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
+                  {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -653,9 +551,7 @@ const LeadsModal = withSwal((props: any) => {
                     onChange={handleDropDowns}
                   />
                   {validationErrors.lead_type_id && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.lead_type_id}
-                    </Form.Text>
+                    <Form.Text className="text-danger">{validationErrors.lead_type_id}</Form.Text>
                   )}
                 </Form.Group>
               </Col>
@@ -675,11 +571,7 @@ const LeadsModal = withSwal((props: any) => {
                     onChange={handleDropDowns}
                     isDisabled={!selectedCategory}
                   />
-                  {validationErrors.source_id && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.source_id}
-                    </Form.Text>
-                  )}
+                  {validationErrors.source_id && <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -698,11 +590,7 @@ const LeadsModal = withSwal((props: any) => {
                     onChange={handleDropDowns}
                     isDisabled={!selectedSource}
                   />
-                  {validationErrors.channel_id && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.channel_id}
-                    </Form.Text>
-                  )}
+                  {validationErrors.channel_id && <Form.Text className="text-danger">{validationErrors.channel_id}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -720,9 +608,7 @@ const LeadsModal = withSwal((props: any) => {
                     onChange={handleDropDowns}
                   />
                   {validationErrors.preferred_country && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.preferred_country}
-                    </Form.Text>
+                    <Form.Text className="text-danger">{validationErrors.preferred_country}</Form.Text>
                   )}
                 </Form.Group>
               </Col>
@@ -730,34 +616,16 @@ const LeadsModal = withSwal((props: any) => {
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="channel_name">
                   <Form.Label>Remarks</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="remarks"
-                    value={formData.remarks}
-                    onChange={handleInputChange}
-                  />
-                  {validationErrors.remarks && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.remarks}
-                    </Form.Text>
-                  )}
+                  <Form.Control type="text" name="remarks" value={formData.remarks} onChange={handleInputChange} />
+                  {validationErrors.remarks && <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>}
                 </Form.Group>
               </Col>
 
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="channel_name">
                   <Form.Label>City</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                  />
-                  {validationErrors.city && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.city}
-                    </Form.Text>
-                  )}
+                  <Form.Control type="text" name="city" value={formData.city} onChange={handleInputChange} />
+                  {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -771,9 +639,7 @@ const LeadsModal = withSwal((props: any) => {
                     onChange={handleInputChange}
                   />
                   {validationErrors.lead_received_date && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.lead_received_date}
-                    </Form.Text>
+                    <Form.Text className="text-danger">{validationErrors.lead_received_date}</Form.Text>
                   )}
                 </Form.Group>
               </Col>
@@ -783,20 +649,11 @@ const LeadsModal = withSwal((props: any) => {
                   <Form.Label>
                     <span className="text-danger fs-4"></span>Zipcode
                   </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="zipcode"
-                    value={formData.zipcode}
-                    onChange={handleInputChange}
-                  />
-                  {validationErrors.zipcode && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.zipcode}
-                    </Form.Text>
-                  )}
+                  <Form.Control type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
+                  {validationErrors.zipcode && <Form.Text className="text-danger">{validationErrors.zipcode}</Form.Text>}
                 </Form.Group>
               </Col>
-              
+
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="flag">
                   <Form.Label>
@@ -812,11 +669,7 @@ const LeadsModal = withSwal((props: any) => {
                     value={selectedFlag}
                     onChange={handleDropDowns}
                   />
-                  {validationErrors.flag && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.flag}
-                    </Form.Text>
-                  )}
+                  {validationErrors.flag && <Form.Text className="text-danger">{validationErrors.flag}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -834,11 +687,7 @@ const LeadsModal = withSwal((props: any) => {
                     value={selectedOffice}
                     onChange={handleDropDowns}
                   />
-                  {validationErrors.office_type && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.office_type}
-                    </Form.Text>
-                  )}
+                  {validationErrors.office_type && <Form.Text className="text-danger">{validationErrors.office_type}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -857,11 +706,7 @@ const LeadsModal = withSwal((props: any) => {
                       value={selectedRegion}
                       onChange={handleDropDowns}
                     />
-                    {validationErrors.region_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.region_id}
-                      </Form.Text>
-                    )}
+                    {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
                   </Form.Group>
                 </Col>
               )}
@@ -881,20 +726,14 @@ const LeadsModal = withSwal((props: any) => {
                       value={selectedFranchisee}
                       onChange={handleDropDowns}
                     />
-                    {validationErrors.region_id && (
-                      <Form.Text className="text-danger">
-                        {validationErrors.region_id}
-                      </Form.Text>
-                    )}
+                    {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
                   </Form.Group>
                 </Col>
               )}
 
               <Col md={4} lg={4} className="mt-2">
                 <Form.Group className="mb-3" controlId="source_id">
-                  <Form.Label>
-                    Have you ever participated in any language exams ?
-                  </Form.Label>
+                  <Form.Label>Have you ever participated in any language exams ?</Form.Label>
                   <div className="d-flex justify-content-start align-items-center mt-1">
                     <div className="d-flex justify-content-start align-items-start me-2">
                       <Form.Check
@@ -933,23 +772,15 @@ const LeadsModal = withSwal((props: any) => {
                             aria-label="Default select example"
                             name="exam_type"
                             value={data.exam_type}
-                            onChange={(e) =>
-                              handleLanguageInputChange(index, e)
-                            }
+                            onChange={(e) => handleLanguageInputChange(index, e)}
                           >
                             <option value="">Choose..</option>
                             {examtypes?.map((item: any) => (
                               <option
                                 value={item?.name}
                                 key={item?.name}
-                                onClick={(e) =>
-                                  handleLanguageInputChange(index, e)
-                                }
-                                defaultValue={
-                                  item.name === formData.exam
-                                    ? item.name
-                                    : undefined
-                                }
+                                onClick={(e) => handleLanguageInputChange(index, e)}
+                                defaultValue={item.name === formData.exam ? item.name : undefined}
                               >
                                 {item.name}
                               </option>
@@ -958,10 +789,7 @@ const LeadsModal = withSwal((props: any) => {
                         </Form.Group>
                       </Col>
                       <Col md={4} lg={4}>
-                        <Form.Group
-                          className="mb-3"
-                          controlId="listening_score"
-                        >
+                        <Form.Group className="mb-3" controlId="listening_score">
                           <Form.Label>Listening Score</Form.Label>
                           <Form.Control
                             type="text"
@@ -1028,10 +856,7 @@ const LeadsModal = withSwal((props: any) => {
                         </Form.Group>
                       </Col>
                       <Col className="d-flex justify-content-between">
-                        <Form
-                          name="exam_documents"
-                          encType="multipart/form-data"
-                        >
+                        <Form name="exam_documents" encType="multipart/form-data">
                           <Form.Group className="mb-3" controlId="profileImage">
                             <Form.Label>Upload Score Card</Form.Label>
                             <Form.Control
@@ -1043,9 +868,7 @@ const LeadsModal = withSwal((props: any) => {
                               ref={fileInputRef}
                             />
                             {selectedFileName[index]?.exam_documents && (
-                              <a
-                                href={`${baseUrl}/uploads/${selectedFileName[index].exam_documents}`}
-                              >
+                              <a href={`${baseUrl}/uploads/${selectedFileName[index].exam_documents}`}>
                                 {selectedFileName[index].exam_documents}
                               </a>
                             )}
@@ -1058,11 +881,7 @@ const LeadsModal = withSwal((props: any) => {
                           <Form.Control
                             type="date"
                             name="exam_date"
-                            value={
-                              data?.exam_date
-                                ? moment(data?.exam_date).format("YYYY-MM-DD")
-                                : ""
-                            }
+                            value={data?.exam_date ? moment(data?.exam_date).format("YYYY-MM-DD") : ""}
                             onChange={(e) => {
                               handleLanguageInputChange(index, e);
                             }}
@@ -1072,15 +891,10 @@ const LeadsModal = withSwal((props: any) => {
                       <Col md={4} lg={4} className="mt-3">
                         <i
                           className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1"
-                          onClick={(e) =>
-                            handleRemoveLanguageForm(index, e, data.exam_type)
-                          }
+                          onClick={(e) => handleRemoveLanguageForm(index, e, data.exam_type)}
                         ></i>
                         {selectExam && (
-                          <i
-                            className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1"
-                            onClick={handleAddLanguageForm}
-                          ></i>
+                          <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>
                         )}
                       </Col>
                     </Row>
@@ -1090,12 +904,7 @@ const LeadsModal = withSwal((props: any) => {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button
-              variant="primary"
-              id="button-addon2"
-              className="mt-1 ms-2"
-              onClick={() => [handleResetValues()]}
-            >
+            <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
               Clear
             </Button>
             <Button
@@ -1121,13 +930,7 @@ const LeadsModal = withSwal((props: any) => {
             >
               {isUpdate ? "Cancel" : "Close"}
             </Button>
-            <Button
-              type="submit"
-              variant="success"
-              id="button-addon2"
-              className="mt-1"
-              disabled={loading}
-            >
+            <Button type="submit" variant="success" id="button-addon2" className="mt-1" disabled={loading}>
               {isUpdate ? "Update" : "Submit"}
             </Button>
           </Modal.Footer>
