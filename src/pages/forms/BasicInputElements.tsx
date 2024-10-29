@@ -18,6 +18,7 @@ import {
   baseUrl,
   cre_id,
   cre_reception_id,
+  showWarningAlert,
 } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
@@ -421,10 +422,11 @@ const BasicInputElements = withSwal((props: any) => {
         setSelectedFile([]);
         toggleUploadModal();
       } else {
-        showErrorAlert(data.message);
+        showWarningAlert(data.message);
         setSelectedFile([]);
         downloadRjectedData(data.invalidFileLink);
         setIsLoading(false);
+        dispatch(getLead());
       }
     } catch (err) {
       showErrorAlert(err);

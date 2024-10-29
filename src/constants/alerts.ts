@@ -26,6 +26,19 @@ export const showErrorAlert = (error: any) => {
   });
 };
 
+export const showWarningAlert = (error: any) => {
+  toast.warning(error, {
+    position: "bottom-left",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+  });
+};
+
 interface toastTypes {
   position: string;
   autoClose: number;

@@ -291,6 +291,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
         showSuccessAlert(response?.data?.message); // Display success message
         getTaskDetails(); // Refresh task details
         getTaskList();
+        dispatch(refreshData());
       }
     } catch (error: any) {
       console.error("Error:", error);
