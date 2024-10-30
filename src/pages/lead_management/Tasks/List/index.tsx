@@ -63,10 +63,6 @@ const TaskList = () => {
   // if (initialLoading) {
   //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
   // }
-
-  console.log("initial lodaing ===>", initialLoading);
-  
-
   return (
     <>
       <PageTitle
@@ -121,7 +117,7 @@ const TaskList = () => {
         </Col>
 
         <Col xl={8}>
-          {/* {selectedTask && ( */}
+          {selectedTask && (
             <StudentDetails
               studentId={selectedTask?.studentId}
               taskId={selectedTask?.id}
@@ -129,7 +125,7 @@ const TaskList = () => {
               setPendingTasks={setPendingTasks}
               initialLoading={initialLoading}
             />
-          {/* )} */}
+          )}
         </Col>
       </Row>
     </>

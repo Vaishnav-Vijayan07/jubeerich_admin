@@ -215,11 +215,11 @@ const PassportDetails = ({ studentId }: Props) => {
         </Col>
         <Col md={6}>
           <Form.Group className="mb-3" controlId={`name_change`}>
-            <Form.Label>Change in name</Form.Label>
+            <Form.Label>Name change ( if any )when compared to other documents</Form.Label>
             <FormInput
               type="text"
               name="name_change"
-              placeholder="Enter change in name"
+              placeholder="Enter details"
               onChange={handleInputChange}
               value={passportDetails?.name_change}
             />

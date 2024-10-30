@@ -27,8 +27,9 @@ const AdditionalDocuments = (props: any) => {
     pte_cred: "",
     lor: "",
     sop: "",
-    gte_form: ""
+    gte_form: "",
   });
+
   const [documentsName, setDocumentsName] = useState({
     passport_doc: "",
     updated_cv: "",
@@ -36,7 +37,7 @@ const AdditionalDocuments = (props: any) => {
     pte_cred: "",
     lor: "",
     sop: "",
-    gte_form: ""
+    gte_form: "",
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,16 +61,28 @@ const AdditionalDocuments = (props: any) => {
       formData.append("sop", documents?.sop);
       formData.append("gte_form", documents?.gte_form);
 
-      const res = await axios.post(`${baseUrl}/api/additional_docs/${studentId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
       });
-      if (res?.data?.status) {
-        console.log(res);
-        showSuccessAlert("Document Updated Succesfully");
-        setDocuments(initialDocumentState);
-        getAdditionalDoc();
+
+      if (result.isConfirmed) {
+        const res = await axios.post(`${baseUrl}/api/additional_docs/${studentId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        if (res?.data?.status) {
+          console.log(res);
+          showSuccessAlert("Document Updated Succesfully");
+          setDocuments(initialDocumentState);
+          getAdditionalDoc();
+        }
       }
     } catch (error) {
       console.log(error);
@@ -109,8 +122,8 @@ const AdditionalDocuments = (props: any) => {
     try {
       const res = await axios.get(`${baseUrl}/api/additional_docs/${studentId}`);
       if (res?.status) {
-        console.log("Data ====>>>>>>>",res?.data?.data);
-        
+        console.log("Data ====>>>>>>>", res?.data?.data);
+
         setDocumentsName(res?.data?.data);
         setIsLoading(false);
       }

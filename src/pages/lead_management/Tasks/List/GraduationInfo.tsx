@@ -31,21 +31,13 @@ interface GraduationDetailsProps {
   student_id: string | number;
 }
 
-const GraduationInfo: React.FC<GraduationDetailsProps> = ({
-  title,
-  details,
-  student_id,
-}) => {
+const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, student_id }) => {
   const [graduationDetails, setGraduationDetails] = useState<any>(details);
 
-  const { saveStudentGraduationDetails, loading } =
-    useSaveGraduationInfo(student_id);
+  const { saveStudentGraduationDetails, loading } = useSaveGraduationInfo(student_id);
   const { removeFromApi } = useRemoveFromApi();
 
-  const handleFieldChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: any
-  ) => {
+  const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement>, index: any) => {
     handleGraduationDetailsChange(e.target.name, e.target.value, index);
   };
 
@@ -89,11 +81,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
   };
 
   // Handlers for graduation details state update
-  const handleGraduationDetailsChange = (
-    name: string,
-    value: any,
-    index: any
-  ) => {
+  const handleGraduationDetailsChange = (name: string, value: any, index: any) => {
     const newDetails = [...graduationDetails];
     newDetails[index][name] = value;
     setGraduationDetails(newDetails);
@@ -117,13 +105,9 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
       // individual_marksheet: { required: false },
     };
 
-    const { isValid, errors } = validateFields(
-      graduationDetails,
-      validatioRules
-    );
+    const { isValid, errors } = validateFields(graduationDetails, validatioRules);
 
     console.log(errors);
-    
 
     if (!isValid) {
       console.log(errors);
@@ -141,7 +125,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
   const renderGraduatonRows = (item: any, index: any) => (
     <>
       <Row key={index}>
-        <Col md={4}>
+        {/* <Col md={4}>
           <Form.Group className="mb-3" controlId={`${title}_qualification`}>
             <Form.Label>
               <span className="text-danger">*</span> Course Type
@@ -159,6 +143,25 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
               </Form.Text>
             )}
           </Form.Group>
+        </Col> */}
+
+        <Col md={4}>
+          <Form.Group className="mb-3" controlId={`${title}_qualification`}>
+            <Form.Label>
+              <span className="text-danger">*</span> Course Type
+            </Form.Label>
+            <Form.Select
+              name="qualification"
+              value={item?.qualification || ""}
+              onChange={(e: any) => handleFieldChange(e, index)}
+            >
+              <option value="">Select Course Type</option>
+              <option value="UG">UG</option>
+              <option value="PG">PG</option>
+              {/* Add more options as needed */}
+            </Form.Select>
+            {item?.errors?.qualification && <Form.Text className="text-danger">{item.errors.qualification}</Form.Text>}
+          </Form.Group>
         </Col>
 
         <Col md={4}>
@@ -173,11 +176,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
               value={item?.university_name}
               onChange={(e) => handleFieldChange(e, index)}
             />
-            {item?.errors?.university_name && (
-              <Form.Text className="text-danger">
-                {item.errors.university_name}
-              </Form.Text>
-            )}
+            {item?.errors?.university_name && <Form.Text className="text-danger">{item.errors.university_name}</Form.Text>}
           </Form.Group>
         </Col>
 
@@ -193,11 +192,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
               value={item?.college_name}
               onChange={(e) => handleFieldChange(e, index)}
             />
-            {item?.errors?.college_name && (
-              <Form.Text className="text-danger">
-                {item.errors.college_name}
-              </Form.Text>
-            )}
+            {item?.errors?.college_name && <Form.Text className="text-danger">{item.errors.college_name}</Form.Text>}
           </Form.Group>
         </Col>
 
@@ -209,14 +204,11 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
             <FormInput
               type="date"
               name="start_date"
-              value={moment(item?.start_date).format("YYYY-MM-DD")}
+              placeholder="Choose start date"
+              value={item?.start_date ? moment(item?.start_date).format("YYYY-MM-DD") : ""}
               onChange={(e) => handleFieldChange(e, index)}
             />
-            {item?.errors?.start_date && (
-              <Form.Text className="text-danger">
-                {item.errors.start_date}
-              </Form.Text>
-            )}
+            {item?.errors?.start_date && <Form.Text className="text-danger">{item.errors.start_date}</Form.Text>}
           </Form.Group>
         </Col>
 
@@ -228,9 +220,11 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
             <FormInput
               type="date"
               name="end_date"
-              value={moment(item?.end_date).format("YYYY-MM-DD")}
+              placeholder="Choose end date"
+              value={item?.end_date ? moment(item?.end_date).format("YYYY-MM-DD") : ""}
               onChange={(e) => handleFieldChange(e, index)}
             />
+            {item?.errors?.end_date && <Form.Text className="text-danger">{item.errors.end_date}</Form.Text>}
           </Form.Group>
         </Col>
 
@@ -247,19 +241,12 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
               onChange={(e) => handleFieldChange(e, index)}
               min={0}
             />
-            {item?.errors?.percentage && (
-              <Form.Text className="text-danger">
-                {item.errors.percentage}
-              </Form.Text>
-            )}
+            {item?.errors?.percentage && <Form.Text className="text-danger">{item.errors.percentage}</Form.Text>}
           </Form.Group>
         </Col>
 
         <Col md={4}>
-          <Form.Group
-            className="mb-3"
-            controlId={`${title}_conversion_formula`}
-          >
+          <Form.Group className="mb-3" controlId={`${title}_conversion_formula`}>
             <Form.Label>
               <span className="text-danger">*</span> Conversion Formula
             </Form.Label>
@@ -269,37 +256,18 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
               value={item?.conversion_formula}
               onChange={(e) => handleFieldChange(e, index)}
             />
-            {item?.errors?.conversion_formula && (
-              <Form.Text className="text-danger">
-                {item.errors.conversion_formula}
-              </Form.Text>
-            )}
+            {item?.errors?.conversion_formula && <Form.Text className="text-danger">{item.errors.conversion_formula}</Form.Text>}
           </Form.Group>
         </Col>
 
-        <Col
-          md={4}
-          className="d-flex justify-content-between align-items-center"
-        >
+        <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3" controlId={`${title}_admit_card`}>
             <Form.Label>Upload Admit Card</Form.Label>
-            <Form.Control
-              name="admit_card"
-              type="file"
-              onChange={(e) => handleFileChange(e, index)}
-            />
-            {item?.errors?.admit_card && (
-              <Form.Text className="text-danger">
-                {item.errors.admit_card}
-              </Form.Text>
-            )}
+            <Form.Control name="admit_card" type="file" onChange={(e) => handleFileChange(e, index)} />
+            {item?.errors?.admit_card && <Form.Text className="text-danger">{item.errors.admit_card}</Form.Text>}
             {typeof item?.admit_card === "string" && (
               <div className="mt-2">
-                <a
-                  href={`${baseUrl}/uploads/graduationDocuments/${item?.admit_card}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={`${baseUrl}/uploads/graduationDocuments/${item?.admit_card}`} target="_blank" rel="noopener noreferrer">
                   <i className="mdi mdi-download me-1"></i> admit_card
                 </a>
               </div>
@@ -307,53 +275,26 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
           </Form.Group>
         </Col>
 
-        <Col
-          md={4}
-          className="d-flex justify-content-between align-items-center"
-        >
+        <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3" controlId={`${title}_certificate`}>
             <Form.Label>Upload Certificate</Form.Label>
-            <Form.Control
-              name="certificate"
-              type="file"
-              onChange={(e) => handleFileChange(e, index)}
-            />
-            {item?.errors?.certificate && (
-              <Form.Text className="text-danger">
-                {item.errors.certificate}
-              </Form.Text>
-            )}
+            <Form.Control name="certificate" type="file" onChange={(e) => handleFileChange(e, index)} />
+            {item?.errors?.certificate && <Form.Text className="text-danger">{item.errors.certificate}</Form.Text>}
             {typeof item?.certificate === "string" && (
               <div className="mt-2">
-                <a
-                  href={`${baseUrl}/uploads/graduationDocuments/${item?.certificate}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={`${baseUrl}/uploads/graduationDocuments/${item?.certificate}`} target="_blank" rel="noopener noreferrer">
                   <i className="mdi mdi-download me-1"></i> certificate
                 </a>
               </div>
             )}
           </Form.Group>
         </Col>
-        <Col
-          md={4}
-          className="d-flex justify-content-between align-items-center"
-        >
-          <Form.Group
-            className="mb-3"
-            controlId={`${title}_registration_certificate `}
-          >
+        <Col md={4} className="d-flex justify-content-between align-items-center">
+          <Form.Group className="mb-3" controlId={`${title}_registration_certificate `}>
             <Form.Label>Upload Registration Certification</Form.Label>
-            <Form.Control
-              name="registration_certificate"
-              type="file"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="registration_certificate" type="file" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.registration_certificate && (
-              <Form.Text className="text-danger">
-                {item.errors.registration_certificate}
-              </Form.Text>
+              <Form.Text className="text-danger">{item.errors.registration_certificate}</Form.Text>
             )}
             {typeof item?.registration_certificate === "string" && (
               <div className="mt-2">
@@ -362,32 +303,17 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="mdi mdi-download me-1"></i>{" "}
-                  registration_certificate
+                  <i className="mdi mdi-download me-1"></i> registration_certificate
                 </a>
               </div>
             )}
           </Form.Group>
         </Col>
-        <Col
-          md={4}
-          className="d-flex justify-content-between align-items-center"
-        >
-          <Form.Group
-            className="mb-3"
-            controlId={`${title}_grading_scale_info`}
-          >
+        <Col md={4} className="d-flex justify-content-between align-items-center">
+          <Form.Group className="mb-3" controlId={`${title}_grading_scale_info`}>
             <Form.Label>Upload Gray Scale Info</Form.Label>
-            <Form.Control
-              name="grading_scale_info"
-              type="file"
-              onChange={(e) => handleFileChange(e, index)}
-            />
-            {item?.errors?.grading_scale_info && (
-              <Form.Text className="text-danger">
-                {item.errors.grading_scale_info}
-              </Form.Text>
-            )}
+            <Form.Control name="grading_scale_info" type="file" onChange={(e) => handleFileChange(e, index)} />
+            {item?.errors?.grading_scale_info && <Form.Text className="text-danger">{item.errors.grading_scale_info}</Form.Text>}
             {typeof item?.grading_scale_info === "string" && (
               <div className="mt-2">
                 <a
@@ -401,24 +327,12 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
             )}
           </Form.Group>
         </Col>
-        <Col
-          md={4}
-          className="d-flex justify-content-between align-items-center"
-        >
-          <Form.Group
-            className="mb-3"
-            controlId={`${title}_backlog_certificate`}
-          >
+        <Col md={4} className="d-flex justify-content-between align-items-center">
+          <Form.Group className="mb-3" controlId={`${title}_backlog_certificate`}>
             <Form.Label>Upload Backlog Certificate</Form.Label>
-            <Form.Control
-              name="backlog_certificate"
-              type="file"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="backlog_certificate" type="file" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.backlog_certificate && (
-              <Form.Text className="text-danger">
-                {item.errors.backlog_certificate}
-              </Form.Text>
+              <Form.Text className="text-danger">{item.errors.backlog_certificate}</Form.Text>
             )}
             {typeof item?.backlog_certificate === "string" && (
               <div className="mt-2">
@@ -433,24 +347,12 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
             )}
           </Form.Group>
         </Col>
-        <Col
-          md={4}
-          className="d-flex justify-content-between align-items-center"
-        >
-          <Form.Group
-            className="mb-3"
-            controlId={`${title}_individual_marksheet`}
-          >
+        <Col md={4} className="d-flex justify-content-between align-items-center">
+          <Form.Group className="mb-3" controlId={`${title}_individual_marksheet`}>
             <Form.Label>Upload Individual Marksheet</Form.Label>
-            <Form.Control
-              name="individual_marksheet"
-              type="file"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="individual_marksheet" type="file" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.individual_marksheet && (
-              <Form.Text className="text-danger">
-                {item.errors.individual_marksheet}
-              </Form.Text>
+              <Form.Text className="text-danger">{item.errors.individual_marksheet}</Form.Text>
             )}
             {typeof item?.individual_marksheet === "string" && (
               <div className="mt-2">
@@ -466,29 +368,14 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
           </Form.Group>
         </Col>
 
-        <Col
-          md={4}
-          className="d-flex justify-content-between align-items-center"
-        >
+        <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3" controlId={`${title}_transcript`}>
             <Form.Label>Upload Transcript</Form.Label>
-            <Form.Control
-              name="transcript"
-              type="file"
-              onChange={(e) => handleFileChange(e, index)}
-            />
-            {item?.errors?.transcript && (
-              <Form.Text className="text-danger">
-                {item.errors.transcript}
-              </Form.Text>
-            )}
+            <Form.Control name="transcript" type="file" onChange={(e) => handleFileChange(e, index)} />
+            {item?.errors?.transcript && <Form.Text className="text-danger">{item.errors.transcript}</Form.Text>}
             {typeof item?.transcript === "string" && (
               <div className="mt-2">
-                <a
-                  href={`${baseUrl}/uploads/graduationDocuments/${item?.transcript}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={`${baseUrl}/uploads/graduationDocuments/${item?.transcript}`} target="_blank" rel="noopener noreferrer">
                   <i className="mdi mdi-download me-1"></i> transcript
                 </a>
               </div>
@@ -498,11 +385,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
       </Row>
       {graduationDetails?.length > 1 && (
         <Row className="mb-2">
-          <ActionButton
-            label="Remove"
-            iconClass="mdi mdi-delete"
-            onClick={() => removeGraduationForm(index, item?.id ?? 0)}
-          />
+          <ActionButton label="Remove" iconClass="mdi mdi-delete" onClick={() => removeGraduationForm(index, item?.id ?? 0)} />
         </Row>
       )}
     </>
@@ -515,18 +398,12 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
           <i className="mdi mdi-office-building me-1"></i> {title}
         </h5>
 
-        {graduationDetails?.map((item: any, index: any) =>
-          renderGraduatonRows(item, index)
-        )}
+        {graduationDetails?.map((item: any, index: any) => renderGraduatonRows(item, index))}
       </Row>
 
       <>
         <Row className="mb-2">
-          <ActionButton
-            label="Add More"
-            iconClass="mdi mdi-plus"
-            onClick={addMoreGraduationForm}
-          />
+          <ActionButton label="Add More" iconClass="mdi mdi-plus" onClick={addMoreGraduationForm} />
         </Row>
       </>
 
