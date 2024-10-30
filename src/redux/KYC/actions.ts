@@ -8,6 +8,8 @@ export interface KYCActionType {
     | KYCActionTypes.GET_PENDING
     | KYCActionTypes.GET_REJECTED
     | KYCActionTypes.ASSIGN_APPLICATION_MEMBER
+    | KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER
+    | KYCActionTypes.GET_PENDING_BY_USER
     | KYCActionTypes.GET_APPROVED;
 
   payload: {} | string;
@@ -31,6 +33,11 @@ export const getPendingKYC = (type: string): KYCActionType => ({
   },
 });
 
+export const getPendingKYCByUser = (): KYCActionType => ({
+  type: KYCActionTypes.GET_PENDING_BY_USER,
+  payload: {},
+});
+
 export const getRejectedKYC = (): KYCActionType => ({
   type: KYCActionTypes.GET_REJECTED,
   payload: {},
@@ -41,12 +48,19 @@ export const getApprovedKYC = (): KYCActionType => ({
   payload: {},
 });
 
-
 export const assignToApplicationMember = (application_ids: any, user_id: any, type: string): KYCActionType => ({
   type: KYCActionTypes.ASSIGN_APPLICATION_MEMBER,
-  payload:{
+  payload: {
     application_ids,
     user_id,
-    type
-  }
+    type,
+  },
+});
+
+export const autoAssignToApplicationMember = (application_ids: any, type: string): KYCActionType => ({
+  type: KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER,
+  payload: {
+    application_ids,
+    type,
+  },
 });

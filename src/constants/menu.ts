@@ -129,7 +129,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     label: "Pending",
     isTitle: false,
     icon: "clock", // Pending application
-    url: "/kyc_details/pending",
+    url: "/kyc_details/applications/pending",
     roles: ["Manage Applications","Allocate Applications"],
   },
   {
