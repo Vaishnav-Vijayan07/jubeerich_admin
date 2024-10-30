@@ -8,12 +8,9 @@ import { Visa_Types } from '../data';
 import { fundTypeOptions } from '../FundPlan/FundPlanRows';
 import { Link } from 'react-router-dom';
 import noFile from '../../../../../assets/images/icons/file_not_found.svg'
-import { error } from 'console';
 
 const DocumentsOverview = (props: any) => {
-    const { studentId } = props
-    console.log('studentId', studentId);
-
+    const { studentId, check = false } = props
 
     const [notFound, setNotFound] = useState<any>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -168,16 +165,14 @@ const DocumentsOverview = (props: any) => {
         )
     }
 
-    // if (isLoading) {
-    //     return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "50%" }} />;
-    // }
-
     return (
         <>
             <Row>
-                <h5 className="mb-4 text-uppercase">
-                    <i className="mdi mdi-account-circle me-1"></i>Documents Overview
-                </h5>
+                <span className="mb-3 text-uppercase">
+                    {!check && <h5>
+                        <i className="mdi mdi-account-circle me-1"></i>Documents Overview
+                    </h5>}
+                </span>
                 {!isLoading && (
                     <Row>
                         <Card>
@@ -276,7 +271,7 @@ const DocumentsOverview = (props: any) => {
                                 <span className='border bg-secondary rounded-2'>
                                     <Form.Label className='fs-4 mt-1 text-white' >Previous Visa Approval</Form.Label>
                                 </span>
-                                {visaApprovals && visaApprovals.map((data: any, index: number) => (
+                                {visaApprovals?.length > 0 ? visaApprovals.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
                                         <Row  className='mt-3'>
                                             <Form.Group className="mb-2" controlId="visa_type">
@@ -297,15 +292,16 @@ const DocumentsOverview = (props: any) => {
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
-                                ))}
+                                )) : <div className='d-flex justify-content-center align-items-center border border-secondary mt-2 me-2'><h4 className='text-muted'>No Documents Uploaded</h4></div>}
                             </Row>
 
                             {/* Visa Declines */}
+
                             <Row className='ms-4 mt-2'>
                                 <span className='border bg-secondary rounded-2'>
                                     <Form.Label className='fs-4 mt-1 text-white' >Previous Visa Declines</Form.Label>
                                 </span>
-                                {visaDeclines && visaDeclines.map((data: any, index: number) => (
+                                {visaDeclines?.length > 0 ? visaDeclines.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
                                         <Row className='mt-3'>
                                             <Form.Group className="mb-2" controlId="visa_type">
@@ -326,7 +322,7 @@ const DocumentsOverview = (props: any) => {
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
-                                ))}
+                                )) : <div className='d-flex justify-content-center align-items-center border border-secondary mt-2 me-2'><h4 className='text-muted'>No Documents Uploaded</h4></div>}
                             </Row>
 
                             {/* Fund Plans */}
@@ -336,7 +332,7 @@ const DocumentsOverview = (props: any) => {
 
                                     <Form.Label className='fs-4 mt-1 text-white' >Fund Plans</Form.Label>
                                 </span>
-                                {fundPlan && fundPlan.map((data: any, index: number) => (
+                                {fundPlan?.length > 0 ? fundPlan.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
                                         <Row md={6} lg={6} xl={6} xxl={4} className='mt-2'>
                                             <Form.Group className="mb-2" controlId="type">
@@ -357,7 +353,7 @@ const DocumentsOverview = (props: any) => {
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
-                                ))}
+                                )) : <div className='d-flex justify-content-center align-items-center border border-secondary mt-2 me-2'><h4 className='text-muted'>No Documents Uploaded</h4></div>}
                             </Row>
 
                             {/* Education Details */}
@@ -367,7 +363,7 @@ const DocumentsOverview = (props: any) => {
 
                                     <Form.Label className='fs-4 mt-1 text-white' >Education Details</Form.Label>
                                 </span>
-                                {educationDocs && educationDocs.map((data: any, index: number) => (
+                                {educationDocs?.length > 0 ? educationDocs.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
                                             <Col className='mt-3'>
                                                 <Form.Group className="mb-2" controlId="type">
@@ -406,7 +402,7 @@ const DocumentsOverview = (props: any) => {
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
-                                ))}
+                                )) : <div className='d-flex justify-content-center align-items-center border border-secondary mt-2 me-2'><h4 className='text-muted'>No Documents Uploaded</h4></div>}
                             </Row>
 
                             {/* Work Info */}
@@ -415,7 +411,7 @@ const DocumentsOverview = (props: any) => {
                                 <span className='border bg-secondary rounded-2'>
                                     <Form.Label className='fs-4 mt-1 text-white' >Work Info</Form.Label>
                                 </span>
-                                {workInfoDocs && workInfoDocs.map((data: any, index: number) => (
+                                {workInfoDocs?.length > 0 ? workInfoDocs.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
                                             <Col md={6} lg={6} xl={6} xxl={4} className='mt-2'>
                                                 <Form.Group className="mb-2" controlId="type">
@@ -472,7 +468,7 @@ const DocumentsOverview = (props: any) => {
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
-                                ))}
+                                )) : <div className='d-flex justify-content-center align-items-center border border-secondary mt-2 me-2'><h4 className='text-muted'>No Documents Uploaded</h4></div>}
                             </Row>
 
                             {/* Exam Details */}
@@ -481,7 +477,7 @@ const DocumentsOverview = (props: any) => {
                                 <span className='border bg-secondary rounded-2 mb-3'>
                                     <Form.Label className='fs-4 mt-1 text-white' >Exam Details</Form.Label>
                                 </span>
-                                {examDocs && examDocs.map((data: any, index: number) => (
+                                {examDocs?.length > 0 ? examDocs.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
                                         <Row >
                                             <Form.Group className="mb-2" controlId="exam_type">
@@ -509,7 +505,7 @@ const DocumentsOverview = (props: any) => {
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
-                                ))}
+                                )) : <div className='d-flex justify-content-center align-items-center border border-secondary mt-2 me-2'><h4 className='text-muted'>No Documents Uploaded</h4></div>}
                             </Row>
 
                             {/* Police Documents */}
@@ -519,7 +515,7 @@ const DocumentsOverview = (props: any) => {
 
                                     <Form.Label className='fs-4 mt-1 text-white' >Police Documents</Form.Label>
                                 </span>
-                                {policeDocs && policeDocs.map((data: any, index: number) => (
+                                {policeDocs?.length > 0 ? policeDocs.map((data: any, index: number) => (
                                     <Row key={index} className='ms-3'>
                                         <Row className='mt-2'>
                                             <Form.Group className="mb-2" controlId="country_name">
@@ -540,7 +536,7 @@ const DocumentsOverview = (props: any) => {
                                         </Row>
                                         <hr className='mt-3' />
                                     </Row>
-                                ))}
+                                )) : <div className='d-flex justify-content-center align-items-center border border-secondary mt-2 me-2'><h4 className='text-muted'>No Documents Uploaded</h4></div>}
                             </Row>
 
                             {/* Employement Histories */}
@@ -549,7 +545,7 @@ const DocumentsOverview = (props: any) => {
                                 <span className='border bg-secondary rounded-2 mb-3'>
                                     <Form.Label className='fs-4 mt-1 text-white' >Employement Histories</Form.Label>
                                 </span>
-                                {empHistories && (
+                                {empHistories ? (
                                     <Row className='ms-3'>
                                         <Row>
                                             <Col>
@@ -588,7 +584,7 @@ const DocumentsOverview = (props: any) => {
                                             </Col>
                                         </Row>
                                     </Row>
-                                )}
+                                ) : <div className='d-flex justify-content-center align-items-center border border-secondary mt-2 me-2'><h4 className='text-muted'>No Documents Uploaded</h4></div>}
                             </Row>
                         </Card>
                     </Row>

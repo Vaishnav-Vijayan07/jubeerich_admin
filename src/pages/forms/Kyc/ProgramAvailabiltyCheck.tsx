@@ -1,9 +1,12 @@
 import React from "react";
 import { Card, Col, Form, Row } from "react-bootstrap";
 
-type Props = {};
+type Props = {
+  data: any
+};
 
-function ProgramAvailabiltyCheck({}: Props) {
+function ProgramAvailabiltyCheck({ data }: Props) {
+  console.log('data', data);
   return (
     <>
       <Row>
@@ -12,44 +15,47 @@ function ProgramAvailabiltyCheck({}: Props) {
       <Row className="mt-2">
         <Card>
           <Card.Body>
-            <Row className="mt-2 p-3">
-              <Col md={2}>
+            <Row className="mt-2">
+              <Col md={3}>
                 <h5>Country</h5>
-                <p>Canada</p>
+                <p>{data?.country_name || 'N/A'}</p>
               </Col>
 
-              <Col md={2}>
+              <Col md={3}>
                 <h5>University</h5>
-                <p>MacEwan University</p>
+                <p>{data?.university_name || 'N/A'}</p>
               </Col>
 
-              <Col md={2}>
+              <Col md={3}>
                 <h5>Intake applying for</h5>
-                <p>April</p>
+                <p>{data?.intake_applying_for || 'N/A'}</p>
               </Col>
 
-              <Col md={2}>
+              <Col md={3}>
                 <h5>Course Link</h5>
                 <p>
                   <a
-                    href="https://www.macewan.ca"
+                    href={data?.course_link}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    www.macewan.ca
+                    {data?.course_link || 'N/A'}
                   </a>
                 </p>
               </Col>
 
-              <Col md={2}>
+            </Row>
+            <Row className="mt-2 mb-2">
+              <Col md={3}>
                 <h5>Stream</h5>
-                <p>Program</p>
+                <p>{data?.stream_name}</p>
               </Col>
 
-              <Col md={2}>
-                <h5>Information Technology</h5>
-                <p>Data Science</p>
+              <Col md={3}>
+                <h5>Program</h5>
+                <p>{data?.program_name}</p>
               </Col>
+
             </Row>
             <Row>
               <Col md={12}>
