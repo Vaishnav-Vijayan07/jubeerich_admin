@@ -567,6 +567,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
           )}
         </Card.Body>
       </Card>
+
       <Row>
         <Col md={6}>
           <Card>
