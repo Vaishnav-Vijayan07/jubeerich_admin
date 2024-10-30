@@ -46,6 +46,8 @@ const StudyPreference = withSwal((props: any) => {
 
   const getStudyPrefData = async () => {
     setInitialLoading(true);
+    console.log("studentId, calling");
+    
 
     try {
       const { data } = await axios.get(
@@ -53,12 +55,21 @@ const StudyPreference = withSwal((props: any) => {
       );
 
       setItem(data.data);
+      console.log("studentId data", data.data);
+      
     } catch (err) {
       console.error(err);
     } finally {
       setInitialLoading(false);
     }
   };
+  
+
+  console.log("studentId", studentId, item);
+
+  console.log("item ===>", item);
+  
+  
 
   useEffect(() => {
     if (
@@ -67,15 +78,15 @@ const StudyPreference = withSwal((props: any) => {
     ) {
       getStudyPrefData();
     }
-  }, [dropdownData.universities.length, dropdownData.campuses.length, refresh]);
+  }, [dropdownData.universities.length, dropdownData.campuses.length, refresh, studentId]);
 
-  // if (initialLoading || dropDownLoading)
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "100%", left: "50%" }}
-  //     />
-  //   );
+  if (initialLoading || dropDownLoading)
+    return (
+      <Spinner
+        animation="border"
+        style={{ position: "absolute", top: "100%", left: "50%" }}
+      />
+    );
 
   return (
     <>

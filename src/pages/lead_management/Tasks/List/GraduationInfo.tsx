@@ -107,14 +107,14 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
       start_date: { required: true },
       end_date: { required: true },
       percentage: { required: true },
-      certificate: { required: true },
-      admit_card: { required: true },
-      registration_certificate: { required: true },
-      backlog_certificate: { required: true },
-      grading_scale_info: { required: true },
-      conversion_formula: { required: true },
-      transcript: { required: true },
-      individual_marksheet: { required: true },
+      // certificate: { required: true },
+      // admit_card: { required: true },
+      // registration_certificate: { required: false },
+      // backlog_certificate: { required: false },
+      // grading_scale_info: { required: false },
+      // conversion_formula: { required: false },
+      // transcript: { required: true },
+      // individual_marksheet: { required: false },
     };
 
     const { isValid, errors } = validateFields(
@@ -122,7 +122,11 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({
       validatioRules
     );
 
+    console.log(errors);
+    
+
     if (!isValid) {
+      console.log(errors);
       setGraduationDetails((prevState: any) =>
         prevState.map((exp: any, index: any) => ({
           ...exp,

@@ -251,7 +251,7 @@ const EmploymentHistory = (props: any) => {
           <Form.Group className="mb-2" controlId="forgotDocuments">
             <Form.Label>
               <span className="text-danger">* </span>
-              Is there any forget experience or any other documents submitted to us
+              Is there any forged experience or any other documents submitted to us
             </Form.Label>
             <Col className="d-flex gap-2 ps-3">
               <Form.Check

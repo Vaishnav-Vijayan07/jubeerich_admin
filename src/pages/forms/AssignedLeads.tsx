@@ -681,6 +681,7 @@ const BasicInputElements = withSwal((props: any) => {
           region={region || []}
           flags={flags || []}
           modal={modal}
+          setModal={setModal}
           toggle={toggle}
           handleUpdateData={handleUpdateData}
           isAssignedLeads={true}

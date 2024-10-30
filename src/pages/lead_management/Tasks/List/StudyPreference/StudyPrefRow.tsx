@@ -15,6 +15,9 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
 
   const [studyPreferenceData, setStudyPreferenceData] = useState<any>(studyPreference);
 
+  console.log("studyPreferenceData ===>", studyPreferenceData);
+  
+
   console.log(studyPreference.length);
   console.log(studyPreferenceData.length);
 
