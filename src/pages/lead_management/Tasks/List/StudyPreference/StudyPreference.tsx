@@ -54,7 +54,7 @@ const StudyPreference = withSwal((props: any) => {
         `/study_preferences_details/${studentId}`
       );
 
-      setItem(data.data);
+      setItem(data?.data);
       console.log("studentId data", data.data);
       
     } catch (err) {
@@ -80,13 +80,13 @@ const StudyPreference = withSwal((props: any) => {
     }
   }, [dropdownData.universities.length, dropdownData.campuses.length, refresh, studentId]);
 
-  if (initialLoading || dropDownLoading)
-    return (
-      <Spinner
-        animation="border"
-        style={{ position: "absolute", top: "100%", left: "50%" }}
-      />
-    );
+  // if (initialLoading || dropDownLoading)
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "100%", left: "50%" }}
+  //     />
+  //   );
 
   return (
     <>

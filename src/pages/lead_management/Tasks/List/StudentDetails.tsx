@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import { Button, Card, Col, Dropdown, Form, Modal, Nav, Row, Spinner, Tab } from "react-bootstrap";
+import { Button, Card, Col, Dropdown, Form, Modal, Nav, Placeholder, Row, Spinner, Tab } from "react-bootstrap";
 import classNames from "classnames";
 import { icons } from "../../../../assets/images/icons";
 import { getCountry } from "../../../../redux/country/actions";
@@ -32,7 +32,7 @@ const BasicInfo = lazy(() => import("./BasicInfo"));
 const History = lazy(() => import("./History"));
 const StudyPreference = lazy(() => import("./StudyPreference/StudyPreference"));
 
-const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
+const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any) => {
   const { userRole } = useSelector((state: RootState) => ({
     userRole: state?.Auth.user.role,
   }));
@@ -339,8 +339,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
 
       if (result.isConfirmed) {
         const res = await axios.post(`/proceed_kyc`, { student_id: studentId });
-        if(res){
-          showSuccessAlert('Proceeded KYC Successfully');
+        if (res) {
+          showSuccessAlert("Proceeded KYC Successfully");
           getTaskDetails();
           getTaskList();
         }
@@ -357,6 +357,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
   //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "65%" }} />;
   // }
 
+  console.log(initialLoading, "initialLoading");
+
   return (
     <>
       <Card className="ribbon-box" style={{ fontFamily: "Nunito" }}>
@@ -364,7 +366,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
           <Row>
             <Col>
               <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
-                <span>{"JBR" + taskDetails?.id}</span>
+                <span>{"JBR" + (taskDetails?.id || "000")}</span>
               </div>
 
               {userRole == cre_id && (
@@ -383,7 +385,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
                 <Col className="d-flex gap-2 float-end">
                   <Button
-                    disabled = {taskDetails?.is_proceed_to_kyc}
+                    disabled={taskDetails?.is_proceed_to_kyc}
                     className="d-flex align-items-center btn-light"
                     // disabled={taskDetails?.isCompleted ? true : false}
                     onClick={handleProccedToKyc}
@@ -393,9 +395,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
                   </Button>
                 </Col>
               )}
-
               <div className="clearfix"></div>
-
               <hr className="my-3" />
             </Col>
           </Row>
@@ -554,15 +554,17 @@ const StudentDetails = ({ studentId, taskId, getTaskList }: any) => {
               </div>
             </div>
           </Row>
-          {taskDetails?.is_rejected && <Row className="mt-3">
-            <div className="">
-              <p className="mt-2 mb-1 text-danger fw-bold fs-4">Remarks</p>
-              <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                <img src={icons.information} alt="comapny icon" className="me-1" width="16" />
-                <h5 className="m-0 font-size-14">{taskDetails?.kyc_remarks?.[0]?.remark}</h5>
+          {taskDetails?.is_rejected && (
+            <Row className="mt-3">
+              <div className="">
+                <p className="mt-2 mb-1 text-danger fw-bold fs-4">Remarks</p>
+                <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                  <img src={icons.information} alt="comapny icon" className="me-1" width="16" />
+                  <h5 className="m-0 font-size-14">{taskDetails?.kyc_remarks?.[0]?.remark}</h5>
+                </div>
               </div>
-            </div>
-          </Row>}
+            </Row>
+          )}
         </Card.Body>
       </Card>
       <Row>
