@@ -7,6 +7,7 @@ export interface KYCActionType {
     | KYCActionTypes.API_RESPONSE_ERROR
     | KYCActionTypes.GET_PENDING
     | KYCActionTypes.GET_REJECTED
+    | KYCActionTypes.ASSIGN_APPLICATION_MEMBER
     | KYCActionTypes.GET_APPROVED;
 
   payload: {} | string;
@@ -38,4 +39,14 @@ export const getRejectedKYC = (): KYCActionType => ({
 export const getApprovedKYC = (): KYCActionType => ({
   type: KYCActionTypes.GET_APPROVED,
   payload: {},
+});
+
+
+export const assignToApplicationMember = (application_ids: any, user_id: any, type: string): KYCActionType => ({
+  type: KYCActionTypes.ASSIGN_APPLICATION_MEMBER,
+  payload:{
+    application_ids,
+    user_id,
+    type
+  }
 });

@@ -1,12 +1,13 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Button, Card, Spinner, Modal } from "react-bootstrap";
+import { Button, Card, Spinner, Modal, Dropdown, Row, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { getPendingKYC } from "../../../../redux/KYC/actions";
+import { assignToApplicationMember, getPendingKYC } from "../../../../redux/KYC/actions";
 import { RootState } from "../../../../redux/store";
 import PageTitle from "../../../../components/PageTitle";
 import Table from "../../../../components/Table";
+import { getAdminUsers } from "../../../../redux/actions";
 
 const sizePerPageList = [
   {
@@ -43,30 +44,34 @@ interface TableRecords {
 const AllPending = () => {
   const dispatch = useDispatch();
 
-
-const location = useLocation();
-const currentUrl = location.pathname;
-
-const isApplicationManager =  currentUrl == "kyc_details/all/pending"
-
-
   const [uploadModal, setUploadModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [selected, setSelected] = useState([]);
+
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  const isPendingPage = pathname.includes("pending");
 
   // Function to toggle the upload modal visibility
   const toggleUploadModal = () => {
     setUploadModal((prevState) => !prevState);
   };
 
-  const { records, user, initialloading } = useSelector((state: RootState) => ({
+  const { records, user, initialloading, application_members } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     records: state.KYC.KYCSPending.data,
+    application_members: state.Users.adminUsers,
     initialloading: state.KYC.initialloading,
   }));
 
+  const handleAssignApplicationMember = (application_ids: any, user_id: any) => {
+    dispatch(assignToApplicationMember(application_ids, user_id, isPendingPage ? "application_manager_pending" : "application_manager_assigned"));
+  };
+
   useEffect(() => {
-    dispatch(getPendingKYC("application_manager"));
-  }, []);
+    dispatch(getAdminUsers());
+    dispatch(getPendingKYC(isPendingPage ? "application_manager_pending" : "application_manager_assigned"));
+  }, [pathname]);
 
   const columns = [
     {
@@ -79,7 +84,7 @@ const isApplicationManager =  currentUrl == "kyc_details/all/pending"
       Header: "Name",
       accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.full_name",
       sort: true,
-      minWidth: 200,
+      minWidth: 100,
     },
     {
       Header: "Country",
@@ -149,6 +154,30 @@ const isApplicationManager =  currentUrl == "kyc_details/all/pending"
       sort: false,
       minWidth: 150,
     },
+
+    {
+      Header: "Assign Application Member",
+      accessor: "",
+      sort: false,
+      Cell: ({ row }: any) => (
+        <div className="no-truncate-text">
+          <Dropdown className="btn-group" style={{ width: "100%", maxHeight: "150px", overflow: "visible !important" }}>
+            <Dropdown.Toggle variant="light" className="table-action-btn btn-sm">
+              {row.original.application ? row.original.application.name : "Assign"}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {application_members.map((item: any) => (
+                <Dropdown.Item key={item?.id} onClick={() => handleAssignApplicationMember([row.original.id], item.id)}>
+                  {item.name}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+      ),
+      minWidth: 150,
+    },
+
     {
       Header: "Actions",
       accessor: "",
@@ -177,9 +206,14 @@ const isApplicationManager =  currentUrl == "kyc_details/all/pending"
 
   console.log(records);
 
-  if (initialloading) {
-    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
-  }
+  const handleSelectedValues = (selectedItems: any) => {
+    console.log("Selected Items:", selectedItems);
+    setSelected(selectedItems);
+  };
+
+  // if (initialloading) {
+  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
+  // }
 
   return (
     <>
@@ -192,14 +226,31 @@ const isApplicationManager =  currentUrl == "kyc_details/all/pending"
       />
       <Card className="bg-white">
         <Card.Body>
+          <div className="d-flex flex-wrap gap-2 justify-content-end">
+            <Dropdown className="btn-group">
+              <Dropdown.Toggle disabled={selected?.length > 0 ? false : true} variant="light" className="table-action-btn btn-sm btn-blue">
+                <i className="mdi mdi-account-plus"></i> {pathname.includes("pending") ? "Assign Application Member" : "Re-Assign"}
+              </Dropdown.Toggle>
+              <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
+                {application_members?.map((item: any) => (
+                  <Dropdown.Item key={item?.id} onClick={() => handleAssignApplicationMember(selected, item?.id)}>
+                    {item.name}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+
           <Table
             columns={columns}
             data={records ?? []}
             pageSize={25}
+            onSelect={handleSelectedValues}
             sizePerPageList={sizePerPageList}
             isSortable={true}
             pagination={true}
             isSearchable={true}
+            isSelectable={true}
             tableClass="table-striped dt-responsive nowrap w-100"
           />
         </Card.Body>

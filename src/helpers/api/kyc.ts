@@ -15,4 +15,12 @@ function getApprovedKycsApi() {
   return api.get(`/kyc_approved`, {});
 }
 
-export { getPendingKycsApi, getRejectedKycsApi, getApprovedKycsApi };
+function assignToApplicationMemberApi(application_ids: any, user_id: any) {
+  const dataToSend = {
+    application_ids,
+    user_id,
+  };
+  return api.updatePatch(`/assign_application`, dataToSend);
+}
+
+export { getPendingKycsApi, getRejectedKycsApi, getApprovedKycsApi, assignToApplicationMemberApi };
