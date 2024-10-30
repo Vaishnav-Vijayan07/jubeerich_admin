@@ -1,9 +1,11 @@
 import React from "react";
 import { Row,Col,Card,Form } from "react-bootstrap";
 
-type Props = {};
+type Props = {
+  data: any
+};
 
-function CampusCheck({}: Props) {
+function CampusCheck({ data }: Props) {
   return (
     <>
       <Row>
@@ -12,43 +14,10 @@ function CampusCheck({}: Props) {
       <Row className="mt-2">
         <Card>
           <Card.Body>
-            <Row className="mt-2 p-3">
-              <Col md={2}>
-                <h5>Country</h5>
-                <p>Canada</p>
-              </Col>
-
-              <Col md={2}>
-                <h5>University</h5>
-                <p>MacEwan University</p>
-              </Col>
-
-              <Col md={2}>
-                <h5>Intake applying for</h5>
-                <p>April</p>
-              </Col>
-
-              <Col md={2}>
-                <h5>Course Link</h5>
-                <p>
-                  <a
-                    href="https://www.macewan.ca"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    www.macewan.ca
-                  </a>
-                </p>
-              </Col>
-
-              <Col md={2}>
-                <h5>Stream</h5>
-                <p>Program</p>
-              </Col>
-
-              <Col md={2}>
-                <h5>Information Technology</h5>
-                <p>Data Science</p>
+            <Row className="mt-1 mb-2">
+              <Col md={6}>
+                <h5>Campus</h5>
+                <p>{data?.campus_name}</p>
               </Col>
             </Row>
             <Row>

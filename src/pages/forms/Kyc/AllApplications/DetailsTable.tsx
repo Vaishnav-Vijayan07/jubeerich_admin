@@ -1,7 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Table from "../../../../components/Table";
 import { sizePerPageList } from "../../data";
+import { baseUrl } from "../../../../constants";
 
 type IconData = {
   id?: number;
@@ -17,55 +18,117 @@ interface Props {
   icons: IconData[];
 }
 
+const response = [
+  { id: '52', name: "Test One" },
+  { id: '53', name: "Test Two" }
+]
+
+const mapData = new Map();
+
+response.forEach((data: any, index: any) => {
+  mapData.set(index, data?.id)
+})
+
+const mapArray = Array.from(mapData.entries());
+
+console.log('mapData',mapData);
+console.log('mapArray',mapArray);
+
 const DetailsTable = ({ data, icons }: Props) => {
-  const dynamicColumns = Object.keys(data[0] || {}).map((key) => ({
-    Header: key
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" "),
-    accessor: key,
-    sort: true,
-  }));
+  const navigate = useNavigate();
 
-  // Add the Action column manually
-  const actionColumn = {
-    Header: "Action",
-    accessor: "",
-    sort: false,
-    Cell: ({ row }: any) => (
-      <div className="d-flex justify-content-center align-items-center gap-2">
-        {icons.map((action: IconData) =>
-          action.isLink ? (
-            <Link
-              key={action.id}
-              to={action.link(row?.original?.id)}
-              className="action-icon"
-              title={action.tooltip}
-            >
-              <i
-                className={`mdi ${action.icon}`}
-                style={{ color: action.color }}
-              ></i>
-            </Link>
-          ) : (
-            <span
-              key={action.id}
-              className="action-icon"
-              title={action.tooltip}
-              style={{ cursor: "pointer" }}
-            >
-              <i
-                className={`mdi ${action.icon}`}
-                style={{ color: action.color }}
-              ></i>
-            </span>
-          )
-        )}
-      </div>
-    ),
-  };
+  const columns = [
+    {
+      Header: "No",
+      accessor: "id",
+      sort: false,
+      Cell: ({ row }: any) => <span>{row.index + 1}</span>,
+    },
+    {
+      Header: "Name",
+      accessor: "full_name",
+      sort: true,
+    },
+    {
+      Header: "Country",
+      accessor: "country_name",
+      sort: false,
+    },
+    {
+      Header: "University",
+      accessor: "university_name",
+      sort: false,
+    },
+    {
+      Header: "Course",
+      accessor: "course_name",
+      sort: false,
+    },
+    {
+      Header: "Office",
+      accessor: "office_type_name",
+      sort: false,
+    },
+    {
+      Header: "Source",
+      accessor: "source_name",
+      sort: false,
+    },
+    {
+      Header: "lead Received Date",
+      accessor: "lead_received_date",
+      sort: false,
+    },
+    {
+      Header: "Assigned by",
+      accessor: "assigned_by",
+      sort: false,
+    },
+    {
+      Header: "Assign Type",
+      accessor: "assign_type",
+      sort: false,
+    },
+    {
+      Header: "Assign Type",
+      accessor: "assign_to",
+      sort: false,
+    },
+    {
+      Header: "Assigned Employee",
+      accessor: "employee_name",
+      sort: false,
+    },
+    {
+      Header: "Status",
+      accessor: "status",
+      sort: false,
+    },
+    {
+      Header: " ",
+      accessor: "",
+      sort: false,
+      Cell: ({ row }: any) => (
+        <div className="d-flex justify-content-center align-items-center gap-2">
+          {/* View Icon */}
+          <span
+            className="action-icon"
+            onClick={() => navigate(`/kyc_details/pending/${row.original.id}`, { state: { mapData: mapArray } })}
+          >
+            <i className="mdi mdi-arrow-right-drop-circle-outline"></i>
+          </span>
 
-  const columns = [...dynamicColumns, actionColumn];
+          {/* Eye Icon */}
+          <span
+            className="action-icon"
+            onClick={() => navigate(`/kyc_details/pending/${row.original.id}`)}
+          >
+            <i className="mdi mdi-eye-outline"></i>
+          </span>
+        </div>
+      ),
+    },
+  ];  
 
   return (
     <Table

@@ -22,9 +22,6 @@ type Props = {
 
 function BasicDetails({ data }: Props) {
 
-  console.log("rendered");
-  
-
   return (
     <Card>
       <Card.Body>

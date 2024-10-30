@@ -9,6 +9,7 @@ import { AppDispatch, RootState } from '../../../../redux/store';
 import { getCourse } from '../../../../redux/course/actions';
 import { getUniversity } from '../../../../redux/University/actions';
 import { travel_history, visa_approve, visa_decline } from './data';
+import { getCountry } from '../../../../redux/country/actions';
 
 const VisaProcess = withSwal((props: any) => {
   const { swal, studentId } = props;
@@ -69,6 +70,7 @@ const VisaProcess = withSwal((props: any) => {
 
   useEffect(() => {
     dispatch(getCourse());
+    dispatch(getCountry())
     dispatch(getUniversity());
   }, [studentId])
 
