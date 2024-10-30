@@ -1,9 +1,12 @@
 import React from "react";
 import { Card, Col, Form, Row } from "react-bootstrap";
+import { FormInput } from "../../../components";
 
-type Props = {};
+type Props = {
+  studentId: any
+};
 
-function DocumentQualityCheck({}: Props) {
+function DocumentQualityCheck({ studentId }: Props) {
   return (
     <>
       <Row>
@@ -12,44 +15,10 @@ function DocumentQualityCheck({}: Props) {
       <Row className="mt-2">
         <Card>
           <Card.Body>
-            <Row className="mt-2 p-3">
-              <Col md={2}>
-                <h5>Country</h5>
-                <p>Canada</p>
-              </Col>
-
-              <Col md={2}>
-                <h5>University</h5>
-                <p>MacEwan University</p>
-              </Col>
-
-              <Col md={2}>
-                <h5>Intake applying for</h5>
-                <p>April</p>
-              </Col>
-
-              <Col md={2}>
-                <h5>Course Link</h5>
-                <p>
-                  <a
-                    href="https://www.macewan.ca"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    www.macewan.ca
-                  </a>
-                </p>
-              </Col>
-
-              <Col md={2}>
-                <h5>Stream</h5>
-                <p>Program</p>
-              </Col>
-
-              <Col md={2}>
-                <h5>Information Technology</h5>
-                <p>Data Science</p>
-              </Col>
+            <Row className="d-flex-col mt-2 gap-2 mb-3">
+              <FormInput label="Formatting" name="formatting" type="checkbox" />
+              <FormInput label="Clarity" name="clarity" type="checkbox" />
+              <FormInput label="Scanning" name="scanning" type="checkbox" />
             </Row>
             <Row>
               <Col md={12}>

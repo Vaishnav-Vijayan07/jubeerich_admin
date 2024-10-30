@@ -4,13 +4,20 @@ import { Button, Col } from "react-bootstrap";
 type Props = {
   handleNavigation: (type: "next" | "prev") => void;
   current: number;
+  size: number
+  handleReject: (value: any) => void
 };
 
-function FormButtons({ handleNavigation, current }: Props) {
+function FormButtons({ handleNavigation, current, size, handleReject }: Props) {
+  
+  const setRejectionIndex = (current: any) => {
+    handleReject(current)
+  }
+
   return (
     <>
       <Col className="d-flex justify-content-end">
-        <Button variant="danger" className="me-2">
+        <Button variant="danger" className="me-2" onClick={() => setRejectionIndex(current)}>
           Reject
         </Button>
         {current !== 0 && (
@@ -18,7 +25,7 @@ function FormButtons({ handleNavigation, current }: Props) {
             Previous
           </Button>
         )}
-        {current !== 3 ? (
+        {current !== 6 ? (
           <Button variant="success" onClick={() => handleNavigation("next")}>
             Next
           </Button>

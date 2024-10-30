@@ -7,6 +7,10 @@ function getPendingKycsApi(type: string) {
   return api.get(`/kyc_pending`, { type });
 }
 
+function getPendingKycsByUserApi() {
+  return api.get(`/kyc_pending_by_user`, {});
+}
+
 function getRejectedKycsApi() {
   return api.get(`/kyc_rejected`, {});
 }
@@ -23,4 +27,11 @@ function assignToApplicationMemberApi(application_ids: any, user_id: any) {
   return api.updatePatch(`/assign_application`, dataToSend);
 }
 
-export { getPendingKycsApi, getRejectedKycsApi, getApprovedKycsApi, assignToApplicationMemberApi };
+function autoAssignToApplicationMemberApi(application_ids: any) {
+  const dataToSend = {
+    application_ids,
+  };
+  return api.updatePatch(`/auto_assign_application`, dataToSend);
+}
+
+export { getPendingKycsApi, getRejectedKycsApi, getApprovedKycsApi, assignToApplicationMemberApi, autoAssignToApplicationMemberApi ,getPendingKycsByUserApi};

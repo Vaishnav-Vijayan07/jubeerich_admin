@@ -1,104 +1,49 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Row, Spinner } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import { withSwal } from "react-sweetalert2";
 import useDropdownData from "../../../../../hooks/useDropdownDatas";
 import axios from "axios";
 import StudyPreferenceRow from "./StudyPrefRow";
-import { showErrorAlert, showSuccessAlert } from "../../../../../constants";
-import useRemoveFromApi from "../../../../../hooks/useRemoveFromApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
-import useSaveStudyPreferenceData from "../../../../../hooks/useSaveStudyPreferenceData";
-import validateFields from "../../../../../helpers/validateHelper";
 
-const initialStateStudyPreference = {
-  id: null,
-  universityId: "",
-  campusId: "",
-  courseTypeId: "",
-  streamId: "",
-  courseId: "",
-  intakeYear: "",
-  intakeMonth: "",
-  estimatedBudget: "",
-  errors: {},
-};
-
-// const StudyPreference = ({ studentId, Countries }: any) => {
 const StudyPreference = withSwal((props: any) => {
   const { swal, studentId } = props;
-
-  const [initialLoading, setInitialLoading] = useState(false);
 
   //create state for item
   const [item, setItem] = useState([]);
 
-  const [loading, setLoading] = useState(false);
-  const [studyPreferenceData, setStudyPreferenceData] = useState<any[]>([
-    initialStateStudyPreference,
-  ]);
+  const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
-  const refresh = useSelector(
-    (state: RootState) => state.refreshReducer.refreshing
-  );
-
-  const { loading: dropDownLoading, dropdownData } = useDropdownData("universities,courses,streams,campuses,courseTypes");
+  const { dropdownData } = useDropdownData("universities,courses,streams,campuses,courseTypes");
 
   const getStudyPrefData = async () => {
-    setInitialLoading(true);
     console.log("studentId, calling");
-    
 
     try {
-      const { data } = await axios.get(
-        `/study_preferences_details/${studentId}`
-      );
+      const { data } = await axios.get(`/study_preferences_details/${studentId}`);
 
       setItem(data?.data);
       console.log("studentId data", data.data);
-      
     } catch (err) {
       console.error(err);
-    } finally {
-      setInitialLoading(false);
     }
   };
-  
-
-  console.log("studentId", studentId, item);
-
-  console.log("item ===>", item);
-  
-  
 
   useEffect(() => {
-    if (
-      dropdownData.universities.length > 0 &&
-      dropdownData.campuses.length > 0
-    ) {
+    if (dropdownData.universities.length > 0 && dropdownData.campuses.length > 0) {
       getStudyPrefData();
     }
   }, [dropdownData.universities.length, dropdownData.campuses.length, refresh, studentId]);
 
-  // if (initialLoading || dropDownLoading)
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "100%", left: "50%" }}
-  //     />
-  //   );
-
   return (
     <>
       <Row>
-        {item &&
+        {item.length > 0 &&
           item?.map((values: any, index: any) => (
             <StudyPreferenceRow
-              studyPreference={
-                values?.studyDetails.length > 0
-                  ? values?.studyDetails
-                  : [initialStateStudyPreference]
-              }
+              key={index + values?.country_name}
+              studyPreference={values?.studyDetails}
               parentIndex={index}
               countryName={values?.country_name}
               studyPreferenceId={values?.studyPreferenceId}

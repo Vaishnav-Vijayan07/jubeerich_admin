@@ -2,7 +2,14 @@ import { all, fork, put, takeEvery, call } from "redux-saga/effects";
 import { SagaIterator } from "@redux-saga/core";
 import { KYCActionTypes } from "./constants";
 import { KYCApiResponseError, KYCApiResponseSuccess } from "./actions";
-import { getPendingKycsApi, getRejectedKycsApi, getApprovedKycsApi, assignToApplicationMemberApi } from "../../helpers/api/kyc";
+import {
+  getPendingKycsApi,
+  getRejectedKycsApi,
+  getApprovedKycsApi,
+  assignToApplicationMemberApi,
+  autoAssignToApplicationMemberApi,
+  getPendingKycsByUserApi,
+} from "../../helpers/api/kyc";
 
 function* getPendingKYCs({ payload: { type } }: any): SagaIterator {
   try {
@@ -18,19 +25,49 @@ function* getPendingKYCs({ payload: { type } }: any): SagaIterator {
   }
 }
 
-function* assignToApplicationMember({ payload: {application_ids,user_id,type} }: any): SagaIterator {
+function* getPendingKYCsByUser(): SagaIterator {
   try {
-    const response = yield call(assignToApplicationMemberApi, application_ids,user_id);
+    const response = yield call(getPendingKycsByUserApi);
     console.log(response.data);
 
     const data = response.data.data;
 
     // NOTE - You can change this according to response format from your api
+    yield put(KYCApiResponseSuccess(KYCActionTypes.GET_PENDING_BY_USER, { data }));
+  } catch (error: any) {
+    yield put(KYCApiResponseError(KYCActionTypes.GET_PENDING_BY_USER, error));
+  }
+}
+
+function* assignToApplicationMember({ payload: { application_ids, user_id, type } }: any): SagaIterator {
+  try {
+    const response = yield call(assignToApplicationMemberApi, application_ids, user_id);
+    console.log(response.data);
+
+    const data = response.data.message;
+
+    // NOTE - You can change this according to response format from your api
     yield put(KYCApiResponseSuccess(KYCActionTypes.ASSIGN_APPLICATION_MEMBER, { data }));
-    yield put({type: KYCActionTypes.GET_PENDING, payload: {type}});
-    yield put({type: "GET_ADMIN_USERS"});
+    yield put({ type: KYCActionTypes.GET_PENDING, payload: { type } });
+    yield put({ type: "GET_ADMIN_USERS" });
   } catch (error: any) {
     yield put(KYCApiResponseError(KYCActionTypes.ASSIGN_APPLICATION_MEMBER, error));
+  }
+}
+
+function* autoAssignToApplicationMember({ payload: { application_ids, type } }: any): SagaIterator {
+  try {
+    const response = yield call(autoAssignToApplicationMemberApi, application_ids);
+    console.log(response.data);
+
+    const data = response.data.message;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(KYCApiResponseSuccess(KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER, { data }));
+    yield put({ type: KYCActionTypes.GET_PENDING, payload: { type } });
+    yield put({ type: "GET_ADMIN_USERS" });
+  } catch (error: any) {
+    yield put(KYCApiResponseError(KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER, error));
   }
 }
 
@@ -64,8 +101,16 @@ export function* watchGetKYCPending() {
   yield takeEvery(KYCActionTypes.GET_PENDING, getPendingKYCs);
 }
 
+export function* watchGetKYCPendingByUser() {
+  yield takeEvery(KYCActionTypes.GET_PENDING_BY_USER, getPendingKYCsByUser);
+}
+
 export function* watchAssignToApplicationMember() {
   yield takeEvery(KYCActionTypes.ASSIGN_APPLICATION_MEMBER, assignToApplicationMember);
+}
+
+export function* watchAutoAssignToApplicationMember() {
+  yield takeEvery(KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER, autoAssignToApplicationMember);
 }
 
 export function* watchGetKYCRejected() {
@@ -77,7 +122,14 @@ export function* watchGetKYCApproved() {
 }
 
 function* KYCSaga() {
-  yield all([fork(watchGetKYCPending), fork(watchGetKYCRejected), fork(watchGetKYCApproved), fork(watchAssignToApplicationMember)]);
+  yield all([
+    fork(watchGetKYCPending),
+    fork(watchGetKYCRejected),
+    fork(watchGetKYCApproved),
+    fork(watchAssignToApplicationMember),
+    fork(watchAutoAssignToApplicationMember),
+    fork(watchGetKYCPendingByUser),
+  ]);
 }
 
 export default KYCSaga;

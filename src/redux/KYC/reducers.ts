@@ -1,4 +1,5 @@
 // constants
+import { showSuccessAlert } from "../../constants";
 import { KYCActionTypes } from "./constants";
 
 const INIT_STATE = {
@@ -17,10 +18,18 @@ interface CategoryData {
 }
 
 interface KYCActionType {
-  type: KYCActionTypes.API_RESPONSE_SUCCESS | KYCActionTypes.API_RESPONSE_ERROR | KYCActionTypes.GET_PENDING | KYCActionTypes.GET_REJECTED | KYCActionTypes.GET_APPROVED;
+  type:
+    | KYCActionTypes.API_RESPONSE_SUCCESS
+    | KYCActionTypes.API_RESPONSE_ERROR
+    | KYCActionTypes.GET_PENDING
+    | KYCActionTypes.GET_PENDING_BY_USER
+    | KYCActionTypes.GET_REJECTED
+    | KYCActionTypes.ASSIGN_APPLICATION_MEMBER
+    | KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER
+    | KYCActionTypes.GET_APPROVED;
   payload: {
     actionType?: string;
-    data?: CategoryData | {};
+    data?: any;
     error?: string;
   };
 }
@@ -36,6 +45,15 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
     case KYCActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
         case KYCActionTypes.GET_PENDING: {
+          return {
+            ...state,
+            KYCSPending: action.payload.data,
+            loading: false,
+            initialloading: false,
+          };
+        }
+
+        case KYCActionTypes.GET_PENDING_BY_USER: {
           return {
             ...state,
             KYCSPending: action.payload.data,
@@ -62,6 +80,23 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
           };
         }
 
+        case KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER: {
+          console.log("AUTO====>", action.payload.data);
+
+          showSuccessAlert(action.payload.data.data);
+          return {
+            ...state,
+          };
+        }
+
+        case KYCActionTypes.ASSIGN_APPLICATION_MEMBER: {
+          console.log("ASSIGN====>", action.payload.data);
+
+          showSuccessAlert(action.payload.data.data);
+          return {
+            ...state,
+          };
+        }
 
         default:
           return { ...state };
@@ -70,6 +105,15 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
     case KYCActionTypes.API_RESPONSE_ERROR:
       switch (action.payload.actionType) {
         case KYCActionTypes.GET_PENDING: {
+          return {
+            ...state,
+            error: action.payload.error,
+            loading: false,
+            initialloading: false,
+          };
+        }
+
+        case KYCActionTypes.GET_PENDING_BY_USER: {
           return {
             ...state,
             error: action.payload.error,
@@ -96,12 +140,13 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
           };
         }
 
-
         default:
           return { ...state };
       }
 
     case KYCActionTypes.GET_PENDING:
+      return { ...state, loading: true, initialloading: true };
+    case KYCActionTypes.GET_PENDING_BY_USER:
       return { ...state, loading: true, initialloading: true };
     case KYCActionTypes.GET_REJECTED:
       return { ...state, loading: true, initialloading: true };

@@ -13,10 +13,28 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
   const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
   const { saveLoading, saveStudyPreferenceData } = useSaveStudyPreferenceData();
 
-  const [studyPreferenceData, setStudyPreferenceData] = useState<any>(studyPreference);
+  console.log("studyPreference ===>", studyPreference);
+
+  const [studyPreferenceData, setStudyPreferenceData] = useState<any>(
+    studyPreference.length > 0
+      ? studyPreference
+      : [
+          {
+            id: null,
+            universityId: "",
+            campusId: "",
+            courseTypeId: "",
+            streamId: "",
+            courseId: "",
+            intakeYear: "",
+            intakeMonth: "",
+            estimatedBudget: "",
+            errors: {},
+          },
+        ]
+  );
 
   console.log("studyPreferenceData ===>", studyPreferenceData);
-  
 
   console.log(studyPreference.length);
   console.log(studyPreferenceData.length);
@@ -25,16 +43,16 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
     <Row key={index} className="mb-3 border-bottom">
       {item?.application_status && item?.kyc_status && (
         <Row className="pb-3">
-            <div className="d-flex gap-2 p-3 justify-content-between" style={{ backgroundColor: "#F8F8F8" }}>
-              <div className="d-flex gap-2 align-content-center justify-content-center">
-                <strong>Application Status:</strong>
-                <StatusBadge status={item?.application_status} />
-              </div>
-              <div className="d-flex gap-2">
-                <strong>KYC Status:</strong>
-                <StatusBadge status={item?.kyc_status} />
-              </div>
+          <div className="d-flex gap-2 p-3 justify-content-between" style={{ backgroundColor: "#F8F8F8" }}>
+            <div className="d-flex gap-2 align-content-center justify-content-center">
+              <strong>Application Status:</strong>
+              <StatusBadge status={item?.application_status} />
             </div>
+            <div className="d-flex gap-2">
+              <strong>KYC Status:</strong>
+              <StatusBadge status={item?.kyc_status} />
+            </div>
+          </div>
         </Row>
       )}
 
@@ -307,7 +325,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
           </h5>
 
           {studyPreferenceData?.map((item: any, index: number) => {
-            console.log("Study Preference Item:", item, index); // Log the item
+            console.log("Study Preference Item:", studyPreferenceData, item, index); // Log the item
             return renderStudyprefRows(item, index, isEditable);
           })}
           {isEditable && (

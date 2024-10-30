@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button, Card, Spinner, Modal, Dropdown, Row, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { assignToApplicationMember, autoAssignToApplicationMember, getPendingKYC } from "../../../../redux/KYC/actions";
+import { assignToApplicationMember, autoAssignToApplicationMember, getPendingKYC, getPendingKYCByUser } from "../../../../redux/KYC/actions";
 import { RootState } from "../../../../redux/store";
 import PageTitle from "../../../../components/PageTitle";
 import Table from "../../../../components/Table";
@@ -41,35 +41,16 @@ interface TableRecords {
   status: string;
 }
 
-const AllPending = () => {
+const Pending = () => {
   const dispatch = useDispatch();
 
-  const [selected, setSelected] = useState([]);
-
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  const isPendingPage = pathname.includes("pending");
-
-  const { records, user, initialloading, application_members } = useSelector((state: RootState) => ({
-    user: state.Auth.user,
+  const { records } = useSelector((state: RootState) => ({
     records: state.KYC.KYCSPending.data,
-    application_members: state.Users.adminUsers,
-    initialloading: state.KYC.initialloading,
   }));
 
-  const handleAssignApplicationMember = (application_ids: any, user_id: any) => {
-    dispatch(assignToApplicationMember(application_ids, user_id, isPendingPage ? "application_manager_pending" : "application_manager_assigned"));
-  };
-
-  const handleAutoAssignApplicationMembers = (application_ids: any) => {
-    dispatch(autoAssignToApplicationMember(application_ids, isPendingPage ? "application_manager_pending" : "application_manager_assigned"));
-  };
-
   useEffect(() => {
-    dispatch(getAdminUsers());
-    dispatch(getPendingKYC(isPendingPage ? "application_manager_pending" : "application_manager_assigned"));
-  }, [pathname]);
+    dispatch(getPendingKYCByUser())
+  }, []);
 
   const columns = [
     {
@@ -154,29 +135,6 @@ const AllPending = () => {
     },
 
     {
-      Header: "Assign Application Member",
-      accessor: "",
-      sort: false,
-      Cell: ({ row }: any) => (
-        <div className="no-truncate-text">
-          <Dropdown className="btn-group" style={{ width: "100%", maxHeight: "150px", overflow: "visible !important" }}>
-            <Dropdown.Toggle variant="light" className="table-action-btn btn-sm">
-              {row.original.application ? row.original.application.name : "Assign"}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              {application_members.map((item: any) => (
-                <Dropdown.Item key={item?.id} onClick={() => handleAssignApplicationMember([row.original.id], item.id)}>
-                  {item.name}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-      ),
-      minWidth: 150,
-    },
-
-    {
       Header: "Actions",
       accessor: "",
       sort: false,
@@ -198,15 +156,6 @@ const AllPending = () => {
 
   console.log(records);
 
-  const handleSelectedValues = (selectedItems: any) => {
-    console.log("Selected Items:", selectedItems);
-    setSelected(selectedItems);
-  };
-
-  // if (initialloading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
-  // }
-
   return (
     <>
       <PageTitle
@@ -218,39 +167,14 @@ const AllPending = () => {
       />
       <Card className="bg-white">
         <Card.Body>
-          <div className="d-flex flex-wrap gap-2 justify-content-end">
-            <Dropdown className="btn-group">
-              <Dropdown.Toggle disabled={selected?.length > 0 ? false : true} variant="light" className="table-action-btn btn-sm btn-blue">
-                <i className="mdi mdi-account-plus"></i> {pathname.includes("pending") ? "Assign Application Member" : "Re-Assign"}
-              </Dropdown.Toggle>
-              <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
-                {application_members?.map((item: any) => (
-                  <Dropdown.Item key={item?.id} onClick={() => handleAssignApplicationMember(selected, item?.id)}>
-                    {item.name}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-            <Button
-              disabled={selected?.length > 0 ? false : true}
-              variant="light"
-              className="table-action-btn btn-sm btn-blue"
-              onClick={() => handleAutoAssignApplicationMembers(selected)}
-            >
-              <i className="mdi mdi-account-plus"></i> {"Auto Assign"}
-            </Button>
-          </div>
-
           <Table
             columns={columns}
-            data={records ?? []}
-            pageSize={25}
-            onSelect={handleSelectedValues}
+            data={records || []}
+            pageSize={10}
             sizePerPageList={sizePerPageList}
             isSortable={true}
             pagination={true}
             isSearchable={true}
-            isSelectable={true}
             tableClass="table-striped dt-responsive nowrap w-100"
           />
         </Card.Body>
@@ -259,4 +183,4 @@ const AllPending = () => {
   );
 };
 
-export default AllPending;
+export default Pending;
