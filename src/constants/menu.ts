@@ -28,7 +28,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "grid", // Dashboard grid view
     url: "/dashboard-4",
-    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications"],
+    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications","Allocate Applications"],
   },
 
   { key: "leads", label: "Leads", isTitle: true, roles: ["Add Lead", "View Task"] },
@@ -117,12 +117,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "assigned",
     label: "Assigned",
     isTitle: false,
-    icon: "clock", // File assigned to user
-    url: "/kyc_details",
+    icon: "user-check", // File assigned to user
+    url: "/kyc_details/all/assigned",
     roles: ["Manage Applications"],
   },
 
-  { key: "my_applications", label: "My Applications", isTitle: true, roles: ["Manage Applications"] },
+  { key: "my_applications", label: "My Applications", isTitle: true, roles: ["Manage Applications","Allocate Applications"] },
 
   {
     key: "pending",
@@ -130,7 +130,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "clock", // Pending application
     url: "/kyc_details/pending",
-    roles: ["Manage Applications"],
+    roles: ["Manage Applications","Allocate Applications"],
   },
   {
     key: "submitted",
@@ -138,7 +138,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "clock", // Submitted application
     url: "/kyc_details/applications/submitted",
-    roles: ["Manage Applications"],
+    roles: ["Manage Applications","Allocate Applications"],
   },
   {
     key: "offer_accepted",
@@ -146,7 +146,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "thumbs-up", // Offer acceptance
     url: "/kyc_details/applications/offer_accepted",
-    roles: ["Manage Applications"],
+    roles: ["Manage Applications","Allocate Applications"],
   },
 
   { key: "settings", label: "Settings", isTitle: true, roles: ["Monitor"] },
@@ -601,7 +601,7 @@ const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [
     icon: "home",
     label: "Home",
     isTitle: true,
-    roles: ["Monitor", "Add Lead", "View Task"],
+    roles: ["Monitor", "Add Lead", "View Task",],
     children: [
       {
         key: "ds-dashboard-4",
@@ -719,7 +719,7 @@ const TWO_COl_MENU_ITEMS: MenuItemTypes[] = [
     icon: "home",
     label: "Home",
     isTitle: true,
-    roles: ["Monitor", "Add Lead", "View Task"],
+    roles: ["Monitor", "Add Lead", "View Task","Allocate Applications"],
     children: [
       {
         key: "ds-dashboard-4",

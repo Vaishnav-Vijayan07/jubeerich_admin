@@ -152,6 +152,7 @@ const dashboardRoutes: RoutesProps = {
             "Monitor",
             "Manage Franchise",
             "Manage Applications",
+            "Allocate Applications"
           ]}
           component={Dashboard4}
         />
@@ -182,6 +183,12 @@ const crmAppRoutes = {
     },
     {
       path: "/kyc_details/all/pending",
+      name: "KYC Approval",
+      element: <ApplicationAllPending />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/kyc_details/all/assigned",
       name: "KYC Approval",
       element: <ApplicationAllPending />,
       route: PrivateRoute,
