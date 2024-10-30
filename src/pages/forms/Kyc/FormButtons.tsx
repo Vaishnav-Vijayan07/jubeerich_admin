@@ -4,11 +4,10 @@ import { Button, Col } from "react-bootstrap";
 type Props = {
   handleNavigation: (type: "next" | "prev") => void;
   current: number;
-  size: number
   handleReject: (value: any) => void
 };
 
-function FormButtons({ handleNavigation, current, size, handleReject }: Props) {
+function FormButtons({ handleNavigation, current, handleReject }: Props) {
   
   const setRejectionIndex = (current: any) => {
     handleReject(current)

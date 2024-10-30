@@ -6,7 +6,6 @@ type Props = {
 };
 
 function ProgramAvailabiltyCheck({ data }: Props) {
-  console.log('data', data);
   return (
     <>
       <Row>

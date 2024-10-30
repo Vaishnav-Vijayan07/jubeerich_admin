@@ -91,7 +91,7 @@ const KycDetails = withSwal((props: any) => {
     { label: "Student Name", value: response?.personalDetails?.full_name || 'N/A' },
     { label: "Mobile", value: response?.personalDetails?.phone || 'N/A' },
     { label: "Email", value: response?.personalDetails?.email || 'N/A' },
-    { label: "DOB", value: response?.basicInfoDetails?.dob || 'N/A' },
+    { label: "DOB", value: (response?.basicInfoDetails?.dob) ? moment(response?.basicInfoDetails?.dob).format('DD/MM/YYYY') : 'N/A' },
     { label: "Current Address", value: response?.basicInfoDetails?.address || 'N/A' },
     { label: "Primary Point of Contact", value: `${(response?.basicInfoDetails?.emergency_contact_name) ? response?.basicInfoDetails?.emergency_contact_name : 'N/A'} - ${(response?.basicInfoDetails?.emergency_contact_relationship) ? response?.basicInfoDetails?.emergency_contact_relationship : 'N/A'}` },
     { label: "Marital Status", value: response?.basicInfoDetails?.marital_status_details?.marital_status_name || 'N/A' },

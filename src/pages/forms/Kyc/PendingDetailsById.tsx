@@ -18,12 +18,6 @@ const PendingDetailsById = () => {
   const location = useLocation();
   const { id } = useParams();
 
-  const { mapData } = location.state || {};
-
-  let newMapData = new Map(mapData);
-
-  console.log('newMapData',newMapData);
-
   const [item, setItem] = useState<any>({});
 
   const formattedItem = useMemo(
@@ -48,9 +42,6 @@ const PendingDetailsById = () => {
 
   const studentId = useMemo(() => item?.studyPreferDetails?.studyPreference?.userPrimaryInfoId, [item]);
   const applicationId = useMemo(() => item?.existApplication?.id, [item]);
-
-  console.log('studentId', studentId);
-  
 
   const availabilityCheck = useMemo(
     () => ({
@@ -93,10 +84,8 @@ const PendingDetailsById = () => {
 
   const buttonNavigations = (type: "next" | "prev") => {
     if (type === "next") {
-      getApplicationsById(newMapData.get(current + 1))
       setCurrent(current + 1);
     } else {
-      getApplicationsById(newMapData.get(current - 1))
       setCurrent(current - 1);
     }
   };
@@ -112,8 +101,7 @@ const PendingDetailsById = () => {
   }
 
   const handleRejection = (value: number) => {
-    let selectedItem = newMapData.get(value);
-    rejectApplication(selectedItem);
+    rejectApplication(value);
   }
 
   return (
@@ -131,7 +119,7 @@ const PendingDetailsById = () => {
       {current === 6 && <ApplicationFeeCheck studentId={studentId}/>}
 
       <Row>
-        <FormButtons handleNavigation={buttonNavigations} current={current} size={newMapData?.size} handleReject={handleRejection} />
+        <FormButtons handleNavigation={buttonNavigations} current={current} handleReject={handleRejection} />
       </Row>
     </>
   );

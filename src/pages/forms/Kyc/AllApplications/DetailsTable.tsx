@@ -18,22 +18,6 @@ interface Props {
   icons: IconData[];
 }
 
-const response = [
-  { id: '52', name: "Test One" },
-  { id: '53', name: "Test Two" }
-]
-
-const mapData = new Map();
-
-response.forEach((data: any, index: any) => {
-  mapData.set(index, data?.id)
-})
-
-const mapArray = Array.from(mapData.entries());
-
-console.log('mapData',mapData);
-console.log('mapArray',mapArray);
-
 const DetailsTable = ({ data, icons }: Props) => {
   const navigate = useNavigate();
 
@@ -113,7 +97,7 @@ const DetailsTable = ({ data, icons }: Props) => {
           {/* View Icon */}
           <span
             className="action-icon"
-            onClick={() => navigate(`/kyc_details/pending/${row.original.id}`, { state: { mapData: mapArray } })}
+            onClick={() => navigate(`/kyc_details/pending/${row.original.id}`)}
           >
             <i className="mdi mdi-arrow-right-drop-circle-outline"></i>
           </span>
