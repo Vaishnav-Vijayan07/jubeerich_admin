@@ -11,7 +11,7 @@ const INIT_STATE = {
   allCres: [],
   initialloading: false,
   loading: false,
-  error: {},
+  error: null,
 };
 
 interface LeadsData {

@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Row, Col, Card, Button, Dropdown, Modal } from "react-bootstrap";
+import { Row, Col, Card, Button, Dropdown, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -61,8 +61,6 @@ const BasicInputElements = withSwal((props: any) => {
     branchForManager,
     branchCounsellors,
   } = props;
-
-  console.log("CRES", cres);
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
@@ -181,7 +179,7 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
       minWidth: 100,
       Cell: ({ row }: any) => (
-        <ul style={{ listStyle: "none",  margin: "0" }}>
+        <ul style={{ listStyle: "none", margin: "0" }}>
           {row.original.preferredCountries.map((item: any) => (
             <li>{item?.country_name}</li>
           ))}
@@ -630,6 +628,7 @@ const BasicInputElements = withSwal((props: any) => {
           region={region || []}
           flags={flags || []}
           modal={modal}
+          setModal={setModal}
           toggle={toggle}
           handleUpdateData={handleUpdateData}
         />
@@ -650,7 +649,15 @@ const BasicInputElements = withSwal((props: any) => {
                   <i className="mdi mdi-download-circle"></i> Download Sample
                 </Button>
                 <Button className="btn-sm btn-success waves-effect waves-light" onClick={handleFileUpload} disabled={isLoading}>
-                  <i className="mdi mdi-upload"></i> Upload File
+                  {isLoading ? (
+                    <>
+                      <Spinner animation="border" size="sm" /> Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <i className="mdi mdi-upload" /> Upload File
+                    </>
+                  )}
                 </Button>
               </div>
             </Modal.Body>

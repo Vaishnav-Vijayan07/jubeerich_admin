@@ -19,11 +19,10 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
   console.log(studyPreferenceData.length);
 
   const renderStudyprefRows = (item: any, index: any, readOnly: boolean) => (
-    <Row key={index} className="mb-3 p-2 border-bottom rounded">
+    <Row key={index} className="mb-3 border-bottom">
       {item?.application_status && item?.kyc_status && (
-        <Row>
-          <Col md={6}>
-            <div className="d-flex gap-2 p-3" style={{ backgroundColor: "#F8F8F8" }}>
+        <Row className="pb-3">
+            <div className="d-flex gap-2 p-3 justify-content-between" style={{ backgroundColor: "#F8F8F8" }}>
               <div className="d-flex gap-2 align-content-center justify-content-center">
                 <strong>Application Status:</strong>
                 <StatusBadge status={item?.application_status} />
@@ -33,7 +32,6 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
                 <StatusBadge status={item?.kyc_status} />
               </div>
             </div>
-          </Col>
         </Row>
       )}
 

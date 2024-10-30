@@ -5,18 +5,8 @@ import { Row, Col, Spinner } from "react-bootstrap";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import {
-  getBranchCounsellors,
-  getLead,
-  getLeadsByCounsellorTL,
-  getLeadsTL,
-} from "../../redux/actions";
-import {
-  AUTH_SESSION_KEY,
-  counsellor_tl_id,
-  cre_tl_id,
-  regional_manager_id,
-} from "../../constants";
+import { getBranchCounsellors, getLead, getLeadsByCounsellorTL, getLeadsTL } from "../../redux/actions";
+import { AUTH_SESSION_KEY, counsellor_tl_id, cre_tl_id, regional_manager_id } from "../../constants";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
@@ -35,41 +25,33 @@ const Leads = () => {
     userBranchId = JSON.parse(userInfo)?.branch_id;
   }
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, branchCounsellor } =
-    useSelector((state: RootState) => ({
-      user: state.Auth.user,
-      state: state.Leads.leads,
-      error: state.Leads.error,
-      loading: state.Leads.loading,
-      initialLoading: state.Leads.initialloading,
-      branchCounsellor: state.Users?.branchCounsellor,
-    }));
+  const { user, state, error, loading, initialLoading, branchCounsellor } = useSelector((state: RootState) => ({
+    user: state.Auth.user,
+    state: state.Leads.leads,
+    error: state.Leads.error,
+    loading: state.Leads.loading,
+    initialLoading: state.Leads.initialloading,
+    branchCounsellor: state.Users?.branchCounsellor,
+  }));
 
   useEffect(() => {
     fetchAllCounsellors();
   }, []);
 
   useEffect(() => {
-    console.log("userRole", userRole);
-
     if (userRole == cre_tl_id) {
-      console.log("userRole", userRole);
       dispatch(getLeadsTL());
-    }
-    // else if(userRole == counsellor_tl_id) {
-    //   console.log('Entered');
-
-    //   dispatch(getLeadsByCounsellorTL());
-    // }
-    else {
-      console.log("userRole", userRole);
-      dispatch(getLead());
+    } else {
+      if (userRole) {
+        dispatch(getLead());
+      }
     }
 
     if (userRole == regional_manager_id) {
-      console.log("userRole", userRole);
       fetchBranches();
     }
+
+    console.count("loading count");
   }, [userRole]);
 
   const fetchAllCounsellors = useCallback(() => {
@@ -97,15 +79,6 @@ const Leads = () => {
       console.log("err", err);
     }
   }, []);
-
-  // if (initialLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <React.Fragment>
