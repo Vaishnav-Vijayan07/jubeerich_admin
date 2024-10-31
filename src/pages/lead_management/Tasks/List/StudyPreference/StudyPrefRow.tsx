@@ -8,6 +8,7 @@ import useRemoveFromApi from "../../../../../hooks/useRemoveFromApi";
 import useSaveStudyPreferenceData from "../../../../../hooks/useSaveStudyPreferenceData";
 import validateFields from "../../../../../helpers/validateHelper";
 import StatusBadge from "./StatusBadge";
+import { formatString } from "../../../../../utils/formatData";
 
 const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyPreferenceId, isEditable }: any) => {
   const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
@@ -41,16 +42,16 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
 
   const renderStudyprefRows = (item: any, index: any, readOnly: boolean) => (
     <Row key={index} className="mb-3 border-bottom">
-      {item?.application_status && item?.kyc_status && (
+      {item?.applications?.length > 0 && (
         <Row className="pb-3">
           <div className="d-flex gap-2 p-3 justify-content-between" style={{ backgroundColor: "#F8F8F8" }}>
             <div className="d-flex gap-2 align-content-center justify-content-center">
               <strong>Application Status:</strong>
-              <StatusBadge status={item?.application_status} />
+              <StatusBadge status={formatString(item?.applications[0].application_status)} />
             </div>
-            <div className="d-flex gap-2">
+            <div className="d-flex gap-2 align-content-center justify-content-center">
               <strong>KYC Status:</strong>
-              <StatusBadge status={item?.kyc_status} />
+              <StatusBadge status={formatString(item?.applications[0].kyc_status)} />
             </div>
           </div>
         </Row>

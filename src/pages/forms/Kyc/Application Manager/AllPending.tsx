@@ -148,8 +148,14 @@ const AllPending = () => {
       minWidth: 150,
     },
     {
-      Header: "Status",
-      accessor: "studyPreferenceDetails.kyc_status", // Corrected accessor for status
+      Header: "KYC Status",
+      accessor: "kyc_status", // Corrected accessor for status
+      sort: false,
+      minWidth: 150,
+    },
+    {
+      Header: "Application Status",
+      accessor: "application_status", // Corrected accessor for status
       sort: false,
       minWidth: 150,
     },

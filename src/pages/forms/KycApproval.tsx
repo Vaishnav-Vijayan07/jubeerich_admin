@@ -48,7 +48,7 @@ const KycApproval = () => {
 
   // Function to toggle the upload modal visibility
   const toggleUploadModal = () => {
-    setUploadModal(prevState => !prevState);
+    setUploadModal((prevState) => !prevState);
   };
 
   const { records, user, initialloading } = useSelector((state: RootState) => ({
@@ -72,37 +72,37 @@ const KycApproval = () => {
       Header: "Name",
       accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.full_name",
       sort: true,
-      minWidth: 200
+      minWidth: 200,
     },
     {
       Header: "Country",
       accessor: "studyPreferenceDetails.studyPreference.country.country_name", // Corrected for nested structure
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "University",
       accessor: "studyPreferenceDetails.preferred_university.university_name", // Corrected accessor
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Course",
       accessor: "studyPreferenceDetails.preferred_courses.course_name", // Corrected accessor
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Office",
       accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.office_type_name.office_type_name", // Corrected accessor
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Source",
       accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.source_name.source_name", // Corrected accessor
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Lead Received Date",
@@ -114,13 +114,13 @@ const KycApproval = () => {
             moment(row.original.studyPreferenceDetails.studyPreference.userPrimaryInfo.lead_received_date).format("DD/MM/YYYY")}
         </span>
       ),
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Assigned Type",
       accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.assign_type", // Corrected accessor for assigned counselor
       sort: false,
-      minWidth: 150
+      minWidth: 150,
     },
     {
       Header: "Assigned Counselor",
@@ -134,13 +134,19 @@ const KycApproval = () => {
 
         return <span>{assignedCounselor ? assignedCounselor.name : "No counselor assigned"}</span>;
       },
-      minWidth: 150
+      minWidth: 150,
     },
     {
-      Header: "Status",
-      accessor: "studyPreferenceDetails.kyc_status", // Corrected accessor for status
+      Header: "Application Status",
+      accessor: "application_status", // Corrected accessor for status
       sort: false,
-      minWidth: 150
+      minWidth: 150,
+    },
+    {
+      Header: "KYC Status",
+      accessor: "kyc_status", // Corrected accessor for status
+      sort: false,
+      minWidth: 150,
     },
     {
       Header: "Actions",
@@ -156,12 +162,15 @@ const KycApproval = () => {
 
           {/* View Icon */}
           {/* <Link to={`/kyc_details/${row.original.id}`} className="action-icon"> */}
-          <Link to={`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}/${row.original?.id}`} className="action-icon">
+          <Link
+            to={`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}/${row.original?.id}`}
+            className="action-icon"
+          >
             <i className="mdi mdi-eye-settings-outline"></i>
           </Link>
         </div>
       ),
-      minWidth: 150
+      minWidth: 150,
     },
   ];
 

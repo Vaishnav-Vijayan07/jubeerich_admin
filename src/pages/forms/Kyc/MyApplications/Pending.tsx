@@ -42,7 +42,7 @@ interface TableRecords {
 
 const Pending = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { records } = useSelector((state: RootState) => ({
     records: state.KYC.KYCSPending.data,
@@ -128,8 +128,14 @@ const Pending = () => {
       minWidth: 150,
     },
     {
-      Header: "Status",
-      accessor: "studyPreferenceDetails.kyc_status", // Corrected accessor for status
+      Header: "KYC Status",
+      accessor: "kyc_status", // Corrected accessor for status
+      sort: false,
+      minWidth: 150,
+    },
+    {
+      Header: "Application Status",
+      accessor: "application_status", // Corrected accessor for status
       sort: false,
       minWidth: 150,
     },
@@ -146,7 +152,10 @@ const Pending = () => {
           </span>
 
           {/* Eye Icon */}
-          <span className="action-icon" onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`)}>
+          <span
+            className="action-icon"
+            onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`)}
+          >
             <i className="mdi mdi-eye-outline"></i>
           </span>
         </div>
@@ -161,8 +170,8 @@ const Pending = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path:"" },
-          { label: "Application(Pending)", path:"", active: true },
+          { label: "Master", path: "" },
+          { label: "Application(Pending)", path: "", active: true },
         ]}
         title={"Application(Pending)"}
       />

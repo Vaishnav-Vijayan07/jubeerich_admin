@@ -136,7 +136,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "submitted",
     label: "Submitted",
     isTitle: false,
-    icon: "clock", // Submitted application
+    icon: "user-check", // Submitted application
     url: "/kyc_details/applications/submitted",
     roles: ["Manage Applications","Allocate Applications"],
   },

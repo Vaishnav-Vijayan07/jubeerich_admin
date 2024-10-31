@@ -22,7 +22,7 @@ const getStatusBadgeColor = (status: string) => {
 function StatusBadge({ status }: Props) {
   return (
     <Badge bg={getStatusBadgeColor(status)} className="p-1">
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+      {status}
     </Badge>
   );
 }
