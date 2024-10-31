@@ -28,7 +28,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "grid", // Dashboard grid view
     url: "/dashboard-4",
-    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications","Allocate Applications"],
+    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications", "Allocate Applications"],
   },
 
   { key: "leads", label: "Leads", isTitle: true, roles: ["Add Lead", "View Task"] },
@@ -69,7 +69,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "ordinary_tasks",
     label: "Todo",
     isTitle: false,
-    icon: "check-circle", // Task completion
+    icon: "check-square", // Represents a to-do task in progress or completion
     url: "/leads/ordinary_tasks",
     roles: ["View Task"],
   },
@@ -80,7 +80,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "kycApproval",
     label: "KYC Approval",
     isTitle: false,
-    icon: "check-square", // KYC verification check
+    icon: "clock", // Icon representing pending action
     url: "/kyc_details",
     roles: ["KYC Approval"],
   },
@@ -89,7 +89,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "kycRejected",
     label: "KYC Rejected",
     isTitle: false,
-    icon: "check-square",
+    icon: "x-circle", // Cross icon for rejection
     url: "/kyc_rejected_details",
     roles: ["KYC Approval"],
   },
@@ -98,7 +98,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "kycApproved",
     label: "KYC Approved",
     isTitle: false,
-    icon: "check-square",
+    icon: "check-circle", // Check icon for approval
     url: "/kyc_approved_details",
     roles: ["KYC Approval"],
   },
@@ -109,7 +109,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "pending",
     label: "Pending",
     isTitle: false,
-    icon: "clock", // Pending status
+    icon: "clock", // Icon for applications still in progress or awaiting action
     url: "/kyc_details/all/pending",
     roles: ["Manage Applications"],
   },
@@ -117,36 +117,38 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "assigned",
     label: "Assigned",
     isTitle: false,
-    icon: "user-check", // File assigned to user
+    icon: "user-check", // Icon indicating assignment to a user
     url: "/kyc_details/all/assigned",
     roles: ["Manage Applications"],
   },
 
-  { key: "my_applications", label: "My Applications", isTitle: true, roles: ["Manage Applications","Allocate Applications"] },
+  { key: "my_applications", label: "My Applications", isTitle: true, roles: ["Manage Applications", "Allocate Applications"] },
 
   {
     key: "pending",
     label: "Pending",
     isTitle: false,
-    icon: "clock", // Pending application
+    icon: "clock", // Icon for applications awaiting review
     url: "/kyc_details/applications/pending",
-    roles: ["Manage Applications","Allocate Applications"],
+    roles: ["Manage Applications", "Allocate Applications"],
   },
+
   {
     key: "submitted",
     label: "Submitted",
     isTitle: false,
-    icon: "clock", // Submitted application
+    icon: "send", // Icon representing submission, as an action taken
     url: "/kyc_details/applications/submitted",
-    roles: ["Manage Applications","Allocate Applications"],
+    roles: ["Manage Applications", "Allocate Applications"],
   },
+
   {
     key: "offer_accepted",
     label: "Offer Accepted",
     isTitle: false,
-    icon: "thumbs-up", // Offer acceptance
+    icon: "thumbs-up", // Icon indicating offer acceptance or a positive status
     url: "/kyc_details/applications/offer_accepted",
-    roles: ["Manage Applications","Allocate Applications"],
+    roles: ["Manage Applications", "Allocate Applications"],
   },
 
   { key: "settings", label: "Settings", isTitle: true, roles: ["Monitor"] },
@@ -601,7 +603,7 @@ const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [
     icon: "home",
     label: "Home",
     isTitle: true,
-    roles: ["Monitor", "Add Lead", "View Task",],
+    roles: ["Monitor", "Add Lead", "View Task"],
     children: [
       {
         key: "ds-dashboard-4",
@@ -719,7 +721,7 @@ const TWO_COl_MENU_ITEMS: MenuItemTypes[] = [
     icon: "home",
     label: "Home",
     isTitle: true,
-    roles: ["Monitor", "Add Lead", "View Task","Allocate Applications"],
+    roles: ["Monitor", "Add Lead", "View Task", "Allocate Applications"],
     children: [
       {
         key: "ds-dashboard-4",
