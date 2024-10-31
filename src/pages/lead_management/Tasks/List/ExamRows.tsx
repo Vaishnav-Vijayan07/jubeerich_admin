@@ -48,11 +48,7 @@ const ExamData: React.FC<ExamDataProps> = ({
               </option>
             ))}
           </Form.Select>
-          {item.errors?.exam_type && (
-            <Form.Text className="text-danger">
-              {item.errors.exam_type}
-            </Form.Text>
-          )}
+          {item.errors?.exam_type && <Form.Text className="text-danger">{item.errors.exam_type}</Form.Text>}
         </Form.Group>
       </Col>
 
@@ -67,11 +63,7 @@ const ExamData: React.FC<ExamDataProps> = ({
               handleExamInputChange(index, e);
             }}
           />
-          {item.errors?.listening_score && (
-            <Form.Text className="text-danger">
-              {item.errors.listening_score}
-            </Form.Text>
-          )}
+          {item.errors?.listening_score && <Form.Text className="text-danger">{item.errors.listening_score}</Form.Text>}
         </Form.Group>
       </Col>
       <Col md={4} lg={4}>
@@ -85,11 +77,7 @@ const ExamData: React.FC<ExamDataProps> = ({
               handleExamInputChange(index, e);
             }}
           />
-          {item.errors?.speaking_score && (
-            <Form.Text className="text-danger">
-              {item.errors.speaking_score}
-            </Form.Text>
-          )}
+          {item.errors?.speaking_score && <Form.Text className="text-danger">{item.errors.speaking_score}</Form.Text>}
         </Form.Group>
       </Col>
       <Col md={4} lg={4}>
@@ -103,11 +91,7 @@ const ExamData: React.FC<ExamDataProps> = ({
               handleExamInputChange(index, e);
             }}
           />
-          {item.errors?.reading_score && (
-            <Form.Text className="text-danger">
-              {item.errors.reading_score}
-            </Form.Text>
-          )}
+          {item.errors?.reading_score && <Form.Text className="text-danger">{item.errors.reading_score}</Form.Text>}
         </Form.Group>
       </Col>
       <Col md={4} lg={4}>
@@ -121,11 +105,7 @@ const ExamData: React.FC<ExamDataProps> = ({
               handleExamInputChange(index, e);
             }}
           />
-          {item.errors?.writing_score && (
-            <Form.Text className="text-danger">
-              {item.errors.writing_score}
-            </Form.Text>
-          )}
+          {item.errors?.writing_score && <Form.Text className="text-danger">{item.errors.writing_score}</Form.Text>}
         </Form.Group>
       </Col>
       <Col md={4} lg={4}>
@@ -139,11 +119,7 @@ const ExamData: React.FC<ExamDataProps> = ({
               handleExamInputChange(index, e);
             }}
           />
-          {item.errors?.overall_score && (
-            <Form.Text className="text-danger">
-              {item.errors.overall_score}
-            </Form.Text>
-          )}
+          {item.errors?.overall_score && <Form.Text className="text-danger">{item.errors.overall_score}</Form.Text>}
         </Form.Group>
       </Col>
       <Col md={4} lg={4}>
@@ -152,39 +128,20 @@ const ExamData: React.FC<ExamDataProps> = ({
           <Form.Control
             type="date"
             name="exam_date"
-            value={
-              moment(item?.exam_date).format("YYYY-MM-DD") ??
-              moment(item?.exam_date).format("YYYY-MM-DD")
-            }
+            value={moment(item?.exam_date).format("YYYY-MM-DD") ?? moment(item?.exam_date).format("YYYY-MM-DD")}
             onChange={(e) => {
               handleExamInputChange(index, e);
             }}
           />
-          {item.errors?.exam_date && (
-            <Form.Text className="text-danger">
-              {item.errors.exam_date}
-            </Form.Text>
-          )}
+          {item.errors?.exam_date && <Form.Text className="text-danger">{item.errors.exam_date}</Form.Text>}
         </Form.Group>
       </Col>
-      <Col
-        md={6}
-        lg={6}
-        className="d-flex justify-content-between align-items-center"
-      >
-        <Form.Group className="mb-3">
+      <Col md={4} lg={4} className="d-flex justify-content-between align-items-center">
+        <Form.Group className="mb-3 form-group">
           <Form.Label>Upload Score Card</Form.Label>
-          <Form.Control
-            name="score_card"
-            type="file"
-            onChange={(e) => handleExamFileChange(index, e)}
-          />
+          <Form.Control name="score_card" type="file" onChange={(e) => handleExamFileChange(index, e)} />
 
-          {item.errors?.score_card && (
-            <Form.Text className="text-danger">
-              {item.errors.score_card}
-            </Form.Text>
-          )}
+          {item.errors?.score_card && <Form.Text className="text-danger">{item.errors.score_card}</Form.Text>}
 
           {typeof item?.score_card === "string" && (
             <div className="d-flex align-items-center">
@@ -218,11 +175,7 @@ const ExamData: React.FC<ExamDataProps> = ({
     <>
       {examForm.map((item, index) => renderExamFields(item, index))}
       <Row className="mb-2">
-        <ActionButton
-          onClick={addMoreExamForm}
-          label="Add More"
-          iconClass="mdi mdi-plus-circle-outline"
-        />
+        <ActionButton onClick={addMoreExamForm} label="Add More" iconClass="mdi mdi-plus-circle-outline" />
       </Row>
     </>
   );

@@ -101,17 +101,6 @@ function EntryRequirementCheck({ studentId }: Props) {
                 )) : <div className='d-flex justify-content-center align-items-center border border-secondary mt-2 me-2'><h4 className='text-muted'>No Documents Uploaded</h4></div>}
               </div>
             </Row>
-            <Row>
-              <Col md={12}>
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlTextarea1"
-                >
-                  <Form.Label>Remarks</Form.Label>
-                  <Form.Control as="textarea" rows={6} />
-                </Form.Group>
-              </Col>
-            </Row>
           </Card.Body>
         </Card>
       </Row>

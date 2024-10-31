@@ -29,7 +29,7 @@ function FormButtons({ handleNavigation, current, handleReject }: Props) {
             Next
           </Button>
         ) : (
-          <Button variant="success">Proceed</Button>
+          <Button variant="success">Proceed to application</Button>
         )}
       </Col>
     </>

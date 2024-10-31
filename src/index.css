@@ -545,3 +545,7 @@ select::-ms-expand {
 .accordion-button2:not(.collapsed){
   color: #ff0000 !important;
 }
+
+.form-group{
+  width: 100%;
+}

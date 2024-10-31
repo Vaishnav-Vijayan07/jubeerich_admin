@@ -322,7 +322,9 @@ const EmploymentHistory = (props: any) => {
             </Col>
           </Form.Group>
         </Col>
+      </Row>
 
+      <Row>
         <Col md={6} lg={6} xl={6} xxl={4}>
           <Form.Group className="mb-2" controlId="visaPage">
             <Form.Label>
@@ -344,7 +346,6 @@ const EmploymentHistory = (props: any) => {
             )}
           </div>
         </Col>
-
         <Col md={6} lg={6} xl={6} xxl={4}>
           <Form.Group className="mb-2" controlId="permitCard">
             <Form.Label>
@@ -410,7 +411,9 @@ const EmploymentHistory = (props: any) => {
             )}
           </div>
         </Col>
+      </Row>
 
+      <Row>
         <Button className="mt-1" onClick={onSubmit}>
           Save Experience History
         </Button>
