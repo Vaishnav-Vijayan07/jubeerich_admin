@@ -103,7 +103,7 @@ const PendingDetailsById = withSwal((props: any) => {
   }, [])
   
 
-  const [current, setCurrent] = React.useState(0);
+
 
   const buttonNavigations = async(type: "next" | "prev") => {
     if (type === "next") {

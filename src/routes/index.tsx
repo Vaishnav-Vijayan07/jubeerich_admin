@@ -16,9 +16,7 @@ const Login2 = React.lazy(() => import("../pages/auth/Login"));
 const Logout2 = React.lazy(() => import("../pages/auth/Logout"));
 const Register2 = React.lazy(() => import("../pages/auth/Register"));
 const Confirm2 = React.lazy(() => import("../pages/auth/Confirm"));
-const ForgetPassword2 = React.lazy(
-  () => import("../pages/auth2/ForgetPassword2")
-);
+const ForgetPassword2 = React.lazy(() => import("../pages/auth2/ForgetPassword2"));
 const LockScreen2 = React.lazy(() => import("../pages/auth/LockScreen"));
 const SignInSignUp2 = React.lazy(() => import("../pages/auth/SignInSignUp"));
 
@@ -28,18 +26,12 @@ const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard3"));
 // - crm pages
 
 const CRMLeads = React.lazy(() => import("../pages/apps/CRM/Leads"));
-const OrdinaryTasks = React.lazy(
-  () => import("../pages/lead_management/OrdinaryTasks")
-);
+const OrdinaryTasks = React.lazy(() => import("../pages/lead_management/OrdinaryTasks"));
 
-const TasksTodo = React.lazy(
-  () => import("../pages/lead_management/TaskTodo/TaskTodo")
-);
+const TasksTodo = React.lazy(() => import("../pages/lead_management/TaskTodo/TaskTodo"));
 
 //Leads
-const CRMLeadsList = React.lazy(
-  () => import("../pages/lead_management/Tickets/List")
-);
+const CRMLeadsList = React.lazy(() => import("../pages/lead_management/Tickets/List"));
 const Tasks = React.lazy(() => import("../pages/lead_management/Tasks/List"));
 
 //KYC
@@ -47,19 +39,13 @@ const KycApproval = React.lazy(() => import("../pages/forms/KycApproval"));
 const ApplicationAllPending = React.lazy(() => import("../pages/forms/Kyc/Application Manager/AllPending"));
 const MyApplicationPending = React.lazy(() => import("../pages/forms/Kyc/MyApplications/Pending"));
 
-
 const KycDetails = React.lazy(() => import("../pages/forms/KycDetails"));
 
-const PendingDetails = React.lazy(
-  () => import("../pages/forms/Kyc/PendingDetails")
-);
-const PendingDetailsByID = React.lazy(
-  () => import("../pages/forms/Kyc/PendingDetailsById")
-);
+const PendingDetails = React.lazy(() => import("../pages/forms/Kyc/PendingDetails"));
+const PendingDetailsByID = React.lazy(() => import("../pages/forms/Kyc/PendingDetailsById"));
+const PortalDetails = React.lazy(() => import("../pages/forms/Kyc/PortDetails"));
 
-const SubmittedDetails = React.lazy(
-  () => import("../pages/forms/Kyc/SubmittedApplication")
-);
+const SubmittedDetails = React.lazy(() => import("../pages/forms/Kyc/SubmittedApplication"));
 
 // uikit
 
@@ -69,9 +55,7 @@ const RangeSliders = React.lazy(() => import("../pages/uikit/RangeSliders"));
 const Animation = React.lazy(() => import("../pages/uikit/Animation"));
 const TourPage = React.lazy(() => import("../pages/uikit/TourPage"));
 const SweetAlerts = React.lazy(() => import("../pages/uikit/SweetAlerts"));
-const LoadingButtons = React.lazy(
-  () => import("../pages/uikit/LoadingButtons")
-);
+const LoadingButtons = React.lazy(() => import("../pages/uikit/LoadingButtons"));
 
 // forms
 const Category = React.lazy(() => import("../pages/forms/Category"));
@@ -83,9 +67,7 @@ const Region = React.lazy(() => import("../pages/forms/Region"));
 const Flag = React.lazy(() => import("../pages/forms/Flag"));
 const MaritalStatus = React.lazy(() => import("../pages/forms/MaritalStatus"));
 const Leads = React.lazy(() => import("../pages/forms/Leads"));
-const RegionalManagerAssignedLeads = React.lazy(
-  () => import("../pages/forms/RegionalManagerAssignedLeads")
-);
+const RegionalManagerAssignedLeads = React.lazy(() => import("../pages/forms/RegionalManagerAssignedLeads"));
 const LeadDetails = React.lazy(() => import("../pages/forms/LeadDetails"));
 const AssignedLeads = React.lazy(() => import("../pages/forms/AssignedLeads"));
 const Country = React.lazy(() => import("../pages/forms/Country"));
@@ -98,18 +80,14 @@ const Campus = React.lazy(() => import("../pages/forms/Campus"));
 const CourseType = React.lazy(() => import("../pages/forms/CourseType"));
 const Course = React.lazy(() => import("../pages/forms/Course"));
 const Stream = React.lazy(() => import("../pages/forms/Stream"));
-const StatusConfig = React.lazy(
-  () => import("../pages/status/StatusConfiguration")
-);
+const StatusConfig = React.lazy(() => import("../pages/status/StatusConfiguration"));
 const SubStatus = React.lazy(() => import("../pages/status/SubStatus"));
 const CheckLists = React.lazy(() => import("../pages/forms/CheckLists"));
 
 // users
 const AccessRoles = React.lazy(() => import("../pages/users/AccessRoles"));
 const AdminUsers = React.lazy(() => import("../pages/users/AdminUsers"));
-const FranchiseCounsellors = React.lazy(
-  () => import("../pages/users/FranchiseCounsellors")
-);
+const FranchiseCounsellors = React.lazy(() => import("../pages/users/FranchiseCounsellors"));
 // tables
 const BasicTables = React.lazy(() => import("../pages/tables/Basic"));
 const AdvancedTables = React.lazy(() => import("../pages/tables/Advanced"));
@@ -147,14 +125,7 @@ const dashboardRoutes: RoutesProps = {
       // element: <Dashboard4 />,
       element: (
         <PrivateRoute
-          roles={[
-            "Add Lead",
-            "View Task",
-            "Monitor",
-            "Manage Franchise",
-            "Manage Applications",
-            "Allocate Applications"
-          ]}
+          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications", "Allocate Applications"]}
           component={Dashboard4}
         />
       ),
@@ -225,6 +196,12 @@ const crmAppRoutes = {
       route: PrivateRoute,
     },
     {
+      path: "/kyc_details/pending/portal_details",
+      name: "KYC Approval",
+      element: <PortalDetails />,
+      route: PrivateRoute,
+    },
+    {
       path: "/kyc_details/applications/submitted",
       name: "KYC Approval",
       element: <SubmittedDetails />,
@@ -278,24 +255,14 @@ const leadRoutes = {
       path: "leads/manage",
       name: "Leads",
       // element: <CRMLeadsList />,
-      element: (
-        <PrivateRoute
-          roles={["Add Lead", "View Task", "Monitor"]}
-          component={Leads}
-        />
-      ),
+      element: <PrivateRoute roles={["Add Lead", "View Task", "Monitor"]} component={Leads} />,
       route: PrivateRoute,
     },
     {
       path: "leads/assigned_regional_manager",
       name: "Leads",
       // element: <CRMLeadsList />,
-      element: (
-        <PrivateRoute
-          roles={["Manage Branch"]}
-          component={RegionalManagerAssignedLeads}
-        />
-      ),
+      element: <PrivateRoute roles={["Manage Branch"]} component={RegionalManagerAssignedLeads} />,
       route: PrivateRoute,
     },
     {
@@ -308,18 +275,14 @@ const leadRoutes = {
       path: "leads/assigned/manage",
       name: "Leads",
       // element: <CRMLeadsList />,
-      element: (
-        <PrivateRoute roles={["Assigned Leads"]} component={AssignedLeads} />
-      ),
+      element: <PrivateRoute roles={["Assigned Leads"]} component={AssignedLeads} />,
       route: PrivateRoute,
     },
     {
       path: "leads/tasks",
       name: "Tasks",
       // element: <Tasks />,
-      element: (
-        <PrivateRoute roles={["View Task", "Monitor"]} component={Tasks} />
-      ),
+      element: <PrivateRoute roles={["View Task", "Monitor"]} component={Tasks} />,
       route: PrivateRoute,
     },
     // {
@@ -338,12 +301,7 @@ const leadRoutes = {
       path: "leads/ordinary_tasks",
       name: "Ordinary Tasks",
       // element: <Tasks />,
-      element: (
-        <PrivateRoute
-          roles={["View Task", "Monitor"]}
-          component={TasksTodo}
-        />
-      ),
+      element: <PrivateRoute roles={["View Task", "Monitor"]} component={TasksTodo} />,
       route: PrivateRoute,
     },
     // {
@@ -422,9 +380,7 @@ const settingsRoutes = {
           path: "/settings/master/marital_status",
           name: "maritial_status",
           // element: <Channel />,
-          element: (
-            <PrivateRoute roles={["Monitor"]} component={MaritalStatus} />
-          ),
+          element: <PrivateRoute roles={["Monitor"]} component={MaritalStatus} />,
           route: PrivateRoute,
         },
         {
@@ -472,17 +428,13 @@ const settingsRoutes = {
         {
           path: "/settings/master/franchise",
           name: "franchisees",
-          element: (
-            <PrivateRoute roles={["Monitor"]} component={Franchiseees} />
-          ),
+          element: <PrivateRoute roles={["Monitor"]} component={Franchiseees} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/franchise_details/:franchiseId",
           name: "franchise_details",
-          element: (
-            <PrivateRoute roles={["Monitor"]} component={FranchiseDetails} />
-          ),
+          element: <PrivateRoute roles={["Monitor"]} component={FranchiseDetails} />,
           route: PrivateRoute,
         },
         {
@@ -504,9 +456,7 @@ const settingsRoutes = {
           path: "/settings/master/status_config",
           name: "Status Config",
           // element: <StatusConfig />,
-          element: (
-            <PrivateRoute roles={["Monitor"]} component={StatusConfig} />
-          ),
+          element: <PrivateRoute roles={["Monitor"]} component={StatusConfig} />,
           route: PrivateRoute,
         },
         {
@@ -551,9 +501,7 @@ const settingsRoutes = {
           path: "/extended-ui/nestable",
           name: "Nestable List",
           // element: <NestableList />,
-          element: (
-            <PrivateRoute roles={["Monitor"]} component={NestableList} />
-          ),
+          element: <PrivateRoute roles={["Monitor"]} component={NestableList} />,
           route: PrivateRoute,
         },
         {
@@ -642,12 +590,7 @@ const UserRoutes = {
       path: "/user_management/counsellor_creation",
       name: "Counsellor Creation",
       // element: <AdminUsers />,
-      element: (
-        <PrivateRoute
-          roles={["Manage Franchise"]}
-          component={FranchiseCounsellors}
-        />
-      ),
+      element: <PrivateRoute roles={["Manage Franchise"]} component={FranchiseCounsellors} />,
       route: PrivateRoute,
     },
   ],
@@ -724,21 +667,9 @@ const flattenRoutes = (routes: RoutesProps[]) => {
 };
 
 // All routes
-const authProtectedRoutes = [
-  dashboardRoutes,
-  ...appRoutes,
-  settingsRoutes,
-  UserRoutes,
-  leadRoutes,
-  reportsRoutes,
-];
+const authProtectedRoutes = [dashboardRoutes, ...appRoutes, settingsRoutes, UserRoutes, leadRoutes, reportsRoutes];
 const publicRoutes = [...authRoutes, ...otherPublicRoutes];
 
 const authProtectedFlattenRoutes = flattenRoutes([...authProtectedRoutes]);
 const publicProtectedFlattenRoutes = flattenRoutes([...publicRoutes]);
-export {
-  publicRoutes,
-  authProtectedRoutes,
-  authProtectedFlattenRoutes,
-  publicProtectedFlattenRoutes,
-};
+export { publicRoutes, authProtectedRoutes, authProtectedFlattenRoutes, publicProtectedFlattenRoutes };
