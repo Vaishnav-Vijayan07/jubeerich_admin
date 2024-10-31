@@ -6,7 +6,7 @@ import ProgramAvailabiltyCheck from "./ProgramAvailabiltyCheck";
 import CampusCheck from "./CampusCheck";
 import EntryRequirementCheck from "./EntryRequirementCheck";
 import DocumentQualityCheck from "./DocumentQualityCheck";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { baseUrl, showSuccessAlert } from "../../../constants";
 import moment from "moment";
@@ -20,6 +20,7 @@ import { check } from "prettier";
 
 const PendingDetailsById = withSwal((props: any) => {
   const { swal } = props;
+  const navigate = useNavigate();
   const { id } = useParams();
   const [remark, setRemark] = useState<any>("");
 
@@ -65,6 +66,7 @@ const PendingDetailsById = withSwal((props: any) => {
 
   const studentId = useMemo(() => item?.studyPreferDetails?.studyPreference?.userPrimaryInfoId, [item]);
   const applicationId = useMemo(() => item?.existApplication?.id, [item]);
+  const universityId = useMemo(() => item?.studyPreferDetails?.preferred_university?.id, [item]);
 
   const availabilityCheck = useMemo(
     () => ({
@@ -172,9 +174,6 @@ const PendingDetailsById = withSwal((props: any) => {
       case 5:
         if (!checks?.immigration_check) submitChecks(CheckTypes.immigration);
         break;
-      case 6:
-        if (!checks?.application_fee_check) submitChecks(CheckTypes.application_fee);
-        break;
       default:
         break;
     }
@@ -214,14 +213,17 @@ const PendingDetailsById = withSwal((props: any) => {
   };
 
   const handleCheckChange = (name: any, checked: any) => {
-    console.log("name", name);
-    console.log("checked", checked);
+    setQualityForm((prev: any) =>({
+      ...prev, [name]: checked
+    }))
+  }
 
-    setQualityForm((prev: any) => ({
-      ...prev,
-      [name]: checked,
-    }));
-  };
+  const handleProceedApplication = async (value: any) => {
+    if (value) {
+      submitChecks(CheckTypes.application_fee);
+      navigate('/kyc/portal_details', { state: { universityId: universityId, applicationId: applicationId } })
+    }
+  }
 
   return (
     <>
@@ -251,7 +253,7 @@ const PendingDetailsById = withSwal((props: any) => {
             />
           </Form.Group>
         </Col>
-        <FormButtons studentId={studentId} handleNavigation={buttonNavigations} current={current} handleReject={handleRejection} />
+        <FormButtons studentId={studentId} handleNavigation={buttonNavigations} current={current} handleReject={handleRejection} handleProceed={handleProceedApplication} />
       </Row>
     </>
   );
