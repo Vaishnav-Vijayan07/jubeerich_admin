@@ -16,13 +16,29 @@ import ApplicationFeeCheck from "./ApplicationFeeCheck";
 import { Col } from "react-bootstrap";
 import { FormInput } from "../../../components";
 import { withSwal } from "react-sweetalert2";
+import { check } from "prettier";
 
 const PendingDetailsById = withSwal((props: any) => {
   const { swal } = props;
   const { id } = useParams();
   const [remark, setRemark] = useState<any>('');
-  const [current, setCurrent] = React.useState(0);
   const [item, setItem] = useState<any>({});
+  const [checks, setChecks] = useState<any>({})
+  const [qualityForm, setQualityForm] = useState<any>({
+    formatting: false,
+    clarity: false,
+    scanning: false,
+  })
+
+  const CheckTypes = {
+    availability: 'availability',
+    campus: 'campus',
+    entry_requirement: 'entry_requirement',
+    quantity: 'quantity',
+    quality: 'quality',
+    immigration: 'immigration',
+    application_fee: 'application_fee'
+  }
 
   const formattedItem = useMemo(
     () => ({
@@ -72,7 +88,8 @@ const PendingDetailsById = withSwal((props: any) => {
     try {
       const result = await axios.get(`${baseUrl}/api/application/${id}`);
       if(result){
-        setItem(result?.data?.data)
+        setItem(result?.data?.data);
+        setChecks(result?.data?.data?.checks)
       }
     } catch (error) {
       console.log(error);
@@ -86,13 +103,84 @@ const PendingDetailsById = withSwal((props: any) => {
 
 
 
-  const buttonNavigations = (type: "next" | "prev") => {
+  const buttonNavigations = async(type: "next" | "prev") => {
     if (type === "next") {
-      setCurrent(current + 1);
+
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      });
+
+      if (result.isConfirmed) {
+        handleChecks(current)
+        setCurrent(current + 1);
+      }
+
     } else {
       setCurrent(current - 1);
     }
   };
+
+  const submitChecks = async(checkType: any) => {
+    try {
+      let payload;
+
+      if (checkType == CheckTypes.quality) {
+        payload = {
+          application_id: applicationId,
+          check_type: checkType,
+          quality_value: qualityForm
+        }
+      } else {
+        payload = {
+          application_id: applicationId,
+          check_type: checkType,
+        }
+      }
+
+      const res = await axios.put(`/check_application`, payload);
+      
+      if(res){
+        showSuccessAlert('Approved Suucessfully')
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleChecks = (index: any) => {
+    switch (index) {
+      case 0:
+        if(!checks?.availability_check) submitChecks(CheckTypes.availability)
+        break;
+      case 1:
+        if(!checks?.campus_check) submitChecks(CheckTypes.campus);
+        break;
+      case 2:
+        if(!checks?.entry_requirement_check) submitChecks(CheckTypes.entry_requirement);
+        break;
+      case 3:
+        if(!checks?.quantity_check) submitChecks(CheckTypes.quantity);
+        break;
+      case 4:
+        if(!(checks?.quality_check?.clarity && checks?.quality_check?.scanning && checks?.quality_check?.formatting)) submitChecks(CheckTypes.quality);
+        break;
+      case 5:
+        if(!checks?.immigration_check) submitChecks(CheckTypes.immigration);
+        break;
+      case 6:
+        if(!checks?.application_fee_check) submitChecks(CheckTypes.application_fee);
+        break;
+      default:
+        break;
+    }
+  }
 
   const rejectApplication = async(id: any) => {
     try {
@@ -129,6 +217,16 @@ const PendingDetailsById = withSwal((props: any) => {
     rejectApplication(value);
   }
 
+  const handleCheckChange = (name: any, checked: any) => {
+
+    console.log('name',name);
+    console.log('checked',checked);
+    
+    setQualityForm((prev: any) =>({
+      ...prev, [name]: checked
+    }))
+  }
+
   return (
     <>
       <Row className="mt-2">
@@ -138,8 +236,8 @@ const PendingDetailsById = withSwal((props: any) => {
       {current === 0 && <ProgramAvailabiltyCheck data={availabilityCheck} />}
       {current === 1 && <CampusCheck data={campusCheck} />}
       {current === 2 && <EntryRequirementCheck studentId={studentId} />}
-      {current === 3 && <DocumentQuantityCheck studentId={studentId} applicationId={applicationId} />}
-      {current === 4 && <DocumentQualityCheck studentId={studentId} />}
+      {current === 3 && <DocumentQuantityCheck studentId={studentId} />}
+      {current === 4 && <DocumentQualityCheck studentId={studentId} handleFormData={handleCheckChange} quality={qualityForm} />}
       {current === 5 && <PreviousImmigrationCheck studentId={studentId}/>}
       {current === 6 && <ApplicationFeeCheck studentId={studentId}/>}
 
@@ -149,10 +247,10 @@ const PendingDetailsById = withSwal((props: any) => {
             className="mb-3"
             controlId="exampleForm.ControlTextarea1"
           >
-            <FormInput name="remarks" type="textarea" rows="6" label="Remarks" value={remark} onChange={(e) => setRemark(e.target?.value)} />
+            <FormInput labelClassName="ms-2" name="remarks" type="textarea" rows="6" label="Remarks" value={remark} onChange={(e) => setRemark(e.target?.value)} />
           </Form.Group>
         </Col>
-        <FormButtons handleNavigation={buttonNavigations} current={current} handleReject={handleRejection} />
+        <FormButtons studentId={studentId} handleNavigation={buttonNavigations} current={current} handleReject={handleRejection} />
       </Row>
     </>
   );

@@ -1,13 +1,13 @@
 import React from "react";
 import { Card, Col, Form, Row } from "react-bootstrap";
 import DocumentsOverview from "../../lead_management/Tasks/List/DocumentsOverview/DocumentsOverview";
+import { FormInput } from "../../../components";
 
 type Props = {
     studentId: any;
-    applicationId: any;
 };
 
-function DocumentQuantityCheck({ studentId, applicationId }: Props) {
+function DocumentQuantityCheck({ studentId }: Props) {
     return (
         <>
             <Row>

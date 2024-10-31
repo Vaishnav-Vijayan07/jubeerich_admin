@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, Col, Form, Row } from "react-bootstrap";
+import { FormInput } from "../../../components";
 
 type Props = {
   data: any
@@ -14,7 +15,7 @@ function ProgramAvailabiltyCheck({ data }: Props) {
       <Row className="mt-2">
         <Card>
           <Card.Body>
-            <Row className="mt-2">
+            <Row>
               <Col md={3}>
                 <h5>Country</h5>
                 <p>{data?.country_name || 'N/A'}</p>

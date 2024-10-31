@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../components";
 
 type Props = {
-  studentId: any
+  studentId: any;
+  quality: any;
+  handleFormData: any
 };
 
-function DocumentQualityCheck({ studentId }: Props) {
+function DocumentQualityCheck({ studentId, quality, handleFormData }: Props) {
+
+  const handleCheckChange = (e: any) => {
+
+    const { name, checked } = e.target;
+    handleFormData(name, checked);
+
+  }
+
   return (
     <>
       <Row>
@@ -16,9 +26,9 @@ function DocumentQualityCheck({ studentId }: Props) {
         <Card>
           <Card.Body>
             <Row className="d-flex-col mt-2 gap-2 mb-3">
-              <FormInput label="Formatting" name="formatting" type="checkbox" />
-              <FormInput label="Clarity" name="clarity" type="checkbox" />
-              <FormInput label="Scanning" name="scanning" type="checkbox" />
+              <FormInput label="Formatting" name="formatting" type="checkbox" checked={quality?.formatting} onChange={handleCheckChange}/>
+              <FormInput label="Clarity" name="clarity" type="checkbox" checked={quality?.clarity} onChange={handleCheckChange}/>
+              <FormInput label="Scanning" name="scanning" type="checkbox" checked={quality?.scanning} onChange={handleCheckChange}/>
             </Row>
           </Card.Body>
         </Card>
