@@ -5,13 +5,18 @@ type Props = {
   handleNavigation: (type: "next" | "prev") => void;
   current: number;
   handleReject: (value: any) => void,
-  studentId: any
+  studentId: any;
+  handleProceed: any
 };
 
-function FormButtons({ handleNavigation, current, handleReject, studentId }: Props) {
+function FormButtons({ handleNavigation, current, handleReject, studentId, handleProceed }: Props) {
   
   const setRejectionIndex = (current: any) => {
     handleReject(current)
+  }
+
+  const proceedApplication = () => {
+    handleProceed(true)
   }
 
   return (
@@ -30,7 +35,7 @@ function FormButtons({ handleNavigation, current, handleReject, studentId }: Pro
             Next
           </Button>
         ) : (
-          <Button variant="success">Proceed to application</Button>
+          <Button onClick={proceedApplication} variant="success">Proceed to application</Button>
         )}
       </Col>
     </>
