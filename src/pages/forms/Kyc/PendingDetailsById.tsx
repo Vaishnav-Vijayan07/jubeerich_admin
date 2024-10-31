@@ -16,12 +16,14 @@ import ApplicationFeeCheck from "./ApplicationFeeCheck";
 import { Col } from "react-bootstrap";
 import { FormInput } from "../../../components";
 import { withSwal } from "react-sweetalert2";
+import { check } from "prettier";
 
 const PendingDetailsById = withSwal((props: any) => {
   const { swal } = props;
   const { id } = useParams();
   const [remark, setRemark] = useState<any>('');
   const [item, setItem] = useState<any>({});
+  const [checks, setChecks] = useState<any>({})
   const [qualityForm, setQualityForm] = useState<any>({
     formatting: false,
     clarity: false,
@@ -86,7 +88,8 @@ const PendingDetailsById = withSwal((props: any) => {
     try {
       const result = await axios.get(`${baseUrl}/api/application/${id}`);
       if(result){
-        setItem(result?.data?.data)
+        setItem(result?.data?.data);
+        setChecks(result?.data?.data?.checks)
       }
     } catch (error) {
       console.log(error);
@@ -154,26 +157,25 @@ const PendingDetailsById = withSwal((props: any) => {
   const handleChecks = (index: any) => {
     switch (index) {
       case 0:
-        submitChecks(CheckTypes.availability)
+        if(!checks?.availability_check) submitChecks(CheckTypes.availability)
         break;
       case 1:
-        submitChecks(CheckTypes.campus);
+        if(!checks?.campus_check) submitChecks(CheckTypes.campus);
         break;
       case 2:
-        submitChecks(CheckTypes.entry_requirement);
+        if(!checks?.entry_requirement_check) submitChecks(CheckTypes.entry_requirement);
         break;
       case 3:
-        submitChecks(CheckTypes.quantity);
+        if(!checks?.quantity_check) submitChecks(CheckTypes.quantity);
         break;
       case 4:
-        submitChecks(CheckTypes.quality);
-        console.log(qualityForm);
+        if(!(checks?.quality_check?.clarity && checks?.quality_check?.scanning && checks?.quality_check?.formatting)) submitChecks(CheckTypes.quality);
         break;
       case 5:
-        submitChecks(CheckTypes.immigration);
+        if(!checks?.immigration_check) submitChecks(CheckTypes.immigration);
         break;
       case 6:
-        submitChecks(CheckTypes.application_fee);
+        if(!checks?.application_fee_check) submitChecks(CheckTypes.application_fee);
         break;
       default:
         break;
@@ -248,7 +250,7 @@ const PendingDetailsById = withSwal((props: any) => {
             <FormInput labelClassName="ms-2" name="remarks" type="textarea" rows="6" label="Remarks" value={remark} onChange={(e) => setRemark(e.target?.value)} />
           </Form.Group>
         </Col>
-        <FormButtons handleNavigation={buttonNavigations} current={current} handleReject={handleRejection} />
+        <FormButtons studentId={studentId} handleNavigation={buttonNavigations} current={current} handleReject={handleRejection} />
       </Row>
     </>
   );
