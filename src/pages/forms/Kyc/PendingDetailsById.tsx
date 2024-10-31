@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Row } from "react-bootstrap";
+import { Form, Row } from "react-bootstrap";
 import BasicDetails from "./BasicDetails";
 import FormButtons from "./FormButtons";
 import ProgramAvailabiltyCheck from "./ProgramAvailabiltyCheck";
@@ -8,21 +8,19 @@ import EntryRequirementCheck from "./EntryRequirementCheck";
 import DocumentQualityCheck from "./DocumentQualityCheck";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
-import { baseUrl } from "../../../constants";
+import { baseUrl, showSuccessAlert } from "../../../constants";
 import moment from "moment";
 import DocumentQuantityCheck from "./DocumentQuantityCheck";
 import PreviousImmigrationCheck from "./PreviousImmigrationCheck";
 import ApplicationFeeCheck from "./ApplicationFeeCheck";
+import { Col } from "react-bootstrap";
+import { FormInput } from "../../../components";
+import { withSwal } from "react-sweetalert2";
 
-const PendingDetailsById = () => {
-  const location = useLocation();
+const PendingDetailsById = withSwal((props: any) => {
+  const { swal } = props;
   const { id } = useParams();
-
-  const { mapData } = location.state || {};
-
-  let newMapData = new Map(mapData);
-
-  console.log('newMapData',newMapData);
+  const [remark, setRemark] = useState<any>('');
 
   const [item, setItem] = useState<any>({});
 
@@ -48,9 +46,6 @@ const PendingDetailsById = () => {
 
   const studentId = useMemo(() => item?.studyPreferDetails?.studyPreference?.userPrimaryInfoId, [item]);
   const applicationId = useMemo(() => item?.existApplication?.id, [item]);
-
-  console.log('studentId', studentId);
-  
 
   const availabilityCheck = useMemo(
     () => ({
@@ -93,27 +88,45 @@ const PendingDetailsById = () => {
 
   const buttonNavigations = (type: "next" | "prev") => {
     if (type === "next") {
-      getApplicationsById(newMapData.get(current + 1))
       setCurrent(current + 1);
     } else {
-      getApplicationsById(newMapData.get(current - 1))
       setCurrent(current - 1);
     }
   };
 
   const rejectApplication = async(id: any) => {
     try {
-      console.log('id',id);
-      
-      // const res = await axios.post(`/reject_application`)     
+
+      let payload = {
+        student_id: studentId,
+        remarks: remark,
+        application_id :applicationId
+      }
+
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.post(`/kyc_reject`, payload);
+        if(res){
+          showSuccessAlert('Rejected Succesfully')
+        }
+      }
+   
     } catch (error) {
       console.log(error);
     }
   }
 
   const handleRejection = (value: number) => {
-    let selectedItem = newMapData.get(value);
-    rejectApplication(selectedItem);
+    rejectApplication(value);
   }
 
   return (
@@ -130,11 +143,19 @@ const PendingDetailsById = () => {
       {current === 5 && <PreviousImmigrationCheck studentId={studentId}/>}
       {current === 6 && <ApplicationFeeCheck studentId={studentId}/>}
 
-      <Row>
-        <FormButtons handleNavigation={buttonNavigations} current={current} size={newMapData?.size} handleReject={handleRejection} />
+      <Row style={{ padding: '0px' }}>
+        <Col md={12} style={{ padding: '0px' }}>
+          <Form.Group
+            className="mb-3"
+            controlId="exampleForm.ControlTextarea1"
+          >
+            <FormInput name="remarks" type="textarea" rows="6" label="Remarks" value={remark} onChange={(e) => setRemark(e.target?.value)} />
+          </Form.Group>
+        </Col>
+        <FormButtons handleNavigation={buttonNavigations} current={current} handleReject={handleRejection} />
       </Row>
     </>
   );
-};
+});
 
 export default PendingDetailsById;

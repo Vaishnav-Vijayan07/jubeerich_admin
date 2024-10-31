@@ -6,6 +6,7 @@ import { baseUrl } from "../../../constants";
 import { Visa_Types } from "../../lead_management/Tasks/List/data";
 import noFile from '../../../assets/images/icons/file_not_found.svg'
 import axios from "axios";
+import { types } from "./EntryRequirementCheck";
 
 type Props = {
     studentId: any;
@@ -17,81 +18,12 @@ function PreviousImmigrationCheck({ studentId }: Props) {
 
     const fetchImmigrationDetails = async () => {
         try {
-            const res = await axios.get('');
-            setVisaApprovals([
-                {
-                    "id": 3,
-                    "student_id": 115,
-                    "country_id": 6,
-                    "visa_type": "business_visa",
-                    "course_applied": 1,
-                    "country_name": "India",
-                    "university_applied": 1,
-                    "approved_letter": "Prisma_Config-1730279845338-503526384.pdf",
-                    "updated_by": 11,
-                    "createdAt": "2024-10-30T09:17:25.395Z",
-                    "updatedAt": "2024-10-30T09:17:25.395Z",
-                    "approved_country": {
-                        "country_name": "Ireland",
-                        "country_code": "IE"
-                    },
-                    "approved_course": {
-                        "course_name": "Bsc. Physics"
-                    },
-                    "approved_university_applied": {
-                        "id": 1,
-                        "university_name": "University of Aberdeen",
-                        "location": "Aberdeen",
-                        "country_id": 6,
-                        "website_url": "https://www.aberdeen.in",
-                        "image_url": "https://picsum.photos/200/300",
-                        "portal_link": "https://www.aberdeen.in",
-                        "username": "admin",
-                        "password": "admin@123",
-                        "updated_by": 6,
-                        "createdAt": "2024-07-12T07:04:03.227Z",
-                        "updatedAt": "2024-10-03T11:52:50.689Z"
-                    }
-                }
-            ])
+            const res = await axios.get(`/details_application/${types.visa}/${studentId}`);
+            if(res){
+                setVisaApprovals(res?.data?.visaDetails?.previousVisaApprovals);
+                setVisaDeclines(res?.data?.visaDetails?.previousVisaDeclines)
+            }
 
-            setVisaDeclines([
-                {
-                    "id": 7,
-                    "student_id": 115,
-                    "country_id": 3,
-                    "visa_type": "tourist_visa",
-                    "course_applied": 1,
-                    "country_name": "US",
-                    "university_applied": 1,
-                    "rejection_reason": "Reason One",
-                    "declined_letter": "Modifications_in_Office_Management-1730279831922-435049720.txt",
-                    "updated_by": 11,
-                    "createdAt": "2024-10-30T09:17:11.974Z",
-                    "updatedAt": "2024-10-30T09:17:11.974Z",
-                    "declined_country": {
-                        "country_name": "Germany",
-                        "country_code": "DE"
-                    },
-                    "declined_course": {
-                        "course_name": "Bsc. Physics"
-                    },
-                    "declined_university_applied": {
-                        "id": 1,
-                        "university_name": "University of Aberdeen",
-                        "location": "Aberdeen",
-                        "country_id": 6,
-                        "website_url": "https://www.aberdeen.in",
-                        "image_url": "https://picsum.photos/200/300",
-                        "portal_link": "https://www.aberdeen.in",
-                        "username": "admin",
-                        "password": "admin@123",
-                        "updated_by": 6,
-                        "createdAt": "2024-07-12T07:04:03.227Z",
-                        "updatedAt": "2024-10-03T11:52:50.689Z"
-                    }
-                }
-            ])
         } catch (error) {
             console.log(error);
         }
@@ -203,7 +135,7 @@ function PreviousImmigrationCheck({ studentId }: Props) {
                                         <Row className='mt-3'>
                                             <Form.Group className="mb-2" controlId="country_name">
                                                 <Form.Label>
-                                                    {`Country`} - {data?.country_name}
+                                                    {`Country`} - {data?.approved_country?.country_name}
                                                 </Form.Label>
                                             </Form.Group>
                                         </Row>
@@ -239,7 +171,7 @@ function PreviousImmigrationCheck({ studentId }: Props) {
                                         <Row className='mt-3'>
                                             <Form.Group className="mb-2" controlId="country_name">
                                                 <Form.Label>
-                                                    {`Country`} - {data?.country_name}
+                                                    {`Country`} - {data?.declined_country?.country_name}
                                                 </Form.Label>
                                             </Form.Group>
                                         </Row>
@@ -265,18 +197,6 @@ function PreviousImmigrationCheck({ studentId }: Props) {
                                 )) : <div className='d-flex justify-content-center align-items-center border border-secondary mt-2 me-2'><h4 className='text-muted'>No Documents Uploaded</h4></div>}
                             </Row>
                         </Row>
-                        <Row className="mt-4">
-                            <Col md={12}>
-                                <Form.Group
-                                    className="mb-3"
-                                    controlId="exampleForm.ControlTextarea1"
-                                >
-                                    <Form.Label>Remarks</Form.Label>
-                                    <Form.Control as="textarea" rows={6} />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-
                     </Card.Body>
                 </Card>
             </Row>

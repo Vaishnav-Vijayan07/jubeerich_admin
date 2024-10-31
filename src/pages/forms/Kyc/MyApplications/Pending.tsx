@@ -1,13 +1,12 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Button, Card, Spinner, Modal, Dropdown, Row, Col } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { Card } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { assignToApplicationMember, autoAssignToApplicationMember, getPendingKYC, getPendingKYCByUser } from "../../../../redux/KYC/actions";
+import { getPendingKYCByUser } from "../../../../redux/KYC/actions";
 import { RootState } from "../../../../redux/store";
 import PageTitle from "../../../../components/PageTitle";
 import Table from "../../../../components/Table";
-import { getAdminUsers } from "../../../../redux/actions";
 
 const sizePerPageList = [
   {
@@ -43,13 +42,14 @@ interface TableRecords {
 
 const Pending = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const { records } = useSelector((state: RootState) => ({
     records: state.KYC.KYCSPending.data,
   }));
 
   useEffect(() => {
-    dispatch(getPendingKYCByUser())
+    dispatch(getPendingKYCByUser());
   }, []);
 
   const columns = [
@@ -141,13 +141,14 @@ const Pending = () => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* View Icon */}
-          {/* <Link to={`/kyc_details/${row.original.id}`} className="action-icon"> */}
-          <Link
-            to={`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}/${row.original?.id}`}
-            className="action-icon"
-          >
-            <i className="mdi mdi-eye-settings-outline"></i>
-          </Link>
+          <span className="action-icon" onClick={() => navigate(`/kyc_details/pending/${row.original.id}`)}>
+            <i className="mdi mdi-arrow-right-drop-circle-outline"></i>
+          </span>
+
+          {/* Eye Icon */}
+          <span className="action-icon" onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`)}>
+            <i className="mdi mdi-eye-outline"></i>
+          </span>
         </div>
       ),
       minWidth: 150,
@@ -160,10 +161,10 @@ const Pending = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/university" },
-          { label: "Assigned Leads", path: "/master/university", active: true },
+          { label: "Master", path:"" },
+          { label: "Application(Pending)", path:"", active: true },
         ]}
-        title={"KYC Approval"}
+        title={"Application(Pending)"}
       />
       <Card className="bg-white">
         <Card.Body>
