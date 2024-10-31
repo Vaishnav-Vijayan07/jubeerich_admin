@@ -221,7 +221,7 @@ const PendingDetailsById = withSwal((props: any) => {
   const handleProceedApplication = async (value: any) => {
     if (value) {
       submitChecks(CheckTypes.application_fee);
-      navigate('/kyc/portal_details', { state: { universityId: universityId, applicationId: applicationId } })
+      navigate('/kyc_details/pending/portal_details', { state: { universityId: universityId, applicationId: applicationId } })
     }
   }
 
