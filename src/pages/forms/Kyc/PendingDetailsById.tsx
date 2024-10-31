@@ -21,7 +21,7 @@ const PendingDetailsById = withSwal((props: any) => {
   const { swal } = props;
   const { id } = useParams();
   const [remark, setRemark] = useState<any>('');
-
+  const [current, setCurrent] = React.useState(0);
   const [item, setItem] = useState<any>({});
 
   const formattedItem = useMemo(
@@ -84,7 +84,7 @@ const PendingDetailsById = withSwal((props: any) => {
   }, [])
   
 
-  const [current, setCurrent] = React.useState(0);
+
 
   const buttonNavigations = (type: "next" | "prev") => {
     if (type === "next") {

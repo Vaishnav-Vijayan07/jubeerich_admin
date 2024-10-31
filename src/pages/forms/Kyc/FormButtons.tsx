@@ -13,6 +13,10 @@ function FormButtons({ handleNavigation, current, handleReject }: Props) {
     handleReject(current)
   }
 
+  const handleNavigationToPortalDetails = ()=>{
+    
+  }
+
   return (
     <>
       <Col className="d-flex justify-content-end">
@@ -29,7 +33,7 @@ function FormButtons({ handleNavigation, current, handleReject }: Props) {
             Next
           </Button>
         ) : (
-          <Button variant="success">Proceed to application</Button>
+          <Button variant="success" onClick={handleNavigationToPortalDetails}>Proceed to application</Button>
         )}
       </Col>
     </>
