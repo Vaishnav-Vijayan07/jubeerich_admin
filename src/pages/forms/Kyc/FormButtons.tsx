@@ -4,20 +4,15 @@ import { Button, Col } from "react-bootstrap";
 type Props = {
   handleNavigation: (type: "next" | "prev") => void;
   current: number;
-  handleReject: (value: any) => void,
+  handleReject: (value: any) => void;
   studentId: any;
-  handleProceed: any
+  handleProceed: any;
 };
 
 function FormButtons({ handleNavigation, current, handleReject, studentId, handleProceed }: Props) {
-  
   const setRejectionIndex = (current: any) => {
-    handleReject(current)
-  }
-
-  const proceedApplication = () => {
-    handleProceed(true)
-  }
+    handleReject(current);
+  };
 
   return (
     <>
@@ -35,7 +30,9 @@ function FormButtons({ handleNavigation, current, handleReject, studentId, handl
             Next
           </Button>
         ) : (
-          <Button onClick={proceedApplication} variant="success">Proceed to application</Button>
+          <Button onClick={handleProceed} variant="success">
+            Proceed to application
+          </Button>
         )}
       </Col>
     </>
