@@ -20,7 +20,6 @@ const Task = ({
   selectTask: (task: TaskItemTypes) => void;
   selectedTaskId: number | null; // Track selected task's ID
 }) => {
-
   return (
     <>
       <Row
@@ -55,6 +54,23 @@ const Task = ({
                 {task?.student_name?.user_primary_flags?.flag_name}
               </small>
             )}
+          </div>
+
+          <div>
+            {task?.student_name?.preferredCountries?.map((country: any) => (
+              <small
+                style={{
+                  backgroundColor: "#9dd3f5",
+                  color: "#122d3d",
+                  border: `1px solid #122d3d`,
+                  borderRadius: "5px",
+                  padding: "4px 10px",
+                }}
+                className={classNames("rounded-pill me-1 ms-0")}
+              >
+                {country?.country_name}
+              </small>
+            ))}
 
             {task?.is_rejected && (
               <small
@@ -73,23 +89,6 @@ const Task = ({
                 Rejected
               </small>
             )}
-          </div>
-
-          <div>
-            {task?.student_name?.preferredCountries?.map((country: any) => (
-              <small
-                style={{
-                  backgroundColor: "#9dd3f5",
-                  color: "#122d3d",
-                  border: `1px solid #122d3d`,
-                  borderRadius: "5px",
-                  padding: "4px 10px",
-                }}
-                className={classNames("rounded-pill me-1 ms-0")}
-              >
-                {country?.country_name}
-              </small>
-            ))}
           </div>
         </Col>
       </Row>
