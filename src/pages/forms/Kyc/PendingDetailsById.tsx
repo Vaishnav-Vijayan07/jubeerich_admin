@@ -95,6 +95,7 @@ const PendingDetailsById = withSwal((props: any) => {
       if (result) {
         setItem(result?.data?.data);
         setChecks(result?.data?.data?.checks);
+        setQualityForm(result?.data?.data?.checks?.quality_check)
       }
     } catch (error) {
       console.log(error);
