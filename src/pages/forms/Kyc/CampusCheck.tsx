@@ -1,8 +1,9 @@
 import React from "react";
 import { Row,Col,Card,Form } from "react-bootstrap";
+import { FormInput } from "../../../components";
 
 type Props = {
-  data: any
+  data: any;
 };
 
 function CampusCheck({ data }: Props) {
