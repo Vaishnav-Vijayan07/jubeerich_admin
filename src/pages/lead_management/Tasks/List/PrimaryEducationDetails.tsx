@@ -46,7 +46,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
       </Row>
       <Row>
         <Col md={4}>
-          <Form.Group className="mb-3" controlId={`${title}_start_date`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_start_date`}>
             <Form.Label>
               <span className="text-danger">*</span> Start Date
             </Form.Label>
@@ -63,7 +63,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
         </Col>
 
         <Col md={4}>
-          <Form.Group className="mb-3" controlId={`${title}_end_date`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_end_date`}>
             <Form.Label>
               <span className="text-danger">*</span> End Date
             </Form.Label>
@@ -80,7 +80,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
         </Col>
 
         <Col md={4} lg={4} xl={4} xxl={4}>
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3 form-group">
             <Form.Label>
               <span className="text-danger">* </span>School Name
             </Form.Label>
@@ -98,7 +98,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
         </Col>
 
         <Col md={4} lg={4} xl={4} xxl={4}>
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3 form-group">
             <Form.Label>
               <span className="text-danger">* </span>Board Name
             </Form.Label>
@@ -116,7 +116,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
         </Col>
 
         <Col md={4} lg={4} xl={4} xxl={4}>
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3 form-group">
             <Form.Label>
               <span className="text-danger">* </span>Percentage
             </Form.Label>
@@ -138,7 +138,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
           md={4}
           className="d-flex justify-content-between align-items-center"
         >
-          <Form.Group className="mb-3" controlId={`${title}_exam_documents`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_exam_documents`}>
             <Form.Label>Upload Mark Sheet</Form.Label>
             <Form.Control
               name="mark_sheet"
@@ -166,7 +166,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
           md={4}
           className="d-flex justify-content-between align-items-center"
         >
-          <Form.Group className="mb-3" controlId={`${title}_exam_documents`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_exam_documents`}>
             <Form.Label>Upload Certificate</Form.Label>
             <Form.Control
               name="certificate"
@@ -194,7 +194,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
           md={4}
           className="d-flex justify-content-between align-items-center"
         >
-          <Form.Group className="mb-3" controlId={`${title}_exam_documents`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_exam_documents`}>
             <Form.Label>Upload Admit Card</Form.Label>
             <Form.Control
               name="admit_card"

@@ -126,7 +126,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
     <>
       <Row key={index}>
         {/* <Col md={4}>
-          <Form.Group className="mb-3" controlId={`${title}_qualification`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_qualification`}>
             <Form.Label>
               <span className="text-danger">*</span> Course Type
             </Form.Label>
@@ -146,7 +146,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         </Col> */}
 
         <Col md={4}>
-          <Form.Group className="mb-3" controlId={`${title}_qualification`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_qualification`}>
             <Form.Label>
               <span className="text-danger">*</span> Course Type
             </Form.Label>
@@ -165,7 +165,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         </Col>
 
         <Col md={4}>
-          <Form.Group className="mb-3" controlId={`${title}_university_name`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_university_name`}>
             <Form.Label>
               <span className="text-danger">*</span> University Name
             </Form.Label>
@@ -181,7 +181,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         </Col>
 
         <Col md={4}>
-          <Form.Group className="mb-3" controlId={`${title}_college_name`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_college_name`}>
             <Form.Label>
               <span className="text-danger">*</span> College Name
             </Form.Label>
@@ -197,7 +197,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         </Col>
 
         <Col md={4}>
-          <Form.Group className="mb-3" controlId={`${title}_start_date`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_start_date`}>
             <Form.Label>
               <span className="text-danger">*</span> Start Date
             </Form.Label>
@@ -213,7 +213,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         </Col>
 
         <Col md={4}>
-          <Form.Group className="mb-3" controlId={`${title}_end_date`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_end_date`}>
             <Form.Label>
               <span className="text-danger">*</span> End Date
             </Form.Label>
@@ -229,7 +229,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         </Col>
 
         <Col md={4}>
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3 form-group">
             <Form.Label>
               <span className="text-danger">* </span>Percentage
             </Form.Label>
@@ -246,7 +246,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         </Col>
 
         <Col md={4}>
-          <Form.Group className="mb-3" controlId={`${title}_conversion_formula`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_conversion_formula`}>
             <Form.Label>
               <span className="text-danger">*</span> Conversion Formula
             </Form.Label>
@@ -260,8 +260,8 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
           </Form.Group>
         </Col>
 
-        <Col md={4} className="d-flex justify-content-between align-items-center">
-          <Form.Group className="mb-3" controlId={`${title}_admit_card`}>
+        <Col md={4} className="d-flex justify-content-between align-items-center" style={{ width: "100% !important" }}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_admit_card`}>
             <Form.Label>Upload Admit Card</Form.Label>
             <Form.Control name="admit_card" type="file" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.admit_card && <Form.Text className="text-danger">{item.errors.admit_card}</Form.Text>}
@@ -276,7 +276,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         </Col>
 
         <Col md={4} className="d-flex justify-content-between align-items-center">
-          <Form.Group className="mb-3" controlId={`${title}_certificate`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_certificate`}>
             <Form.Label>Upload Certificate</Form.Label>
             <Form.Control name="certificate" type="file" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.certificate && <Form.Text className="text-danger">{item.errors.certificate}</Form.Text>}
@@ -290,7 +290,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
           </Form.Group>
         </Col>
         <Col md={4} className="d-flex justify-content-between align-items-center">
-          <Form.Group className="mb-3" controlId={`${title}_registration_certificate `}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_registration_certificate `}>
             <Form.Label>Upload Registration Certification</Form.Label>
             <Form.Control name="registration_certificate" type="file" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.registration_certificate && (
@@ -310,7 +310,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
           </Form.Group>
         </Col>
         <Col md={4} className="d-flex justify-content-between align-items-center">
-          <Form.Group className="mb-3" controlId={`${title}_grading_scale_info`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_grading_scale_info`}>
             <Form.Label>Upload Gray Scale Info</Form.Label>
             <Form.Control name="grading_scale_info" type="file" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.grading_scale_info && <Form.Text className="text-danger">{item.errors.grading_scale_info}</Form.Text>}
@@ -328,7 +328,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
           </Form.Group>
         </Col>
         <Col md={4} className="d-flex justify-content-between align-items-center">
-          <Form.Group className="mb-3" controlId={`${title}_backlog_certificate`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_backlog_certificate`}>
             <Form.Label>Upload Backlog Certificate</Form.Label>
             <Form.Control name="backlog_certificate" type="file" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.backlog_certificate && (
@@ -348,7 +348,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
           </Form.Group>
         </Col>
         <Col md={4} className="d-flex justify-content-between align-items-center">
-          <Form.Group className="mb-3" controlId={`${title}_individual_marksheet`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_individual_marksheet`}>
             <Form.Label>Upload Individual Marksheet</Form.Label>
             <Form.Control name="individual_marksheet" type="file" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.individual_marksheet && (
@@ -369,7 +369,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         </Col>
 
         <Col md={4} className="d-flex justify-content-between align-items-center">
-          <Form.Group className="mb-3" controlId={`${title}_transcript`}>
+          <Form.Group className="mb-3 form-group" controlId={`${title}_transcript`}>
             <Form.Label>Upload Transcript</Form.Label>
             <Form.Control name="transcript" type="file" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.transcript && <Form.Text className="text-danger">{item.errors.transcript}</Form.Text>}
