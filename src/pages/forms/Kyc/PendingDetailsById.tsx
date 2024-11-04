@@ -68,6 +68,7 @@ const PendingDetailsById = withSwal((props: any) => {
   const universityId = useMemo(() => item?.studyPreferDetails?.preferred_university?.id, [item]);
   const comments = useMemo(() => item?.existApplication?.comments || "", [item]);
   const reference_id = useMemo(() => item?.existApplication?.reference_id || 0, [item]);
+  const application_fee = useMemo(() => item?.studyPreferDetails?.preferred_courses?.campuses?.[0]?.campus_course?.application_fee || 0, [item]);
 
   const availabilityCheck = useMemo(
     () => ({
@@ -239,7 +240,7 @@ const PendingDetailsById = withSwal((props: any) => {
       {current === 3 && <DocumentQuantityCheck studentId={studentId} />}
       {current === 4 && <DocumentQualityCheck studentId={studentId} handleFormData={handleCheckChange} quality={qualityForm} />}
       {current === 5 && <PreviousImmigrationCheck studentId={studentId} />}
-      {current === 6 && <ApplicationFeeCheck studentId={studentId} />}
+      {current === 6 && <ApplicationFeeCheck studentId={studentId} fee={application_fee} />}
 
       <Row style={{ padding: "0px" }}>
         <Col md={12} style={{ padding: "0px" }}>

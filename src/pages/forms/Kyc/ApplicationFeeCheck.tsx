@@ -4,9 +4,10 @@ import DocumentsOverview from "../../lead_management/Tasks/List/DocumentsOvervie
 
 type Props = {
     studentId: any;
+    fee: any;
 };
 
-function ApplicationFeeCheck({ studentId }: Props) {
+function ApplicationFeeCheck({ studentId, fee }: Props) {
     return (
         <>
             <Row>
@@ -16,9 +17,9 @@ function ApplicationFeeCheck({ studentId }: Props) {
                 <Card>
                     <Card.Body>
                         <Row>
-                            <Form.Group className="mb-2" controlId="country_name">
+                            <Form.Group controlId="fee">
                                 <Form.Label>
-                                    {`Application Fee`} - {'500'}
+                                    {`Application Fee`} - {fee}
                                 </Form.Label>
                             </Form.Group>
                         </Row>
