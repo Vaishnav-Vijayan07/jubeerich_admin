@@ -44,6 +44,7 @@ interface State {
   loading?: boolean;
   initialLoading?: boolean;
   value?: boolean;
+  hasLoadedInitially?: boolean;
 }
 
 const Branch = (state: State = INIT_STATE, action: BranchActionType): any => {
@@ -56,6 +57,7 @@ const Branch = (state: State = INIT_STATE, action: BranchActionType): any => {
             branches: action.payload.data,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case BranchActionTypes.ADD_BRANCHES: {
@@ -93,6 +95,7 @@ const Branch = (state: State = INIT_STATE, action: BranchActionType): any => {
             ...state,
             error: action.payload.error,
             loading: false,
+            hasLoadedInitially: true,
           };
         }
         case BranchActionTypes.ADD_BRANCHES: {
@@ -139,11 +142,11 @@ const Branch = (state: State = INIT_STATE, action: BranchActionType): any => {
       };
 
     case BranchActionTypes.GET_BRANCHES:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true, initialLoading: !state.hasLoadedInitially };
     case BranchActionTypes.ADD_BRANCHES:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true };
     case BranchActionTypes.UPDATE_BRANCHES:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true};
     default:
       return { ...state };
   }

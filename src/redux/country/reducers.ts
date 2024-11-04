@@ -7,6 +7,7 @@ const INIT_STATE = {
   loading: false,
   initialLoading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface CountryData {
@@ -40,6 +41,7 @@ const Country = (state: any = INIT_STATE, action: CountryActionType) => {
             countries: action.payload.data,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
 
@@ -85,6 +87,7 @@ const Country = (state: any = INIT_STATE, action: CountryActionType) => {
             error: action.payload.error,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case CountryActionTypes.GET_COUNTRY_BY_ID: {
@@ -125,9 +128,9 @@ const Country = (state: any = INIT_STATE, action: CountryActionType) => {
       }
 
     case CountryActionTypes.GET_COUNTRY:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true, initialLoading: !state.hasLoadedInitially };
     case CountryActionTypes.GET_COUNTRY_BY_ID:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true };
     case CountryActionTypes.ADD_COUNTRY:
       return { ...state, loading: true };
     case CountryActionTypes.DELETE_COUNTRY:

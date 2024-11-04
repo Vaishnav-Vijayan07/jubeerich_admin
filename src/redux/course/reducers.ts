@@ -2,13 +2,14 @@
 import { showErrorAlert, showSuccessAlert } from "../../constants";
 
 // constants
-import { CourseActionTypes} from "./constants";
+import { CourseActionTypes } from "./constants";
 
 const INIT_STATE = {
   course: [],
   loading: false,
   initialloading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface CourseData {
@@ -19,12 +20,12 @@ interface CourseData {
 
 export interface CampusActionType {
   type:
-  | CourseActionTypes.API_RESPONSE_SUCCESS
-  | CourseActionTypes.API_RESPONSE_ERROR
-  | CourseActionTypes.GET_COURSE
-  | CourseActionTypes.ADD_COURSE
-  | CourseActionTypes.UPDATE_COURSE
-  | CourseActionTypes.DELETE_COURSE;
+    | CourseActionTypes.API_RESPONSE_SUCCESS
+    | CourseActionTypes.API_RESPONSE_ERROR
+    | CourseActionTypes.GET_COURSE
+    | CourseActionTypes.ADD_COURSE
+    | CourseActionTypes.UPDATE_COURSE
+    | CourseActionTypes.DELETE_COURSE;
   payload: {
     actionType?: string;
     data?: CourseData | {};
@@ -36,6 +37,7 @@ interface State {
   course?: CourseData | {};
   loading?: boolean;
   value?: boolean;
+  hasLoadedInitially?: boolean;
 }
 
 const Course = (state: State = INIT_STATE, action: CampusActionType): any => {
@@ -48,6 +50,7 @@ const Course = (state: State = INIT_STATE, action: CampusActionType): any => {
             course: action.payload.data,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case CourseActionTypes.ADD_COURSE: {
@@ -87,6 +90,7 @@ const Course = (state: State = INIT_STATE, action: CampusActionType): any => {
             course: [],
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case CourseActionTypes.ADD_COURSE: {
@@ -121,13 +125,13 @@ const Course = (state: State = INIT_STATE, action: CampusActionType): any => {
       }
 
     case CourseActionTypes.GET_COURSE:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
     case CourseActionTypes.ADD_COURSE:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     case CourseActionTypes.UPDATE_COURSE:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     case CourseActionTypes.DELETE_COURSE:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     default:
       return { ...state };
   }

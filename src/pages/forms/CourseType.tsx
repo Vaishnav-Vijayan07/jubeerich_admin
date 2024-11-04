@@ -16,13 +16,9 @@ import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { getUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
 import {
-  addCampus,
   addCourseType,
-  deleteCampus,
   deleteCourseType,
-  getCampus,
   getCourseType,
-  updateCampus,
   updateCourseType,
 } from "../../redux/actions";
 
@@ -70,7 +66,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, university, error, loading } = props;
+  const { swal, state, error, loading, initialLoading } = props;
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -377,6 +373,7 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
+                initialLoading={initialLoading}
               />
             </Card.Body>
           </Card>
@@ -423,7 +420,7 @@ const CourseType = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} error={error} loading={loading} />
+          <BasicInputElements state={state} error={error} loading={loading} initialLoading={initialLoading} />
         </Col>
       </Row>
     </React.Fragment>

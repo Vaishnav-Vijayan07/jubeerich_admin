@@ -7,6 +7,7 @@ const INIT_STATE = {
   loading: false,
   error: null,
   initialLoading: false,
+  hasLoadedInitially: false,
 };
 
 interface FranchiseUsersData {
@@ -39,6 +40,7 @@ interface State {
   franchiseUsers?: FranchiseUsersData | {};
   loading?: boolean;
   value?: boolean;
+  hasLoadedInitially?: boolean
 }
 
 const Franchise = (
@@ -54,6 +56,7 @@ const Franchise = (
             franchiseUsers: action.payload.data,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case FranchiseActionTypes.ADD_FRANCHISE: {
@@ -114,6 +117,7 @@ const Franchise = (
             error: action.payload.error,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case FranchiseActionTypes.ADD_FRANCHISE: {
@@ -166,7 +170,7 @@ const Franchise = (
       }
 
     case FranchiseActionTypes.GET_FRANCHISE:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true, initialLoading: !state.hasLoadedInitially };
     case FranchiseActionTypes.ADD_FRANCHISE:
       return { ...state, loading: true, error: null };
     case FranchiseActionTypes.UPDATE_FRANCHISE:

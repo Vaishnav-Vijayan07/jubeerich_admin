@@ -8,6 +8,7 @@ const INIT_STATE = {
   loading: false,
   initialLoading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface RegionData {
@@ -44,6 +45,7 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
             regions: action.payload.data,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case RegionActionTypes.GET_REGION_MANAGERS: {
@@ -97,6 +99,7 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
             error: action.payload.error,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case RegionActionTypes.GET_REGION_MANAGERS: {
@@ -145,11 +148,11 @@ const Region = (state: any = INIT_STATE, action: RegionActionType) => {
       }
 
     case RegionActionTypes.GET_REGION:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true, initialLoading: !state.hasLoadedInitially };
     case RegionActionTypes.GET_REGION_MANAGERS:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true };
     case RegionActionTypes.GET_REGION_BY_ID:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true };
     case RegionActionTypes.ADD_REGION:
       return { ...state, loading: true };
     case RegionActionTypes.UPDATE_REGION:

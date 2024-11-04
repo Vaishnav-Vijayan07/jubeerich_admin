@@ -10,6 +10,7 @@ const INIT_STATE = {
   loading: false,
   initialloading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface CourseTypeData {
@@ -37,6 +38,7 @@ interface State {
   courseType?: CourseTypeData | {};
   loading?: boolean;
   value?: boolean;
+  hasLoadedInitially?: boolean,
 }
 
 const CourseType = (
@@ -53,6 +55,7 @@ const CourseType = (
             options: action.payload.data.formattedCourseTypes,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case CourseTypeActionTypes.ADD_COURSE_TYPE: {
@@ -92,6 +95,7 @@ const CourseType = (
             courseType: [],
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case CourseTypeActionTypes.ADD_COURSE_TYPE: {
@@ -126,13 +130,13 @@ const CourseType = (
       }
 
     case CourseTypeActionTypes.GET_COURSE_TYPE:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
     case CourseTypeActionTypes.ADD_COURSE_TYPE:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true};
     case CourseTypeActionTypes.UPDATE_COURSE_TYPE:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true};
     case CourseTypeActionTypes.DELETE_COURSE_TYPE:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true};
     default:
       return { ...state };
   }

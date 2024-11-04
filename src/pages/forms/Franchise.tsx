@@ -111,7 +111,7 @@ const initialValidationStateAdminUsers = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, error, loading } = props;
+  const { swal, state, error, loading, initialLoading } = props;
 
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   const { user_id } = JSON.parse(userInfo || "");
@@ -413,63 +413,6 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "slug",
       sort: false,
     },
-    // {
-    //   Header: "Admin User",
-    //   accessor: "",
-    //   sort: false,
-    //   Cell: ({ row }: any) => (
-    //     <div className="d-flex justify-content-center align-items-center gap-2">
-    //       {/* Edit Icon */}
-
-    //       {row?.original?.adminUsers.length > 0 ? (
-    //         <>
-    //           <span>{row?.original?.adminUsers[0]?.name}</span>
-    //           <Link
-    //             to="#"
-    //             className="action-icon"
-    //             onClick={() => {
-    //               setAdminUserFormData((prev: any) => ({
-    //                 ...prev,
-    //                 franchise_id: row?.original?.id,
-    //               }));
-    //               setIsUpdateAdminUser(true);
-    //               handleUpdateAdminUser(row.original?.adminUsers[0]);
-    //               toggleResponsiveModalAdminUser();
-    //             }}
-    //           >
-    //             <i className="mdi mdi-account-edit-outline text-primary font-5"></i>
-    //           </Link>
-    //         </>
-    //       ) : (
-    //         <Link
-    //           to="#"
-    //           className="action-icon"
-    //           onClick={() => {
-    //             setAdminUserFormData((prev: any) => ({
-    //               ...prev,
-    //               id: "",
-    //               employee_id: "",
-    //               name: "",
-    //               email: "",
-    //               phone: "",
-    //               address: "",
-    //               username: "",
-    //               password: "",
-    //               updated_by: "",
-    //               role_id: "",
-    //               branch_ids: null,
-    //               country_id: null,
-    //               franchise_id: row?.original?.id,
-    //             }));
-    //             toggleResponsiveModalAdminUser();
-    //           }}
-    //         >
-    //           <i className="mdi mdi-account-plus-outline text-primary font-5"></i>
-    //         </Link>
-    //       )}
-    //     </div>
-    //   ),
-    // },
     {
       Header: " ",
       accessor: "",
@@ -911,6 +854,7 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
+                initialLoading={initialLoading}
               />
             </Card.Body>
           </Card>
@@ -924,27 +868,18 @@ const Franchise = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   //Fetch data from redux store
-  const { state, error, loading, initialloading } = useSelector(
+  const { state, error, loading, initialLoading } = useSelector(
     (state: RootState) => ({
       state: state.Franchise.franchiseUsers,
       error: state.Franchise.error,
       loading: state.Franchise.loading,
-      initialloading: state.Franchise.initialLoading,
+      initialLoading: state.Franchise.initialLoading,
     })
   );
 
   useEffect(() => {
     dispatch(getFranchise());
   }, []);
-
-  // if (initialloading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <React.Fragment>
@@ -957,7 +892,7 @@ const Franchise = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} error={error} loading={loading} />
+          <BasicInputElements state={state} error={error} loading={loading} initialLoading={initialLoading} />
         </Col>
       </Row>
     </React.Fragment>
