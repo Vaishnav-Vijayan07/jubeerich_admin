@@ -8,6 +8,8 @@ import { AUTH_SESSION_KEY } from "../constants";
 import UserBox from "../pages/forms/BranchDetails";
 import KycRejected from "../pages/forms/KycRejected";
 import KycApproved from "../pages/forms/KycApproved";
+import Submitted from "../pages/forms/Kyc/MyApplications/Submitted";
+import OfferSubmitted from "../pages/forms/Kyc/MyApplications/OfferSubmitted";
 
 // lazy load all the views
 
@@ -204,13 +206,15 @@ const crmAppRoutes = {
     {
       path: "/kyc_details/applications/submitted",
       name: "KYC Approval",
-      element: <SubmittedDetails />,
+      // element: <SubmittedDetails />,
+      element: <Submitted />,
       route: PrivateRoute,
     },
     {
       path: "/kyc_details/applications/offer_accepted",
       name: "KYC Approval",
-      element: <SubmittedDetails />,
+      // element: <SubmittedDetails />,
+      element: <OfferSubmitted />,
       route: PrivateRoute,
     },
     {

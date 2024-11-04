@@ -16,7 +16,6 @@ import ApplicationFeeCheck from "./ApplicationFeeCheck";
 import { Col } from "react-bootstrap";
 import { FormInput } from "../../../components";
 import { withSwal } from "react-sweetalert2";
-import { check } from "prettier";
 
 const PendingDetailsById = withSwal((props: any) => {
   const { swal } = props;
@@ -67,6 +66,8 @@ const PendingDetailsById = withSwal((props: any) => {
   const studentId = useMemo(() => item?.studyPreferDetails?.studyPreference?.userPrimaryInfoId, [item]);
   const applicationId = useMemo(() => item?.existApplication?.id, [item]);
   const universityId = useMemo(() => item?.studyPreferDetails?.preferred_university?.id, [item]);
+  const comments = useMemo(() => item?.existApplication?.comments || "", [item]);
+  const reference_id = useMemo(() => item?.existApplication?.reference_id || 0, [item]);
 
   const availabilityCheck = useMemo(
     () => ({
@@ -222,7 +223,7 @@ const PendingDetailsById = withSwal((props: any) => {
   const handleProceedApplication = async (value: any) => {
     if (value) {
       submitChecks(CheckTypes.application_fee);
-      navigate('/kyc_details/pending/portal_details', { state: { universityId: universityId, applicationId: applicationId } })
+      navigate('/kyc_details/pending/portal_details', { state: { universityId: universityId, applicationId: applicationId,comments,reference_id } })
     }
   }
 
