@@ -256,7 +256,7 @@ const Submitted = () => {
                     <Modal.Body>
                         <Row>
                             <Row className='mb-4'>
-                                <Form.Label>Letter Type</Form.Label>
+                                <Form.Label>Offer Letter Type</Form.Label>
                                 <Select
                                     styles={customStyles}
                                     className="react-select react-select-container"
