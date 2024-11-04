@@ -7,6 +7,7 @@ const INIT_STATE = {
   loading: false,
   initialLoading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface OfficeData {
@@ -32,10 +33,7 @@ interface OfficeTypesActionType {
   };
 }
 
-const OfficeTypes = (
-  state: any = INIT_STATE,
-  action: OfficeTypesActionType
-) => {
+const OfficeTypes = (state: any = INIT_STATE, action: OfficeTypesActionType) => {
   switch (action.type) {
     case OfficeTypesActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
@@ -45,6 +43,7 @@ const OfficeTypes = (
             officeTypes: action.payload.data,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
 
@@ -90,6 +89,7 @@ const OfficeTypes = (
             error: action.payload.error,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case OfficeTypesActionTypes.GET_OFFICE_TYPE_BY_ID: {
@@ -130,9 +130,9 @@ const OfficeTypes = (
       }
 
     case OfficeTypesActionTypes.GET_OFFICE_TYPE:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true, initialLoading: !state.hasLoadedInitially };
     case OfficeTypesActionTypes.GET_OFFICE_TYPE_BY_ID:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true };
     case OfficeTypesActionTypes.ADD_OFFICE_TYPE:
       return { ...state, loading: true };
     case OfficeTypesActionTypes.UPDATE_OFFICE_TYPE:

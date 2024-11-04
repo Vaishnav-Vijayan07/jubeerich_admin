@@ -7,6 +7,7 @@ const INIT_STATE = {
   loading: false,
   initialLoading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface MaritalStatusData {
@@ -42,6 +43,7 @@ const MaritalStatus = (state: any = INIT_STATE, action: MaritalStatusActionType)
             maritalStatus: action.payload.data,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
 
@@ -87,6 +89,7 @@ const MaritalStatus = (state: any = INIT_STATE, action: MaritalStatusActionType)
             error: action.payload.error,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case MaritalStatusActionTypes.GET_MARITAL_STATUS_BY_ID: {
@@ -127,9 +130,9 @@ const MaritalStatus = (state: any = INIT_STATE, action: MaritalStatusActionType)
       }
 
     case MaritalStatusActionTypes.GET_MARITAL_STATUS:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true, initialLoading: !state.hasLoadedInitially };
     case MaritalStatusActionTypes.GET_MARITAL_STATUS_BY_ID:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true };
     case MaritalStatusActionTypes.ADD_MARITAL_STATUS:
       return { ...state, loading: true };
     case MaritalStatusActionTypes.UPDATE_MARITAL_STATUS:

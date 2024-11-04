@@ -96,7 +96,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, regions, office } = props;
+  const { swal, state, regions, office, initialLoading } = props;
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -911,6 +911,7 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
+                initialLoading={initialLoading}
               />
             </Card.Body>
           </Card>
@@ -974,7 +975,7 @@ const Branches = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} regions={regionsData} office={officeData} />
+          <BasicInputElements state={state} regions={regionsData} office={officeData} initialLoading={initialLoading} />
         </Col>
       </Row>
     </React.Fragment>

@@ -10,6 +10,7 @@ const INIT_STATE = {
   loading: false,
   initialloading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 type StreamData = {
@@ -38,6 +39,7 @@ interface State {
   stream?: StreamData | {};
   loading?: boolean;
   value?: boolean;
+  hasLoadedInitially?: boolean;
 }
 
 const Stream = (state: State = INIT_STATE, action: CampusActionType): any => {
@@ -51,6 +53,7 @@ const Stream = (state: State = INIT_STATE, action: CampusActionType): any => {
             options: action.payload.formattedStreams,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case StreamActionTypes.ADD_STREAM: {
@@ -90,6 +93,7 @@ const Stream = (state: State = INIT_STATE, action: CampusActionType): any => {
             stream: [],
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case StreamActionTypes.ADD_STREAM: {
@@ -124,13 +128,13 @@ const Stream = (state: State = INIT_STATE, action: CampusActionType): any => {
       }
 
     case StreamActionTypes.GET_STREAM:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
     case StreamActionTypes.ADD_STREAM:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true,  };
     case StreamActionTypes.UPDATE_STREAM:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true,  };
     case StreamActionTypes.DELETE_STREAM:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true,  };
     default:
       return { ...state };
   }

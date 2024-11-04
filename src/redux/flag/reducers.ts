@@ -7,6 +7,7 @@ const INIT_STATE = {
   loading: false,
   initialLoading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface FlagData {
@@ -43,6 +44,7 @@ const Flag = (state: any = INIT_STATE, action: FlagActionType) => {
             flags: action.payload.data,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
 
@@ -88,6 +90,7 @@ const Flag = (state: any = INIT_STATE, action: FlagActionType) => {
             error: action.payload.error,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case FlagActionTypes.GET_FLAG_BY_ID: {
@@ -128,9 +131,9 @@ const Flag = (state: any = INIT_STATE, action: FlagActionType) => {
       }
 
     case FlagActionTypes.GET_FLAG:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true, initialLoading: !state.hasLoadedInitially };
     case FlagActionTypes.GET_FLAG_BY_ID:
-      return { ...state, loading: true, initialLoading: true };
+      return { ...state, loading: true };
     case FlagActionTypes.ADD_FLAG:
       return { ...state, loading: true };
     case FlagActionTypes.UPDATE_FLAG:

@@ -85,7 +85,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, sourceData, error, loading } = props;
+  const { swal, state, sourceData, error, loading, initialLoading } = props;
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -475,7 +475,7 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
-
+                initialLoading={initialLoading}
               />
             </Card.Body>
           </Card>
@@ -546,6 +546,7 @@ const OfficeType = () => {
             sourceData={sourceData}
             error={error}
             loading={loading}
+            initialLoading={initialLoading}
           />
         </Col>
       </Row>

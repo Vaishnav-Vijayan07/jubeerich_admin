@@ -10,6 +10,7 @@ const INIT_STATE = {
   loading: false,
   initialloading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface ChannelData {
@@ -39,6 +40,7 @@ interface State {
   sources?: ChannelData | {};
   loading?: boolean;
   value?: boolean;
+  hasLoadedInitially?: boolean;
 }
 
 const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
@@ -51,6 +53,7 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
             channels: action.payload.data,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case ChannelsActionTypes.ADD_CHANNELS: {
@@ -89,6 +92,7 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
             error: action.payload.error,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case ChannelsActionTypes.ADD_CHANNELS: {
@@ -123,11 +127,11 @@ const Channel = (state: State = INIT_STATE, action: ChannelActionType): any => {
       }
 
     case ChannelsActionTypes.GET_CHANNELS:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
     case ChannelsActionTypes.ADD_CHANNELS:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     case ChannelsActionTypes.UPDATE_CHANNELS:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     default:
       return { ...state };
   }

@@ -76,6 +76,7 @@ const BasicInputElements = withSwal((props: any) => {
     userId,
     streamOptions,
     courseTypeOptions,
+    initialLoading
   } = props;
 
   //fetch token from session storage
@@ -483,6 +484,7 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
+                initialLoading={initialLoading}
               />
             </Card.Body>
           </Card>
@@ -547,6 +549,7 @@ const Course = () => {
             error={error}
             loading={loading}
             userId={userId}
+            initialLoading={initialLoading}
           />
         </Col>
       </Row>
