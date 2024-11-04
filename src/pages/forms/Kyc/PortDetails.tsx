@@ -1,32 +1,75 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Props = {};
 
 function PortalDetails({}: Props) {
-  const [reference_id, setReferenceId] = useState(0);
-  const [application_comment, setApplicationComment] = useState("");
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const { universityId, applicationId, comments, reference_id } = state || {};
+
+  const [application_reference_id, setReferenceId] = useState(reference_id);
+  const [application_comment, setApplicationComment] = useState(comments);
+  const [portalData, setPortalData] = useState({
+    portal_link: "",
+    username: "",
+    password: "",
+  });
+
+  const proceedSave = async (application_reference_id: any, application_comment: any) => {
+    try {
+      const { data } = await axios.patch(`/complete_application/${applicationId}`, {
+        ref_id: application_reference_id,
+        comment: application_comment,
+      });
+      if (data?.status) {
+        navigate("/kyc_details/applications/submitted");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchUniversityDetails = async () => {
+    const { data } = await axios.get(`/portal_details/${universityId}`);
+    setPortalData(data?.data);
+  };
+
+  console.log(portalData);
+
+  useEffect(() => {
+    if (universityId && applicationId) {
+      fetchUniversityDetails();
+    }
+  }, []);
 
   const handleLanguageMarkInputChange = (e: any) => {
     const { name, value } = e.target;
-    if (name === "reference_id") {
+    if (name === "application_reference_id") {
       setReferenceId(value);
     } else if (name === "application_comment") {
       setApplicationComment(value);
     }
   };
 
+  const handleProceed = () => {
+    console.log(application_reference_id, application_comment);
+    proceedSave(application_reference_id, application_comment);
+  };
+
   return (
     <>
-      <Row cla>
-        <Col>
+      <Row>
+        <Col md={4}>
           <div className="page-title-box">
             <h4 className="page-title">Portal Details</h4>
           </div>
         </Col>
       </Row>
       <Row className="mt-2">
-        <Col md={4}>
+        <Col md={5}>
           <Row className="mt-2">
             <h4>Application Portal Details</h4>
           </Row>
@@ -37,19 +80,16 @@ function PortalDetails({}: Props) {
                   <h5>
                     Portal Link:
                     <i className="mdi mdi-link-variant"></i>
-                    https://www.example.com
+                    {portalData?.portal_link}
                   </h5>
-                  <h5>Username: user123</h5>
-                  <h5>Password: *******</h5>
+                  <h5>Username: {portalData?.username}</h5>
+                  <h5>Password: {portalData?.password}</h5>
                 </div>
               </Row>
             </Card.Body>
           </Card>
         </Col>
-      </Row>
-      <Row></Row>
-      <Row className="mt-2">
-        <Col md={9}>
+        <Col md={7}>
           <Row className="mt-2">
             <h4>Reference Details</h4>
           </Row>
@@ -57,13 +97,13 @@ function PortalDetails({}: Props) {
             <Card.Body>
               <Row classname="d-flex flex-column p-2">
                 <Row>
-                  <Col md={4} lg={4}>
-                    <Form.Group className="mb-3" controlId="reference_id">
+                  <Col>
+                    <Form.Group className="mb-3" controlId="application_reference_id">
                       <Form.Label>Reference ID</Form.Label>
                       <Form.Control
                         type="text"
-                        name="reference_id"
-                        value={reference_id}
+                        name="application_reference_id"
+                        value={application_reference_id}
                         onChange={(e) => {
                           handleLanguageMarkInputChange(e);
                         }}
@@ -72,7 +112,7 @@ function PortalDetails({}: Props) {
                   </Col>
                 </Row>
                 <Row>
-                  <Col md={8} lg={8}>
+                  <Col>
                     <Form.Group className="mb-3" controlId="application_comment">
                       <Form.Label>Application Comment</Form.Label>
                       <Form.Control
@@ -88,8 +128,10 @@ function PortalDetails({}: Props) {
                   </Col>
                 </Row>
                 <Row>
-                  <Col md={8} lg={8}>
-                    <Button className="float-end">Proceed</Button>
+                  <Col>
+                    <Button className="float-end" style={{backgroundColor:"#28a745"}} onClick={handleProceed}>
+                      Mark as complete
+                    </Button>
                   </Col>
                 </Row>
               </Row>
