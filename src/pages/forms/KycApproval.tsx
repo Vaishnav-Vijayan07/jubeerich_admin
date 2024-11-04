@@ -211,7 +211,7 @@ const KycApproval = () => {
           <h3>Remarks</h3>
         </Modal.Header>
         <Modal.Body>
-        <div className="row">
+          <div className="row">
             <div style={{ minHeight: "150px", maxHeight: "250px", overflowY: "auto", scrollbarWidth: "none" }} className="col">
               {remarkData?.[0]?.remark ? (
                 remarkData?.map((remark: any, idx: any) => (
