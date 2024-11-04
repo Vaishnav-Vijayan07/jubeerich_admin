@@ -22,7 +22,7 @@ interface KYCActionType {
     | KYCActionTypes.API_RESPONSE_SUCCESS
     | KYCActionTypes.API_RESPONSE_ERROR
     | KYCActionTypes.GET_PENDING
-    | KYCActionTypes.GET_PENDING_BY_USER
+    | KYCActionTypes.GET_APPLICATION_BY_USER
     | KYCActionTypes.GET_REJECTED
     | KYCActionTypes.ASSIGN_APPLICATION_MEMBER
     | KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER
@@ -53,7 +53,7 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
           };
         }
 
-        case KYCActionTypes.GET_PENDING_BY_USER: {
+        case KYCActionTypes.GET_APPLICATION_BY_USER: {
           return {
             ...state,
             KYCSPending: action.payload.data,
@@ -113,7 +113,7 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
           };
         }
 
-        case KYCActionTypes.GET_PENDING_BY_USER: {
+        case KYCActionTypes.GET_APPLICATION_BY_USER: {
           return {
             ...state,
             error: action.payload.error,
@@ -146,7 +146,7 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
 
     case KYCActionTypes.GET_PENDING:
       return { ...state, loading: true, initialloading: true };
-    case KYCActionTypes.GET_PENDING_BY_USER:
+    case KYCActionTypes.GET_APPLICATION_BY_USER:
       return { ...state, loading: true, initialloading: true };
     case KYCActionTypes.GET_REJECTED:
       return { ...state, loading: true, initialloading: true };

@@ -8,7 +8,7 @@ import {
   getApprovedKycsApi,
   assignToApplicationMemberApi,
   autoAssignToApplicationMemberApi,
-  getPendingKycsByUserApi,
+  getApplicationByUserApi,
 } from "../../helpers/api/kyc";
 
 function* getPendingKYCs({ payload: { type } }: any): SagaIterator {
@@ -25,17 +25,17 @@ function* getPendingKYCs({ payload: { type } }: any): SagaIterator {
   }
 }
 
-function* getPendingKYCsByUser(): SagaIterator {
+function* getApplicationsByUser({ payload: { status } }: any): SagaIterator {
   try {
-    const response = yield call(getPendingKycsByUserApi);
+    const response = yield call(getApplicationByUserApi, status);
     console.log(response.data);
 
     const data = response.data.data;
 
     // NOTE - You can change this according to response format from your api
-    yield put(KYCApiResponseSuccess(KYCActionTypes.GET_PENDING_BY_USER, { data }));
+    yield put(KYCApiResponseSuccess(KYCActionTypes.GET_APPLICATION_BY_USER, { data }));
   } catch (error: any) {
-    yield put(KYCApiResponseError(KYCActionTypes.GET_PENDING_BY_USER, error));
+    yield put(KYCApiResponseError(KYCActionTypes.GET_APPLICATION_BY_USER, error));
   }
 }
 
@@ -101,8 +101,8 @@ export function* watchGetKYCPending() {
   yield takeEvery(KYCActionTypes.GET_PENDING, getPendingKYCs);
 }
 
-export function* watchGetKYCPendingByUser() {
-  yield takeEvery(KYCActionTypes.GET_PENDING_BY_USER, getPendingKYCsByUser);
+export function* watchGetApplicationsByUser() {
+  yield takeEvery(KYCActionTypes.GET_APPLICATION_BY_USER, getApplicationsByUser);
 }
 
 export function* watchAssignToApplicationMember() {
@@ -128,7 +128,7 @@ function* KYCSaga() {
     fork(watchGetKYCApproved),
     fork(watchAssignToApplicationMember),
     fork(watchAutoAssignToApplicationMember),
-    fork(watchGetKYCPendingByUser),
+    fork(watchGetApplicationsByUser),
   ]);
 }
 

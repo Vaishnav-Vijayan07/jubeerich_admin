@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { getPendingKYCByUser } from "../../../../redux/KYC/actions";
+import { getApplicationByUser } from "../../../../redux/KYC/actions";
 import { RootState } from "../../../../redux/store";
 import PageTitle from "../../../../components/PageTitle";
 import Table from "../../../../components/Table";
@@ -40,6 +40,13 @@ interface TableRecords {
   status: string;
 }
 
+export const applicationsStatuses = {
+    pending: 'pending',
+    submitted: 'submitted',
+    offer_accepted: 'offer_accepted',
+    rejected: 'rejected'
+}
+
 const Pending = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -49,7 +56,7 @@ const Pending = () => {
   }));
 
   useEffect(() => {
-    dispatch(getPendingKYCByUser());
+    dispatch(getApplicationByUser(applicationsStatuses.pending));
   }, []);
 
   const columns = [
