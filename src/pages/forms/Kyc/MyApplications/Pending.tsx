@@ -155,7 +155,7 @@ const Pending = () => {
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* View Icon */}
           <span className="action-icon" onClick={() => navigate(`/kyc_details/pending/${row.original.id}`)}>
-            <i className="mdi mdi-arrow-right-drop-circle-outline"></i>
+            <i className="fs-3 mdi mdi-arrow-right-drop-circle-outline"></i>
           </span>
 
           {/* Eye Icon */}
@@ -163,7 +163,7 @@ const Pending = () => {
             className="action-icon"
             onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`)}
           >
-            <i className="mdi mdi-eye-outline"></i>
+            <i className="fs-3 mdi mdi-eye-outline"></i>
           </span>
         </div>
       ),
