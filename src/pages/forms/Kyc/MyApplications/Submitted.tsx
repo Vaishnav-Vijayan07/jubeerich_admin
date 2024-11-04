@@ -64,7 +64,8 @@ const Submitted = () => {
     const navigate = useNavigate();
     const [showLetterModal, setShowLetterModal] = useState<any>(false);
     const [selectedOfferType, setSelectedOfferType] = useState<any>(null);
-    const [selectedFile, setSelectedFile] = useState<any>(null)
+    const [selectedFile, setSelectedFile] = useState<any>(null);
+    const [selectedApplication, setSelectedApplication] = useState<any>('')
 
     const { records } = useSelector((state: RootState) => ({
         records: state.KYC.KYCSPending.data,
@@ -178,7 +179,7 @@ const Submitted = () => {
                     {/* Cloud Icon */}
                     <span
                         className="action-icon"
-                        onClick={() => [setShowLetterModal(true), setSelectedFile(null), setSelectedOfferType(null)]}
+                        onClick={() => [setSelectedApplication(row.original.id), setShowLetterModal(true), setSelectedFile(null), setSelectedOfferType(null)]}
                     >
                         <i className="fs-3 mdi mdi-cloud-upload-outline"></i>
                     </span>
@@ -195,19 +196,20 @@ const Submitted = () => {
     const handleOfferSubmit = async () => {
 
         try {
-            const formData = new FormData()
+            const formData = new FormData();
             formData.append('offer_letter', selectedFile[0])
             formData.append('offer_letter_type', selectedOfferType?.value)
-
-            const res = await axios.put(`/provide_offer/${'55'}`, formData, {
+            
+            const res = await axios.put(`/provide_offer/${selectedApplication}`, formData, {
                 headers: {
                     "content-type": "multipart/form-data",
                 },
             })
 
             if (res) {
-                showSuccessAlert('Offer Submitted Successfull');
-                handleReset()
+                showSuccessAlert('Offer Submitted Successfully');
+                handleReset();
+                dispatch(getApplicationByUser(applicationsStatuses.submitted));
             }
         } catch (error) {
             showErrorAlert('Something went wrong')
