@@ -10,6 +10,7 @@ const INIT_STATE = {
   loading: false,
   initialloading: false,
   error: null,
+  hasLoadedInitially: false, 
 };
 
 interface SourceData {
@@ -40,6 +41,7 @@ interface State {
   sources?: SourceData | {};
   loading?: boolean;
   value?: boolean;
+  hasLoadedInitially?: boolean;
 }
 
 const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
@@ -52,6 +54,7 @@ const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
             sources: action.payload.data,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case SourceActionTypes.ADD_SOURCES: {
@@ -91,6 +94,7 @@ const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
             error: action.payload.error,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case SourceActionTypes.ADD_SOURCES: {
@@ -125,11 +129,11 @@ const Sources = (state: State = INIT_STATE, action: SourceActionType): any => {
       }
 
     case SourceActionTypes.GET_SOURCES:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
     case SourceActionTypes.ADD_SOURCES:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true};
     case SourceActionTypes.UPDATE_SOURCES:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     default:
       return { ...state };
   }

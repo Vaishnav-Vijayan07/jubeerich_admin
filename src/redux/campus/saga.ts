@@ -5,20 +5,11 @@ import { SagaIterator } from "@redux-saga/core";
 import { APICore } from "../../helpers/api/apiCore";
 
 // actions
-import {
-  CampusApiResponseSuccess,
-  CampusApiResponseError,
-  getCampus
-} from "./actions";
+import { CampusApiResponseSuccess, CampusApiResponseError, getCampus } from "./actions";
 
 // constants
 import { CampusActionTypes } from "./constants";
-import {
-  addCampusApi,
-  deleteCampusApi,
-  getCampusApi,
-  updateCampusApi
-} from "../../helpers";
+import { addCampusApi, deleteCampusApi, getCampusApi, updateCampusApi } from "../../helpers";
 
 interface CampusData {
   payload: {
@@ -49,73 +40,42 @@ function* getAllCampus(): SagaIterator {
       })
     );
   } catch (error: any) {
-    yield put(
-      CampusApiResponseError(CampusActionTypes.GET_CAMPUS, error)
-    );
+    yield put(CampusApiResponseError(CampusActionTypes.GET_CAMPUS, error));
   }
 }
 
-function* addCampus({
-  payload: {
-    campus_name,
-    location,
-    university_id,
-    courses
-  },
-}: CampusData): SagaIterator {
+function* addCampus({ payload: { campus_name, location, university_id, courses } }: CampusData): SagaIterator {
   try {
     const response = yield call(addCampusApi, {
       campus_name,
       location,
       university_id,
-      courses
+      courses,
     });
     const data = response.data.message;
 
-    yield put(
-      CampusApiResponseSuccess(CampusActionTypes.ADD_CAMPUS, data)
-    );
+    yield put(CampusApiResponseSuccess(CampusActionTypes.ADD_CAMPUS, data));
 
     yield put(getCampus());
   } catch (error: any) {
-    yield put(
-      CampusApiResponseError(CampusActionTypes.ADD_CAMPUS, error)
-    );
+    yield put(CampusApiResponseError(CampusActionTypes.ADD_CAMPUS, error));
   }
 }
 
-function* updateCampus({
-  payload: {
-    id,
-    campus_name,
-    location,
-    university_id,
-    courses
-  },
-}: CampusData): SagaIterator {
+function* updateCampus({ payload: { id, campus_name, location, university_id, courses } }: CampusData): SagaIterator {
   try {
     const response = yield call(updateCampusApi, id, {
       campus_name,
       location,
       university_id,
-      courses
+      courses,
     });
     const data = response.data.message;
 
-    yield put(
-      CampusApiResponseSuccess(
-        CampusActionTypes.UPDATE_CAMPUS,
-        data
-      )
-    );
+    yield put(CampusApiResponseSuccess(CampusActionTypes.UPDATE_CAMPUS, data));
     yield put(getCampus());
   } catch (error: any) {
-    yield put(
-      CampusApiResponseSuccess(
-        CampusActionTypes.UPDATE_CAMPUS,
-        error
-      )
-    );
+    yield put(CampusApiResponseSuccess(CampusActionTypes.UPDATE_CAMPUS, error));
   }
 }
 
@@ -124,17 +84,10 @@ function* deleteCampus({ payload: { id } }: CampusData): SagaIterator {
     const response = yield call(deleteCampusApi, id);
     const data = response.data.message;
 
-    yield put(
-      CampusApiResponseSuccess(
-        CampusActionTypes.DELETE_CAMPUS,
-        data
-      )
-    );
+    yield put(CampusApiResponseSuccess(CampusActionTypes.DELETE_CAMPUS, data));
     yield put(getCampus());
   } catch (error: any) {
-    yield put(
-      CampusApiResponseError(CampusActionTypes.DELETE_CAMPUS, error)
-    );
+    yield put(CampusApiResponseError(CampusActionTypes.DELETE_CAMPUS, error));
   }
 }
 
@@ -155,12 +108,7 @@ export function* watchDeleteCampus(): any {
 }
 
 function* CampusSaga() {
-  yield all([
-    fork(watchGetCampus),
-    fork(watchaddCampus),
-    fork(watchUpdateCampus),
-    fork(watchDeleteCampus),
-  ]);
+  yield all([fork(watchGetCampus), fork(watchaddCampus), fork(watchUpdateCampus), fork(watchDeleteCampus)]);
 }
 
 export default CampusSaga;

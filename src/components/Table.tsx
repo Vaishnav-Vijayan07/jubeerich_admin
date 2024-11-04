@@ -9,6 +9,8 @@ import {
   useExpanded,
 } from "react-table";
 import classNames from "classnames";
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 // components
 import Pagination from "./Pagination";
@@ -105,6 +107,7 @@ interface TableProps {
   tableClass?: string;
   theadClass?: string;
   onSelect?: any;
+  initialLoading?: boolean;
 }
 
 const Table = (props: TableProps) => {
@@ -263,7 +266,6 @@ const Table = (props: TableProps) => {
             {(dataTable.headerGroups || []).map((headerGroup: any) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {(headerGroup.headers || []).map((column: any) => (
-
                   <th
                     {...column.getHeaderProps(
                       column.sort && column.getSortByToggleProps()
@@ -292,27 +294,40 @@ const Table = (props: TableProps) => {
                       )}
                     </span>
                   </th>
-
                 ))}
               </tr>
             ))}
           </thead>
           <tbody {...dataTable.getTableBodyProps()}>
-            {(rows || []).map((row: any, i: number) => {
-              dataTable.prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {(row.cells || []).map((cell: any) => {  
-                    return (
+            {props.initialLoading ? (
+              [...Array(5)].map((_, index) => (
+                <tr key={index}>
+                  {props.columns.map((col, i) => (
+                    <td key={i}>
+                      <Skeleton height={20} />
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : rows.length === 0 ? (
+              <tr>
+                <td colSpan={props.columns.length} className="text-center">
+                  No data found...
+                </td>
+              </tr>
+            ) : (
+              rows.map((row: any, i: number) => {
+                dataTable.prepareRow(row);
+                return (
+                  <tr {...row.getRowProps()}>
+                    {(row.cells || []).map((cell: any) => (
                       <td
                         {...cell.getCellProps([
                           {
-                            // className: cell.column.className,
                             className: `${cell.column.className} cursor-pointer`,
                           },
                         ])}
                         style={{ ...(cell.minWidth && { minWidth: cell.minWidth }), ...(cell.maxWidth && { maxWidth: cell.maxWidth }) }}
-                        // title={cell.value}
                         title={`${formatCellValue(cell.value)}`}
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top"
@@ -321,18 +336,13 @@ const Table = (props: TableProps) => {
                           {cell.render("Cell")}
                         </span>
                       </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
+                    ))}
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
-        {rows.length === 0 && (
-          <div className="text-center">
-            <p>No data found...</p>
-          </div>
-        )}
       </div>
       {pagination && (
         <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />
