@@ -62,7 +62,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedLeadType, setSelectedLeadType] = useState<any>(null);
   const dispatch = useDispatch<AppDispatch>();
   const { swal } = props;
-  const { state, loading, error, leadType } = props;
+  const { state, loading, error, leadType, initialLoading } = props;
 
   console.log('leadType 2',leadType);
 
@@ -272,7 +272,7 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
@@ -425,6 +425,7 @@ const BasicInputElements = withSwal((props: any) => {
                 isSortable={true}
                 pagination={true}
                 isSearchable={true}
+                initialLoading={initialLoading}
                 tableClass="table-striped dt-responsive nowrap w-100"
 
               />
@@ -481,7 +482,7 @@ const Sources = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} leadType={leadTypeData} error={error} loading={loading} />
+          <BasicInputElements state={state} leadType={leadTypeData} error={error} loading={loading} initialLoading={initialloading} />
         </Col>
       </Row>
     </React.Fragment>

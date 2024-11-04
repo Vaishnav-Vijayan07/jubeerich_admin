@@ -61,7 +61,7 @@ const initialValidationState = {
 };
 
 const BasicInputElements = withSwal((props: any) => {
-  const { swal, state, loading, error } = props;
+  const { swal, state, loading, error, initialLoading } = props;
   const dispatch = useDispatch();
 
   //fetch token from session storage
@@ -232,7 +232,7 @@ const BasicInputElements = withSwal((props: any) => {
     //   ),
     // },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
@@ -386,6 +386,7 @@ const BasicInputElements = withSwal((props: any) => {
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
+                initialLoading={initialLoading}
                 // isSelectable={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
@@ -440,6 +441,7 @@ const Category = () => {
             loading={loading}
             success={success}
             error={error}
+            initialLoading={initialloading}
           />
         </Col>
       </Row>
