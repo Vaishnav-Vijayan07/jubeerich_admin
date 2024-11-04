@@ -16,7 +16,7 @@ interface CampusData {
   campus_name: string;
   location: string;
   university_id: string;
-  courses: { course_fee: string; course_link: string; course_id: string | number }[];
+  courses: { course_fee: string; application_fee: string; course_link: string; course_id: string | number }[];
 }
 
 // common success
@@ -45,7 +45,7 @@ export const addCampus = (
   campus_name: string,
   location: string,
   university_id: string,
-  courses: { course_fee: string; course_link: string; course_id: string | number }[]
+  courses: { course_fee: string; application_fee: string; course_link: string; course_id: string | number }[]
 ): CampusActionType => ({
   type: CampusActionTypes.ADD_CAMPUS,
   payload: {
@@ -61,7 +61,7 @@ export const updateCampus = (
   campus_name: string,
   location: string,
   university_id: string,
-  courses: { course_fee: string; course_link: string; course_id: string | number }[]
+  courses: { course_fee: string; application_fee: string; course_link: string; course_id: string | number }[]
 ): CampusActionType => ({
   type: CampusActionTypes.UPDATE_CAMPUS,
   payload: {

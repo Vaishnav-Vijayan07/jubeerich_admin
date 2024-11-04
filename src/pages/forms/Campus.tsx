@@ -55,7 +55,7 @@ const initialState = {
   campus_name: "",
   location: "",
   university_id: "",
-  courses: [{ course_fee: "", course_link: "", course_id: "" }],
+  courses: [{ course_fee: "", application_fee: "", course_link: "", course_id: "" }],
 };
 
 const initialValidationState = {
@@ -336,7 +336,7 @@ const BasicInputElements = withSwal((props: any) => {
 
       return {
         ...prevData,
-        courses: [...prevData.courses, { course_fee: "", course_link: "", course_id: "" }],
+        courses: [...prevData.courses, { course_fee: "", application_fee: "", course_link: "", course_id: "" }],
       };
     });
   };
@@ -440,6 +440,18 @@ const BasicInputElements = withSwal((props: any) => {
                           type="text"
                           name="course_fee"
                           value={course.course_fee}
+                          onChange={(e) => handleInputChange(e, index)}
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={6}>
+                      <Form.Group className="mb-2" controlId={`application_fee${index}`}>
+                        <Form.Label>Application Fee</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="application_fee"
+                          value={course.application_fee}
                           onChange={(e) => handleInputChange(e, index)}
                         />
                       </Form.Group>
