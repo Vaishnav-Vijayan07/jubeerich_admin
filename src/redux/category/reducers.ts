@@ -14,6 +14,7 @@ const INIT_STATE = {
   error: null,
   success: false,
   message: false,
+  hasLoadedInitially: false,
 };
 
 interface CategoryData {
@@ -41,6 +42,7 @@ interface State {
   category?: CategoryData | {};
   loading?: boolean;
   value?: boolean;
+  hasLoadedInitially: boolean;
 }
 
 const Category = (
@@ -56,6 +58,7 @@ const Category = (
             category: action.payload.data,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case CategoryActionTypes.ADD_CATEGORY: {
@@ -102,6 +105,7 @@ const Category = (
             error: action.payload.error,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case CategoryActionTypes.ADD_CATEGORY: {
@@ -141,11 +145,11 @@ const Category = (
       }
 
     case CategoryActionTypes.GET_CATEGORY:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
     case CategoryActionTypes.ADD_CATEGORY:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     case CategoryActionTypes.UPDATE_CATEGORY:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     default:
       return { ...state };
   }
