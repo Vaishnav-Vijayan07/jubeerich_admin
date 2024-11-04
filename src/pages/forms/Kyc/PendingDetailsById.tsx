@@ -65,6 +65,7 @@ const PendingDetailsById = withSwal((props: any) => {
 
   const studentId = useMemo(() => item?.studyPreferDetails?.studyPreference?.userPrimaryInfoId, [item]);
   const applicationId = useMemo(() => item?.existApplication?.id, [item]);
+  const isChecksCompleted = useMemo(() => item?.existApplication?.is_application_checks_passed, [item]);
   const universityId = useMemo(() => item?.studyPreferDetails?.preferred_university?.id, [item]);
   const comments = useMemo(() => item?.existApplication?.comments || "", [item]);
   const reference_id = useMemo(() => item?.existApplication?.reference_id || 0, [item]);
@@ -97,7 +98,7 @@ const PendingDetailsById = withSwal((props: any) => {
       if (result) {
         setItem(result?.data?.data);
         setChecks(result?.data?.data?.checks);
-        setQualityForm(result?.data?.data?.checks?.quality_check)
+        setQualityForm(result?.data?.data?.checks?.quality_check);
       }
     } catch (error) {
       console.log(error);
@@ -110,19 +111,23 @@ const PendingDetailsById = withSwal((props: any) => {
 
   const buttonNavigations = async (type: "next" | "prev") => {
     if (type === "next") {
-      const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
-      });
-
-      if (result.isConfirmed) {
-        handleChecks(current);
+      if (isChecksCompleted) {
         setCurrent(current + 1);
+      } else {
+        const result = await swal.fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Save",
+        });
+
+        if (result.isConfirmed) {
+          handleChecks(current);
+          setCurrent(current + 1);
+        }
       }
     } else {
       setCurrent(current - 1);
@@ -216,17 +221,30 @@ const PendingDetailsById = withSwal((props: any) => {
   };
 
   const handleCheckChange = (name: any, checked: any) => {
-    setQualityForm((prev: any) =>({
-      ...prev, [name]: checked
-    }))
-  }
+    setQualityForm((prev: any) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
 
   const handleProceedApplication = async (value: any) => {
-    if (value) {
-      submitChecks(CheckTypes.application_fee);
-      navigate('/kyc_details/pending/portal_details', { state: { universityId: universityId, applicationId: applicationId,comments,reference_id } })
+    if (!value) return;
+
+    try {
+      // If all checks are completed, proceed to submit the application checks.
+      if (!isChecksCompleted) {
+        await submitChecks(CheckTypes.application_fee);
+      }
+
+      // Navigate to the specified page, passing the required state.
+      navigate("/kyc_details/pending/portal_details", {
+        state: { universityId, applicationId, comments, reference_id },
+      });
+    } catch (error) {
+      console.error("Error submitting application checks:", error);
+      // Optionally, display an error message to the user here
     }
-  }
+  };
 
   return (
     <>
@@ -256,7 +274,13 @@ const PendingDetailsById = withSwal((props: any) => {
             />
           </Form.Group>
         </Col>
-        <FormButtons studentId={studentId} handleNavigation={buttonNavigations} current={current} handleReject={handleRejection} handleProceed={handleProceedApplication} />
+        <FormButtons
+          studentId={studentId}
+          handleNavigation={buttonNavigations}
+          current={current}
+          handleReject={handleRejection}
+          handleProceed={handleProceedApplication}
+        />
       </Row>
     </>
   );

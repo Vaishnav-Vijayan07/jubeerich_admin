@@ -41,11 +41,11 @@ interface TableRecords {
 }
 
 export const applicationsStatuses = {
-    pending: 'pending',
-    submitted: 'submitted',
-    offer_accepted: 'offer_accepted',
-    rejected: 'rejected'
-}
+  pending: "pending",
+  submitted: "submitted",
+  offer_accepted: "offer_accepted",
+  rejected: "rejected",
+};
 
 const Pending = () => {
   const dispatch = useDispatch();
@@ -151,22 +151,51 @@ const Pending = () => {
       Header: "Actions",
       accessor: "",
       sort: false,
-      Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
-          {/* View Icon */}
-          <span className="action-icon" onClick={() => navigate(`/kyc_details/pending/${row.original.id}`)}>
-            <i className="fs-3 mdi mdi-arrow-right-drop-circle-outline"></i>
-          </span>
+      Cell: ({ row }: any) => {
+        const isChecksPassed = row.original?.is_application_checks_passed;
+        const universityId = row.original?.studyPreferenceDetails?.preferred_university?.id;
+        const applicationId = row.original?.id;
+        const comments = row.original?.comments;
+        const reference_id = row.original?.reference_id;
 
-          {/* Eye Icon */}
-          <span
-            className="action-icon"
-            onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`)}
-          >
-            <i className="fs-3 mdi mdi-eye-outline"></i>
-          </span>
-        </div>
-      ),
+        const navigateTo = (type: string) => {
+          console.log("type=========>", type);
+
+          switch (type) {
+            case "checks":
+              navigate(`/kyc_details/pending/${row.original.id}`);
+              break;
+            case "portal":
+              navigate("/kyc_details/pending/portal_details", {
+                state: { universityId: universityId, applicationId: applicationId, comments, reference_id },
+              });
+              break;
+            default:
+              navigate(`/kyc_details/pending/${row.original.id}`);
+              break;
+          }
+        };
+
+        return (
+          <>
+            <div className="d-flex justify-content-center align-items-center gap-2">
+              {/* View Icon */}
+              <span className="action-icon" onClick={() => navigateTo(isChecksPassed ? "portal" : "checks")}>
+                <i className="fs-3 mdi mdi-arrow-right-drop-circle-outline"></i>
+              </span>
+
+              {/* Eye Icon */}
+              <span
+                className="action-icon"
+                onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`)}
+              >
+                <i className="fs-3 mdi mdi-eye-outline"></i>
+              </span>
+            </div>
+          </>
+        );
+      },
+
       minWidth: 150,
     },
   ];
