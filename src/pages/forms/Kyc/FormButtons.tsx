@@ -30,7 +30,7 @@ function FormButtons({ handleNavigation, current, handleReject, studentId, handl
             Next
           </Button>
         ) : (
-          <Button onClick={handleProceed} variant="success">
+          <Button onClick={handleProceed} >
             Proceed to application
           </Button>
         )}
