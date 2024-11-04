@@ -228,11 +228,21 @@ const PendingDetailsById = withSwal((props: any) => {
   };
 
   const handleProceedApplication = async (value: any) => {
-    if (value) {
-      submitChecks(CheckTypes.application_fee);
+    if (!value) return;
+
+    try {
+      // If all checks are completed, proceed to submit the application checks.
+      if (!isChecksCompleted) {
+        await submitChecks(CheckTypes.application_fee);
+      }
+
+      // Navigate to the specified page, passing the required state.
       navigate("/kyc_details/pending/portal_details", {
-        state: { universityId: universityId, applicationId: applicationId, comments, reference_id },
+        state: { universityId, applicationId, comments, reference_id },
       });
+    } catch (error) {
+      console.error("Error submitting application checks:", error);
+      // Optionally, display an error message to the user here
     }
   };
 

@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { showSuccessAlert } from "../../../constants";
 
 type Props = {};
 
@@ -26,6 +27,7 @@ function PortalDetails({}: Props) {
       });
       if (data?.status) {
         navigate("/kyc_details/applications/submitted");
+        showSuccessAlert("Application submitted succesfully");
       }
     } catch (error) {
       console.log(error);
@@ -59,12 +61,26 @@ function PortalDetails({}: Props) {
     proceedSave(application_reference_id, application_comment);
   };
 
+  const handleNavigation = () => {
+    navigate(`/kyc_details/pending/${applicationId}`);
+  };
+
   return (
     <>
       <Row>
         <Col md={4}>
           <div className="page-title-box">
             <h4 className="page-title">Portal Details</h4>
+          </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={4}>
+          <div className="d-flex align-items-center">
+            <div onClick={handleNavigation} className="d-flex align-items-center text-primary view-link" role="button">
+              <i className="mdi mdi-arrow-left-bold-circle-outline fs-3 me-2"></i>
+              <span className="view-text">View all check details</span>
+            </div>
           </div>
         </Col>
       </Row>
@@ -129,7 +145,7 @@ function PortalDetails({}: Props) {
                 </Row>
                 <Row>
                   <Col>
-                    <Button className="float-end" style={{backgroundColor:"#28a745"}} onClick={handleProceed}>
+                    <Button className="float-end" style={{ backgroundColor: "#28a745" }} onClick={handleProceed}>
                       Mark as complete
                     </Button>
                   </Col>
