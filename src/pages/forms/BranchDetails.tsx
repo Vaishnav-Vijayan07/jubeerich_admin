@@ -161,7 +161,7 @@ const BranchDetails = withSwal((props: any) => {
       ),
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (

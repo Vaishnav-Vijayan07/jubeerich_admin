@@ -73,7 +73,7 @@ const initialValidationState = {
 const BasicInputElements = withSwal((props: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, loading, success, error, initialloading } = props;
+  const { swal, state, loading, success, error, initialLoading } = props;
 
   console.log("loading ===>", loading);
   console.log("error ===>", error);
@@ -280,7 +280,7 @@ const BasicInputElements = withSwal((props: any) => {
       ),
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
@@ -409,6 +409,7 @@ const BasicInputElements = withSwal((props: any) => {
               <h4 className="header-title mb-4">Manage Status</h4>
               <Table columns={columns} data={records ? records : []} pageSize={10} sizePerPageList={sizePerPageList} isSortable={true} pagination={true} isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
+                initialLoading={initialLoading}
               />
             </Card.Body>
           </Card>
@@ -455,7 +456,7 @@ const Status = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={Status} loading={loading} success={success} error={error} initialloading={initialloading} />
+          <BasicInputElements initialLoading={initialloading} state={Status} loading={loading} success={success} error={error} initialloading={initialloading} />
         </Col>
       </Row>
     </React.Fragment>

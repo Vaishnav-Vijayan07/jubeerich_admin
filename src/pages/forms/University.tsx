@@ -81,7 +81,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, country, error, loading } = props;
+  const { swal, state, country, error, loading, initialLoading } = props;
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -365,7 +365,7 @@ const BasicInputElements = withSwal((props: any) => {
     //   </div>,
     // },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
@@ -420,7 +420,7 @@ const BasicInputElements = withSwal((props: any) => {
     if (isUpdate) {
       handleCancelUpdate();
     }
-  };
+  };  
 
   useEffect(() => {
     // Check for errors and clear the form
@@ -568,6 +568,7 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
+                initialLoading={initialLoading}
               />
             </Card.Body>
           </Card>
@@ -609,7 +610,7 @@ const University = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} country={country?.countries || []} error={error} loading={loading} />
+          <BasicInputElements state={state} country={country?.countries || []} error={error} loading={loading} initialLoading={initialLoading} />
         </Col>
       </Row>
     </React.Fragment>

@@ -1,4 +1,5 @@
 // apicore
+import { stat } from "fs";
 import { showErrorAlert, showSuccessAlert } from "../../constants";
 
 // constants
@@ -9,6 +10,7 @@ const INIT_STATE = {
   loading: false,
   initialloading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface CampusData {
@@ -37,6 +39,7 @@ interface State {
   campus?: CampusData | {};
   loading?: boolean;
   value?: boolean;
+  hasLoadedInitially: boolean;
 }
 
 const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
@@ -49,6 +52,7 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
             campus: action.payload.data,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case CampusActionTypes.ADD_CAMPUS: {
@@ -88,6 +92,7 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
             campus: [],
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case CampusActionTypes.ADD_CAMPUS: {
@@ -122,13 +127,13 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
       }
 
     case CampusActionTypes.GET_CAMPUS:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
     case CampusActionTypes.ADD_CAMPUS:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     case CampusActionTypes.UPDATE_CAMPUS:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     case CampusActionTypes.DELETE_CAMPUS:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     default:
       return { ...state };
   }

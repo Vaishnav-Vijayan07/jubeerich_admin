@@ -309,7 +309,7 @@ const StatusModal = ({ modal, setModal }: modalType) => {
       ),
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (

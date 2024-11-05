@@ -89,7 +89,7 @@ const DetailsTable = ({ data, icons }: Props) => {
       sort: false,
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (

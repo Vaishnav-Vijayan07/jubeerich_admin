@@ -293,7 +293,7 @@ const BasicInputElements = withSwal((props: any) => {
       sort: true,
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (

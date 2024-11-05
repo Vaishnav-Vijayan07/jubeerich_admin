@@ -181,7 +181,7 @@ const LeadTable = ({ statusData, openModalWithClass, handleUpdate, leadsData, Us
       sort: false,
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "action",
       Cell: ActionColumn,
       sort: false,
