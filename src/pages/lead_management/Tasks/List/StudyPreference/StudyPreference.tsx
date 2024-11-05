@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Row } from "react-bootstrap";
+import { Row, Spinner } from "react-bootstrap";
 import { withSwal } from "react-sweetalert2";
 import useDropdownData from "../../../../../hooks/useDropdownDatas";
 import axios from "axios";
 import StudyPreferenceRow from "./StudyPrefRow";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
+import SkeletonComponent from "./LoadingSkeleton";
 
 const StudyPreference = withSwal((props: any) => {
   const { swal, studentId } = props;
 
   //create state for item
   const [item, setItem] = useState([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
@@ -20,6 +22,8 @@ const StudyPreference = withSwal((props: any) => {
   const getStudyPrefData = async () => {
     console.log("studentId, calling");
 
+    setLoading(true);
+
     try {
       const { data } = await axios.get(`/study_preferences_details/${studentId}`);
 
@@ -27,6 +31,8 @@ const StudyPreference = withSwal((props: any) => {
       console.log("studentId data", data.data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,6 +41,10 @@ const StudyPreference = withSwal((props: any) => {
       getStudyPrefData();
     }
   }, [dropdownData.universities.length, dropdownData.campuses.length, refresh, studentId]);
+
+  if (loading) {
+    return <SkeletonComponent />;
+  }
 
   return (
     <>
