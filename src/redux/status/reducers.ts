@@ -120,7 +120,6 @@ const Status = (state: State = INIT_STATE, action: StatusActionType): any => {
             error: action.payload.error,
             initialConfigloading: false,
             loading: false,
-            initialloading: false,
             hasConfigLoadedInitially: false,
           };
         }
