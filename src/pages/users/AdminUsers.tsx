@@ -35,7 +35,7 @@ import { getFranchise } from "../../redux/franchise/actions";
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, BranchesData, franchiseData, CountriesData, RolesData, regionData, error, loading } = props;
+  const { swal, state, BranchesData, franchiseData, CountriesData, RolesData, regionData, error, loading, initialLoading } = props;
   console.log(franchiseData);
   
   const [modal, setModal] = useState<boolean>(false);
@@ -351,7 +351,7 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
@@ -771,6 +771,7 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
+                initialLoading={initialLoading}
               />
             </Card.Body>
           </Card>
@@ -884,6 +885,7 @@ const AdminUsers = () => {
             RolesData={RolesData?.state}
             regionData={regionData}
             franchiseData={franchiseData}
+            initialLoading={initialLoading}
           />
         </Col>
       </Row>

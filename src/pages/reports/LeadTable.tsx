@@ -125,7 +125,7 @@ const LeadTable = ({ leadsData, setStandard, setSelectedLead }: any) => {
       sort: false,
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "action",
       Cell: ActionColumn,
       sort: false,

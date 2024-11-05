@@ -22,7 +22,7 @@ interface LeadsData {
   enquiry: string;
   status: string;
   category_id: string;
-  lead_type_id:string;
+  lead_type_id: string;
   source_id: string;
   channel_id: string;
   user_id: string;
@@ -77,7 +77,7 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
           };
         }
 
-          
+
         case LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER: {
           return {
             ...state,
@@ -249,17 +249,17 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
       }
 
     case LeadsActionTypes.GET_LEADS:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.GET_LEADS_TL:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.GET_LEADS_ASSIGNED:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.ADD_LEADS:
       return { ...state, loading: true };
     case LeadsActionTypes.UPDATE_LEADS:

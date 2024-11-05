@@ -12,6 +12,7 @@ const INIT_STATE = {
   loading: false,
   error: null,
   initialLoading: false,
+  hasLoadedInitially: false,
 };
 
 interface AdminUsersData {
@@ -51,6 +52,7 @@ interface State {
   adminUsers?: AdminUsersData | {};
   loading?: boolean;
   value?: boolean;
+  hasLoadedInitially?: boolean;
 }
 
 const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any => {
@@ -65,6 +67,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             adminUsers: action.payload.data,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case AdminUserActionTypes.GET_BRANCH_COUNSELLOR: {
@@ -139,6 +142,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
             error: action.payload.error,
             loading: false,
             initialLoading: false,
+            hasLoadedInitially: true,
           };
         }
         case AdminUserActionTypes.ADD_ADMIN_USERS: {
@@ -205,7 +209,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
       }
 
     case AdminUserActionTypes.GET_ADMIN_USERS:
-      return { ...state, loading: true , initialLoading: true,};
+      return { ...state, loading: true , initialLoading: !state.hasLoadedInitially,};
     case AdminUserActionTypes.ADD_ADMIN_USERS:
       return { ...state, loading: true, error: null };
     case AdminUserActionTypes.UPDATE_ADMIN_USERS:

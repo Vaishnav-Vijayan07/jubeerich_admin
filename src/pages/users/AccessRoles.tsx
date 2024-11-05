@@ -67,7 +67,7 @@ const BasicInputElements = withSwal((props: any) => {
   const animatedComponents = makeAnimated();
 
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, powersData, error, loading } = props;
+  const { swal, state, powersData, error, loading, initialLoading } = props;
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
   //Table data
@@ -84,8 +84,6 @@ const BasicInputElements = withSwal((props: any) => {
     role_name: "",
     power_ids: "",
   });
-
-  console.log("formData ====>", formData);
 
   const validationSchema = yup.object().shape({
     role_name: yup
@@ -283,7 +281,7 @@ const BasicInputElements = withSwal((props: any) => {
       ),
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
@@ -459,6 +457,7 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
+                initialLoading={initialLoading}
               />
             </Card.Body>
           </Card>
@@ -526,6 +525,7 @@ const AccessRoles = () => {
             powersData={powers}
             error={error}
             loading={loading}
+            initialLoading={initialLoading}
           />
         </Col>
       </Row>

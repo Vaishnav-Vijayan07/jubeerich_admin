@@ -219,7 +219,7 @@ const BasicInputElements = withSwal((props: any) => {
       ),
     },
     {
-      Header: " ",
+      Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
@@ -336,6 +336,7 @@ const BasicInputElements = withSwal((props: any) => {
                 pagination={true}
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
+                initialLoading={initialConfigloading}
               />
             </Card.Body>
           </Card>

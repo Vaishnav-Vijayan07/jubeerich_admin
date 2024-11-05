@@ -7,6 +7,7 @@ import { Button, Card, Spinner, Modal } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import { getPendingKYC, getRejectedKYC } from "../../redux/KYC/actions";
+import UserImage from "../../assets/images/users/user_circle_icon.png";
 
 const sizePerPageList = [
   {
@@ -45,6 +46,7 @@ const KycRejected = () => {
 
   const [uploadModal, setUploadModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [remarkData, setRemarkData] = useState<any>([])
 
   // Function to toggle the upload modal visibility
   const toggleUploadModal = () => {
@@ -155,7 +157,7 @@ const KycRejected = () => {
           {/* Comment Icon */}
           <Link to="#" className="action-icon" onClick={() => setUploadModal(true)}>
             {/* <i className="mdi mdi-delete"></i> */}
-            <i className="mdi mdi-comment-processing-outline"></i>
+            <i className="mdi mdi-comment-processing-outline" onClick={() => setRemarkData(row.original?.remarks)}></i>
           </Link>
 
           {/* View Icon */}
@@ -202,7 +204,32 @@ const KycRejected = () => {
         <Modal.Header closeButton>
           <h3>Remarks</h3>
         </Modal.Header>
-        <Modal.Body></Modal.Body>
+        <Modal.Body>
+          <div className="row">
+            <div style={{ minHeight: "150px", maxHeight: "250px", overflowY: "auto", scrollbarWidth: "none" }} className="col">
+              {remarkData?.[0]?.remark ? (
+                remarkData?.map((remark: any, idx: any) => (
+                  <React.Fragment key={idx}>
+                    <div key={idx} className="d-flex align-items-start p-1">
+                      <img src={UserImage} className="me-2 rounded-circle" height="36" width="36" alt={remark.created_by} />
+                      <div className="w-100">
+                        <h5 className="mt-0 mb-0 font-size-14">
+                          <span className="text-muted fs-12">{remark?.created_by}</span>
+                          <div className="mt-1">{remark?.remark}</div>
+                        </h5>
+                      </div>
+                    </div>
+                    <hr style={{ marginTop: "0.5rem", marginBottom: "0.5rem" }} />
+                  </React.Fragment>
+                ))
+              ) : (
+                <div className="d-flex justify-content-center align-items-center">
+                  <h3 className="text-muted">No Remarks Available</h3>
+                </div>
+              )}
+            </div>
+          </div>
+        </Modal.Body>
         <Modal.Footer>
           <Button className="btn-sm btn-danger waves-effect waves-light" onClick={toggleUploadModal}>
             Close

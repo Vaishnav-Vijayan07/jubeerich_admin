@@ -10,16 +10,17 @@ const INIT_STATE = {
   loading: false,
   initialloading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface UniversityData {
   id: string;
-  university_name: string,
-  location: string,
-  country_id: string,
-  website_url: string,
-  image_url: string,
-  updated_by: string
+  university_name: string;
+  location: string;
+  country_id: string;
+  website_url: string;
+  image_url: string;
+  updated_by: string;
 }
 
 export interface UniversityActionType {
@@ -41,6 +42,7 @@ interface State {
   sources?: UniversityData | {};
   loading?: boolean;
   value?: boolean;
+  hasLoadedInitially: boolean;
 }
 
 const University = (state: State = INIT_STATE, action: UniversityActionType): any => {
@@ -53,6 +55,7 @@ const University = (state: State = INIT_STATE, action: UniversityActionType): an
             universities: action.payload.data,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case UniversityActionTypes.ADD_UNIVERSITY: {
@@ -91,6 +94,7 @@ const University = (state: State = INIT_STATE, action: UniversityActionType): an
             error: action.payload.error,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case UniversityActionTypes.ADD_UNIVERSITY: {
@@ -125,11 +129,11 @@ const University = (state: State = INIT_STATE, action: UniversityActionType): an
       }
 
     case UniversityActionTypes.GET_UNIVERSITY:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
     case UniversityActionTypes.ADD_UNIVERSITY:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     case UniversityActionTypes.UPDATE_UNIVERSITY:
-      return { ...state, loading: true, initialloading: true };
+      return { ...state, loading: true };
     default:
       return { ...state };
   }
