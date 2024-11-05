@@ -78,33 +78,33 @@ const BranchDetails = withSwal((props: any) => {
   const dispatch = useDispatch();
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
-    const {
-        adminUsers: state,
-        error,
-        loading,
-        initialLoading,
-        countries: Countries,
-        branchesData: Branch,
-        branchCounsellor: CounsellorData,
-        branchCounsellorTL: CounsellorTLData
-    } = useSelector((state: RootState) => ({
-        adminUsers: state.Users.adminUsers,
-        error: state.Users.error,
-        loading: state.Users.loading,
-        initialLoading: state.Users.initialLoading,
-        countries: state.Country.countries,
-        branchesData: state.Branches?.branches?.data,
-        branchCounsellor: state.Users?.branchCounsellor,
-        branchCounsellorTL: state.Users?.branchCounsellorTL
+  const {
+    adminUsers: state,
+    error,
+    loading,
+    initialLoading,
+    countries: Countries,
+    branchesData: Branch,
+    branchCounsellor: CounsellorData,
+    branchCounsellorTL: CounsellorTLData,
+  } = useSelector((state: RootState) => ({
+    adminUsers: state.Users.adminUsers,
+    error: state.Users.error,
+    loading: state.Users.loading,
+    initialLoading: state.Users.initialLoading,
+    countries: state.Country.countries,
+    branchesData: state.Branches?.branches?.data,
+    branchCounsellor: state.Users?.branchCounsellor,
+    branchCounsellorTL: state.Users?.branchCounsellorTL,
+  }));
+
+  const BranchesData = useMemo(() => {
+    if (!Branch) return [];
+    return Branch.map((item: any) => ({
+      value: item.id.toString(),
+      label: item.branch_name,
     }));
-    
-    const BranchesData = useMemo(() => {
-        if (!Branch) return [];
-        return Branch.map((item: any) => ({
-            value: item.id.toString(),
-            label: item.branch_name,
-        }));
-    }, [Branch]);
+  }, [Branch]);
 
   const columns = [
     {
@@ -265,7 +265,7 @@ const BranchDetails = withSwal((props: any) => {
     if (role_id == counsellor_tl_id) {
       setIsTL(true);
     } else {
-      setIsTL(false)
+      setIsTL(false);
     }
 
     // Update formData with country_id if it exists
@@ -478,16 +478,16 @@ const BranchDetails = withSwal((props: any) => {
     }
   };
 
-    useEffect(() => {
-        // Check for errors and clear the form
-        if (!loading && !error) {
-            setShowModal(false)
-            setValidationErrors(initialValidationState); // Clear validation errors
-            setFormData(initialState); //clear form data
-            handleResetValues()
-            // Clear validation errors
-        }
-    }, [loading, error]);
+  useEffect(() => {
+    // Check for errors and clear the form
+    if (!loading && !error) {
+      setShowModal(false);
+      setValidationErrors(initialValidationState); // Clear validation errors
+      setFormData(initialState); //clear form data
+      handleResetValues();
+      // Clear validation errors
+    }
+  }, [loading, error]);
 
   useEffect(() => {
     dispatch(getCountry());
@@ -500,26 +500,18 @@ const BranchDetails = withSwal((props: any) => {
     const tlData = Array.isArray(CounsellorTLData) ? CounsellorTLData : [];
     const counsellorData = Array.isArray(CounsellorData) ? CounsellorData : [];
 
-    setTableData([...tlData, ...counsellorData])
-  }, [CounsellorTLData, CounsellorData])
+    setTableData([...tlData, ...counsellorData]);
+  }, [CounsellorTLData, CounsellorData]);
 
-    // useEffect(() => {
-    //     setTableData([
-    //         ...(CounsellorTLData || []),
-    //         ...(CounsellorData || [])
-    //     ]);
-    // }, [CounsellorTLData, CounsellorData]);
-    
-    useEffect(() => {
-        if (Countries) {
-            const countryArray = Countries?.map((country: any) => ({
-                value: country.id.toString(),
-                label: country.country_name,
-            }));
-            setCountryData(countryArray);
-        }
-    }, [Countries]);
-
+  useEffect(() => {
+    if (Countries) {
+      const countryArray = Countries?.map((country: any) => ({
+        value: country.id.toString(),
+        label: country.country_name,
+      }));
+      setCountryData(countryArray);
+    }
+  }, [Countries]);
 
   return (
     <>
@@ -588,18 +580,21 @@ const BranchDetails = withSwal((props: any) => {
             </Col>
             <Col md={8} lg={8}>
               <div className="d-flex justify-content-end pb-2">
-                <Button className="btn btn-primary me-2" onClick={() => [setShowModal(true), handleResetValues(), handleCancelUpdate(), setIsTL(false)]}>
+                <Button
+                  className="btn btn-primary me-2"
+                  onClick={() => [setShowModal(true), handleResetValues(), handleCancelUpdate(), setIsTL(false)]}
+                >
                   <i className="mdi mdi-plus-circle"></i>
-                  <span className="ms-1">
-                    Branch Counsellor
-                  </span>
+                  <span className="ms-1">Branch Counsellor</span>
                 </Button>
 
-                <Button className="btn btn-primary" onClick={() => [setShowModal(true), setIsTL(true), handleCancelUpdate(), handleResetValues()]}>
+                <Button
+                  className="btn btn-primary"
+                  onClick={() => [setShowModal(true), setIsTL(true), handleCancelUpdate(), handleResetValues()]}
+                  disabled={CounsellorTLData?.length > 0}
+                >
                   <i className="mdi mdi-plus-circle"></i>
-                  <span className="ms-1">
-                    Branch Counsellor TL
-                  </span>
+                  <span className="ms-1">Branch Counsellor TL</span>
                 </Button>
               </div>
 
@@ -624,7 +619,7 @@ const BranchDetails = withSwal((props: any) => {
           <Row className="justify-content-between px-2">
             <Modal show={showModal} onHide={toggleModal} dialogClassName={"modal-right"}>
               <h6 className="fw-medium px-3 m-0 py-2 font-13 text-uppercase bg-light">
-                <span className="d-block py-1">Add Branch Counsellor {isTL ? "TL" : ""}</span>
+                <span className="d-block py-1">{isUpdate ? "Update" : "Add"} Branch Counsellor {isTL ? "TL" : ""}</span>
               </h6>
               <Modal.Body>
                 <Row>
