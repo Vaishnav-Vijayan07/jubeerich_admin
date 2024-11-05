@@ -60,6 +60,7 @@ const BasicInputElements = withSwal((props: any) => {
     franchisees,
     branchForManager,
     branchCounsellors,
+    initialLoading
   } = props;
 
   //State for handling update function
@@ -784,6 +785,7 @@ const BasicInputElements = withSwal((props: any) => {
                   isSearchable={true}
                   tableClass="table-striped dt-responsive nowrap w-100"
                   onSelect={handleSelectedValues}
+                  initialLoading={initialLoading}
                 />
               ) : (
                 <Table
@@ -795,6 +797,7 @@ const BasicInputElements = withSwal((props: any) => {
                   pagination={true}
                   isSearchable={true}
                   tableClass="table-striped dt-responsive nowrap w-100"
+                  initialLoading={initialLoading}
                 />
               )}
             </Card.Body>

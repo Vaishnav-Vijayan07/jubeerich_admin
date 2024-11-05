@@ -12,6 +12,7 @@ const INIT_STATE = {
   initialloading: false,
   loading: false,
   error: null,
+  hasLoadedInitially: false,
 };
 
 interface LeadsData {
@@ -38,18 +39,18 @@ interface LeadsData {
 
 export interface LeadsActionType {
   type:
-  | LeadsActionTypes.API_RESPONSE_SUCCESS
-  | LeadsActionTypes.API_RESPONSE_ERROR
-  | LeadsActionTypes.GET_LEADS
-  | LeadsActionTypes.GET_LEADS_TL
-  | LeadsActionTypes.GET_LEADS_ASSIGNED
-  | LeadsActionTypes.GET_LEAD_USER
-  | LeadsActionTypes.ADD_LEADS
-  | LeadsActionTypes.UPDATE_LEADS
-  | LeadsActionTypes.DELETE_LEADS
-  | LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL
-  | LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER
-  | LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL;
+    | LeadsActionTypes.API_RESPONSE_SUCCESS
+    | LeadsActionTypes.API_RESPONSE_ERROR
+    | LeadsActionTypes.GET_LEADS
+    | LeadsActionTypes.GET_LEADS_TL
+    | LeadsActionTypes.GET_LEADS_ASSIGNED
+    | LeadsActionTypes.GET_LEAD_USER
+    | LeadsActionTypes.ADD_LEADS
+    | LeadsActionTypes.UPDATE_LEADS
+    | LeadsActionTypes.DELETE_LEADS
+    | LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL
+    | LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER
+    | LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL;
   payload: {
     actionType?: string;
     data?: any;
@@ -74,9 +75,9 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
-
 
         case LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER: {
           return {
@@ -170,6 +171,7 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             error: action.payload.error,
             loading: false,
             initialloading: false,
+            hasLoadedInitially: true,
           };
         }
         case LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER: {
@@ -249,7 +251,7 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
       }
 
     case LeadsActionTypes.GET_LEADS:
-      return { ...state, loading: true, initialloading: true, error: null };
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially, error: null };
     case LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER:
       return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.GET_LEADS_TL:

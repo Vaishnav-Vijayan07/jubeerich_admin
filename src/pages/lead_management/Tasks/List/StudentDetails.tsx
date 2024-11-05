@@ -619,19 +619,21 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                   <p className="mt-2 mb-2 text-muted fw-light">Change flag</p>
                 </span>
 
-                <small
-                  style={{
-                    backgroundColor: `${basicData?.user_primary_flags?.color}`,
-                    color: "white",
-                    border: `1px solid ${basicData?.user_primary_flags?.color}`,
-                    borderRadius: "5px",
-                    padding: "6px 18px",
-                    height: "fit-content",
-                  }}
-                  className={classNames("rounded-pill me-1")}
-                >
-                  {basicData?.user_primary_flags?.flag_name}
-                </small>
+                {basicData?.user_primary_flags?.flag_name && (
+                  <small
+                    style={{
+                      backgroundColor: `${basicData?.user_primary_flags?.color}`,
+                      color: "white",
+                      border: `1px solid ${basicData?.user_primary_flags?.color}`,
+                      borderRadius: "5px",
+                      padding: "6px 18px",
+                      height: "fit-content",
+                    }}
+                    className={classNames("rounded-pill me-1")}
+                  >
+                    {basicData?.user_primary_flags?.flag_name}
+                  </small>
+                )}
               </div>
               <Dropdown>
                 <Dropdown.Toggle

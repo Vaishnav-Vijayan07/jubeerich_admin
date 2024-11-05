@@ -111,6 +111,7 @@ const Leads = () => {
             branchForManager={branchForManager}
             branchCounsellors={branchCounsellor || []}
             flags={dropdownData.flags || []}
+            initialLoading={initialLoading}
           />
         </Col>
       </Row>
