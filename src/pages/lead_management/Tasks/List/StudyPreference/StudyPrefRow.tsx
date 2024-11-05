@@ -346,14 +346,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             onClick={handleSave}
             disabled={saveLoading || !isEditable} // Disable button while loading
           >
-            {saveLoading ? (
-              <>
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                {"Saving..."} {/* Show spinner and text */}
-              </>
-            ) : (
-              "Save Details" // Normal button text when not loading
-            )}
+            Save Details
           </Button>
         </Row>
       </Row>
