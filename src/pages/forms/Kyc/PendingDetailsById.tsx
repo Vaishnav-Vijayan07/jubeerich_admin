@@ -209,6 +209,7 @@ const PendingDetailsById = withSwal((props: any) => {
         const res = await axios.post(`/kyc_reject`, payload);
         if (res) {
           showSuccessAlert("Rejected Succesfully");
+          navigate('/kyc_details/applications/pending');
         }
       }
     } catch (error) {
