@@ -78,7 +78,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
 
   {
     key: "kycApproval",
-    label: "KYC Approval",
+    label: "KYC Pending",
     isTitle: false,
     icon: "clock", // Icon representing pending action
     url: "/kyc_details",
@@ -103,7 +103,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["KYC Approval"],
   },
 
-  { key: "all_applications", label: "All Applications", isTitle: true, roles: ["Manage Applications"] },
+  { key: "all_applications", label: "All Applications", isTitle: true, roles: ["Allocate Applications"] },
 
   {
     key: "pending",
@@ -111,7 +111,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "clock", // Icon for applications still in progress or awaiting action
     url: "/kyc_details/all/pending",
-    roles: ["Manage Applications"],
+    roles: ["Allocate Applications"],
   },
   {
     key: "assigned",
@@ -119,7 +119,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "user-check", // Icon indicating assignment to a user
     url: "/kyc_details/all/assigned",
-    roles: ["Manage Applications"],
+    roles: ["Allocate Applications"],
   },
 
   { key: "my_applications", label: "My Applications", isTitle: true, roles: ["Manage Applications", "Allocate Applications"] },
