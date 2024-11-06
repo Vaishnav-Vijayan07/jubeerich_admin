@@ -142,6 +142,7 @@ const BasicInputElements = withSwal((props: any) => {
     region,
     franchisees,
     branchCounsellors,
+    initialLoading
   } = props;
 
   console.log("Region from state", region);
@@ -783,6 +784,7 @@ const BasicInputElements = withSwal((props: any) => {
                 isSearchable={true}
                 tableClass="table-striped dt-responsive nowrap w-100"
                 onSelect={handleSelectedValues}
+                initialLoading={initialLoading}
               />
             </Card.Body>
           </Card>
@@ -902,6 +904,7 @@ const AssignedLeads = () => {
             franchisees={dropdownData.franchises || []}
             branchCounsellors={branchCounsellor || []}
             flags={flagsData || []}
+            initialLoading={initialLoading}
           />
         </Col>
       </Row>
