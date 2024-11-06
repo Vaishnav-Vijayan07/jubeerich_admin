@@ -111,7 +111,6 @@ const DocumentsOverview = (props: any) => {
 
     
     if (isLoading) {
-        // return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "50%" }} />;
         return <SkeletonComponent />;
     }
     

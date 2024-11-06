@@ -272,7 +272,7 @@ const leadRoutes = {
     {
       path: "leads/manage/:id",
       name: "Leads",
-      element: <PrivateRoute roles={["Add Lead"]} component={LeadDetails} />,
+      element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetails} />,
       route: PrivateRoute,
     },
     {

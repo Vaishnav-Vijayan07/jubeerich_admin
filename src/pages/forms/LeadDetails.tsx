@@ -20,6 +20,7 @@ import axios from "axios";
 import { icons } from "../../assets/images/icons";
 import moment from "moment";
 import DocumentsOverview from "../lead_management/Tasks/List/DocumentsOverview/DocumentsOverview";
+import History from "../lead_management/Tasks/List/History";
 
 interface Props {}
 
@@ -206,6 +207,12 @@ const LeadDetails = (props: Props) => {
                       </Nav.Link>
                     </Nav.Item>
 
+                    <Nav.Item as="li" className="nav-item nav_item_3">
+                      <Nav.Link eventKey="history" className="nav-link cursor-pointer">
+                        History
+                      </Nav.Link>
+                    </Nav.Item>
+
                     <Nav.Item as="li" className="nav-item nav_item_4">
                       <Nav.Link eventKey="passport_details" className="nav-link cursor-pointer">
                         Passport Details
@@ -292,6 +299,14 @@ const LeadDetails = (props: Props) => {
                       <Suspense fallback={null}>
                         <Comments studentId={studentId} />
                       </Suspense>
+                    )}
+
+                    {activeTab === "history" && studentId && (
+                      <>
+                        <Suspense fallback={null}>
+                          <History studentId={studentId} />
+                        </Suspense>
+                      </>
                     )}
 
                     {activeTab === "additional_documents" && studentId && (

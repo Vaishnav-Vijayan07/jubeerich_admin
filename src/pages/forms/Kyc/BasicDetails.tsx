@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   data: {
@@ -18,9 +19,11 @@ type Props = {
     employee_name: string;
     status: string;
   };
+  studentId: any
 };
 
-function BasicDetails({ data }: Props) {
+function BasicDetails({ data, studentId }: Props) {
+  const navigate = useNavigate();
 
   return (
     <Card>
@@ -82,7 +85,7 @@ function BasicDetails({ data }: Props) {
             <p>{data.status}</p>
           </Col>
           <Col md={2}>
-            <Button variant="primary" className="mt-2" size="sm">
+            <Button variant="primary" className="mt-2" size="sm" onClick={() => navigate(`/leads/manage/${studentId}`)}>
               View More
             </Button>
           </Col>
