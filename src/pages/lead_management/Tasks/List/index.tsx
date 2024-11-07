@@ -10,14 +10,14 @@ import TaskSection from "./Section";
 import { TaskItemTypes } from "./data";
 import axios from "axios";
 import StudentDetails from "./StudentDetails";
+import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 
 // Task List
 const TaskList = () => {
-  const [TaskArray, setTaskArray] = useState<TaskItemTypes[]>([]);
-  const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(TaskArray[0]);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
-  const [initialLoading, setLoading] = useState(false);
+  const [initialLoading, setLoading] = useState(true);
   const [pendingTasks, setPendingTasks] = useState<any[]>([]);
+  const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(pendingTasks[0]);
 
   const selectTask = (task: TaskItemTypes) => {
     setSelectedTask(task);
@@ -25,30 +25,24 @@ const TaskList = () => {
   };
 
   const getTaskList = () => {
-    setLoading(true);
     axios
       .get(`/tasks`)
       .then((res) => {
         let pendingArray: any = [];
-        let completedArray: any = [];
         res.data.data.map((item: any) => {
           if (!item.isCompleted) {
             pendingArray.push(item);
-          } else {
-            completedArray.push(item);
           }
         });
-
         setPendingTasks(pendingArray);
-        setTaskArray(completedArray);
 
         if (selectedTaskId) {
           const pendingSelected = pendingArray?.filter((item: any) => item.id == selectedTaskId);
-          const completedSelected = completedArray?.filter((item: any) => item.id == selectedTaskId);
-          setSelectedTask(pendingSelected[0] || completedSelected[0]);
+          setSelectedTask(pendingSelected[0]);
         } else {
           setSelectedTask(pendingArray[0]);
         }
+        setLoading(false);
       })
       .catch((err) => console.error(err))
       .finally(() => {
@@ -61,7 +55,9 @@ const TaskList = () => {
   }, []);
 
   // if (initialLoading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
+  //   return (
+  //     <SkeletonComponent />
+  //   );
   // }
   return (
     <>
@@ -77,7 +73,7 @@ const TaskList = () => {
           <Row>
             <Col>
               <Card>
-                <Card.Body style={{ minHeight: "400px" }}>
+                <Card.Body style={{ minHeight: "480px" }}>
                   <Row>
                     <Col className="p-0 m-0">
                       <div className="mt-0">
@@ -88,13 +84,14 @@ const TaskList = () => {
                           tasks={pendingTasks}
                           selectTask={selectTask}
                           date={""}
+                          initialLoading={initialLoading}
                           setSelectedDate={function (value: React.SetStateAction<string>): void {
                             throw new Error("Function not implemented.");
                           }}
                         ></TaskSection>
                       </div>
 
-                      {TaskArray.length > 0 && (
+                      {/* {TaskArray.length > 0 && (
                         <div className="mt-2">
                           <TaskSection
                             title="Completed Task"
@@ -107,7 +104,7 @@ const TaskList = () => {
                             }}
                           ></TaskSection>
                         </div>
-                      )}
+                      )} */}
                     </Col>
                   </Row>
                 </Card.Body>

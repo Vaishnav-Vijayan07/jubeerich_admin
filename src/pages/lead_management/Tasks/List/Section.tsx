@@ -10,6 +10,7 @@ import { TaskItemTypes } from "./data";
 import { DateReverse, handleDateFormat, setColorOpacity } from "../../../../constants";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.module.css";
+import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 
 const Task = ({
   task,
@@ -64,7 +65,9 @@ const Task = ({
                   color: "#122d3d",
                   border: `1px solid #122d3d`,
                   borderRadius: "5px",
-                  padding: "4px 10px",
+                  padding: "2px 8px",
+                  fontSize: "0.6rem",
+                  opacity: "0.8",
                 }}
                 className={classNames("rounded-pill me-1 ms-0")}
               >
@@ -79,8 +82,9 @@ const Task = ({
                   color: "white",
                   border: `1px solid #122d3d`,
                   borderRadius: "5px",
-                  padding: "2px 12px",
-                  fontSize: "0.7rem",
+                  padding: "2px 8px",
+                  fontSize: "0.6rem",
+                  opacity: "0.8",
                   borderColor: `red`,
                   height: "max-content",
                 }}
@@ -102,10 +106,11 @@ interface TaskSectionState {
   selectTask: (task: TaskItemTypes) => void;
   initialTaskId: number;
   date: string;
+  initialLoading: boolean;
   setSelectedDate: Dispatch<SetStateAction<string>>;
 }
 
-const TaskSection = ({ title, tasks, selectTask, initialTaskId }: TaskSectionState) => {
+const TaskSection = ({ title, tasks, selectTask, initialTaskId, initialLoading }: TaskSectionState) => {
   const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
   const [selectedTaskId, setSelectedTaskId] = useState<number>(initialTaskId); // Track selected task's ID
   useEffect(() => {
@@ -150,7 +155,9 @@ const TaskSection = ({ title, tasks, selectTask, initialTaskId }: TaskSectionSta
         )}
       </div>
 
-      {taskList.length > 0 ? (
+      {initialLoading ? (
+        <SkeletonComponent />
+      ) : taskList.length > 0 ? (
         <Card className="mb-0 shadow-none" style={{ borderTop: "1.3px solid #70707033" }}>
           <Card.Body className="px-0 pt-0">
             <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>

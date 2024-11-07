@@ -347,8 +347,8 @@ const BasicInputElements = withSwal((props: any) => {
       ),
     },
     {
-      Header: "Assigned To",
-      accessor: "assigned_user",
+      Header: "Assigned CRE",
+      accessor: "cre_name",
       // Cell: UserColumn,
       Cell: ({ row }: any) => (
         <span className="no-truncate-text">
@@ -357,16 +357,6 @@ const BasicInputElements = withSwal((props: any) => {
       ),
       minWidth: 100,
     },
-    ...(user?.role == cre_tl_id
-      ? [
-          {
-            Header: "Assigned CRE",
-            accessor: "cre_name",
-            sort: false,
-          },
-        ]
-      : []),
-
     ...(user?.role == cre_id || user?.role == cre_tl_id
       ? [
           {

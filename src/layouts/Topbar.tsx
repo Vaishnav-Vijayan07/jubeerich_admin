@@ -289,9 +289,9 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
             <li className="dropdown d-none d-lg-inline-block">
               <MaximizeScreen />
             </li>
-            <li className="app-search dropdown d-none d-sm-block">
+            {/* <li className="app-search dropdown d-none d-sm-block">
               <TopbarSearch items={SearchResults} />
-            </li>
+            </li> */}
             <li className="dropdown notification-list">
               <NotificationDropdown notifications={Notifications} />
             </li>
