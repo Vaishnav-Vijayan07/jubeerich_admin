@@ -8,14 +8,14 @@ import axios from "axios";
 import moment from "moment";
 import { fdValue, fundTypeOptions, savingsValue } from "../lead_management/Tasks/List/FundPlan/FundPlanRows";
 import { Visa_Types } from "../lead_management/Tasks/List/data";
-import { showErrorAlert, showSuccessAlert } from "../../constants";
+import { AUTH_SESSION_KEY, country_manager_id, showErrorAlert, showSuccessAlert } from "../../constants";
 import { withSwal } from "react-sweetalert2";
 
 const KycDetails = withSwal((props: any) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id, application_id } = useParams();
-  const hideFooter = new URLSearchParams(useLocation()?.search)?.get("hideFooter");
-  
+  const { hideFooter } = location.state || {};
   const { swal } = props;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -36,7 +36,13 @@ const KycDetails = withSwal((props: any) => {
   const [clearenceCountries, setClearenceCountries] = useState<any>([]);
   const [passportsInfo, setPassportsInfo] = useState<any>([]);
   const [notFound, setNotFound] = useState<boolean>(false);
-  const [remarkForm, setRemarkForm] = useState<any>('')
+  const [remarkForm, setRemarkForm] = useState<any>('');
+  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+
+  let userRole
+  if (userInfo) {
+    userRole = JSON.parse(userInfo)?.role;
+  }
 
   const fetchDetails = async () => {
     try {
@@ -932,7 +938,7 @@ const KycDetails = withSwal((props: any) => {
         </Row>
       </Accordion>
 
-      {!hideFooter && <Row>
+      {(!hideFooter && userRole == country_manager_id) && <Row>
         <Col>
           <Form.Group className="mb-3" controlId="remarks">
             <Form.Label className="fs-9">Remarks</Form.Label>

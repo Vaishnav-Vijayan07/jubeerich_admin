@@ -327,6 +327,10 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
 
   const handleProccedToKyc = async () => {
     try {
+      if(basicData?.preferredCountries?.length == 0){
+        return showErrorAlert('Please choose a prefered country')
+      }
+      
       const result = await swal.fire({
         title: "Are you sure?",
         text: "This action cannot be undone.",
@@ -358,6 +362,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
   // }
 
   console.log(initialLoading, "initialLoading");
+  console.log('basicData',basicData);
+  
 
   return (
     <>

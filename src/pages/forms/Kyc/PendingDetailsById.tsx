@@ -250,7 +250,7 @@ const PendingDetailsById = withSwal((props: any) => {
   return (
     <>
       <Row className="mt-2">
-        <BasicDetails data={formattedItem} />
+        <BasicDetails data={formattedItem} studentId={studentId}/>
       </Row>
 
       {current === 0 && <ProgramAvailabiltyCheck data={availabilityCheck} />}

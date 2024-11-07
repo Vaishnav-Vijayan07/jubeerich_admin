@@ -8,6 +8,7 @@ import { Visa_Types } from '../data';
 import { fundTypeOptions } from '../FundPlan/FundPlanRows';
 import { Link } from 'react-router-dom';
 import noFile from '../../../../../assets/images/icons/file_not_found.svg'
+import SkeletonComponent from '../StudyPreference/LoadingSkeleton';
 
 const DocumentsOverview = (props: any) => {
     const { studentId, check = false } = props
@@ -110,7 +111,7 @@ const DocumentsOverview = (props: any) => {
 
     
     if (isLoading) {
-        return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "50%" }} />;
+        return <SkeletonComponent />;
     }
     
     if (notFound) {
