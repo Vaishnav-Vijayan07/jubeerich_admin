@@ -617,9 +617,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
         </Card>
       )}
 
-      <Row>
+      <Row className="d-flex align-items-stretch mb-2">
         <Col md={6}>
-          <Card>
+          <Card className="h-100">
             <Card.Body>
               <h4 className="text-secondary m-0">Status</h4>
               <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p>
@@ -660,7 +660,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
           </Card>
         </Col>
         <Col md={6}>
-          <Card>
+          <Card className="h-100">
             <Card.Body>
               <div className="d-flex justify-content-between">
                 <span>
@@ -710,7 +710,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
               </Dropdown>
               <div className="mt-2">
                 {basicData?.flags?.length > 0 && basicData?.flags.map((data: any) => (<span style={{ border: `2px solid ${data?.color}`, backgroundColor: `${setColorOpacityRGB(data?.color)}`}} className="rounded-5 me-2 mt-1">
-                  <small className="ps-1 pe-1 fw-bold">{data?.flag_name}<i className="ms-2 pt-2 mdi mdi-close fs-5" onClick={() => removeFlag(data?.id)}></i></small>
+                  <small className="ps-1 pe-1 fw-bold" style={{ fontSize: "0.7rem", lineHeight: "1", }}>{data?.flag_name}<i className="ms-2 mdi mdi-close" onClick={() => removeFlag(data?.id)}></i></small>
                 </span>))}
               </div>
             </Card.Body>
