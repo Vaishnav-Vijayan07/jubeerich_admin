@@ -38,21 +38,25 @@ const Task = ({
               <b>{task.title}</b>
             </label>
 
-            {task?.student_name?.user_primary_flags?.flag_name && (
+            {task?.student_name?.status?.status_name && (
               <small
                 style={{
-                  backgroundColor: `${task?.student_name?.user_primary_flags?.color}`,
+                  backgroundColor: `${task?.student_name?.status?.color}`,
                   color: "white",
                   border: `1px solid #122d3d`,
                   borderRadius: "5px",
-                  padding: "2px 12px",
-                  fontSize: "0.7rem",
-                  borderColor: `${task?.student_name?.user_primary_flags?.color}`,
+                  padding: "6px 10px",
+                  width: "fit-content",
+                  fontSize: "0.6rem",
+                  borderColor: `${task?.student_name?.status?.color}`,
                   height: "max-content",
+                  textAlign: "center",
+                  whiteSpace: "nowrap",
+                  opacity: "0.8",
                 }}
                 className={classNames("rounded-pill ms-2")}
               >
-                {task?.student_name?.user_primary_flags?.flag_name}
+                {task?.student_name?.status?.status_name}
               </small>
             )}
           </div>

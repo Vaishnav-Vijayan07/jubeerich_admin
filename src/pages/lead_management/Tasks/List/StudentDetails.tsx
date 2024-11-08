@@ -707,12 +707,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
               <Card>
                 <Card.Body>
                   <Nav variant="pills" as="ul" className="nav nav-pills nav-fill navtab-bg row-gap-1">
-                    <Nav.Item as="li" className="nav-item nav_item_1">
-                      <Nav.Link eventKey="basic_info" className="nav-link cursor-pointer">
-                        Basic Info
-                      </Nav.Link>
-                    </Nav.Item>
-
                     <Nav.Item as="li" className="nav-item nav_item_4">
                       <Nav.Link eventKey="comments" className="nav-link cursor-pointer">
                         Comments
@@ -724,29 +718,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                         History
                       </Nav.Link>
                     </Nav.Item>
-
-                    <Nav.Item as="li" className="nav-item nav_item_3">
-                      <Nav.Link eventKey="study_preference" className="nav-link cursor-pointer">
-                        Study Preference Info
-                      </Nav.Link>
-                    </Nav.Item>
                   </Nav>
 
                   <Tab.Content>
-                    {/* Conditionally render the content based on the active tab */}
-                    {activeTab === "basic_info" && studentId && (
-                      <Suspense fallback={null}>
-                        <BasicInfo
-                          studentId={studentId}
-                          role={user.role}
-                          officeTypes={officeTypes}
-                          regions={regions}
-                          franchises={franchises}
-                          maritalStatus={maritalStatus}
-                        />
-                      </Suspense>
-                    )}
-
                     {activeTab === "comments" && studentId && (
                       <>
                         {console.log(studentId)}
@@ -756,8 +730,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                       </>
                     )}
 
-                    {console.log("activeTab", activeTab)}
-
                     {activeTab === "history" && studentId && (
                       <>
                         {console.log(studentId)}
@@ -765,12 +737,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                           <History studentId={studentId} />
                         </Suspense>
                       </>
-                    )}
-
-                    {activeTab === "study_preference" && studentId && (
-                      <Suspense fallback={null}>
-                        <StudyPreference studentId={studentId} />
-                      </Suspense>
                     )}
                   </Tab.Content>
                 </Card.Body>

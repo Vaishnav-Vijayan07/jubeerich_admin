@@ -69,7 +69,7 @@ const TaskList = () => {
         title={"Tasks List"}
       />
       <Row>
-        <Col xl={4}>
+        <Col xl={5}>
           <Row>
             <Col>
               <Card>
@@ -113,7 +113,7 @@ const TaskList = () => {
           </Row>
         </Col>
 
-        <Col xl={8}>
+        <Col xl={7}>
           {selectedTask && (
             <StudentDetails
               studentId={selectedTask?.studentId}
