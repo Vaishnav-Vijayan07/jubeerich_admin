@@ -11,6 +11,7 @@ import {
   counsellor_id,
   country_manager_id,
   cre_id,
+  customStyles,
   follow_up_id,
   franchise_counsellor_id,
   future_leads_id,
@@ -26,6 +27,8 @@ import useDropdownData from "../../../../hooks/useDropdownDatas";
 import swal from "sweetalert2";
 import RemarkModal from "./RemarkModal";
 import { Link } from "react-router-dom";
+import Select from "react-select";
+import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import CardLoadingSkeleton from "../../../../components/SkeletonLoading/CardLoadingSkeleton1";
 
@@ -38,6 +41,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
   }));
 
   const [basicData, setBasicData] = useState<any>([]);
+  const [flagData, setFlagData] = useState<any>([])
   const [status, setStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [standard, setStandard] = useState(false);
@@ -85,6 +89,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
         console.log(res.data);
 
         setBasicData(res.data.data);
+        setFlagData(res?.data?.data?.flags);
         setLoading(false);
       })
       .catch((err) => {
@@ -93,6 +98,14 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
       });
   };
 
+  const formattedFlagData = useMemo(() => {
+    if (!flags || !basicData?.flags) return [];
+  
+    const basicDataFlagIds = new Set(basicData?.flags?.map((data: any) => data?.id));
+  
+    return flags.filter((item: any) => !basicDataFlagIds.has(item.value));
+  }, [flags, basicData?.flags]);
+  
   const handleStatusChange = async (status_id: number) => {
     if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
       toggleStandard();
@@ -350,9 +363,45 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
       }
     } catch (error) {
       console.log(error);
-      showErrorAlert("Something went wrong");
+      showErrorAlert(error);
     }
   };
+
+  const removeFlag = async (flagId: any) => {
+    try {
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.put(`/remove_flag_status/${studentId}`, { flag_id: flagId });
+        if (res) {
+          showSuccessAlert('Flag Updated Successfully');
+          getRemarks();
+          dispatch(refreshData());
+          getTaskList();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      showErrorAlert(error)
+    }
+
+  }
+
+  // if (loading) {
+  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "65%" }} />;
+  // }
+
+  console.log(initialLoading, "initialLoading");
+  console.log('basicData',basicData);
+  
 
   return (
     <>
@@ -537,7 +586,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                   <p className="mt-2 mb-1 text-muted fw-light">Followup Date</p>
                   <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                     <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
-                    <input
+                    <h5 className="m-0 font-size-14">{basicData?.followup_date && moment(basicData?.followup_date).format("DD/MM/YYYY")}</h5>
+                  {/* <input
                       type="tel"
                       value={basicData?.followup_date && moment(basicData?.followup_date).format("DD/MM/YYYY")}
                       style={{
@@ -547,7 +597,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                         fontSize: "16px",
                         fontWeight: 600,
                       }}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
@@ -638,12 +688,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                 <Dropdown.Toggle
                   className="cursor-pointer"
                   variant="light"
+                  disabled={formattedFlagData?.length == 0}
                   // disabled={!StudentData?.status}
                 >
                   {basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Change Flag"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {(flags || [])?.map((item: any) => (
+                  {(formattedFlagData || [])?.map((item: any) => (
                     // Check if the item is visible before rendering the Dropdown.Item
 
                     <Dropdown.Item
@@ -657,6 +708,11 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
+              <div className="mt-2">
+                {basicData?.flags?.length > 0 && basicData?.flags.map((data: any) => (<span style={{ border: `2px solid ${data?.color}`, backgroundColor: `${setColorOpacityRGB(data?.color)}`}} className="rounded-5 me-2 mt-1">
+                  <small className="ps-1 pe-1 fw-bold">{data?.flag_name}<i className="ms-2 pt-2 mdi mdi-close fs-5" onClick={() => removeFlag(data?.id)}></i></small>
+                </span>))}
+              </div>
             </Card.Body>
           </Card>
         </Col>
