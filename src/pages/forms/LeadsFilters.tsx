@@ -152,7 +152,7 @@ const LeadsFilters = (props: any) => {
         <Row>
           <Col className="d-flex justify-content-start align-items-center">
             <span className="mt-3 ms-3 w-full">
-              <h4 className="header-title mb-3 fs-3">Filters</h4>
+              <h4 className="header-title mb-3" style={{fontSize:"18px"}}>Filters</h4>
             </span>
           </Col>
           <Col className="d-flex justify-content-end align-items-center">

@@ -242,8 +242,6 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
 
   useEffect(() => {
     const branchName = BranchName() as { label: string; value: string }[];
-    console.log("branchName", branchName);
-
     if (branchName.length > 0) {
       setBranchName(branchName[0]?.label);
     }

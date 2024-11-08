@@ -91,20 +91,6 @@ const TaskList = () => {
                         ></TaskSection>
                       </div>
 
-                      {/* {TaskArray.length > 0 && (
-                        <div className="mt-2">
-                          <TaskSection
-                            title="Completed Task"
-                            initialTaskId={selectedTask?.id}
-                            tasks={TaskArray}
-                            selectTask={selectTask}
-                            date={""}
-                            setSelectedDate={function (value: React.SetStateAction<string>): void {
-                              throw new Error("Function not implemented.");
-                            }}
-                          ></TaskSection>
-                        </div>
-                      )} */}
                     </Col>
                   </Row>
                 </Card.Body>

@@ -394,7 +394,14 @@ input[type="number"] {
 }
 
 .content-page {
-  overflow-x: hidden;
+  overflow: visible;
+}
+
+html[data-sidenav-size=condensed]:not([data-layout=horizontal]) .content-page{
+  width: calc(100% - var(--ct-leftbar-width-sm));
+}
+.content-page{
+  width: calc(100% - var(--ct-leftbar-width));
 }
 
 .nav-pills .nav_item_1 .nav-link.active,

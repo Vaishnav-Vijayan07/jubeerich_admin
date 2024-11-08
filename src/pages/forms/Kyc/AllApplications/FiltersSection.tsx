@@ -37,7 +37,7 @@ const FiltersSection = () => {
     <>
       <Card>
         <Card.Body>
-          <h4 className="header-title mb-3">Filters</h4>
+          <h4 className="header-title mb-3" style={{fontSize:"16px"}}>Filters</h4>
           <Row className="mb-3">
             <Col md={2}>
               <Form.Group className="mb-3" controlId="status_id">
