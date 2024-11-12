@@ -281,6 +281,33 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
     }
   };
 
+  const handleCompleteTask = async () => {
+    try {
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.put("complete_task", {
+          isCompleted: true,
+          id: taskId,
+        });
+
+        getTaskDetails();
+        getTaskList();
+        showSuccessAlert(res.data.message);
+      }
+    } catch (err) {
+      console.log("Error during task completion:", err);
+    }
+  };
+
   const addNewCountry = async (newCountryId: number) => {
     try {
       const result = await swal.fire({
@@ -429,19 +456,35 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                   </Col>
                 )}
 
-                {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
-                  <Col className="d-flex gap-2 float-end">
-                    <Button
-                      disabled={taskDetails?.is_proceed_to_kyc}
-                      className="d-flex align-items-center btn-light"
-                      // disabled={taskDetails?.isCompleted ? true : false}
-                      onClick={handleProccedToKyc}
-                    >
-                      <div className="round-circle" />
-                      Proceed to KYC
-                    </Button>
-                  </Col>
-                )}
+                  <Row className="g-1 float-end">
+                    {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                      <Col className="d-flex gap-2">
+                        <Button
+                          className="d-flex align-items-center btn-light"
+                          disabled={taskDetails?.isCompleted ? true : false}
+                          onClick={handleCompleteTask}
+                        >
+                          <div className="round-circle" />
+                          Complete Task
+                        </Button>
+                      </Col>
+                    )}
+
+                  {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                    <Col className="d-flex gap-2 float-end">
+                      <Button
+                        style={{ minWidth: "150px" }} 
+                        disabled={taskDetails?.is_proceed_to_kyc}
+                        className="d-flex align-items-center btn-light"
+                        // disabled={taskDetails?.isCompleted ? true : false}
+                        onClick={handleProccedToKyc}
+                      >
+                        <div className="round-circle" />
+                        Proceed to KYC
+                      </Button>
+                    </Col>
+                  )}
+                  </Row>
                 <div className="clearfix"></div>
                 <hr className="my-3" />
               </Col>
@@ -708,9 +751,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
-              <div className="mt-2">
+              <div className="mt-2" style={{ display: "flex", flexWrap: "wrap", gap: "1px" }}>
                 {basicData?.flags?.length > 0 && basicData?.flags.map((data: any) => (<span style={{ border: `2px solid ${data?.color}`, backgroundColor: `${setColorOpacityRGB(data?.color)}`}} className="rounded-5 me-2 mt-1">
-                  <small className="ps-1 pe-1 fw-bold" style={{ fontSize: "0.7rem", lineHeight: "1", }}>{data?.flag_name}<i className="ms-2 mdi mdi-close" onClick={() => removeFlag(data?.id)}></i></small>
+                  <small className="ps-1 pe-1 mb-2 fw-bold" style={{ fontSize: "0.6rem", lineHeight: "0"}}>{data?.flag_name}<i className="ms-2 mdi mdi-close" style={{transition: "transform 0.3s ease"}} onClick={() => removeFlag(data?.id)}></i></small>
                 </span>))}
               </div>
             </Card.Body>
