@@ -661,7 +661,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
         </Card>
       )}
 
-      <Row className="d-flex align-items-stretch mb-2">
+      <Row className="d-flex align-items-stretch mb-3">
         <Col md={6}>
           <Card className="h-100">
             <Card.Body>
