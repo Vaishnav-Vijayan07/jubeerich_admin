@@ -31,6 +31,7 @@ import Select from "react-select";
 import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import CardLoadingSkeleton from "../../../../components/SkeletonLoading/CardLoadingSkeleton1";
+import DocumentsOverview from "./DocumentsOverview/DocumentsOverview";
 
 const Comments = lazy(() => import("./Comments"));
 const History = lazy(() => import("./History"));
@@ -752,9 +753,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                 </Dropdown.Menu>
               </Dropdown>
               <div className="mt-2" style={{ display: "flex", flexWrap: "wrap", gap: "1px" }}>
-                {basicData?.flags?.length > 0 && basicData?.flags.map((data: any) => (<span style={{ border: `2px solid ${data?.color}`, backgroundColor: `${setColorOpacityRGB(data?.color)}`}} className="rounded-5 me-2 mt-1">
-                  <small className="ps-1 pe-1 mb-2 fw-bold" style={{ fontSize: "0.6rem", lineHeight: "0"}}>{data?.flag_name}<i className="ms-2 mdi mdi-close" style={{transition: "transform 0.3s ease"}} onClick={() => removeFlag(data?.id)}></i></small>
-                </span>))}
+                {basicData?.flags?.length > 0 && basicData?.flags.map((data: any) => (<div style={{ border: `2px solid ${data?.color}`, backgroundColor: `${setColorOpacityRGB(data?.color)}`}} className="rounded-5 me-2 mt-1">
+                  <div className="ps-1 pe-1 fw-bold" style={{ fontSize: "0.6rem", paddingTop: '2px'}}>{data?.flag_name}<i className="mdi mdi-close" style={{paddingLeft: '12px'}} onClick={() => removeFlag(data?.id)}></i></div>
+                </div>))}
               </div>
             </Card.Body>
           </Card>
@@ -810,12 +811,17 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                         History
                       </Nav.Link>
                     </Nav.Item>
+
+                    <Nav.Item as="li" className="nav-item nav_item_3">
+                      <Nav.Link eventKey="documents_overview" className="nav-link cursor-pointer">
+                        Documents Overview
+                      </Nav.Link>
+                    </Nav.Item>
                   </Nav>
 
                   <Tab.Content>
                     {activeTab === "comments" && studentId && (
                       <>
-                        {console.log(studentId)}
                         <Suspense fallback={null}>
                           <Comments studentId={studentId} />
                         </Suspense>
@@ -824,9 +830,16 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
 
                     {activeTab === "history" && studentId && (
                       <>
-                        {console.log(studentId)}
                         <Suspense fallback={null}>
                           <History studentId={studentId} />
+                        </Suspense>
+                      </>
+                    )}
+
+                    {activeTab === "documents_overview" && studentId && (
+                      <>
+                        <Suspense fallback={null}>
+                          <DocumentsOverview studentId={studentId} />
                         </Suspense>
                       </>
                     )}
