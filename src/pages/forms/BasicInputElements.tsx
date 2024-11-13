@@ -422,14 +422,12 @@ const BasicInputElements = withSwal((props: any) => {
         toggleUploadModal();
       } else {
         showWarningAlert(data.message);
-        setSelectedFile([]);
         downloadRjectedData(data.invalidFileLink);
         setIsLoading(false);
         dispatch(getLead());
       }
     } catch (err) {
       showErrorAlert(err);
-      setSelectedFile([]);
       setIsLoading(false);
     }
   };

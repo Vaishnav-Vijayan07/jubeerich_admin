@@ -22,7 +22,7 @@ const SiblingsDetails = ({
   return (
     <Row className="p-2" style={{ borderBottom: "1px solid #6658dd" }}>
       <Row>
-        <h5 className="mb-4 text-uppercase">Siblings Details</h5>
+        <h5 className="mb-4 text-uppercase">Siblings' Details</h5>
       </Row>
       <Col md={6}>
         <Form.Group className="mb-3" controlId={`number_of_siblings`}>
