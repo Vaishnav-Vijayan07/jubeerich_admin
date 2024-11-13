@@ -11,6 +11,7 @@ import {
   counsellor_id,
   country_manager_id,
   cre_id,
+  customStyles,
   follow_up_id,
   franchise_counsellor_id,
   future_leads_id,
@@ -26,8 +27,11 @@ import useDropdownData from "../../../../hooks/useDropdownDatas";
 import swal from "sweetalert2";
 import RemarkModal from "./RemarkModal";
 import { Link } from "react-router-dom";
+import Select from "react-select";
+import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import CardLoadingSkeleton from "../../../../components/SkeletonLoading/CardLoadingSkeleton1";
+import DocumentsOverview from "./DocumentsOverview/DocumentsOverview";
 
 const Comments = lazy(() => import("./Comments"));
 const History = lazy(() => import("./History"));
@@ -38,6 +42,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
   }));
 
   const [basicData, setBasicData] = useState<any>([]);
+  const [flagData, setFlagData] = useState<any>([])
   const [status, setStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [standard, setStandard] = useState(false);
@@ -85,6 +90,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
         console.log(res.data);
 
         setBasicData(res.data.data);
+        setFlagData(res?.data?.data?.flags);
         setLoading(false);
       })
       .catch((err) => {
@@ -93,6 +99,14 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
       });
   };
 
+  const formattedFlagData = useMemo(() => {
+    if (!flags || !basicData?.flags) return [];
+  
+    const basicDataFlagIds = new Set(basicData?.flags?.map((data: any) => data?.id));
+  
+    return flags.filter((item: any) => !basicDataFlagIds.has(item.value));
+  }, [flags, basicData?.flags]);
+  
   const handleStatusChange = async (status_id: number) => {
     if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
       toggleStandard();
@@ -268,6 +282,33 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
     }
   };
 
+  const handleCompleteTask = async () => {
+    try {
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.put("complete_task", {
+          isCompleted: true,
+          id: taskId,
+        });
+
+        getTaskDetails();
+        getTaskList();
+        showSuccessAlert(res.data.message);
+      }
+    } catch (err) {
+      console.log("Error during task completion:", err);
+    }
+  };
+
   const addNewCountry = async (newCountryId: number) => {
     try {
       const result = await swal.fire({
@@ -350,9 +391,45 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
       }
     } catch (error) {
       console.log(error);
-      showErrorAlert("Something went wrong");
+      showErrorAlert(error);
     }
   };
+
+  const removeFlag = async (flagId: any) => {
+    try {
+      const result = await swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axios.put(`/remove_flag_status/${studentId}`, { flag_id: flagId });
+        if (res) {
+          showSuccessAlert('Flag Updated Successfully');
+          getRemarks();
+          dispatch(refreshData());
+          getTaskList();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      showErrorAlert(error)
+    }
+
+  }
+
+  // if (loading) {
+  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "65%" }} />;
+  // }
+
+  console.log(initialLoading, "initialLoading");
+  console.log('basicData',basicData);
+  
 
   return (
     <>
@@ -380,19 +457,35 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                   </Col>
                 )}
 
-                {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
-                  <Col className="d-flex gap-2 float-end">
-                    <Button
-                      disabled={taskDetails?.is_proceed_to_kyc}
-                      className="d-flex align-items-center btn-light"
-                      // disabled={taskDetails?.isCompleted ? true : false}
-                      onClick={handleProccedToKyc}
-                    >
-                      <div className="round-circle" />
-                      Proceed to KYC
-                    </Button>
-                  </Col>
-                )}
+                  <Row className="g-1 float-end">
+                    {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                      <Col className="d-flex gap-2">
+                        <Button
+                          className="d-flex align-items-center btn-light"
+                          disabled={taskDetails?.isCompleted ? true : false}
+                          onClick={handleCompleteTask}
+                        >
+                          <div className="round-circle" />
+                          Complete Task
+                        </Button>
+                      </Col>
+                    )}
+
+                  {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                    <Col className="d-flex gap-2 float-end">
+                      <Button
+                        style={{ minWidth: "150px" }} 
+                        disabled={taskDetails?.is_proceed_to_kyc}
+                        className="d-flex align-items-center btn-light"
+                        // disabled={taskDetails?.isCompleted ? true : false}
+                        onClick={handleProccedToKyc}
+                      >
+                        <div className="round-circle" />
+                        Proceed to KYC
+                      </Button>
+                    </Col>
+                  )}
+                  </Row>
                 <div className="clearfix"></div>
                 <hr className="my-3" />
               </Col>
@@ -537,7 +630,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                   <p className="mt-2 mb-1 text-muted fw-light">Followup Date</p>
                   <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                     <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
-                    <input
+                    <h5 className="m-0 font-size-14">{basicData?.followup_date && moment(basicData?.followup_date).format("DD/MM/YYYY")}</h5>
+                  {/* <input
                       type="tel"
                       value={basicData?.followup_date && moment(basicData?.followup_date).format("DD/MM/YYYY")}
                       style={{
@@ -547,7 +641,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                         fontSize: "16px",
                         fontWeight: 600,
                       }}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
@@ -567,9 +661,9 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
         </Card>
       )}
 
-      {!loading && <Row>
+      {!loading && <Row className="d-flex align-items-stretch mb-3">
         <Col md={6}>
-          <Card>
+          <Card className="h-100">
             <Card.Body>
               <h4 className="text-secondary m-0">Status</h4>
               <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p>
@@ -610,7 +704,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
           </Card>
         </Col>
         <Col md={6}>
-          <Card>
+          <Card className="h-100">
             <Card.Body>
               <div className="d-flex justify-content-between">
                 <span>
@@ -638,12 +732,13 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                 <Dropdown.Toggle
                   className="cursor-pointer"
                   variant="light"
+                  disabled={formattedFlagData?.length == 0}
                   // disabled={!StudentData?.status}
                 >
                   {basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Change Flag"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {(flags || [])?.map((item: any) => (
+                  {(formattedFlagData || [])?.map((item: any) => (
                     // Check if the item is visible before rendering the Dropdown.Item
 
                     <Dropdown.Item
@@ -657,6 +752,11 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
+              <div className="mt-2" style={{ display: "flex", flexWrap: "wrap", gap: "1px" }}>
+                {basicData?.flags?.length > 0 && basicData?.flags.map((data: any) => (<div style={{ border: `2px solid ${data?.color}`, backgroundColor: `${setColorOpacityRGB(data?.color)}`}} className="rounded-5 me-2 mt-1">
+                  <div className="ps-1 pe-1 fw-bold" style={{ fontSize: "0.6rem", paddingTop: '2px'}}>{data?.flag_name}<i className="mdi mdi-close" style={{paddingLeft: '12px'}} onClick={() => removeFlag(data?.id)}></i></div>
+                </div>))}
+              </div>
             </Card.Body>
           </Card>
         </Col>
@@ -711,12 +811,17 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                         History
                       </Nav.Link>
                     </Nav.Item>
+
+                    <Nav.Item as="li" className="nav-item nav_item_3">
+                      <Nav.Link eventKey="documents_overview" className="nav-link cursor-pointer">
+                        Documents Overview
+                      </Nav.Link>
+                    </Nav.Item>
                   </Nav>
 
                   <Tab.Content>
                     {activeTab === "comments" && studentId && (
                       <>
-                        {console.log(studentId)}
                         <Suspense fallback={null}>
                           <Comments studentId={studentId} />
                         </Suspense>
@@ -725,9 +830,16 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
 
                     {activeTab === "history" && studentId && (
                       <>
-                        {console.log(studentId)}
                         <Suspense fallback={null}>
                           <History studentId={studentId} />
+                        </Suspense>
+                      </>
+                    )}
+
+                    {activeTab === "documents_overview" && studentId && (
+                      <>
+                        <Suspense fallback={null}>
+                          <DocumentsOverview studentId={studentId} />
                         </Suspense>
                       </>
                     )}

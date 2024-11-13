@@ -11,6 +11,7 @@ import { TaskItemTypes } from "./data";
 import axios from "axios";
 import StudentDetails from "./StudentDetails";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
+import moment from "moment";
 
 // Task List
 const TaskList = () => {
@@ -18,15 +19,18 @@ const TaskList = () => {
   const [initialLoading, setLoading] = useState(true);
   const [pendingTasks, setPendingTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(pendingTasks[0]);
+  const [taskFilterDate, setTaskFilterDate] = useState<any>('')
 
   const selectTask = (task: TaskItemTypes) => {
     setSelectedTask(task);
     setSelectedTaskId(task?.id);
   };
 
-  const getTaskList = () => {
+  const getTaskList = (date: any) => {    
+    date = moment(date).startOf('day').format('YYYY-MM-DD');
+
     axios
-      .get(`/tasks`)
+      .get(`/tasks`, { params:{ date: date }})
       .then((res) => {
         let pendingArray: any = [];
         res.data.data.map((item: any) => {
@@ -51,7 +55,7 @@ const TaskList = () => {
   };
 
   useEffect(() => {
-    getTaskList();
+    getTaskList(new Date());
   }, []);
 
   // if (initialLoading) {
@@ -86,7 +90,8 @@ const TaskList = () => {
                           date={""}
                           initialLoading={initialLoading}
                           setSelectedDate={function (value: React.SetStateAction<string>): void {
-                            throw new Error("Function not implemented.");
+                            console.log(value);
+                            getTaskList(value)
                           }}
                         ></TaskSection>
                       </div>

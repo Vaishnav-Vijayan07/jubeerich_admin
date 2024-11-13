@@ -50,6 +50,7 @@ const LeadsModal = withSwal((props: any) => {
   const [selectedSource, setSelectedSource] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
+  // const [selectedFlag, setSelectedFlag] = useState<any>(null);
   const [selectedFlag, setSelectedFlag] = useState<any>(null);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<any>([]);
@@ -105,7 +106,12 @@ const LeadsModal = withSwal((props: any) => {
     const updatedOffice = office?.filter((office: any) => office.value == item?.office_type);
     const updatedRegion = region?.filter((region: any) => region.value == item?.region_id);
 
-    const updatedFlag = flags?.filter((flag: any) => flag.value == item?.flag_id);
+    // const updatedFlag = flags?.filter((flag: any) => flag.value == item?.flag_id);
+    const updatedFlag = item?.flag_details?.map((flag: any) => ({
+      value: flag?.id,
+      label: flag?.flag_name,
+    }));
+
 
     const updatedCtegory = leadTypes?.filter((category: any) => category.value == item?.lead_type_id);
 
@@ -117,6 +123,7 @@ const LeadsModal = withSwal((props: any) => {
     }));
 
     const countryArray = item?.preferredCountries?.map((country: any) => country?.id);
+    const flagArray = item?.flag_details?.map((flag: any) => flag?.id);
 
     const { value } = updatedOffice[0];
     const { franchise_id, region_id: region_id_from_item } = item;
@@ -137,7 +144,8 @@ const LeadsModal = withSwal((props: any) => {
 
     setSelectedSource(updatedSource[0]);
     setSelectedOffice(updatedOffice[0]);
-    setSelectedFlag(updatedFlag[0]);
+    // setSelectedFlag(updatedFlag[0]);
+    setSelectedFlag(updatedFlag);
     setSelectedRegion(updatedRegion[0]);
     setSelectedCountry(updatedCountry);
     setSelectedCategory(updatedCtegory[0]);
@@ -164,7 +172,8 @@ const LeadsModal = withSwal((props: any) => {
       branch_id: item?.branch_id || "",
       region_id: item?.region_id || "",
       franchise_id: item?.franchise_id || "",
-      flag: item?.flag_id || "",
+      // flag: item?.flag_id || "",
+      flag: flagArray || []
     }));
 
     setIsUpdate(true);
@@ -198,8 +207,11 @@ const LeadsModal = withSwal((props: any) => {
       countries = selectedCountry.map((data: any) => data?.value);
     }
 
+    let selectedFlagIds = selectedFlag?.map((data: any) => data?.value) || [];
+
     let exam_details = languageForm.length ? languageForm : [];
     try {
+      
       await validationSchema.validate(formData, { abortEarly: false });
       swal
         .fire({
@@ -231,7 +243,8 @@ const LeadsModal = withSwal((props: any) => {
                     // JSON.stringify(formData.preferred_country),
                     JSON.stringify(countries),
                     formData.office_type,
-                    formData.flag ? formData.flag : null,
+                    // formData.flag ? formData.flag : null,
+                    JSON.stringify(selectedFlagIds),
                     formData.region_id ? formData.region_id : null,
                     null,
                     user.role == regional_manager_id ? formData.branch_id : null,
@@ -258,7 +271,8 @@ const LeadsModal = withSwal((props: any) => {
                     formData.city,
                     JSON.stringify([formData.preferred_country]),
                     formData.office_type,
-                    formData.flag ? formData.flag : null,
+                    // formData.flag ? formData.flag : null,
+                    JSON.stringify(selectedFlagIds),
                     formData.region_id ? formData.region_id : null,
                     null,
                     null,
@@ -667,6 +681,7 @@ const LeadsModal = withSwal((props: any) => {
                     name="flag"
                     options={flags}
                     value={selectedFlag}
+                    isMulti={true}
                     onChange={handleDropDowns}
                   />
                   {validationErrors.flag && <Form.Text className="text-danger">{validationErrors.flag}</Form.Text>}

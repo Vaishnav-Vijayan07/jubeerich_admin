@@ -80,7 +80,8 @@ export const initialState = {
   franchise_id: "",
   lead_type_id: "",
   branch_id: "",
-  flag: ""
+  // flag: ""
+  flag: []
 };
 
 export const initialValidationState = {

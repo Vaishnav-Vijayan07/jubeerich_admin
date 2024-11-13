@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Table from "../../components/Table";
 import PageTitle from "../../components/PageTitle";
 import { Button, Card, Spinner, Modal } from "react-bootstrap";
@@ -43,6 +43,7 @@ interface TableRecords {
 
 const KycApproved = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [uploadModal, setUploadModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -162,9 +163,13 @@ const KycApproved = () => {
 
           {/* View Icon */}
           {/* <Link to={`/kyc_details/${row.original.id}`} className="action-icon"> */}
-          <Link to={`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}/${row.original?.id}?hideFooter=true`} className="action-icon">
+          {/* <Link to={`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}/${row.original?.id}?hideFooter=true`} className="action-icon">
             <i className="mdi mdi-eye-settings-outline"></i>
-          </Link>
+          </Link> */}
+
+          <span onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails.studyPreference.userPrimaryInfoId}/${row.original?.id}`, { state: { hideFooter: true } })} className="action-icon">
+            <i className="mdi mdi-eye-settings-outline"></i>
+          </span>
         </div>
       ),
     },

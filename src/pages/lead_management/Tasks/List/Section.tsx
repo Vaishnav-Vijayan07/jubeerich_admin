@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Row, Col, Card, Collapse, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Row, Col, Card, Collapse, OverlayTrigger, Tooltip, Button } from "react-bootstrap";
 import classNames from "classnames";
 import { ReactSortable } from "react-sortablejs";
 import calender from "../../../../assets/images/icons/calendar.svg";
@@ -11,6 +11,8 @@ import { DateReverse, handleDateFormat, setColorOpacity } from "../../../../cons
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.module.css";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
+import { FormInput } from "../../../../components";
+import moment from "moment";
 
 const Task = ({
   task,
@@ -114,9 +116,10 @@ interface TaskSectionState {
   setSelectedDate: Dispatch<SetStateAction<string>>;
 }
 
-const TaskSection = ({ title, tasks, selectTask, initialTaskId, initialLoading }: TaskSectionState) => {
+const TaskSection = ({ title, tasks, selectTask, initialTaskId, initialLoading, setSelectedDate }: TaskSectionState) => {
   const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
   const [selectedTaskId, setSelectedTaskId] = useState<number>(initialTaskId); // Track selected task's ID
+  const [selectedFollowupDate, setSelectedFollowupDate] = useState<any>('');
   useEffect(() => {
     setTaskList(tasks);
   }, [tasks]);
@@ -131,34 +134,64 @@ const TaskSection = ({ title, tasks, selectTask, initialTaskId, initialLoading }
     setSelectedTaskId(initialTaskId);
   }, [initialTaskId]);
 
-  const handleDateChange = (date: Date) => {};
-
-  const date = new Date();
+  const handleFollowupFilter = (date: any) => {
+    setSelectedFollowupDate(date);
+    setSelectedDate(date)
+  }
 
   return (
     <>
-      <div className="d-flex justify-content-between pb-3 mx-2">
-        <div className="text-dark">
-          <h5 className=" text-secondary" style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: "16px" }}>
-            {title}{" "}
-            <span className="text-danger" style={{ fontWeight: 500, fontSize: "14px" }}>
-              ({taskList.length})
-            </span>
-          </h5>
-        </div>
-        {title !== "Completed Task" && (
-          <div className="d-flex align-items-center justify-content-end">
-            <img src={calender} alt="date logo" width={16.3} className="calender-img" />
-            <ReactDatePicker
-              onChange={handleDateChange}
-              selected={new Date()}
-              dateFormat={"dd-MM-yyyy"}
-              className="custom-react-date-picker"
-            />
+      <div>
+        <div className="d-flex justify-content-between pb-3 mx-2">
+          <div className="text-dark">
+            <h5 className=" text-secondary" style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: "16px" }}>
+              {title}{" "}
+              <span className="text-danger" style={{ fontWeight: 500, fontSize: "14px" }}>
+                ({taskList.length})
+              </span>
+            </h5>
           </div>
-        )}
+          {title !== "Completed Task" && (
+            <div className="d-flex align-items-center justify-content-end">
+              <img src={calender} alt="date logo" width={16.3} className="calender-img" style={{paddingBottom: "3px"}} />
+              <ReactDatePicker
+                onChange={(date) => handleFollowupFilter(date)}
+                selected={selectedFollowupDate || new Date()}
+                dateFormat={"dd-MM-yyyy"}
+                onKeyDown={(e) => e.preventDefault()}
+                className="custom-react-date-picker"
+              />
+            </div>
+          )}
+        </div>
       </div>
+{/* 
+      {initialLoading ? (
+        <SkeletonComponent />
+      ) : taskList.length > 0 ? (
+        <Card className="mb-0 shadow-none" style={{ borderTop: "1.3px solid #70707033" }}>
+          <Card.Body className="px-0 pt-0">
+            <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>
+              {(taskList || []).map((task, idx) => (
+                <Task
+                  selectTask={handleSelectTask}
+                  task={task}
+                  key={idx}
+                  selectedTaskId={selectedTaskId} // Pass selectedTaskId as prop
+                />
+              ))}
+            </ReactSortable>
+          </Card.Body>
+        </Card>
+      ) : (
+        <Card className="mb-0 shadow-none" style={{ borderTop: "1.3px solid #70707033" }}>
+          <Card.Body className="px-0 text-center pt-4 pb-4">
+            <span>No tasks found...</span>
+          </Card.Body>
+        </Card>
+      )} */}
 
+      
       {initialLoading ? (
         <SkeletonComponent />
       ) : taskList.length > 0 ? (
