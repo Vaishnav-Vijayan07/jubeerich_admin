@@ -50,6 +50,7 @@ const LeadsModal = withSwal((props: any) => {
   const [selectedSource, setSelectedSource] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
+  // const [selectedFlag, setSelectedFlag] = useState<any>(null);
   const [selectedFlag, setSelectedFlag] = useState<any>(null);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<any>([]);
@@ -206,11 +207,10 @@ const LeadsModal = withSwal((props: any) => {
       countries = selectedCountry.map((data: any) => data?.value);
     }
 
-    let selectedFlagIds = selectedFlag.map((data: any) => data?.value);
+    let selectedFlagIds = selectedFlag?.map((data: any) => data?.value) || [];
 
     let exam_details = languageForm.length ? languageForm : [];
     try {
-      console.log('selectedFlag',selectedFlagIds);
       
       await validationSchema.validate(formData, { abortEarly: false });
       swal
