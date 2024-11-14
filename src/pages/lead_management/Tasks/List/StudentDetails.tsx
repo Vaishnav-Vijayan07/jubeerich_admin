@@ -491,7 +491,12 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
               </Col>
             </Row>
             <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
-              <Col md={9}>
+              <Col>
+                <Col  className="float-end">
+                  <div className="text-end text-nowrap">
+                    <b>Lead Date: {handleDateFormat(basicData?.lead_received_date)}</b>
+                  </div>
+                </Col>
                 <h3 className="m-0 mb-1">{taskDetails?.title}</h3>
                 <p className="mb-2">{taskDetails?.description}</p>
                 <div className="d-flex">
@@ -509,11 +514,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                       {country}
                     </small>
                   ))}
-                </div>
-              </Col>
-              <Col md={3}>
-                <div className="text-end text-nowrap">
-                  <b>Lead Date: {handleDateFormat(basicData?.lead_received_date)}</b>
                 </div>
               </Col>
             </Row>
@@ -661,7 +661,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
         </Card>
       )}
 
-      <Row className="d-flex align-items-stretch mb-3">
+      {!loading && <Row className="d-flex align-items-stretch mb-3">
         <Col md={6}>
           <Card className="h-100">
             <Card.Body>
@@ -760,8 +760,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
             </Card.Body>
           </Card>
         </Col>
-      </Row>
-      {user.role == 7 && (
+      </Row>}
+      {(!loading && user.role == 7) && (
         <Card>
           <Card.Body>
             <Row>
@@ -787,7 +787,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
           </Card.Body>
         </Card>
       )}
-      <Card>
+      {!loading && <Card>
         <Card.Body>
           <Row>
             <Tab.Container
@@ -849,7 +849,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
             </Tab.Container>
           </Row>
         </Card.Body>
-      </Card>
+      </Card>}
 
       <Modal show={standard} centered onHide={toggleStandard} dialogClassName="modal-calendar-width">
         <Modal.Header onHide={toggleStandard} closeButton>

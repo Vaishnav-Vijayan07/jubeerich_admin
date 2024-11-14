@@ -17,7 +17,7 @@ const ParentDetailsForm = ({
   return (
     <Row className="border-bottom p-1 mb-1">
       <Row>
-        <h5 className="mb-4 text-uppercase">{`${parentType} Details`}</h5>
+        <h5 className="mb-4 text-uppercase">{`${parentType}'s Details`}</h5>
       </Row>
       <Row>
         <Col md={6}>
