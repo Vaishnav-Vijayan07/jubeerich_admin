@@ -9,26 +9,40 @@ interface ParentDetailsFormProps {
   onChange: (e: any) => void;
 }
 
-const ParentDetailsForm = ({
+const GrandParentDetailsForm = ({
   parentType,
   parentDetails,
   onChange,
 }: ParentDetailsFormProps) => {
+
+  const parentTypeMap: { [key: string]: string } = {
+    paternal_grand_mother_info: 'Paternal Grand Mother',
+    paternal_grand_father_info: 'Paternal Grand Father',
+    maternal_grand_mother_info: 'Maternal Grand Mother',
+    maternal_grand_father_info: 'Maternal Grand Father',
+    paternal_grand_mother_info_spouse: 'Paternal Grand Mother Spouse',
+    paternal_grand_father_info_spouse: 'Paternal Grand Father Spouse',
+    maternal_grand_mother_info_spouse: 'Maternal Grand Mother Spouse',
+    maternal_grand_father_info_spouse: 'Maternal Grand Father Spouse',
+    father_in_law_info: 'Father In Law',
+    mother_in_law_info: 'Father In Law',
+  };
+
+  const parentTypeName = parentTypeMap[parentType] || 'Unknown Parent Type';
+
   return (
     <Row className="border-bottom p-1 mb-1">
       <Row>
-        <h5 className="mb-4 text-uppercase">{`${parentType} Details`}</h5>
+        <h5 className="mb-4 text-uppercase">{`${parentTypeName} Details`}</h5>
       </Row>
       <Row>
         <Col md={6}>
           <Form.Group className="mb-3" controlId={`${parentType}_name`}>
-            <Form.Label>{`Name of ${
-              parentType.charAt(0).toUpperCase() + parentType.slice(1)
-            }`}</Form.Label>
+            <Form.Label>{`Name of ${parentTypeName}`}</Form.Label>
             <FormInput
               type="text"
               name={`${parentType}.name`}
-              placeholder={`Enter name of ${parentType}`}
+              placeholder={`Enter name of ${parentTypeName?.toLowerCase()}`}
               onChange={onChange}
               value={parentDetails?.name}
             />
@@ -40,7 +54,7 @@ const ParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.occupation`}
-              placeholder={`Enter ${parentType}'s occupation`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s occupation`}
               onChange={onChange}
               value={parentDetails?.occupation}
             />
@@ -55,7 +69,7 @@ const ParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.annual_income`}
-              placeholder={`Enter ${parentType}'s annual income`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s annual income`}
               onChange={onChange}
               value={parentDetails?.annual_income}
             />
@@ -67,7 +81,7 @@ const ParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.organization`}
-              placeholder={`Enter ${parentType}'s organization`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s organization`}
               onChange={onChange}
               value={parentDetails?.organization}
             />
@@ -82,7 +96,7 @@ const ParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.age`}
-              placeholder={`Enter ${parentType}'s age`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s age`}
               onChange={onChange}
               value={parentDetails?.age}
             />
@@ -98,7 +112,7 @@ const ParentDetailsForm = ({
             <FormInput
               type="date"
               name={`${parentType}.dob`}
-              placeholder={`Enter ${parentType}'s dob`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s dob`}
               onChange={onChange}
               value={parentDetails?.dob}
             />
@@ -114,13 +128,13 @@ const ParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.location`}
-              placeholder={`Enter ${parentType}'s location`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s location`}
               onChange={onChange}
               value={parentDetails?.location}
             />
           </Form.Group>
         </Col>
-        
+
         <Col md={6}>
           <Form.Group
             className="mb-3"
@@ -130,7 +144,7 @@ const ParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.designation`}
-              placeholder={`Enter ${parentType}'s designation`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s designation`}
               onChange={onChange}
               value={parentDetails?.designation}
             />
@@ -146,7 +160,7 @@ const ParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.duration`}
-              placeholder={`Enter ${parentType}'s duration`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s duration`}
               onChange={onChange}
               value={parentDetails?.duration}
             />
@@ -159,13 +173,6 @@ const ParentDetailsForm = ({
             controlId={`${parentType}_current_status`}
           >
             <Form.Label>Current Status</Form.Label>
-            {/* <FormInput
-              type="text"
-              name={`${parentType}.current_status`}
-              placeholder={`Enter ${parentType}'s current status`}
-              onChange={onChange}
-              value={parentDetails?.current_status}
-            /> */}
             <Form.Select
               aria-label="select current status"
               name={`${parentType}.current_status`}
@@ -193,7 +200,7 @@ const ParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.monthly_salary`}
-              placeholder={`Enter ${parentType}'s monthly salary`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s monthly salary`}
               onChange={onChange}
               value={parentDetails?.monthly_salary}
             />
@@ -233,7 +240,7 @@ const ParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.current_income_source`}
-              placeholder={`Enter ${parentType}'s current income source`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s current income source`}
               onChange={onChange}
               value={parentDetails?.current_income_source}
             />
@@ -283,4 +290,4 @@ const ParentDetailsForm = ({
   );
 };
 
-export default ParentDetailsForm;
+export default GrandParentDetailsForm;

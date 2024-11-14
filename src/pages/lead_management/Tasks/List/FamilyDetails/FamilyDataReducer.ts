@@ -2,6 +2,16 @@ interface FamilyDetailsState {
   father: ParentDetails;
   mother: ParentDetails;
   spouse: Spouse;
+  paternal_grand_father_info: GrandParentDetails;
+  paternal_grand_mother_info: GrandParentDetails;
+  maternal_grand_father_info: GrandParentDetails;
+  maternal_grand_mother_info: GrandParentDetails;
+  paternal_grand_father_info_spouse: GrandParentDetails;
+  paternal_grand_mother_info_spouse: GrandParentDetails;
+  maternal_grand_father_info_spouse: GrandParentDetails;
+  maternal_grand_mother_info_spouse: GrandParentDetails;
+  father_in_law_info: GrandParentDetails;
+  mother_in_law_info: GrandParentDetails;
   number_of_siblings: number;
   siblings_info: SiblingDetails[];
   number_of_children: number;
@@ -19,6 +29,14 @@ interface ParentDetails {
   income_tax_payer: boolean;
   nature_of_occupation: string;
 }
+interface GrandParentDetails {
+  name: string;
+  occupation: string;
+  annual_income: number;
+  organization: string;
+  income_tax_payer: boolean;
+  nature_of_occupation: string;
+}
 interface Spouse {
   name: string;
   occupation: string;
@@ -28,16 +46,47 @@ interface Spouse {
 }
 
 interface SiblingDetails {
-  name: string;
-  occupation: string;
-  annual_income: number;
-  income_tax_payer: boolean;
+  // name: string;
+  // occupation: string;
+  // annual_income: number;
+  // income_tax_payer: boolean;
+  name: string,
+  age: string,
+  dob: string,
+  occupation: string,
+  annual_income: number,
+  organization: string,
+  income_tax_payer: boolean,
+  nature_of_occupation: string,
+  location: string,
+  designation: string,
+  duration: number,
+  current_status: string,
+  monthly_salary: number,
+  mode_of_payment: string,
+  current_income_source: string,
 }
 
 interface ChildDetails {
-  name: string;
-  gender: string;
-  age: number;
+  // name: string;
+  // gender: string;
+  // age: number;
+  name: string,
+  gender: string,
+  age: number,
+  dob: string,
+  occupation: string,
+  annual_income: number,
+  organization: string,
+  income_tax_payer: boolean,
+  nature_of_occupation: string,
+  location: string,
+  designation: string,
+  duration: number,
+  current_status: string,
+  monthly_salary: number,
+  mode_of_payment: string,
+  current_income_source: string,
 }
 
 type FamilyDetailsAction =
@@ -45,6 +94,12 @@ type FamilyDetailsAction =
   | {
       type: "UPDATE_PARENT";
       parentType: "father" | "mother" | "spouse";
+      field: string;
+      value: any;
+    }
+  | {
+      type: "UPDATE_GRAND_PARENT";
+      parentType: "paternal_grand_mother_info" | "paternal_grand_father_info" | "maternal_grand_mother_info" | "maternal_grand_father_info" | "paternal_grand_mother_info_spouse" | "paternal_grand_father_info_spouse" | "maternal_grand_mother_info_spouse" | "maternal_grand_father_info_spouse" | "father_in_law_info" | "mother_in_law_info" ;
       field: string;
       value: any;
     }
@@ -109,6 +164,14 @@ export const familyDetailsReducer = (
           [action.field]: action.value,
         },
       };
+    case "UPDATE_GRAND_PARENT":
+      return {
+        ...state,
+        [action.parentType]: {
+          ...state[action.parentType],
+          [action.field]: action.value,
+        },
+      };
 
     case "UPDATE_SIBLING":
       return {
@@ -129,10 +192,25 @@ export const familyDetailsReducer = (
         siblings_info: [
           ...state.siblings_info,
           {
+            // name: "",
+            // occupation: "",
+            // annual_income: 0,
+            // income_tax_payer: true,
             name: "",
+            age: "",
+            dob: "",
             occupation: "",
             annual_income: 0,
+            organization: "",
             income_tax_payer: true,
+            nature_of_occupation: "",
+            location: "",
+            designation: "",
+            duration: 0,
+            current_status: "",
+            monthly_salary: 0,
+            mode_of_payment: "",
+            current_income_source: "",
           },
         ],
       };
@@ -164,7 +242,25 @@ export const familyDetailsReducer = (
         ...state,
         children_info: [
           ...state.children_info,
-          { name: "", gender: "", age: 0 },
+          // { name: "", gender: "", age: 0 },
+          {
+            name: "",
+            gender: "",
+            age: 0,
+            dob: "",
+            occupation: "",
+            annual_income: 0,
+            organization: "",
+            income_tax_payer: true,
+            nature_of_occupation: "",
+            location: "",
+            designation: "",
+            duration: 0,
+            current_status: "",
+            monthly_salary: 0,
+            mode_of_payment: "",
+            current_income_source: "",
+          }
         ],
       };
 

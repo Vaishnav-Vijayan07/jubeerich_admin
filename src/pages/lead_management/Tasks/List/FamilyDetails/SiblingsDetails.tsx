@@ -3,6 +3,7 @@ import ActionButton from "../ActionButton";
 import { Form, Row } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { FormInput } from "../../../../../components";
+import { currentStatus, modeOfPayment, natureOfOccupaton } from "./FamilyDetails";
 
 interface Props {
   handleInputChange: any;
@@ -44,7 +45,7 @@ const SiblingsDetails = ({
               <div key={index}>
                 <h6>Sibling {index + 1}</h6>
                 <Row>
-                  <Col md={4}>
+                  <Col md={6}>
                     <Form.Group
                       className="mb-3"
                       controlId={`siblings?.${index}.name`}
@@ -59,7 +60,7 @@ const SiblingsDetails = ({
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={4}>
+                  <Col md={6}>
                     <Form.Group
                       className="mb-3"
                       controlId={`siblings?.${index}.occupation`}
@@ -74,7 +75,22 @@ const SiblingsDetails = ({
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={4}>
+                </Row>
+
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3" controlId={`siblings?.${index}.organization`}>
+                      <Form.Label>Organization</Form.Label>
+                      <FormInput
+                        type="text"
+                        name={`siblings.${index}.organization`}
+                        placeholder={`Enter sibling's organization`}
+                        onChange={handleInputChange}
+                        value={sibling?.organization}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
                     <Form.Group
                       className="mb-3"
                       controlId={`siblings?.${index}.annual_income`}
@@ -94,16 +110,199 @@ const SiblingsDetails = ({
                   <Col md={6}>
                     <Form.Group
                       className="mb-3"
-                      controlId={`siblings?.${index}.income_tax_payer`}
+                      controlId={`siblings.${index}.age`}
+                    >
+                      <Form.Label>Age</Form.Label>
+                      <FormInput
+                        type="number"
+                        name={`siblings.${index}.age`}
+                        placeholder={`Enter siblings's age`}
+                        onChange={handleInputChange}
+                        value={sibling?.age}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`siblings.${index}.dob`}
+                    >
+                      <Form.Label>Date of Birth</Form.Label>
+                      <FormInput
+                        type="date"
+                        name={`siblings.${index}.dob`}
+                        placeholder={`Enter siblings's dob`}
+                        onChange={handleInputChange}
+                        value={sibling?.dob}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`siblings.${index}.location`}
+                    >
+                      <Form.Label>Location</Form.Label>
+                      <FormInput
+                        type="text"
+                        name={`siblings.${index}.location`}
+                        placeholder={`Enter siblings's location`}
+                        onChange={handleInputChange}
+                        value={sibling?.location}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`siblings.${index}.designation`}
+                    >
+                      <Form.Label>Designation</Form.Label>
+                      <FormInput
+                        type="text"
+                        name={`siblings.${index}.designation`}
+                        placeholder={`Enter siblings's designation`}
+                        onChange={handleInputChange}
+                        value={sibling?.designation}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`siblings.${index}.duration`}
+                    >
+                      <Form.Label>Duration</Form.Label>
+                      <FormInput
+                        type="number"
+                        name={`siblings.${index}.duration`}
+                        placeholder={`Enter siblings's duration`}
+                        onChange={handleInputChange}
+                        value={sibling?.duration}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`siblings.${index}.current_status`}
+                    >
+                      <Form.Label>Current Status</Form.Label>
+                      <Form.Select
+                        aria-label="select current status"
+                        name={`siblings.${index}.current_status`}
+                        value={sibling?.current_status}
+                        onChange={handleInputChange}
+                      >
+                        <option value="" disabled selected>
+                          Choose..
+                        </option>
+                        {currentStatus?.map((item: any) => (
+                          <option value={item?.value} key={item?.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`siblings.${index}.monthly_salary`}
+                    >
+                      <Form.Label>Monthly Salary</Form.Label>
+                      <FormInput
+                        type="number"
+                        name={`siblings.${index}.monthly_salary`}
+                        placeholder={`Enter siblings's monthly salary`}
+                        onChange={handleInputChange}
+                        value={sibling?.monthly_salary}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`siblings.${index}.mode_of_payment`}
+                    >
+                      <Form.Label>Mode of Payment</Form.Label>
+                      <Form.Select
+                        aria-label="select mode of payment"
+                        name={`siblings.${index}.mode_of_payment`}
+                        value={sibling?.mode_of_payment}
+                        onChange={handleInputChange}
+                      >
+                        <option value="" disabled selected>
+                          Choose..
+                        </option>
+                        {modeOfPayment?.map((item: any) => (
+                          <option value={item?.value} key={item?.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`siblings.${index}.current_income_source`}
+                    >
+                      <Form.Label>Current Income Source</Form.Label>
+                      <FormInput
+                        type="text"
+                        name={`siblings.${index}.current_income_source`}
+                        placeholder={`Enter siblings's current income source`}
+                        onChange={handleInputChange}
+                        value={sibling?.current_income_source}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`siblings.${index}.income_tax_payer`}
                     >
                       <Form.Label>Income Tax Payer</Form.Label>
                       <Form.Check
                         type="checkbox"
                         label="Is Income Tax Payer"
                         name={`siblings.${index}.income_tax_payer`}
-                        checked={sibling.income_tax_payer}
+                        checked={sibling?.income_tax_payer}
                         onChange={handleInputChange}
                       />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`siblings.${index}.nature_of_occupation`}
+                    >
+                      <Form.Label>Nature of Occupation</Form.Label>
+                      <Form.Select
+                        aria-label="select nature of occupation"
+                        name={`siblings.${index}.nature_of_occupation`}
+                        value={sibling?.nature_of_occupation}
+                        onChange={handleInputChange}
+                      >
+                        <option value="" disabled selected>
+                          Choose..
+                        </option>
+                        {natureOfOccupaton?.map((item: any) => (
+                          <option value={item?.value} key={item?.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </Form.Select>
                     </Form.Group>
                   </Col>
                   <Col md={6}>

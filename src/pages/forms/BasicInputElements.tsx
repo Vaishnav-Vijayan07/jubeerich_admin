@@ -74,6 +74,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [filteredItems, setFilteredItems] = useState<any[]>([]); // Filtered data
   const [handleUpdateData, setHandleUpdateData] = useState<any>({});
   const [clearLeadModal, setClearLeadModal] = useState<any>(null);
+  // const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     setFilteredItems(state);
@@ -386,6 +387,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleOnFileUpload = (files: any) => {
     setSelectedFile(files);
+    // setProgress(0)
   };
 
   const handleFileUpload = async () => {
@@ -409,6 +411,13 @@ const BasicInputElements = withSwal((props: any) => {
 
     try {
       const { data } = await axios.post(`/excel_import`, formData, {
+        // onUploadProgress: (progressEvent: ProgressEvent) => {
+        //   console.log('progressEvent',progressEvent.loaded);
+        //   console.log('progressEvent',progressEvent.total);
+          
+        //   const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        //   setProgress(percentCompleted)
+        // },
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -638,6 +647,7 @@ const BasicInputElements = withSwal((props: any) => {
           <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body>
+              {/* <h1>Progress Bar = {progress}</h1> */}
               <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
               <FileUploader
                 onFileUpload={handleOnFileUpload}

@@ -209,6 +209,7 @@ const LeadsModal = withSwal((props: any) => {
 
     let selectedFlagIds = selectedFlag?.map((data: any) => data?.value) || [];
 
+    console.log('selectedFlag',selectedFlagIds);
     let exam_details = languageForm.length ? languageForm : [];
     try {
       

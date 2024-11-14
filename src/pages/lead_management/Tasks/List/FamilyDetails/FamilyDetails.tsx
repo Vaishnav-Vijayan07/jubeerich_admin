@@ -12,35 +12,111 @@ import AccompanyingDetails from "./AccompanyingDetails";
 import RelativesDetails from "./RelativesDetails";
 import { familyDetailsReducer } from "./FamilyDataReducer";
 import axios from "axios";
+import GrandParentDetailsForm from "./GrandParentsDetailForm";
 
 interface Props {
   studentId: string | number;
 }
 
+// const initialFamilyDetailsState = {
+//   father: {
+//     name: "",
+//     occupation: "",
+//     annual_income: 0,
+//     organization: "",
+//     income_tax_payer: true,
+//     nature_of_occupation: "",
+//   },
+//   mother: {
+//     name: "",
+//     occupation: "",
+//     annual_income: 0,
+//     organization: "",
+//     income_tax_payer: true,
+//     nature_of_occupation: "",
+//   },
+//   number_of_siblings: 0,
+//   siblings_info: [
+//     {
+//       name: "",
+//       occupation: "",
+//       annual_income: 0,
+//       income_tax_payer: true,
+//     },
+//   ],
+//   number_of_children: 0,
+//   children_info: [
+//     {
+//       name: "",
+//       gender: "",
+//       age: 0,
+//     },
+//   ],
+//   accompanying_child: false,
+//   accompanying_spouse: false,
+//   spouse: {
+//     name: "",
+//     occupation: "",
+//     annual_income: 0,
+//     organization: "",
+//     income_tax_payer: true,
+//   },
+//   relatives_info: "",
+// };
+
 const initialFamilyDetailsState = {
   father: {
     name: "",
+    age: "",
+    dob: "",
     occupation: "",
     annual_income: 0,
     organization: "",
     income_tax_payer: true,
     nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
   },
   mother: {
     name: "",
+    age: "",
+    dob: "",
     occupation: "",
     annual_income: 0,
     organization: "",
     income_tax_payer: true,
     nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
   },
   number_of_siblings: 0,
   siblings_info: [
     {
       name: "",
+      age: "",
+      dob: "",
       occupation: "",
       annual_income: 0,
+      organization: "",
       income_tax_payer: true,
+      nature_of_occupation: "",
+      location: "",
+      designation: "",
+      duration: 0,
+      current_status: "",
+      monthly_salary: 0,
+      mode_of_payment: "",
+      current_income_source: "",
     },
   ],
   number_of_children: 0,
@@ -49,19 +125,229 @@ const initialFamilyDetailsState = {
       name: "",
       gender: "",
       age: 0,
+      dob: "",
+      occupation: "",
+      annual_income: 0,
+      organization: "",
+      income_tax_payer: true,
+      nature_of_occupation: "",
+      location: "",
+      designation: "",
+      duration: 0,
+      current_status: "",
+      monthly_salary: 0,
+      mode_of_payment: "",
+      current_income_source: "",
     },
   ],
   accompanying_child: false,
   accompanying_spouse: false,
   spouse: {
     name: "",
+    age: "",
+    dob: "",
     occupation: "",
     annual_income: 0,
     organization: "",
     income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
+  },
+  paternal_grand_mother_info: {
+    name: "",
+    age: "",
+    dob: "",
+    occupation: "",
+    annual_income: 0,
+    organization: "",
+    income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
+  },
+  paternal_grand_father_info: {
+    name: "",
+    age: "",
+    dob: "",
+    occupation: "",
+    annual_income: 0,
+    organization: "",
+    income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
+  },
+  maternal_grand_mother_info: {
+    name: "",
+    age: "",
+    dob: "",
+    occupation: "",
+    annual_income: 0,
+    organization: "",
+    income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
+  },
+  maternal_grand_father_info: {
+    name: "",
+    age: "",
+    dob: "",
+    occupation: "",
+    annual_income: 0,
+    organization: "",
+    income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
+  },
+  paternal_grand_mother_info_spouse: {
+    name: "",
+    age: "",
+    dob: "",
+    occupation: "",
+    annual_income: 0,
+    organization: "",
+    income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
+  },
+  paternal_grand_father_info_spouse: {
+    name: "",
+    age: "",
+    dob: "",
+    occupation: "",
+    annual_income: 0,
+    organization: "",
+    income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
+  },
+  maternal_grand_mother_info_spouse: {
+    name: "",
+    age: "",
+    dob: "",
+    occupation: "",
+    annual_income: 0,
+    organization: "",
+    income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
+  },
+  maternal_grand_father_info_spouse: {
+    name: "",
+    age: "",
+    dob: "",
+    occupation: "",
+    annual_income: 0,
+    organization: "",
+    income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
+  },
+  father_in_law_info: {
+    name: "",
+    age: "",
+    dob: "",
+    occupation: "",
+    annual_income: 0,
+    organization: "",
+    income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
+  },
+  mother_in_law_info: {
+    name: "",
+    age: "",
+    dob: "",
+    occupation: "",
+    annual_income: 0,
+    organization: "",
+    income_tax_payer: true,
+    nature_of_occupation: "",
+    location: "",
+    designation: "",
+    duration: 0,
+    current_status: "",
+    monthly_salary: 0,
+    mode_of_payment: "",
+    current_income_source: "",
   },
   relatives_info: "",
 };
+
+export const natureOfOccupaton = [
+  { label: 'Self Employed', value: 'self_employed' },
+  { label: 'Salaried', value: 'salaried' },
+  { label: 'Business', value: 'business' },
+]
+
+export const currentStatus = [
+  { label: 'Working', value: 'working' },
+  { label: 'Relieved', value: 'relieved' },
+]
+
+export const modeOfPayment = [
+  { label: 'By Cash', value: 'by_cash' },
+  { label: 'Bank', value: 'bank' },
+]
+
 
 const FamilyDetails = ({ studentId }: Props) => {
   const [initialLoading, setInitialLoading] = useState(false);
@@ -112,7 +398,6 @@ const FamilyDetails = ({ studentId }: Props) => {
         value: type === "checkbox" ? checked : value,
       });
     } else if (relation === "children") {
-      console.log("here");
 
       const [_, index, childField] = name.split(".");
       dispatch({
@@ -132,7 +417,26 @@ const FamilyDetails = ({ studentId }: Props) => {
         field,
         value: type === "checkbox" ? checked : value,
       });
-    } else if (name.startsWith("accompanying_")) {
+    } else if (
+      relation == "paternal_grand_mother_info" ||
+      relation == "paternal_grand_father_info" ||
+      relation == "maternal_grand_mother_info" ||
+      relation == "maternal_grand_father_info" ||
+      relation == "paternal_grand_mother_info_spouse" ||
+      relation == "paternal_grand_father_info_spouse" ||
+      relation == "maternal_grand_mother_info_spouse" ||
+      relation == "maternal_grand_father_info_spouse" ||
+      relation === "mother_in_law_info" ||
+      relation === "father_in_law_info"
+    ) {
+      dispatch({
+        type: "UPDATE_GRAND_PARENT",
+        parentType: relation,
+        field,
+        value: type === "checkbox" ? checked : value,
+      });
+    }
+    else if (name.startsWith("accompanying_")) {
       dispatch({
         type: "UPDATE_ACCOMPANYING",
         accompanyingType: name.split("_")[1],
@@ -229,6 +533,16 @@ const FamilyDetails = ({ studentId }: Props) => {
         number_of_children,
         accompanying_child,
         relatives_info,
+        paternal_grand_mother_info,
+        paternal_grand_father_info,
+        maternal_grand_mother_info,
+        maternal_grand_father_info,
+        paternal_grand_mother_info_spouse,
+        paternal_grand_father_info_spouse,
+        maternal_grand_mother_info_spouse,
+        maternal_grand_father_info_spouse,
+        father_in_law_info,
+        mother_in_law_info
       } = familyDetails;
 
       const res = await axios.post(`family_information`, {
@@ -243,6 +557,16 @@ const FamilyDetails = ({ studentId }: Props) => {
         accompanying_spouse,
         accompanying_child,
         relatives_info,
+        paternal_grand_mother_info,
+        paternal_grand_father_info,
+        maternal_grand_mother_info,
+        maternal_grand_father_info,
+        paternal_grand_mother_info_spouse,
+        paternal_grand_father_info_spouse,
+        maternal_grand_mother_info_spouse,
+        maternal_grand_father_info_spouse,
+        father_in_law_info,
+        mother_in_law_info
       });
       if (res) {
         fetchFamilyDetails();
@@ -322,6 +646,77 @@ const FamilyDetails = ({ studentId }: Props) => {
         number_of_children={familyDetails?.number_of_children}
         handleDropDowns={handleDropDowns}
       />
+
+      {/* Paternal Grand Mother's Information */}
+      <GrandParentDetailsForm
+        parentType="paternal_grand_mother_info"
+        parentDetails={familyDetails.paternal_grand_mother_info}
+        onChange={handleInputChange}
+      />
+
+      {/* Paternal Grand Fathers's Information */}
+      <GrandParentDetailsForm
+        parentType="paternal_grand_father_info"
+        parentDetails={familyDetails.paternal_grand_father_info}
+        onChange={handleInputChange}
+      />
+
+      {/* Maternal Grand Mother's Information */}
+      <GrandParentDetailsForm
+        parentType="maternal_grand_mother_info"
+        parentDetails={familyDetails.maternal_grand_mother_info}
+        onChange={handleInputChange}
+      />
+
+      {/* Maternal Grand Fathers's Information */}
+      <GrandParentDetailsForm
+        parentType="maternal_grand_father_info"
+        parentDetails={familyDetails.maternal_grand_father_info}
+        onChange={handleInputChange}
+      />
+
+      {/* Paternal Grand Mother's Information Spouse */}
+      <GrandParentDetailsForm
+        parentType="paternal_grand_mother_info_spouse"
+        parentDetails={familyDetails.paternal_grand_mother_info_spouse}
+        onChange={handleInputChange}
+      />
+
+      {/* Paternal Grand Fathers's Information Spouse */}
+      <GrandParentDetailsForm
+        parentType="paternal_grand_father_info_spouse"
+        parentDetails={familyDetails.paternal_grand_father_info_spouse}
+        onChange={handleInputChange}
+      />
+
+      {/* Maternal Grand Mother's Information Spouse */}
+      <GrandParentDetailsForm
+        parentType="maternal_grand_mother_info_spouse"
+        parentDetails={familyDetails.maternal_grand_mother_info_spouse}
+        onChange={handleInputChange}
+      />
+
+      {/* Maternal Grand Fathers's Information Spouse */}
+      <GrandParentDetailsForm
+        parentType="maternal_grand_father_info_spouse"
+        parentDetails={familyDetails.maternal_grand_father_info_spouse}
+        onChange={handleInputChange}
+      />
+
+      {/* Father In Law Information */}
+      <GrandParentDetailsForm
+        parentType="father_in_law_info"
+        parentDetails={familyDetails.father_in_law_info}
+        onChange={handleInputChange}
+      />
+
+      {/* Mother In Law Information */}
+      <GrandParentDetailsForm
+        parentType="mother_in_law_info"
+        parentDetails={familyDetails.mother_in_law_info}
+        onChange={handleInputChange}
+      />
+
       {/* Accompanying Details */}
       <Row className="mt-3">
         <Row>
