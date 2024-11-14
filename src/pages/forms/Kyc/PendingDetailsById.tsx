@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Form, Row } from "react-bootstrap";
+import { Card, Form, Row } from "react-bootstrap";
 import BasicDetails from "./BasicDetails";
 import FormButtons from "./FormButtons";
 import ProgramAvailabiltyCheck from "./ProgramAvailabiltyCheck";
@@ -16,6 +16,21 @@ import ApplicationFeeCheck from "./ApplicationFeeCheck";
 import { Col } from "react-bootstrap";
 import { FormInput } from "../../../components";
 import { withSwal } from "react-sweetalert2";
+
+import Box from '@mui/material/Box';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+
+const steps = [
+  'Program Availability',
+  'Campus',
+  'Entry Requirement',
+  'Document Quantity',
+  'Document Quality',
+  'Immigration History',
+  'Application Fee',
+];
 
 const PendingDetailsById = withSwal((props: any) => {
   const { swal } = props;
@@ -250,7 +265,22 @@ const PendingDetailsById = withSwal((props: any) => {
   return (
     <>
       <Row className="mt-2">
-        <BasicDetails data={formattedItem} studentId={studentId}/>
+        <BasicDetails data={formattedItem} studentId={studentId} />
+      </Row>
+      <Row className="pt-2">
+        <Card>
+          <Card.Body>
+            <Box sx={{ width: '100%' }}>
+              <Stepper activeStep={current} alternativeLabel>
+                {steps.map((label) => (
+                  <Step key={label}>
+                    <StepLabel>{label}</StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+            </Box>
+          </Card.Body>
+        </Card>
       </Row>
 
       {current === 0 && <ProgramAvailabiltyCheck data={availabilityCheck} />}
