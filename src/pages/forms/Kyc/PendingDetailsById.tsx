@@ -16,11 +16,12 @@ import ApplicationFeeCheck from "./ApplicationFeeCheck";
 import { Col } from "react-bootstrap";
 import { FormInput } from "../../../components";
 import { withSwal } from "react-sweetalert2";
-
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const steps = [
   'Program Availability',
@@ -47,6 +48,7 @@ const PendingDetailsById = withSwal((props: any) => {
     clarity: false,
     scanning: false,
   });
+  const [expanded, setExpanded] = React.useState<string | false>(false);
 
   const CheckTypes = {
     availability: "availability",
@@ -118,6 +120,11 @@ const PendingDetailsById = withSwal((props: any) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleChange =
+  (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : false);
   };
 
   useEffect(() => {
@@ -265,7 +272,20 @@ const PendingDetailsById = withSwal((props: any) => {
   return (
     <>
       <Row className="mt-2">
-        <BasicDetails data={formattedItem} studentId={studentId} />
+      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1bh-content"
+          id="panel1bh-header"
+        >
+          <Typography sx={{ width: '33%', flexShrink: 0 }}>
+            Basic Details
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <BasicDetails data={formattedItem} studentId={studentId} />
+        </AccordionDetails>
+      </Accordion>
       </Row>
       <Row className="pt-2">
         <Card>

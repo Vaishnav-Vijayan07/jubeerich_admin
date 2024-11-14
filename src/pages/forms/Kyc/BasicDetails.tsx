@@ -27,9 +27,8 @@ function BasicDetails({ data, studentId }: Props) {
 
   return (
     <Card>
-      <Card.Body>
-        <h3 className="header ">Basic Details</h3>
-        <Row className="mt-2 p-3">
+      <Card.Body style={{paddingTop: '0px', paddingBottom: '0px'}}>
+        <Row>
           <Col md={2}>
             <h5>Name</h5>
             <p>{data.full_name}</p>
