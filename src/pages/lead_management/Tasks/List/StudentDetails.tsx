@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import { Button, Card, Col, Dropdown, Form, Modal, Nav, Placeholder, Row, Spinner, Tab } from "react-bootstrap";
+import { Button, Card, Col, Dropdown, Form, Modal, Nav, Placeholder, Row, Spinner } from "react-bootstrap";
 import classNames from "classnames";
 import { icons } from "../../../../assets/images/icons";
 import { getCountry } from "../../../../redux/country/actions";
@@ -32,6 +32,8 @@ import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import CardLoadingSkeleton from "../../../../components/SkeletonLoading/CardLoadingSkeleton1";
 import DocumentsOverview from "./DocumentsOverview/DocumentsOverview";
+import { Box, Tabs } from "@mui/material";
+import Tab from '@mui/material/Tab';
 
 const Comments = lazy(() => import("./Comments"));
 const History = lazy(() => import("./History"));
@@ -53,6 +55,24 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
   const [remarkData, setRemarkData] = useState<any>(null);
   const [viewOnly, setViewOnly] = useState<boolean>(false);
   const [isFollowupLoading, setIsFollowupLoading] = useState<boolean>(false);
+  const [tabValue, setTabValue] = React.useState('comments');
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTabValue(newValue);
+  };
+
+  const tabsStyle = {
+    '& .MuiTabs-indicator': {
+      backgroundColor: '#26BCA2',
+      height: '4px'
+    },
+  }
+
+  const individualTabStyle = {
+    '&.Mui-selected': {
+      color: 'black',
+    },
+  }
 
   const [activeTab, setActiveTab] = useState<any>("comments");
 
@@ -795,7 +815,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
       {!loading && <Card>
         <Card.Body>
           <Row>
-            <Tab.Container
+            {/* <Tab.Container
               activeKey={activeTab}
               onSelect={(tab) => {
                 console.log("Selected Tab:", tab); // Log the selected tab
@@ -851,7 +871,48 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                   </Tab.Content>
                 </Card.Body>
               </Card>
-            </Tab.Container>
+            </Tab.Container> */}
+
+            <Box sx={{ width: '100%' }}>
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                textColor="secondary"
+                aria-label="secondary tabs example"
+                sx={{...tabsStyle}}
+              >
+                <Tab value="comments" label="Comments"
+                  sx={{...individualTabStyle}}
+                />
+                
+                <Tab value="history" label="History"
+                  sx={{...individualTabStyle}}
+                />
+
+                <Tab value="attachments" label="Attachments"
+                  sx={{...individualTabStyle}}
+                />
+              </Tabs>
+
+              {/* Tab content */}
+              <Box sx={{ mt: 2 }}>
+                {tabValue === 'comments' && studentId && (
+                  <Suspense fallback={null}>
+                    <Comments studentId={studentId} />
+                  </Suspense>
+                )}
+                {tabValue === 'history' && studentId && (
+                  <Suspense fallback={null}>
+                    <History studentId={studentId} />
+                  </Suspense>
+                )}
+                {tabValue === 'attachments' && studentId && (
+                  <Suspense fallback={null}>
+                    <DocumentsOverview studentId={studentId} />
+                  </Suspense>
+                )}
+              </Box>
+            </Box>
           </Row>
         </Card.Body>
       </Card>}
