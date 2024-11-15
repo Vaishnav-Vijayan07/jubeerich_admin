@@ -108,6 +108,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
   }, [flags, basicData?.flags]);
   
   const handleStatusChange = async (status_id: number) => {
+    let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
+    
     if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
       toggleStandard();
     } else {
@@ -125,6 +127,7 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
         const { data } = await axios.put("/lead_status", {
           lead_id: studentId,
           status_id,
+          country_id: country_id
         });
 
         dispatch(refreshData());
@@ -135,12 +138,15 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
   };
 
   const handleFollowUpDate = () => {
+    let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
+
     setIsFollowupLoading(true);
     axios
       .put("/lead_status", {
         lead_id: studentId,
         status_id: statusId,
         followup_date: selectedDate,
+        country_id: country_id
       })
       .then((res) => {
         toggleStandard();
@@ -208,7 +214,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
           showSuccessAlert("Flag Changed Successfully");
           getRemarks();
           dispatch(refreshData());
-          getTaskList();
         }
       }
     } catch (error) {
