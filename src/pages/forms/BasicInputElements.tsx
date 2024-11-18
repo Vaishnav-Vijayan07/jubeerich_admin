@@ -60,7 +60,7 @@ const BasicInputElements = withSwal((props: any) => {
     franchisees,
     branchForManager,
     branchCounsellors,
-    initialLoading
+    initialLoading,
   } = props;
 
   //State for handling update function
@@ -414,7 +414,7 @@ const BasicInputElements = withSwal((props: any) => {
         // onUploadProgress: (progressEvent: ProgressEvent) => {
         //   console.log('progressEvent',progressEvent.loaded);
         //   console.log('progressEvent',progressEvent.total);
-          
+
         //   const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
         //   setProgress(percentCompleted)
         // },
@@ -687,100 +687,105 @@ const BasicInputElements = withSwal((props: any) => {
 
           <Card className="bg-white py-3">
             <Card.Body>
-              <div className="d-flex flex-wrap gap-2 justify-content-end">
-                {user.role == it_team_id && (
-                  <Button className="btn-sm btn-blue waves-effect waves-light" onClick={toggleUploadModal}>
-                    <i className="mdi mdi-upload"></i> Import Leads
+              <div className="d-flex mb-4 flex-wrap gap-2 justify-content-between">
+                <h4 className="header-title">Manage Leads</h4>
+                <div className="d-flex flex-wrap gap-2 justify-content-end">
+                  {user.role == it_team_id && (
+                    <Button className="btn-sm btn-blue waves-effect waves-light" onClick={toggleUploadModal}>
+                      <i className="mdi mdi-upload"></i> Import Leads
+                    </Button>
+                  )}
+
+                  {user?.role == cre_tl_id && (
+                    <>
+                      <Dropdown className="btn-group">
+                        <Dropdown.Toggle
+                          disabled={selectedValues?.length > 0 ? false : true}
+                          variant="light"
+                          className="table-action-btn btn-sm btn-blue"
+                        >
+                          <i className="mdi mdi-account-plus"></i> Assign CRE's
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
+                          {cres?.map((item: any) => (
+                            <Dropdown.Item key={item.value} onClick={() => handleAssignBulk(selectedValues, item.value)}>
+                              {item.label}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+
+                      <Button
+                        className="btn-sm btn-blue waves-effect waves-light float-end"
+                        disabled={selectedValues?.length > 0 ? false : true}
+                        onClick={handleAutoAssign}
+                      >
+                        <i className="mdi mdi-plus-circle"></i> Auto Assign
+                      </Button>
+                    </>
+                  )}
+
+                  {user?.role == counsellor_tl_id && (
+                    <>
+                      <Dropdown className="btn-group">
+                        <Dropdown.Toggle
+                          disabled={selectedValues?.length > 0 ? false : true}
+                          variant="light"
+                          className="table-action-btn btn-sm btn-blue"
+                        >
+                          <i className="mdi mdi-account-plus"></i> Assign Counsellors
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
+                          {branchCounsellors?.map((item: any) => (
+                            <Dropdown.Item
+                              key={item.id}
+                              onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}
+                            >
+                              {item.name}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+
+                      <Button
+                        className="btn-sm btn-blue waves-effect waves-light float-end"
+                        disabled={selectedValues?.length > 0 ? false : true}
+                        onClick={handleAutoAssignBranchCounsellors}
+                      >
+                        <i className="mdi mdi-plus-circle"></i> Auto Assign Counsellors
+                      </Button>
+                    </>
+                  )}
+
+                  {user?.role == regional_manager_id && (
+                    <>
+                      <Dropdown className="btn-group">
+                        <Dropdown.Toggle
+                          disabled={selectedValues?.length > 0 ? false : true}
+                          variant="light"
+                          className="table-action-btn btn-sm btn-blue"
+                        >
+                          <i className="mdi mdi-account-plus"></i> Assign Branch
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
+                          {branchForManager?.map((item: any) => (
+                            <Dropdown.Item key={item.value} onClick={() => handleBranchAssignBulk(selectedValues, item.value)}>
+                              {item.label}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </>
+                  )}
+
+                  <Button
+                    className="btn-sm btn-blue waves-effect waves-light float-end"
+                    onClick={() => [openModalWithClass("modal-full-width"), handleClearModal()]}
+                  >
+                    <i className="mdi mdi-plus-circle"></i> Add lead
                   </Button>
-                )}
-
-                {user?.role == cre_tl_id && (
-                  <>
-                    <Dropdown className="btn-group">
-                      <Dropdown.Toggle
-                        disabled={selectedValues?.length > 0 ? false : true}
-                        variant="light"
-                        className="table-action-btn btn-sm btn-blue"
-                      >
-                        <i className="mdi mdi-account-plus"></i> Assign CRE's
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
-                        {cres?.map((item: any) => (
-                          <Dropdown.Item key={item.value} onClick={() => handleAssignBulk(selectedValues, item.value)}>
-                            {item.label}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
-
-                    <Button
-                      className="btn-sm btn-blue waves-effect waves-light float-end"
-                      disabled={selectedValues?.length > 0 ? false : true}
-                      onClick={handleAutoAssign}
-                    >
-                      <i className="mdi mdi-plus-circle"></i> Auto Assign
-                    </Button>
-                  </>
-                )}
-
-                {user?.role == counsellor_tl_id && (
-                  <>
-                    <Dropdown className="btn-group">
-                      <Dropdown.Toggle
-                        disabled={selectedValues?.length > 0 ? false : true}
-                        variant="light"
-                        className="table-action-btn btn-sm btn-blue"
-                      >
-                        <i className="mdi mdi-account-plus"></i> Assign Counsellors
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
-                        {branchCounsellors?.map((item: any) => (
-                          <Dropdown.Item key={item.id} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
-                            {item.name}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
-
-                    <Button
-                      className="btn-sm btn-blue waves-effect waves-light float-end"
-                      disabled={selectedValues?.length > 0 ? false : true}
-                      onClick={handleAutoAssignBranchCounsellors}
-                    >
-                      <i className="mdi mdi-plus-circle"></i> Auto Assign Counsellors
-                    </Button>
-                  </>
-                )}
-
-                {user?.role == regional_manager_id && (
-                  <>
-                    <Dropdown className="btn-group">
-                      <Dropdown.Toggle
-                        disabled={selectedValues?.length > 0 ? false : true}
-                        variant="light"
-                        className="table-action-btn btn-sm btn-blue"
-                      >
-                        <i className="mdi mdi-account-plus"></i> Assign Branch
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
-                        {branchForManager?.map((item: any) => (
-                          <Dropdown.Item key={item.value} onClick={() => handleBranchAssignBulk(selectedValues, item.value)}>
-                            {item.label}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </>
-                )}
-
-                <Button
-                  className="btn-sm btn-blue waves-effect waves-light float-end"
-                  onClick={() => [openModalWithClass("modal-full-width"), handleClearModal()]}
-                >
-                  <i className="mdi mdi-plus-circle"></i> Add lead
-                </Button>
+                </div>
               </div>
-              <h4 className="header-title mb-4">Manage Leads</h4>
               {userRole == cre_tl_id || userRole == regional_manager_id || userRole == counsellor_tl_id ? (
                 <Table
                   columns={columns}
