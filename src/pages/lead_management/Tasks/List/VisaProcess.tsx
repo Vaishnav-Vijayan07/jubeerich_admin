@@ -1,22 +1,23 @@
-import axios from 'axios';
-import React, { useEffect, useMemo, useState } from 'react'
-import { Spinner } from 'react-bootstrap';
+import axios from "axios";
+import React, { useEffect, useMemo, useState } from "react";
+import { Spinner } from "react-bootstrap";
 import { withSwal } from "react-sweetalert2";
-import { baseUrl, showErrorAlert, showSuccessAlert } from '../../../../constants';
-import VisaProcessRow from './VisaProcessRow';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../../redux/store';
-import { getCourse } from '../../../../redux/course/actions';
-import { getUniversity } from '../../../../redux/University/actions';
-import { travel_history, visa_approve, visa_decline } from './data';
-import { getCountry } from '../../../../redux/country/actions';
+import { baseUrl, showErrorAlert, showSuccessAlert } from "../../../../constants";
+import VisaProcessRow from "./VisaProcessRow";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../../redux/store";
+import { getCourse } from "../../../../redux/course/actions";
+import { getUniversity } from "../../../../redux/University/actions";
+import { travel_history, visa_approve, visa_decline } from "./data";
+import { getCountry } from "../../../../redux/country/actions";
+import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 
 const VisaProcess = withSwal((props: any) => {
   const { swal, studentId } = props;
   let userInfo = sessionStorage.getItem("jb_user");
   let loggedUser: any;
   if (userInfo) {
-    loggedUser = JSON.parse(userInfo)
+    loggedUser = JSON.parse(userInfo);
   }
 
   const initialVisaDeclineForm = {
@@ -37,7 +38,7 @@ const VisaProcess = withSwal((props: any) => {
     visa_type: "",
     course_applied: "",
     university_applied: "",
-    approve_letter: ""
+    approve_letter: "",
   };
 
   const initialTravelHistoryForm = {
@@ -53,26 +54,26 @@ const VisaProcess = withSwal((props: any) => {
   const [visaDeclineFormData, setVisaDeclineFormData] = useState<any>([initialVisaDeclineForm]);
   const [visaApproveFormData, setVisaApproveFormData] = useState<any>([initialVisaApproveForm]);
   const [travelHistoryFormData, setTravelHistoryFormData] = useState<any>([initialTravelHistoryForm]);
-  const [visaApproveDocs, setVisaApproveDocs] = useState<any[]>([])
-  const [visaDeclinedDocs, setVisaDeclinedDocs] = useState<any[]>([])
+  const [visaApproveDocs, setVisaApproveDocs] = useState<any[]>([]);
+  const [visaDeclinedDocs, setVisaDeclinedDocs] = useState<any[]>([]);
 
   const dispatch = useDispatch<AppDispatch>();
 
   const { country, courses, universities } = useSelector((state: RootState) => ({
     country: state.Country.countries,
     courses: state.Course.course?.data,
-    universities: state.University.universities?.data
+    universities: state.University.universities?.data,
   }));
 
   useEffect(() => {
     getVisaProcess();
-  }, [studentId])
+  }, [studentId]);
 
   useEffect(() => {
     dispatch(getCourse());
-    dispatch(getCountry())
+    dispatch(getCountry());
     dispatch(getUniversity());
-  }, [studentId])
+  }, [studentId]);
 
   const formatSelectOptions = (data: any[], valueKey: string, labelKey: string) => {
     if (!data) return [];
@@ -89,7 +90,6 @@ const VisaProcess = withSwal((props: any) => {
   const universityData = useMemo(() => formatSelectOptions(universities, "id", "university_name"), [universities]);
 
   const getVisaProcess = async () => {
-    
     const emptyFile = new File([], "empty.txt", {
       type: "text/plain",
     });
@@ -97,8 +97,8 @@ const VisaProcess = withSwal((props: any) => {
 
     try {
       const response = await axios.get(`${baseUrl}/api/visa_process/${studentId}`);
-      console.log('response',response);
-      
+      console.log("response", response);
+
       if (response && response.data) {
         const data = response.data.data;
         setVisaApproveFormData(data?.previousVisaApprove);
@@ -122,15 +122,13 @@ const VisaProcess = withSwal((props: any) => {
         setVisaDeclineFormData(initialVisaDeclineForm);
         setTravelHistoryFormData(initialTravelHistoryForm);
         setLoading(false);
-
       }
     } catch (error) {
-      console.error('Error fetching visa process data:', error);
-      showErrorAlert('Error fetching visa process data');
-      setLoading(false)
+      console.error("Error fetching visa process data:", error);
+      showErrorAlert("Error fetching visa process data");
+      setLoading(false);
     }
   };
-  
 
   const handleVisaInputChange = (index: any, e: any, formName: any) => {
     const { name, value } = e.target;
@@ -156,13 +154,7 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  const handleVisaSelectChange = (
-    index: number,
-    field: string,
-    value: any,
-    formName: any
-  ) => {
-
+  const handleVisaSelectChange = (index: number, field: string, value: any, formName: any) => {
     switch (formName) {
       case visa_decline:
         const newVisaDeclineFormData = [...visaDeclineFormData];
@@ -185,25 +177,15 @@ const VisaProcess = withSwal((props: any) => {
   };
 
   const addMoreVisaForm = (formName: string) => {
-
     switch (formName) {
       case visa_decline:
-        setVisaDeclineFormData([
-          ...visaDeclineFormData,
-          initialVisaDeclineForm
-        ]);
+        setVisaDeclineFormData([...visaDeclineFormData, initialVisaDeclineForm]);
         break;
       case visa_approve:
-        setVisaApproveFormData([
-          ...visaApproveFormData,
-          initialVisaApproveForm
-        ]);
+        setVisaApproveFormData([...visaApproveFormData, initialVisaApproveForm]);
         break;
       case travel_history:
-        setTravelHistoryFormData([
-          ...travelHistoryFormData,
-          initialTravelHistoryForm
-        ]);
+        setTravelHistoryFormData([...travelHistoryFormData, initialTravelHistoryForm]);
         break;
       default:
         break;
@@ -228,23 +210,22 @@ const VisaProcess = withSwal((props: any) => {
         try {
           let result = await axios.delete(`${baseUrl}/api/delete_visa_item/${formName}/${id}`);
           showSuccessAlert(result.data.message);
-          setVisaApproveDocs([])
-          setVisaDeclinedDocs([])
+          setVisaApproveDocs([]);
+          setVisaDeclinedDocs([]);
           getVisaProcess();
         } catch (err) {
           console.error(err);
           showErrorAlert("Error occurred");
-          setVisaApproveDocs([])
-          setVisaDeclinedDocs([])
+          setVisaApproveDocs([]);
+          setVisaDeclinedDocs([]);
         } finally {
           setLoading(false);
         }
       }
-
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const removeVisaForm = (index: any, itemId: any, formName: string) => {
     switch (formName) {
@@ -254,7 +235,7 @@ const VisaProcess = withSwal((props: any) => {
           newVisaApproveFormData.splice(index, 1);
           setVisaApproveFormData(newVisaApproveFormData);
         } else {
-          removeVisaItem(itemId, visa_approve)
+          removeVisaItem(itemId, visa_approve);
         }
         break;
       case visa_decline:
@@ -263,7 +244,7 @@ const VisaProcess = withSwal((props: any) => {
           newVisaDeclineFormData.splice(index, 1);
           setVisaDeclineFormData(newVisaDeclineFormData);
         } else {
-          removeVisaItem(itemId, visa_decline)
+          removeVisaItem(itemId, visa_decline);
         }
         break;
       case travel_history:
@@ -272,7 +253,7 @@ const VisaProcess = withSwal((props: any) => {
           newVisaTravelFormData.splice(index, 1);
           setTravelHistoryFormData(newVisaTravelFormData);
         } else {
-          removeVisaItem(itemId, travel_history)
+          removeVisaItem(itemId, travel_history);
         }
         break;
       default:
@@ -294,18 +275,17 @@ const VisaProcess = withSwal((props: any) => {
       default:
         break;
     }
-  }
+  };
 
   const submitDeclinedVisa = async () => {
-
     const newFormData = new FormData();
 
     for (let data of visaDeclinedDocs) {
-      newFormData.append('visaDeclinedDocs', data);
+      newFormData.append("visaDeclinedDocs", data);
     }
 
-    newFormData.append('visaDecline', JSON.stringify(visaDeclineFormData));
-    newFormData.append('userId', loggedUser.user_id);
+    newFormData.append("visaDecline", JSON.stringify(visaDeclineFormData));
+    newFormData.append("userId", loggedUser.user_id);
 
     for (let [key, value] of Object.entries(newFormData)) {
       console.log(`${key}: ${value}`);
@@ -313,9 +293,9 @@ const VisaProcess = withSwal((props: any) => {
 
     const body = {
       userId: loggedUser.user_id,
-      visaDecline: visaDeclineFormData
+      visaDecline: visaDeclineFormData,
     };
-  
+
     try {
       const confirmationResult = await swal.fire({
         title: "Are you sure?",
@@ -326,44 +306,43 @@ const VisaProcess = withSwal((props: any) => {
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, Save",
       });
-  
+
       if (confirmationResult.isConfirmed) {
         setLoading(true);
         try {
           const response = await axios.post(`${baseUrl}/api/visa_decline_process/`, newFormData, {
             headers: {
               "content-type": "multipart/form-data",
-            }
+            },
           });
           // const response = await axios.post(`${baseUrl}/api/visa_decline_process/`, body);
-          console.log('response', response);
+          console.log("response", response);
           showSuccessAlert(response.data.message);
-          setVisaDeclinedDocs([])
+          setVisaDeclinedDocs([]);
           getVisaProcess();
         } catch (error) {
-          console.error('Error during API call:', error);
+          console.error("Error during API call:", error);
           showErrorAlert("Error occurred");
-          setVisaDeclinedDocs([])
+          setVisaDeclinedDocs([]);
         } finally {
           setLoading(false);
-          setVisaDeclinedDocs([])
+          setVisaDeclinedDocs([]);
         }
       }
     } catch (error) {
-      console.error('Error during confirmation process:', error);
+      console.error("Error during confirmation process:", error);
     }
   };
-  
-  const submitApprovedVisa = async () => {
 
+  const submitApprovedVisa = async () => {
     const newFormData = new FormData();
 
     for (let data of visaApproveDocs) {
-      newFormData.append('visaApprovedDocs', data);
+      newFormData.append("visaApprovedDocs", data);
     }
 
-    newFormData.append('visaApproved', JSON.stringify(visaApproveFormData));
-    newFormData.append('userId', loggedUser.user_id);
+    newFormData.append("visaApproved", JSON.stringify(visaApproveFormData));
+    newFormData.append("userId", loggedUser.user_id);
 
     for (let [key, value] of Object.entries(newFormData)) {
       console.log(`${key}: ${value}`);
@@ -384,42 +363,41 @@ const VisaProcess = withSwal((props: any) => {
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, Save",
       });
-  
+
       if (confirmationResult.isConfirmed) {
         setLoading(true);
-  
+
         try {
           const response = await axios.post(`${baseUrl}/api/visa_approve_process/`, newFormData, {
             headers: {
               "content-type": "multipart/form-data",
-            }
+            },
           });
           // const response = await axios.post(`${baseUrl}/api/visa_approve_process/`, body);
-          console.log('response', response);
+          console.log("response", response);
           showSuccessAlert(response.data.message);
-          setVisaApproveDocs([])
+          setVisaApproveDocs([]);
           getVisaProcess();
         } catch (error) {
-          console.error('Error during API call:', error);
+          console.error("Error during API call:", error);
           showErrorAlert("Error occurred");
-          setVisaApproveDocs([])
+          setVisaApproveDocs([]);
         } finally {
           setLoading(false);
-          setVisaApproveDocs([])
+          setVisaApproveDocs([]);
         }
       }
     } catch (error) {
-      console.error('Error during confirmation process:', error);
+      console.error("Error during confirmation process:", error);
     }
   };
-  
 
   const submitTravelHistory = async () => {
     const body = {
       userId: loggedUser.user_id,
-      travelHistory: travelHistoryFormData
+      travelHistory: travelHistoryFormData,
     };
-  
+
     try {
       const confirmationResult = await swal.fire({
         title: "Are you sure?",
@@ -430,24 +408,24 @@ const VisaProcess = withSwal((props: any) => {
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, Save",
       });
-  
+
       if (confirmationResult.isConfirmed) {
         setLoading(true);
-  
+
         try {
           const response = await axios.post(`${baseUrl}/api/travel_history/`, body);
-          console.log('response', response);
+          console.log("response", response);
           showSuccessAlert(response.data.message);
           getVisaProcess();
         } catch (error) {
-          console.error('Error during API call:', error);
+          console.error("Error during API call:", error);
           showErrorAlert("Error occurred");
         } finally {
           setLoading(false);
         }
       }
     } catch (error) {
-      console.error('Error during confirmation process:', error);
+      console.error("Error during confirmation process:", error);
     }
   };
 
@@ -460,14 +438,14 @@ const VisaProcess = withSwal((props: any) => {
         visaApproveDocs.splice(index, 1, file);
         setVisaApproveDocs([...visaApproveDocs]);
         break;
-      case visa_decline: 
+      case visa_decline:
         visaDeclinedDocs.splice(index, 1, file);
         setVisaDeclinedDocs([...visaDeclinedDocs]);
         break;
       default:
         break;
     }
-};
+  };
 
   // if (loading) {
   //   return (
@@ -480,22 +458,26 @@ const VisaProcess = withSwal((props: any) => {
 
   return (
     <>
-      {!loading && <VisaProcessRow
-        saveVisaForm={saveVisaFormData}
-        visaDecline={visaDeclineFormData}
-        visaApprove={visaApproveFormData}
-        travelHistory={travelHistoryFormData}
-        countries={countryData}
-        courses={courseData}
-        universities={universityData}
-        handleVisaInputChange={handleVisaInputChange}
-        handleVisaSelectChange={handleVisaSelectChange}
-        addMoreVisaForm={addMoreVisaForm}
-        removeVisaForm={removeVisaForm}
-        handleFileChange={handleFileChange}
-        />}
+      {loading ? (
+        <SkeletonComponent />
+      ) : (
+        <VisaProcessRow
+          saveVisaForm={saveVisaFormData}
+          visaDecline={visaDeclineFormData}
+          visaApprove={visaApproveFormData}
+          travelHistory={travelHistoryFormData}
+          countries={countryData}
+          courses={courseData}
+          universities={universityData}
+          handleVisaInputChange={handleVisaInputChange}
+          handleVisaSelectChange={handleVisaSelectChange}
+          addMoreVisaForm={addMoreVisaForm}
+          removeVisaForm={removeVisaForm}
+          handleFileChange={handleFileChange}
+        />
+      )}
     </>
-  )
-})
+  );
+});
 
-export default VisaProcess
+export default VisaProcess;

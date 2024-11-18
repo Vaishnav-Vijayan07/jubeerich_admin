@@ -102,15 +102,6 @@ const Comments = ({ studentId }: any) => {
     console.log(selectedCountry);
   };
 
-  // if (loading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "100%", left: "50%" }}
-  //     />
-  //   );
-  // }
-
   return (
     <>
       {loading ? (

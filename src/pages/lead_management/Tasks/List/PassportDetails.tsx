@@ -7,6 +7,7 @@ import swal from "sweetalert2";
 import axios from "axios";
 import moment from "moment";
 import validateFields from "../../../../helpers/validateHelper";
+import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 
 interface Props {
   studentId: string | number;
@@ -30,17 +31,14 @@ const initialPassportState = {
 
 const PassportDetails = ({ studentId }: Props) => {
   const [initialLoading, setInitialLoading] = React.useState(false);
-  const [passportDetails, setPassportDetails] =
-    React.useState<any>(initialPassportState);
+  const [passportDetails, setPassportDetails] = React.useState<any>(initialPassportState);
 
   const fetchPassportDetails = async () => {
     setInitialLoading(true);
     try {
       const { data } = await axios.get(`passport_details/${studentId}`);
 
-      data.data
-        ? setPassportDetails(data.data)
-        : setPassportDetails(initialPassportState);
+      data.data ? setPassportDetails(data.data) : setPassportDetails(initialPassportState);
     } catch (error) {
       console.error("Error fetching passport details:", error);
     } finally {
@@ -124,10 +122,7 @@ const PassportDetails = ({ studentId }: Props) => {
       passport_number: { required: true },
     };
 
-    const { errors, isValid } = validateFields(
-      passportDetails.passports,
-      validationRules
-    );
+    const { errors, isValid } = validateFields(passportDetails.passports, validationRules);
 
     console.log(errors);
     if (!isValid) {
@@ -156,16 +151,12 @@ const PassportDetails = ({ studentId }: Props) => {
     if (result.isConfirmed) {
       try {
         if (passportDetails.id) {
-          const { data } = await axios.put(
-            `passport_details/${studentId}`,
-            passportDetails
-          );
+          const { data } = await axios.put(`passport_details/${studentId}`, passportDetails);
           fetchPassportDetails();
           showSuccessAlert(data.message);
         } else {
           const { data } = await axios.post(`passport_details`, {
-            original_passports_in_hand:
-              passportDetails.original_passports_in_hand,
+            original_passports_in_hand: passportDetails.original_passports_in_hand,
             missing_passport_reason: passportDetails.missing_passport_reason,
             visa_immigration_history: passportDetails.visa_immigration_history,
             name_change: passportDetails.name_change,
@@ -194,212 +185,194 @@ const PassportDetails = ({ studentId }: Props) => {
 
   return (
     <>
-      <Row>
-        <h5 className="mb-4 text-uppercase">
-          <i className="mdi mdi-account-circle me-1"></i>Passport Details
-        </h5>
-      </Row>
-      <Row>
-        <Col md={6}>
-          <Form.Group className="mb-3" controlId={`number_of_passports`}>
-            <Form.Label>Number of Passports</Form.Label>
-            <FormInput
-              type="number"
-              name="number_of_passports"
-              placeholder="Enter number of passports"
-              onChange={handleInputChange}
-              value={passportDetails?.number_of_passports}
-              min="1" // Ensure the user can't enter less than 1
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6}>
-          <Form.Group className="mb-3" controlId={`name_change`}>
-            <Form.Label>Name change ( if any )when compared to other documents</Form.Label>
-            <FormInput
-              type="text"
-              name="name_change"
-              placeholder="Enter details"
-              onChange={handleInputChange}
-              value={passportDetails?.name_change}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      {passportDetails?.passports?.map((passport: any, index: number) => (
-        <Row key={index}>
-          <>
+      {initialLoading ? (
+        <SkeletonComponent />
+      ) : (
+        <>
+          <Row>
+            <h5 className="mb-4 text-uppercase">
+              <i className="mdi mdi-account-circle me-1"></i>Passport Details
+            </h5>
+          </Row>
+          <Row>
             <Col md={6}>
-              <Form.Group
-                className="mb-3"
-                controlId={`passport_number_${index}`}
-              >
-                <Form.Label>Passport Number</Form.Label>
+              <Form.Group className="mb-3" controlId={`number_of_passports`}>
+                <Form.Label>Number of Passports</Form.Label>
+                <FormInput
+                  type="number"
+                  name="number_of_passports"
+                  placeholder="Enter number of passports"
+                  onChange={handleInputChange}
+                  value={passportDetails?.number_of_passports}
+                  min="1" // Ensure the user can't enter less than 1
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId={`name_change`}>
+                <Form.Label>Name change ( if any )when compared to other documents</Form.Label>
                 <FormInput
                   type="text"
-                  name="passport_number"
-                  placeholder="Enter passport number"
-                  onChange={(e) => handleInputChange(e, index)} // Pass the index to the handler
-                  value={passport.passport_number}
+                  name="name_change"
+                  placeholder="Enter details"
+                  onChange={handleInputChange}
+                  value={passportDetails?.name_change}
                 />
-                {passport?.errors?.passport_number && (
-                  <Form.Text className="text-danger">
-                    {passport?.errors?.passport_number}
-                  </Form.Text>
-                )}
               </Form.Group>
             </Col>
+          </Row>
+          {passportDetails?.passports?.map((passport: any, index: number) => (
+            <Row key={index}>
+              <>
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId={`passport_number_${index}`}>
+                    <Form.Label>Passport Number</Form.Label>
+                    <FormInput
+                      type="text"
+                      name="passport_number"
+                      placeholder="Enter passport number"
+                      onChange={(e) => handleInputChange(e, index)} // Pass the index to the handler
+                      value={passport.passport_number}
+                    />
+                    {passport?.errors?.passport_number && (
+                      <Form.Text className="text-danger">{passport?.errors?.passport_number}</Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
 
-            <Col md={6}>
-              <Form.Group
-                className="mb-3"
-                controlId={`date_of_expiry_${index}`}
-              >
-                <Form.Label>Date of Expiry</Form.Label>
-                <FormInput
-                  type="date"
-                  name="date_of_expiry"
-                  placeholder="Enter date of expiry"
-                  onChange={(e) => handleInputChange(e, index)} // Pass the index to the handler
-                  value={moment(passport.date_of_expiry).format("YYYY-MM-DD")}
-                />
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId={`date_of_expiry_${index}`}>
+                    <Form.Label>Date of Expiry</Form.Label>
+                    <FormInput
+                      type="date"
+                      name="date_of_expiry"
+                      placeholder="Enter date of expiry"
+                      onChange={(e) => handleInputChange(e, index)} // Pass the index to the handler
+                      value={moment(passport.date_of_expiry).format("YYYY-MM-DD")}
+                    />
 
-                {passport?.errors?.date_of_expiry && (
-                  <Form.Text className="text-danger">
-                    {passport?.errors?.date_of_expiry}
-                  </Form.Text>
-                )}
-              </Form.Group>
-            </Col>
-            <Row>
-              {passportDetails?.passports.length > 1 && (
-                <ActionButton
-                  onClick={() => removePassport(index)}
-                  colorClass="text-danger"
-                  iconClass="mdi mdi-delete"
-                  label="Remove"
-                />
-              )}
+                    {passport?.errors?.date_of_expiry && (
+                      <Form.Text className="text-danger">{passport?.errors?.date_of_expiry}</Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Row>
+                  {passportDetails?.passports.length > 1 && (
+                    <ActionButton
+                      onClick={() => removePassport(index)}
+                      colorClass="text-danger"
+                      iconClass="mdi mdi-delete"
+                      label="Remove"
+                    />
+                  )}
+                </Row>
+              </>
             </Row>
-          </>
-        </Row>
-      ))}
-      <Row>
-        <ActionButton
-          label="Add More"
-          iconClass="mdi mdi-plus"
-          onClick={handleAddMorePassport}
-        />
-      </Row>
+          ))}
+          <Row>
+            <ActionButton label="Add More" iconClass="mdi mdi-plus" onClick={handleAddMorePassport} />
+          </Row>
 
-      <Row className="mt-4">
-        <Col md={6}>
-          <Form.Group className="mb-3">
-            <Form.Label>
-              Do you have all your original passports in hand?
-            </Form.Label>
-            <div>
-              <Form.Check
-                inline
-                label="Yes"
-                type="radio"
-                name="original_passports_in_hand"
-                value="yes"
-                checked={passportDetails?.original_passports_in_hand === true}
-                onChange={() =>
-                  setPassportDetails((prev: any) => ({
-                    ...prev,
-                    original_passports_in_hand: true,
-                  }))
-                }
-              />
-              <Form.Check
-                inline
-                label="No"
-                type="radio"
-                name="original_passports_in_hand"
-                value="no"
-                checked={passportDetails?.original_passports_in_hand === false}
-                onChange={() =>
-                  setPassportDetails((prev: any) => ({
-                    ...prev,
-                    original_passports_in_hand: false,
-                  }))
-                }
-              />
-            </div>
-          </Form.Group>
-        </Col>
-        <Col md={6}>
-          <Form.Group className="mb-3">
-            <Form.Label>
-              Any visa stamping / immigration history in the current and
-              previous passport?
-            </Form.Label>
-            <div>
-              <Form.Check
-                inline
-                label="Yes"
-                type="radio"
-                name="visa_immigration_history"
-                value="yes"
-                checked={passportDetails?.visa_immigration_history === true}
-                onChange={() =>
-                  setPassportDetails((prev: any) => ({
-                    ...prev,
-                    visa_immigration_history: true,
-                  }))
-                }
-              />
-              <Form.Check
-                inline
-                label="No"
-                type="radio"
-                name="visa_immigration_history"
-                value="no"
-                checked={passportDetails?.visa_immigration_history === false}
-                onChange={() =>
-                  setPassportDetails((prev: any) => ({
-                    ...prev,
-                    visa_immigration_history: false,
-                  }))
-                }
-              />
-            </div>
-          </Form.Group>
-        </Col>
-      </Row>
+          <Row className="mt-4">
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Do you have all your original passports in hand?</Form.Label>
+                <div>
+                  <Form.Check
+                    inline
+                    label="Yes"
+                    type="radio"
+                    name="original_passports_in_hand"
+                    value="yes"
+                    checked={passportDetails?.original_passports_in_hand === true}
+                    onChange={() =>
+                      setPassportDetails((prev: any) => ({
+                        ...prev,
+                        original_passports_in_hand: true,
+                      }))
+                    }
+                  />
+                  <Form.Check
+                    inline
+                    label="No"
+                    type="radio"
+                    name="original_passports_in_hand"
+                    value="no"
+                    checked={passportDetails?.original_passports_in_hand === false}
+                    onChange={() =>
+                      setPassportDetails((prev: any) => ({
+                        ...prev,
+                        original_passports_in_hand: false,
+                      }))
+                    }
+                  />
+                </div>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Any visa stamping / immigration history in the current and previous passport?</Form.Label>
+                <div>
+                  <Form.Check
+                    inline
+                    label="Yes"
+                    type="radio"
+                    name="visa_immigration_history"
+                    value="yes"
+                    checked={passportDetails?.visa_immigration_history === true}
+                    onChange={() =>
+                      setPassportDetails((prev: any) => ({
+                        ...prev,
+                        visa_immigration_history: true,
+                      }))
+                    }
+                  />
+                  <Form.Check
+                    inline
+                    label="No"
+                    type="radio"
+                    name="visa_immigration_history"
+                    value="no"
+                    checked={passportDetails?.visa_immigration_history === false}
+                    onChange={() =>
+                      setPassportDetails((prev: any) => ({
+                        ...prev,
+                        visa_immigration_history: false,
+                      }))
+                    }
+                  />
+                </div>
+              </Form.Group>
+            </Col>
+          </Row>
 
-      <Row>
-        {!passportDetails?.original_passports_in_hand && (
-          <Col md={6}>
-            <Form.Group className="mb-3" controlId={`missing_passport_reason`}>
-              <Form.Label>Reason for not having</Form.Label>
-              <Form.Control
-                as="textarea"
-                name="missing_passport_reason"
-                placeholder="Enter reason for not having original passport"
-                onChange={handleInputChange}
-                value={passportDetails?.missing_passport_reason}
-                rows={3}
-              />
-            </Form.Group>
-          </Col>
-        )}
-      </Row>
+          <Row>
+            {!passportDetails?.original_passports_in_hand && (
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId={`missing_passport_reason`}>
+                  <Form.Label>Reason for not having</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    name="missing_passport_reason"
+                    placeholder="Enter reason for not having original passport"
+                    onChange={handleInputChange}
+                    value={passportDetails?.missing_passport_reason}
+                    rows={3}
+                  />
+                </Form.Group>
+              </Col>
+            )}
+          </Row>
 
-      <Row className="mt-4"></Row>
+          <Row className="mt-4"></Row>
 
-      <Row>
-        <Button
-          variant="primary"
-          className="mt-4"
-          type="submit"
-          onClick={savePassportDetails}
-        >
-          Save
-        </Button>
-      </Row>
+          <Row>
+            <Button variant="primary" className="mt-4" type="submit" onClick={savePassportDetails}>
+              Save
+            </Button>
+          </Row>
+        </>
+      )}
     </>
   );
 };

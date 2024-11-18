@@ -10,6 +10,7 @@ import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import validateFields from "../../../../helpers/validateHelper";
+import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 
 const initialStateAcademic = {
   qualification: "",
@@ -186,9 +187,12 @@ const AcademicInfo = withSwal((props: any) => {
 
   return (
     <>
-      <Row className={deleteLoading || saveLoading ? "opacity-25" : ""}>
-        <>
-          {/* <AcademicInfoRow
+      {loading ? (
+        <SkeletonComponent />
+      ) : (
+        <Row className={deleteLoading || saveLoading ? "opacity-25" : ""}>
+          <>
+            {/* <AcademicInfoRow
             academicInfo={academicInfoFromApi}
             handleAcademicInfoChange={(index, event) =>
               handleInputChange(setAcademicInfoFromApi, index, event)
@@ -208,7 +212,7 @@ const AcademicInfo = withSwal((props: any) => {
             }
           /> */}
 
-          {/*     <Row>
+            {/*     <Row>
             <Button
               variant="primary"
               className="mt-4"
@@ -232,79 +236,80 @@ const AcademicInfo = withSwal((props: any) => {
               )}
             </Button>
           </Row> */}
-          <h5 className="mb-2 text-uppercase">
-            <i className="mdi mdi-file-document-outline me-1"></i> Exam Details
-          </h5>
+            <h5 className="mb-2 text-uppercase">
+              <i className="mdi mdi-file-document-outline me-1"></i> Exam Details
+            </h5>
 
-          <Row className="mt-3">
-            <Col>
-              <Form.Group className="mb-3" controlId="source_id">
-                <Form.Label>Have you ever participated in any language exams?</Form.Label>
-                <div className="d-flex justify-content-start align-items-center mt-1">
-                  <Form.Check
-                    type="radio"
-                    name="hasExams"
-                    checked={hasExams === "yes"}
-                    onChange={() => setHasExams("yes")}
-                    label={<span className="ps-1 fw-bold">Yes</span>}
-                  />
-                  <Form.Check
-                    type="radio"
-                    name="hasExams"
-                    checked={hasExams === "no"}
-                    onChange={() => setHasExams("no")}
-                    label={<span className="ps-1 fw-bold">No</span>}
-                    className="ms-3"
-                  />
-                </div>
-              </Form.Group>
-            </Col>
-          </Row>
+            <Row className="mt-3">
+              <Col>
+                <Form.Group className="mb-3" controlId="source_id">
+                  <Form.Label>Have you ever participated in any language exams?</Form.Label>
+                  <div className="d-flex justify-content-start align-items-center mt-1">
+                    <Form.Check
+                      type="radio"
+                      name="hasExams"
+                      checked={hasExams === "yes"}
+                      onChange={() => setHasExams("yes")}
+                      label={<span className="ps-1 fw-bold">Yes</span>}
+                    />
+                    <Form.Check
+                      type="radio"
+                      name="hasExams"
+                      checked={hasExams === "no"}
+                      onChange={() => setHasExams("no")}
+                      label={<span className="ps-1 fw-bold">No</span>}
+                      className="ms-3"
+                    />
+                  </div>
+                </Form.Group>
+              </Col>
+            </Row>
 
-          {hasExams == "yes" && (
-            <>
-              <Row>
-                <ExamData
-                  examForm={examForm}
-                  addMoreExamForm={() =>
-                    addFormField(setExamForm, {
-                      exam_type: "",
-                      listening_score: "",
-                      speaking_score: "",
-                      reading_score: "",
-                      writing_score: "",
-                      overall_score: "",
-                      exam_date: "",
-                      score_card: null,
-                    })
-                  }
-                  removeExamForm={(index, itemId) => removeFormField(setExamForm, index, itemId, "exam")}
-                  handleExamInputChange={(index, event: any) => handleInputChange(setExamForm, index, event)}
-                  handleExamFileChange={handleFileChange}
-                />
-              </Row>
-              <Row>
-                <Button
-                  variant="primary"
-                  className="mt-4"
-                  type="submit"
-                  onClick={handleSaveExamInfo}
-                  disabled={saveLoading || deleteLoading}
-                >
-                  {saveLoading || deleteLoading ? (
-                    <>
-                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                      {" Loading..."} {/* Show spinner and text */}
-                    </>
-                  ) : (
-                    "Save Exam Info" // Normal button text when not loading
-                  )}
-                </Button>
-              </Row>
-            </>
-          )}
-        </>
-      </Row>
+            {hasExams == "yes" && (
+              <>
+                <Row>
+                  <ExamData
+                    examForm={examForm}
+                    addMoreExamForm={() =>
+                      addFormField(setExamForm, {
+                        exam_type: "",
+                        listening_score: "",
+                        speaking_score: "",
+                        reading_score: "",
+                        writing_score: "",
+                        overall_score: "",
+                        exam_date: "",
+                        score_card: null,
+                      })
+                    }
+                    removeExamForm={(index, itemId) => removeFormField(setExamForm, index, itemId, "exam")}
+                    handleExamInputChange={(index, event: any) => handleInputChange(setExamForm, index, event)}
+                    handleExamFileChange={handleFileChange}
+                  />
+                </Row>
+                <Row>
+                  <Button
+                    variant="primary"
+                    className="mt-4"
+                    type="submit"
+                    onClick={handleSaveExamInfo}
+                    disabled={saveLoading || deleteLoading}
+                  >
+                    {saveLoading || deleteLoading ? (
+                      <>
+                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                        {" Loading..."} {/* Show spinner and text */}
+                      </>
+                    ) : (
+                      "Save Exam Info" // Normal button text when not loading
+                    )}
+                  </Button>
+                </Row>
+              </>
+            )}
+          </>
+        </Row>
+      )}
     </>
   );
 });

@@ -20,6 +20,7 @@ import ActionButton from "./ActionButton";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { refreshData } from "../../../../redux/countryReducer";
+import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 
 const validationErrorsInitialState = {
   full_name: "",
@@ -447,7 +448,7 @@ const BasicInfo = withSwal((props: any) => {
 
   return (
     <>
-      <>
+      {loading ? <SkeletonComponent /> : <>
         <h5 className="mb-4 text-uppercase">
           <i className="mdi mdi-account-circle me-1"></i> Primary Info
         </h5>
@@ -1000,7 +1001,7 @@ const BasicInfo = withSwal((props: any) => {
             Save Details
           </Button>
         </Row>
-      </>
+      </>}
     </>
   );
 });

@@ -12,6 +12,7 @@ import useSaveSecondaryEducationDetails from "../../../../hooks/useSaveSecondary
 import validateFields from "../../../../helpers/validateHelper";
 import GapRow from "./gapRow";
 import GapRows from "./gapRow";
+import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 
 const initialPrimaryState = {
   id: null,
@@ -74,25 +75,16 @@ const EducationDetails = withSwal((props: any) => {
   const [initialLoading, setInitialLoading] = useState(false);
   const [gap, setGap] = useState<any>(initialGapState);
 
-  const refresh = useSelector(
-    (state: RootState) => state.refreshReducer.refreshing
-  );
+  const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
-  const [primaryDetails, setPrimaryDetails] =
-    useState<any>(initialPrimaryState);
-  const [secondaryDetails, setSecondaryDetails] = useState<any>(
-    initialSecondaryState
-  );
+  const [primaryDetails, setPrimaryDetails] = useState<any>(initialPrimaryState);
+  const [secondaryDetails, setSecondaryDetails] = useState<any>(initialSecondaryState);
 
-  const [graduationDetails, setGraduationDetails] = useState<any>(
-    initialGraduationState
-  );
+  const [graduationDetails, setGraduationDetails] = useState<any>(initialGraduationState);
 
-  const { primaryLoading, savePrimaryEducationDetails } =
-    useSaveEducationDetails();
+  const { primaryLoading, savePrimaryEducationDetails } = useSaveEducationDetails();
 
-  const { saveSecondaryEducationDetails, secondaryLoading } =
-    useSaveSecondaryEducationDetails();
+  const { saveSecondaryEducationDetails, secondaryLoading } = useSaveSecondaryEducationDetails();
 
   const fetchEducationDetails = async (studentId: string) => {
     setInitialLoading(true);
@@ -108,14 +100,8 @@ const EducationDetails = withSwal((props: any) => {
       setPrimaryDetails(educationData.primary || initialPrimaryState);
       setSecondaryDetails(educationData.secondary || initialSecondaryState);
 
-      educationData.graduation.length > 0
-        ? setHasGraduation("yes")
-        : setHasGraduation("no");
-      setGraduationDetails(
-        educationData.graduation.length > 0
-          ? educationData.graduation
-          : [initialGraduationState]
-      );
+      educationData.graduation.length > 0 ? setHasGraduation("yes") : setHasGraduation("no");
+      setGraduationDetails(educationData.graduation.length > 0 ? educationData.graduation : [initialGraduationState]);
       setGap(gapData.length > 0 ? gapData : [initialGapState]);
       setHasGap(gapData.length > 0 ? "yes" : "no");
     } catch (error) {
@@ -168,10 +154,7 @@ const EducationDetails = withSwal((props: any) => {
       school_name: { required: true },
     };
 
-    const { isValid, errors } = validateFields(
-      [primaryDetails],
-      validationRules
-    );
+    const { isValid, errors } = validateFields([primaryDetails], validationRules);
 
     console.log(errors);
 
@@ -197,10 +180,7 @@ const EducationDetails = withSwal((props: any) => {
       school_name: { required: true },
     };
 
-    const { isValid, errors } = validateFields(
-      [secondaryDetails],
-      validationRules
-    );
+    const { isValid, errors } = validateFields([secondaryDetails], validationRules);
 
     if (!isValid) {
       setSecondaryDetails((prevState: any) => ({
@@ -210,11 +190,7 @@ const EducationDetails = withSwal((props: any) => {
       return;
     }
 
-    await saveSecondaryEducationDetails(
-      secondaryDetails,
-      "secondary",
-      studentId
-    );
+    await saveSecondaryEducationDetails(secondaryDetails, "secondary", studentId);
   };
 
   // if (primaryLoading || secondaryLoading || initialLoading) {
@@ -230,151 +206,127 @@ const EducationDetails = withSwal((props: any) => {
 
   return (
     <>
-      {/* Primary Education Section */}
-      <Row>
-        <PrimaryEducationDetails
-          title="Primary Education Details"
-          details={primaryDetails}
-          onChange={handlePrimaryChange}
-        />
-      </Row>
-      <Row className="mb-2">
-        <Button
-          variant="primary"
-          className="mt-4"
-          onClick={handleSavePrimary}
-          disabled={primaryLoading}
-        >
-          {primaryLoading ? (
+      {initialLoading ? (
+        <SkeletonComponent />
+      ) : (
+        <>
+          {/* Primary Education Section */}
+          <Row>
+            <PrimaryEducationDetails title="Primary Education Details" details={primaryDetails} onChange={handlePrimaryChange} />
+          </Row>
+          <Row className="mb-2">
+            <Button variant="primary" className="mt-4" onClick={handleSavePrimary} disabled={primaryLoading}>
+              {primaryLoading ? (
+                <>
+                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                  {" Saving..."} {/* Show spinner and text */}
+                </>
+              ) : (
+                "Save Primary Info" // Normal button text when not loading
+              )}
+            </Button>
+          </Row>
+
+          <>
+            <Row>
+              <PrimaryEducationDetails
+                title="Secondary Education Details"
+                details={secondaryDetails}
+                onChange={handleSecondaryChange}
+              />
+            </Row>
+
+            {/* Move Save Button below Secondary Education Section */}
+            <Row className="mb-2">
+              <Button variant="primary" className="mt-4" onClick={handleSaveSecondary} disabled={secondaryLoading}>
+                {secondaryLoading ? (
+                  <>
+                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                    {" Saving..."} {/* Show spinner and text */}
+                  </>
+                ) : (
+                  "Save Secondary Info" // Normal button text when not loading
+                )}
+              </Button>
+            </Row>
+
+            {/* Radio button for Graduation */}
+            <Row className="mt-4">
+              <Col md={12}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Are you a Graduate?</Form.Label>
+                  <div>
+                    <Form.Check
+                      inline
+                      label="Yes"
+                      type="radio"
+                      name="hasGraduation"
+                      value="yes"
+                      checked={hasGraduation === "yes"}
+                      onChange={handleGraduationChange}
+                    />
+                    <Form.Check
+                      inline
+                      label="No"
+                      type="radio"
+                      name="hasGraduation"
+                      value="no"
+                      checked={hasGraduation === "no"}
+                      onChange={handleGraduationChange}
+                    />
+                  </div>
+                </Form.Group>
+              </Col>
+            </Row>
+          </>
+
+          {/* Graduation Details Section */}
+          {hasGraduation === "yes" && (
             <>
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-              {" Saving..."} {/* Show spinner and text */}
+              <Row>
+                <GraduationInfo title="Graduation Details" details={graduationDetails} student_id={studentId} />
+              </Row>
             </>
-          ) : (
-            "Save Primary Info" // Normal button text when not loading
           )}
-        </Button>
-      </Row>
 
-      <>
-        <Row>
-          <PrimaryEducationDetails
-            title="Secondary Education Details"
-            details={secondaryDetails}
-            onChange={handleSecondaryChange}
-          />
-        </Row>
-
-        {/* Move Save Button below Secondary Education Section */}
-        <Row className="mb-2">
-          <Button
-            variant="primary"
-            className="mt-4"
-            onClick={handleSaveSecondary}
-            disabled={secondaryLoading}
-          >
-            {secondaryLoading ? (
-              <>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-                {" Saving..."} {/* Show spinner and text */}
-              </>
-            ) : (
-              "Save Secondary Info" // Normal button text when not loading
-            )}
-          </Button>
-        </Row>
-
-        {/* Radio button for Graduation */}
-        <Row className="mt-4">
-          <Col md={12}>
-            <Form.Group className="mb-3">
-              <Form.Label>Are you a Graduate?</Form.Label>
-              <div>
-                <Form.Check
-                  inline
-                  label="Yes"
-                  type="radio"
-                  name="hasGraduation"
-                  value="yes"
-                  checked={hasGraduation === "yes"}
-                  onChange={handleGraduationChange}
-                />
-                <Form.Check
-                  inline
-                  label="No"
-                  type="radio"
-                  name="hasGraduation"
-                  value="no"
-                  checked={hasGraduation === "no"}
-                  onChange={handleGraduationChange}
-                />
-              </div>
-            </Form.Group>
-          </Col>
-        </Row>
-      </>
-
-      {/* Graduation Details Section */}
-      {hasGraduation === "yes" && (
-        <>
-          <Row>
-            <GraduationInfo
-              title="Graduation Details"
-              details={graduationDetails}
-              student_id={studentId}
-            />
+          {/* Radio button for Graduation */}
+          <Row className="mt-4">
+            <Col md={12}>
+              <Form.Group className="mb-3">
+                <Form.Label>Have gap in education?</Form.Label>
+                <div>
+                  <Form.Check
+                    inline
+                    label="Yes"
+                    type="radio"
+                    name="hasGap"
+                    value="yes"
+                    checked={hasGap === "yes"}
+                    onChange={handleGapChange}
+                  />
+                  <Form.Check
+                    inline
+                    label="No"
+                    type="radio"
+                    name="hasGap"
+                    value="no"
+                    checked={hasGap === "no"}
+                    onChange={handleGapChange}
+                  />
+                </div>
+              </Form.Group>
+            </Col>
           </Row>
-        </>
-      )}
 
-      {/* Radio button for Graduation */}
-      <Row className="mt-4">
-        <Col md={12}>
-          <Form.Group className="mb-3">
-            <Form.Label>Have gap in education?</Form.Label>
-            <div>
-              <Form.Check
-                inline
-                label="Yes"
-                type="radio"
-                name="hasGap"
-                value="yes"
-                checked={hasGap === "yes"}
-                onChange={handleGapChange}
-              />
-              <Form.Check
-                inline
-                label="No"
-                type="radio"
-                name="hasGap"
-                value="no"
-                checked={hasGap === "no"}
-                onChange={handleGapChange}
-              />
-            </div>
-          </Form.Group>
-        </Col>
-      </Row>
+          {/* Gap Details Section */}
 
-      {/* Gap Details Section */}
-
-      {hasGap === "yes" && (
-        <>
-          <Row>
-            <GapRows gapData={gap} studentId={studentId} type="education" />
-          </Row>
+          {hasGap === "yes" && (
+            <>
+              <Row>
+                <GapRows gapData={gap} studentId={studentId} type="education" />
+              </Row>
+            </>
+          )}
         </>
       )}
     </>

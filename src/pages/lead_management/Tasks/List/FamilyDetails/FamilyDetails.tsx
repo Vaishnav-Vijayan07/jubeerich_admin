@@ -13,6 +13,7 @@ import RelativesDetails from "./RelativesDetails";
 import { familyDetailsReducer } from "./FamilyDataReducer";
 import axios from "axios";
 import GrandParentDetailsForm from "./GrandParentsDetailForm";
+import SkeletonComponent from "../StudyPreference/LoadingSkeleton";
 
 interface Props {
   studentId: string | number;
@@ -333,29 +334,25 @@ const initialFamilyDetailsState = {
 };
 
 export const natureOfOccupaton = [
-  { label: 'Self Employed', value: 'self_employed' },
-  { label: 'Salaried', value: 'salaried' },
-  { label: 'Business', value: 'business' },
-]
+  { label: "Self Employed", value: "self_employed" },
+  { label: "Salaried", value: "salaried" },
+  { label: "Business", value: "business" },
+];
 
 export const currentStatus = [
-  { label: 'Working', value: 'working' },
-  { label: 'Relieved', value: 'relieved' },
-]
+  { label: "Working", value: "working" },
+  { label: "Relieved", value: "relieved" },
+];
 
 export const modeOfPayment = [
-  { label: 'By Cash', value: 'by_cash' },
-  { label: 'Bank', value: 'bank' },
-]
-
+  { label: "By Cash", value: "by_cash" },
+  { label: "Bank", value: "bank" },
+];
 
 const FamilyDetails = ({ studentId }: Props) => {
   const [initialLoading, setInitialLoading] = useState(false);
 
-  const [familyDetails, dispatch] = useReducer(
-    familyDetailsReducer,
-    initialFamilyDetailsState
-  );
+  const [familyDetails, dispatch] = useReducer(familyDetailsReducer, initialFamilyDetailsState);
 
   const fetchFamilyDetails = async () => {
     setInitialLoading(true);
@@ -398,7 +395,6 @@ const FamilyDetails = ({ studentId }: Props) => {
         value: type === "checkbox" ? checked : value,
       });
     } else if (relation === "children") {
-
       const [_, index, childField] = name.split(".");
       dispatch({
         type: "UPDATE_CHILD",
@@ -406,11 +402,7 @@ const FamilyDetails = ({ studentId }: Props) => {
         field: childField,
         value: type === "checkbox" ? checked : value,
       });
-    } else if (
-      relation === "mother" ||
-      relation === "father" ||
-      relation === "spouse"
-    ) {
+    } else if (relation === "mother" || relation === "father" || relation === "spouse") {
       dispatch({
         type: "UPDATE_PARENT",
         parentType: relation,
@@ -435,18 +427,14 @@ const FamilyDetails = ({ studentId }: Props) => {
         field,
         value: type === "checkbox" ? checked : value,
       });
-    }
-    else if (name.startsWith("accompanying_")) {
+    } else if (name.startsWith("accompanying_")) {
       dispatch({
         type: "UPDATE_ACCOMPANYING",
         accompanyingType: name.split("_")[1],
         value: value === "true",
       });
     } else if (name === "number_of_children" || name === "number_of_siblings") {
-      let typeToDispatch: any =
-        name === "number_of_children"
-          ? "UPDATE_NUMBER_OF_CHILDREN"
-          : "UPDATE_NUMBER_OF_SIBLINGS";
+      let typeToDispatch: any = name === "number_of_children" ? "UPDATE_NUMBER_OF_CHILDREN" : "UPDATE_NUMBER_OF_SIBLINGS";
 
       dispatch({
         type: typeToDispatch,
@@ -460,10 +448,7 @@ const FamilyDetails = ({ studentId }: Props) => {
     }
   };
 
-  const handleRemoveItem = (
-    type: "children_info" | "siblings_info",
-    index: number
-  ) => {
+  const handleRemoveItem = (type: "children_info" | "siblings_info", index: number) => {
     if (type === "children_info") {
       dispatch({
         type: "REMOVE_CHILD",
@@ -542,7 +527,7 @@ const FamilyDetails = ({ studentId }: Props) => {
         maternal_grand_mother_info_spouse,
         maternal_grand_father_info_spouse,
         father_in_law_info,
-        mother_in_law_info
+        mother_in_law_info,
       } = familyDetails;
 
       const res = await axios.post(`family_information`, {
@@ -566,7 +551,7 @@ const FamilyDetails = ({ studentId }: Props) => {
         maternal_grand_mother_info_spouse,
         maternal_grand_father_info_spouse,
         father_in_law_info,
-        mother_in_law_info
+        mother_in_law_info,
       });
       if (res) {
         fetchFamilyDetails();
@@ -601,158 +586,136 @@ const FamilyDetails = ({ studentId }: Props) => {
 
   return (
     <>
-      <Row>
-        <h5 className="mb-4 text-uppercase">
-          <i className="mdi mdi-account-circle me-1"></i>Family Details
-        </h5>
-      </Row>
+      {initialLoading ? (
+        <SkeletonComponent />
+      ) : (
+        <>
+          <Row>
+            <h5 className="mb-4 text-uppercase">
+              <i className="mdi mdi-account-circle me-1"></i>Family Details
+            </h5>
+          </Row>
 
-      {/* Father's Information */}
-      <ParentDetailsForm
-        parentType="father"
-        parentDetails={familyDetails.father}
-        onChange={handleInputChange}
-      />
+          {/* Father's Information */}
+          <ParentDetailsForm parentType="father" parentDetails={familyDetails.father} onChange={handleInputChange} />
 
-      {/* Mother's Information */}
-      <ParentDetailsForm
-        parentType="mother"
-        parentDetails={familyDetails.mother}
-        onChange={handleInputChange}
-      />
+          {/* Mother's Information */}
+          <ParentDetailsForm parentType="mother" parentDetails={familyDetails.mother} onChange={handleInputChange} />
 
-      {/* Spouse Information */}
-      <ParentDetailsForm
-        parentType="spouse"
-        parentDetails={familyDetails.spouse}
-        onChange={handleInputChange}
-      />
+          {/* Spouse Information */}
+          <ParentDetailsForm parentType="spouse" parentDetails={familyDetails.spouse} onChange={handleInputChange} />
 
-      {/* Siblings Information */}
-      <SiblingsDetails
-        handleInputChange={handleInputChange}
-        handleRemoveItem={handleRemoveItem}
-        handleAddSibling={handleAddSibling}
-        siblings={familyDetails?.siblings_info}
-        number_of_siblings={familyDetails?.number_of_siblings}
-      />
+          {/* Siblings Information */}
+          <SiblingsDetails
+            handleInputChange={handleInputChange}
+            handleRemoveItem={handleRemoveItem}
+            handleAddSibling={handleAddSibling}
+            siblings={familyDetails?.siblings_info}
+            number_of_siblings={familyDetails?.number_of_siblings}
+          />
 
-      {/* Children Information */}
-      <ChildrenDetails
-        handleInputChange={handleInputChange}
-        handleRemoveItem={handleRemoveItem}
-        handleAddChildren={handleAddChildren}
-        children={familyDetails?.children_info}
-        number_of_children={familyDetails?.number_of_children}
-        handleDropDowns={handleDropDowns}
-      />
+          {/* Children Information */}
+          <ChildrenDetails
+            handleInputChange={handleInputChange}
+            handleRemoveItem={handleRemoveItem}
+            handleAddChildren={handleAddChildren}
+            children={familyDetails?.children_info}
+            number_of_children={familyDetails?.number_of_children}
+            handleDropDowns={handleDropDowns}
+          />
 
-      {/* Paternal Grand Mother's Information */}
-      <GrandParentDetailsForm
-        parentType="paternal_grand_mother_info"
-        parentDetails={familyDetails.paternal_grand_mother_info}
-        onChange={handleInputChange}
-      />
+          {/* Paternal Grand Mother's Information */}
+          <GrandParentDetailsForm
+            parentType="paternal_grand_mother_info"
+            parentDetails={familyDetails.paternal_grand_mother_info}
+            onChange={handleInputChange}
+          />
 
-      {/* Paternal Grand Fathers's Information */}
-      <GrandParentDetailsForm
-        parentType="paternal_grand_father_info"
-        parentDetails={familyDetails.paternal_grand_father_info}
-        onChange={handleInputChange}
-      />
+          {/* Paternal Grand Fathers's Information */}
+          <GrandParentDetailsForm
+            parentType="paternal_grand_father_info"
+            parentDetails={familyDetails.paternal_grand_father_info}
+            onChange={handleInputChange}
+          />
 
-      {/* Maternal Grand Mother's Information */}
-      <GrandParentDetailsForm
-        parentType="maternal_grand_mother_info"
-        parentDetails={familyDetails.maternal_grand_mother_info}
-        onChange={handleInputChange}
-      />
+          {/* Maternal Grand Mother's Information */}
+          <GrandParentDetailsForm
+            parentType="maternal_grand_mother_info"
+            parentDetails={familyDetails.maternal_grand_mother_info}
+            onChange={handleInputChange}
+          />
 
-      {/* Maternal Grand Fathers's Information */}
-      <GrandParentDetailsForm
-        parentType="maternal_grand_father_info"
-        parentDetails={familyDetails.maternal_grand_father_info}
-        onChange={handleInputChange}
-      />
+          {/* Maternal Grand Fathers's Information */}
+          <GrandParentDetailsForm
+            parentType="maternal_grand_father_info"
+            parentDetails={familyDetails.maternal_grand_father_info}
+            onChange={handleInputChange}
+          />
 
-      {/* Paternal Grand Mother's Information Spouse */}
-      <GrandParentDetailsForm
-        parentType="paternal_grand_mother_info_spouse"
-        parentDetails={familyDetails.paternal_grand_mother_info_spouse}
-        onChange={handleInputChange}
-      />
+          {/* Paternal Grand Mother's Information Spouse */}
+          <GrandParentDetailsForm
+            parentType="paternal_grand_mother_info_spouse"
+            parentDetails={familyDetails.paternal_grand_mother_info_spouse}
+            onChange={handleInputChange}
+          />
 
-      {/* Paternal Grand Fathers's Information Spouse */}
-      <GrandParentDetailsForm
-        parentType="paternal_grand_father_info_spouse"
-        parentDetails={familyDetails.paternal_grand_father_info_spouse}
-        onChange={handleInputChange}
-      />
+          {/* Paternal Grand Fathers's Information Spouse */}
+          <GrandParentDetailsForm
+            parentType="paternal_grand_father_info_spouse"
+            parentDetails={familyDetails.paternal_grand_father_info_spouse}
+            onChange={handleInputChange}
+          />
 
-      {/* Maternal Grand Mother's Information Spouse */}
-      <GrandParentDetailsForm
-        parentType="maternal_grand_mother_info_spouse"
-        parentDetails={familyDetails.maternal_grand_mother_info_spouse}
-        onChange={handleInputChange}
-      />
+          {/* Maternal Grand Mother's Information Spouse */}
+          <GrandParentDetailsForm
+            parentType="maternal_grand_mother_info_spouse"
+            parentDetails={familyDetails.maternal_grand_mother_info_spouse}
+            onChange={handleInputChange}
+          />
 
-      {/* Maternal Grand Fathers's Information Spouse */}
-      <GrandParentDetailsForm
-        parentType="maternal_grand_father_info_spouse"
-        parentDetails={familyDetails.maternal_grand_father_info_spouse}
-        onChange={handleInputChange}
-      />
+          {/* Maternal Grand Fathers's Information Spouse */}
+          <GrandParentDetailsForm
+            parentType="maternal_grand_father_info_spouse"
+            parentDetails={familyDetails.maternal_grand_father_info_spouse}
+            onChange={handleInputChange}
+          />
 
-      {/* Father In Law Information */}
-      <GrandParentDetailsForm
-        parentType="father_in_law_info"
-        parentDetails={familyDetails.father_in_law_info}
-        onChange={handleInputChange}
-      />
+          {/* Father In Law Information */}
+          <GrandParentDetailsForm
+            parentType="father_in_law_info"
+            parentDetails={familyDetails.father_in_law_info}
+            onChange={handleInputChange}
+          />
 
-      {/* Mother In Law Information */}
-      <GrandParentDetailsForm
-        parentType="mother_in_law_info"
-        parentDetails={familyDetails.mother_in_law_info}
-        onChange={handleInputChange}
-      />
+          {/* Mother In Law Information */}
+          <GrandParentDetailsForm
+            parentType="mother_in_law_info"
+            parentDetails={familyDetails.mother_in_law_info}
+            onChange={handleInputChange}
+          />
 
-      {/* Accompanying Details */}
-      <Row className="mt-3">
-        <Row>
-          <h5 className="mb-4 text-uppercase">Accompanying Details</h5>
-        </Row>
-      </Row>
-      {/* Accompanying Child */}
-      <AccompanyingDetails
-        type="child"
-        data={familyDetails.accompanying_child}
-        handleInputChange={handleInputChange}
-      />
+          {/* Accompanying Details */}
+          <Row className="mt-3">
+            <Row>
+              <h5 className="mb-4 text-uppercase">Accompanying Details</h5>
+            </Row>
+          </Row>
+          {/* Accompanying Child */}
+          <AccompanyingDetails type="child" data={familyDetails.accompanying_child} handleInputChange={handleInputChange} />
 
-      {/* Accompanying Spouse */}
-      <AccompanyingDetails
-        type="spouse"
-        data={familyDetails.accompanying_spouse}
-        handleInputChange={handleInputChange}
-      />
+          {/* Accompanying Spouse */}
+          <AccompanyingDetails type="spouse" data={familyDetails.accompanying_spouse} handleInputChange={handleInputChange} />
 
-      {/* Relatives Details */}
-      <RelativesDetails
-        handleInputChange={handleInputChange}
-        data={familyDetails.relatives_info}
-      />
+          {/* Relatives Details */}
+          <RelativesDetails handleInputChange={handleInputChange} data={familyDetails.relatives_info} />
 
-      <Row>
-        <Button
-          variant="primary"
-          className="mt-4"
-          type="submit"
-          onClick={saveFamilyDetails}
-        >
-          Save
-        </Button>
-      </Row>
+          <Row>
+            <Button variant="primary" className="mt-4" type="submit" onClick={saveFamilyDetails}>
+              Save
+            </Button>
+          </Row>
+        </>
+      )}
     </>
   );
 };

@@ -8,6 +8,7 @@ import useSaveFundPlan from "../../../../../hooks/useSaveFundPlan";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import useRemoveFromApi from "../../../../../hooks/useRemoveFromApi";
+import SkeletonComponent from "../StudyPreference/LoadingSkeleton";
 
 interface Props {
   student_id: string | number;
@@ -35,9 +36,7 @@ const FundPlan = ({ student_id }: Props) => {
   const { saveFundPlan, saveLoading } = useSaveFundPlan(student_id);
   const { loading, removeFromApi } = useRemoveFromApi();
 
-  const refreshing = useSelector(
-    (state: RootState) => state.refreshReducer.refreshing
-  );
+  const refreshing = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
   const handleAddMoreFundPlan = () => {
     setFundPlan([
@@ -70,14 +69,12 @@ const FundPlan = ({ student_id }: Props) => {
   };
 
   const saveFundPlanData = () => {
-
     console.log(fundPlan);
-    
 
     const validationRules = {
       type: { required: true },
       fund_origin: { required: true },
-      has_min_6_months_backup : { required: true },
+      has_min_6_months_backup: { required: true },
       source_of_funds: { required: true },
       sponsor_name: { required: true },
       approx_annual_income: { required: true },
@@ -102,11 +99,7 @@ const FundPlan = ({ student_id }: Props) => {
     saveFundPlan(fundPlan);
   };
 
-  const handleFundPlanInputChange = (
-    index: number,
-    name: string,
-    value: string | number | File
-  ) => {
+  const handleFundPlanInputChange = (index: number, name: string, value: string | number | File) => {
     const newFundPlan = [...fundPlan];
     newFundPlan[index] = {
       ...newFundPlan[index], // Ensure you don't overwrite the whole object
@@ -122,9 +115,7 @@ const FundPlan = ({ student_id }: Props) => {
 
       console.log(data?.data);
 
-      data?.data.length > 0
-        ? setFundPlan(data.data)
-        : setFundPlan([initialFundPlanState]);
+      data?.data.length > 0 ? setFundPlan(data.data) : setFundPlan([initialFundPlanState]);
     } catch (error) {
       console.error("Error fetching fund plan:", error);
       showErrorAlert("Failed to fetch fund plan");
@@ -150,39 +141,32 @@ const FundPlan = ({ student_id }: Props) => {
 
   return (
     <>
-      <Row>
-        <FundPlanRows
-          fundPlan={fundPlan}
-          handleFundPlanInputChange={handleFundPlanInputChange}
-          removeFundPlan={removeFundPlan}
-          handleAddMoreFundPlan={handleAddMoreFundPlan}
-        />
-      </Row>
-
-      <Row>
-        <Button
-          variant="primary"
-          className="mt-4"
-          type="submit"
-          onClick={saveFundPlanData}
-          disabled={saveLoading}
-        >
-          {saveLoading ? (
-            <>
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-              {" Saving..."} {/* Show spinner and text */}
-            </>
-          ) : (
-            "Save Details" // Normal button text when not loading
-          )}
-        </Button>
-      </Row>
+      {initialLoading ? (
+        <SkeletonComponent />
+      ) : (
+        <>
+          <Row>
+            <FundPlanRows
+              fundPlan={fundPlan}
+              handleFundPlanInputChange={handleFundPlanInputChange}
+              removeFundPlan={removeFundPlan}
+              handleAddMoreFundPlan={handleAddMoreFundPlan}
+            />
+          </Row>
+          <Row>
+            <Button variant="primary" className="mt-4" type="submit" onClick={saveFundPlanData} disabled={saveLoading}>
+              {saveLoading ? (
+                <>
+                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                  {" Saving..."} {/* Show spinner and text */}
+                </>
+              ) : (
+                "Save Details" // Normal button text when not loading
+              )}
+            </Button>
+          </Row>{" "}
+        </>
+      )}
     </>
   );
 };

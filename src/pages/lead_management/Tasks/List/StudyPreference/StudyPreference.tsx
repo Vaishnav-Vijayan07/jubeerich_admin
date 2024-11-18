@@ -20,8 +20,6 @@ const StudyPreference = withSwal((props: any) => {
   const { dropdownData } = useDropdownData("universities,courses,streams,campuses,courseTypes");
 
   const getStudyPrefData = async () => {
-    console.log("studentId, calling");
-
     setLoading(true);
 
     try {
@@ -37,31 +35,32 @@ const StudyPreference = withSwal((props: any) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     if (dropdownData.universities.length > 0 && dropdownData.campuses.length > 0) {
       getStudyPrefData();
     }
   }, [dropdownData.universities.length, dropdownData.campuses.length, refresh, studentId]);
 
-  if (loading) {
-    return <SkeletonComponent />;
-  }
-
   return (
     <>
-      <Row>
-        {item.length > 0 &&
-          item?.map((values: any, index: any) => (
-            <StudyPreferenceRow
-              key={index + values?.country_name}
-              studyPreference={values?.studyDetails}
-              parentIndex={index}
-              countryName={values?.country_name}
-              studyPreferenceId={values?.studyPreferenceId}
-              dropdownData={dropdownData}
-              isEditable={values?.isEditable}
-            />
-          ))}
-      </Row>
+      {loading ? (
+        <SkeletonComponent />
+      ) : (
+        <Row>
+          {item.length > 0 &&
+            item?.map((values: any, index: any) => (
+              <StudyPreferenceRow
+                key={index + values?.country_name}
+                studyPreference={values?.studyDetails}
+                parentIndex={index}
+                countryName={values?.country_name}
+                studyPreferenceId={values?.studyPreferenceId}
+                dropdownData={dropdownData}
+                isEditable={values?.isEditable}
+              />
+            ))}
+        </Row>
+      )}
     </>
   );
 });
