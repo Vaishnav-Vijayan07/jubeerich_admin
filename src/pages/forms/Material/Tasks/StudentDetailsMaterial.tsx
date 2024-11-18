@@ -537,7 +537,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                                     </div>
                                 </Col>
                             </Row>
-                            <Row className="mb-3">
+                            <Row className="mb-2">
                                 <Row className="mt-3" style={{ paddingRight: '0px' }}>
                                     <Col>
                                         <h4 className="text-secondary mt-1">Task Details</h4>
