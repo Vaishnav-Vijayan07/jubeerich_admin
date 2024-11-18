@@ -179,9 +179,9 @@ const KycRejected = () => {
 
   console.log(records);
 
-  if (initialloading) {
-    return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
-  }
+  // if (initialloading) {
+  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
+  // }
 
   return (
     <>
@@ -203,6 +203,7 @@ const KycRejected = () => {
             pagination={true}
             isSearchable={true}
             tableClass="table-striped dt-responsive nowrap w-100"
+            initialLoading={initialloading}
           />
         </Card.Body>
       </Card>

@@ -51,8 +51,9 @@ const Pending = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { records } = useSelector((state: RootState) => ({
+  const { records, initialloading } = useSelector((state: RootState) => ({
     records: state.KYC.KYCSPending.data,
+    initialloading: state.KYC.initialloading,
   }));
 
   useEffect(() => {
@@ -187,7 +188,11 @@ const Pending = () => {
               {/* Eye Icon */}
               <span
                 className="action-icon"
-                onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`)}
+                onClick={() =>
+                  navigate(
+                    `/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`
+                  )
+                }
               >
                 <i className="fs-3 mdi mdi-eye-outline"></i>
               </span>
@@ -222,6 +227,7 @@ const Pending = () => {
             pagination={true}
             isSearchable={true}
             tableClass="table-striped dt-responsive nowrap w-100"
+            initialLoading={initialloading}
           />
         </Card.Body>
       </Card>

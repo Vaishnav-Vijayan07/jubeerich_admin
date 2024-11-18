@@ -263,6 +263,7 @@ const AllPending = () => {
             isSearchable={true}
             isSelectable={true}
             tableClass="table-striped dt-responsive nowrap w-100"
+            initialLoading={initialloading}
           />
         </Card.Body>
       </Card>
