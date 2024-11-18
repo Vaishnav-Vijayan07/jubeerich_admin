@@ -7,6 +7,7 @@ import { RootState } from "../../../../redux/store";
 import { useSelector } from "react-redux";
 import { getTimeFromTimestamp, handleDateFormat, showErrorAlert, showSuccessAlert } from "../../../../constants";
 import classNames from "classnames";
+import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 
 const Comments = ({ studentId }: any) => {
   const commentBox = useRef<any>(null);
@@ -49,8 +50,6 @@ const Comments = ({ studentId }: any) => {
       setLoading(false);
     }
   };
-
-  console.log(loading);
 
   const handleCancelUpdate = () => {
     setisUpdate(false);
@@ -114,111 +113,117 @@ const Comments = ({ studentId }: any) => {
 
   return (
     <>
-      <Row className="mb-3 mt-3">
-        <Col md={6}>
-          <div className="d-flex flex-wrap">
-            <small
-              style={{
-                backgroundColor: selectedCountry === "all" ? "#00ce64" : "#9dd3f5",
-                color: "#122d3d",
-                padding: "4px 10px",
-              }}
-              className={classNames("rounded-pill fs-6 me-1 cursor-pointer")}
-              onClick={() => handleCountryWiseHistory("all", "All Countries")}
-            >
-              All Countries
-            </small>
-            {countries.length > 0 &&
-              countries.map((country: any) => (
+      {loading ? (
+        <SkeletonComponent />
+      ) : (
+        <>
+          <Row className="mb-3 mt-3">
+            <Col md={6}>
+              <div className="d-flex flex-wrap">
                 <small
-                  key={country.id}
                   style={{
-                    backgroundColor: selectedCountry === country.id ? "#00ce64" : "#9dd3f5",
+                    backgroundColor: selectedCountry === "all" ? "#00ce64" : "#9dd3f5",
                     color: "#122d3d",
                     padding: "4px 10px",
                   }}
                   className={classNames("rounded-pill fs-6 me-1 cursor-pointer")}
-                  onClick={() => handleCountryWiseHistory(country.id, country.country)}
+                  onClick={() => handleCountryWiseHistory("all", "All Countries")}
                 >
-                  {country.country}
+                  All Countries
                 </small>
-              ))}
-          </div>
-        </Col>
-      </Row>
-      <div>
-        <div className="row">
-          <div className="col">
-            <h5 className="mb-2 font-size-16">Comments</h5>
-            {commentArray.length == 0 && <p>No comments...</p>}
+                {countries.length > 0 &&
+                  countries.map((country: any) => (
+                    <small
+                      key={country.id}
+                      style={{
+                        backgroundColor: selectedCountry === country.id ? "#00ce64" : "#9dd3f5",
+                        color: "#122d3d",
+                        padding: "4px 10px",
+                      }}
+                      className={classNames("rounded-pill fs-6 me-1 cursor-pointer")}
+                      onClick={() => handleCountryWiseHistory(country.id, country.country)}
+                    >
+                      {country.country}
+                    </small>
+                  ))}
+              </div>
+            </Col>
+          </Row>
+          <div>
+            <div className="row">
+              <div className="col">
+                <h5 className="mb-2 font-size-16">Comments</h5>
+                {commentArray.length == 0 && <p>No comments...</p>}
 
-            {/* comments */}
-            {commentArray?.map((comment: any, idx: any) => (
-              <React.Fragment key={idx}>
-                <div key={idx} className="d-flex align-items-start mt-3 p-1">
-                  <div
-                    className="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2"
-                    style={{ width: "30px", height: "30px", fontSize: "13px" }}
-                  >
-                    {comment?.user?.name.charAt(0)}
-                  </div>
-                  <div className="w-100">
-                    {comment?.user_id === user.user_id && (
-                      <FeatherIcons
-                        icon="edit"
-                        size="13"
-                        className="cursor-pointer float-end ms-2 mt-0"
-                        onClick={() => {
-                          handleCommentUpdate(comment);
-                        }}
-                      />
-                    )}
-                    <h5 className="mt-0 mb-0 font-size-14">
-                      <span className="float-end text-muted font-12 ms-1">{getTimeFromTimestamp(comment.createdAt)}</span>
-                      <span className="float-end text-muted font-12">{handleDateFormat(comment.createdAt)}</span>
-                      {comment?.user?.name}
-                    </h5>
-                    <Badge>{comment?.country ? comment?.country?.country_name : null}</Badge>
-                    <p className="mt-1 mb-0 text-muted">{comment.comment}</p>
-                  </div>
-                </div>
-                <hr />
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-
-        <Row className="mt-3">
-          <Col>
-            <div className="border rounded" ref={commentBox}>
-              <form onSubmit={handleSubmit}>
-                <textarea
-                  rows={3}
-                  className="form-control border-0 resize-none"
-                  placeholder="Your comment..."
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  required
-                ></textarea>
-                <div className="p-2 bg-light d-flex justify-content-between align-items-center">
-                  <div></div>
-                  <div>
-                    {isUpdate && (
-                      <button type="reset" className="btn btn-sm btn-danger me-2" onClick={() => handleCancelUpdate()}>
-                        <i className="mdi mdi-cancel me-1"></i>Cancel
-                      </button>
-                    )}
-                    <button type="submit" className="btn btn-sm btn-success">
-                      <i className="mdi mdi-send me-1"></i>
-                      {isUpdate ? "Update" : "Submit"}
-                    </button>
-                  </div>
-                </div>
-              </form>
+                {/* comments */}
+                {commentArray?.map((comment: any, idx: any) => (
+                  <React.Fragment key={idx}>
+                    <div key={idx} className="d-flex align-items-start mt-3 p-1">
+                      <div
+                        className="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2"
+                        style={{ width: "30px", height: "30px", fontSize: "13px" }}
+                      >
+                        {comment?.user?.name.charAt(0)}
+                      </div>
+                      <div className="w-100">
+                        {comment?.user_id === user.user_id && (
+                          <FeatherIcons
+                            icon="edit"
+                            size="13"
+                            className="cursor-pointer float-end ms-2 mt-0"
+                            onClick={() => {
+                              handleCommentUpdate(comment);
+                            }}
+                          />
+                        )}
+                        <h5 className="mt-0 mb-0 font-size-14">
+                          <span className="float-end text-muted font-12 ms-1">{getTimeFromTimestamp(comment.createdAt)}</span>
+                          <span className="float-end text-muted font-12">{handleDateFormat(comment.createdAt)}</span>
+                          {comment?.user?.name}
+                        </h5>
+                        <Badge>{comment?.country ? comment?.country?.country_name : null}</Badge>
+                        <p className="mt-1 mb-0 text-muted">{comment.comment}</p>
+                      </div>
+                    </div>
+                    <hr />
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
-          </Col>
-        </Row>
-      </div>
+
+            <Row className="mt-3">
+              <Col>
+                <div className="border rounded" ref={commentBox}>
+                  <form onSubmit={handleSubmit}>
+                    <textarea
+                      rows={3}
+                      className="form-control border-0 resize-none"
+                      placeholder="Your comment..."
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      required
+                    ></textarea>
+                    <div className="p-2 bg-light d-flex justify-content-between align-items-center">
+                      <div></div>
+                      <div>
+                        {isUpdate && (
+                          <button type="reset" className="btn btn-sm btn-danger me-2" onClick={() => handleCancelUpdate()}>
+                            <i className="mdi mdi-cancel me-1"></i>Cancel
+                          </button>
+                        )}
+                        <button type="submit" className="btn btn-sm btn-success">
+                          <i className="mdi mdi-send me-1"></i>
+                          {isUpdate ? "Update" : "Submit"}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </Col>
+            </Row>
+          </div>
+        </>
+      )}
     </>
   );
 };
