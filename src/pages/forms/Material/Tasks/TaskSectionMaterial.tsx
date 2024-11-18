@@ -8,6 +8,7 @@ import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.module.css";
 import { TaskItemTypes } from "../../../lead_management/Tasks/List/data";
 import SkeletonComponent from "../../../lead_management/Tasks/List/StudyPreference/LoadingSkeleton";
+import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 
 interface TaskSectionState {
     title: string;
@@ -69,7 +70,7 @@ const Task = ({
                     </div>
 
                     <div>
-                        {task?.student_name?.preferredCountries?.map((country: any) => (
+                        {/* {task?.student_name?.preferredCountries?.map((country: any) => (
                             <small
                                 style={{
                                     backgroundColor: "#9dd3f5",
@@ -83,6 +84,28 @@ const Task = ({
                                 className={classNames("rounded-pill me-1 ms-0")}
                             >
                                 {country?.country_name}
+                            </small>
+                        ))} */}
+
+                        {task?.student_name?.flag_details_rows?.map((flag: any) => (
+                            <small
+                            style={{
+                                backgroundColor: setColorOpacityRGB(flag?.color),
+                                color: "black",
+                                border: `1px solid #122d3d`,
+                                borderRadius: "5px",
+                                padding: "2px 10px",
+                                width: "fit-content",
+                                fontSize: "0.6rem",
+                                borderColor: `${flag?.color}`,
+                                height: "max-content",
+                                textAlign: "center",
+                                whiteSpace: "nowrap",
+                                opacity: "0.8",
+                            }}
+                                className={classNames("rounded-pill me-1 ms-0")}
+                            >
+                                {flag?.flag_name}
                             </small>
                         ))}
 
@@ -115,7 +138,8 @@ const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialL
     const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
     const [selectedTaskId, setSelectedTaskId] = useState<number>(initialTaskId);
     const [selectedFollowupDate, setSelectedFollowupDate] = useState<any>('');
-    useEffect(() => {
+    
+    useEffect(() => {        
         setTaskList(tasks);
     }, [tasks]);
 

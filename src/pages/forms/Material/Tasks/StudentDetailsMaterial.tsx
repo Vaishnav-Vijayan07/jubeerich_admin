@@ -163,6 +163,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                 dispatch(refreshData());
                 showSuccessAlert(data.message);
                 setShowRemarkModal(true);
+                getTaskList()
             }
         }
     };
@@ -185,6 +186,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                 showSuccessAlert(res.data.message);
                 setIsFollowupLoading(false);
                 setShowRemarkModal(true);
+                getTaskList()
             })
             .catch((err) => {
                 console.log("err", err);
@@ -243,6 +245,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     showSuccessAlert("Flag Changed Successfully");
                     getRemarks();
                     dispatch(refreshData());
+                    getTaskList()
                 }
             }
         } catch (error) {
@@ -455,17 +458,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
     return (
         <>
-            <Row
-                // style={{
-                //     maxHeight: "68vh",
-                //     height: "68vh",
-                //     overflowY: "auto",
-                //     overflowX: "hidden",
-                //     width: "100%",
-                //     boxSizing: "border-box",
-                //     scrollbarWidth: 'none',
-                // }}
-            >
+            <Row>
                 {loading ? (
                     <CardLoadingSkeleton />
                 ) : (
@@ -524,11 +517,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                             </Row>
                             <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
                                 <Col>
-                                    {/* <Col className="float-end">
-                                        <div className="text-end text-nowrap">
-                                            <b>Lead Date: {handleDateFormat(basicData?.lead_received_date)}</b>
-                                        </div>
-                                    </Col> */}
                                     <h3 className="m-0 mb-1">{taskDetails?.title}</h3>
                                     <p className="mb-2">{taskDetails?.description}</p>
                                     <div className="d-flex">
@@ -708,6 +696,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                                         disablePortal
                                         disableClearable 
                                         options={formattedStatus || []}
+                                        value={basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
                                         sx={{ width: 300, paddingTop: '1.2rem' }}
                                         renderInput={(params) =>
                                             <TextField {...params}
