@@ -10,6 +10,8 @@ import KycRejected from "../pages/forms/KycRejected";
 import KycApproved from "../pages/forms/KycApproved";
 import Submitted from "../pages/forms/Kyc/MyApplications/Submitted";
 import OfferSubmitted from "../pages/forms/Kyc/MyApplications/OfferSubmitted";
+import LeadDetailsMaterial from "../pages/forms/Material/LeadsDetails/LeadDetailsMaterial";
+import TasksMaterial from "../pages/forms/Material/Tasks/TasksMaterial";
 
 // lazy load all the views
 
@@ -272,7 +274,14 @@ const leadRoutes = {
     {
       path: "leads/manage/:id",
       name: "Leads",
-      element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetails} />,
+      // element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetails} />,
+      element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetailsMaterial} />,
+      route: PrivateRoute,
+    },
+    {
+      path: "leads/manage_mat/:id",
+      name: "Leads",
+      element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetailsMaterial} />,
       route: PrivateRoute,
     },
     {
@@ -287,6 +296,13 @@ const leadRoutes = {
       name: "Tasks",
       // element: <Tasks />,
       element: <PrivateRoute roles={["View Task", "Monitor"]} component={Tasks} />,
+      route: PrivateRoute,
+    },
+    {
+      path: "leads/tasks_mat",
+      name: "Tasks",
+      // element: <Tasks />,
+      element: <PrivateRoute roles={["View Task", "Monitor"]} component={TasksMaterial} />,
       route: PrivateRoute,
     },
     // {
