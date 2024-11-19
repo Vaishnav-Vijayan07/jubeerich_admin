@@ -58,11 +58,6 @@ const TaskList = () => {
     getTaskList(new Date());
   }, []);
 
-  // if (initialLoading) {
-  //   return (
-  //     <SkeletonComponent />
-  //   );
-  // }
   return (
     <>
       <PageTitle
@@ -73,7 +68,7 @@ const TaskList = () => {
         title={"Tasks List"}
       />
       <Row>
-        <Col xl={5}>
+        <Col xl={5} >
           <Row>
             <Col>
               <Card>
