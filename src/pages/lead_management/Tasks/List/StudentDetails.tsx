@@ -71,6 +71,8 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
   const individualTabStyle = {
     '&.Mui-selected': {
       color: 'black',
+      fontFamily: "'Nunito', sans-serif",
+      fontWeight: 700
     },
   }
 
