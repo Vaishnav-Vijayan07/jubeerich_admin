@@ -295,7 +295,8 @@ const leadRoutes = {
       path: "leads/tasks",
       name: "Tasks",
       // element: <Tasks />,
-      element: <PrivateRoute roles={["View Task", "Monitor"]} component={Tasks} />,
+      // element: <PrivateRoute roles={["View Task", "Monitor"]} component={Tasks} />,
+      element: <PrivateRoute roles={["View Task", "Monitor"]} component={TasksMaterial} />,
       route: PrivateRoute,
     },
     {

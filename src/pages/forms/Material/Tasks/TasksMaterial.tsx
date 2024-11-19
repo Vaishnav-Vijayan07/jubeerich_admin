@@ -21,9 +21,7 @@ const TasksMaterial = () => {
   };
 
   const getTaskList = (date: any) => {
-    
-    // date = moment(date).startOf('day').format('YYYY-MM-DD');
-    date = date ? moment(date).startOf('day').format('YYYY-MM-DD') : moment(selectedDate).startOf('day').format('YYYY-MM-DD') || moment(new Date()).startOf('day').format('YYYY-MM-DD');
+    date = date ? moment(date).startOf('day').format('YYYY-MM-DD') : (selectedDate ? moment(selectedDate).startOf('day').format('YYYY-MM-DD') : moment(new Date()).startOf('day').format('YYYY-MM-DD'));
 
     axios
       .get(`/tasks`, { params: { date: date } })

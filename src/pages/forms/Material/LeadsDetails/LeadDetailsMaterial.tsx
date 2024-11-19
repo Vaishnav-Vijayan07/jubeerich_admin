@@ -63,13 +63,6 @@ const LeadDetailsMaterial = (props: Props) => {
     getBasicInfo();
   }, []);
 
-  const a11yProps = (index: number) => {
-    return {
-      id: `vertical-tab-${index}`,
-      'aria-controls': `vertical-tabpanel-${index}`,
-    };
-  }
-
   if (loading) {
     return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
   }
@@ -100,7 +93,7 @@ const LeadDetailsMaterial = (props: Props) => {
           aria-controls="panel1-content"
           id="panel1-header"
         >
-          <h4 className="text-secondary mt-0">Basic Details</h4>
+          <h4 className="text-secondary mt-0">Basic Details {basicInfo?.status?.status_name}</h4>
         </AccordionSummary>
         <AccordionDetails>
           <Row className="mt-1">
