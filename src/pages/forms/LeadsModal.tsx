@@ -947,7 +947,7 @@ const LeadsModal = withSwal((props: any) => {
               {isUpdate ? "Cancel" : "Close"}
             </Button>
             <Button type="submit" variant="success" id="button-addon2" className="mt-1" disabled={loading}>
-              {isUpdate ? "Update" : "Submit"}
+              {isUpdate ? "Update Lead" : "Create Lead"}
             </Button>
           </Modal.Footer>
         </Form>

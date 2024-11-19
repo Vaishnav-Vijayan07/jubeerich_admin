@@ -295,7 +295,7 @@ const LeadsFilters = (props: any) => {
                 </Form.Group>
               </Col>
 
-              <Col lg={3} md={4} sm={6} xs={12}>
+              {/* <Col lg={3} md={4} sm={6} xs={12}>
                 <Form.Group controlId="followup_date" className="cust-date mb-3">
                   <Form.Label>Followup Date</Form.Label>
                   <Form.Control
@@ -305,7 +305,7 @@ const LeadsFilters = (props: any) => {
                     onChange={(e: any) => handleFilterDateChange(e)}
                   />
                 </Form.Group>
-              </Col>
+              </Col> */}
 
               <Col lg={3} md={4} sm={6} xs={12} style={{ alignSelf: "center" }}>
                 <Form.Group className="align-items-center">

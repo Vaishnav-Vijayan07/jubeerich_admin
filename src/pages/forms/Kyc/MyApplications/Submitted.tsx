@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../../../redux/store";
 import Table from "../../../../components/Table";
-import FileUploader from "../../../../components/FileUploader";
 import { Form } from "react-bootstrap";
 import Select from "react-select";
 import { customStyles, showErrorAlert, showSuccessAlert } from "../../../../constants";
