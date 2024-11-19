@@ -443,8 +443,8 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleAssignBulk = async (user_ids: any, cre_id: any) => {
     const result = await swal.fire({
-      title: "Are you sure?",
-      text: "This action cannot be undone.",
+      title: "Confirm Assignment",
+      text: "Are you sure you want to assign this? This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -474,8 +474,8 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleBranchCounsellorAssignBulk = async (user_ids: any, counsellor_id: any) => {
     const result = await swal.fire({
-      title: "Are you sure?",
-      text: "This action cannot be undone.",
+      title: "Confirm Assignment",
+      text: "Are you sure you want to assign this? This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -504,8 +504,8 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleBranchAssignBulk = async (user_ids: any, branch_id: any) => {
     const result = await swal.fire({
-      title: "Are you sure?",
-      text: "This action cannot be undone.",
+      title: "Confirm Assignment",
+      text: "Are you sure you want to assign this? This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -538,8 +538,8 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleAutoAssign = async () => {
     const result = await swal.fire({
-      title: "Are you sure?",
-      text: "This action cannot be undone.",
+      title: "Confirm Auto Assignment!",
+      text: "The selected leads will be automatically assigned to the respective CREs. This process cannot be reversed.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -570,8 +570,8 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleAutoAssignBranchCounsellors = async () => {
     const result = await swal.fire({
-      title: "Are you sure?",
-      text: "This action cannot be undone.",
+      title: "Confirm Auto Assignment!",
+      text: "The selected leads will be automatically assigned to the respective CREs. This process cannot be reversed.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -782,7 +782,7 @@ const BasicInputElements = withSwal((props: any) => {
                     className="btn-sm btn-blue waves-effect waves-light float-end"
                     onClick={() => [openModalWithClass("modal-full-width"), handleClearModal()]}
                   >
-                    <i className="mdi mdi-plus-circle"></i> Add lead
+                    <i className="mdi mdi-plus-circle"></i> Create Lead
                   </Button>
                 </div>
               </div>
