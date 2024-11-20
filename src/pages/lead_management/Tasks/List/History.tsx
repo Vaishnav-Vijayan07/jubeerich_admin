@@ -5,6 +5,7 @@ import { Badge, Col, Dropdown, Row, Spinner } from "react-bootstrap";
 import classNames from "classnames";
 import CardLoadingSkeleton from "../../../../components/SkeletonLoading/CardLoadingSkeleton1";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
+import { reverse } from "dns";
 
 const History = ({ studentId }: any) => {
   const [userHistory, setUserHistory] = useState([]);
@@ -99,12 +100,12 @@ const History = ({ studentId }: any) => {
           <Row>
             <div className="history-tl-container">
               <ul className="tl">
+                <li className="tl-item">
+                  History
+                </li>
                 {userHistory.length > 0 ? (
-                  userHistory.map((item: any) => (
+                  userHistory?.reverse()?.map((item: any) => (
                     <>
-                      <li key={item.id} className="tl-item">
-                        History
-                      </li>
                       <li key={item.id} className="tl-item">
                         <div className="item-title">{item.action}</div>
                         <Badge>{item?.country ? item.country.country_name : ""}</Badge>

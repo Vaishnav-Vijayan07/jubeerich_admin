@@ -322,7 +322,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
       <Row className="mb-2">
         <Row>
           <h5 className="mb-4 text-uppercase">
-            <i className="mdi mdi-account-circle me-1"></i> Study Preference Info -{countryName}
+            <i className="mdi mdi-account-circle me-1"></i> Study Preference Info - {countryName}
           </h5>
 
           {studyPreferenceData?.map((item: any, index: number) => {

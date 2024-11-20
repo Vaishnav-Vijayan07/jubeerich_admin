@@ -896,7 +896,6 @@ const StudentDetails = ({ studentId, taskId, getTaskList, initialLoading }: any)
                 />
               </Tabs>
 
-              {/* Tab content */}
               <Box sx={{ mt: 2 }}>
                 {tabValue === 'comments' && studentId && (
                   <Suspense fallback={null}>

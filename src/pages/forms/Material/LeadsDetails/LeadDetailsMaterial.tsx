@@ -87,13 +87,13 @@ const LeadDetailsMaterial = (props: Props) => {
   return (
     <>
 
-      <Accordion className="mt-3 mb-3">
+      <Accordion className="mt-3 mb-3 py-2 px-3">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
           id="panel1-header"
         >
-          <h4 className="text-secondary mt-0">Basic Details {basicInfo?.status?.status_name}</h4>
+          <h4 className="text-secondary mt-0 mb-0">Basic Details</h4>
         </AccordionSummary>
         <AccordionDetails>
           <Row className="mt-1">
