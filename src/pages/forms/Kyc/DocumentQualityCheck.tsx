@@ -20,7 +20,7 @@ function DocumentQualityCheck({ studentId, quality, handleFormData }: Props) {
   return (
     <>
       <Row>
-        <h4>Document Quality Check</h4>
+        <h4 className="py-1" style={{width:"max-content", color:"#1976d2", fontWeight:"800"}}>Document Quality Check</h4>
       </Row>
       <Row className="mt-2">
         <Card>

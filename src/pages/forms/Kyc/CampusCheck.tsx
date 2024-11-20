@@ -10,7 +10,7 @@ function CampusCheck({ data }: Props) {
   return (
     <>
       <Row>
-        <h4>Campus Check</h4>
+        <h4 className="py-1" style={{width:"max-content", color:"#1976d2", fontWeight:"800"}}>Campus Check</h4>
       </Row>
       <Row className="mt-2">
         <Card>
