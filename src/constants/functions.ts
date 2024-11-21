@@ -56,6 +56,26 @@ export const getTimeFromTimestamp = (timestamp: string) => {
   return formattedTime;
 };
 
+export const calculateDaysAgo = (createdAt: string): string => {
+  const createdDate = new Date(createdAt);
+  const today = new Date();
+
+  // Calculate the time difference in milliseconds
+  const timeDifference = today.getTime() - createdDate.getTime();
+
+  // Convert milliseconds to days
+  const daysAgo = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+  if (daysAgo === 0) {
+    return "Today";
+  } else if (daysAgo === 1) {
+    return "Yesterday";
+  } else {
+    return `${daysAgo} days ago`;
+  }
+};
+
+
 export const FindStatusName = (status_id: string, Status: any) => {
   if (Status) {
     const statusObject: StatusObjType = Status.find((status: any) => status.id === status_id);

@@ -63,7 +63,7 @@ const TasksMaterial = () => {
         title={"Tasks List"}
       />
       <Row>
-        <Col xl={5}>
+        <Col xl={4}>
           <Row>
             <Col>
               <Card>
@@ -94,7 +94,7 @@ const TasksMaterial = () => {
           </Row>
         </Col>
 
-        <Col xl={7} className="">
+        <Col xl={8} className="">
           {selectedTask && (
             <StudentDetailsMaterial
               studentId={selectedTask?.studentId}

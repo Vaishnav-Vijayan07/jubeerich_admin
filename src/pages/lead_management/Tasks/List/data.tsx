@@ -105,6 +105,7 @@ export interface TaskItemTypes {
   handleUpdateStatus: (taskId: number, status_name: string, color: string, status: string) => void;
   pickedDate: Date;
   student_name?: any;
+  createdAt?: any;
 }
 
 export interface TaskObjects {
