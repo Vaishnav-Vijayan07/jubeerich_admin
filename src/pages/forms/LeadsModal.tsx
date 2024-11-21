@@ -107,10 +107,10 @@ const LeadsModal = withSwal((props: any) => {
     const updatedRegion = region?.filter((region: any) => region.value == item?.region_id);
 
     // const updatedFlag = flags?.filter((flag: any) => flag.value == item?.flag_id);
-    const updatedFlag = item?.flag_details?.map((flag: any) => ({
+    const updatedFlag = Array.isArray(item?.flag_details) ? item?.flag_details?.map((flag: any) => ({
       value: flag?.id,
       label: flag?.flag_name,
-    }));
+    })): [];
 
 
     const updatedCtegory = leadTypes?.filter((category: any) => category.value == item?.lead_type_id);
@@ -123,7 +123,7 @@ const LeadsModal = withSwal((props: any) => {
     }));
 
     const countryArray = item?.preferredCountries?.map((country: any) => country?.id);
-    const flagArray = item?.flag_details?.map((flag: any) => flag?.id);
+    const flagArray = Array.isArray(item?.flag_details) ? item?.flag_details?.map((flag: any) => flag?.id) : [];
 
     const { value } = updatedOffice[0];
     const { franchise_id, region_id: region_id_from_item } = item;
