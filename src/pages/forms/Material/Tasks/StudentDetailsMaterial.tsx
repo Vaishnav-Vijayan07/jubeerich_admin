@@ -180,7 +180,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       .put("/lead_status", {
         lead_id: studentId,
         status_id: statusId,
-        followup_date: selectedDate,
+        // followup_date: selectedDate,
+        followup_date: value,
         country_id: country_id,
       })
       .then((res) => {
@@ -912,7 +913,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           </Card>
         )}
 
-        <Modal show={standard} centered onHide={toggleStandard} dialogClassName="modal-calendar-width">
+        {/* <Modal show={standard} centered onHide={toggleStandard} dialogClassName="modal-calendar-width">
           <Modal.Header onHide={toggleStandard} closeButton>
             <h4 className="modal-title">Choose Followup Date</h4>
           </Modal.Header>
@@ -939,7 +940,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
               </Button>
             </div>
           </Modal.Footer>
-        </Modal>
+        </Modal> */}
 
         <FollowupModal
           setIsCancelModal={isCancelModal}

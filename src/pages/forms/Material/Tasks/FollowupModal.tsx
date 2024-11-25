@@ -8,16 +8,11 @@ import { withSwal } from "react-sweetalert2";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 import { refreshData } from "../../../../redux/countryReducer";
-import classNames from "classnames";
-import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 import DatePicker from "react-datepicker";
 import { FormInput } from "../../../../components";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import dayjs from "dayjs";
 
 const initialFormState = {
@@ -38,7 +33,7 @@ const FollowupModal = withSwal((props: any) => {
         setViewOnly,
         viewOnly = false,
         setIsCancelModal,
-        submitFollowupDate
+        submitFollowupDate,
     } = props;
     const [remarkId, setRemarkId] = useState<any>("");
 
@@ -48,7 +43,30 @@ const FollowupModal = withSwal((props: any) => {
     const [remarkForm, setRemarkForm] = useState(initialFormState);
     const [isLoading, setIsLoading] = useState<any>(false);
     const headerHeight = 100;
-    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+    // const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+    const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(dayjs());
+
+
+    const calenderStyle = {
+        '& .MuiPickersDay-root': {
+            margin: '4px', // Add spacing between days
+            padding: '12px', // Increase the padding inside each day
+            fontSize: '1rem', // Adjust font size if needed
+          },
+          '& .MuiDateCalendar-root': {
+            width: '350px', // Increase the overall width of the calendar
+          },
+          '& .MuiPickersCalendarHeader-root': {
+            fontSize: '1.25rem', // Adjust header font size
+          },
+          '& .MuiDayCalendar-header': {
+            display: 'flex', // Ensure it's a flex container
+            justifyContent: 'space-between', // Spread the items evenly
+            gap: '8px', // Add horizontal spacing between labels
+            padding: '0 16px',
+          },
+
+    }
 
     const scrollToStartOfTarget = () => {
         if (targetRef.current) {
@@ -60,10 +78,8 @@ const FollowupModal = withSwal((props: any) => {
         }
     };
 
-    // const handleSubmit = async (e: any) => {
     const handleSubmit = async () => {
         setIsLoading(true);
-        // e.preventDefault();
         let payload;
         let result;
 
@@ -84,12 +100,12 @@ const FollowupModal = withSwal((props: any) => {
         }
         try {
             if (remarkForm?.remark == "") {
-                submitFollowupDate(selectedDate);
                 toggleRemarkModal();
                 callGetRemark();
                 dispatch(refreshData());
                 setRemarkForm(initialFormState);
                 submitFollowupDate(selectedDate)
+                setSelectedDate(dayjs())
                 setIsLoading(false);
                 return
             }
@@ -100,12 +116,12 @@ const FollowupModal = withSwal((props: any) => {
                 result = await axios.put(`/followup_remark/${studentId}`, payload);
             }
             if (result) {
-                showSuccessAlert("Remark Saved Successfully");
                 toggleRemarkModal();
                 callGetRemark();
                 dispatch(refreshData());
                 setRemarkForm(initialFormState);
                 submitFollowupDate(selectedDate)
+                setSelectedDate(dayjs())
                 setIsLoading(false);
             }
         } catch (error) {
@@ -132,26 +148,26 @@ const FollowupModal = withSwal((props: any) => {
         }));
     };
 
-    const handleCancelUpdate = () => {
-        setRemarkForm(initialFormState);
-        setIsUpdate(false);
-        // setIsCancelModal();
-    };
+    // const handleCancelUpdate = () => {
+    //     setRemarkForm(initialFormState);
+    //     setIsUpdate(false);
+    //     // setIsCancelModal();
+    // };
 
     const handleDateChange = (date: any) => {
-        setSelectedDate(date);
+        // setSelectedDate(date);
+        setSelectedDate(date ? date.toDate() : null);
     };
 
     return (
         <>
             <Modal dialogClassName="modal-dialog-centered" show={showModal} onHide={toggleRemarkModal}>
                 <Modal.Header style={{ paddingTop: '0px' }}>
-                    <h3>Followup Date</h3>
+                    <h3>{viewOnly ? `Remarks` : `Followup Date`}</h3>
                 </Modal.Header>
 
-                <Modal.Body style={{ paddingTop: '0px'}}>
-                    {/* <div className=" w-100 lead-date-picker/"> */}
-                    <div className="w-100 border rounded shadow-sm mb-2">
+                <Modal.Body style={{ paddingTop: '0px' }}>
+                    <div className={`w-100 shadow-sm ${viewOnly ? '' : 'border rounded mb-2'}`}>
                         {/* <DatePicker
                             minDate={new Date()}
                             selected={selectedDate}
@@ -160,7 +176,7 @@ const FollowupModal = withSwal((props: any) => {
                             placeholderText="Choose a date"
                             className="w-100"
                         /> */}
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        {!viewOnly && (<LocalizationProvider dateAdapter={AdapterDayjs}>
                             <StaticDatePicker defaultValue={dayjs()}
                                 slotProps={{
                                     actionBar: {
@@ -170,16 +186,19 @@ const FollowupModal = withSwal((props: any) => {
                                         hidden: true
                                     }
                                 }}
+                                sx={{...calenderStyle}}
+                                onChange={handleDateChange}
+                                value={selectedDate ? dayjs(selectedDate) : null}
+                                disablePast
                             />
-
-                        </LocalizationProvider>
+                        </LocalizationProvider>)}
                     </div>
                     <div className="row">
-                        {/* <div style={{ minHeight: "90px", maxHeight: "250px", overflowY: "auto", scrollbarWidth: "none" }} className="col"> */}
-                        {/* {remarkData?.[0]?.remark ? (
+                        {viewOnly && (<div style={{ minHeight: "90px", maxHeight: "250px", overflowY: "auto", scrollbarWidth: "none" }} className="col">
+                            {remarkData?.[0]?.remark ? (
                                 remarkData?.map((remark: any, idx: any) => (
                                     <React.Fragment key={idx}>
-                                        <div key={idx} className="d-flex align-items-start p-1 pt-4">
+                                        <div key={idx} className="d-flex align-items-start p-1 pt-1">
                                             <img src={UserImage} className="me-2 rounded-circle" height="36" width="36" alt={remark.created_by_name} />
                                             <div className="w-100">
                                                 {!viewOnly && (
@@ -210,52 +229,27 @@ const FollowupModal = withSwal((props: any) => {
                                 <div className="d-flex justify-content-center align-items-center">
                                     <h3 className="text-muted">No Remarks Available</h3>
                                 </div>
-                            )} */}
-                        {/* </div> */}
+                            )}
+                        </div>)}
                     </div>
 
                     {!viewOnly && (
                         <Row>
                             <Col>
-                                {/* <div className="border rounded" ref={targetRef}> */}
                                 <div>
-                                    {/* <form onSubmit={handleSubmit}>
-                                        <textarea
-                                            rows={3}
-                                            name="remark"
-                                            className="form-control border-0 resize-none"
-                                            placeholder="Add your remarks..."
-                                            value={remarkForm.remark}
-                                            onChange={handleRemarkInputChange}
-                                            required
-                                        ></textarea>
-                                        <div className="p-2 bg-light d-flex justify-content-end align-items-center">
-                                            <div>
-                                                {isUpdate && (
-                                                    <button type="reset" className="btn btn-sm btn-danger me-2" onClick={() => handleCancelUpdate()}>
-                                                        <i className="mdi mdi-cancel me-1"></i>Cancel
-                                                    </button>
-                                                )}
-                                                <button type="submit" className="btn btn-sm btn-success" disabled={isLoading}>
-                                                    <i className="mdi mdi-send me-1"></i>
-                                                    {isUpdate ? "Update" : "Submit"}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form> */}
-                                    <FormInput label="Remarks" name="remark" type="textarea" rows="2" className="bg-muted" value={remarkForm.remark} onChange={handleRemarkInputChange} />
+                                    <FormInput label="Remarks" name="remark" type="textarea" rows="2" value={remarkForm.remark} onChange={handleRemarkInputChange} />
                                 </div>
                             </Col>
                         </Row>
                     )}
 
                     <Modal.Footer style={{ paddingBottom: '0px' }}>
-                        <Button className="bg-danger" onClick={() => [toggleRemarkModal(), handleCancelUpdate(), setViewOnly(false)]}>
+                        <Button className="bg-danger" onClick={() => [toggleRemarkModal(), setTimeout(() => setViewOnly(false) ,500)]}>
                             Close
                         </Button>
-                        <Button className="bg-primary" onClick={(e) => [handleSubmit(), handleCancelUpdate(), setViewOnly(false)]}>
-                            Submit
-                        </Button>
+                        {!viewOnly && (<Button className="bg-primary" onClick={() => [handleSubmit(), setViewOnly(false)]}>
+                            Save
+                        </Button>)}
                     </Modal.Footer>
                 </Modal.Body>
             </Modal>
