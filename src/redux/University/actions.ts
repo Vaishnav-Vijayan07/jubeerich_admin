@@ -49,7 +49,8 @@ export const addUniversity = (
   portal_link: string,
   username: string,
   password: string,
-  updated_by: string
+  updated_by: string,
+  description: string
 ): UniversityActionType => ({
   type: UniversityActionTypes.ADD_UNIVERSITY,
   payload: {
@@ -62,6 +63,7 @@ export const addUniversity = (
     username,
     password,
     updated_by,
+    description
   },
 });
 
@@ -75,7 +77,8 @@ export const updateUniversity = (
   portal_link: string,
   username: string,
   password: string,
-  updated_by: string
+  updated_by: string,
+  description: string
 ): UniversityActionType => ({
   type: UniversityActionTypes.UPDATE_UNIVERSITY,
   payload: {
@@ -89,6 +92,7 @@ export const updateUniversity = (
     username,
     password,
     updated_by,
+    description
   },
 });
 

@@ -19,6 +19,7 @@ function addUniversitysApi(params: {
   username: string;
   password: string;
   updated_by: string;
+  description: string;
 }) {
   return api.create(`${baseUrl}`, params);
 }
@@ -35,6 +36,7 @@ function updateUniversitysApi(
     username: string;
     password: string;
     updated_by: string;
+    description: string;
   }
 ) {
   return api.update(`${baseUrl}/${id}`, params);

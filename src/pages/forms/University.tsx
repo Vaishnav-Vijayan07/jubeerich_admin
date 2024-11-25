@@ -57,6 +57,7 @@ const sizePerPageList = [
 const initialState = {
   id: "",
   university_name: "",
+  description: "",
   location: "",
   country_id: "",
   website_url: "",
@@ -70,6 +71,7 @@ const initialState = {
 const initialValidationState = {
   university_name: "",
   location: "",
+  description:"",
   country_id: "",
   website_url: "",
   image_url: "",
@@ -134,6 +136,7 @@ const BasicInputElements = withSwal((props: any) => {
       ...prev,
       id: item?.id,
       university_name: item?.university_name,
+      description: item?.description,
       location: item?.location,
       website_url: item?.website_url,
       image_url: item?.image_url,
@@ -215,7 +218,8 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.portal_link,
                     formData.username,
                     formData.password,
-                    user_id
+                    user_id,
+                    formData.description
                   )
                 );
                 setIsUpdate(false);
@@ -233,7 +237,8 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.portal_link,
                     formData.username,
                     formData.password,
-                    user_id
+                    user_id,
+                    formData.description
                   )
                 );
               }
@@ -323,6 +328,11 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
     },
     {
+      Header: "Description",
+      accessor: "description",
+      sort: false,
+    },
+    {
       Header: "Website",
       accessor: "website_url",
       sort: false,
@@ -356,14 +366,6 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "password",
       sort: false,
     },
-    // {
-    //   Header: "Image",
-    //   accessor: "image_url",
-    //   sort: false,
-    //   Cell: ({ row }: any) => <div className="table-user">
-    //     <img src={row.original.image_url} alt="university image" className="me-2 rounded-circle" />
-    //   </div>,
-    // },
     {
       Header: "Actions",
       accessor: "",
@@ -483,6 +485,16 @@ const BasicInputElements = withSwal((props: any) => {
                     {validationErrors.country_id && <Form.Text className="text-danger">{validationErrors.country_id}</Form.Text>}
                   </Form.Group>
                 </Col>
+
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="description">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control type="text" name="description" value={formData.description} onChange={handleInputChange} />
+
+                    {validationErrors.description && <Form.Text className="text-danger">{validationErrors.description}</Form.Text>}
+                  </Form.Group>
+                </Col>
+                
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="channel_name">

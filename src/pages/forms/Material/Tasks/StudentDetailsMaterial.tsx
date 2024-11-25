@@ -467,7 +467,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           <CardLoadingSkeleton />
         ) : (
           <Card className="ribbon-box ms-1 pb-0" style={{ fontFamily: "Nunito" }}>
-            <Card.Body style={{ paddingBottom: '4px' }}>
+            <Card.Body style={{ paddingBottom: '4px', padding:"10px 2px", margin:'10px' }}>
               <Row>
                 <Col>
                   <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
