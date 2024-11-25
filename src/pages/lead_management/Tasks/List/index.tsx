@@ -63,9 +63,9 @@ const TaskList = () => {
       <PageTitle
         breadCrumbItems={[
           { label: "Tasks", path: "/leads/tasks" },
-          { label: "Tasks List", path: "/leads/tasks", active: true },
+          { label: "Inbox", path: "/leads/tasks", active: true },
         ]}
-        title={"Tasks List"}
+        title={"Inbox"}
       />
       <Row>
         <Col xl={5}>
@@ -78,7 +78,7 @@ const TaskList = () => {
                       <div className="mt-0">
                         <TaskSection
                           // title={formattedDate}
-                          title={"Pending Tasks"}
+                          title={"Task List"}
                           initialTaskId={selectedTask?.id}
                           tasks={pendingTasks}
                           selectTask={selectTask}
