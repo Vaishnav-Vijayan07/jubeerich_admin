@@ -35,6 +35,8 @@ import RemarkModal from "../../../lead_management/Tasks/List/RemarkModal";
 import MatButton from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CommentIcon from "@mui/icons-material/Comment";
+import HyperDatepicker from "../../../../components/Datepicker";
+import FollowupModal from "./FollowupModal";
 
 const Comments = lazy(() => import("../../../lead_management/Tasks/List/Comments"));
 const History = lazy(() => import("../../../lead_management/Tasks/List/History"));
@@ -56,7 +58,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const [remarkData, setRemarkData] = useState<any>(null);
   const [viewOnly, setViewOnly] = useState<boolean>(false);
   const [isFollowupLoading, setIsFollowupLoading] = useState<boolean>(false);
-  const [tabValue, setTabValue] = React.useState("comments");
+  const [tabValue, setTabValue] = React.useState("history");
   const navigate = useNavigate();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -140,7 +142,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
 
     if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
-      toggleStandard();
+      // toggleStandard();
+      setShowRemarkModal(true);
     } else {
       const result = await swal.fire({
         title: "Are you sure?",
@@ -161,13 +164,15 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
         dispatch(refreshData());
         showSuccessAlert(data.message);
-        setShowRemarkModal(true);
+        // setShowRemarkModal(true);
         getTaskList();
       }
     }
   };
 
-  const handleFollowUpDate = () => {
+  const handleFollowUpDate = (value: any) => {
+    console.log(value);
+    
     let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
 
     setIsFollowupLoading(true);
@@ -179,12 +184,12 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         country_id: country_id,
       })
       .then((res) => {
-        toggleStandard();
+        // toggleStandard();
         dispatch(refreshData());
         setLoading(false);
         showSuccessAlert(res.data.message);
         setIsFollowupLoading(false);
-        setShowRemarkModal(true);
+        // setShowRemarkModal(true);
         getTaskList();
       })
       .catch((err) => {
@@ -461,7 +466,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           <CardLoadingSkeleton />
         ) : (
           <Card className="ribbon-box ms-1 pb-0" style={{ fontFamily: "Nunito" }}>
-            <Card.Body>
+            <Card.Body style={{ paddingBottom: '4px' }}>
               <Row>
                 <Col>
                   <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
@@ -538,12 +543,12 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
               </Row>
               <Row className="mb-2">
                 <Row className="mt-3" style={{ paddingRight: "0px" }}>
-                  <Col>
+                  {/* <Col>
                     <h4 className="text-secondary mt-1">Task Details</h4>
-                  </Col>
+                  </Col> */}
                   <Col style={{ paddingRight: "0px" }}>
                     <div className="action-icon d-flex justify-content-end align-items-center">
-                      <Tooltip title="View All Details">
+                      {/* <Tooltip title="View All Details">
                         <MatButton
                           sx={{ mb: 2 }}
                           onClick={() => navigate(`/leads/manage/${studentId}`)}
@@ -561,18 +566,18 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                             View More
                           </Typography>
                         </MatButton>
-                      </Tooltip>
+                      </Tooltip> */}
                     </div>
                   </Col>
                 </Row>
                 <div className="grid-container mb-2">
-                  <div className="">
+                  {/* <div className="">
                     <p className="mt-2 mb-1 text-muted fw-light">Name</p>
                     <div className="d-flex align-items-start" style={{ gap: "5px" }}>
                       <img src={icons.user} alt="date" className="me-1" height="16" />
                       <h5 className="m-0 font-size-14">{basicData?.full_name}</h5>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="">
                     <p className="mt-2 mb-1 text-muted fw-light">Phone Number</p>
@@ -610,33 +615,72 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     </div>
                   </div>
 
+                  <div>
+                    <p className="mt-2 mb-1 text-muted fw-light">Passport</p>
+                    <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                      <img src={icons.Layer} alt="email" className="me-1" width="17" />
+                      <input
+                        type="text"
+                        value={basicData?.passportDetails?.[0]?.passports?.[0]?.passport_number}
+                        style={{
+                          border: "none",
+                          outline: "none",
+                          fontSize: "16px",
+                          fontWeight: 600,
+                          width: "100%",
+                        }}
+                      />
+                    </div>
+                  </div>
+
                   <br className="grid-br" />
-                  <div className="">
+                  {/* <div className="">
                     <p className="mt-2 mb-1 text-muted fw-light">Source</p>
                     <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                       <img src={icons.cloud} alt="source icon" className="me-1" width="16" />
                       <h5 className="m-0 font-size-14">{basicData?.source_name}</h5>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="">
+                  {/* <div className="">
                     <p className="mt-2 mb-1 text-muted fw-light">Channel</p>
                     <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                       <img src={icons.information} alt="cahnnel icon" className="me-1" width="16" />
                       <h5 className="m-0 font-size-14">{basicData?.channel_name}</h5>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="">
+                  {/* <div className="">
                     <p className="mt-2 mb-1 text-muted fw-light">City</p>
                     <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                       <img src={icons.business} alt="comapny icon" className="me-1" width="16" />
                       <h5 className="m-0 font-size-14">{basicData?.city}</h5>
                     </div>
+                  </div> */}
                   </div>
-                </div>
-              </Row>
-              <Row>
+                  <div className="action-icon d-flex justify-content-end align-items-center">
+                    <Tooltip title="View All Details">
+                      <MatButton
+                        sx={{ mt: 2, marginRight: "2rem" }}
+                        onClick={() => navigate(`/leads/manage/${studentId}`)}
+                        startIcon={<VisibilityIcon />}
+                        variant="contained"
+                      >
+                        <Typography
+                          sx={{
+                            fontFamily: "'Nunito', sans-serif",
+                            textTransform: "none",
+                            fontWeight: "700",
+                            fontSize: "12px",
+                          }}
+                        >
+                          View More
+                        </Typography>
+                      </MatButton>
+                    </Tooltip>
+                  </div>
+                </Row>
+              {/* <Row>
                 <div className="grid-container mb-2">
                   <div className="">
                     <p className="mt-2 mb-1 text-muted fw-light">Lead Received Date</p>
@@ -666,7 +710,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     </div>
                   </div>
                 </div>
-              </Row>
+              </Row> */}
               {taskDetails?.is_rejected && (
                 <Row className="mt-3">
                   <div className="">
@@ -690,26 +734,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   <h4 className="text-secondary m-0">Status</h4>
                   <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p>
                   <div className="d-flex justify-content-between align-items-center">
-                    {/* <Dropdown>
-                                        <Dropdown.Toggle
-                                            className="cursor-pointer"
-                                            variant="light"
-                                        >
-                                            {basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
-                                        </Dropdown.Toggle>
-                                        <Dropdown.Menu>
-                                            {(status || [])?.map((item: any) => (
-                                                <Dropdown.Item
-                                                    eventKey={item.id}
-                                                    key={item.id}
-                                                    onClick={() => [handleStatusChange(item?.id), setStatusId(item?.id), setViewOnly(false)]}
-                                                >
-                                                    {item.status_name}
-                                                </Dropdown.Item>
-                                            ))}
-                                        </Dropdown.Menu>
-                                    </Dropdown> */}
-
                     <Autocomplete
                       disablePortal
                       disableClearable
@@ -746,13 +770,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       }}
                     />
                     <span className="mt-2 ms-2">
-                      {/* <i
-                                            className="mdi mdi-comment-eye-outline fs-2 ps-3"
-                                            title="View Comments"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="top"
-                                            onClick={() => [setShowRemarkModal(true), setViewOnly(true)]}
-                                        ></i> */}
                       <Tooltip title="View Comments">
                         <MatButton
                           sx={{ marginTop: "8px" }}
@@ -863,11 +880,11 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     aria-label="secondary tabs example"
                     sx={{ ...tabsStyle }}
                   >
-                    <Tab value="comments" label="Comments" sx={{ ...individualTabStyle }} />
+                    {/* <Tab value="comments" label="Comments" sx={{ ...individualTabStyle }} /> */}
 
                     <Tab value="history" label="History" sx={{ ...individualTabStyle }} />
 
-                    <Tab value="attachments" label="Attachments" sx={{ ...individualTabStyle }} />
+                    {/* <Tab value="attachments" label="Attachments" sx={{ ...individualTabStyle }} /> */}
                   </Tabs>
 
                   {/* Tab content */}
@@ -923,7 +940,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           </Modal.Footer>
         </Modal>
 
-        <RemarkModal
+        <FollowupModal
           setIsCancelModal={isCancelModal}
           viewOnly={viewOnly}
           setViewOnly={setViewOnly}
@@ -934,7 +951,21 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           followup={selectedDate}
           remarkData={remarkData}
           callGetRemark={callGetRemark}
+          submitFollowupDate={handleFollowUpDate}
         />
+
+        {/* <RemarkModal
+          setIsCancelModal={isCancelModal}
+          viewOnly={viewOnly}
+          setViewOnly={setViewOnly}
+          showModal={ShowRemarkModal}
+          toggleRemarkModal={setShowRemarkModal}
+          studentId={studentId}
+          statusId={statusId}
+          followup={selectedDate}
+          remarkData={remarkData}
+          callGetRemark={callGetRemark}
+        /> */}
       </Row>
     </>
   );
