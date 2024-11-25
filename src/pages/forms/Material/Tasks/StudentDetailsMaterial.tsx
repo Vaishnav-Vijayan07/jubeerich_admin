@@ -479,6 +479,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         className="d-flex align-items-center btn-light"
                         disabled={taskDetails?.isCompleted ? true : false}
                         onClick={handleFinishTask}
+                        style={{fontSize:"12px"}}
                       >
                         <div className="round-circle" />
                         {taskDetails?.isCompleted ? "Task Completed" : "Mark As Completed"}
@@ -580,7 +581,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   </div> */}
 
                   <div className="">
-                    <p className="mt-2 mb-1 text-muted fw-light">Phone Number</p>
+                    <p className="mt-0 text-muted fw-light mb-0" style={{fontSize:"0.8rem"}}>Phone Number</p>
                     <div className="d-flex align-items-center outline-none" style={{ gap: "5px" }}>
                       <img src={icons.apple} alt="phone" className="me-1" width="16" />
                       <input
@@ -590,7 +591,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           border: "none",
                           outline: "none",
                           width: "100%",
-                          fontSize: "16px",
+                          fontSize: "15px",
                           fontWeight: 600,
                         }}
                       />
@@ -598,7 +599,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   </div>
 
                   <div className="">
-                    <p className="mt-2 mb-1 text-muted fw-light">Email</p>
+                    <p className="mt-0 text-muted fw-light mb-0" style={{fontSize:"0.8rem"}}>Email</p>
                     <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                       <img src={icons.email} alt="email" className="me-1" width="17" />
                       <input
@@ -607,7 +608,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         style={{
                           border: "none",
                           outline: "none",
-                          fontSize: "16px",
+                          fontSize: "15px",
                           fontWeight: 600,
                           width: "100%",
                         }}
@@ -616,7 +617,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   </div>
 
                   <div>
-                    <p className="mt-2 mb-1 text-muted fw-light">Passport</p>
+                    <p className="mt-0 mb-0 text-muted fw-light" style={{fontSize:"0.8rem"}}>Passport</p>
                     <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                       <img src={icons.Layer} alt="email" className="me-1" width="17" />
                       <input
@@ -625,7 +626,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         style={{
                           border: "none",
                           outline: "none",
-                          fontSize: "16px",
+                          fontSize: "15px",
                           fontWeight: 600,
                           width: "100%",
                         }}
@@ -661,7 +662,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   <div className="action-icon d-flex justify-content-end align-items-center">
                     <Tooltip title="View All Details">
                       <MatButton
-                        sx={{ mt: 2, marginRight: "2rem" }}
+                        sx={{ mt: 2 }}
                         onClick={() => navigate(`/leads/manage/${studentId}`)}
                         startIcon={<VisibilityIcon />}
                         variant="contained"
@@ -670,7 +671,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           sx={{
                             fontFamily: "'Nunito', sans-serif",
                             textTransform: "none",
-                            fontWeight: "700",
+                            fontWeight: "600",
                             fontSize: "12px",
                           }}
                         >
@@ -693,7 +694,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           border: "none",
                           outline: "none",
                           width: "100%",
-                          fontSize: "16px",
+                          fontSize: "15px",
                           fontWeight: 600,
                         }}
                       />
@@ -732,7 +733,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
               <Card className="h-100">
                 <Card.Body>
                   <h4 className="text-secondary m-0">Status</h4>
-                  <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p>
+                  {/* <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p> */}
                   <div className="d-flex justify-content-between align-items-center">
                     <Autocomplete
                       disablePortal
@@ -790,7 +791,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   <div className="d-flex justify-content-between">
                     <span>
                       <h4 className="text-secondary m-0">Flag</h4>
-                      <p className="mt-2 mb-2 text-muted fw-light">Change flag</p>
+                      {/* <p className="mt-2 mb-2 text-muted fw-light">Change flag</p> */}
                     </span>
 
                     {basicData?.user_primary_flags?.flag_name && (
