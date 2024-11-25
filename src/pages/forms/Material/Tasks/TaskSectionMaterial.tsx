@@ -52,10 +52,10 @@ const Task = ({
             display: "inline-block", // Prevent content from stretching vertically
           }}
         >
-          <label className="form-check-label fs-5" htmlFor={`task-${task.id}`}>
-            <span className="text-primary" style={{ fontSize: "14px", fontWeight: "700" }}>{`JBR${task.id}`}</span>
+          <label className="form-check-label fs-6" htmlFor={`task-${task.id}`}>
+            <span className="text-primary" style={{ fontSize: "12px", fontWeight: "700" }}>{`JBR${task.id}`}</span>
             &nbsp; &nbsp;
-            <b>{task.title}</b>
+            <b style={{ fontSize: "13px"}}>{task.title}</b>
           </label>
 
           <div>
@@ -66,9 +66,9 @@ const Task = ({
                   color: "black",
                   border: `1px solid #122d3d`,
                   borderRadius: "5px",
-                  padding: "2px 10px",
+                  padding: "1px 8px",
                   width: "fit-content",
-                  fontSize: "0.6rem",
+                  fontSize: "0.5rem",
                   borderColor: `${flag?.color}`,
                   height: "max-content",
                   textAlign: "center",
@@ -88,8 +88,8 @@ const Task = ({
                   color: "white",
                   border: `1px solid #122d3d`,
                   borderRadius: "5px",
-                  padding: "2px 8px",
-                  fontSize: "0.6rem",
+                  padding: "1px 6px",
+                  fontSize: "0.5rem",
                   opacity: "0.8",
                   borderColor: `red`,
                   height: "max-content",
@@ -330,7 +330,7 @@ const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialL
           >
             <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>
               {(taskList || []).map((task, idx) => (
-                <div key={idx} className="task-item-one px-2">
+                <div key={idx} className="task-item-one">
                   <Task selectTask={handleSelectTask} task={task} key={idx} selectedTaskId={selectedTaskId} />
                 </div>
               ))}

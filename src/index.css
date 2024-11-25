@@ -95,7 +95,7 @@ button.react-datepicker__close-icon {
 }
 
 .task__list {
-  padding: 10px 5px;
+  padding: 5px;
 }
 
 .unselected-task {
@@ -555,4 +555,9 @@ select::-ms-expand {
 
 .form-group{
   width: 100%;
+}
+
+.task-item-one{
+  padding-left: 15px;
+  overflow: visible;
 }

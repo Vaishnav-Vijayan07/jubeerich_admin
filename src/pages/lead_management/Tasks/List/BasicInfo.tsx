@@ -442,10 +442,6 @@ const BasicInfo = withSwal((props: any) => {
     }
   };
 
-  // if (loading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "45%" }} />;
-  // }
-
   return (
     <>
       {loading ? <SkeletonComponent /> : <>
@@ -453,7 +449,7 @@ const BasicInfo = withSwal((props: any) => {
           <i className="mdi mdi-account-circle me-1"></i> Primary Info
         </h5>
         <Row>
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="full_name">
               <Form.Label>
                 <span className="text-danger">* </span>Full Name
@@ -470,7 +466,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>
                 <span className="text-danger">* </span>Email Id
@@ -487,7 +483,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="phone">
               <Form.Label>
                 <span className="text-danger">* </span>Phone Number
@@ -504,7 +500,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="city">
               <Form.Label>City</Form.Label>
               <FormInput
@@ -519,7 +515,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="channel_name">
               <Form.Label>Preferred Country</Form.Label>
               <Select
@@ -534,7 +530,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="office_type">
               <Form.Label>Office Type</Form.Label>
               <Select
@@ -553,7 +549,7 @@ const BasicInfo = withSwal((props: any) => {
 
         <Row>
           {primaryInfo?.office_type == Number(regionId) && (
-            <Col xl={6} xxl={4}>
+            <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="region_id">
                 <Form.Label>
                   <span className="text-danger fs-4">* </span>Region
@@ -594,7 +590,7 @@ const BasicInfo = withSwal((props: any) => {
         </Row>
 
         <Row>
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="passport_no">
               <Form.Label>Passport No</Form.Label>
               <FormInput
@@ -609,7 +605,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="gender">
               <Form.Label>
                 <span className="text-danger">*</span> Gender
@@ -627,7 +623,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="marital_status">
               <Form.Label>Marital Status</Form.Label>
               <Select
@@ -643,7 +639,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="dob">
               <Form.Label>
                 <span className="text-danger">*</span> Date of Birth
@@ -660,7 +656,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="nationality">
               <Form.Label>Nationality</Form.Label>
               <FormInput
@@ -675,7 +671,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="secondary_number">
               <Form.Label>Secondary number</Form.Label>
               <FormInput
@@ -690,7 +686,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="state">
               <Form.Label>State</Form.Label>
               <FormInput
@@ -705,7 +701,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="country">
               <Form.Label>Country</Form.Label>
               <FormInput
@@ -720,7 +716,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="address">
               <Form.Label>Current Address</Form.Label>
 
@@ -736,7 +732,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="emergency_contact_name">
               <Form.Label>Primary Contact Name</Form.Label>
 
@@ -754,7 +750,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="emergency_contact_relationship">
               <Form.Label>Primary Contact Relationship</Form.Label>
 
@@ -780,7 +776,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="emergency_contact_phone">
               <Form.Label>Primary Contact Phone</Form.Label>
 
@@ -798,7 +794,7 @@ const BasicInfo = withSwal((props: any) => {
             </Form.Group>
           </Col>
 
-          <Col xl={6} xxl={4}>
+          <Col xl={3} xxl={2}>
             <Form.Group className="mb-3" controlId="remarks">
               <Form.Label>Remarks</Form.Label>
               <Form.Control

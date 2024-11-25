@@ -510,13 +510,13 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     )}
                   </Row>
                   <div className="clearfix"></div>
-                  <hr className="my-3" />
+                  <hr className="mt-3 mb-2" />
                 </Col>
               </Row>
               <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
                 <Col>
-                  <h3 className="m-0 mb-1">{taskDetails?.title}</h3>
-                  <p className="mb-2">{taskDetails?.description}</p>
+                  <h3 className="m-0" style={{fontSize:"1.3rem"}}>{taskDetails?.title}</h3>
+                  <p className="mb-2" style={{fontSize:"0.9rem"}}>{taskDetails?.description}</p>
                   <div className="d-flex">
                     {basicData?.country_names?.map((country: any) => (
                       <small
@@ -525,9 +525,10 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           color: "#122d3d",
                           border: `1px solid #122d3d`,
                           borderRadius: "5px",
-                          padding: "4px 10px",
+                          padding: "2px 10px",
+                          fontSize:"0.7rem"
                         }}
-                        className={classNames("rounded-pill fs-6 me-1")}
+                        className={classNames("rounded-pill me-1")}
                       >
                         {country}
                       </small>

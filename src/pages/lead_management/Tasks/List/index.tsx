@@ -19,18 +19,18 @@ const TaskList = () => {
   const [initialLoading, setLoading] = useState(true);
   const [pendingTasks, setPendingTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(pendingTasks[0]);
-  const [taskFilterDate, setTaskFilterDate] = useState<any>('')
+  const [taskFilterDate, setTaskFilterDate] = useState<any>("");
 
   const selectTask = (task: TaskItemTypes) => {
     setSelectedTask(task);
     setSelectedTaskId(task?.id);
   };
 
-  const getTaskList = (date: any) => {    
-    date = moment(date).startOf('day').format('YYYY-MM-DD');
+  const getTaskList = (date: any) => {
+    date = moment(date).startOf("day").format("YYYY-MM-DD");
 
     axios
-      .get(`/tasks`, { params:{ date: date }})
+      .get(`/tasks`, { params: { date: date } })
       .then((res) => {
         let pendingArray: any = [];
         res.data.data.map((item: any) => {
@@ -68,7 +68,7 @@ const TaskList = () => {
         title={"Tasks List"}
       />
       <Row>
-        <Col xl={5} >
+        <Col xl={5}>
           <Row>
             <Col>
               <Card>
@@ -86,11 +86,10 @@ const TaskList = () => {
                           initialLoading={initialLoading}
                           setSelectedDate={function (value: React.SetStateAction<string>): void {
                             console.log(value);
-                            getTaskList(value)
+                            getTaskList(value);
                           }}
                         ></TaskSection>
                       </div>
-
                     </Col>
                   </Row>
                 </Card.Body>

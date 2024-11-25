@@ -12,8 +12,8 @@ const TasksMaterial = () => {
   const [initialLoading, setLoading] = useState(true);
   const [pendingTasks, setPendingTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(pendingTasks[0]);
-  const [taskFilterDate, setTaskFilterDate] = useState<any>('')
-  const [selectedDate, setSelectedDate] = useState<any>('')
+  const [taskFilterDate, setTaskFilterDate] = useState<any>("");
+  const [selectedDate, setSelectedDate] = useState<any>("");
 
   const selectTask = (task: TaskItemTypes) => {
     setSelectedTask(task);
@@ -21,7 +21,11 @@ const TasksMaterial = () => {
   };
 
   const getTaskList = (date: any) => {
-    date = date ? moment(date).startOf('day').format('YYYY-MM-DD') : (selectedDate ? moment(selectedDate).startOf('day').format('YYYY-MM-DD') : moment(new Date()).startOf('day').format('YYYY-MM-DD'));
+    date = date
+      ? moment(date).startOf("day").format("YYYY-MM-DD")
+      : selectedDate
+      ? moment(selectedDate).startOf("day").format("YYYY-MM-DD")
+      : moment(new Date()).startOf("day").format("YYYY-MM-DD");
 
     axios
       .get(`/tasks`, { params: { date: date } })
@@ -52,7 +56,6 @@ const TasksMaterial = () => {
     getTaskList(new Date());
   }, []);
 
-
   return (
     <>
       <PageTitle
@@ -67,7 +70,6 @@ const TasksMaterial = () => {
           <Row>
             <Col>
               <Card>
-
                 <Card.Body style={{ minHeight: "68vh", maxHeight: "68vh" }}>
                   <Row>
                     <Col className="p-0 m-0">
@@ -80,12 +82,11 @@ const TasksMaterial = () => {
                           date={""}
                           initialLoading={initialLoading}
                           setSelectedDate={function (value: React.SetStateAction<string>): void {
-                            setSelectedDate(value)
-                            getTaskList(value)
+                            setSelectedDate(value);
+                            getTaskList(value);
                           }}
                         ></TaskSectionMaterial>
                       </div>
-
                     </Col>
                   </Row>
                 </Card.Body>
@@ -94,7 +95,7 @@ const TasksMaterial = () => {
           </Row>
         </Col>
 
-        <Col xl={8} className="">
+        <Col xl={8} className="task_section">
           {selectedTask && (
             <StudentDetailsMaterial
               studentId={selectedTask?.studentId}
@@ -108,6 +109,6 @@ const TasksMaterial = () => {
       </Row>
     </>
   );
-}
+};
 
-export default TasksMaterial
+export default TasksMaterial;
