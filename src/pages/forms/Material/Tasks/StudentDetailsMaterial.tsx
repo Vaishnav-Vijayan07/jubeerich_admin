@@ -36,6 +36,7 @@ import MatButton from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CommentIcon from "@mui/icons-material/Comment";
 import HyperDatepicker from "../../../../components/Datepicker";
+import FollowupModal from "./FollowupModal";
 
 const Comments = lazy(() => import("../../../lead_management/Tasks/List/Comments"));
 const History = lazy(() => import("../../../lead_management/Tasks/List/History"));
@@ -141,7 +142,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
 
     if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
-      toggleStandard();
+      // toggleStandard();
+      setShowRemarkModal(true);
     } else {
       const result = await swal.fire({
         title: "Are you sure?",
@@ -162,13 +164,15 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
         dispatch(refreshData());
         showSuccessAlert(data.message);
-        setShowRemarkModal(true);
+        // setShowRemarkModal(true);
         getTaskList();
       }
     }
   };
 
-  const handleFollowUpDate = () => {
+  const handleFollowUpDate = (value: any) => {
+    console.log(value);
+    
     let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
 
     setIsFollowupLoading(true);
@@ -180,12 +184,12 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         country_id: country_id,
       })
       .then((res) => {
-        toggleStandard();
+        // toggleStandard();
         dispatch(refreshData());
         setLoading(false);
         showSuccessAlert(res.data.message);
         setIsFollowupLoading(false);
-        setShowRemarkModal(true);
+        // setShowRemarkModal(true);
         getTaskList();
       })
       .catch((err) => {
@@ -935,7 +939,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           </Modal.Footer>
         </Modal>
 
-        <RemarkModal
+        <FollowupModal
           setIsCancelModal={isCancelModal}
           viewOnly={viewOnly}
           setViewOnly={setViewOnly}
@@ -946,7 +950,21 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           followup={selectedDate}
           remarkData={remarkData}
           callGetRemark={callGetRemark}
+          submitFollowupDate={handleFollowUpDate}
         />
+
+        {/* <RemarkModal
+          setIsCancelModal={isCancelModal}
+          viewOnly={viewOnly}
+          setViewOnly={setViewOnly}
+          showModal={ShowRemarkModal}
+          toggleRemarkModal={setShowRemarkModal}
+          studentId={studentId}
+          statusId={statusId}
+          followup={selectedDate}
+          remarkData={remarkData}
+          callGetRemark={callGetRemark}
+        /> */}
       </Row>
     </>
   );
