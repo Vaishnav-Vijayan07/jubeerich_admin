@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, Suspense, useEffect, useState } from "react";
 import { Row, Col, Card } from "react-bootstrap";
 import classNames from "classnames";
 import { ReactSortable } from "react-sortablejs";
@@ -9,6 +9,7 @@ import { TaskItemTypes } from "../../../lead_management/Tasks/List/data";
 import SkeletonComponent from "../../../lead_management/Tasks/List/StudyPreference/LoadingSkeleton";
 import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 import { calculateDaysAgo } from "../../../../constants";
+import { Badge, Box, Tab, Tabs } from "@mui/material";
 
 interface TaskSectionState {
   title: string;
@@ -18,6 +19,7 @@ interface TaskSectionState {
   date: string;
   initialLoading: boolean;
   setSelectedDate: Dispatch<SetStateAction<string>>;
+  incompleteTasks: TaskItemTypes[]
 }
 
 const Task = ({
@@ -29,6 +31,16 @@ const Task = ({
   selectTask: (task: TaskItemTypes) => void;
   selectedTaskId: number | null;
 }) => {
+  const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
+
+  const badgeStyle = {
+    '& .MuiBadge-dot': {
+      transform: 'translateX(1px) translateY(5px)',
+      zIndex: 0,
+      bgcolor: statusColor,
+    },
+  };
+
   return (
     <>
       <Row
@@ -55,7 +67,7 @@ const Task = ({
           <label className="form-check-label fs-6" htmlFor={`task-${task.id}`}>
             <span className="text-primary" style={{ fontSize: "12px", fontWeight: "700" }}>{`JBR${task.id}`}</span>
             &nbsp; &nbsp;
-            <b style={{ fontSize: "13px"}}>{task.title}</b>
+            <b style={{ fontSize: "13px" }}>{task.title}</b>
           </label>
 
           <div>
@@ -102,41 +114,42 @@ const Task = ({
           </div>
         </div>
 
-        <div
-          style={{
-            whiteSpace: "nowrap",
-            textAlign: "right",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            gap:"4px"
-          }}
-        >
-          <span style={{fontSize: "0.7rem"}}>{calculateDaysAgo(task.createdAt)}</span>
-          {task?.student_name?.status?.status_name && (
-            <small
-              style={{
-                backgroundColor: `${task?.student_name?.status?.color}`,
-                color: "white",
-                border: `1px solid #122d3d`,
-                borderRadius: "5px",
-                padding: "2px 10px",
-                width: "fit-content",
-                fontSize: "0.6rem",
-                borderColor: `${task?.student_name?.status?.color}`,
-                height: "max-content",
-                textAlign: "center",
-                whiteSpace: "nowrap",
-                opacity: "0.8",
-              }}
-              className={classNames("rounded-pill ms-2")}
-            >
-              {task?.student_name?.status?.status_name}
-            </small>
-          )}
-        </div>
+        <Badge className="w-100" color={statusColor} variant="dot" sx={{ ...badgeStyle }}>
+          <div
+            style={{
+              whiteSpace: "nowrap",
+              textAlign: "right",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              gap: "4px",
+            }}
+          >
+            <span style={{ fontSize: "0.7rem" }}>{calculateDaysAgo(task.createdAt)}</span>
+            {task?.student_name?.status?.status_name && (
+              <small
+                style={{
+                  backgroundColor: `${task?.student_name?.status?.color}`,
+                  color: "white",
+                  border: `1px solid #122d3d`,
+                  borderRadius: "5px",
+                  padding: "2px 10px",
+                  width: "fit-content",
+                  fontSize: "0.6rem",
+                  borderColor: `${task?.student_name?.status?.color}`,
+                  height: "max-content",
+                  textAlign: "center",
+                  whiteSpace: "nowrap",
+                  opacity: "0.8",
+                }}
+                className={classNames("rounded-pill ms-2")}
+              >
+                {task?.student_name?.status?.status_name}
+              </small>
+            )}
+          </div>
+        </Badge>
       </Row>
-
       {/* <Row
         className={classNames("task__list ribbon-box unselected-task", {
           "selected-task": task.id === selectedTaskId,
@@ -263,10 +276,67 @@ const Task = ({
   );
 };
 
-const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialLoading, setSelectedDate }: TaskSectionState) => {
+const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialLoading, setSelectedDate, incompleteTasks }: TaskSectionState) => {
   const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
   const [selectedTaskId, setSelectedTaskId] = useState<number>(initialTaskId);
   const [selectedFollowupDate, setSelectedFollowupDate] = useState<any>("");
+  const [tabValue, setTabValue] = React.useState('all');
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTabValue(newValue);
+  };
+
+  const tabsStyle = {
+    "& .MuiTabs-indicator": {
+      backgroundColor: "#26BCA2",
+      height: "4px",
+    },
+    "& .MuiTabs-flexContainer": {
+      height: "30px", // Set desired height for the container
+      alignItems: "center", // Optional: Center-align tabs vertically
+    },
+    minHeight: "30px", // Reduce the tab container height
+    height: "30px", 
+  };
+
+  const individualTabStyle = {
+  fontFamily: "'Nunito', sans-serif",
+  fontWeight: 400,
+  fontSize: "12px", 
+  maxHeight: "32px",
+    "&.Mui-selected": {
+      color: "black",
+      fontFamily: "'Nunito', sans-serif",
+      fontWeight: 700,
+      fontSize: "12px",
+    },
+  };
+
+  const badgeStyle = {
+    '& .MuiBadge-badge': {
+      transform: 'translate(80%, -60%)',
+      backgroundColor: '#1976d2',
+      color: '#fff',
+      fontSize: '10px',
+      minWidth: '18px',
+      height: '18px',
+      borderRadius: '50%',
+      padding: '0 6px',
+    },
+  };
+
+  const pendingBadgeStyle = {
+    '& .MuiBadge-badge': {
+      transform: 'translate(85%, -60%)',
+      backgroundColor: '#1976d2',
+      color: '#fff',
+      fontSize: '10px',
+      minWidth: '18px',
+      height: '18px',
+      borderRadius: '50%',
+      padding: '0 6px',
+    },
+  };
 
   useEffect(() => {
     setTaskList(tasks);
@@ -328,13 +398,68 @@ const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialL
               scrollbarWidth: "none",
             }}
           >
-            <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>
+              <Box sx={{ width: '100%' }}>
+                <Tabs
+                  value={tabValue}
+                  onChange={handleTabChange}
+                  textColor="secondary"
+                  indicatorColor="secondary"
+                  aria-label="secondary tabs example"
+                  sx={{ ...tabsStyle }}
+                >
+                  {/* <Tab value="all" label={
+                    <Badge badgeContent={taskList?.length || 0} color="primary" sx={{...badgeStyle}}>
+                      All
+                    </Badge>
+                  }
+                    sx={{ ...individualTabStyle }} />
+                  <Tab value="pending" label={
+                    <Badge badgeContent={incompleteTasks?.length || 0} color="primary" sx={{...pendingBadgeStyle}}>
+                      Pending
+                    </Badge>
+                  }sx={{ ...individualTabStyle }} /> */}
+
+                  <Tab value="all" label='All'
+                    sx={{ ...individualTabStyle }} />
+                  <Tab value="pending" label='Pending' sx={{ ...individualTabStyle }} />
+                </Tabs>
+              </Box>
+
+              <Box sx={{ mt: 2 }}>
+
+                {tabValue === "all" && (
+                  <Suspense fallback={null}>
+                    <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>
+                      {(taskList || []).map((task, idx) => (
+                        <div key={idx} className="task-item-one">
+                          <Task selectTask={handleSelectTask} task={task} key={idx} selectedTaskId={selectedTaskId} />
+                        </div>
+                      ))}
+                    </ReactSortable>
+                  </Suspense>
+                )}
+
+                {tabValue === "pending" && (
+                  <Suspense fallback={null}>
+                    <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>
+                      {(incompleteTasks || []).map((task, idx) => (
+                        <div key={idx} className="task-item-one">
+                          <Task selectTask={handleSelectTask} task={task} key={idx} selectedTaskId={selectedTaskId} />
+                        </div>
+                      ))}
+                    </ReactSortable>
+                  </Suspense>
+                )}
+                
+              </Box>
+
+            {/* <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>
               {(taskList || []).map((task, idx) => (
                 <div key={idx} className="task-item-one">
                   <Task selectTask={handleSelectTask} task={task} key={idx} selectedTaskId={selectedTaskId} />
                 </div>
               ))}
-            </ReactSortable>
+            </ReactSortable> */}
           </Card.Body>
         </Card>
       ) : (
