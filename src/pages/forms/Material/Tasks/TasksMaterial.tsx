@@ -11,6 +11,7 @@ const TasksMaterial = () => {
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [initialLoading, setLoading] = useState(true);
   const [pendingTasks, setPendingTasks] = useState<any[]>([]);
+  const [incompleteTasks, setIncompleteTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(pendingTasks[0]);
   const [taskFilterDate, setTaskFilterDate] = useState<any>("");
   const [selectedDate, setSelectedDate] = useState<any>("");
@@ -37,6 +38,7 @@ const TasksMaterial = () => {
           }
         });
         setPendingTasks(pendingArray);
+        setIncompleteTasks(res.data?.pendingTasks)
 
         if (selectedTaskId) {
           const pendingSelected = pendingArray?.filter((item: any) => item.id == selectedTaskId);
@@ -78,6 +80,7 @@ const TasksMaterial = () => {
                           title={"Task List"}
                           initialTaskId={selectedTask?.id}
                           tasks={pendingTasks}
+                          incompleteTasks={incompleteTasks || []}
                           selectTask={selectTask}
                           date={""}
                           initialLoading={initialLoading}

@@ -663,7 +663,11 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                 </Row>
                 <div className="action-icon d-flex justify-content-end align-items-center">
                   <Tooltip title="View All Details">
-                    <MatButton onClick={() => navigate(`/leads/manage/${studentId}`)} startIcon={<VisibilityIcon />} variant="contained">
+                    <MatButton
+                      onClick={() => navigate(`/leads/manage/${studentId}`)}
+                      startIcon={<VisibilityIcon />}
+                      variant="outlined"
+                    >
                       <Typography
                         sx={{
                           fontFamily: "'Nunito', sans-serif",
