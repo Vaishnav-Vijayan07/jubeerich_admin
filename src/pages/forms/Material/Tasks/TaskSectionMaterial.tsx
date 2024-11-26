@@ -21,13 +21,6 @@ interface TaskSectionState {
   setSelectedDate: Dispatch<SetStateAction<string>>;
 }
 
-const badgeStyle = {
-  '& .MuiBadge-dot': {
-    transform: 'translateX(1px) translateY(5px)',
-    // transform: 'translateY(-6px) translateX(6px)',
-  },
-}
-
 const Task = ({
   task,
   selectTask,
@@ -38,10 +31,17 @@ const Task = ({
   selectedTaskId: number | null;
 }) => {
 
-  console.log("DATA====",task)
   
   const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
-  console.log("DATA====",statusColor)
+
+  const badgeStyle = {
+    '& .MuiBadge-dot': {
+      transform: 'translateX(1px) translateY(5px)',
+      // transform: 'translateY(-6px) translateX(6px)',
+      zIndex: 0,
+      bgcolor: statusColor
+    },
+  }
 
   return (
     <>

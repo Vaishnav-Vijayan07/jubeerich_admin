@@ -316,13 +316,24 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     dispatch(getCountry());
   }, []);
 
+  // const countryData = useMemo(() => {
+  //   if (!Countries) return [];
+  //   return Countries.map((item: any) => ({
+  //     value: item.id.toString(),
+  //     label: item.country_name,
+  //   }));
+  // }, [Countries]);
+
   const countryData = useMemo(() => {
     if (!Countries) return [];
-    return Countries.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.country_name,
+    return Countries?.filter((item: any) => {
+      return !basicData?.country_ids?.includes(item?.id);
+    }).map((item: any) => ({
+      value: item?.id.toString(),
+      label: item?.country_name,
     }));
-  }, [Countries]);
+  }, [Countries, basicData]);
+  
 
   const handleFinishTask = async () => {
     try {
@@ -576,11 +587,11 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         {country}
                       </small>
                     ))}
-                    <Tooltip title="Add Country">
+                    {!loading && user.role == 7 && (<Tooltip title="Add Country">
                       <span onClick={handleClick}>
                         <AddCircleOutlineIcon />
                       </span>
-                    </Tooltip>
+                    </Tooltip>)}
                   </div>
                   <Menu
                     anchorEl={anchorEl}
@@ -597,8 +608,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
                   >
                     {countryData?.length > 0 && countryData?.map((data: any) => (
-                      // <MenuItem onClick={handleClose} key={data?.label}>
-                      <MenuItem onClick={() => addNewCountry(data.value)} key={data?.label}>
+                      <MenuItem onClick={() => addNewCountry(data?.value)} key={data?.label}>
                         {data?.label}
                       </MenuItem>
                     ))}
@@ -911,7 +921,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           </Row>
         )}
 
-        {!loading && user.role == 7 && (
+        {/* {!loading && user.role == 7 && (
           <Card>
             <Card.Body>
               <Row>
@@ -936,7 +946,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
               </Row>
             </Card.Body>
           </Card>
-        )}
+        )} */}
 
         {!loading && (
           <Card className="ms-1 mb-0">
