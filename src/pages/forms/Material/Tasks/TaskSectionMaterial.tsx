@@ -38,7 +38,6 @@ const Task = ({
   const badgeStyle = {
     '& .MuiBadge-dot': {
       transform: 'translateX(1px) translateY(5px)',
-      // transform: 'translateY(-6px) translateX(6px)',
       zIndex: 0,
       bgcolor: statusColor
     },
