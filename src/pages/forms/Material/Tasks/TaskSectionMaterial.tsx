@@ -30,18 +30,16 @@ const Task = ({
   selectTask: (task: TaskItemTypes) => void;
   selectedTaskId: number | null;
 }) => {
-
-  
   const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
 
   const badgeStyle = {
-    '& .MuiBadge-dot': {
-      transform: 'translateX(1px) translateY(5px)',
+    "& .MuiBadge-dot": {
+      transform: "translateX(1px) translateY(5px)",
       // transform: 'translateY(-6px) translateX(6px)',
       zIndex: 0,
-      bgcolor: statusColor
+      bgcolor: statusColor,
     },
-  }
+  };
 
   return (
     <>
@@ -69,7 +67,7 @@ const Task = ({
           <label className="form-check-label fs-6" htmlFor={`task-${task.id}`}>
             <span className="text-primary" style={{ fontSize: "12px", fontWeight: "700" }}>{`JBR${task.id}`}</span>
             &nbsp; &nbsp;
-            <b style={{ fontSize: "13px"}}>{task.title}</b>
+            <b style={{ fontSize: "13px" }}>{task.title}</b>
           </label>
 
           <div>
@@ -116,42 +114,41 @@ const Task = ({
           </div>
         </div>
 
-        <Badge className="w-100" color={statusColor} variant="dot" sx={{...badgeStyle}} >
-        {/* <Badge className="w-100" color={statusColor} variant="dot" sx={{...badgeStyle}} > */}
-        <div
-          style={{
-            whiteSpace: "nowrap",
-            textAlign: "right",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            gap:"4px"
-          }}
-        >
-          <span style={{fontSize: "0.7rem"}}>{calculateDaysAgo(task.createdAt)}</span>
-          {task?.student_name?.status?.status_name && (
-            <small
-              style={{
-                backgroundColor: `${task?.student_name?.status?.color}`,
-                color: "white",
-                border: `1px solid #122d3d`,
-                borderRadius: "5px",
-                padding: "2px 10px",
-                width: "fit-content",
-                fontSize: "0.6rem",
-                borderColor: `${task?.student_name?.status?.color}`,
-                height: "max-content",
-                textAlign: "center",
-                whiteSpace: "nowrap",
-                opacity: "0.8",
-              }}
-              className={classNames("rounded-pill ms-2")}
-            >
-              {task?.student_name?.status?.status_name}
-            </small>
-          )}
-        </div>
-    </Badge>
+        <Badge className="w-100" color={statusColor} variant="dot" sx={{ ...badgeStyle }}>
+          <div
+            style={{
+              whiteSpace: "nowrap",
+              textAlign: "right",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              gap: "4px",
+            }}
+          >
+            <span style={{ fontSize: "0.7rem" }}>{calculateDaysAgo(task.createdAt)}</span>
+            {task?.student_name?.status?.status_name && (
+              <small
+                style={{
+                  backgroundColor: `${task?.student_name?.status?.color}`,
+                  color: "white",
+                  border: `1px solid #122d3d`,
+                  borderRadius: "5px",
+                  padding: "2px 10px",
+                  width: "fit-content",
+                  fontSize: "0.6rem",
+                  borderColor: `${task?.student_name?.status?.color}`,
+                  height: "max-content",
+                  textAlign: "center",
+                  whiteSpace: "nowrap",
+                  opacity: "0.8",
+                }}
+                className={classNames("rounded-pill ms-2")}
+              >
+                {task?.student_name?.status?.status_name}
+              </small>
+            )}
+          </div>
+        </Badge>
       </Row>
       {/* <Row
         className={classNames("task__list ribbon-box unselected-task", {
