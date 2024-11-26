@@ -28,7 +28,7 @@ import swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 import CardLoadingSkeleton from "../../../../components/SkeletonLoading/CardLoadingSkeleton1";
-import { Autocomplete, Box, Tabs, TextField, Tooltip, Typography } from "@mui/material";
+import { Autocomplete, Box, Menu, MenuItem, Tabs, TextField, Tooltip, Typography } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import DocumentsOverview from "../../../lead_management/Tasks/List/DocumentsOverview/DocumentsOverview";
 import RemarkModal from "../../../lead_management/Tasks/List/RemarkModal";
@@ -37,6 +37,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import CommentIcon from "@mui/icons-material/Comment";
 import HyperDatepicker from "../../../../components/Datepicker";
 import FollowupModal from "./FollowupModal";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const Comments = lazy(() => import("../../../lead_management/Tasks/List/Comments"));
 const History = lazy(() => import("../../../lead_management/Tasks/List/History"));
@@ -65,6 +66,15 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     setTabValue(newValue);
   };
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const tabsStyle = {
     "& .MuiTabs-indicator": {
       backgroundColor: "#26BCA2",
@@ -79,6 +89,31 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       fontWeight: 700,
     },
   };
+
+  const menuStyle = {
+    maxHeight: 300, // Limit the height
+    overflowY: 'auto', // Enable scrolling for overflow content
+    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+    mt: 1.5,
+    '& .MuiAvatar-root': {
+      width: 32,
+      height: 32,
+      ml: -0.5,
+      mr: 1,
+    },
+    '&::before': {
+      content: '""',
+      display: 'block',
+      position: 'absolute',
+      top: 0,
+      right: 14,
+      width: 10,
+      height: 10,
+      bgcolor: 'background.paper',
+      transform: 'translateY(-50%) rotate(45deg)',
+      zIndex: 0,
+    },
+  }
 
   const dispatch = useDispatch();
   const { Countries, user, refresh } = useSelector((state: RootState) => ({
@@ -172,7 +207,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   const handleFollowUpDate = (value: any) => {
     console.log(value);
-    
+
     let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
 
     setIsFollowupLoading(true);
@@ -393,6 +428,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       }
     } finally {
       setLoading(false);
+      setAnchorEl(null);
     }
   };
 
@@ -467,7 +503,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           <CardLoadingSkeleton />
         ) : (
           <Card className="ribbon-box ms-1 pb-0" style={{ fontFamily: "Nunito" }}>
-            <Card.Body style={{ paddingBottom: '4px', padding:"10px 2px", margin:'10px' }}>
+            <Card.Body style={{ paddingBottom: '4px', padding: "10px 2px", margin: '10px' }}>
               <Row>
                 <Col>
                   <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
@@ -480,7 +516,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         className="d-flex align-items-center btn-light"
                         disabled={taskDetails?.isCompleted ? true : false}
                         onClick={handleFinishTask}
-                        style={{fontSize:"12px"}}
+                        style={{ fontSize: "12px" }}
                       >
                         <div className="round-circle" />
                         {taskDetails?.isCompleted ? "Task Completed" : "Mark As Completed"}
@@ -521,9 +557,9 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                 </Col>
               </Row>
               <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
-                <Col>
-                  <h3 className="m-0" style={{fontSize:"1.3rem"}}>{taskDetails?.title}</h3>
-                  <p className="mb-2" style={{fontSize:"0.9rem"}}>{taskDetails?.description}</p>
+                <Col md={10} lg={10}>
+                  <h3 className="m-0" style={{ fontSize: "1.3rem" }}>{taskDetails?.title}</h3>
+                  <p className="mb-2" style={{ fontSize: "0.9rem" }}>{taskDetails?.description}</p>
                   <div className="d-flex">
                     {basicData?.country_names?.map((country: any) => (
                       <small
@@ -533,22 +569,55 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           border: `1px solid #122d3d`,
                           borderRadius: "5px",
                           padding: "2px 10px",
-                          fontSize:"0.7rem"
+                          fontSize: "0.7rem"
                         }}
                         className={classNames("rounded-pill me-1")}
                       >
                         {country}
                       </small>
                     ))}
+                    <Tooltip title="Add Country">
+                      <span onClick={handleClick}>
+                        <AddCircleOutlineIcon />
+                      </span>
+                    </Tooltip>
                   </div>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    slotProps={{
+                      paper: {
+                        elevation: 0,
+                        sx: {...menuStyle},
+                      },
+                    }}
+                    transformOrigin={{ horizontal: 'center', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+                  >
+                    {countryData?.length > 0 && countryData?.map((data: any) => (
+                      // <MenuItem onClick={handleClose} key={data?.label}>
+                      <MenuItem onClick={() => addNewCountry(data.value)} key={data?.label}>
+                        {data?.label}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Col>
+
+                <Col md={2} lg={2} className="d-flex justify-content-end align-items-start mt-1">
+                  <span>
+                    <h5 className="m-0 mb-1 text-muted" style={{ fontSize: ".7rem" }}>Last Updated</h5>
+                    <h5 className="m-0 text-muted ps-1" style={{ fontSize: ".7rem" }}>{handleDateFormat(taskDetails?.updatedAt)}</h5>
+                  </span>
                 </Col>
               </Row>
               <Row className="mb-2">
-                <Row className="mt-3" style={{ paddingRight: "0px" }}>
+                <Row className="mt-1" style={{ paddingRight: "0px" }}>
                   {/* <Col>
                     <h4 className="text-secondary mt-1">Task Details</h4>
                   </Col> */}
-                  <Col style={{ paddingRight: "0px" }}>
+                  <Col>
                     <div className="action-icon d-flex justify-content-end align-items-center">
                       {/* <Tooltip title="View All Details">
                         <MatButton
@@ -572,6 +641,26 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     </div>
                   </Col>
                 </Row>
+                <div className="action-icon d-flex justify-content-end align-items-center">
+                  <Tooltip title="View All Details">
+                    <MatButton
+                      onClick={() => navigate(`/leads/manage/${studentId}`)}
+                      startIcon={<VisibilityIcon />}
+                      variant="contained"
+                    >
+                      <Typography
+                        sx={{
+                          fontFamily: "'Nunito', sans-serif",
+                          textTransform: "none",
+                          fontWeight: "600",
+                          fontSize: "12px",
+                        }}
+                      >
+                        View More
+                      </Typography>
+                    </MatButton>
+                  </Tooltip>
+                </div>
                 <div className="grid-container mb-2">
                   {/* <div className="">
                     <p className="mt-2 mb-1 text-muted fw-light">Name</p>
@@ -582,7 +671,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   </div> */}
 
                   <div className="">
-                    <p className="mt-0 text-muted fw-light mb-0" style={{fontSize:"0.8rem"}}>Phone Number</p>
+                    <p className="mt-0 text-muted fw-light mb-0" style={{ fontSize: "0.8rem" }}>Phone Number</p>
                     <div className="d-flex align-items-center outline-none" style={{ gap: "5px" }}>
                       <img src={icons.apple} alt="phone" className="me-1" width="16" />
                       <input
@@ -600,7 +689,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   </div>
 
                   <div className="">
-                    <p className="mt-0 text-muted fw-light mb-0" style={{fontSize:"0.8rem"}}>Email</p>
+                    <p className="mt-0 text-muted fw-light mb-0" style={{ fontSize: "0.8rem" }}>Email</p>
                     <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                       <img src={icons.email} alt="email" className="me-1" width="17" />
                       <input
@@ -618,7 +707,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   </div>
 
                   <div>
-                    <p className="mt-0 mb-0 text-muted fw-light" style={{fontSize:"0.8rem"}}>Passport</p>
+                    <p className="mt-0 mb-0 text-muted fw-light" style={{ fontSize: "0.8rem" }}>Passport</p>
                     <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                       <img src={icons.Layer} alt="email" className="me-1" width="17" />
                       <input
@@ -659,29 +748,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       <h5 className="m-0 font-size-14">{basicData?.city}</h5>
                     </div>
                   </div> */}
-                  </div>
-                  <div className="action-icon d-flex justify-content-end align-items-center">
-                    <Tooltip title="View All Details">
-                      <MatButton
-                        sx={{ mt: 2 }}
-                        onClick={() => navigate(`/leads/manage/${studentId}`)}
-                        startIcon={<VisibilityIcon />}
-                        variant="contained"
-                      >
-                        <Typography
-                          sx={{
-                            fontFamily: "'Nunito', sans-serif",
-                            textTransform: "none",
-                            fontWeight: "600",
-                            fontSize: "12px",
-                          }}
-                        >
-                          View More
-                        </Typography>
-                      </MatButton>
-                    </Tooltip>
-                  </div>
-                </Row>
+                </div>
+              </Row>
               {/* <Row>
                 <div className="grid-container mb-2">
                   <div className="">
