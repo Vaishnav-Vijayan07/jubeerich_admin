@@ -656,7 +656,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     <MatButton
                       onClick={() => navigate(`/leads/manage/${studentId}`)}
                       startIcon={<VisibilityIcon />}
-                      variant="contained"
+                      variant="outlined"
                     >
                       <Typography
                         sx={{
