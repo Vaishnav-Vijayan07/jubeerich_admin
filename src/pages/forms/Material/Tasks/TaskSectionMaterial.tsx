@@ -295,6 +295,12 @@ const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialL
       backgroundColor: "#26BCA2",
       height: "4px",
     },
+    "& .MuiTabs-flexContainer": {
+      height: "30px", // Set desired height for the container
+      alignItems: "center", // Optional: Center-align tabs vertically
+    },
+    minHeight: "30px", // Reduce the tab container height
+    height: "30px", 
   };
 
   const individualTabStyle = {
@@ -405,7 +411,7 @@ const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialL
                   aria-label="secondary tabs example"
                   sx={{ ...tabsStyle }}
                 >
-                  <Tab value="all" label={
+                  {/* <Tab value="all" label={
                     <Badge badgeContent={taskList?.length || 0} color="primary" sx={{...badgeStyle}}>
                       All
                     </Badge>
@@ -415,7 +421,11 @@ const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialL
                     <Badge badgeContent={incompleteTasks?.length || 0} color="primary" sx={{...pendingBadgeStyle}}>
                       Pending
                     </Badge>
-                  }sx={{ ...individualTabStyle }} />
+                  }sx={{ ...individualTabStyle }} /> */}
+
+                  <Tab value="all" label='All'
+                    sx={{ ...individualTabStyle }} />
+                  <Tab value="pending" label='Pending' sx={{ ...individualTabStyle }} />
                 </Tabs>
               </Box>
 
