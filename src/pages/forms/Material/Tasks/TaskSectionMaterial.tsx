@@ -9,6 +9,7 @@ import { TaskItemTypes } from "../../../lead_management/Tasks/List/data";
 import SkeletonComponent from "../../../lead_management/Tasks/List/StudyPreference/LoadingSkeleton";
 import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 import { calculateDaysAgo } from "../../../../constants";
+import { Badge } from "@mui/material";
 
 interface TaskSectionState {
   title: string;
@@ -18,6 +19,13 @@ interface TaskSectionState {
   date: string;
   initialLoading: boolean;
   setSelectedDate: Dispatch<SetStateAction<string>>;
+}
+
+const badgeStyle = {
+  '& .MuiBadge-dot': {
+    transform: 'translateX(1px) translateY(5px)',
+    // transform: 'translateY(-6px) translateX(6px)',
+  },
 }
 
 const Task = ({
@@ -102,6 +110,7 @@ const Task = ({
           </div>
         </div>
 
+        <Badge className="w-100" color="primary" variant="dot" sx={{...badgeStyle}} >
         <div
           style={{
             whiteSpace: "nowrap",
@@ -135,8 +144,8 @@ const Task = ({
             </small>
           )}
         </div>
+    </Badge>
       </Row>
-
       {/* <Row
         className={classNames("task__list ribbon-box unselected-task", {
           "selected-task": task.id === selectedTaskId,
