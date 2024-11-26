@@ -37,6 +37,12 @@ const Task = ({
   selectTask: (task: TaskItemTypes) => void;
   selectedTaskId: number | null;
 }) => {
+
+  console.log("DATA====",task)
+  
+  const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
+  console.log("DATA====",statusColor)
+
   return (
     <>
       <Row
@@ -110,7 +116,8 @@ const Task = ({
           </div>
         </div>
 
-        <Badge className="w-100" color="primary" variant="dot" sx={{...badgeStyle}} >
+        <Badge className="w-100" color={statusColor} variant="dot" sx={{...badgeStyle}} >
+        {/* <Badge className="w-100" color={statusColor} variant="dot" sx={{...badgeStyle}} > */}
         <div
           style={{
             whiteSpace: "nowrap",
