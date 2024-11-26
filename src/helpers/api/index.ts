@@ -11,17 +11,19 @@ import { getLeads, addLeads, updateLeads, deleteLeads, getLeadUser } from "./lea
 import { getAllChecklists, getChecklistById, addChecklist, updateChecklist, deleteChecklist } from "./checklist";
 import { addSubStatus, deleteSubStatus, getAllSubStatus, updateSubStatus } from "./subStatus";
 import { addUniversitysApi, deleteUniversitysApi, getUniversitysApi, updateUniversitysApi } from "./university";
-import { addCampusApi, deleteCampusApi, getCampusApi, updateCampusApi } from "./campus";
+import {
+  addCampusApi,
+  deleteCampusApi,
+  getCampusApi,
+  updateCampusApi,
+  getCampusCourseApi,
+  configureCampusCourseApi,
+  courseConfigurationApi,
+  deleteCourseConfigApi,
+} from "./campus";
 import { addStatus, deleteStatus, getStatus, updateStatus, getStatusConfig } from "./master/status";
 import { addCourseTypeApi, deleteCourseTypeApi, getCourseTypeApi, updateCourseTypeApi } from "./courseType";
-import {
-  addHistory,
-  getAllHistories,
-  getHistoriesById,
-  updateHistory,
-  deleteHistory,
-  getHistoriesByLeadId,
-} from "./history";
+import { addHistory, getAllHistories, getHistoriesById, updateHistory, deleteHistory, getHistoriesByLeadId } from "./history";
 import { getDashboard } from "./dashboard";
 
 export {
@@ -87,7 +89,21 @@ export {
   getPrograms,
   updatePrograms,
   getStatusConfig,
-  getFranchiseCounsellors, addUniversitysApi, deleteUniversitysApi, getUniversitysApi, updateUniversitysApi,
-  addCampusApi, deleteCampusApi, getCampusApi, updateCampusApi,
-  addCourseTypeApi, deleteCourseTypeApi, getCourseTypeApi, updateCourseTypeApi
+  getFranchiseCounsellors,
+  addUniversitysApi,
+  deleteUniversitysApi,
+  getUniversitysApi,
+  updateUniversitysApi,
+  addCampusApi,
+  deleteCampusApi,
+  getCampusApi,
+  updateCampusApi,
+  getCampusCourseApi,
+  configureCampusCourseApi,
+  addCourseTypeApi,
+  deleteCourseTypeApi,
+  getCourseTypeApi,
+  updateCourseTypeApi,
+  courseConfigurationApi,
+  deleteCourseConfigApi,
 };

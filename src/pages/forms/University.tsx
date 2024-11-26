@@ -66,12 +66,13 @@ const initialState = {
   username: "",
   password: "",
   updated_by: "",
+  is_active: true,
 };
 
 const initialValidationState = {
   university_name: "",
   location: "",
-  description:"",
+  description: "",
   country_id: "",
   website_url: "",
   image_url: "",
@@ -79,6 +80,7 @@ const initialValidationState = {
   username: "",
   password: "",
   updated_by: "",
+  is_active: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -145,6 +147,7 @@ const BasicInputElements = withSwal((props: any) => {
       password: item?.password,
       country_id: item?.country_id,
       updated_by: "",
+      is_active: item?.is_active,
     }));
 
     setIsUpdate(true);
@@ -219,7 +222,8 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.username,
                     formData.password,
                     user_id,
-                    formData.description
+                    formData.description,
+                    formData.is_active
                   )
                 );
                 setIsUpdate(false);
@@ -238,7 +242,8 @@ const BasicInputElements = withSwal((props: any) => {
                     formData.username,
                     formData.password,
                     user_id,
-                    formData.description
+                    formData.description,
+                    formData.is_active
                   )
                 );
               }
@@ -367,6 +372,18 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
     },
     {
+      Header: "Status",
+      accessor: "is_active",
+      sort: false,
+      Cell: ({ row }: any) => (
+        <>
+          <span style={{fontSize:"10px"}} className={`badge rounded-pill ${row.original.is_active ? "bg-success" : "bg-danger"}`}>
+            {row.original.is_active ? "Active" : "Disabled"}
+          </span>
+        </>
+      ),
+    },
+    {
       Header: "Actions",
       accessor: "",
       sort: false,
@@ -386,10 +403,9 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
-            {/* <i className="mdi mdi-delete"></i> */}
+          {/* <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             <i className="mdi mdi-delete-outline"></i>
-          </Link>
+          </Link> */}
         </div>
       ),
     },
@@ -422,7 +438,7 @@ const BasicInputElements = withSwal((props: any) => {
     if (isUpdate) {
       handleCancelUpdate();
     }
-  };  
+  };
 
   useEffect(() => {
     // Check for errors and clear the form
@@ -487,16 +503,6 @@ const BasicInputElements = withSwal((props: any) => {
                 </Col>
 
                 <Col md={6}>
-                  <Form.Group className="mb-3" controlId="description">
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control type="text" name="description" value={formData.description} onChange={handleInputChange} />
-
-                    {validationErrors.description && <Form.Text className="text-danger">{validationErrors.description}</Form.Text>}
-                  </Form.Group>
-                </Col>
-                
-
-                <Col md={6}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Website URL</Form.Label>
                     <Form.Control type="text" name="website_url" value={formData.website_url} onChange={handleInputChange} />
@@ -537,6 +543,37 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="text" name="password" value={formData.password} onChange={handleInputChange} />
                     {validationErrors.password && <Form.Text className="text-danger">{validationErrors.password}</Form.Text>}
+                  </Form.Group>
+                </Col>
+
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="description">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control as="textarea" name="description" value={formData.description} onChange={handleInputChange} />
+
+                    {validationErrors.description && (
+                      <Form.Text className="text-danger">{validationErrors.description}</Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="is_active">
+                    <Form.Label>Status</Form.Label>
+                    <Form.Check
+                      type="switch"
+                      name="is_active"
+                      id="is_active_toggle"
+                      checked={formData.is_active}
+                      onChange={(e) =>
+                        handleInputChange({
+                          target: { name: "is_active", value: e.target.checked },
+                        })
+                      }
+                      label={formData.is_active ? "Active" : "Inactive"} /* Optional label */
+                    />
+
+                    {validationErrors.is_active && <Form.Text className="text-danger">{validationErrors.is_active}</Form.Text>}
                   </Form.Group>
                 </Col>
               </Row>
@@ -622,7 +659,13 @@ const University = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} country={country?.countries || []} error={error} loading={loading} initialLoading={initialLoading} />
+          <BasicInputElements
+            state={state}
+            country={country?.countries || []}
+            error={error}
+            loading={loading}
+            initialLoading={initialLoading}
+          />
         </Col>
       </Row>
     </React.Fragment>

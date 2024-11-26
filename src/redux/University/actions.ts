@@ -50,7 +50,8 @@ export const addUniversity = (
   username: string,
   password: string,
   updated_by: string,
-  description: string
+  description: string,
+  is_active: boolean
 ): UniversityActionType => ({
   type: UniversityActionTypes.ADD_UNIVERSITY,
   payload: {
@@ -63,7 +64,8 @@ export const addUniversity = (
     username,
     password,
     updated_by,
-    description
+    description,
+    is_active
   },
 });
 
@@ -78,7 +80,8 @@ export const updateUniversity = (
   username: string,
   password: string,
   updated_by: string,
-  description: string
+  description: string,
+  is_active: boolean
 ): UniversityActionType => ({
   type: UniversityActionTypes.UPDATE_UNIVERSITY,
   payload: {
@@ -92,7 +95,8 @@ export const updateUniversity = (
     username,
     password,
     updated_by,
-    description
+    description,
+    is_active
   },
 });
 

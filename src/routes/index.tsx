@@ -81,6 +81,7 @@ const Programs = React.lazy(() => import("../pages/forms/Programs"));
 const Franchiseees = React.lazy(() => import("../pages/forms/Franchise"));
 const Status = React.lazy(() => import("../pages/status/Status"));
 const Campus = React.lazy(() => import("../pages/forms/Campus"));
+const ConfigureCourses = React.lazy(() => import("../pages/forms/ConfigureCourses"));
 const CourseType = React.lazy(() => import("../pages/forms/CourseType"));
 const Course = React.lazy(() => import("../pages/forms/Course"));
 const Stream = React.lazy(() => import("../pages/forms/Stream"));
@@ -491,6 +492,12 @@ const settingsRoutes = {
           path: "/settings/master/campus",
           name: "Campus",
           element: <PrivateRoute roles={["Monitor"]} component={Campus} />,
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/configure_courses/:id",
+          name: "Configure Courses",
+          element: <PrivateRoute roles={["Monitor"]} component={ConfigureCourses} />,
           route: PrivateRoute,
         },
         {

@@ -4,9 +4,11 @@ import { showErrorAlert, showSuccessAlert } from "../../constants";
 
 // constants
 import { CampusActionTypes } from "./constants";
+import { error } from "console";
 
 const INIT_STATE = {
   campus: [],
+  courses: [],
   loading: false,
   initialloading: false,
   error: null,
@@ -22,12 +24,14 @@ interface CampusData {
 
 export interface CampusActionType {
   type:
-  | CampusActionTypes.API_RESPONSE_SUCCESS
-  | CampusActionTypes.API_RESPONSE_ERROR
-  | CampusActionTypes.GET_CAMPUS
-  | CampusActionTypes.ADD_CAMPUS
-  | CampusActionTypes.UPDATE_CAMPUS
-  | CampusActionTypes.DELETE_CAMPUS;
+    | CampusActionTypes.API_RESPONSE_SUCCESS
+    | CampusActionTypes.API_RESPONSE_ERROR
+    | CampusActionTypes.GET_CAMPUS
+    | CampusActionTypes.ADD_CAMPUS
+    | CampusActionTypes.UPDATE_CAMPUS
+    | CampusActionTypes.GET_CAMPUS_COURSES
+    | CampusActionTypes.CONFIGURE_COURSES
+    | CampusActionTypes.DELETE_CAMPUS;
   payload: {
     actionType?: string;
     data?: CampusData | {};
@@ -55,7 +59,24 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
             hasLoadedInitially: true,
           };
         }
+        case CampusActionTypes.GET_CAMPUS_COURSES: {
+          return {
+            ...state,
+            courses: action.payload.data,
+            loading: false,
+            initialloading: false,
+            hasLoadedInitially: true,
+          };
+        }
         case CampusActionTypes.ADD_CAMPUS: {
+          showSuccessAlert(action.payload.data);
+          return {
+            ...state,
+            loading: false,
+            initialloading: false,
+          };
+        }
+        case CampusActionTypes.CONFIGURE_COURSES: {
           showSuccessAlert(action.payload.data);
           return {
             ...state,
@@ -95,7 +116,25 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
             hasLoadedInitially: true,
           };
         }
+        case CampusActionTypes.GET_CAMPUS_COURSES: {
+          return {
+            ...state,
+            courses: [],
+            loading: false,
+            initialloading: false,
+            hasLoadedInitially: true,
+          };
+        }
         case CampusActionTypes.ADD_CAMPUS: {
+          showErrorAlert(action.payload.error);
+          return {
+            ...state,
+            error: action.payload.error,
+            loading: false,
+            initialloading: false,
+          };
+        }
+        case CampusActionTypes.CONFIGURE_COURSES: {
           showErrorAlert(action.payload.error);
           return {
             ...state,
@@ -128,12 +167,16 @@ const Campus = (state: State = INIT_STATE, action: CampusActionType): any => {
 
     case CampusActionTypes.GET_CAMPUS:
       return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
+    case CampusActionTypes.GET_CAMPUS_COURSES:
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
     case CampusActionTypes.ADD_CAMPUS:
-      return { ...state, loading: true };
+      return { ...state, loading: true, error: null };
+    case CampusActionTypes.CONFIGURE_COURSES:
+      return { ...state, loading: true, error: null };
     case CampusActionTypes.UPDATE_CAMPUS:
-      return { ...state, loading: true };
+      return { ...state, loading: true, error: null };
     case CampusActionTypes.DELETE_CAMPUS:
-      return { ...state, loading: true };
+      return { ...state, loading: true, error: null };
     default:
       return { ...state };
   }

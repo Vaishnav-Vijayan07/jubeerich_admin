@@ -14,11 +14,10 @@ import { AppDispatch, RootState } from "../../redux/store";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { getUniversity } from "../../redux/University/actions";
-import { Link } from "react-router-dom";
-import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
+import { Link, useParams } from "react-router-dom";
+import { addCampus, configureCourses, deleteCampus, getCampus, getCampusCourses, updateCampus } from "../../redux/actions";
 import { getCourse } from "../../redux/course/actions";
 import useDropdownData from "../../hooks/useDropdownDatas";
-import { access } from "fs";
 
 interface OptionType {
   value: string;
@@ -53,21 +52,24 @@ const sizePerPageList = [
 
 const initialState = {
   id: "",
-  campus_name: "",
-  location: "",
-  university_id: "",
+  campus_id: "",
+  course_fee: "",
+  course_link: "",
+  course_id: "",
+  application_fee: "",
 };
 
 const initialValidationState = {
-  campus_name: "",
-  location: "",
-  university_id: "",
+  campus_id: "",
+  course_fee: "",
+  course_link: "",
+  course_id: "",
+  application_fee: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, university, error, loading, courseData, initialLoading } = props;
-
+  const { swal, state, error, loading, courseData, initialLoading, campusId, campusData } = props;
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
@@ -86,13 +88,12 @@ const BasicInputElements = withSwal((props: any) => {
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    campus_name: yup
-      .string()
-      .min(3, "Campus name name must be at least 3 characters long")
-      .required("Campus name name is required"),
-    location: yup.string().required("Location is required"),
-    university_id: yup.string().required("University is required"),
+    course_id: yup.string().required("Course is required"),
   });
+
+  console.log("campusOd", campusId);
+
+  console.log("formData", formData);
 
   /*
    * form methods
@@ -104,16 +105,20 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     // Update university dropdown
-    const updatedUniversity: OptionType[] = university?.filter((university: any) => university.value == item.university_id);
+    const updatedUniversity: OptionType[] = courseData?.filter((course: any) => course.value == item.course_id);
+    console.log("updatedUniversity", courseData, item);
+
     setSelectedUniversity(updatedUniversity[0]);
 
     // Set form data including courses
     setFormData((prev) => ({
       ...prev,
       id: item?.id,
-      campus_name: item?.campus_name,
-      location: item?.location,
-      university_id: item?.university_id,
+      course_fee: item?.course_fee,
+      course_link: item?.course_link,
+      course_id: item?.course_id,
+      campus_id: item?.campus_id,
+      application_fee: item?.application_fee, // Ensure courses is an array, defaulting to empty if undefined
     }));
 
     setIsUpdate(true);
@@ -155,10 +160,12 @@ const BasicInputElements = withSwal((props: any) => {
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("here");
 
     // Validate the form using yup
     try {
       await validationSchema.validate(formData, { abortEarly: false });
+      console.log("validationSchema ==>", validationSchema);
 
       // Validation passed, handle form submission
 
@@ -174,18 +181,16 @@ const BasicInputElements = withSwal((props: any) => {
         })
         .then((result: any) => {
           if (result.isConfirmed) {
-            if (userInfo) {
-              const { user_id } = JSON.parse(userInfo);
-              if (isUpdate) {
-                // Handle update logic
-                dispatch(updateCampus(formData?.id, formData.campus_name, formData.location, formData.university_id));
-                setIsUpdate(false);
-              } else {
-                // Handle add logic
-                console.log("Here");
-                dispatch(addCampus(formData.campus_name, formData.location, formData.university_id));
-              }
-            }
+            dispatch(
+              configureCourses(
+                campusId,
+                formData.course_fee,
+                formData.application_fee,
+                formData.course_link,
+                formData.course_id,
+                isUpdate ? "update" : "add"
+              )
+            );
           }
         })
         .catch((err: any) => {
@@ -213,31 +218,27 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Campus Name",
-      accessor: "campus_name",
+      Header: "Course Name",
+      accessor: "course_name",
       sort: true,
     },
     {
-      Header: "Location",
-      accessor: "location",
+      Header: "Course Fee (₹)",
+      accessor: "course_fee",
       sort: false,
     },
     {
-      Header: "University",
-      accessor: "university",
+      Header: "Application Fee (₹)",
+      accessor: "application_fee",
       sort: false,
     },
     {
-      Header: "Country",
-      accessor: "country",
+      Header: "Course Link",
+      accessor: "course_link",
       sort: false,
-    },
-    {
-      Header: "Course Configuration",
-      accessor: "",
       Cell: ({ row }: any) => (
-        <a href={`/settings/master/configure_courses/${row.original.id}`} className="">
-          <i className="mdi mdi-cog"></i> Course Configuration
+        <a href={row.original?.course_link} target="_blank">
+          {row.original?.course_link}
         </a>
       ),
     },
@@ -281,7 +282,7 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedUniversity(selected);
     setFormData((prev) => ({
       ...prev,
-      university_id: selected.value,
+      course_id: selected.value,
     }));
   };
 
@@ -299,6 +300,13 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  const getCampusName = () => {
+    if (campusData && campusData.length > 0) {
+      return campusData.find((item: any) => item.id == campusId)?.campus_name;
+    }
+    return "";
+  };
+
   useEffect(() => {
     // Check for errors and clear the form
     if (!loading && !error) {
@@ -310,8 +318,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  console.log("formData ==>", formData);
-
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -319,48 +325,61 @@ const BasicInputElements = withSwal((props: any) => {
         <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-lg modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Campus Management</h4>
+              <h4 className="modal-title">Course Management</h4>
             </Modal.Header>
             <Modal.Body>
               <Row>
                 <Col md={6}>
-                  {/* Campus Name */}
-                  <Form.Group className="mb-3" controlId="campus_name">
-                    <Form.Label>Campus Name</Form.Label>
-                    <Form.Control type="text" name="campus_name" value={formData.campus_name} onChange={handleInputChange} />
-                    {validationErrors.campus_name && (
-                      <Form.Text className="text-danger">{validationErrors.campus_name}</Form.Text>
-                    )}
-                  </Form.Group>
-                </Col>
-
-                <Col md={6}>
                   {/* University */}
-                  <Form.Group className="mb-3" controlId="university_id">
-                    <Form.Label>University</Form.Label>
+                  <Form.Group className="mb-3" controlId="course_id">
+                    <Form.Label>Course</Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
-                      name="university_id"
-                      options={university}
+                      name="course_id"
+                      options={courseData}
+                      isDisabled={isUpdate}
                       value={selectedUniversity}
                       onChange={handleUniversityChange}
                     />
-                    {validationErrors.university_id && (
-                      <Form.Text className="text-danger">{validationErrors.university_id}</Form.Text>
+                    {validationErrors.course_id && <Form.Text className="text-danger">{validationErrors.course_id}</Form.Text>}
+                  </Form.Group>
+                </Col>
+
+                <Col md={6}>
+                  {/* Location */}
+                  <Form.Group className="mb-3" controlId="course_link">
+                    <Form.Label>Course Link</Form.Label>
+                    <Form.Control type="text" name="course_link" value={formData.course_link} onChange={handleInputChange} />
+                    {validationErrors.course_link && (
+                      <Form.Text className="text-danger">{validationErrors.course_link}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
-              </Row>
 
-              <Row>
+                <Col md={6}>
+                  {/* Campus Name */}
+                  <Form.Group className="mb-3" controlId="course_fee">
+                    <Form.Label>Course Fee (₹)</Form.Label>
+                    <Form.Control type="number" name="course_fee" value={formData.course_fee} onChange={handleInputChange} />
+                    {validationErrors.course_fee && <Form.Text className="text-danger">{validationErrors.course_fee}</Form.Text>}
+                  </Form.Group>
+                </Col>
+
                 <Col md={6}>
                   {/* Location */}
-                  <Form.Group className="mb-3" controlId="location">
-                    <Form.Label>Location</Form.Label>
-                    <Form.Control as="textarea" rows={5} name="location" value={formData.location} onChange={handleInputChange} />
-                    {validationErrors.location && <Form.Text className="text-danger">{validationErrors.location}</Form.Text>}
+                  <Form.Group className="mb-3" controlId="application_fee">
+                    <Form.Label>Application Fee (₹)</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="application_fee"
+                      value={formData.application_fee}
+                      onChange={handleInputChange}
+                    />
+                    {validationErrors.application_fee && (
+                      <Form.Text className="text-danger">{validationErrors.application_fee}</Form.Text>
+                    )}
                   </Form.Group>
                 </Col>
               </Row>
@@ -393,9 +412,9 @@ const BasicInputElements = withSwal((props: any) => {
           <Card className="bg-white">
             <Card.Body>
               <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
-                <i className="mdi mdi-plus-circle"></i> Add Campus
+                <i className="mdi mdi-plus-circle"></i> Configure Courses
               </Button>
-              <h4 className="header-title mb-4">Manage Campus</h4>
+              <h4 className="header-title mb-4">Manage Courses - {getCampusName()}</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -415,63 +434,53 @@ const BasicInputElements = withSwal((props: any) => {
   );
 });
 
-const Campus = () => {
+const ConfigureCourses = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [university, setUniversity] = useState([])
+  const { id } = useParams();
+
+  console.log("id ===>", id);
+
+  const { dropdownData: courses, loading: dropDownLoading } = useDropdownData("courses");
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading, courseData, universityData } = useSelector((state: RootState) => ({
-    state: state.Campus.campus.data,
+  const { state, error, loading, initialLoading, courseData, campusCourses } = useSelector((state: RootState) => ({
+    state: state.Campus?.campus?.data,
+    campusCourses: state?.Campus?.courses,
     error: state.Campus.error,
     loading: state.Campus.loading,
     initialLoading: state.Campus.initialloading,
     courseData: state.Course.course.data,
-    universityData: state.University?.universities?.data
   }));
 
   useEffect(() => {
     dispatch(getCampus());
     dispatch(getCourse());
-    dispatch(getUniversity())
+    dispatch(getCampusCourses(id));
   }, []);
-
-  useEffect(() => {
-    if (universityData) {
-      const UniversityArray = universityData?.map((unvsty: any) => ({
-        value: unvsty.id.toString(),
-        label: `${unvsty.university_name} - ${unvsty.country_name}`, // Replace with the appropriate field from the lead data
-        country_name: unvsty.country_name,
-      }));
-      setUniversity(UniversityArray);
-    }
-  }, [universityData]);
-
-  // if (initialLoading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
-  // }
 
   return (
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
           { label: "Master", path: "/master/campus" },
-          { label: "Campus", path: "/master/campus", active: true },
+          { label: "Configure Courses", path: "/master/configure_courses", active: true },
         ]}
-        title={"Campus"}
+        title={"Course Configuration"}
       />
       <Row>
         <Col>
           <BasicInputElements
-            state={state}
-            university={university}
+            state={campusCourses}
+            campusData={state}
             error={error}
             loading={loading}
-            courseData={courseData}
+            courseData={courses.courses}
             initialLoading={initialLoading}
+            campusId={id}
           />
         </Col>
       </Row>
     </React.Fragment>
   );
 };
-export default Campus;
+export default ConfigureCourses;

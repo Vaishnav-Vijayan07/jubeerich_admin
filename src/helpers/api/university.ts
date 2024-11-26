@@ -20,6 +20,7 @@ function addUniversitysApi(params: {
   password: string;
   updated_by: string;
   description: string;
+  is_active: boolean;
 }) {
   return api.create(`${baseUrl}`, params);
 }
@@ -37,6 +38,7 @@ function updateUniversitysApi(
     password: string;
     updated_by: string;
     description: string;
+    is_active: boolean;
   }
 ) {
   return api.update(`${baseUrl}/${id}`, params);

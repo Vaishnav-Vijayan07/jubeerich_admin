@@ -24,6 +24,7 @@ interface UniversityData {
     password: string;
     updated_by: string;
     description: string;
+    is_active: boolean;
   };
   type: string;
 }
@@ -51,7 +52,7 @@ function* getUniversitys(): SagaIterator {
 }
 
 function* addUniversity({
-  payload: { university_name, location, country_id, website_url, image_url, portal_link, username, password, updated_by, description },
+  payload: { university_name, location, country_id, website_url, image_url, portal_link, username, password, updated_by, description, is_active },
 }: UniversityData): SagaIterator {
   try {
     const response = yield call(addUniversitysApi, {
@@ -64,7 +65,8 @@ function* addUniversity({
       username,
       password,
       updated_by,
-      description
+      description,
+      is_active
     });
     const data = response.data.message;
 
@@ -77,7 +79,7 @@ function* addUniversity({
 }
 
 function* updateUniversity({
-  payload: { id, university_name, location, country_id, website_url, image_url, portal_link, username, password, updated_by, description },
+  payload: { id, university_name, location, country_id, website_url, image_url, portal_link, username, password, updated_by, description, is_active },
 }: UniversityData): SagaIterator {
   try {
     const response = yield call(updateUniversitysApi, id, {
@@ -90,7 +92,8 @@ function* updateUniversity({
       username,
       password,
       updated_by,
-      description
+      description,
+      is_active
     });
     const data = response.data.message;
 

@@ -5,19 +5,32 @@ import { SagaIterator } from "@redux-saga/core";
 import { APICore } from "../../helpers/api/apiCore";
 
 // actions
-import { CampusApiResponseSuccess, CampusApiResponseError, getCampus } from "./actions";
+import { CampusApiResponseSuccess, CampusApiResponseError, getCampus, getCampusCourses as getCampusCoursAction } from "./actions";
 
 // constants
 import { CampusActionTypes } from "./constants";
-import { addCampusApi, deleteCampusApi, getCampusApi, updateCampusApi } from "../../helpers";
+import {
+  addCampusApi,
+  courseConfigurationApi,
+  deleteCampusApi,
+  deleteCourseConfigApi,
+  getCampusApi,
+  getCampusCourseApi,
+  updateCampusApi,
+} from "../../helpers";
 
 interface CampusData {
   payload: {
     id: string;
     campus_name: string;
+    campus_id: string;
     location: string;
     university_id: string;
-    courses: { course_fee: string; application_fee: string; course_link: string; course_id: string | number }[];
+    course_fee: string;
+    application_fee: string;
+    course_link: string;
+    course_id: string | number;
+    operation: string
   };
   type: string;
 }
@@ -44,13 +57,12 @@ function* getAllCampus(): SagaIterator {
   }
 }
 
-function* addCampus({ payload: { campus_name, location, university_id, courses } }: CampusData): SagaIterator {
+function* addCampus({ payload: { campus_name, location, university_id } }: CampusData): SagaIterator {
   try {
     const response = yield call(addCampusApi, {
       campus_name,
       location,
       university_id,
-      courses,
     });
     const data = response.data.message;
 
@@ -62,13 +74,12 @@ function* addCampus({ payload: { campus_name, location, university_id, courses }
   }
 }
 
-function* updateCampus({ payload: { id, campus_name, location, university_id, courses } }: CampusData): SagaIterator {
+function* updateCampus({ payload: { id, campus_name, location, university_id } }: CampusData): SagaIterator {
   try {
     const response = yield call(updateCampusApi, id, {
       campus_name,
       location,
       university_id,
-      courses,
     });
     const data = response.data.message;
 
@@ -91,12 +102,68 @@ function* deleteCampus({ payload: { id } }: CampusData): SagaIterator {
   }
 }
 
+function* deleteCourseConfiguration({ payload: { campus_id, course_id } }: CampusData): SagaIterator {
+  try {
+    const response = yield call(deleteCourseConfigApi, {
+      campus_id,
+      course_id,
+    });
+    const data = response.data.message;
+
+    yield put(CampusApiResponseSuccess(CampusActionTypes.DELETE_CONFIGURE_COURSES, data));
+    yield put(getCampusCoursAction(campus_id));
+  } catch (error: any) {
+    yield put(CampusApiResponseError(CampusActionTypes.DELETE_CONFIGURE_COURSES, error));
+  }
+}
+
+function* getCampusCourses({ payload: { campus_id } }: CampusData): SagaIterator {
+  try {
+    const response = yield call(getCampusCourseApi, campus_id);
+    const data = response.data.data;
+
+    yield put(CampusApiResponseSuccess(CampusActionTypes.GET_CAMPUS_COURSES, data));
+  } catch (error: any) {
+    yield put(CampusApiResponseError(CampusActionTypes.GET_CAMPUS_COURSES, error));
+  }
+}
+
+function* courseConfiguration({
+  payload: { campus_id, course_fee, application_fee, course_link, course_id, operation },
+}: CampusData): SagaIterator {
+  try {
+    const response = yield call(courseConfigurationApi, {
+      campus_id,
+      course_fee,
+      application_fee,
+      course_link,
+      course_id,
+      operation
+    });
+    const data = response.data.message;
+
+    yield put(CampusApiResponseSuccess(CampusActionTypes.CONFIGURE_COURSES, data));
+
+    yield put(getCampusCoursAction(campus_id));
+  } catch (error: any) {
+    yield put(CampusApiResponseError(CampusActionTypes.CONFIGURE_COURSES, error));
+  }
+}
+
 export function* watchGetCampus() {
   yield takeEvery(CampusActionTypes.GET_CAMPUS, getAllCampus);
 }
 
+export function* watchgetCampusCourses() {
+  yield takeEvery(CampusActionTypes.GET_CAMPUS_COURSES, getCampusCourses);
+}
+
 export function* watchaddCampus() {
   yield takeEvery(CampusActionTypes.ADD_CAMPUS, addCampus);
+}
+
+export function* watchCourseConfiguration() {
+  yield takeEvery(CampusActionTypes.CONFIGURE_COURSES, courseConfiguration);
 }
 
 export function* watchUpdateCampus(): any {
@@ -107,8 +174,20 @@ export function* watchDeleteCampus(): any {
   yield takeEvery(CampusActionTypes.DELETE_CAMPUS, deleteCampus);
 }
 
+export function* watchDeleteCourseConfiguration(): any {
+  yield takeEvery(CampusActionTypes.DELETE_CAMPUS, deleteCourseConfiguration);
+}
+
 function* CampusSaga() {
-  yield all([fork(watchGetCampus), fork(watchaddCampus), fork(watchUpdateCampus), fork(watchDeleteCampus)]);
+  yield all([
+    fork(watchGetCampus),
+    fork(watchaddCampus),
+    fork(watchUpdateCampus),
+    fork(watchDeleteCampus),
+    fork(watchgetCampusCourses),
+    fork(watchCourseConfiguration),
+    fork(watchDeleteCourseConfiguration),
+  ]);
 }
 
 export default CampusSaga;
