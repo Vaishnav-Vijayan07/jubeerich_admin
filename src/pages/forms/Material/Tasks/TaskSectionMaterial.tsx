@@ -9,7 +9,8 @@ import { TaskItemTypes } from "../../../lead_management/Tasks/List/data";
 import SkeletonComponent from "../../../lead_management/Tasks/List/StudyPreference/LoadingSkeleton";
 import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 import { calculateDaysAgo } from "../../../../constants";
-import { Badge, Box, Tab, Tabs } from "@mui/material";
+import { Badge, Box, Collapse, Tab, Tabs } from "@mui/material";
+import { Link } from "react-router-dom";
 
 interface TaskSectionState {
   title: string;
@@ -19,7 +20,6 @@ interface TaskSectionState {
   date: string;
   initialLoading: boolean;
   setSelectedDate: Dispatch<SetStateAction<string>>;
-  incompleteTasks: TaskItemTypes[];
 }
 
 const Task = ({
@@ -32,31 +32,13 @@ const Task = ({
   selectedTaskId: number | null;
 }) => {
   const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
-  const statusName = task?.student_name?.preferredCountries[0]?.country_status[0]?.status_name
-
-  const badgeStyle = {
-    "& .MuiBadge-dot": {
-      transform: "translateX(1px) translateY(5px)",
-      zIndex: 0,
-      bgcolor: statusColor,
-    },
-  };
+  const statusName = task?.student_name?.preferredCountries[0]?.country_status[0]?.status_name;
 
   return (
     <>
       <Row
-        // className={classNames("task__list ribbon-box unselected-task", {
-        //   "selected-task": task.id === selectedTaskId,
-        // })}
         className="task__list ribbon-box"
         onClick={() => selectTask(task)}
-        // style={{
-        //   fontFamily: "Nunito",
-        //   borderBottom: "1.3px solid #70707033",
-        //   display: "grid",
-        //   gridTemplateColumns: "1fr auto",
-        //   width: "100%",
-        // }}
         style={{
           display: "grid",
           gridTemplateColumns: "1fr auto",
@@ -120,14 +102,13 @@ const Task = ({
             )}
           </div>
         </div>
-
-        {/* <Badge className="w-100" color={statusColor} variant="dot" sx={{ ...badgeStyle }}> */}
         <div
           style={{
             whiteSpace: "nowrap",
             textAlign: "right",
             overflow: "hidden",
             display: "flex",
+            justifyContent: "center",
             flexDirection: "column",
             gap: "4px",
           }}
@@ -153,205 +134,18 @@ const Task = ({
               {statusName}
             </small>
           )}
-          <span style={{ fontSize: "0.7rem" }}>{calculateDaysAgo(task.createdAt)}</span>
+          <span style={{ fontSize: "0.65rem" }}>{calculateDaysAgo(task.createdAt)}</span>
         </div>
         {/* </Badge> */}
       </Row>
-      {/* <Row
-        className={classNames("task__list ribbon-box unselected-task", {
-          "selected-task": task.id === selectedTaskId,
-        })}
-        onClick={() => selectTask(task)}
-        style={{
-          fontFamily: "Nunito",
-          borderBottom: "1.3px solid #70707033",
-          display: "grid",
-          gridTemplateColumns: "1fr auto",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        <div
-          style={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            width: "100%", // Ensure the container takes full width of its grid cell
-          }}
-        >
-          <label className="form-check-label fs-5" htmlFor={`task-${task.id}`}>
-            <span className="text-primary" style={{ fontSize: "14px", fontWeight: "700" }}>{`JBR${task.id}`}</span>
-            &nbsp; &nbsp;
-            <b>{task.title}</b>
-          </label>
-        </div>
-        <div
-          style={{
-            whiteSpace: "nowrap",
-            textAlign: "right",
-            overflow: "hidden",
-            flexShrink: 0, // Prevent the right content from shrinking and making the text wrap
-          }}
-        >
-          <span>{calculateDaysAgo(task.createdAt)}</span>
-        </div>
-      </Row> */}
-
-      {/* <Row
-        className={classNames("justify-content-sm-between task__list ribbon-box unselected-task", {
-          "selected-task": task.id === selectedTaskId,
-        })}
-        onClick={() => selectTask(task)}
-        style={{ fontFamily: "Nunito", borderBottom: "1.3px solid #70707033" }}
-      >
-        <Col className="py-1 px-2 d-flex flex-column gap-2 cursor-pointer" md={12}>
-          <div className="d-flex justify-content-between gap-3">
-            <label className="form-check-label fs-5 truncate-text" htmlFor={`task-${task.id}`}>
-              <span className="text-primary" style={{ fontSize: "14px", fontWeight: "700" }}>{`JBR${task.id}`}</span>
-              &nbsp; &nbsp;
-              <b>{task.title}</b>
-            </label>
-
-            {task?.student_name?.status?.status_name && (
-              <small
-                style={{
-                  backgroundColor: `${task?.student_name?.status?.color}`,
-                  color: "white",
-                  border: `1px solid #122d3d`,
-                  borderRadius: "5px",
-                  padding: "6px 10px",
-                  width: "fit-content",
-                  fontSize: "0.6rem",
-                  borderColor: `${task?.student_name?.status?.color}`,
-                  height: "max-content",
-                  textAlign: "center",
-                  whiteSpace: "nowrap",
-                  opacity: "0.8",
-                }}
-                className={classNames("rounded-pill ms-2")}
-              >
-                {task?.student_name?.status?.status_name}
-              </small>
-            )}
-          </div>
-
-          <div>
-            {task?.student_name?.flag_details_rows?.map((flag: any) => (
-              <small
-                style={{
-                  backgroundColor: setColorOpacityRGB(flag?.color),
-                  color: "black",
-                  border: `1px solid #122d3d`,
-                  borderRadius: "5px",
-                  padding: "2px 10px",
-                  width: "fit-content",
-                  fontSize: "0.6rem",
-                  borderColor: `${flag?.color}`,
-                  height: "max-content",
-                  textAlign: "center",
-                  whiteSpace: "nowrap",
-                  opacity: "0.8",
-                }}
-                className={classNames("rounded-pill me-1 ms-0")}
-              >
-                {flag?.flag_name}
-              </small>
-            ))}
-
-            {task?.is_rejected && (
-              <small
-                style={{
-                  backgroundColor: `red`,
-                  color: "white",
-                  border: `1px solid #122d3d`,
-                  borderRadius: "5px",
-                  padding: "2px 8px",
-                  fontSize: "0.6rem",
-                  opacity: "0.8",
-                  borderColor: `red`,
-                  height: "max-content",
-                }}
-                className={classNames("rounded-pill me-1")}
-              >
-                Rejected
-              </small>
-            )}
-          </div>
-        </Col>
-      </Row> */}
     </>
   );
 };
 
-const TaskSectionMaterial = ({
-  title,
-  tasks,
-  selectTask,
-  initialTaskId,
-  initialLoading,
-  setSelectedDate,
-  incompleteTasks,
-}: TaskSectionState) => {
+const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialLoading, setSelectedDate }: TaskSectionState) => {
   const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
   const [selectedTaskId, setSelectedTaskId] = useState<number>(initialTaskId);
-  const [selectedFollowupDate, setSelectedFollowupDate] = useState<any>("");
-  const [tabValue, setTabValue] = React.useState("all");
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    setTabValue(newValue);
-  };
-
-  const tabsStyle = {
-    "& .MuiTabs-indicator": {
-      backgroundColor: "#26BCA2",
-      height: "4px",
-    },
-    "& .MuiTabs-flexContainer": {
-      height: "30px", // Set desired height for the container
-      alignItems: "center", // Optional: Center-align tabs vertically
-    },
-    minHeight: "30px", // Reduce the tab container height
-    height: "30px",
-  };
-
-  const individualTabStyle = {
-    fontFamily: "'Nunito', sans-serif",
-    fontWeight: 400,
-    fontSize: "12px",
-    maxHeight: "32px",
-    "&.Mui-selected": {
-      color: "black",
-      fontFamily: "'Nunito', sans-serif",
-      fontWeight: 700,
-      fontSize: "12px",
-    },
-  };
-
-  const badgeStyle = {
-    "& .MuiBadge-badge": {
-      transform: "translate(80%, -60%)",
-      backgroundColor: "#1976d2",
-      color: "#fff",
-      fontSize: "10px",
-      minWidth: "18px",
-      height: "18px",
-      borderRadius: "50%",
-      padding: "0 6px",
-    },
-  };
-
-  const pendingBadgeStyle = {
-    "& .MuiBadge-badge": {
-      transform: "translate(85%, -60%)",
-      backgroundColor: "#1976d2",
-      color: "#fff",
-      fontSize: "10px",
-      minWidth: "18px",
-      height: "18px",
-      borderRadius: "50%",
-      padding: "0 6px",
-    },
-  };
+  const [collapse, setCollapse] = useState<boolean>(title == "Past" ? false : true);
 
   useEffect(() => {
     setTaskList(tasks);
@@ -365,72 +159,38 @@ const TaskSectionMaterial = ({
   useEffect(() => {
     setSelectedTaskId(initialTaskId);
   }, [initialTaskId]);
-
-  const handleFollowupFilter = (date: any) => {
-    setSelectedFollowupDate(date);
-    setSelectedDate(date);
+  const toggleTask = () => {
+    if (title == "Past") {
+      setCollapse(!collapse);
+    }
   };
 
   return (
     <>
-      <div>
-        <div className="d-flex justify-content-between pb-3 mx-2">
-          <div className="text-dark">
-            <h5 className=" text-secondary" style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: "16px" }}>
-              {title}{" "}
-              <span className="text-danger" style={{ fontWeight: 500, fontSize: "14px" }}>
-                ({taskList.length})
-              </span>
-            </h5>
-          </div>
-          {title !== "Completed Task" && (
-            <div className="d-flex align-items-center justify-content-end">
-              <img src={calender} alt="date logo" width={16.3} className="calender-img" style={{ paddingBottom: "3px" }} />
-              <ReactDatePicker
-                minDate={new Date()}
-                onChange={(date) => handleFollowupFilter(date)}
-                selected={selectedFollowupDate || new Date()}
-                dateFormat={"dd-MM-yyyy"}
-                onKeyDown={(e) => e.preventDefault()}
-                className="custom-react-date-picker"
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
       {initialLoading ? (
         <SkeletonComponent />
-      ) : taskList.length > 0 ? (
-        <Card className="mb-0 shadow-none" style={{ borderTop: "1.3px solid #70707033" }}>
-          <Card.Body
-            className="px-0 mt-2 pt-0"
-            style={{
-              maxHeight: "52vh",
-              overflowY: "auto",
-              overflowX: "hidden",
-              width: "100%",
-              boxSizing: "border-box",
-              scrollbarWidth: "none",
-            }}
-          >
-            <Box sx={{ width: '100%' }}>
-              <Tabs
-                value={tabValue}
-                onChange={handleTabChange}
-                textColor="secondary"
-                indicatorColor="secondary"
-                aria-label="secondary tabs example"
-                sx={{ ...tabsStyle }}
+      ) : (
+        <>
+          <Link className="text-dark" to="#" onClick={toggleTask}>
+            <h5 className="m-0">
+              <i className={classNames("mdi", { "mdi-chevron-down": collapse, "mdi-chevron-right": !collapse }, "font-18")}></i>
+              {title} <span className="text-muted font-14">({taskList.length})</span>
+            </h5>
+          </Link>
+          <Collapse in={collapse}>
+            <Card className="mb-0 shadow-none">
+              <Card.Body
+                className="px-1 pt-1 pb-1"
+                style={{
+                  maxHeight: "52vh",
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                  width: "100%",
+                  boxSizing: "border-box",
+                  scrollbarWidth: "none",
+                }}
               >
-                <Tab value="all" label='All'
-                  sx={{ ...individualTabStyle }} />
-                <Tab value="pending" label='Pending' sx={{ ...individualTabStyle }} />
-              </Tabs>
-            </Box>
-
-            <Box sx={{ mt: 2 }}>
-              {tabValue === "all" && (
+                {taskList?.length == 0 && <div className="text-left ps-2">No tasks found..</div>}
                 <Suspense fallback={null}>
                   <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>
                     {(taskList || []).map((task, idx) => (
@@ -450,43 +210,10 @@ const TaskSectionMaterial = ({
                     ))}
                   </ReactSortable>
                 </Suspense>
-              )}
-
-              {tabValue === "pending" && (
-                <Suspense fallback={null}>
-                  <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>
-                    {(incompleteTasks || []).map((task, idx) => (
-                      <div key={idx} className={classNames("task-item-one unselected-task", {
-                        "selected-task": task.id === selectedTaskId,
-                      })}
-                        style={{
-                          fontFamily: "Nunito",
-                          borderBottom: "1.3px solid #70707033",
-                        }}
-                      >
-                        <Task selectTask={handleSelectTask} task={task} key={idx} selectedTaskId={selectedTaskId} />
-                      </div>
-                    ))}
-                  </ReactSortable>
-                </Suspense>
-              )}
-            </Box>
-
-            {/* <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>
-              {(taskList || []).map((task, idx) => (
-                <div key={idx} className="task-item-one">
-                  <Task selectTask={handleSelectTask} task={task} key={idx} selectedTaskId={selectedTaskId} />
-                </div>
-              ))}
-            </ReactSortable> */}
-          </Card.Body>
-        </Card>
-      ) : (
-        <Card className="mb-0 shadow-none" style={{ borderTop: "1.3px solid #70707033" }}>
-          <Card.Body className="px-0 text-center pt-4 pb-4">
-            <span>No tasks found...</span>
-          </Card.Body>
-        </Card>
+              </Card.Body>
+            </Card>
+          </Collapse>
+        </>
       )}
     </>
   );

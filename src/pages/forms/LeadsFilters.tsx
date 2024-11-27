@@ -152,7 +152,9 @@ const LeadsFilters = (props: any) => {
         <Row>
           <Col className="d-flex justify-content-start align-items-center">
             <span className="mt-3 ms-3 w-full">
-              <h4 className="header-title mb-3" style={{fontSize:"18px"}}>Filters</h4>
+              <h4 className="header-title mb-3" style={{ fontSize: "18px" }}>
+                Filters
+              </h4>
             </span>
           </Col>
           <Col className="d-flex justify-content-end align-items-center">
@@ -285,7 +287,7 @@ const LeadsFilters = (props: any) => {
 
               <Col lg={3} md={4} sm={6} xs={12}>
                 <Form.Group controlId="lead_received_date" className="cust-date mb-3">
-                  <Form.Label>Lead Received Date</Form.Label>
+                  <Form.Label>Date</Form.Label>
                   <Form.Control
                     type="date"
                     name="lead_received_date"

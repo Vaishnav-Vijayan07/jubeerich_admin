@@ -99,12 +99,14 @@ button.react-datepicker__close-icon {
 }
 
 .unselected-task {
-  border-left: 3px solid #ffffff;
+  border-left: none;
+  padding: 2px 6px;
 }
 
 .selected-task {
   background-color: rgb(237, 237, 237);
   border-left: 3px solid #6558dc;
+  padding-left: 3px;
 }
 
 .table-responsive {

@@ -6,6 +6,8 @@ import moment from "moment";
 import { TaskItemTypes } from "../../../lead_management/Tasks/List/data";
 import TaskSectionMaterial from "./TaskSectionMaterial";
 import StudentDetailsMaterial from "./StudentDetailsMaterial";
+import ReactDatePicker from "react-datepicker";
+import calender from "../../../../assets/images/icons/calendar.svg";
 
 const TasksMaterial = () => {
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
@@ -38,7 +40,7 @@ const TasksMaterial = () => {
           }
         });
         setPendingTasks(pendingArray);
-        setIncompleteTasks(res.data?.pendingTasks)
+        setIncompleteTasks(res.data?.pendingTasks);
 
         if (selectedTaskId) {
           const pendingSelected = pendingArray?.filter((item: any) => item.id == selectedTaskId);
@@ -72,15 +74,59 @@ const TasksMaterial = () => {
           <Row>
             <Col>
               <Card>
-                <Card.Body style={{ minHeight: "68vh", maxHeight: "68vh" }}>
-                  <Row>
+                <Card.Body style={{ minHeight: "68vh" }}>
+                  <Row className="pb-2" style={{ borderBottom: "1.3px solid #70707033" }}>
+                    <Col>
+                      <h5 className=" text-secondary" style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: "16px" }}>
+                        Task List{" "}
+                        <span className="text-danger" style={{ fontWeight: 500, fontSize: "14px" }}>
+                          ({pendingTasks?.length})
+                        </span>
+                      </h5>
+                    </Col>
+                    <Col className="d-flex align-items-center justify-content-end">
+                      <img
+                        src={calender}
+                        alt="date logo"
+                        width={16.3}
+                        className="calender-img"
+                        style={{ paddingBottom: "3px" }}
+                      />
+                      <ReactDatePicker
+                        minDate={new Date()}
+                        onChange={(date) => [setSelectedDate(date), getTaskList(date)]}
+                        selected={selectedDate || new Date()}
+                        dateFormat={"dd-MM-yyyy"}
+                        onKeyDown={(e) => e.preventDefault()}
+                        className="custom-react-date-picker"
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="mt-2">
                     <Col className="p-0 m-0">
                       <div className="mt-0">
                         <TaskSectionMaterial
-                          title={"Task List"}
+                          title={"Past"}
                           initialTaskId={selectedTask?.id}
-                          tasks={pendingTasks}
-                          incompleteTasks={incompleteTasks || []}
+                          tasks={incompleteTasks || []}
+                          selectTask={selectTask}
+                          date={""}
+                          initialLoading={initialLoading}
+                          setSelectedDate={function (value: React.SetStateAction<string>): void {
+                            setSelectedDate(value);
+                            getTaskList(value);
+                          }}
+                        ></TaskSectionMaterial>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="p-0 m-0 mt-3">
+                      <div className="mt-0">
+                        <TaskSectionMaterial
+                          title={"Today"}
+                          initialTaskId={selectedTask?.id}
+                          tasks={pendingTasks || []}
                           selectTask={selectTask}
                           date={""}
                           initialLoading={initialLoading}
