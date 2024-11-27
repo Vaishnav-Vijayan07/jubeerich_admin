@@ -14,6 +14,7 @@ import { familyDetailsReducer } from "./FamilyDataReducer";
 import axios from "axios";
 import GrandParentDetailsForm from "./GrandParentsDetailForm";
 import SkeletonComponent from "../StudyPreference/LoadingSkeleton";
+import { regrexValidation } from "../../../../../utils/regrexValidation";
 
 interface Props {
   studentId: string | number;
@@ -388,21 +389,83 @@ const FamilyDetails = ({ studentId }: Props) => {
 
     if (relation === "siblings") {
       const [_, index, siblingField] = name.split(".");
+
+      // const regexPatterns: Record<string, RegExp> = {
+      //   name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   occupation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      // };
+  
+      // // Check if the field has a validation regex
+      // if (regexPatterns[siblingField]) {
+      //   if (!regexPatterns[siblingField].test(value.toString())) {
+      //     console.error(`Invalid ${siblingField}: ${value}`);
+      //     return; // Stop updating if validation fails
+      //   }
+      // }
+
+      if (!regrexValidation(siblingField, value.toString())) {
+        console.error(`Invalid ${siblingField}: ${value}`);
+        return; // Stop updating if validation fails
+      }
+
       dispatch({
         type: "UPDATE_SIBLING",
         index: parseInt(index),
         field: siblingField,
         value: type === "checkbox" ? checked : value,
       });
+
     } else if (relation === "children") {
       const [_, index, childField] = name.split(".");
+
+      // const regexPatterns: Record<string, RegExp> = {
+      //   name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   occupation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      // };
+  
+      // // Check if the field has a validation regex
+      // if (regexPatterns[childField]) {
+      //   if (!regexPatterns[childField].test(value.toString())) {
+      //     console.error(`Invalid ${childField}: ${value}`);
+      //     return; // Stop updating if validation fails
+      //   }
+      // }
+
+      if (!regrexValidation(childField, value.toString())) {
+        console.error(`Invalid ${childField}: ${value}`);
+        return; // Stop updating if validation fails
+      }
+
       dispatch({
         type: "UPDATE_CHILD",
         index: parseInt(index),
         field: childField,
         value: type === "checkbox" ? checked : value,
       });
+
     } else if (relation === "mother" || relation === "father" || relation === "spouse") {
+      
+      const regexPatterns: Record<string, RegExp> = {
+        [`${relation}.name`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+        [`${relation}.occupation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+        [`${relation}.designation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+        [`${relation}.current_income_source`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/
+      };
+
+      // Check if the field has a validation regex
+      if (regexPatterns[name]) {
+        if (!regexPatterns[name].test(value.toString())) {
+          console.error(`Invalid ${name}: ${value}`);
+          return; // Stop updating if validation fails
+        }
+      }
+
       dispatch({
         type: "UPDATE_PARENT",
         parentType: relation,
@@ -421,12 +484,29 @@ const FamilyDetails = ({ studentId }: Props) => {
       relation === "mother_in_law_info" ||
       relation === "father_in_law_info"
     ) {
+
+      const regexPatterns: Record<string, RegExp> = {
+        [`${relation}.name`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+        [`${relation}.occupation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+        [`${relation}.designation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+        [`${relation}.current_income_source`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/
+      };
+  
+      // Check if the field has a validation regex
+      if (regexPatterns[name]) {
+        if (!regexPatterns[name].test(value.toString())) {
+          console.error(`Invalid ${name}: ${value}`);
+          return; // Stop updating if validation fails
+        }
+      }
+
       dispatch({
         type: "UPDATE_GRAND_PARENT",
         parentType: relation,
         field,
         value: type === "checkbox" ? checked : value,
       });
+
     } else if (name.startsWith("accompanying_")) {
       dispatch({
         type: "UPDATE_ACCOMPANYING",

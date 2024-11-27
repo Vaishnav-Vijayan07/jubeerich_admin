@@ -18,7 +18,7 @@ const WorkExpRow = ({
       <Row key={index} className="mb-3 p-2 border-bottom rounded">
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="qualification">
-            <Form.Label>Work Experience</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Work Experience</Form.Label>
             <FormInput
               type="number"
               name="years"
@@ -40,7 +40,7 @@ const WorkExpRow = ({
 
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="company">
-            <Form.Label>Company</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Company</Form.Label>
             <FormInput
               type="text"
               name="company"
@@ -61,7 +61,7 @@ const WorkExpRow = ({
 
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="designation">
-            <Form.Label>Designation</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Designation</Form.Label>
             <FormInput
               type="text"
               name="designation"

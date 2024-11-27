@@ -13,6 +13,7 @@ import validateFields from "../../../../helpers/validateHelper";
 import GapRow from "./gapRow";
 import GapRows from "./gapRow";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
+import { regrexValidation } from "../../../../utils/regrexValidation";
 
 const initialPrimaryState = {
   id: null,
@@ -128,6 +129,24 @@ const EducationDetails = withSwal((props: any) => {
 
   // Handlers for primary education state update
   const handlePrimaryChange = (name: string, value: any) => {
+
+    // const regexPatterns: Record<string, RegExp> = {
+    //   board_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+    // };
+
+    // // Check if the field has a validation regex
+    // if (regexPatterns[name]) {
+    //   if (!regexPatterns[name].test(value)) {
+    //     console.error(`Invalid ${name}: ${value}`);
+    //     return; // Stop updating if validation fails
+    //   }
+    // }
+    
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
+    }
+
     setPrimaryDetails((prevDetails: any) => ({
       ...prevDetails,
       [name]: value,
@@ -136,6 +155,24 @@ const EducationDetails = withSwal((props: any) => {
 
   // Handlers for secondary education state update
   const handleSecondaryChange = (name: string, value: any) => {
+
+    // const regexPatterns: Record<string, RegExp> = {
+    //   board_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+    // };
+
+    // // Check if the field has a validation regex
+    // if (regexPatterns[name]) {
+    //   if (!regexPatterns[name].test(value)) {
+    //     console.error(`Invalid ${name}: ${value}`);
+    //     return; // Stop updating if validation fails
+    //   }
+    // }
+
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
+    }
+    
     setSecondaryDetails((prevDetails: any) => ({
       ...prevDetails,
       [name]: value,

@@ -75,7 +75,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
       {/* Start Date */}
       <Col md={4} lg={4} xl={4} xxl={4}>
         <Form.Group className="mb-3" controlId={`start_date-${index}`}>
-          <Form.Label>Start Date</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Start Date</Form.Label>
           <FormInput
             type="date"
             name="start_date"
@@ -96,7 +96,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
       {/* End Date */}
       <Col md={4} lg={4} xl={4} xxl={4}>
         <Form.Group className="mb-3" controlId={`end_date-${index}`}>
-          <Form.Label>End Date</Form.Label>
+          <Form.Label><span className="text-danger">*</span> End Date</Form.Label>
           <FormInput
             type="date"
             name="end_date"
@@ -115,7 +115,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
       {/* Supporting Document */}
       <Col md={4} lg={4} xl={4} xxl={4}>
         <Form.Group className="mb-3" controlId={`supporting_document-${index}`}>
-          <Form.Label>Supporting Document</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Supporting Document</Form.Label>
           <Form.Control
             type="file"
             name="supporting_document"
@@ -147,7 +147,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
       {/* Reason */}
       <Col md={8} lg={8} xl={8} xxl={8}>
         <Form.Group className="mb-3" controlId={`reason-${index}`}>
-          <Form.Label>Reason</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Reason</Form.Label>
           <Form.Control
             as="textarea"
             rows={4}

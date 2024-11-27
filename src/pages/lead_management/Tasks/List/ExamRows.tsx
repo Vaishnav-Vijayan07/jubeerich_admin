@@ -33,7 +33,7 @@ const ExamData: React.FC<ExamDataProps> = ({
     <Row key={index} className="p-2 border-bottom rounded">
       <Col md={4} lg={4}>
         <Form.Group className="mb-3">
-          <Form.Label>Exam Type</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Exam Type</Form.Label>
           <Form.Select
             aria-label="Select exam type"
             // name="exam_name"
@@ -54,7 +54,7 @@ const ExamData: React.FC<ExamDataProps> = ({
 
       <Col md={4} lg={4}>
         <Form.Group className="mb-3" controlId="listening_score">
-          <Form.Label>Listening Score</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Listening Score</Form.Label>
           <Form.Control
             type="text"
             name="listening_score"
@@ -68,7 +68,7 @@ const ExamData: React.FC<ExamDataProps> = ({
       </Col>
       <Col md={4} lg={4}>
         <Form.Group className="mb-3" controlId="speaking_score">
-          <Form.Label>Speaking Score</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Speaking Score</Form.Label>
           <Form.Control
             type="text"
             name="speaking_score"
@@ -82,7 +82,7 @@ const ExamData: React.FC<ExamDataProps> = ({
       </Col>
       <Col md={4} lg={4}>
         <Form.Group className="mb-3" controlId="reading_score">
-          <Form.Label>Reading Score</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Reading Score</Form.Label>
           <Form.Control
             type="text"
             name="reading_score"
@@ -96,7 +96,7 @@ const ExamData: React.FC<ExamDataProps> = ({
       </Col>
       <Col md={4} lg={4}>
         <Form.Group className="mb-3" controlId="writing_score">
-          <Form.Label>Writing Score</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Writing Score</Form.Label>
           <Form.Control
             type="text"
             name="writing_score"
@@ -110,7 +110,7 @@ const ExamData: React.FC<ExamDataProps> = ({
       </Col>
       <Col md={4} lg={4}>
         <Form.Group className="mb-3" controlId="marks">
-          <Form.Label>Overall Score</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Overall Score</Form.Label>
           <Form.Control
             type="text"
             name="overall_score"
@@ -124,7 +124,7 @@ const ExamData: React.FC<ExamDataProps> = ({
       </Col>
       <Col md={4} lg={4}>
         <Form.Group className="mb-3" controlId="exam_date">
-          <Form.Label>Exam Date</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Exam Date</Form.Label>
           <Form.Control
             type="date"
             name="exam_date"
@@ -138,7 +138,7 @@ const ExamData: React.FC<ExamDataProps> = ({
       </Col>
       <Col md={4} lg={4} className="d-flex justify-content-between align-items-center">
         <Form.Group className="mb-3 form-group">
-          <Form.Label>Upload Score Card</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Upload Score Card</Form.Label>
           <Form.Control name="score_card" type="file" onChange={(e) => handleExamFileChange(index, e)} />
 
           {item.errors?.score_card && <Form.Text className="text-danger">{item.errors.score_card}</Form.Text>}
