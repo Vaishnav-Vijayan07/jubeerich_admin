@@ -55,6 +55,19 @@ const PassportDetails = ({ studentId }: Props) => {
   const handleInputChange = (e: any, index?: number) => {
     const { name, value } = e.target;
 
+    const regexPatterns: Record<string, RegExp> = {
+      name_change: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      passport_number: /^[A-Z0-9]{0,9}$/,
+    };
+
+    // Check if the field has a validation regex
+    if (regexPatterns[name]) {
+      if (!regexPatterns[name].test(value.toString())) {
+        console.error(`Invalid ${name}: ${value}`);
+        return; // Stop updating if validation fails
+      }
+    }
+
     if (index !== undefined) {
       // Handle change for a specific passport in the passports array
       const updatedPassports = [...passportDetails.passports];

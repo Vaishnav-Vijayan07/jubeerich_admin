@@ -192,6 +192,7 @@ const BasicInfo = withSwal((props: any) => {
     // Define regex for validation
     const regexPatterns: Record<string, RegExp> = {
       full_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      city: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
       address: /^[a-zA-Z0-9À-ÖØ-öø-ÿ'.,\- ]*$/,
       phone: /^\+?[0-9]{0,15}$/,
       secondary_number: /^\+?[0-9]{0,15}$/,
@@ -201,6 +202,8 @@ const BasicInfo = withSwal((props: any) => {
       remarks: /^[a-zA-Z0-9À-ÖØ-öø-ÿ'.,\- ]*$/,
       concern_on_medical_condition_details: /^[a-zA-Z0-9À-ÖØ-öø-ÿ'.,\- ]*$/,
       criminal_offence_details: /^[a-zA-Z0-9À-ÖØ-öø-ÿ'.,\- ]*$/,
+      state: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      country: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
     };
 
     // Check if the field has a validation regex
@@ -642,7 +645,7 @@ const BasicInfo = withSwal((props: any) => {
           </Row>
 
           <Row>
-            <Col xl={3} xxl={2}>
+            {/* <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="passport_no">
                 <Form.Label>Passport No</Form.Label>
                 <FormInput
@@ -657,7 +660,7 @@ const BasicInfo = withSwal((props: any) => {
                   <Form.Text className="text-danger">{basicInfo?.errors?.passport_no}</Form.Text>
                 )}
               </Form.Group>
-            </Col>
+            </Col> */}
 
             <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="gender">
@@ -698,7 +701,7 @@ const BasicInfo = withSwal((props: any) => {
             <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="dob">
                 <Form.Label>
-                  <span className="text-danger">*</span> Date of Birth
+                  Date of Birth
                 </Form.Label>
                 <FormInput
                   type="date"

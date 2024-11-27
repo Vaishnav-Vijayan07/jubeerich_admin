@@ -106,6 +106,19 @@ const WorkExpereince = withSwal((props: any) => {
   }, [workExperienceFromApi]);
 
   const handleWorkExperienceChange = (name: string, value: any, index: number) => {
+
+    const regexPatterns: Record<string, RegExp> = {
+      designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+    };
+
+    // Check if the field has a validation regex
+    if (regexPatterns[name]) {
+      if (!regexPatterns[name].test(value)) {
+        console.error(`Invalid ${name}: ${value}`);
+        return; // Stop updating if validation fails
+      }
+    }
+
     setWorkExperienceFromApi((prevState: any) =>
       prevState.map((item: any, i: number) => (i === index ? { ...item, [name]: value } : item))
     );

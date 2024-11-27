@@ -82,6 +82,20 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
 
   // Handlers for graduation details state update
   const handleGraduationDetailsChange = (name: string, value: any, index: any) => {
+
+    const regexPatterns: Record<string, RegExp> = {
+      university_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      percentage: /^\+?[0-9]{0,4}(\.[0-9]+)?$/
+    };
+
+    // Check if the field has a validation regex
+    if (regexPatterns[name]) {
+      if (!regexPatterns[name].test(value)) {
+        console.error(`Invalid ${name}: ${value}`);
+        return; // Stop updating if validation fails
+      }
+    }
+    
     const newDetails = [...graduationDetails];
     newDetails[index][name] = value;
     setGraduationDetails(newDetails);

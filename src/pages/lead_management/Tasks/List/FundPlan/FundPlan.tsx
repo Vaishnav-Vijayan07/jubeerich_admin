@@ -100,6 +100,22 @@ const FundPlan = ({ student_id }: Props) => {
   };
 
   const handleFundPlanInputChange = (index: number, name: string, value: string | number | File) => {
+
+    const regexPatterns: Record<string, RegExp> = {
+      sponsor_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      approx_annual_income: /^\+?[0-9]{0,15}(\.[0-9]+)?$/,
+      relation_with_sponsor: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      sponsorship_amount: /^\+?[0-9]{0,15}(\.[0-9]+)?$/,
+    };
+
+    // Check if the field has a validation regex
+    if (regexPatterns[name]) {
+      if (!regexPatterns[name].test(value.toString())) {
+        console.error(`Invalid ${name}: ${value}`);
+        return; // Stop updating if validation fails
+      }
+    }
+    
     const newFundPlan = [...fundPlan];
     newFundPlan[index] = {
       ...newFundPlan[index], // Ensure you don't overwrite the whole object
