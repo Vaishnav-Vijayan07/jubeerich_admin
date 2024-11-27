@@ -850,7 +850,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       disablePortal
                       disableClearable
                       options={formattedStatus || []}
-                      value={basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
+                      // value={basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
+                      value={basicData?.preferredCountries?.length > 0 ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name : "Change status"}
                       sx={{ width: 300, paddingTop: "1.2rem",flex:1,fontSize:'0.8rem' }}
                       renderInput={(params) => (
                         <TextField
@@ -913,7 +914,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       disablePortal
                       disableClearable
                       options={formattedFlagData || []}
-                      value={basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Change Flag"}
+                      value={basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Add Flag"}
                       sx={{ width: "100%", paddingTop: "1.2rem" }}
                       renderInput={(params) => (
                         <TextField
