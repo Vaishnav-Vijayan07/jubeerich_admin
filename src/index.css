@@ -556,8 +556,3 @@ select::-ms-expand {
 .form-group{
   width: 100%;
 }
-
-.task-item-one{
-  padding-left: 15px;
-  overflow: visible;
-}

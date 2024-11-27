@@ -60,7 +60,7 @@ const Task = ({
         style={{
           display: "grid",
           gridTemplateColumns: "1fr auto",
-          width: "100%",
+          // width: "100%",
         }}
       >
         <div
@@ -122,39 +122,39 @@ const Task = ({
         </div>
 
         {/* <Badge className="w-100" color={statusColor} variant="dot" sx={{ ...badgeStyle }}> */}
-          <div
-            style={{
-              whiteSpace: "nowrap",
-              textAlign: "right",
-              overflow: "hidden",
-              display: "flex",
-              flexDirection: "column",
-              gap: "4px",
-            }}
-          >
-            {statusName && (
-              <small
-                style={{
-                  backgroundColor: `${statusColor}`,
-                  color: "white",
-                  border: `1px solid #122d3d`,
-                  borderRadius: "5px",
-                  padding: "2px 10px",
-                  width: "fit-content",
-                  fontSize: "0.5rem",
-                  borderColor: `${statusColor}`,
-                  height: "max-content",
-                  textAlign: "center",
-                  whiteSpace: "nowrap",
-                  opacity: "0.8",
-                }}
-                className={classNames("rounded-pill ms-2")}
-              >
-                {statusName}
-              </small>
-            )}
-            <span style={{ fontSize: "0.7rem" }}>{calculateDaysAgo(task.createdAt)}</span>
-          </div>
+        <div
+          style={{
+            whiteSpace: "nowrap",
+            textAlign: "right",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            gap: "4px",
+          }}
+        >
+          {statusName && (
+            <small
+              style={{
+                backgroundColor: `${statusColor}`,
+                color: "white",
+                border: `1px solid #122d3d`,
+                borderRadius: "5px",
+                padding: "2px 10px",
+                width: "fit-content",
+                fontSize: "0.5rem",
+                borderColor: `${statusColor}`,
+                height: "max-content",
+                textAlign: "center",
+                whiteSpace: "nowrap",
+                opacity: "0.8",
+              }}
+              className={classNames("rounded-pill ms-2")}
+            >
+              {statusName}
+            </small>
+          )}
+          <span style={{ fontSize: "0.7rem" }}>{calculateDaysAgo(task.createdAt)}</span>
+        </div>
         {/* </Badge> */}
       </Row>
       {/* <Row
@@ -414,20 +414,20 @@ const TaskSectionMaterial = ({
               scrollbarWidth: "none",
             }}
           >
-              <Box sx={{ width: '100%' }}>
-                <Tabs
-                  value={tabValue}
-                  onChange={handleTabChange}
-                  textColor="secondary"
-                  indicatorColor="secondary"
-                  aria-label="secondary tabs example"
-                  sx={{ ...tabsStyle }}
-                >
-                  <Tab value="all" label='All'
-                    sx={{ ...individualTabStyle }} />
-                  <Tab value="pending" label='Pending' sx={{ ...individualTabStyle }} />
-                </Tabs>
-              </Box>
+            <Box sx={{ width: '100%' }}>
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                textColor="secondary"
+                indicatorColor="secondary"
+                aria-label="secondary tabs example"
+                sx={{ ...tabsStyle }}
+              >
+                <Tab value="all" label='All'
+                  sx={{ ...individualTabStyle }} />
+                <Tab value="pending" label='Pending' sx={{ ...individualTabStyle }} />
+              </Tabs>
+            </Box>
 
             <Box sx={{ mt: 2 }}>
               {tabValue === "all" && (
@@ -436,7 +436,7 @@ const TaskSectionMaterial = ({
                     {(taskList || []).map((task, idx) => (
                       <div
                         key={idx}
-                        className={classNames("unselected-task", {
+                        className={classNames("task-item-one unselected-task", {
                           "selected-task": task.id === selectedTaskId,
                         })}
                         onClick={() => selectTask(task)}
@@ -456,7 +456,14 @@ const TaskSectionMaterial = ({
                 <Suspense fallback={null}>
                   <ReactSortable group="taskList1" handle=".task-item" list={taskList} setList={setTaskList}>
                     {(incompleteTasks || []).map((task, idx) => (
-                      <div key={idx} className="task-item-one ">
+                      <div key={idx} className={classNames("task-item-one unselected-task", {
+                        "selected-task": task.id === selectedTaskId,
+                      })}
+                        style={{
+                          fontFamily: "Nunito",
+                          borderBottom: "1.3px solid #70707033",
+                        }}
+                      >
                         <Task selectTask={handleSelectTask} task={task} key={idx} selectedTaskId={selectedTaskId} />
                       </div>
                     ))}

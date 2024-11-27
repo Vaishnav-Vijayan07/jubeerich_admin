@@ -29,12 +29,12 @@
 // }
 
 .task-item-one {
+    padding-left: 5px;
     transition: box-shadow 0.3s ease-in-out; /* Smooth transition for the shadow */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0); /* No shadow by default */
 }
 
 .task-item-one:hover {
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow on hover */
+    box-shadow: 0px 0.5px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow on hover */
 }
 
 .content {
