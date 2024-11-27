@@ -506,6 +506,22 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     }
   };
 
+  const inputStyle = {
+    "& .MuiInputBase-root": {
+      padding: "4px 12px",
+    },
+    "& .MuiInputBase-input": {
+      height: "1.1rem",
+      paddingTop: "6px",
+      paddingBottom: "6px",
+      //   marginBottom: '6px',
+      lineHeight: "1.2rem",
+    },
+    "& .MuiInputLabel-root": {
+      lineHeight: "normal",
+    },
+  }
+
   return (
     <>
       <Row>
@@ -839,21 +855,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          sx={{
-                            "& .MuiInputBase-root": {
-                              padding: "4px 12px",
-                            },
-                            "& .MuiInputBase-input": {
-                              height: "1.2rem",
-                              paddingTop: "6px",
-                              paddingBottom: "6px",
-                              //   marginBottom: '6px',
-                              lineHeight: "1.2rem",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "normal",
-                            },
-                          }}
+                          sx={{...inputStyle}}
                           label="Status"
                         />
                       )}
@@ -916,28 +918,13 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          sx={{
-                            "& .MuiInputBase-root": {
-                              padding: "4px 12px",
-                            },
-                            "& .MuiInputBase-input": {
-                              // height: "1.2rem",
-                              paddingTop: "6px",
-                              paddingBottom: "6px",
-                              //   marginBottom: '6px',
-                              lineHeight: "1.2rem",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "normal",
-                            },
-                          }}
+                          sx={{...inputStyle}}
                           label="Flag"
                         />
                       )}
                       onChange={(event, newValue) => {
                         if (newValue) {
-                          handleStatusChange(newValue.value);
-                          setStatusId(newValue.value);
+                          updateFlagStatus(newValue.value)
                           setViewOnly(false);
                         }
                       }}
