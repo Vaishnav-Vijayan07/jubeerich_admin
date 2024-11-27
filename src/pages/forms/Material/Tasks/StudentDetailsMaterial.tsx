@@ -520,7 +520,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     "& .MuiInputLabel-root": {
       lineHeight: "normal",
     },
-  }
+  };
 
   return (
     <>
@@ -529,7 +529,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           <CardLoadingSkeleton />
         ) : (
           <Card className="ribbon-box ms-1 pb-0" style={{ fontFamily: "Nunito" }}>
-            <Card.Body style={{ paddingBottom: "4px", padding: "10px 2px", margin: "10px" }}>
+            <Card.Body style={{ padding: "10px 2px", margin: "10px", paddingBottom: "5px" }}>
               <Row>
                 <Col>
                   <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
@@ -648,8 +648,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   </span>
                 </Col>
               </Row>
-              <Row className="mb-2">
-                <Row className="mt-1" style={{ paddingRight: "0px" }}>
+              <Row className="mb-0">
+                <Row className="mt-3" style={{ paddingRight: "0px" }}>
                   {/* <Col>
                     <h4 className="text-secondary mt-1">Task Details</h4>
                   </Col> */}
@@ -677,7 +677,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     </div>
                   </Col>
                 </Row>
-                <div className="action-icon d-flex justify-content-end align-items-center">
+                {/* <div className="action-icon d-flex justify-content-end align-items-center">
                   <Tooltip title="View All Details">
                     <MatButton
                       onClick={() => navigate(`/leads/manage/${studentId}`)}
@@ -696,8 +696,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       </Typography>
                     </MatButton>
                   </Tooltip>
-                </div>
-                <div className="grid-container mb-2">
+                </div> */}
+                <div className="grid-container mb-1">
                   {/* <div className="">
                     <p className="mt-2 mb-1 text-muted fw-light">Name</p>
                     <div className="d-flex align-items-start" style={{ gap: "5px" }}>
@@ -767,6 +767,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                   </div>
 
                   <br className="grid-br" />
+
                   {/* <div className="">
                     <p className="mt-2 mb-1 text-muted fw-light">Source</p>
                     <div className="d-flex align-items-center" style={{ gap: "5px" }}>
@@ -790,6 +791,28 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       <h5 className="m-0 font-size-14">{basicData?.city}</h5>
                     </div>
                   </div> */}
+                </div>
+
+                <div className="action-icon d-flex justify-content-end align-items-center">
+                  <Tooltip title="View All Details">
+                    <MatButton
+                      onClick={() => navigate(`/leads/manage/${studentId}`)}
+                      startIcon={<VisibilityIcon />}
+                      variant="outlined"
+                      size="small"
+                    >
+                      <Typography
+                        sx={{
+                          fontFamily: "'Nunito', sans-serif",
+                          textTransform: "none",
+                          fontWeight: "600",
+                          fontSize: "12px",
+                        }}
+                      >
+                        View More
+                      </Typography>
+                    </MatButton>
+                  </Tooltip>
                 </div>
               </Row>
               {/* <Row>
@@ -851,15 +874,13 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       disableClearable
                       options={formattedStatus || []}
                       // value={basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
-                      value={basicData?.preferredCountries?.length > 0 ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name : "Change status"}
-                      sx={{ width: 300, paddingTop: "1.2rem",flex:1,fontSize:'0.8rem' }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          sx={{...inputStyle}}
-                          label="Status"
-                        />
-                      )}
+                      value={
+                        basicData?.preferredCountries?.length > 0
+                          ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
+                          : "Change status"
+                      }
+                      sx={{ width: 300, paddingTop: "1.2rem", flex: 1, fontSize: "0.8rem" }}
+                      renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} label="Status" />}
                       onChange={(event, newValue) => {
                         if (newValue) {
                           handleStatusChange(newValue.value);
@@ -899,7 +920,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           color: "white",
                           border: `1px solid ${basicData?.user_primary_flags?.color}`,
                           borderRadius: "5px",
-                          padding: "6px 18px", 
+                          padding: "6px 18px",
                           height: "fit-content",
                         }}
                         className={classNames("rounded-pill me-1")}
@@ -916,16 +937,10 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       options={formattedFlagData || []}
                       value={basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Add Flag"}
                       sx={{ width: "100%", paddingTop: "1.2rem" }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          sx={{...inputStyle}}
-                          label="Flag"
-                        />
-                      )}
+                      renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} label="Flag" />}
                       onChange={(event, newValue) => {
                         if (newValue) {
-                          updateFlagStatus(newValue.value)
+                          updateFlagStatus(newValue.value);
                           setViewOnly(false);
                         }
                       }}
@@ -997,7 +1012,13 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
             <Card.Body>
               <Row>
                 <Box sx={{ width: "100%" }}>
-                  <Tabs value={tabValue} onChange={handleTabChange} textColor="secondary" aria-label="secondary tabs example" sx={{ ...tabsStyle }}>
+                  <Tabs
+                    value={tabValue}
+                    onChange={handleTabChange}
+                    textColor="secondary"
+                    aria-label="secondary tabs example"
+                    sx={{ ...tabsStyle }}
+                  >
                     {/* <Tab value="comments" label="Comments" sx={{ ...individualTabStyle }} /> */}
 
                     <Tab value="history" label="History" sx={{ ...individualTabStyle }} />
