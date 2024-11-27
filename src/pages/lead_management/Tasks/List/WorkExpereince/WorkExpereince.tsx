@@ -12,6 +12,7 @@ import GapRows from ".././gapRow";
 import EmploymentHistory from ".././EmploymentHistory";
 import { useSelector } from "react-redux";
 import SkeletonComponent from "../StudyPreference/LoadingSkeleton";
+import { regrexValidation } from "../../../../../utils/regrexValidation";
 
 const initialStateWork = {
   years: 0,
@@ -107,16 +108,21 @@ const WorkExpereince = withSwal((props: any) => {
 
   const handleWorkExperienceChange = (name: string, value: any, index: number) => {
 
-    const regexPatterns: Record<string, RegExp> = {
-      designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-    };
+    // const regexPatterns: Record<string, RegExp> = {
+    //   designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+    // };
 
-    // Check if the field has a validation regex
-    if (regexPatterns[name]) {
-      if (!regexPatterns[name].test(value)) {
-        console.error(`Invalid ${name}: ${value}`);
-        return; // Stop updating if validation fails
-      }
+    // // Check if the field has a validation regex
+    // if (regexPatterns[name]) {
+    //   if (!regexPatterns[name].test(value)) {
+    //     console.error(`Invalid ${name}: ${value}`);
+    //     return; // Stop updating if validation fails
+    //   }
+    // }
+
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
     }
 
     setWorkExperienceFromApi((prevState: any) =>

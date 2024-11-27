@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import validateFields from "../../../../helpers/validateHelper";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
+import { regrexValidation } from "../../../../utils/regrexValidation";
 
 const initialStateAcademic = {
   qualification: "",
@@ -92,20 +93,25 @@ const AcademicInfo = withSwal((props: any) => {
   ) => {
     const { name, value } = event.target;
 
-    const regexPatterns: Record<string, RegExp> = {
-      listening_score: /^\+?[0-9]{0,5}$/,
-      speaking_score: /^\+?[0-9]{0,5}$/,
-      reading_score: /^\+?[0-9]{0,5}$/,
-      writing_score: /^\+?[0-9]{0,5}$/,
-      overall_score: /^\+?[0-9]{0,5}$/,
-    };
+    // const regexPatterns: Record<string, RegExp> = {
+    //   listening_score: /^\+?[0-9]{0,5}$/,
+    //   speaking_score: /^\+?[0-9]{0,5}$/,
+    //   reading_score: /^\+?[0-9]{0,5}$/,
+    //   writing_score: /^\+?[0-9]{0,5}$/,
+    //   overall_score: /^\+?[0-9]{0,5}$/,
+    // };
 
-    // Check if the field has a validation regex
-    if (regexPatterns[name]) {
-      if (!regexPatterns[name].test(value)) {
-        console.error(`Invalid ${name}: ${value}`);
-        return; // Stop updating if validation fails
-      }
+    // // Check if the field has a validation regex
+    // if (regexPatterns[name]) {
+    //   if (!regexPatterns[name].test(value)) {
+    //     console.error(`Invalid ${name}: ${value}`);
+    //     return; // Stop updating if validation fails
+    //   }
+    // }
+
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
     }
     
     setter((prevData) => {

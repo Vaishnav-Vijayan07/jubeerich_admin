@@ -14,6 +14,7 @@ import { familyDetailsReducer } from "./FamilyDataReducer";
 import axios from "axios";
 import GrandParentDetailsForm from "./GrandParentsDetailForm";
 import SkeletonComponent from "../StudyPreference/LoadingSkeleton";
+import { regrexValidation } from "../../../../../utils/regrexValidation";
 
 interface Props {
   studentId: string | number;
@@ -389,20 +390,25 @@ const FamilyDetails = ({ studentId }: Props) => {
     if (relation === "siblings") {
       const [_, index, siblingField] = name.split(".");
 
-      const regexPatterns: Record<string, RegExp> = {
-        name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-        occupation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-        organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-        designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-        current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      };
+      // const regexPatterns: Record<string, RegExp> = {
+      //   name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   occupation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      // };
   
-      // Check if the field has a validation regex
-      if (regexPatterns[siblingField]) {
-        if (!regexPatterns[siblingField].test(value.toString())) {
-          console.error(`Invalid ${siblingField}: ${value}`);
-          return; // Stop updating if validation fails
-        }
+      // // Check if the field has a validation regex
+      // if (regexPatterns[siblingField]) {
+      //   if (!regexPatterns[siblingField].test(value.toString())) {
+      //     console.error(`Invalid ${siblingField}: ${value}`);
+      //     return; // Stop updating if validation fails
+      //   }
+      // }
+
+      if (!regrexValidation(siblingField, value.toString())) {
+        console.error(`Invalid ${siblingField}: ${value}`);
+        return; // Stop updating if validation fails
       }
 
       dispatch({
@@ -415,20 +421,25 @@ const FamilyDetails = ({ studentId }: Props) => {
     } else if (relation === "children") {
       const [_, index, childField] = name.split(".");
 
-      const regexPatterns: Record<string, RegExp> = {
-        name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-        occupation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-        organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-        designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-        current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      };
+      // const regexPatterns: Record<string, RegExp> = {
+      //   name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   occupation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      //   current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+      // };
   
-      // Check if the field has a validation regex
-      if (regexPatterns[childField]) {
-        if (!regexPatterns[childField].test(value.toString())) {
-          console.error(`Invalid ${childField}: ${value}`);
-          return; // Stop updating if validation fails
-        }
+      // // Check if the field has a validation regex
+      // if (regexPatterns[childField]) {
+      //   if (!regexPatterns[childField].test(value.toString())) {
+      //     console.error(`Invalid ${childField}: ${value}`);
+      //     return; // Stop updating if validation fails
+      //   }
+      // }
+
+      if (!regrexValidation(childField, value.toString())) {
+        console.error(`Invalid ${childField}: ${value}`);
+        return; // Stop updating if validation fails
       }
 
       dispatch({
