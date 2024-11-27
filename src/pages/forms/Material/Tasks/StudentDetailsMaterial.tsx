@@ -899,7 +899,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           color: "white",
                           border: `1px solid ${basicData?.user_primary_flags?.color}`,
                           borderRadius: "5px",
-                          padding: "6px 18px",
+                          padding: "6px 18px", 
                           height: "fit-content",
                         }}
                         className={classNames("rounded-pill me-1")}
