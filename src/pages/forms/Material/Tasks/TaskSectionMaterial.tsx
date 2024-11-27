@@ -32,6 +32,7 @@ const Task = ({
   selectedTaskId: number | null;
 }) => {
   const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
+  const statusName = task?.student_name?.preferredCountries[0]?.country_status[0]?.status_name
 
   const badgeStyle = {
     '& .MuiBadge-dot': {
@@ -114,7 +115,7 @@ const Task = ({
           </div>
         </div>
 
-        <Badge className="w-100" color={statusColor} variant="dot" sx={{ ...badgeStyle }}>
+        {/* <Badge className="w-100" color={statusColor} variant="dot" sx={{ ...badgeStyle }}> */}
           <div
             style={{
               whiteSpace: "nowrap",
@@ -125,18 +126,17 @@ const Task = ({
               gap: "4px",
             }}
           >
-            <span style={{ fontSize: "0.7rem" }}>{calculateDaysAgo(task.createdAt)}</span>
-            {task?.student_name?.status?.status_name && (
+            {statusName && (
               <small
                 style={{
-                  backgroundColor: `${task?.student_name?.status?.color}`,
+                  backgroundColor: `${statusColor}`,
                   color: "white",
                   border: `1px solid #122d3d`,
                   borderRadius: "5px",
                   padding: "2px 10px",
                   width: "fit-content",
-                  fontSize: "0.6rem",
-                  borderColor: `${task?.student_name?.status?.color}`,
+                  fontSize: "0.5rem",
+                  borderColor: `${statusColor}`,
                   height: "max-content",
                   textAlign: "center",
                   whiteSpace: "nowrap",
@@ -144,11 +144,12 @@ const Task = ({
                 }}
                 className={classNames("rounded-pill ms-2")}
               >
-                {task?.student_name?.status?.status_name}
+                {statusName}
               </small>
             )}
+            <span style={{ fontSize: "0.7rem" }}>{calculateDaysAgo(task.createdAt)}</span>
           </div>
-        </Badge>
+        {/* </Badge> */}
       </Row>
       {/* <Row
         className={classNames("task__list ribbon-box unselected-task", {
@@ -372,6 +373,7 @@ const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialL
             <div className="d-flex align-items-center justify-content-end">
               <img src={calender} alt="date logo" width={16.3} className="calender-img" style={{ paddingBottom: "3px" }} />
               <ReactDatePicker
+                minDate={new Date()}
                 onChange={(date) => handleFollowupFilter(date)}
                 selected={selectedFollowupDate || new Date()}
                 dateFormat={"dd-MM-yyyy"}
@@ -407,18 +409,6 @@ const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialL
                   aria-label="secondary tabs example"
                   sx={{ ...tabsStyle }}
                 >
-                  {/* <Tab value="all" label={
-                    <Badge badgeContent={taskList?.length || 0} color="primary" sx={{...badgeStyle}}>
-                      All
-                    </Badge>
-                  }
-                    sx={{ ...individualTabStyle }} />
-                  <Tab value="pending" label={
-                    <Badge badgeContent={incompleteTasks?.length || 0} color="primary" sx={{...pendingBadgeStyle}}>
-                      Pending
-                    </Badge>
-                  }sx={{ ...individualTabStyle }} /> */}
-
                   <Tab value="all" label='All'
                     sx={{ ...individualTabStyle }} />
                   <Tab value="pending" label='Pending' sx={{ ...individualTabStyle }} />
