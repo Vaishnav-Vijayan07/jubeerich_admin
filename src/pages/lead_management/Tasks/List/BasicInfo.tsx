@@ -57,7 +57,7 @@ const BasicInfo = withSwal((props: any) => {
   const { swal, studentId, role, officeTypes, regions, franchises, maritalStatus } = props;
 
   const [basicInfo, setBasicInfo] = useState<any>({
-    passport_no: "",
+    passport_no: null,
     dob: null, // You might want to use a date type or string based on your needs
     gender: "",
     marital_status: null,
@@ -232,7 +232,7 @@ const BasicInfo = withSwal((props: any) => {
     console.log(basicInfo);
 
     const basicValidationRules = {
-      passport_no: { required: true },
+      passport_no: { required: false },
       dob: { required: true },
       gender: { required: true },
       marital_status: { required: true },

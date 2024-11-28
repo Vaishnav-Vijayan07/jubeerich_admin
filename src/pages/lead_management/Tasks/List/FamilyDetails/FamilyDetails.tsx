@@ -450,10 +450,11 @@ const FamilyDetails = ({ studentId }: Props) => {
       });
 
     } else if (relation === "mother" || relation === "father" || relation === "spouse") {
-      
+
       const regexPatterns: Record<string, RegExp> = {
         [`${relation}.name`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
         [`${relation}.occupation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+        [`${relation}.organization`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
         [`${relation}.designation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
         [`${relation}.current_income_source`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/
       };
@@ -489,6 +490,7 @@ const FamilyDetails = ({ studentId }: Props) => {
         [`${relation}.name`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
         [`${relation}.occupation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
         [`${relation}.designation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+        [`${relation}.organization`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
         [`${relation}.current_income_source`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/
       };
   

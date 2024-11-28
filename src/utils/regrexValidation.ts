@@ -24,14 +24,15 @@ export const regexPatterns: Record<string, RegExp> = {
 
     // Work Info
     designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-    company: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+    company: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
 
     // Primary-Secondary- Education
     board_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-    // school_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+    school_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
 
     // Graduation Details
     university_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+    college_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
     percentage: /^\+?[0-9]{0,4}(\.[0-9]+)?$/,
 
     // Fund Plan
@@ -39,6 +40,7 @@ export const regexPatterns: Record<string, RegExp> = {
     approx_annual_income: /^\+?[0-9]{0,15}(\.[0-9]+)?$/,
     relation_with_sponsor: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
     sponsorship_amount: /^\+?[0-9]{0,15}(\.[0-9]+)?$/,
+    name_of_bank: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
 
     // Passport Details
     name_change: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
