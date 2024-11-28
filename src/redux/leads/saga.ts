@@ -243,7 +243,6 @@ function* addLeads({
       exam_documents
     );
     const data = response.data.message;
-    console.log("data after lead created", response.data);
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));
 
