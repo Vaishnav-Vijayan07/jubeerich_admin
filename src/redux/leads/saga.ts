@@ -64,6 +64,7 @@ interface LeadsData {
     exam_documents?: any;
     franchise_id?: string;
     changedFiles: any;
+    navigate?: any;
   };
   type: string;
 }
@@ -109,9 +110,7 @@ function* getLeadsAssignedByRegionalManager(): SagaIterator {
     );
   } catch (error: any) {
     console.log("Error", error);
-    yield put(
-      LeadsApiResponseError(LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER, error)
-    );
+    yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER, error));
   }
 }
 
@@ -137,14 +136,10 @@ function* getAssignedLeads(): SagaIterator {
     let data = response.data;
 
     // NOTE - You can change this according to response format from your api
-    yield put(
-      LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_ASSIGNED, { data })
-    );
+    yield put(LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_ASSIGNED, { data }));
   } catch (error: any) {
     console.log("Error", error);
-    yield put(
-      LeadsApiResponseError(LeadsActionTypes.GET_LEADS_ASSIGNED, error)
-    );
+    yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS_ASSIGNED, error));
   }
 }
 
@@ -163,9 +158,7 @@ function* getLeadsForCounsellorTL(): SagaIterator {
     );
   } catch (error: any) {
     console.log("Error", error);
-    yield put(
-      LeadsApiResponseError(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, error)
-    );
+    yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, error));
   }
 }
 
@@ -175,20 +168,10 @@ function* getAssignedLeadsByCounsellorTL(): SagaIterator {
     let data = response.data;
 
     // NOTE - You can change this according to response format from your api
-    yield put(
-      LeadsApiResponseSuccess(
-        LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
-        { data }
-      )
-    );
+    yield put(LeadsApiResponseSuccess(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, { data }));
   } catch (error: any) {
     console.log("Error", error);
-    yield put(
-      LeadsApiResponseError(
-        LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
-        error
-      )
-    );
+    yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, error));
   }
 }
 
@@ -198,9 +181,7 @@ function* getLeadUsers(): SagaIterator {
     const data = response.data;
 
     // NOTE - You can change this according to response format from your api
-    yield put(
-      LeadsApiResponseSuccess(LeadsActionTypes.GET_LEAD_USER, { data })
-    );
+    yield put(LeadsApiResponseSuccess(LeadsActionTypes.GET_LEAD_USER, { data }));
   } catch (error: any) {
     console.log("Error", error);
     yield put(LeadsApiResponseError(LeadsActionTypes.GET_LEAD_USER, error));
@@ -231,6 +212,7 @@ function* addLeads({
     exam_details,
     exam_documents,
     franchise_id,
+    navigate,
   },
 }: LeadsData): SagaIterator {
   try {
@@ -261,6 +243,7 @@ function* addLeads({
       exam_documents
     );
     const data = response.data.message;
+    console.log("data after lead created", response.data);
 
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));
 
@@ -278,11 +261,10 @@ function* addLeads({
       } else if (role == counsellor_tl_id && isAssignedLeads) {
         yield put(getLeadAssignedByCounsellorTL());
       } else {
-        console.log("getLead called");
-
         yield put(getLead());
       }
     }
+    navigate(`/leads/manage/${response?.data?.data?.userPrimaryInfo?.id}`);
   } catch (error: any) {
     console.log("err", error);
 
@@ -373,9 +355,7 @@ function* updateLeads({
   }
 }
 
-function* deleteLeads({
-  payload: { id, isAssignedLeads },
-}: LeadsData): SagaIterator {
+function* deleteLeads({ payload: { id, isAssignedLeads } }: LeadsData): SagaIterator {
   try {
     const response = yield call(deleteSourcesApi, id);
     const data = response.data.message;
@@ -415,17 +395,11 @@ export function* watchGetAssignedLeads() {
   yield takeEvery(LeadsActionTypes.GET_LEADS_ASSIGNED, getAssignedLeads);
 }
 export function* watchGetAssignedLeadsByCounsellorTL() {
-  yield takeEvery(
-    LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
-    getAssignedLeadsByCounsellorTL
-  );
+  yield takeEvery(LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL, getAssignedLeadsByCounsellorTL);
 }
 
 export function* watchGetLeadsByCounsellorTL() {
-  yield takeEvery(
-    LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL,
-    getLeadsForCounsellorTL
-  );
+  yield takeEvery(LeadsActionTypes.GET_LEADS_BY_COUNSELLOR_TL, getLeadsForCounsellorTL);
 }
 
 export function* watchGetLeadUser() {
@@ -445,10 +419,7 @@ export function* watchDeleteLeads(): any {
 }
 
 export function* watcGetLeadsRegionalmanger(): any {
-  yield takeEvery(
-    LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER,
-    getLeadsAssignedByRegionalManager
-  );
+  yield takeEvery(LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER, getLeadsAssignedByRegionalManager);
 }
 
 function* LeadsSaga() {

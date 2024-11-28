@@ -70,7 +70,7 @@ const TasksMaterial = () => {
         title={"Inbox"}
       />
       <Row>
-        <Col xl={4}>
+        <Col md={4} xl={5}>
           <Row>
             <Col>
               <Card>
@@ -144,7 +144,7 @@ const TasksMaterial = () => {
           </Row>
         </Col>
 
-        <Col xl={8} className="task_section">
+        <Col md={8} xl={7} className="task_section">
           {selectedTask && (
             <StudentDetailsMaterial
               studentId={selectedTask?.studentId}

@@ -118,6 +118,7 @@ export const addLeads = (
   exam_details?: any,
   exam_documents?: any,
   franchise_id?: string | null,
+  navigate?: any
 ): LeadsActionType => ({
   type: LeadsActionTypes.ADD_LEADS,
   payload: {
@@ -142,7 +143,8 @@ export const addLeads = (
     ielts,
     zipcode,
     exam_details,
-    exam_documents
+    exam_documents,
+    navigate
   },
 });
 
