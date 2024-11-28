@@ -874,13 +874,15 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       disableClearable
                       options={formattedStatus || []}
                       // value={basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
-                      value={
-                        basicData?.preferredCountries?.length > 0
-                          ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
-                          : "Change status"
-                      }
-                      sx={{ width: 300, paddingTop: "1.2rem", flex: 1, fontSize: "0.8rem" }}
-                      renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} label="Status" />}
+                      value={basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name : "Change status"}
+                      sx={{ width: 300, paddingTop: "1.2rem",flex:1,fontSize:'0.8rem' }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{...inputStyle}}
+                          // label="Status"
+                        />
+                      )}
                       onChange={(event, newValue) => {
                         if (newValue) {
                           handleStatusChange(newValue.value);
