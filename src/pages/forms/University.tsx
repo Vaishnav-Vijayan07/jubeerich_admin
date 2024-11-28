@@ -315,7 +315,7 @@ const BasicInputElements = withSwal((props: any) => {
       sort: true,
       Cell: ({ row }: any) => (
         <div className="table-user">
-          <img src={row.original.image_url} alt="university image" className="me-2 rounded-circle" />
+          {row.original.image_url && <img src={row.original.image_url} alt="university image" className="me-2 rounded-circle" />}
           <Link to="#" className="text-body fw-semibold">
             {row.original.university_name}
           </Link>
