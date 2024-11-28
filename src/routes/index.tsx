@@ -12,6 +12,7 @@ import Submitted from "../pages/forms/Kyc/MyApplications/Submitted";
 import OfferSubmitted from "../pages/forms/Kyc/MyApplications/OfferSubmitted";
 import LeadDetailsMaterial from "../pages/forms/Material/LeadsDetails/LeadDetailsMaterial";
 import TasksMaterial from "../pages/forms/Material/Tasks/TasksMaterial";
+import TaskPrefix from "../pages/forms/taskPrefix";
 
 // lazy load all the views
 
@@ -361,6 +362,12 @@ const settingsRoutes = {
           name: "Category",
           // element: <Category />,
           element: <PrivateRoute roles={["Monitor"]} component={Category} />,
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/master/task_prefix",
+          name: "Task Prefix",
+          element: <PrivateRoute roles={["Monitor"]} component={TaskPrefix} />,
           route: PrivateRoute,
         },
         {

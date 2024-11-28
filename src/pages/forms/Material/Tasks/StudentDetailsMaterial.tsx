@@ -60,6 +60,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const [viewOnly, setViewOnly] = useState<boolean>(false);
   const [isFollowupLoading, setIsFollowupLoading] = useState<boolean>(false);
   const [tabValue, setTabValue] = React.useState("history");
+  const [taskPrefix, setTaskPrefix] = useState<string>('');
+  const currentDate = new Date()
   const navigate = useNavigate();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -506,6 +508,22 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     }
   };
 
+  const getTaskPrefix = async () => {
+    try {
+      const res = await axios.get(`/master_data/${'1'}`);
+      if (res) {
+        setTaskPrefix(res?.data?.data?.task_prefix)
+      }
+    } catch (error) {
+      console.log(error);
+      showErrorAlert(error);
+    }
+  };
+
+  useEffect(() => {
+    getTaskPrefix();
+  }, [])
+
   const inputStyle = {
     "& .MuiInputBase-root": {
       padding: "4px 12px",
@@ -533,7 +551,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
               <Row>
                 <Col>
                   <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
-                    <span>{"JBR" + (taskDetails?.id || "000")}</span>
+                    {/* <span>{"JBR" + (taskDetails?.id || "000")}</span> */}
+                    <span>{taskPrefix + "/" + currentDate.getFullYear() + "/" + (taskDetails?.id || "000")}</span>
                   </div>
 
                   {userRole == cre_id && (
@@ -545,7 +564,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         style={{ fontSize: "12px" }}
                       >
                         <div className="round-circle" />
-                        {taskDetails?.isCompleted ? "Task Completed" : "Mark As Completed"}
+                        {/* {taskDetails?.isCompleted ? "Task Completed" : "Mark As Completed"} */}
+                        {taskDetails?.isCompleted ? "Task Completed" : "Move to Counsellor"}
                       </Button>
                     </Col>
                   )}
