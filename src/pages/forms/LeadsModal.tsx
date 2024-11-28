@@ -20,6 +20,7 @@ import axios from "axios";
 import moment from "moment";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
 
 const LeadsModal = withSwal((props: any) => {
   const {
@@ -69,6 +70,7 @@ const LeadsModal = withSwal((props: any) => {
   const [languageForm, setLanguageForm] = useState<any[]>([{ id: "", exam_type: "", marks: "" }]);
   const [formData, setFormData] = useState(initialState);
   const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
+  const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>();
 
   const validationSchema = yup.object().shape({
@@ -284,7 +286,8 @@ const LeadsModal = withSwal((props: any) => {
                     formData.zipcode,
                     exam_details[0]?.exam_type ? JSON.stringify(exam_details) : null,
                     selectedFile,
-                    formData.franchise_id ? formData.franchise_id : null
+                    formData.franchise_id ? formData.franchise_id : null,
+                    navigate
                   )
                 );
               }
