@@ -167,6 +167,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         parentKey: "master",
       },
       {
+        key: "task_prefix",
+        label: "Task Prefix",
+        url: "/settings/master/task_prefix",
+        parentKey: "master",
+      },
+      {
         key: "Source",
         label: "Lead Source",
         url: "/settings/master/source",
