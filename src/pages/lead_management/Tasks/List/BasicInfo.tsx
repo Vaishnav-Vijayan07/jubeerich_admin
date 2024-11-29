@@ -421,6 +421,7 @@ const BasicInfo = withSwal((props: any) => {
           case "country":
             setSelectedNation(selected);
             getNationalities(selected?.iso)
+            setSelectedState(null)
             updatedBasic.country = selected?.value;
             break;
           case "state":
@@ -529,8 +530,6 @@ const BasicInfo = withSwal((props: any) => {
   }
 
   useEffect(() => {
-    console.log('EEE');
-    
     getAllCountries();
   }, [])
 
