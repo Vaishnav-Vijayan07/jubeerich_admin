@@ -539,7 +539,7 @@ const BasicInputElements = withSwal((props: any) => {
   const handleAutoAssign = async () => {
     const result = await swal.fire({
       title: "Confirm Auto Assignment!",
-      text: "The selected leads will be automatically assigned to the respective CREs. This process cannot be reversed.",
+      text: "The selected leads will be automatically assigned to the respective CREs.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -571,7 +571,7 @@ const BasicInputElements = withSwal((props: any) => {
   const handleAutoAssignBranchCounsellors = async () => {
     const result = await swal.fire({
       title: "Confirm Auto Assignment!",
-      text: "The selected leads will be automatically assigned to the respective CREs. This process cannot be reversed.",
+      text: "The selected leads will be automatically assigned to the respective CREs.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
