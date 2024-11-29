@@ -107,6 +107,11 @@ const BasicInfo = withSwal((props: any) => {
   const animatedComponents = makeAnimated();
   const [selectedCountry, setSelectedCountry] = useState<any>([]);
   const [validationErrors, setValidationErrors] = useState(validationErrorsInitialState);
+  const [allCountries, setAllCountries] = useState<any>([]);
+  const [selectedNation, setSelectedNation] = useState<any>(null);
+  const [allStates, setAllStates] = useState<any>([]);
+  const [selectedState, setSelectedState] = useState<any>(null);
+  const [selectedNationality, setSelectedNationality] = useState<any>(null);
 
   const dispatch = useDispatch();
   const { refresh } = useSelector((state: RootState) => ({
@@ -134,6 +139,12 @@ const BasicInfo = withSwal((props: any) => {
         };
       });
       setSelectedCountry(countries);
+
+      setSelectedNation({ label: basicInfoFromApi?.country, value: basicInfoFromApi?.country });
+
+      setSelectedState({ label: basicInfoFromApi?.state, value: basicInfoFromApi?.state })
+
+      setSelectedNationality(basicInfoFromApi?.nationality)
 
       const updatedOffice = officeTypes?.filter((office: any) => office.value == primaryInfo?.office_type);
 
@@ -407,7 +418,19 @@ const BasicInfo = withSwal((props: any) => {
             setSelectedGender(selected);
             updatedBasic.gender = selected?.value;
             break;
-
+          case "country":
+            setSelectedNation(selected);
+            getNationalities(selected?.iso)
+            updatedBasic.country = selected?.value;
+            break;
+          case "state":
+            setSelectedState(selected);
+            updatedBasic.state = selected?.value;
+            break;
+          case "nationality":
+            setSelectedNationality(selected);
+            updatedBasic.nationality = selected?.value;
+            break;
           default:
             break;
         }
@@ -466,6 +489,56 @@ const BasicInfo = withSwal((props: any) => {
       deleteFromApi(id);
     }
   };
+
+  const getAllCountries = async() => {
+    try {
+      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/iso`,{
+        timeout: 10000
+      });
+      
+      setAllCountries(res?.data?.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getStateByCountry = async() => {
+    try {
+      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/states/q?country=${selectedNation?.value}`)
+      setAllStates(res?.data?.data?.states);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getNationalities = async(country: any) => {
+    try {
+      const res = await axios.get(`https://restcountries.com/v3.1/alpha/${country}`)
+      
+      setSelectedNationality(res?.data?.[0]?.demonyms?.eng?.m)
+
+      setBasicInfo((prev: any) => ({
+        ...prev,
+        nationality: res?.data?.[0]?.demonyms?.eng?.m,
+      }));
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    console.log('EEE');
+    
+    getAllCountries();
+  }, [])
+
+  useEffect(() => {
+    if(selectedNation?.value){
+      getStateByCountry();
+    }
+  }, [selectedNation])
 
   return (
     <>
@@ -696,7 +769,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            {/* <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="nationality">
                 <Form.Label>Nationality</Form.Label>
                 <FormInput
@@ -711,7 +784,68 @@ const BasicInfo = withSwal((props: any) => {
                   <Form.Text className="text-danger">{basicInfo?.errors?.nationality}</Form.Text>
                 )}
               </Form.Group>
+            </Col> */}
+
+              <Col xl={3} xxl={2}>
+                <Form.Group className="mb-3" controlId="country">
+                  <Form.Label>Country</Form.Label>
+                  <Select
+                    className="react-select react-select-container"
+                    name="country"
+                    options={allCountries?.map((item: any) => {
+                      return {
+                        label: item.name, value: item?.name, iso: item?.Iso3
+                      }
+                    })}
+                    value={selectedNation}
+                    onChange={(selected) => handleDropDowns(selected, { name: "country" }, "basic")}
+                  />
+                  {basicInfo?.errors?.country && (
+                    <Form.Text className="text-danger">{basicInfo?.errors?.country}</Form.Text>
+                  )}
+                </Form.Group>
+              </Col>
+
+            <Col xl={3} xxl={2}>
+              <Form.Group className="mb-3" controlId="nationality">
+                <Form.Label>Nationality</Form.Label>
+                <FormInput
+                  type="text"
+                  name="nationality"
+                  placeholder="Enter nationality"
+                  key="nationality"
+                  value={selectedNationality} // Change to basicInfo
+                  // value={selectedNationality ? selectedNationality : basicInfo?.nationality} // Change to basicInfo
+                  onChange={(e) => handleInputChange(e, "nationality", "basic")}
+                  disabled={true}
+                />
+                {basicInfo?.errors?.nationality && (
+                  <Form.Text className="text-danger">{basicInfo?.errors?.nationality}</Form.Text>
+                )}
+              </Form.Group>
             </Col>
+
+            <Col xl={3} xxl={2}>
+              <Form.Group className="mb-3" controlId="state">
+                <Form.Label>State</Form.Label>
+                <Select
+                  className="react-select react-select-container"
+                  name="state"
+                  options={allStates?.map((item: any) => { 
+                    return {
+                      label: item.name, value: item?.name
+                    }
+                   })}
+                  value={selectedState}
+                  onChange={(selected) => handleDropDowns(selected, { name: "state" }, "basic")}
+                  isDisabled={!selectedNation}
+                />
+                {basicInfo?.errors?.state && (
+                  <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>
+                )}
+              </Form.Group>
+            </Col>
+            
 
             <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="secondary_number">
@@ -730,7 +864,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            {/* <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="state">
                 <Form.Label>State</Form.Label>
                 <FormInput
@@ -743,8 +877,8 @@ const BasicInfo = withSwal((props: any) => {
                 />
                 {basicInfo?.errors?.state && <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>}
               </Form.Group>
-            </Col>
-
+            </Col> */}
+{/* 
             <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="country">
                 <Form.Label>Country</Form.Label>
@@ -758,7 +892,7 @@ const BasicInfo = withSwal((props: any) => {
                 />
                 {basicInfo?.errors?.country && <Form.Text className="text-danger">{basicInfo?.errors?.country}</Form.Text>}
               </Form.Group>
-            </Col>
+            </Col> */}
 
             <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="address">
