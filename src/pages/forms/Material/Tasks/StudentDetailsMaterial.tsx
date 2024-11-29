@@ -510,9 +510,9 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   const getTaskPrefix = async () => {
     try {
-      const res = await axios.get(`/master_data/${'1'}`);
+      const res = await axios.get('/master_data');
       if (res) {
-        setTaskPrefix(res?.data?.data?.task_prefix)
+        setTaskPrefix(res?.data?.data?.[0]?.task_prefix)
       }
     } catch (error) {
       console.log(error);
