@@ -47,7 +47,6 @@ const validationErrorsInitialState = {
 };
 
 const genderData: any = [
-  { value: null, label: "None" },
   { value: "Male", label: "Male" },
   { value: "Female", label: "Female" },
   { value: "Other", label: "Other" },
