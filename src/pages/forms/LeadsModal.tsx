@@ -21,6 +21,7 @@ import moment from "moment";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
+import { regrexValidation } from "../../utils/regrexValidation";
 
 const LeadsModal = withSwal((props: any) => {
   const {
@@ -312,6 +313,12 @@ const LeadsModal = withSwal((props: any) => {
 
   const handleInputChange = (e: any) => {
     const { name, value, checked } = e.target;
+
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
+    }
+
     if (name == "ielts") {
       setFormData((prevData) => ({
         ...prevData,

@@ -15,7 +15,6 @@ const TasksMaterial = () => {
   const [pendingTasks, setPendingTasks] = useState<any[]>([]);
   const [incompleteTasks, setIncompleteTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(pendingTasks[0]);
-  const [taskFilterDate, setTaskFilterDate] = useState<any>("");
   const [selectedDate, setSelectedDate] = useState<any>("");
 
   const selectTask = (task: TaskItemTypes) => {
@@ -70,7 +69,7 @@ const TasksMaterial = () => {
         title={"Inbox"}
       />
       <Row>
-        <Col md={4} xl={5}>
+        <Col xl={4}>
           <Row>
             <Col>
               <Card>
@@ -144,7 +143,7 @@ const TasksMaterial = () => {
           </Row>
         </Col>
 
-        <Col md={8} xl={7} className="task_section">
+        <Col xl={8} className="task_section">
           {selectedTask && (
             <StudentDetailsMaterial
               studentId={selectedTask?.studentId}

@@ -774,7 +774,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       <img src={icons.Layer} alt="email" className="me-1" width="17" />
                       <input
                         type="text"
-                        value={basicData?.passportDetails?.[0]?.passports?.[0]?.passport_number}
+                        value={basicData?.passportDetails?.[0]?.passports?.[0]?.passport_number || 'N/A'}
                         style={{
                           border: "none",
                           outline: "none",
