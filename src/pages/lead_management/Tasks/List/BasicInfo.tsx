@@ -141,9 +141,9 @@ const BasicInfo = withSwal((props: any) => {
 
       setSelectedNation({ label: basicInfoFromApi?.country, value: basicInfoFromApi?.country });
 
-      setSelectedState({ label: basicInfoFromApi?.state, value: basicInfoFromApi?.state })
+      setSelectedState({ label: basicInfoFromApi?.state, value: basicInfoFromApi?.state });
 
-      setSelectedNationality(basicInfoFromApi?.nationality)
+      setSelectedNationality(basicInfoFromApi?.nationality);
 
       const updatedOffice = officeTypes?.filter((office: any) => office.value == primaryInfo?.office_type);
 
@@ -230,7 +230,7 @@ const BasicInfo = withSwal((props: any) => {
     const newPoliceClearenceDocs = [...policeClearenceDocs];
     newPoliceClearenceDocs[itemIndex] = {
       ...newPoliceClearenceDocs[itemIndex],
-      [itemName]: file ? file : value.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ' -]/g, ''),
+      [itemName]: file ? file : value.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ' -]/g, ""),
     };
 
     setPoliceClearenceDocs(newPoliceClearenceDocs);
@@ -419,8 +419,8 @@ const BasicInfo = withSwal((props: any) => {
             break;
           case "country":
             setSelectedNation(selected);
-            getNationalities(selected?.iso)
-            setSelectedState(null)
+            getNationalities(selected?.iso);
+            setSelectedState(null);
             updatedBasic.country = selected?.value;
             break;
           case "state":
@@ -490,53 +490,51 @@ const BasicInfo = withSwal((props: any) => {
     }
   };
 
-  const getAllCountries = async() => {
+  const getAllCountries = async () => {
     try {
-      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/iso`,{
-        timeout: 10000
+      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/iso`, {
+        timeout: 10000,
       });
-      
-      setAllCountries(res?.data?.data);
 
+      setAllCountries(res?.data?.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const getStateByCountry = async() => {
+  const getStateByCountry = async () => {
     try {
-      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/states/q?country=${selectedNation?.value}`)
+      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/states/q?country=${selectedNation?.value}`);
       setAllStates(res?.data?.data?.states);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const getNationalities = async(country: any) => {
+  const getNationalities = async (country: any) => {
     try {
-      const res = await axios.get(`https://restcountries.com/v3.1/alpha/${country}`)
-      
-      setSelectedNationality(res?.data?.[0]?.demonyms?.eng?.m)
+      const res = await axios.get(`https://restcountries.com/v3.1/alpha/${country}`);
+
+      setSelectedNationality(res?.data?.[0]?.demonyms?.eng?.m);
 
       setBasicInfo((prev: any) => ({
         ...prev,
         nationality: res?.data?.[0]?.demonyms?.eng?.m,
       }));
-      
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getAllCountries();
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if(selectedNation?.value){
+    if (selectedNation?.value) {
       getStateByCountry();
     }
-  }, [selectedNation])
+  }, [selectedNation]);
 
   return (
     <>
@@ -752,9 +750,7 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="dob">
-                <Form.Label>
-                  Date of Birth
-                </Form.Label>
+                <Form.Label>Date of Birth</Form.Label>
                 <FormInput
                   type="date"
                   name="dob"
@@ -762,6 +758,7 @@ const BasicInfo = withSwal((props: any) => {
                   key="dob"
                   value={basicInfo?.dob ? moment(basicInfo.dob).format("YYYY-MM-DD") : ""} // Change to basicInfo
                   onChange={(e) => handleInputChange(e, "dob", "basic")}
+                  max={moment().format("YYYY-MM-DD")}
                 />
                 {basicInfo?.errors?.dob && <Form.Text className="text-danger">{basicInfo?.errors?.dob}</Form.Text>}
               </Form.Group>
@@ -784,25 +781,25 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col> */}
 
-              <Col xl={3} xxl={2}>
-                <Form.Group className="mb-3" controlId="country">
-                  <Form.Label>Country</Form.Label>
-                  <Select
-                    className="react-select react-select-container"
-                    name="country"
-                    options={allCountries?.map((item: any) => {
-                      return {
-                        label: item.name, value: item?.name, iso: item?.Iso3
-                      }
-                    })}
-                    value={selectedNation}
-                    onChange={(selected) => handleDropDowns(selected, { name: "country" }, "basic")}
-                  />
-                  {basicInfo?.errors?.country && (
-                    <Form.Text className="text-danger">{basicInfo?.errors?.country}</Form.Text>
-                  )}
-                </Form.Group>
-              </Col>
+            <Col xl={3} xxl={2}>
+              <Form.Group className="mb-3" controlId="country">
+                <Form.Label>Country</Form.Label>
+                <Select
+                  className="react-select react-select-container"
+                  name="country"
+                  options={allCountries?.map((item: any) => {
+                    return {
+                      label: item.name,
+                      value: item?.name,
+                      iso: item?.Iso3,
+                    };
+                  })}
+                  value={selectedNation}
+                  onChange={(selected) => handleDropDowns(selected, { name: "country" }, "basic")}
+                />
+                {basicInfo?.errors?.country && <Form.Text className="text-danger">{basicInfo?.errors?.country}</Form.Text>}
+              </Form.Group>
+            </Col>
 
             <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="nationality">
@@ -829,21 +826,19 @@ const BasicInfo = withSwal((props: any) => {
                 <Select
                   className="react-select react-select-container"
                   name="state"
-                  options={allStates?.map((item: any) => { 
+                  options={allStates?.map((item: any) => {
                     return {
-                      label: item.name, value: item?.name
-                    }
-                   })}
+                      label: item.name,
+                      value: item?.name,
+                    };
+                  })}
                   value={selectedState}
                   onChange={(selected) => handleDropDowns(selected, { name: "state" }, "basic")}
                   isDisabled={!selectedNation}
                 />
-                {basicInfo?.errors?.state && (
-                  <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>
-                )}
+                {basicInfo?.errors?.state && <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>}
               </Form.Group>
             </Col>
-            
 
             <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="secondary_number">
@@ -876,7 +871,7 @@ const BasicInfo = withSwal((props: any) => {
                 {basicInfo?.errors?.state && <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>}
               </Form.Group>
             </Col> */}
-{/* 
+            {/* 
             <Col xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="country">
                 <Form.Label>Country</Form.Label>

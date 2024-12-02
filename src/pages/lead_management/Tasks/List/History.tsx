@@ -104,7 +104,7 @@ const History = ({ studentId }: any) => {
                   History
                 </li>
                 {userHistory.length > 0 ? (
-                  userHistory?.reverse()?.map((item: any) => (
+                  userHistory?.map((item: any) => (
                     <>
                       <li key={item.id} className="tl-item">
                         <div className="item-title">{item.action}</div>
@@ -118,6 +118,7 @@ const History = ({ studentId }: any) => {
                 )}
               </ul>
             </div>
+
           </Row>
         </>
       )}
