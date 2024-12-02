@@ -643,6 +643,7 @@ const BasicInfo = withSwal((props: any) => {
                   options={officeTypes}
                   value={selectedOfficeType}
                   onChange={(selected) => handleDropDowns(selected, { name: "office_type" }, "primary")}
+                  isDisabled={true}
                 />
                 {primaryInfo?.errors?.office_type && (
                   <Form.Text className="text-danger">{primaryInfo?.errors?.office_type}</Form.Text>

@@ -51,11 +51,11 @@ export const regexPatterns: Record<string, RegExp> = {
     occupation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
     organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
     current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+
+    zipcode: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/
   };
   
   export const regrexValidation = (name: string, value: string): boolean => {
-    console.log(name);
-    
     const regex = regexPatterns[name];
     if (regex) {
       return regex.test(value);
