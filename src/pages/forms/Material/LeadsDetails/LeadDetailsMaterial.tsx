@@ -184,13 +184,13 @@ const LeadDetailsMaterial = (props: Props) => {
               <Tab value="study_pref" label="Study Preference" sx={{ ...individualTabStyle }} />
               <Tab value="education" label="Education Details" sx={{ ...individualTabStyle }} />
               <Tab value="fund_plan" label="Fund Plan" sx={{ ...individualTabStyle }} />
-              <Tab value="comments" label="Comments" sx={{ ...individualTabStyle }} />
-              <Tab value="history" label="History" sx={{ ...individualTabStyle }} />
               <Tab value="passport" label="Passport Details" sx={{ ...individualTabStyle }} />
               <Tab value="family" label="Family Details" sx={{ ...individualTabStyle }} />
               <Tab value="visa" label="Visa Process" sx={{ ...individualTabStyle }} />
               <Tab value="add_docs" label="Additional Documents" sx={{ ...individualTabStyle }} />
               <Tab value="docs_overview" label="Documents Overview" sx={{ ...individualTabStyle }} />
+              <Tab value="comments" label="Comments" sx={{ ...individualTabStyle }} />
+              <Tab value="history" label="History" sx={{ ...individualTabStyle }} />
             </Tabs>
 
             {/* Tab content */}

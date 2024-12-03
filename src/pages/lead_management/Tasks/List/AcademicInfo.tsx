@@ -213,7 +213,7 @@ const AcademicInfo = withSwal((props: any) => {
       {loading ? (
         <SkeletonComponent />
       ) : (
-        <Row className={deleteLoading || saveLoading ? "opacity-25" : ""}>
+        <Row className={deleteLoading || saveLoading ? "opacity-25 pe-0" : ""}>
           <>
             {/* <AcademicInfoRow
             academicInfo={academicInfoFromApi}

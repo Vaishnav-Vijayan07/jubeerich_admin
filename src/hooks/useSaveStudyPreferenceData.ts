@@ -47,8 +47,8 @@ const useSaveStudyPreferenceData = () => {
             dispatch(refreshData());
           }
         } catch (error) {
-          console.error("Error saving gap data:", error);
-          showErrorAlert("Failed to save gap data");
+          console.error("Error saving study preference:", error);
+          showErrorAlert("Failed to save study preference");
         } finally {
           setSaveLoading(false);
         }

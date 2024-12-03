@@ -30,7 +30,7 @@ const ExamData: React.FC<ExamDataProps> = ({
 }) => {
   // const renderExamFields = (item: ExamForm, index: number) => (
   const renderExamFields = (item: any, index: number) => (
-    <Row key={index} className="p-2 border-bottom rounded">
+    <Row key={index} className="p-2 border-bottom rounded pe-0">
       <Col md={4} lg={4}>
         <Form.Group className="mb-3">
           <Form.Label><span className="text-danger">*</span> Exam Type</Form.Label>
@@ -129,6 +129,7 @@ const ExamData: React.FC<ExamDataProps> = ({
             type="date"
             name="exam_date"
             value={moment(item?.exam_date).format("YYYY-MM-DD") ?? moment(item?.exam_date).format("YYYY-MM-DD")}
+            max={moment().format("YYYY-MM-DD")}
             onChange={(e) => {
               handleExamInputChange(index, e);
             }}

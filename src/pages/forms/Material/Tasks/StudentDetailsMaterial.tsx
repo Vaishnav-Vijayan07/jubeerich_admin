@@ -551,7 +551,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
               <Row>
                 <Col>
                   <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
-                    {/* <span>{"JBR" + (taskDetails?.id || "000")}</span> */}
                     <span>{taskPrefix + "/" + currentDate.getFullYear() + "/" + (taskDetails?.id || "000")}</span>
                   </div>
 
@@ -774,7 +773,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       <img src={icons.Layer} alt="email" className="me-1" width="17" />
                       <input
                         type="text"
-                        value={basicData?.passportDetails?.[0]?.passports?.[0]?.passport_number || 'N/A'}
+                        value={basicData?.passportNumber || 'N/A'}
                         style={{
                           border: "none",
                           outline: "none",
