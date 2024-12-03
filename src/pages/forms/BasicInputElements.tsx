@@ -215,7 +215,7 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>,
     },
     {
-      Header: "Lead Stage",
+      Header: "Department",
       accessor: "stage",
       sort: false,
       minWidth: 150,
