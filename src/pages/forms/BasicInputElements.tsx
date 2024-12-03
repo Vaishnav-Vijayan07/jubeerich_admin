@@ -205,18 +205,20 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "lead_received_date",
       sort: false,
       minWidth: 150,
-      Cell: ({ row }: any) => (
-        <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
-      ),
+      Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
     },
     {
       Header: "Followup Date",
       accessor: "followup_date",
       sort: false,
       minWidth: 150,
-      Cell: ({ row }: any) => (
-        <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>
-      ),
+      Cell: ({ row }: any) => <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>,
+    },
+    {
+      Header: "Lead Stage",
+      accessor: "stage",
+      sort: false,
+      minWidth: 150,
     },
     ...(user?.role == cre_tl_id
       ? [
@@ -235,9 +237,7 @@ const BasicInputElements = withSwal((props: any) => {
             accessor: "assigned_branch_counselor",
             sort: false,
             minWidth: 150,
-            Cell: ({ row }: any) => (
-              <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
-            ),
+            Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
           },
           {
             Header: "Assigned Counselor",
@@ -264,9 +264,7 @@ const BasicInputElements = withSwal((props: any) => {
             accessor: "assigned_regional_manager",
             sort: false,
             minWidth: 150,
-            Cell: ({ row }: any) => (
-              <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
-            ),
+            Cell: ({ row }: any) => <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
           },
         ]
       : []),
@@ -647,12 +645,7 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               {/* <h1>Progress Bar = {progress}</h1> */}
               <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
-              <FileUploader
-                onFileUpload={handleOnFileUpload}
-                showPreview={true}
-                selectedFile={selectedFile}
-                setSelectedFile={setSelectedFile}
-              />
+              <FileUploader onFileUpload={handleOnFileUpload} showPreview={true} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
               <div className="d-flex gap-2 justify-content-end mt-2">
                 <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
                   <i className="mdi mdi-download-circle"></i> Download Sample
@@ -737,10 +730,7 @@ const BasicInputElements = withSwal((props: any) => {
                         </Dropdown.Toggle>
                         <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                           {branchCounsellors?.map((item: any) => (
-                            <Dropdown.Item
-                              key={item.id}
-                              onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}
-                            >
+                            <Dropdown.Item key={item.id} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
                               {item.name}
                             </Dropdown.Item>
                           ))}

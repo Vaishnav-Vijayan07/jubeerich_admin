@@ -36,7 +36,8 @@ const Leads = () => {
 
   useEffect(() => {
     fetchAllCounsellors();
-  }, []);
+    userBranchId ?? dispatch(getBranchCounsellors(userBranchId));
+  }, [userBranchId]);
 
   useEffect(() => {
     if (userRole == cre_tl_id) {
