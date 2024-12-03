@@ -8,6 +8,7 @@ import TaskSectionMaterial from "./TaskSectionMaterial";
 import StudentDetailsMaterial from "./StudentDetailsMaterial";
 import ReactDatePicker from "react-datepicker";
 import calender from "../../../../assets/images/icons/calendar.svg";
+import { showErrorAlert } from "../../../../constants";
 
 const TasksMaterial = () => {
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
@@ -16,6 +17,7 @@ const TasksMaterial = () => {
   const [incompleteTasks, setIncompleteTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(pendingTasks[0]);
   const [selectedDate, setSelectedDate] = useState<any>("");
+  const [taskPrefix, setTaskPrefix] = useState<string>('');
 
   const selectTask = (task: TaskItemTypes) => {
     setSelectedTask(task);
@@ -58,6 +60,22 @@ const TasksMaterial = () => {
   useEffect(() => {
     getTaskList(new Date());
   }, []);
+
+  const getTaskPrefix = async () => {
+    try {
+      const res = await axios.get('/master_data');
+      if (res) {
+        setTaskPrefix(res?.data?.data?.[0]?.task_prefix)
+      }
+    } catch (error) {
+      console.log(error);
+      showErrorAlert(error);
+    }
+  };
+
+  useEffect(() => {
+    getTaskPrefix();
+  }, [])
 
   return (
     <>
@@ -105,6 +123,7 @@ const TasksMaterial = () => {
                     <Col className="p-0 m-0">
                       <div className="mt-0">
                         <TaskSectionMaterial
+                          taskPrefix={taskPrefix}
                           title={"Past"}
                           initialTaskId={selectedTask?.id}
                           tasks={incompleteTasks || []}
@@ -123,6 +142,7 @@ const TasksMaterial = () => {
                     <Col className="p-0 m-0 mt-3">
                       <div className="mt-0">
                         <TaskSectionMaterial
+                          taskPrefix={taskPrefix}
                           title={"Today"}
                           initialTaskId={selectedTask?.id}
                           tasks={pendingTasks || []}
