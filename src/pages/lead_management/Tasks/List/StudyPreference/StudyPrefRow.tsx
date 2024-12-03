@@ -41,9 +41,9 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
   console.log(studyPreferenceData.length);
 
   const renderStudyprefRows = (item: any, index: any, readOnly: boolean) => (
-    <Row key={index} className="mb-3 border-bottom">
+    <Row key={index} className="mb-3 border-bottom pe-0">
       {item?.applications?.length > 0 && (
-        <Row className="pb-3">
+        <Row className="pb-3 pe-0">
           <div className="d-flex gap-2 p-3 justify-content-between" style={{ backgroundColor: "#F8F8F8" }}>
             <div className="d-flex gap-2 align-content-center justify-content-center">
               <strong>Application Status:</strong>
@@ -57,8 +57,8 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
         </Row>
       )}
 
-      <Row>
-        <Col xl={6} xxl={4}>
+      <Row className="pe-0">
+        <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="universityId">
             <Form.Label>University</Form.Label>
             <Select
@@ -82,7 +82,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
           </Form.Group>
         </Col>
 
-        <Col xl={6} xxl={4}>
+        <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="campusId">
             <Form.Label>Campus</Form.Label>
             <Select
@@ -106,7 +106,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
           </Form.Group>
         </Col>
 
-        <Col xl={6} xxl={4}>
+        <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="courseTypeId">
             <Form.Label>Course Type</Form.Label>
             <Select
@@ -130,7 +130,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
           </Form.Group>
         </Col>
 
-        <Col xl={6} xxl={4}>
+        <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="streamId">
             <Form.Label>Stream</Form.Label>
             <Select
@@ -154,7 +154,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
           </Form.Group>
         </Col>
 
-        <Col xl={6} xxl={4}>
+        <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="courseId">
             <Form.Label>Course</Form.Label>
             <Select
@@ -178,7 +178,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
           </Form.Group>
         </Col>
 
-        <Col xl={6} xxl={4}>
+        <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="intakeYear">
             <Form.Label>Intake Year</Form.Label>
             <Select
@@ -202,7 +202,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
           </Form.Group>
         </Col>
 
-        <Col xl={6} xxl={4}>
+        <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="intakeMonth">
             <Form.Label>Intake Month</Form.Label>
             <Select
@@ -226,7 +226,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
           </Form.Group>
         </Col>
 
-        <Col xl={6} xxl={4}>
+        <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="estimatedBudget">
             <Form.Label>Estimated Budget</Form.Label>
             <FormInput
@@ -319,8 +319,8 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
 
   return (
     <>
-      <Row className="mb-2">
-        <Row>
+      <Row className="mb-2 pe-0">
+        <Row className="pe-0">
           <h5 className="mb-4 text-uppercase">
             <i className="mdi mdi-account-circle me-1"></i> Study Preference Info - {countryName}
           </h5>
@@ -330,8 +330,8 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             return renderStudyprefRows(item, index, isEditable);
           })}
           {isEditable && (
-            <Row>
-              <Row className="mb-2">
+            <Row className="pe-0">
+              <Row className="mb-2 pe-0">
                 <ActionButton label="Add More" iconClass="mdi mdi-plus" onClick={addMoreStudyPreference} />
               </Row>
             </Row>

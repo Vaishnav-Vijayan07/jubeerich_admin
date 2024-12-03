@@ -157,7 +157,7 @@ const WorkExpereince = withSwal((props: any) => {
         <SkeletonComponent />
       ) : (
         <>
-          <Row className={deleteLoading || workSaveLoading ? "opacity-25" : ""}>
+          <Row className={deleteLoading || workSaveLoading ? "opacity-25 pe-0" : ""}>
             <WorkExpRow
               workExperienceData={workExperienceFromApi}
               handleWorkExperienceChange={handleWorkExperienceChange}
