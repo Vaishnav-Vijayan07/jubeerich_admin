@@ -108,9 +108,10 @@ const Task = ({
             textAlign: "right",
             overflow: "hidden",
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "start",
             flexDirection: "column",
             gap: "4px",
+            padding:'2px 10px 0px 0px'
           }}
         >
           {statusName && (
