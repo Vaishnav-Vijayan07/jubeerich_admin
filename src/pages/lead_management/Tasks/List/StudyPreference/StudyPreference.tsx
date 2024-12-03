@@ -46,7 +46,7 @@ const StudyPreference = withSwal((props: any) => {
       {loading ? (
         <SkeletonComponent />
       ) : (
-        <Row>
+        <Row className="pe-0">
           {item.length > 0 &&
             item?.map((values: any, index: any) => (
               <StudyPreferenceRow

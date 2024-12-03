@@ -141,9 +141,9 @@ const BasicInfo = withSwal((props: any) => {
 
       setSelectedNation({ label: basicInfoFromApi?.country, value: basicInfoFromApi?.country });
 
-      setSelectedState({ label: basicInfoFromApi?.state, value: basicInfoFromApi?.state })
+      setSelectedState({ label: basicInfoFromApi?.state, value: basicInfoFromApi?.state });
 
-      setSelectedNationality(basicInfoFromApi?.nationality)
+      setSelectedNationality(basicInfoFromApi?.nationality);
 
       const updatedOffice = officeTypes?.filter((office: any) => office.value == primaryInfo?.office_type);
 
@@ -230,7 +230,7 @@ const BasicInfo = withSwal((props: any) => {
     const newPoliceClearenceDocs = [...policeClearenceDocs];
     newPoliceClearenceDocs[itemIndex] = {
       ...newPoliceClearenceDocs[itemIndex],
-      [itemName]: file ? file : value.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ' -]/g, ''),
+      [itemName]: file ? file : value.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ' -]/g, ""),
     };
 
     setPoliceClearenceDocs(newPoliceClearenceDocs);
@@ -419,8 +419,8 @@ const BasicInfo = withSwal((props: any) => {
             break;
           case "country":
             setSelectedNation(selected);
-            getNationalities(selected?.iso)
-            setSelectedState(null)
+            getNationalities(selected?.iso);
+            setSelectedState(null);
             updatedBasic.country = selected?.value;
             break;
           case "state":
@@ -490,53 +490,51 @@ const BasicInfo = withSwal((props: any) => {
     }
   };
 
-  const getAllCountries = async() => {
+  const getAllCountries = async () => {
     try {
-      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/iso`,{
-        timeout: 10000
+      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/iso`, {
+        timeout: 10000,
       });
-      
-      setAllCountries(res?.data?.data);
 
+      setAllCountries(res?.data?.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const getStateByCountry = async() => {
+  const getStateByCountry = async () => {
     try {
-      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/states/q?country=${selectedNation?.value}`)
+      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/states/q?country=${selectedNation?.value}`);
       setAllStates(res?.data?.data?.states);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const getNationalities = async(country: any) => {
+  const getNationalities = async (country: any) => {
     try {
-      const res = await axios.get(`https://restcountries.com/v3.1/alpha/${country}`)
-      
-      setSelectedNationality(res?.data?.[0]?.demonyms?.eng?.m)
+      const res = await axios.get(`https://restcountries.com/v3.1/alpha/${country}`);
+
+      setSelectedNationality(res?.data?.[0]?.demonyms?.eng?.m);
 
       setBasicInfo((prev: any) => ({
         ...prev,
         nationality: res?.data?.[0]?.demonyms?.eng?.m,
       }));
-      
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getAllCountries();
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if(selectedNation?.value){
+    if (selectedNation?.value) {
       getStateByCountry();
     }
-  }, [selectedNation])
+  }, [selectedNation]);
 
   return (
     <>
@@ -547,8 +545,8 @@ const BasicInfo = withSwal((props: any) => {
           <h5 className="mb-4 text-uppercase">
             <i className="mdi mdi-account-circle me-1"></i> Primary Info
           </h5>
-          <Row>
-            <Col xl={3} xxl={2}>
+          <Row className="pe-1">
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="full_name">
                 <Form.Label>
                   <span className="text-danger">* </span>Full Name
@@ -567,7 +565,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="email">
                 <Form.Label>
                   <span className="text-danger">* </span>Email Id
@@ -584,7 +582,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="phone">
                 <Form.Label>
                   <span className="text-danger">* </span>Phone Number
@@ -601,7 +599,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="city">
                 <Form.Label>City</Form.Label>
                 <FormInput
@@ -616,7 +614,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="channel_name">
                 <Form.Label>Preferred Country</Form.Label>
                 <Select
@@ -631,7 +629,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="office_type">
                 <Form.Label>Office Type</Form.Label>
                 <Select
@@ -649,11 +647,8 @@ const BasicInfo = withSwal((props: any) => {
                 )}
               </Form.Group>
             </Col>
-          </Row>
-
-          <Row>
             {primaryInfo?.office_type == Number(regionId) && (
-              <Col xl={3} xxl={2}>
+              <Col md={6} xl={3} xxl={2}>
                 <Form.Group className="mb-3" controlId="region_id">
                   <Form.Label>
                     <span className="text-danger fs-4">* </span>Region
@@ -695,10 +690,8 @@ const BasicInfo = withSwal((props: any) => {
                 </Form.Group>
               </Col>
             )}
-          </Row>
-
-          <Row>
-            {/* <Col xl={3} xxl={2}>
+            
+            {/* <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="passport_no">
                 <Form.Label>Passport No</Form.Label>
                 <FormInput
@@ -715,7 +708,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col> */}
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="gender">
                 <Form.Label>
                   <span className="text-danger">*</span> Gender
@@ -733,7 +726,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="marital_status">
                 <Form.Label>Marital Status</Form.Label>
                 <Select
@@ -751,11 +744,9 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="dob">
-                <Form.Label>
-                  Date of Birth
-                </Form.Label>
+                <Form.Label>Date of Birth</Form.Label>
                 <FormInput
                   type="date"
                   name="dob"
@@ -763,12 +754,13 @@ const BasicInfo = withSwal((props: any) => {
                   key="dob"
                   value={basicInfo?.dob ? moment(basicInfo.dob).format("YYYY-MM-DD") : ""} // Change to basicInfo
                   onChange={(e) => handleInputChange(e, "dob", "basic")}
+                  max={moment().format("YYYY-MM-DD")}
                 />
                 {basicInfo?.errors?.dob && <Form.Text className="text-danger">{basicInfo?.errors?.dob}</Form.Text>}
               </Form.Group>
             </Col>
 
-            {/* <Col xl={3} xxl={2}>
+            {/* <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="nationality">
                 <Form.Label>Nationality</Form.Label>
                 <FormInput
@@ -785,27 +777,27 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col> */}
 
-              <Col xl={3} xxl={2}>
-                <Form.Group className="mb-3" controlId="country">
-                  <Form.Label>Country</Form.Label>
-                  <Select
-                    className="react-select react-select-container"
-                    name="country"
-                    options={allCountries?.map((item: any) => {
-                      return {
-                        label: item.name, value: item?.name, iso: item?.Iso3
-                      }
-                    })}
-                    value={selectedNation}
-                    onChange={(selected) => handleDropDowns(selected, { name: "country" }, "basic")}
-                  />
-                  {basicInfo?.errors?.country && (
-                    <Form.Text className="text-danger">{basicInfo?.errors?.country}</Form.Text>
-                  )}
-                </Form.Group>
-              </Col>
+            <Col md={6} xl={3} xxl={2}>
+              <Form.Group className="mb-3" controlId="country">
+                <Form.Label>Country</Form.Label>
+                <Select
+                  className="react-select react-select-container"
+                  name="country"
+                  options={allCountries?.map((item: any) => {
+                    return {
+                      label: item.name,
+                      value: item?.name,
+                      iso: item?.Iso3,
+                    };
+                  })}
+                  value={selectedNation}
+                  onChange={(selected) => handleDropDowns(selected, { name: "country" }, "basic")}
+                />
+                {basicInfo?.errors?.country && <Form.Text className="text-danger">{basicInfo?.errors?.country}</Form.Text>}
+              </Form.Group>
+            </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="nationality">
                 <Form.Label>Nationality</Form.Label>
                 <FormInput
@@ -824,29 +816,27 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="state">
                 <Form.Label>State</Form.Label>
                 <Select
                   className="react-select react-select-container"
                   name="state"
-                  options={allStates?.map((item: any) => { 
+                  options={allStates?.map((item: any) => {
                     return {
-                      label: item.name, value: item?.name
-                    }
-                   })}
+                      label: item.name,
+                      value: item?.name,
+                    };
+                  })}
                   value={selectedState}
                   onChange={(selected) => handleDropDowns(selected, { name: "state" }, "basic")}
                   isDisabled={!selectedNation}
                 />
-                {basicInfo?.errors?.state && (
-                  <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>
-                )}
+                {basicInfo?.errors?.state && <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>}
               </Form.Group>
             </Col>
-            
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="secondary_number">
                 <Form.Label>Secondary number</Form.Label>
                 <FormInput
@@ -863,7 +853,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            {/* <Col xl={3} xxl={2}>
+            {/* <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="state">
                 <Form.Label>State</Form.Label>
                 <FormInput
@@ -877,8 +867,8 @@ const BasicInfo = withSwal((props: any) => {
                 {basicInfo?.errors?.state && <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>}
               </Form.Group>
             </Col> */}
-{/* 
-            <Col xl={3} xxl={2}>
+            {/* 
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="country">
                 <Form.Label>Country</Form.Label>
                 <FormInput
@@ -893,7 +883,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col> */}
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="address">
                 <Form.Label>Current Address</Form.Label>
 
@@ -909,7 +899,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="emergency_contact_name">
                 <Form.Label>Primary Contact Name</Form.Label>
 
@@ -927,7 +917,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="emergency_contact_relationship">
                 <Form.Label>Primary Contact Relationship</Form.Label>
 
@@ -953,7 +943,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="emergency_contact_phone">
                 <Form.Label>Primary Contact Phone</Form.Label>
 
@@ -971,7 +961,7 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            <Col xl={3} xxl={2}>
+            <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="remarks">
                 <Form.Label>Remarks</Form.Label>
                 <Form.Control

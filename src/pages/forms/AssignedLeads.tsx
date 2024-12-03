@@ -337,15 +337,15 @@ const BasicInputElements = withSwal((props: any) => {
         <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
       ),
     },
-    {
-      Header: "Followup Date",
-      accessor: "followup_date",
-      sort: false,
-      minWidth: 100,
-      Cell: ({ row }: any) => (
-        <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>
-      ),
-    },
+    // {
+    //   Header: "Followup Date",
+    //   accessor: "followup_date",
+    //   sort: false,
+    //   minWidth: 100,
+    //   Cell: ({ row }: any) => (
+    //     <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>
+    //   ),
+    // },
     {
       Header: "Assigned CRE",
       accessor: "cre_name",

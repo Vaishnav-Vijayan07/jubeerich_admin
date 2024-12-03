@@ -15,7 +15,7 @@ const WorkExpRow = ({
 
   const renderWorkRows = (workExperience: any, index: any) => (
     <>
-      <Row key={index} className="mb-3 p-2 border-bottom rounded">
+      <Row key={index} className="mb-3 p-2 border-bottom rounded pe-0">
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="qualification">
             <Form.Label><span className="text-danger">*</span> Work Experience</Form.Label>
@@ -29,6 +29,7 @@ const WorkExpRow = ({
                 handleWorkExperienceChange(e.target.name, e.target.value, index)
               }
               min={0}
+              max={99}
             />
             {workExperience?.errors?.years && (
               <Form.Text className="text-danger">
@@ -277,6 +278,7 @@ const WorkExpRow = ({
               key="from"
               defaultValue={moment(workExperience?.from).format("YYYY-MM-DD")}
               value={moment(workExperience?.from).format("YYYY-MM-DD")}
+              max={moment().format("YYYY-MM-DD")}
               onChange={(e) =>
                 handleWorkExperienceChange(e.target.name, e.target.value, index)
               }
@@ -299,6 +301,7 @@ const WorkExpRow = ({
               name="to"
               placeholder="Select date of birth"
               key="to"
+              max={moment().format("YYYY-MM-DD")}
               defaultValue={moment(workExperience?.to).format("YYYY-MM-DD")}
               value={moment(workExperience?.to).format("YYYY-MM-DD")}
               onChange={(e) =>
