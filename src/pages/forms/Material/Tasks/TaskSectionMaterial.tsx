@@ -8,9 +8,10 @@ import "react-datepicker/dist/react-datepicker.module.css";
 import { TaskItemTypes } from "../../../lead_management/Tasks/List/data";
 import SkeletonComponent from "../../../lead_management/Tasks/List/StudyPreference/LoadingSkeleton";
 import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
-import { calculateDaysAgo } from "../../../../constants";
+import { calculateDaysAgo, showErrorAlert } from "../../../../constants";
 import { Badge, Box, Collapse, Tab, Tabs } from "@mui/material";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 interface TaskSectionState {
   title: string;
@@ -20,19 +21,23 @@ interface TaskSectionState {
   date: string;
   initialLoading: boolean;
   setSelectedDate: Dispatch<SetStateAction<string>>;
+  taskPrefix: any
 }
 
 const Task = ({
   task,
   selectTask,
   selectedTaskId,
+  taskPrefix
 }: {
   task: TaskItemTypes;
   selectTask: (task: TaskItemTypes) => void;
   selectedTaskId: number | null;
+  taskPrefix: any
 }) => {
   const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
   const statusName = task?.student_name?.preferredCountries[0]?.country_status[0]?.status_name;
+  const currentDate = new Date()
 
   return (
     <>
@@ -54,7 +59,7 @@ const Task = ({
           }}
         >
           <label className="form-check-label fs-6" htmlFor={`task-${task.id}`}>
-            <span className="text-primary" style={{ fontSize: "12px", fontWeight: "700" }}>{`JBR${task.id}`}</span>
+            <span className="text-primary" style={{ fontSize: "12px", fontWeight: "700" }}>{taskPrefix + "/" + currentDate.getFullYear() + "/" + (task?.id || "000")}</span>
             &nbsp; &nbsp;
             <b style={{ fontSize: "13px" }}>{task.title}</b>
           </label>
@@ -143,7 +148,7 @@ const Task = ({
   );
 };
 
-const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialLoading, setSelectedDate }: TaskSectionState) => {
+const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialLoading, setSelectedDate, taskPrefix }: TaskSectionState) => {
   const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
   const [selectedTaskId, setSelectedTaskId] = useState<number>(initialTaskId);
   const [collapse, setCollapse] = useState<boolean>(title == "Past" ? false : true);
@@ -206,7 +211,7 @@ const TaskSectionMaterial = ({ title, tasks, selectTask, initialTaskId, initialL
                           borderBottom: "1.3px solid #70707033",
                         }}
                       >
-                        <Task selectTask={handleSelectTask} task={task} key={idx} selectedTaskId={selectedTaskId} />
+                        <Task taskPrefix={taskPrefix} selectTask={handleSelectTask} task={task} key={idx} selectedTaskId={selectedTaskId} />
                       </div>
                     ))}
                   </ReactSortable>
