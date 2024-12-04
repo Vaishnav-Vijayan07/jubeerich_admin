@@ -53,33 +53,56 @@ const PassportDetails = ({ studentId }: Props) => {
     }
   }, []);
 
+  // const handleInputChange = (e: any, index?: number) => {
+  //   const { name, value } = e.target;
+
+  //   if (!regrexValidation(name, value.toString())) {
+  //     console.error(`Invalid ${name}: ${value}`);
+  //     return; // Stop updating if validation fails
+  //   }
+
+  //   if (index !== undefined) {
+  //     // Handle change for a specific passport in the passports array
+  //     const updatedPassports = [...passportDetails.passports];
+  //     updatedPassports[index] = {
+  //       ...updatedPassports[index],
+  //       [name]: value,
+  //     };
+  //     setPassportDetails((prev: any) => ({
+  //       ...prev,
+  //       passports: updatedPassports,
+  //     }));
+  //   } else {
+  //     // Handle change for number_of_passports or other top-level fields
+  //     setPassportDetails((prev: any) => ({
+  //       ...prev,
+  //       [name]: value,
+  //     }));
+  //   }
+  // };
+
+
   const handleInputChange = (e: any, index?: number) => {
     const { name, value } = e.target;
-
-    // const regexPatterns: Record<string, RegExp> = {
-    //   name_change: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-    //   passport_number: /^[A-Z0-9]{0,9}$/,
-    // };
-
-    // // Check if the field has a validation regex
-    // if (regexPatterns[name]) {
-    //   if (!regexPatterns[name].test(value.toString())) {
-    //     console.error(`Invalid ${name}: ${value}`);
-    //     return; // Stop updating if validation fails
-    //   }
-    // }
-
-    if (!regrexValidation(name, value.toString())) {
-      console.error(`Invalid ${name}: ${value}`);
+  
+    // Convert the passport number to uppercase if the name matches 'passport_number' (or the appropriate field name)
+    let updatedValue = value;
+    if (name === 'passport_number') {
+      updatedValue = value.toUpperCase(); // Convert to uppercase
+    }
+  
+    // Validate the value using the regex function
+    if (!regrexValidation(name, updatedValue.toString())) {
+      console.error(`Invalid ${name}: ${updatedValue}`);
       return; // Stop updating if validation fails
     }
-
+  
     if (index !== undefined) {
       // Handle change for a specific passport in the passports array
       const updatedPassports = [...passportDetails.passports];
       updatedPassports[index] = {
         ...updatedPassports[index],
-        [name]: value,
+        [name]: updatedValue, // Use the updated value (uppercase if passport_number)
       };
       setPassportDetails((prev: any) => ({
         ...prev,
@@ -89,11 +112,11 @@ const PassportDetails = ({ studentId }: Props) => {
       // Handle change for number_of_passports or other top-level fields
       setPassportDetails((prev: any) => ({
         ...prev,
-        [name]: value,
+        [name]: updatedValue, // Use the updated value (uppercase if passport_number)
       }));
     }
   };
-
+  
   const handleAddMorePassport = () => {
     const { number_of_passports, passports } = passportDetails;
 

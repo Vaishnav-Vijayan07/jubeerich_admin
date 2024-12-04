@@ -47,6 +47,7 @@ export const regexPatterns: Record<string, RegExp> = {
   name_of_bank: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
 
   // Passport Details
+  number_of_passports: /^\d{0,2}$/,
   name_change: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   passport_number: /^[A-Z0-9]{0,9}$/,
 

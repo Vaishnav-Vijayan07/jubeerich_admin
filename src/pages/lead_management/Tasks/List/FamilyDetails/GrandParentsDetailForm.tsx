@@ -2,6 +2,7 @@ import React from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../../components";
 import { currentStatus, modeOfPayment, natureOfOccupaton } from "./FamilyDetails";
+import moment from "moment";
 
 interface ParentDetailsFormProps {
   parentType: string;
@@ -115,6 +116,7 @@ const GrandParentDetailsForm = ({
               placeholder={`Enter ${parentTypeName?.toLowerCase()}'s dob`}
               onChange={onChange}
               value={parentDetails?.dob}
+              max={moment().format("YYYY-MM-DD")}
             />
           </Form.Group>
         </Col>

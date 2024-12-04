@@ -4,6 +4,7 @@ import { Form, Row } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { FormInput } from "../../../../../components";
 import { currentStatus, modeOfPayment, natureOfOccupaton } from "./FamilyDetails";
+import moment from "moment";
 
 interface Props {
   handleInputChange: any;
@@ -13,13 +14,7 @@ interface Props {
   number_of_siblings: any;
 }
 
-const SiblingsDetails = ({
-  handleInputChange,
-  siblings,
-  number_of_siblings,
-  handleRemoveItem,
-  handleAddSibling,
-}: Props) => {
+const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, handleRemoveItem, handleAddSibling }: Props) => {
   return (
     <Row className="p-2" style={{ borderBottom: "1px solid #6658dd" }}>
       <Row>
@@ -46,10 +41,7 @@ const SiblingsDetails = ({
                 <h6>Sibling {index + 1}</h6>
                 <Row>
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings?.${index}.name`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings?.${index}.name`}>
                       <Form.Label>Name</Form.Label>
                       <FormInput
                         type="text"
@@ -61,10 +53,7 @@ const SiblingsDetails = ({
                     </Form.Group>
                   </Col>
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings?.${index}.occupation`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings?.${index}.occupation`}>
                       <Form.Label>Occupation</Form.Label>
                       <FormInput
                         type="text"
@@ -91,10 +80,7 @@ const SiblingsDetails = ({
                     </Form.Group>
                   </Col>
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings?.${index}.annual_income`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings?.${index}.annual_income`}>
                       <Form.Label>Annual Income</Form.Label>
                       <FormInput
                         type="number"
@@ -108,10 +94,7 @@ const SiblingsDetails = ({
                 </Row>
                 <Row>
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.age`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.age`}>
                       <Form.Label>Age</Form.Label>
                       <FormInput
                         type="number"
@@ -124,10 +107,7 @@ const SiblingsDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.dob`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.dob`}>
                       <Form.Label>Date of Birth</Form.Label>
                       <FormInput
                         type="date"
@@ -135,15 +115,13 @@ const SiblingsDetails = ({
                         placeholder={`Enter siblings's dob`}
                         onChange={handleInputChange}
                         value={sibling?.dob}
+                        max={moment().format("YYYY-MM-DD")}
                       />
                     </Form.Group>
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.location`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.location`}>
                       <Form.Label>Location</Form.Label>
                       <FormInput
                         type="text"
@@ -156,10 +134,7 @@ const SiblingsDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.designation`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.designation`}>
                       <Form.Label>Designation</Form.Label>
                       <FormInput
                         type="text"
@@ -172,10 +147,7 @@ const SiblingsDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.duration`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.duration`}>
                       <Form.Label>Duration</Form.Label>
                       <FormInput
                         type="number"
@@ -188,10 +160,7 @@ const SiblingsDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.current_status`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.current_status`}>
                       <Form.Label>Current Status</Form.Label>
                       <Form.Select
                         aria-label="select current status"
@@ -212,10 +181,7 @@ const SiblingsDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.monthly_salary`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.monthly_salary`}>
                       <Form.Label>Monthly Salary</Form.Label>
                       <FormInput
                         type="number"
@@ -228,10 +194,7 @@ const SiblingsDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.mode_of_payment`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.mode_of_payment`}>
                       <Form.Label>Mode of Payment</Form.Label>
                       <Form.Select
                         aria-label="select mode of payment"
@@ -252,10 +215,7 @@ const SiblingsDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.current_income_source`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.current_income_source`}>
                       <Form.Label>Current Income Source</Form.Label>
                       <FormInput
                         type="text"
@@ -268,10 +228,7 @@ const SiblingsDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.income_tax_payer`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.income_tax_payer`}>
                       <Form.Label>Income Tax Payer</Form.Label>
                       <Form.Check
                         type="checkbox"
@@ -283,10 +240,7 @@ const SiblingsDetails = ({
                     </Form.Group>
                   </Col>
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`siblings.${index}.nature_of_occupation`}
-                    >
+                    <Form.Group className="mb-3" controlId={`siblings.${index}.nature_of_occupation`}>
                       <Form.Label>Nature of Occupation</Form.Label>
                       <Form.Select
                         aria-label="select nature of occupation"
@@ -319,11 +273,7 @@ const SiblingsDetails = ({
           </Row>
 
           <Row>
-            <ActionButton
-              label="Add More Siblings"
-              iconClass="mdi mdi-plus"
-              onClick={handleAddSibling}
-            />
+            <ActionButton label="Add More Siblings" iconClass="mdi mdi-plus" onClick={handleAddSibling} />
           </Row>
         </>
       )}

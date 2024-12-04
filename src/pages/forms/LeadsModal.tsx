@@ -412,73 +412,73 @@ const LeadsModal = withSwal((props: any) => {
     }
   };
 
-  const handleAddLanguageForm = () => {
-    setLanguageForm((prevData) => [...prevData, { exam_type: "", marks: "" }]);
-  };
+  // const handleAddLanguageForm = () => {
+  //   setLanguageForm((prevData) => [...prevData, { exam_type: "", marks: "" }]);
+  // };
 
-  const handleLanguageInputChange = (index: number, e: any) => {
-    const { name, value } = e.target;
+  // const handleLanguageInputChange = (index: number, e: any) => {
+  //   const { name, value } = e.target;
 
-    const newFields = [...languageForm];
-    newFields[index][name] = value;
-    setLanguageForm(newFields);
-  };
+  //   const newFields = [...languageForm];
+  //   newFields[index][name] = value;
+  //   setLanguageForm(newFields);
+  // };
 
-  const handleLanguageMarkInputChange = (index: number, e: any) => {
-    const { name, value } = e.target;
+  // const handleLanguageMarkInputChange = (index: number, e: any) => {
+  //   const { name, value } = e.target;
 
-    const newFields = [...languageForm];
-    newFields[index][name] = value.replace(/[^0-9]/g, "");
-    setLanguageForm(newFields);
-  };
+  //   const newFields = [...languageForm];
+  //   newFields[index][name] = value.replace(/[^0-9]/g, "");
+  //   setLanguageForm(newFields);
+  // };
 
-  const handleRemoveLanguageForm = async (index: number, e: any, exam_type: string) => {
-    let existExamId = languageForm[index]?.id;
+  // const handleRemoveLanguageForm = async (index: number, e: any, exam_type: string) => {
+  //   let existExamId = languageForm[index]?.id;
 
-    const payload = {
-      id: formData?.id,
-      exam_type: exam_type,
-    };
+  //   const payload = {
+  //     id: formData?.id,
+  //     exam_type: exam_type,
+  //   };
 
-    try {
-      swal
-        .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, Delete",
-        })
-        .then((result: any) => {
-          if (result.isConfirmed) {
-            if (!existExamId) {
-              const removeFields = languageForm.filter((data: any, i: number) => i !== index);
-              const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
-              setLanguageForm(removeFields);
-              setSelectedFile(removeFiles);
-            } else {
-              axios
-                .delete("/exams", { data: payload })
-                .then((res: any) => {
-                  const removeFields = languageForm.filter((data: any, i: number) => i !== index);
-                  const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
-                  setLanguageForm(removeFields);
-                  setSelectedFile(removeFiles);
-                  showSuccessAlert(res?.data?.message);
-                })
-                .catch((err: any) => {
-                  console.log(err);
-                  showErrorAlert("Error occured");
-                });
-            }
-          }
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   try {
+  //     swal
+  //       .fire({
+  //         title: "Are you sure?",
+  //         text: "This action cannot be undone.",
+  //         icon: "warning",
+  //         showCancelButton: true,
+  //         confirmButtonColor: "#3085d6",
+  //         cancelButtonColor: "#d33",
+  //         confirmButtonText: "Yes, Delete",
+  //       })
+  //       .then((result: any) => {
+  //         if (result.isConfirmed) {
+  //           if (!existExamId) {
+  //             const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+  //             const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
+  //             setLanguageForm(removeFields);
+  //             setSelectedFile(removeFiles);
+  //           } else {
+  //             axios
+  //               .delete("/exams", { data: payload })
+  //               .then((res: any) => {
+  //                 const removeFields = languageForm.filter((data: any, i: number) => i !== index);
+  //                 const removeFiles = selectedFile.filter((data: any, i: number) => i !== index);
+  //                 setLanguageForm(removeFields);
+  //                 setSelectedFile(removeFiles);
+  //                 showSuccessAlert(res?.data?.message);
+  //               })
+  //               .catch((err: any) => {
+  //                 console.log(err);
+  //                 showErrorAlert("Error occured");
+  //               });
+  //           }
+  //         }
+  //       });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleFileChange = (index: number, e: any) => {
     let file = e.target.files[0];
@@ -757,7 +757,7 @@ const LeadsModal = withSwal((props: any) => {
                 </Col>
               )}
 
-              <Col md={4} lg={4} className="mt-2">
+              {/* <Col md={4} lg={4} className="mt-2">
                 <Form.Group className="mb-3" controlId="source_id">
                   <Form.Label>Have you ever participated in any language exams ?</Form.Label>
                   <div className="d-flex justify-content-start align-items-center mt-1">
@@ -783,11 +783,11 @@ const LeadsModal = withSwal((props: any) => {
                     </div>
                   </div>
                 </Form.Group>
-              </Col>
+              </Col> */}
             </Row>
 
             <Row>
-              {selectExam &&
+              {/* {selectExam &&
                 languageForm.map((data, index) => (
                   <Row key={index}>
                     <Row>
@@ -925,7 +925,7 @@ const LeadsModal = withSwal((props: any) => {
                       </Col>
                     </Row>
                   </Row>
-                ))}
+                ))} */}
             </Row>
           </Modal.Body>
 

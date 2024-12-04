@@ -885,7 +885,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
             <Col md={7} style={{ paddingLeft: "0px" }}>
               <Card className="h-100">
                 <Card.Body>
-                  {/* <h4 className="text-secondary m-0">Status</h4> */}
+                  <h4 className="text-secondary m-0">Status</h4>
                   {/* <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p> */}
                   <div className="d-flex justify-content-between align-items-center">
                     <Autocomplete

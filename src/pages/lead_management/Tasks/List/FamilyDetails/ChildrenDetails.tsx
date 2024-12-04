@@ -4,6 +4,7 @@ import ActionButton from "../ActionButton";
 import { FormInput } from "../../../../../components";
 import Select from "react-select";
 import { currentStatus, modeOfPayment, natureOfOccupaton } from "./FamilyDetails";
+import moment from "moment";
 
 interface Props {
   number_of_children: any;
@@ -29,10 +30,7 @@ const ChildrenDetails = ({
   handleDropDowns,
 }: Props) => {
   return (
-    <Row
-      className="p-2 mt-2"
-      style={{ borderBottom: "1px solid #6658dd" }}
-    >
+    <Row className="p-2 mt-2" style={{ borderBottom: "1px solid #6658dd" }}>
       <Row>
         <h5 className="mb-4 text-uppercase">Children Details</h5>
       </Row>
@@ -57,10 +55,7 @@ const ChildrenDetails = ({
                 <h6>Child {index + 1}</h6>
                 <Row>
                   <Col md={4}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children?.${index}.name`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children?.${index}.name`}>
                       <Form.Label>Name</Form.Label>
                       <FormInput
                         type="text"
@@ -72,19 +67,14 @@ const ChildrenDetails = ({
                     </Form.Group>
                   </Col>
                   <Col md={4}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children?.${index}.gender`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children?.${index}.gender`}>
                       <Form.Label>Gender</Form.Label>
                       <Select
                         className="react-select react-select-container"
                         classNamePrefix="react-select"
                         name={`children.${index}.gender`}
                         options={genderData}
-                        value={genderData.find(
-                          (item: any) => item.value === child.gender
-                        )}
+                        value={genderData.find((item: any) => item.value === child.gender)}
                         onChange={(selected: any) =>
                           handleDropDowns(selected, {
                             name: `children?.${index}.gender`,
@@ -94,10 +84,7 @@ const ChildrenDetails = ({
                     </Form.Group>
                   </Col>
                   <Col md={4}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children?.${index}.age`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children?.${index}.age`}>
                       <Form.Label>Age</Form.Label>
                       <FormInput
                         type="number"
@@ -110,10 +97,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.dob`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.dob`}>
                       <Form.Label>Date of Birth</Form.Label>
                       <FormInput
                         type="date"
@@ -121,15 +105,13 @@ const ChildrenDetails = ({
                         placeholder={`Enter child's dob`}
                         onChange={handleInputChange}
                         value={child?.dob}
+                        max={moment().format("YYYY-MM-DD")}
                       />
                     </Form.Group>
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.occupation`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.occupation`}>
                       <Form.Label>Occupation</Form.Label>
                       <FormInput
                         type="text"
@@ -155,10 +137,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.annual_income`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.annual_income`}>
                       <Form.Label>Annual Income</Form.Label>
                       <FormInput
                         type="number"
@@ -171,10 +150,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.location`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.location`}>
                       <Form.Label>Location</Form.Label>
                       <FormInput
                         type="text"
@@ -187,10 +163,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.designation`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.designation`}>
                       <Form.Label>Designation</Form.Label>
                       <FormInput
                         type="text"
@@ -203,10 +176,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.duration`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.duration`}>
                       <Form.Label>Duration</Form.Label>
                       <FormInput
                         type="number"
@@ -219,10 +189,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.current_status`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.current_status`}>
                       <Form.Label>Current Status</Form.Label>
                       <Form.Select
                         aria-label="select current status"
@@ -243,10 +210,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.monthly_salary`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.monthly_salary`}>
                       <Form.Label>Monthly Salary</Form.Label>
                       <FormInput
                         type="number"
@@ -259,10 +223,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.mode_of_payment`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.mode_of_payment`}>
                       <Form.Label>Mode of Payment</Form.Label>
                       <Form.Select
                         aria-label="select mode of payment"
@@ -283,10 +244,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.current_income_source`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.current_income_source`}>
                       <Form.Label>Current Income Source</Form.Label>
                       <FormInput
                         type="text"
@@ -299,10 +257,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.income_tax_payer`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.income_tax_payer`}>
                       <Form.Label>Income Tax Payer</Form.Label>
                       <Form.Check
                         type="checkbox"
@@ -315,10 +270,7 @@ const ChildrenDetails = ({
                   </Col>
 
                   <Col md={6}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId={`children.${index}.nature_of_occupation`}
-                    >
+                    <Form.Group className="mb-3" controlId={`children.${index}.nature_of_occupation`}>
                       <Form.Label>Nature of Occupation</Form.Label>
                       <Form.Select
                         aria-label="select nature of occupation"
@@ -353,11 +305,7 @@ const ChildrenDetails = ({
           </Row>
 
           <Row>
-            <ActionButton
-              label="Add More Children"
-              iconClass="mdi mdi-plus"
-              onClick={handleAddChildren}
-            />
+            <ActionButton label="Add More Children" iconClass="mdi mdi-plus" onClick={handleAddChildren} />
           </Row>
         </>
       )}
