@@ -750,23 +750,6 @@ const BasicInfo = withSwal((props: any) => {
               </Form.Group>
             </Col>
 
-            {/* <Col md={6} xl={3} xxl={2}>
-              <Form.Group className="mb-3" controlId="nationality">
-                <Form.Label>Nationality</Form.Label>
-                <FormInput
-                  type="text"
-                  name="nationality"
-                  placeholder="Enter nationality"
-                  key="nationality"
-                  value={basicInfo?.nationality} // Change to basicInfo
-                  onChange={(e) => handleInputChange(e, "nationality", "basic")}
-                />
-                {basicInfo?.errors?.nationality && (
-                  <Form.Text className="text-danger">{basicInfo?.errors?.nationality}</Form.Text>
-                )}
-              </Form.Group>
-            </Col> */}
-
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="country">
                 <Form.Label>Country</Form.Label>
@@ -796,7 +779,6 @@ const BasicInfo = withSwal((props: any) => {
                   placeholder="Enter nationality"
                   key="nationality"
                   value={selectedNationality} // Change to basicInfo
-                  // value={selectedNationality ? selectedNationality : basicInfo?.nationality} // Change to basicInfo
                   onChange={(e) => handleInputChange(e, "nationality", "basic")}
                   disabled={true}
                 />
@@ -818,7 +800,7 @@ const BasicInfo = withSwal((props: any) => {
                   })}
                   value={selectedState}
                   onChange={(selected) => handleDropDowns(selected, { name: "state" }, "basic")}
-                  isDisabled={!selectedNation}
+                  isDisabled={!selectedNation?.value}
                 />
                 {basicInfo?.errors?.state && <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>}
               </Form.Group>

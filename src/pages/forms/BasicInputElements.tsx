@@ -233,7 +233,7 @@ const BasicInputElements = withSwal((props: any) => {
     ...(user?.role == counsellor_tl_id
       ? [
           {
-            Header: "Status",
+            Header: "Assigned Status",
             accessor: "assigned_branch_counselor",
             sort: false,
             minWidth: 150,
@@ -637,6 +637,7 @@ const BasicInputElements = withSwal((props: any) => {
           setModal={setModal}
           toggle={toggle}
           handleUpdateData={handleUpdateData}
+          initialLoading={initialLoading}
         />
 
         {user?.role == it_team_id && (
@@ -676,6 +677,7 @@ const BasicInputElements = withSwal((props: any) => {
             userData={userData || []}
             counsellors={counsellors || []}
             cres={cres || []}
+            branchForManager={branchForManager || []}
           />
 
           <Card className="bg-white py-3">
