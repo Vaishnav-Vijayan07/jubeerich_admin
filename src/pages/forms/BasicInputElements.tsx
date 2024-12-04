@@ -637,6 +637,7 @@ const BasicInputElements = withSwal((props: any) => {
           setModal={setModal}
           toggle={toggle}
           handleUpdateData={handleUpdateData}
+          initialLoading={initialLoading}
         />
 
         {user?.role == it_team_id && (
