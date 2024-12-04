@@ -177,7 +177,7 @@ const LeadsFilters = (props: any) => {
 
         <Card.Body className="pt-0 pb-0">
           <Collapse in={open}>
-            <>
+            <div>
               <Row className="mb-3">
                 <Col lg={3} md={4} sm={6} xs={12}>
                   <Form.Group className="mb-3" controlId="status_id">
@@ -317,7 +317,7 @@ const LeadsFilters = (props: any) => {
                   </Form.Group>
                 </Col>
               </Row>
-            </>
+            </div>
           </Collapse>
         </Card.Body>
       </Card>
