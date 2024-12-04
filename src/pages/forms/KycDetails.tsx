@@ -109,12 +109,8 @@ const KycDetails = withSwal((props: any) => {
             { label: "Current Address", value: response?.basicInfoDetails?.address || "N/A" },
             {
               label: "Primary Point of Contact",
-              value: `${
-                response?.basicInfoDetails?.emergency_contact_name ? response?.basicInfoDetails?.emergency_contact_name : "N/A"
-              } - ${
-                response?.basicInfoDetails?.emergency_contact_relationship
-                  ? response?.basicInfoDetails?.emergency_contact_relationship
-                  : "N/A"
+              value: `${response?.basicInfoDetails?.emergency_contact_name ? response?.basicInfoDetails?.emergency_contact_name : "N/A"} - ${
+                response?.basicInfoDetails?.emergency_contact_relationship ? response?.basicInfoDetails?.emergency_contact_relationship : "N/A"
               }`,
             },
             { label: "Marital Status", value: response?.basicInfoDetails?.marital_status_details?.marital_status_name || "N/A" },
@@ -129,9 +125,7 @@ const KycDetails = withSwal((props: any) => {
             },
             {
               label: "Course Link",
-              value:
-                response?.studyPreferences?.[0]?.studyPreferenceDetails?.[0]?.preferred_courses?.campuses?.[0]?.campus_course
-                  ?.course_link,
+              value: response?.studyPreferences?.[0]?.studyPreferenceDetails?.[0]?.preferred_courses?.campuses?.[0]?.campus_course?.course_link,
             },
             { label: "Counselor Name", value: response?.assignedCounselor?.name || "N/A" },
             { label: "Branch", value: response?.branches?.branch_name || "N/A" },
@@ -295,7 +289,7 @@ const KycDetails = withSwal((props: any) => {
       });
 
       if (result.isConfirmed) {
-        const res = await axios.post("/approve_kyc", { application_id: application_id });
+        const res = await axios.post("/approve_kyc", { application_id: application_id, student_id: id });
         if (res) {
           showSuccessAlert("KYC Rejected");
           navigate(`/kyc_details`);
@@ -441,11 +435,7 @@ const KycDetails = withSwal((props: any) => {
                     <h5 className="font-weight-bold text-danger">Qualifications:</h5>
 
                     {educationDetails?.map((qual: any, index: number) => (
-                      <div
-                        key={index}
-                        className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Qualification:</strong>
                           <span className="ms-2">{qual?.qualification}</span>
@@ -472,11 +462,7 @@ const KycDetails = withSwal((props: any) => {
                     <h5 className="font-weight-bold text-danger">Periods of Gap:</h5>
 
                     {gapDetails?.map((gap: any, index: any) => (
-                      <div
-                        key={index}
-                        className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Period of Gap:</strong>
                           <span className="ms-2">{`${gap?.start_date ? moment(gap?.start_date).format("DD/MM/YYYY") : "N/A"} - ${
@@ -511,11 +497,7 @@ const KycDetails = withSwal((props: any) => {
                 <Accordion.Body>
                   <div className="text-start mt-2">
                     {passportDetails?.[0]?.map((field: any, index: number) => (
-                      <p
-                        key={index}
-                        className={`mb-2 font-15 ${index % 2 == 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <p key={index} className={`mb-2 font-15 ${index % 2 == 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <strong>{field?.label}:</strong>
                         <span className="ms-2">{field?.value}</span>
                       </p>
@@ -524,20 +506,14 @@ const KycDetails = withSwal((props: any) => {
                     <h5 className="font-weight-bold text-danger pt-2">Passport Details:</h5>
 
                     {passportsInfo?.map((data: any, index: any) => (
-                      <div
-                        key={index}
-                        className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Passport Number:</strong>
                           <span className="ms-2">{data?.passport_number || "N/A"}</span>
                         </p>
                         <p className="mb-1 font-15">
                           <strong>Date of Expiry:</strong>
-                          <span className="ms-2">
-                            {data?.date_of_expiry ? moment(data?.date_of_expiry).format("DD/MM/YYYY") : "N/A"}
-                          </span>
+                          <span className="ms-2">{data?.date_of_expiry ? moment(data?.date_of_expiry).format("DD/MM/YYYY") : "N/A"}</span>
                         </p>
                       </div>
                     ))}
@@ -559,11 +535,7 @@ const KycDetails = withSwal((props: any) => {
                 <Accordion.Body>
                   <div className="text-start mt-2 ps-1">
                     {familyDetails?.map((field, index) => (
-                      <p
-                        key={index}
-                        className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <p key={index} className={`mb-2 font-15 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <strong>{field?.label}:</strong>
                         <span className="ms-2">{field?.value}</span>
                       </p>
@@ -572,11 +544,7 @@ const KycDetails = withSwal((props: any) => {
                     <h5 className="font-weight-bold text-danger mt-3">Siblings Info:</h5>
 
                     {siblingsInfo?.map((data: any, index: any) => (
-                      <div
-                        key={index}
-                        className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>No. of Sibling:</strong>
                           <span className="ms-2">{data?.name || "N/A"}</span>
@@ -599,11 +567,7 @@ const KycDetails = withSwal((props: any) => {
                     <h5 className="font-weight-bold text-danger mt-3">Childrens Info:</h5>
 
                     {childrensInfo?.map((data: any, index: any) => (
-                      <div
-                        key={index}
-                        className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Name:</strong>
                           <span className="ms-2">{data?.name || "N/A"}</span>
@@ -639,11 +603,7 @@ const KycDetails = withSwal((props: any) => {
 
                     {fundDetails.length > 0 ? (
                       fundDetails?.map((data: any, index: any) => (
-                        <div
-                          key={index}
-                          className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }}
-                        >
+                        <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                           <p className="mb-1 font-15">
                             <strong>Type of funds:</strong>
                             <span className="ms-2">{formatFundName(data?.type)}</span>
@@ -671,9 +631,7 @@ const KycDetails = withSwal((props: any) => {
 
                               <div className="text-start mt-2">
                                 <p className={`mb-0 p-2 ps-2 font-15 bg-light`}>
-                                  <strong>
-                                    {"If FD or Savings does the funds have min 6 months back up and proper source to prove?"}:
-                                  </strong>
+                                  <strong>{"If FD or Savings does the funds have min 6 months back up and proper source to prove?"}:</strong>
                                   <span className="ms-2">{data?.has_min_6_months_backup ? "Yes" : "No"}</span>
                                 </p>
 
@@ -709,11 +667,7 @@ const KycDetails = withSwal((props: any) => {
                 <Accordion.Body>
                   <div className="text-start mt-2 ps-1">
                     {experienceDetails?.map((exp: any, index: number) => (
-                      <div
-                        key={index}
-                        className={`mb-3 ${index % 2 == 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div key={index} className={`mb-3 ${index % 2 == 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Name of Company:</strong>
                           <span className="ms-2">{exp?.company}</span>
@@ -721,8 +675,7 @@ const KycDetails = withSwal((props: any) => {
                         <p className="mb-1 font-15">
                           <strong>Start and End Date:</strong>
                           <span className="ms-2">
-                            {exp?.from ? moment(exp?.from).format("DD/MM/YYYY") : "N/A"} -{" "}
-                            {exp?.to ? moment(exp?.from).format("DD/MM/YYYY") : "N/A"}
+                            {exp?.from ? moment(exp?.from).format("DD/MM/YYYY") : "N/A"} - {exp?.to ? moment(exp?.from).format("DD/MM/YYYY") : "N/A"}
                           </span>
                         </p>
                         <p className="mb-1 font-15">
@@ -731,9 +684,7 @@ const KycDetails = withSwal((props: any) => {
                         </p>
                         <p className="mb-1 font-15">
                           <strong>Work Experience Certificate Available:</strong>
-                          <span className="ms-2">
-                            {exp?.experience_certificate && exp?.experience_certificate?.trim() !== "" ? "Yes" : "No"}
-                          </span>
+                          <span className="ms-2">{exp?.experience_certificate && exp?.experience_certificate?.trim() !== "" ? "Yes" : "No"}</span>
                         </p>
                         <p className="mb-1 font-15">
                           <strong>Bank Statement Attached:</strong>
@@ -747,11 +698,7 @@ const KycDetails = withSwal((props: any) => {
                     <h5 className="font-weight-bold text-danger">Other Information:</h5>
 
                     {employementHistoriesDetails?.map((info: any, index: number) => (
-                      <div
-                        key={index}
-                        className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>{info?.label}</strong>
                           <span className="ms-2">{info?.value}</span>
@@ -778,11 +725,7 @@ const KycDetails = withSwal((props: any) => {
                     <h5 className="font-weight-bold text-danger">Previous Visa Decline (If Any):</h5>
 
                     {visaDeclineDetails?.map((visa: any, index: any) => (
-                      <div
-                        key={index}
-                        className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Country Name:</strong>
                           <span className="ms-2">{visa?.declined_country?.country_name}</span>
@@ -819,11 +762,7 @@ const KycDetails = withSwal((props: any) => {
                     <h5 className="font-weight-bold text-danger">Previous Visa Approval (If Any):</h5>
 
                     {visaApprovalDetails?.map((visa: any, index: any) => (
-                      <div
-                        key={index}
-                        className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Country Name:</strong>
                           <span className="ms-2">{visa.approved_country?.country_name}</span>
@@ -860,11 +799,7 @@ const KycDetails = withSwal((props: any) => {
                     <h5 className="font-weight-bold text-danger">Previous Travel History (If Any):</h5>
 
                     {travelHistoryDetails?.map((travel: any, index: number) => (
-                      <div
-                        key={index}
-                        className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`}
-                        style={{ padding: "10px", borderRadius: "4px" }}
-                      >
+                      <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Country Name:</strong>
                           <span className="ms-2">{travel?.travelHistoryCountry?.country_name}</span>
@@ -901,11 +836,7 @@ const KycDetails = withSwal((props: any) => {
                   <div className="text-start mt-2 ps-1">
                     {examDetails.length > 0 ? (
                       examDetails?.map((test: any, index: number) => (
-                        <div
-                          key={index}
-                          className={`mb-3 ${index % 2 == 0 ? "bg-light" : ""}`}
-                          style={{ padding: "10px", borderRadius: "4px" }}
-                        >
+                        <div key={index} className={`mb-3 ${index % 2 == 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                           <p className="mb-1 font-15">
                             <strong>Type of Test:</strong>
                             <span className="ms-2">{test?.exam_type}</span>
@@ -968,10 +899,7 @@ const KycDetails = withSwal((props: any) => {
                       </p>
                     </div>
                     <p className="font-15">
-                      <em>
-                        This information is necessary for regulatory compliance and will be treated with the utmost
-                        confidentiality.
-                      </em>
+                      <em>This information is necessary for regulatory compliance and will be treated with the utmost confidentiality.</em>
                     </p>
                   </div>
                 </Accordion.Body>

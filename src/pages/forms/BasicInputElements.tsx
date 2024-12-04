@@ -215,7 +215,7 @@ const BasicInputElements = withSwal((props: any) => {
     //   Cell: ({ row }: any) => <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>,
     // },
     {
-      Header: "Lead Stage",
+      Header: "Department",
       accessor: "stage",
       sort: false,
       minWidth: 150,
@@ -233,7 +233,7 @@ const BasicInputElements = withSwal((props: any) => {
     ...(user?.role == counsellor_tl_id
       ? [
           {
-            Header: "Status",
+            Header: "Assigned Status",
             accessor: "assigned_branch_counselor",
             sort: false,
             minWidth: 150,
@@ -637,6 +637,7 @@ const BasicInputElements = withSwal((props: any) => {
           setModal={setModal}
           toggle={toggle}
           handleUpdateData={handleUpdateData}
+          initialLoading={initialLoading}
         />
 
         {user?.role == it_team_id && (
@@ -676,6 +677,7 @@ const BasicInputElements = withSwal((props: any) => {
             userData={userData || []}
             counsellors={counsellors || []}
             cres={cres || []}
+            branchForManager={branchForManager || []}
           />
 
           <Card className="bg-white py-3">

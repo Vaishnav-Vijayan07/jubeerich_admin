@@ -12,6 +12,8 @@ export const spam_id = "45";
 export const lost_id = "44";
 export const region_id = "4";
 export const franchise_id_from_office = "5";
+export const corporate_id_from_office = "6"
+export const region_id_from_office = "4"
 
 // role ids
 export const it_team_id = "2";

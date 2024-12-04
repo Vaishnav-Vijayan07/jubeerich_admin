@@ -142,7 +142,7 @@ const BasicInputElements = withSwal((props: any) => {
     region,
     franchisees,
     branchCounsellors,
-    initialLoading
+    initialLoading,
   } = props;
 
   console.log("Region from state", region);
@@ -333,30 +333,47 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "lead_received_date",
       sort: false,
       minWidth: 150,
-      Cell: ({ row }: any) => (
-        <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
-      ),
+      Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
     },
     // {
     //   Header: "Followup Date",
     //   accessor: "followup_date",
     //   sort: false,
     //   minWidth: 100,
-    //   Cell: ({ row }: any) => (
-    //     <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>
-    //   ),
+    //   Cell: ({ row }: any) => <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>,
     // },
     {
-      Header: "Assigned CRE",
-      accessor: "cre_name",
-      // Cell: UserColumn,
-      Cell: ({ row }: any) => (
-        <span className="no-truncate-text">
-          <UserColumn row={row} />
-        </span>
-      ),
-      minWidth: 100,
+      Header: "Department",
+      accessor: "stage",
+      sort: false,
+      minWidth: 150,
     },
+    // {
+    //   Header: "Assigned CRE",
+    //   accessor: "cre_name",
+    //   // Cell: UserColumn,
+    //   Cell: ({ row }: any) => (
+    //     <span className="no-truncate-text">
+    //       <UserColumn row={row} />
+    //     </span>
+    //   ),
+    //   minWidth: 100,
+    // },
+    ...(user?.role == cre_tl_id
+      ? [
+        {
+          Header: "Assigned CRE",
+          accessor: "cre_name",
+          // Cell: UserColumn,
+          Cell: ({ row }: any) => (
+            <span className="no-truncate-text">
+              <UserColumn row={row} />
+            </span>
+          ),
+          minWidth: 100,
+        }
+        ]
+      : []),
     ...(user?.role == cre_id || user?.role == cre_tl_id
       ? [
           {
@@ -379,6 +396,23 @@ const BasicInputElements = withSwal((props: any) => {
             },
           },
         ]
+      : []),
+    ...(user?.role == counsellor_tl_id
+      ? [
+        {
+          Header: "Assigned Status",
+          accessor: "assigned_branch_counselor",
+          sort: false,
+          minWidth: 150,
+          Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+        },
+        {
+          Header: "Assigned Counselor",
+          accessor: "assigned_branch_counselor_name",
+          sort: false,
+          minWidth: 150,
+        },
+      ]
       : []),
     {
       Header: "Status",
@@ -683,12 +717,7 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body>
               <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
-              <FileUploader
-                onFileUpload={handleOnFileUpload}
-                showPreview={true}
-                selectedFile={selectedFile}
-                setSelectedFile={setSelectedFile}
-              />
+              <FileUploader onFileUpload={handleOnFileUpload} showPreview={true} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
               <div className="d-flex gap-2 justify-content-end mt-2">
                 <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
                   <i className="mdi mdi-download-circle"></i> Download Sample
@@ -791,19 +820,17 @@ const AssignedLeads = () => {
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag } = useSelector(
-    (state: RootState) => ({
-      user: state.Auth.user,
-      state: state.Leads.assignedLeads,
-      error: state.Leads.error,
-      loading: state.Leads.loading,
-      initialLoading: state.Leads.initialloading,
-      users: state.Users.adminUsers,
-      franchisees: state.Franchise.franchiseUsers,
-      branchCounsellor: state.Users?.branchCounsellor,
-      flag: state?.Flag?.flags,
-    })
-  );
+  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag } = useSelector((state: RootState) => ({
+    user: state.Auth.user,
+    state: state.Leads.assignedLeads,
+    error: state.Leads.error,
+    loading: state.Leads.loading,
+    initialLoading: state.Leads.initialloading,
+    users: state.Users.adminUsers,
+    franchisees: state.Franchise.franchiseUsers,
+    branchCounsellor: state.Users?.branchCounsellor,
+    flag: state?.Flag?.flags,
+  }));
 
   let userRole: any;
   let userBranchId: any;

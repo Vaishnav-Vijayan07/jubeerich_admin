@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import Select, { ActionMeta, OptionsType } from "react-select";
@@ -8,9 +8,18 @@ import { AppDispatch } from "../../redux/store";
 import { addLeads, deleteLeads, getLead, getLeadAssigned, getLeadAssignedByCounsellorTL, updateLeads } from "../../redux/actions";
 import {
   baseUrl,
+  branch_counsellor_id,
+  corporate_id_from_office,
+  counsellor_id,
+  counsellor_tl_id,
+  cre_id,
+  cre_tl_id,
   customStyles,
+  franchise_counsellor_id,
   franchise_id_from_office,
+  franchise_manager_id,
   region_id,
+  region_id_from_office,
   regional_manager_id,
   showErrorAlert,
   showSuccessAlert,
@@ -22,6 +31,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { APICore } from "../../helpers/api/apiCore";
 
 const LeadsModal = withSwal((props: any) => {
   const {
@@ -44,7 +54,10 @@ const LeadsModal = withSwal((props: any) => {
     clearLeadModal,
     setModal,
     isAssignedLeads = false,
+    initialLoading
   } = props;
+  const api = new APICore()
+  const loggedInUser = api.getLoggedInUser();
 
   const [sourceData, setSourceData] = useState<any>(source);
   const [channelData, setChannelData] = useState<any>(channels);
@@ -73,6 +86,7 @@ const LeadsModal = withSwal((props: any) => {
   const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>();
+  const [isOfficeDisable, setIsOfficeDisable] = useState<any>(false)
 
   const validationSchema = yup.object().shape({
     full_name: yup.string().required("Name is required"),
@@ -103,6 +117,58 @@ const LeadsModal = withSwal((props: any) => {
     handleCancelUpdate();
   }, [clearLeadModal]);
 
+  const filteredOffice = useMemo(() => {
+    if (!loggedInUser || !office?.length) return null;
+  
+    if ([cre_tl_id, cre_id, counsellor_id].includes(loggedInUser?.role.toString())) {
+      return office?.find((data: any) => data?.value == corporate_id_from_office);
+    } else if ([regional_manager_id, counsellor_tl_id, branch_counsellor_id].includes(loggedInUser?.role.toString())) {
+      return office?.find((data: any) => data?.value == region_id_from_office);
+    } else if ([franchise_manager_id, franchise_counsellor_id].includes(loggedInUser?.role.toString())) {
+      return office?.find((data: any) => data?.value == franchise_id_from_office);
+    }
+    return null;
+  }, [loggedInUser, office]);
+  
+  useEffect(() => {
+    if (filteredOffice) {
+      setOfficeType(filteredOffice);
+    }
+  }, [filteredOffice]);
+
+
+  useEffect(() => {
+    const rolesWithOfficeDisable = [
+      cre_tl_id,
+      cre_id,
+      counsellor_id,
+      regional_manager_id,
+      counsellor_tl_id,
+      branch_counsellor_id,
+      franchise_manager_id,
+      franchise_counsellor_id,
+    ];
+  
+    if (rolesWithOfficeDisable.includes(loggedInUser?.role.toString())) {
+      setIsOfficeDisable(true);
+    }
+  }, [loggedInUser]);
+
+  const setOfficeType = (data: any) => {
+    setSelectedOffice(data);
+    
+    if(data?.value?.toString() == franchise_id_from_office){
+      setIsFranchiseActive(true)
+    } else if(data?.value?.toString() == region_id_from_office){
+      setActiveRegion(true)
+    }
+
+    setFormData((prev: any) => ({
+      ...prev,
+      office_type: data?.value,
+    }));
+  } 
+  
   const handleUpdate = (item: any) => {
     //update source dropdown
     const updatedSource = source?.filter((source: any) => source.value == item?.source_id);
@@ -492,8 +558,10 @@ const LeadsModal = withSwal((props: any) => {
   };
 
   const handleCancelUpdate = () => {
-    setIsUpdate(false);
-    handleResetValues();
+    if(isUpdate){
+      setIsUpdate(false);
+      handleResetValues();
+    }
   };
 
   const handleResetValues = () => {
@@ -502,7 +570,7 @@ const LeadsModal = withSwal((props: any) => {
     setSelectedCountry([]);
     setSelectedCategory(null);
     setSelectedChannel(null);
-    setSelectedOffice(null);
+    // setSelectedOffice(null);
     setSelectedFlag(null);
     setSelectedRegion(null);
     setSelectedSource(null);
@@ -512,13 +580,18 @@ const LeadsModal = withSwal((props: any) => {
     setActiveRegion(false);
     setIsFranchiseActive(false);
     setSelectExam(false);
+    if(filteredOffice){
+      setOfficeType(filteredOffice)
+    }
   };
 
   useEffect(() => {
-    if (!loading && !error) {      
+    if (!loading && !error) {   
       setModal(false)
-      setValidationErrors(initialValidationState); // Clear validation errors
-      setFormData(initialState); //clear form data
+      if(!filteredOffice){
+        setValidationErrors(initialValidationState); // Clear validation errors
+        setFormData(initialState); //clear form data
+      }
     }
   }, [loading, error]);
 
@@ -712,6 +785,7 @@ const LeadsModal = withSwal((props: any) => {
                     options={office}
                     value={selectedOffice}
                     onChange={handleDropDowns}
+                    isDisabled={isOfficeDisable}
                   />
                   {validationErrors.office_type && <Form.Text className="text-danger">{validationErrors.office_type}</Form.Text>}
                 </Form.Group>
