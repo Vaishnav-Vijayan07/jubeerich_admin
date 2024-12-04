@@ -233,7 +233,7 @@ const BasicInputElements = withSwal((props: any) => {
     ...(user?.role == counsellor_tl_id
       ? [
           {
-            Header: "Status",
+            Header: "Assigned Status",
             accessor: "assigned_branch_counselor",
             sort: false,
             minWidth: 150,

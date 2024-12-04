@@ -348,17 +348,32 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
       minWidth: 150,
     },
-    {
-      Header: "Assigned CRE",
-      accessor: "cre_name",
-      // Cell: UserColumn,
-      Cell: ({ row }: any) => (
-        <span className="no-truncate-text">
-          <UserColumn row={row} />
-        </span>
-      ),
-      minWidth: 100,
-    },
+    // {
+    //   Header: "Assigned CRE",
+    //   accessor: "cre_name",
+    //   // Cell: UserColumn,
+    //   Cell: ({ row }: any) => (
+    //     <span className="no-truncate-text">
+    //       <UserColumn row={row} />
+    //     </span>
+    //   ),
+    //   minWidth: 100,
+    // },
+    ...(user?.role == cre_tl_id
+      ? [
+        {
+          Header: "Assigned CRE",
+          accessor: "cre_name",
+          // Cell: UserColumn,
+          Cell: ({ row }: any) => (
+            <span className="no-truncate-text">
+              <UserColumn row={row} />
+            </span>
+          ),
+          minWidth: 100,
+        }
+        ]
+      : []),
     ...(user?.role == cre_id || user?.role == cre_tl_id
       ? [
           {
@@ -381,6 +396,23 @@ const BasicInputElements = withSwal((props: any) => {
             },
           },
         ]
+      : []),
+    ...(user?.role == counsellor_tl_id
+      ? [
+        {
+          Header: "Assigned Status",
+          accessor: "assigned_branch_counselor",
+          sort: false,
+          minWidth: 150,
+          Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+        },
+        {
+          Header: "Assigned Counselor",
+          accessor: "assigned_branch_counselor_name",
+          sort: false,
+          minWidth: 150,
+        },
+      ]
       : []),
     {
       Header: "Status",

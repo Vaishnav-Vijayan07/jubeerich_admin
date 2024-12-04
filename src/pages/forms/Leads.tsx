@@ -36,7 +36,7 @@ const Leads = () => {
 
   useEffect(() => {
     fetchAllCounsellors();
-    userBranchId ?? dispatch(getBranchCounsellors(userBranchId));
+    if(userBranchId) dispatch(getBranchCounsellors(userBranchId));
   }, [userBranchId]);
 
   useEffect(() => {
