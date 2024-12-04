@@ -72,10 +72,9 @@ const VisaProcessRow = ({
                     }
                     placeholder="Select Visa Type"
                     name="visa_type"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "visa_type", selectedOption.value, visa_decline)
-                    }
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "visa_type", selectedOption.value, visa_decline)}
                   />
+                  {data?.errors?.visa_type && <Form.Text className="text-danger">{data?.errors?.visa_type}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -96,10 +95,9 @@ const VisaProcessRow = ({
                     }
                     placeholder="Select Country"
                     name="country_id"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "country_id", selectedOption.value, visa_decline)
-                    }
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "country_id", selectedOption.value, visa_decline)}
                   />
+                  {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -120,10 +118,9 @@ const VisaProcessRow = ({
                     }
                     placeholder="Select Course"
                     name="course_applied"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "course_applied", selectedOption.value, visa_decline)
-                    }
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "course_applied", selectedOption.value, visa_decline)}
                   />
+                  {data?.errors?.course_applied && <Form.Text className="text-danger">{data?.errors?.course_applied}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -144,10 +141,9 @@ const VisaProcessRow = ({
                     }
                     placeholder="Select University Applied"
                     name="university_applied"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "university_applied", selectedOption.value, visa_decline)
-                    }
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "university_applied", selectedOption.value, visa_decline)}
                   />
+                  {data?.errors?.university_applied && <Form.Text className="text-danger">{data?.errors?.university_applied}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -163,31 +159,28 @@ const VisaProcessRow = ({
                     value={data?.rejection_reason || ""}
                     onChange={(e) => handleVisaInputChange(index, e, visa_decline)}
                   />
+
+                  {data?.errors?.rejection_reason && <Form.Text className="text-danger">{data?.errors?.rejection_reason}</Form.Text>}
                 </Form.Group>
               </Col>
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-2" controlId="decline_letter">
                   <Form.Label>Rejection Letter</Form.Label>
-                  <FormInput
-                    type="file"
-                    name="decline_letter"
-                    onChange={(e) =>
-                      handleFileChange(e, visa_decline, index)
-                    }
-                  />
+                  <FormInput type="file" name="decline_letter" onChange={(e) => handleFileChange(e, visa_decline, index)} />
+                  {data?.errors?.decline_letter && <Form.Text className="text-danger">{data?.errors?.decline_letter}</Form.Text>}
                 </Form.Group>
-                <div className='d-flex mb-2'>
-                  {data?.decline_letter && <a
-                    href={`${baseUrl}/uploads/${data?.decline_letter}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-                  >
-                    <div className='p-1'>
-                      {(data?.decline_letter ? 'Rejection Letter' : "")}
-                    </div>
-                  </a>}
+                <div className="d-flex mb-2">
+                  {data?.decline_letter && (
+                    <a
+                      href={`${baseUrl}/uploads/${data?.decline_letter}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
+                    >
+                      <div className="p-1">{data?.decline_letter ? "Rejection Letter" : ""}</div>
+                    </a>
+                  )}
                 </div>
               </Col>
 
@@ -239,10 +232,9 @@ const VisaProcessRow = ({
                     }
                     placeholder="Select Visa Type"
                     name="visa_type"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "visa_type", selectedOption.value, visa_approve)
-                    }
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "visa_type", selectedOption.value, visa_approve)}
                   />
+                  {data?.errors?.visa_type && <Form.Text className="text-danger">{data?.errors?.visa_type}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -263,10 +255,9 @@ const VisaProcessRow = ({
                     }
                     placeholder="Select Country"
                     name="country_id"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "country_id", selectedOption.value, visa_approve)
-                    }
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "country_id", selectedOption.value, visa_approve)}
                   />
+                  {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -287,10 +278,9 @@ const VisaProcessRow = ({
                     }
                     placeholder="Select Course"
                     name="course_applied"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "course_applied", selectedOption.value, visa_approve)
-                    }
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "course_applied", selectedOption.value, visa_approve)}
                   />
+                  {data?.errors?.course_applied && <Form.Text className="text-danger">{data?.errors?.course_applied}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -311,35 +301,28 @@ const VisaProcessRow = ({
                     }
                     placeholder="Select University Applied"
                     name="university_applied"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "university_applied", selectedOption.value, visa_approve)
-                    }
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "university_applied", selectedOption.value, visa_approve)}
                   />
+                  {data?.errors?.university_applied && <Form.Text className="text-danger">{data?.errors?.university_applied}</Form.Text>}
                 </Form.Group>
               </Col>
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-2" controlId="approve_letter">
                   <Form.Label>Approved Letter</Form.Label>
-                  <FormInput
-                    type="file"
-                    name="approve_letter"
-                    onChange={(e) =>
-                      handleFileChange(e, visa_approve, index)
-                    }
-                  />
+                  <FormInput type="file" name="approve_letter" onChange={(e) => handleFileChange(e, visa_approve, index)} />
                 </Form.Group>
-                <div className='d-flex mb-2'>
-                  {data?.approve_letter && <a
-                    href={`${baseUrl}/uploads/${data?.approve_letter}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-                  >
-                    <div className='p-1'>
-                      {(data?.approve_letter ? 'Approved Letter' : "")}
-                    </div>
-                  </a>}
+                <div className="d-flex mb-2">
+                  {data?.approve_letter && (
+                    <a
+                      href={`${baseUrl}/uploads/${data?.approve_letter}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
+                    >
+                      <div className="p-1">{data?.approve_letter ? "Approved Letter" : ""}</div>
+                    </a>
+                  )}
                 </div>
               </Col>
 
@@ -391,10 +374,9 @@ const VisaProcessRow = ({
                     }
                     placeholder="Select Country"
                     name="country_id"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "country_id", selectedOption.value, travel_history)
-                    }
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "country_id", selectedOption.value, travel_history)}
                   />
+                  {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -411,6 +393,7 @@ const VisaProcessRow = ({
                     value={moment(data?.start_date).format("YYYY-MM-DD")}
                     onChange={(e) => handleVisaInputChange(index, e, travel_history)}
                   />
+                  {data?.errors?.start_date && <Form.Text className="text-danger">{data?.errors?.start_date}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -427,6 +410,7 @@ const VisaProcessRow = ({
                     value={moment(data?.end_date).format("YYYY-MM-DD")}
                     onChange={(e) => handleVisaInputChange(index, e, travel_history)}
                   />
+                  {data?.errors?.end_date && <Form.Text className="text-danger">{data?.errors?.end_date}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -441,6 +425,7 @@ const VisaProcessRow = ({
                     value={data?.purpose_of_travel || ""}
                     onChange={(e) => handleVisaInputChange(index, e, travel_history)}
                   />
+                  {data?.errors?.purpose_of_travel && <Form.Text className="text-danger">{data?.errors?.purpose_of_travel}</Form.Text>}
                 </Form.Group>
               </Col>
               {travelHistoryData.length > 1 && (

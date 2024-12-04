@@ -11,6 +11,8 @@ import { getUniversity } from "../../../../redux/University/actions";
 import { travel_history, visa_approve, visa_decline } from "./data";
 import { getCountry } from "../../../../redux/country/actions";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
+import validateFields from "../../../../helpers/validateHelper";
+import { count } from "console";
 
 const VisaProcess = withSwal((props: any) => {
   const { swal, studentId } = props;
@@ -29,6 +31,7 @@ const VisaProcess = withSwal((props: any) => {
     university_applied: "",
     rejection_reason: "",
     decline_letter: null,
+    errors: {},
   };
 
   const initialVisaApproveForm = {
@@ -39,6 +42,7 @@ const VisaProcess = withSwal((props: any) => {
     course_applied: "",
     university_applied: "",
     approve_letter: "",
+    errors: {},
   };
 
   const initialTravelHistoryForm = {
@@ -48,6 +52,7 @@ const VisaProcess = withSwal((props: any) => {
     start_date: "",
     end_date: "",
     purpose_of_travel: "",
+    errors: {},
   };
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -278,6 +283,26 @@ const VisaProcess = withSwal((props: any) => {
   };
 
   const submitDeclinedVisa = async () => {
+    const validationRules = {
+      course_applied: { required: true },
+      country_id: { required: true },
+      rejection_reason: { required: true }, // Assuming it's optional
+      university_applied: { required: true },
+      visa_type: { required: true },
+    };
+
+    const { isValid, errors } = validateFields(visaDeclineFormData, validationRules);
+
+    if (!isValid) {
+      setVisaDeclineFormData((prevState: any) =>
+        prevState.map((exp: any, index: any) => ({
+          ...exp,
+          errors: errors[index] || {},
+        }))
+      );
+      return;
+    }
+
     const newFormData = new FormData();
 
     for (let data of visaDeclinedDocs) {
@@ -335,6 +360,25 @@ const VisaProcess = withSwal((props: any) => {
   };
 
   const submitApprovedVisa = async () => {
+    const validationRules = {
+      course_applied: { required: true },
+      country_id: { required: true },
+      university_applied: { required: true },
+      visa_type: { required: true },
+    };
+
+    const { isValid, errors } = validateFields(visaApproveFormData, validationRules);
+
+    if (!isValid) {
+      setVisaApproveFormData((prevState: any) =>
+        prevState.map((exp: any, index: any) => ({
+          ...exp,
+          errors: errors[index] || {},
+        }))
+      );
+      return;
+    }
+
     const newFormData = new FormData();
 
     for (let data of visaApproveDocs) {
@@ -393,6 +437,25 @@ const VisaProcess = withSwal((props: any) => {
   };
 
   const submitTravelHistory = async () => {
+    const validationRules = {
+      country_id: { required: true },
+      start_date: { required: true },
+      end_date: { required: true },
+      purpose_of_travel: { required: true },
+    };
+
+    const { isValid, errors } = validateFields(travelHistoryFormData, validationRules);
+
+    if (!isValid) {
+      setTravelHistoryFormData((prevState: any) =>
+        prevState.map((exp: any, index: any) => ({
+          ...exp,
+          errors: errors[index] || {},
+        }))
+      );
+      return;
+    }
+
     const body = {
       userId: loggedUser.user_id,
       travelHistory: travelHistoryFormData,
