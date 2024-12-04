@@ -677,6 +677,7 @@ const BasicInputElements = withSwal((props: any) => {
             userData={userData || []}
             counsellors={counsellors || []}
             cres={cres || []}
+            branchForManager={branchForManager || []}
           />
 
           <Card className="bg-white py-3">

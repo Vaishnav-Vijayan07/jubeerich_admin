@@ -156,6 +156,13 @@ const LeadsModal = withSwal((props: any) => {
 
   const setOfficeType = (data: any) => {
     setSelectedOffice(data);
+    
+    if(data?.value?.toString() == franchise_id_from_office){
+      setIsFranchiseActive(true)
+    } else if(data?.value?.toString() == region_id_from_office){
+      setActiveRegion(true)
+    }
+
     setFormData((prev: any) => ({
       ...prev,
       office_type: data?.value,
