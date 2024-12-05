@@ -51,7 +51,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const [basicData, setBasicData] = useState<any>([]);
   const [flagData, setFlagData] = useState<any>([]);
   const [status, setStatus] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [standard, setStandard] = useState(false);
   const [statusId, setStatusId] = useState(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -153,6 +153,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   }, [status]);
 
   const getBasicInfo = () => {
+    setLoading(true);
     axios
       .get(`getStudentBasicInfo/${studentId}`)
       .then((res) => {
