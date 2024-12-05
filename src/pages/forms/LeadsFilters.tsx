@@ -179,7 +179,7 @@ const LeadsFilters = (props: any) => {
           <Collapse in={open}>
             <div>
               <Row className="mb-3">
-                <Col lg={3} md={4} sm={6} xs={12}>
+                {/* <Col lg={3} md={4} sm={6} xs={12}>
                   <Form.Group className="mb-3" controlId="status_id">
                     <Form.Label>Status</Form.Label>
                     <Select
@@ -192,7 +192,7 @@ const LeadsFilters = (props: any) => {
                       onChange={handleFilterChange}
                     />
                   </Form.Group>
-                </Col>
+                </Col> */}
 
                 <Col lg={3} md={4} sm={6} xs={12}>
                   <Form.Group className="mb-3" controlId="source_id">
