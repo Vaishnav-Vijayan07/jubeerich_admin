@@ -11,6 +11,7 @@ import {
   counsellor_id,
   country_manager_id,
   cre_id,
+  cre_tl_id,
   customStyles,
   follow_up_id,
   franchise_counsellor_id,
@@ -60,8 +61,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const [viewOnly, setViewOnly] = useState<boolean>(false);
   const [isFollowupLoading, setIsFollowupLoading] = useState<boolean>(false);
   const [tabValue, setTabValue] = React.useState("history");
-  const [taskPrefix, setTaskPrefix] = useState<string>('');
-  const currentDate = new Date()
+  const [taskPrefix, setTaskPrefix] = useState<string>("");
+  const currentDate = new Date();
   const navigate = useNavigate();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -510,9 +511,9 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   const getTaskPrefix = async () => {
     try {
-      const res = await axios.get('/master_data');
+      const res = await axios.get("/master_data");
       if (res) {
-        setTaskPrefix(res?.data?.data?.[0]?.task_prefix)
+        setTaskPrefix(res?.data?.data?.[0]?.task_prefix);
       }
     } catch (error) {
       console.log(error);
@@ -522,7 +523,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   useEffect(() => {
     getTaskPrefix();
-  }, [])
+  }, []);
 
   const inputStyle = {
     "& .MuiInputBase-root": {
@@ -554,7 +555,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     <span>{taskPrefix + "/" + currentDate.getFullYear() + "/" + (taskDetails?.id || "000")}</span>
                   </div>
 
-                  {userRole == cre_id && (
+                  {(userRole == cre_id || userRole == cre_tl_id) && (
                     <Col className="d-flex gap-2 float-end">
                       <Button
                         className="d-flex align-items-center btn-light"
@@ -773,7 +774,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       <img src={icons.Layer} alt="email" className="me-1" width="17" />
                       <input
                         type="text"
-                        value={basicData?.passportNumber || 'N/A'}
+                        value={basicData?.passportNumber || "N/A"}
                         style={{
                           border: "none",
                           outline: "none",
@@ -893,12 +894,16 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       disableClearable
                       options={formattedStatus || []}
                       // value={basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
-                      value={basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name : "Change status"}
-                      sx={{ width: 300, paddingTop: "1.2rem",flex:1,fontSize:'0.8rem' }}
+                      value={
+                        basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
+                          ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
+                          : "Change status"
+                      }
+                      sx={{ width: 300, paddingTop: "1.2rem", flex: 1, fontSize: "0.8rem" }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          sx={{...inputStyle}}
+                          sx={{ ...inputStyle }}
                           // label="Status"
                         />
                       )}
