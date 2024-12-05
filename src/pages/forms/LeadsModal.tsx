@@ -18,6 +18,7 @@ import {
   franchise_counsellor_id,
   franchise_id_from_office,
   franchise_manager_id,
+  it_team_id,
   region_id,
   region_id_from_office,
   regional_manager_id,
@@ -100,6 +101,24 @@ const LeadsModal = withSwal((props: any) => {
     channel_id: yup.string().required("Channel is required").nullable(),
     office_type: yup.string().required("Office type is required").nullable(),
     lead_received_date: yup.date().required("Date is required"),
+    franchise_id: yup
+    .string()
+    .nullable()
+    .when('office_type', (officeType, schema) => {
+        if (officeType === franchise_id_from_office) {
+            return schema.required("Franchise is required").nullable();
+        }
+        return schema.nullable();
+    }),
+    region_id: yup
+    .string()
+    .nullable()
+    .when('office_type', (officeType, schema) => {
+        if (officeType === region_id_from_office) {
+            return schema.required("Region is required").nullable();
+        }
+        return schema.nullable();
+    }),
   });
 
   const methods = useForm({
@@ -582,6 +601,8 @@ const LeadsModal = withSwal((props: any) => {
     setSelectExam(false);
     if(filteredOffice){
       setOfficeType(filteredOffice)
+    } else if(loggedInUser?.role == it_team_id){
+      setOfficeType(filteredOffice)
     }
   };
 
@@ -826,7 +847,7 @@ const LeadsModal = withSwal((props: any) => {
                       value={selectedFranchisee}
                       onChange={handleDropDowns}
                     />
-                    {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
+                    {validationErrors.franchise_id && <Form.Text className="text-danger">{validationErrors.franchise_id}</Form.Text>}
                   </Form.Group>
                 </Col>
               )}
