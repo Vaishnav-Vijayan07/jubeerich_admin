@@ -101,7 +101,8 @@ export const initialValidationState = {
   zipcode: "",
   region_id: "",
   lead_type_id: "",
-  flag: ""
+  flag: "",
+  franchise_id: "",
 };
 
 export interface OptionType {
