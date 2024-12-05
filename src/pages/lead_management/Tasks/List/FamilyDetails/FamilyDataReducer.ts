@@ -74,19 +74,7 @@ interface ChildDetails {
   name: string,
   gender: string,
   age: number,
-  dob: string,
-  occupation: string,
-  annual_income: number,
-  organization: string,
-  income_tax_payer: boolean,
-  nature_of_occupation: string,
-  location: string,
-  designation: string,
-  duration: number,
-  current_status: string,
-  monthly_salary: number,
-  mode_of_payment: string,
-  current_income_source: string,
+  dob: string
 }
 
 type FamilyDetailsAction =
@@ -247,19 +235,7 @@ export const familyDetailsReducer = (
             name: "",
             gender: "",
             age: 0,
-            dob: "",
-            occupation: "",
-            annual_income: 0,
-            organization: "",
-            income_tax_payer: true,
-            nature_of_occupation: "",
-            location: "",
-            designation: "",
-            duration: 0,
-            current_status: "",
-            monthly_salary: 0,
-            mode_of_payment: "",
-            current_income_source: "",
+            dob: ""
           }
         ],
       };
