@@ -71,13 +71,13 @@ export const calculateDaysAgo = (createdAt: string): string => {
   } else if (daysAgo === 1) {
     return "Yesterday";
   } else if (daysAgo < 7) {
-    return `${daysAgo} days`;
+    return `${daysAgo} days ago`;
   } else if (daysAgo < 30) {
     const weeksAgo = Math.floor(daysAgo / 7);
-    return weeksAgo === 1 ? "1 week" : `${weeksAgo} weeks`;
+    return weeksAgo === 1 ? "1 week ago" : `${weeksAgo} weeks ago`;
   } else {
     const monthsAgo = Math.floor(daysAgo / 30);
-    return monthsAgo === 1 ? "1 month" : `${monthsAgo} months`;
+    return monthsAgo === 1 ? "1 month ago" : `${monthsAgo} months ago`;
   }
 };
 
