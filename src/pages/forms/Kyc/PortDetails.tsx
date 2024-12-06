@@ -145,7 +145,7 @@ function PortalDetails({}: Props) {
                 </Row>
                 <Row>
                   <Col>
-                    <Button className="float-end" style={{ backgroundColor: "#28a745" }} onClick={handleProceed}>
+                    <Button className="float-end" style={{ backgroundColor: "#28a745", border: "none" }} onClick={handleProceed}>
                       Mark as complete
                     </Button>
                   </Col>

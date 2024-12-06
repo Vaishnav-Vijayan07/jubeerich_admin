@@ -16,21 +16,21 @@ import ApplicationFeeCheck from "./ApplicationFeeCheck";
 import { Col } from "react-bootstrap";
 import { FormInput } from "../../../components";
 import { withSwal } from "react-sweetalert2";
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
+import Box from "@mui/material/Box";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const steps = [
-  'Program Availability',
-  'Campus',
-  'Entry Requirement',
-  'Document Quantity',
-  'Document Quality',
-  'Immigration History',
-  'Application Fee',
+  "Program Availability",
+  "Campus",
+  "Entry Requirement",
+  "Document Quantity",
+  "Document Quality",
+  "Immigration History",
+  "Application Fee",
 ];
 
 const PendingDetailsById = withSwal((props: any) => {
@@ -41,7 +41,7 @@ const PendingDetailsById = withSwal((props: any) => {
 
   const [current, setCurrent] = useState(0);
 
-  const [item, setItem] = useState<any>({});
+  const [item, setItem] = useState<any>(null);
   const [checks, setChecks] = useState<any>({});
   const [qualityForm, setQualityForm] = useState<any>({
     formatting: false,
@@ -49,6 +49,8 @@ const PendingDetailsById = withSwal((props: any) => {
     scanning: false,
   });
   const [expanded, setExpanded] = React.useState<string | false>(false);
+
+  console.log("ITEM IN ID", item);
 
   const CheckTypes = {
     availability: "availability",
@@ -88,6 +90,33 @@ const PendingDetailsById = withSwal((props: any) => {
   const reference_id = useMemo(() => item?.existApplication?.reference_id || 0, [item]);
   const application_fee = useMemo(() => item?.studyPreferDetails?.preferred_courses?.campuses?.[0]?.campus_course?.application_fee || 0, [item]);
 
+  item &&
+    !item.assigned_user &&
+    swal
+      .fire({
+        icon: "warning", // Adds a warning icon
+        title: "Action Required",
+        html: `
+      <p style="font-size: 1rem; margin: 10px 0;">
+        <strong>Please assign a application member</strong> before proceeding.
+      </p>
+      <p style="color: #555;">
+        You need to assign a application member to handle this case. Click "OK" to return to the pending KYC details page.
+      </p>
+    `,
+        confirmButtonText: "Assign Now", // Better call-to-action
+        confirmButtonColor: "#3085d6", // Custom button color
+        background: "#f9f9f9", // Light background
+        allowOutsideClick: false, // Block interactions outside the alert
+        allowEscapeKey: false,
+        allowEnterKey: false,
+      })
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          navigate("/kyc_details/all/pending");
+        }
+      });
+
   const availabilityCheck = useMemo(
     () => ({
       id: item?.existApplication?.id,
@@ -122,8 +151,7 @@ const PendingDetailsById = withSwal((props: any) => {
     }
   };
 
-  const handleChange =
-  (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
 
@@ -231,7 +259,7 @@ const PendingDetailsById = withSwal((props: any) => {
         const res = await axios.post(`/kyc_reject`, payload);
         if (res) {
           showSuccessAlert("Rejected Succesfully");
-          navigate('/kyc_details/applications/pending');
+          navigate("/kyc_details/applications/pending");
         }
       }
     } catch (error) {
@@ -272,25 +300,19 @@ const PendingDetailsById = withSwal((props: any) => {
   return (
     <>
       <Row className="mt-2">
-      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
-        >
-          <Typography sx={{ width: '33%', flexShrink: 0 }}>
-            Basic Details
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <BasicDetails data={formattedItem} studentId={studentId} />
-        </AccordionDetails>
-      </Accordion>
+        <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+            <Typography sx={{ width: "33%", flexShrink: 0 }}>Basic Details</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <BasicDetails data={formattedItem} studentId={studentId} />
+          </AccordionDetails>
+        </Accordion>
       </Row>
       <Row className="pt-2">
         <Card>
           <Card.Body>
-            <Box sx={{ width: '100%' }}>
+            <Box sx={{ width: "100%" }}>
               <Stepper activeStep={current} alternativeLabel>
                 {steps.map((label) => (
                   <Step key={label}>
@@ -325,13 +347,15 @@ const PendingDetailsById = withSwal((props: any) => {
             />
           </Form.Group>
         </Col>
-        <FormButtons
-          studentId={studentId}
-          handleNavigation={buttonNavigations}
-          current={current}
-          handleReject={handleRejection}
-          handleProceed={handleProceedApplication}
-        />
+        {item?.assigned_user && (
+          <FormButtons
+            studentId={studentId}
+            handleNavigation={buttonNavigations}
+            current={current}
+            handleReject={handleRejection}
+            handleProceed={handleProceedApplication}
+          />
+        )}
       </Row>
     </>
   );
