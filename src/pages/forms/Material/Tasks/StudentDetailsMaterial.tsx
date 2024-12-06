@@ -146,11 +146,16 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   const formattedStatus = useMemo(() => {
     if (!status) return [];
-    return status?.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.status_name,
-    }));
-  }, [status]);
+
+    const currentStatus = basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name;
+
+    return status
+      .filter((item: any) => item.status_name !== currentStatus) // Filter out the current status
+      .map((item: any) => ({
+        value: item.id.toString(),
+        label: item.status_name,
+      }));
+  }, [status, basicData]); // Ensure basicData is included in dependencies if it's part of the logic
 
   const getBasicInfo = () => {
     setLoading(true);
@@ -330,12 +335,15 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   const countryData = useMemo(() => {
     if (!Countries) return [];
-    return Countries?.filter((item: any) => {
-      return !basicData?.country_ids?.includes(item?.id);
-    }).map((item: any) => ({
-      value: item?.id.toString(),
-      label: item?.country_name,
-    }));
+
+    const currentCountries = basicData?.country_names;
+
+    return Countries.filter((item: any) => !basicData?.country_ids?.includes(item?.id))
+      .filter((item: any) => !currentCountries?.includes(item?.country_name))
+      .map((item: any) => ({
+        value: item?.id.toString(),
+        label: item?.country_name,
+      }));
   }, [Countries, basicData]);
 
   const handleFinishTask = async () => {
@@ -479,6 +487,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       }
     } catch (error) {
       console.log(error);
+      navigate(`/leads/manage/${studentId}?tab=study_pref`);
       showErrorAlert(error);
     }
   };
@@ -627,7 +636,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         {country}
                       </small>
                     ))}
-                    {!loading && user.role == 7 && (
+                    {!loading && (user.role == counsellor_id || user?.role == branch_counsellor_id || user?.role == franchise_counsellor_id) && (
                       <Tooltip title="Add Country">
                         <span onClick={handleClick}>
                           <AddCircleOutlineIcon />
@@ -816,12 +825,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
                 <div className="action-icon d-flex justify-content-end align-items-center">
                   <Tooltip title="View All Details">
-                    <MatButton
-                      onClick={() => navigate(`/leads/manage/${studentId}`)}
-                      startIcon={<VisibilityIcon />}
-                      variant="outlined"
-                      size="small"
-                    >
+                    <MatButton onClick={() => navigate(`/leads/manage/${studentId}`)} startIcon={<VisibilityIcon />} variant="outlined" size="small">
                       <Typography
                         sx={{
                           fontFamily: "'Nunito', sans-serif",
@@ -1039,13 +1043,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
             <Card.Body>
               <Row>
                 <Box sx={{ width: "100%" }}>
-                  <Tabs
-                    value={tabValue}
-                    onChange={handleTabChange}
-                    textColor="secondary"
-                    aria-label="secondary tabs example"
-                    sx={{ ...tabsStyle }}
-                  >
+                  <Tabs value={tabValue} onChange={handleTabChange} textColor="secondary" aria-label="secondary tabs example" sx={{ ...tabsStyle }}>
                     {/* <Tab value="comments" label="Comments" sx={{ ...individualTabStyle }} /> */}
 
                     <Tab value="history" label="History" sx={{ ...individualTabStyle }} />

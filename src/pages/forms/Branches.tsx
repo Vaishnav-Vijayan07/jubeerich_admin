@@ -684,24 +684,6 @@ const BasicInputElements = withSwal((props: any) => {
               <Row>
                 <Col>
                   <Form.Group className="mb-3" controlId="source_id">
-                    <Form.Label>Office</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="office_type"
-                      options={office}
-                      value={selectedOffice}
-                      onChange={handleOfficeChanges}
-                    />
-
-                    {validationErrors.office_type && (
-                      <Form.Text className="text-danger">{validationErrors.office_type}</Form.Text>
-                    )}
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group className="mb-3" controlId="source_id">
                     <Form.Label>Region</Form.Label>
                     <Select
                       styles={customStyles}
