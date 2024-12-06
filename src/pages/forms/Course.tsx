@@ -223,6 +223,8 @@ const BasicInputElements = withSwal((props: any) => {
                 )
               );
               setIsUpdate(false);
+              setSelectedCourseType(null);
+              setSelectedStream(null);
             } else {
               // Handle add logic
               console.log("Here");
@@ -235,6 +237,8 @@ const BasicInputElements = withSwal((props: any) => {
                   formData.stream_id
                 )
               );
+              setSelectedCourseType(null);
+              setSelectedStream(null);
             }
           }
         })

@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { showErrorAlert } from "../../../../constants";
 import { Badge, Col, Dropdown, Row, Spinner } from "react-bootstrap";
 import classNames from "classnames";
-import CardLoadingSkeleton from "../../../../components/SkeletonLoading/CardLoadingSkeleton1";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
-import { reverse } from "dns";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 
 const History = ({ studentId }: any) => {
   const [userHistory, setUserHistory] = useState([]);
@@ -13,6 +13,10 @@ const History = ({ studentId }: any) => {
   const [selectedCountry, setSelectedCountry] = useState("all"); // Default to "all"
   const [loading, setLoading] = useState(false);
   const [dropdownLabel, setDropdownLabel] = useState("Choose Country");
+
+  const { refresh } = useSelector((state: RootState) => ({
+    refresh: state.refreshReducer.refreshing,
+  }));
 
   const fetchDetails = async (countryId: any) => {
     setLoading(true);
@@ -34,7 +38,7 @@ const History = ({ studentId }: any) => {
   // Fetch all countries and history initially
   useEffect(() => {
     fetchDetails("all");
-  }, [studentId]);
+  }, [studentId, refresh]);
 
   console.log(selectedCountry);
   console.log("userHistory", userHistory);
@@ -100,9 +104,7 @@ const History = ({ studentId }: any) => {
           <Row>
             <div className="history-tl-container">
               <ul className="tl">
-                <li className="tl-item">
-                  History
-                </li>
+                <li className="tl-item">History</li>
                 {userHistory.length > 0 ? (
                   userHistory?.map((item: any) => (
                     <>
@@ -118,7 +120,6 @@ const History = ({ studentId }: any) => {
                 )}
               </ul>
             </div>
-
           </Row>
         </>
       )}

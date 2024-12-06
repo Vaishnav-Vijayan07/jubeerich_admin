@@ -60,8 +60,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const [viewOnly, setViewOnly] = useState<boolean>(false);
   const [isFollowupLoading, setIsFollowupLoading] = useState<boolean>(false);
   const [tabValue, setTabValue] = React.useState("history");
-  const [taskPrefix, setTaskPrefix] = useState<string>('');
-  const currentDate = new Date()
+  const [taskPrefix, setTaskPrefix] = useState<string>("");
+  const currentDate = new Date();
   const navigate = useNavigate();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -145,11 +145,16 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   const formattedStatus = useMemo(() => {
     if (!status) return [];
-    return status?.map((item: any) => ({
-      value: item.id.toString(),
-      label: item.status_name,
-    }));
-  }, [status]);
+
+    const currentStatus = basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name;
+
+    return status
+      .filter((item: any) => item.status_name !== currentStatus) // Filter out the current status
+      .map((item: any) => ({
+        value: item.id.toString(),
+        label: item.status_name,
+      }));
+  }, [status, basicData]); // Ensure basicData is included in dependencies if it's part of the logic
 
   const getBasicInfo = () => {
     axios
@@ -328,12 +333,15 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   const countryData = useMemo(() => {
     if (!Countries) return [];
-    return Countries?.filter((item: any) => {
-      return !basicData?.country_ids?.includes(item?.id);
-    }).map((item: any) => ({
-      value: item?.id.toString(),
-      label: item?.country_name,
-    }));
+
+    const currentCountries = basicData?.country_names;
+
+    return Countries.filter((item: any) => !basicData?.country_ids?.includes(item?.id))
+      .filter((item: any) => !currentCountries?.includes(item?.country_name))
+      .map((item: any) => ({
+        value: item?.id.toString(),
+        label: item?.country_name,
+      }));
   }, [Countries, basicData]);
 
   const handleFinishTask = async () => {
@@ -477,6 +485,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       }
     } catch (error) {
       console.log(error);
+      navigate(`/leads/manage/${studentId}?tab=study_pref`);
       showErrorAlert(error);
     }
   };
@@ -510,9 +519,9 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   const getTaskPrefix = async () => {
     try {
-      const res = await axios.get('/master_data');
+      const res = await axios.get("/master_data");
       if (res) {
-        setTaskPrefix(res?.data?.data?.[0]?.task_prefix)
+        setTaskPrefix(res?.data?.data?.[0]?.task_prefix);
       }
     } catch (error) {
       console.log(error);
@@ -522,7 +531,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   useEffect(() => {
     getTaskPrefix();
-  }, [])
+  }, []);
 
   const inputStyle = {
     "& .MuiInputBase-root": {
@@ -773,7 +782,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       <img src={icons.Layer} alt="email" className="me-1" width="17" />
                       <input
                         type="text"
-                        value={basicData?.passportNumber || 'N/A'}
+                        value={basicData?.passportNumber || "N/A"}
                         style={{
                           border: "none",
                           outline: "none",
@@ -814,12 +823,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
                 <div className="action-icon d-flex justify-content-end align-items-center">
                   <Tooltip title="View All Details">
-                    <MatButton
-                      onClick={() => navigate(`/leads/manage/${studentId}`)}
-                      startIcon={<VisibilityIcon />}
-                      variant="outlined"
-                      size="small"
-                    >
+                    <MatButton onClick={() => navigate(`/leads/manage/${studentId}`)} startIcon={<VisibilityIcon />} variant="outlined" size="small">
                       <Typography
                         sx={{
                           fontFamily: "'Nunito', sans-serif",
@@ -893,12 +897,16 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       disableClearable
                       options={formattedStatus || []}
                       // value={basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
-                      value={basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name : "Change status"}
-                      sx={{ width: 300, paddingTop: "1.2rem",flex:1,fontSize:'0.8rem' }}
+                      value={
+                        basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
+                          ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
+                          : "Change status"
+                      }
+                      sx={{ width: 300, paddingTop: "1.2rem", flex: 1, fontSize: "0.8rem" }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          sx={{...inputStyle}}
+                          sx={{ ...inputStyle }}
                           // label="Status"
                         />
                       )}
@@ -1033,13 +1041,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
             <Card.Body>
               <Row>
                 <Box sx={{ width: "100%" }}>
-                  <Tabs
-                    value={tabValue}
-                    onChange={handleTabChange}
-                    textColor="secondary"
-                    aria-label="secondary tabs example"
-                    sx={{ ...tabsStyle }}
-                  >
+                  <Tabs value={tabValue} onChange={handleTabChange} textColor="secondary" aria-label="secondary tabs example" sx={{ ...tabsStyle }}>
                     {/* <Tab value="comments" label="Comments" sx={{ ...individualTabStyle }} /> */}
 
                     <Tab value="history" label="History" sx={{ ...individualTabStyle }} />
