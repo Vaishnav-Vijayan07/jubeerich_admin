@@ -338,7 +338,7 @@ const BasicInputElements = withSwal((props: any) => {
             <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
           </Link>
 
-          <Link
+          {/* <Link
             to="#"
             className="action-icon"
             onClick={() => {
@@ -347,7 +347,7 @@ const BasicInputElements = withSwal((props: any) => {
             }}
           >
             <i className="mdi mdi-square-edit-outline"></i>
-          </Link>
+          </Link> */}
 
           {/* Delete Icon */}
           <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>

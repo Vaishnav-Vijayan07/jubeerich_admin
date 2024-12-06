@@ -159,7 +159,7 @@ const BasicInputElements = withSwal((props: any) => {
     social_media: yup.string(),
     account_mail: yup.string(),
     support_mail: yup.string(),
-    office_type: yup.string().required("Office type is required"),
+    // office_type: yup.string().required("Office type is required"),
     region_id: yup.string().required("Region ID is required"),
     updated_by: yup.string(),
     status: yup.string(),
@@ -355,6 +355,8 @@ const BasicInputElements = withSwal((props: any) => {
             errors[error.path] = error.message;
           }
         });
+        console.log(errors);
+        
         setValidationErrors(errors);
       }
     }
@@ -682,24 +684,6 @@ const BasicInputElements = withSwal((props: any) => {
               </Row>
 
               <Row>
-                <Col>
-                  <Form.Group className="mb-3" controlId="source_id">
-                    <Form.Label>Office</Form.Label>
-                    <Select
-                      styles={customStyles}
-                      className="react-select react-select-container"
-                      classNamePrefix="react-select"
-                      name="office_type"
-                      options={office}
-                      value={selectedOffice}
-                      onChange={handleOfficeChanges}
-                    />
-
-                    {validationErrors.office_type && (
-                      <Form.Text className="text-danger">{validationErrors.office_type}</Form.Text>
-                    )}
-                  </Form.Group>
-                </Col>
                 <Col>
                   <Form.Group className="mb-3" controlId="source_id">
                     <Form.Label>Region</Form.Label>
