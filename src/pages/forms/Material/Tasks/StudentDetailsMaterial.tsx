@@ -11,6 +11,7 @@ import {
   counsellor_id,
   country_manager_id,
   cre_id,
+  cre_tl_id,
   customStyles,
   follow_up_id,
   franchise_counsellor_id,
@@ -50,7 +51,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const [basicData, setBasicData] = useState<any>([]);
   const [flagData, setFlagData] = useState<any>([]);
   const [status, setStatus] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [standard, setStandard] = useState(false);
   const [statusId, setStatusId] = useState(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -157,6 +158,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   }, [status, basicData]); // Ensure basicData is included in dependencies if it's part of the logic
 
   const getBasicInfo = () => {
+    setLoading(true);
     axios
       .get(`getStudentBasicInfo/${studentId}`)
       .then((res) => {
@@ -563,7 +565,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     <span>{taskPrefix + "/" + currentDate.getFullYear() + "/" + (taskDetails?.id || "000")}</span>
                   </div>
 
-                  {userRole == cre_id && (
+                  {(userRole == cre_id || userRole == cre_tl_id) && (
                     <Col className="d-flex gap-2 float-end">
                       <Button
                         className="d-flex align-items-center btn-light"

@@ -70,11 +70,16 @@ export const calculateDaysAgo = (createdAt: string): string => {
     return "Today";
   } else if (daysAgo === 1) {
     return "Yesterday";
-  } else {
+  } else if (daysAgo < 7) {
     return `${daysAgo} days ago`;
+  } else if (daysAgo < 30) {
+    const weeksAgo = Math.floor(daysAgo / 7);
+    return weeksAgo === 1 ? "1 week ago" : `${weeksAgo} weeks ago`;
+  } else {
+    const monthsAgo = Math.floor(daysAgo / 30);
+    return monthsAgo === 1 ? "1 month ago" : `${monthsAgo} months ago`;
   }
 };
-
 
 export const FindStatusName = (status_id: string, Status: any) => {
   if (Status) {

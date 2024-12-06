@@ -1,6 +1,7 @@
 {
   "hosting": {
     "public": "build",
+    "site": "jubeerich-33583",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
