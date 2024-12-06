@@ -627,7 +627,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         {country}
                       </small>
                     ))}
-                    {!loading && user.role == 7 && (
+                    {!loading && (user.role == counsellor_id || user?.role == branch_counsellor_id || user?.role == franchise_counsellor_id) && (
                       <Tooltip title="Add Country">
                         <span onClick={handleClick}>
                           <AddCircleOutlineIcon />
