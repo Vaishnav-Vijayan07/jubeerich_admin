@@ -102,7 +102,7 @@ function* addOfficeTypeDataSaga({
       office_type_description,
     });
     console.log(response);
-    const data = response.message;
+    const data = response?.data?.message;
 
     yield put(
       OfficeTypesApiResponseSuccess(
@@ -128,7 +128,7 @@ function* updateOfficeTypeDataSaga({
       office_type_name,
     });
     console.log(response);
-    const data = response.message;
+    const data = response?.data?.message;
 
     yield put(
       OfficeTypesApiResponseSuccess(

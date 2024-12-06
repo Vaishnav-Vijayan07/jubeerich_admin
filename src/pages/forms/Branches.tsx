@@ -70,7 +70,7 @@ const initialState = {
   support_mail: "",
   office_type: "",
   region_id: "",
-  status: false,
+  status: true,
 };
 
 const initialValidationState = {
@@ -96,7 +96,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, regions, office, initialLoading } = props;
+  const { swal, state, regions, office, initialLoading, error, loading } = props;
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -350,7 +350,7 @@ const BasicInputElements = withSwal((props: any) => {
           }
         });
         console.log(errors);
-        
+
         setValidationErrors(errors);
       }
     }
@@ -542,6 +542,17 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  useEffect(() => {
+    // Check for errors and clear the form
+    if (!loading && !error) {
+      setResponsiveModal(false);
+      setValidationErrors(initialValidationState); // Clear validation errors
+      setFormData(initialState); //clear form data
+      setSelectedRegion(null);
+      // Clear validation errors
+    }
+  }, [loading, error]);
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -553,7 +564,7 @@ const BasicInputElements = withSwal((props: any) => {
             </Modal.Header>
             <Modal.Body>
               <Row>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Branch Name</Form.Label>
                     <Form.Control type="text" name="branch_name" value={formData.branch_name} onChange={handleInputChange} />
@@ -562,7 +573,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Email</Form.Label>
                     <Form.Control type="text" name="email" value={formData.email} onChange={handleInputChange} />
@@ -570,14 +581,14 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Phone</Form.Label>
                     <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
                     {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Pincode</Form.Label>
                     <Form.Control type="number" name="pincode" value={formData.pincode} onChange={handleInputChange} />
@@ -585,7 +596,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="country">
                     <Form.Label>Branch Country</Form.Label>
                     <Form.Select
@@ -610,7 +621,7 @@ const BasicInputElements = withSwal((props: any) => {
                     {validationErrors.country && <Form.Text className="text-danger">{validationErrors.country}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="country">
                     <Form.Label>Branch State</Form.Label>
                     <Form.Select
@@ -634,7 +645,7 @@ const BasicInputElements = withSwal((props: any) => {
                     {validationErrors.country && <Form.Text className="text-danger">{validationErrors.country}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="city">
                     <Form.Label>Branch City</Form.Label>
                     <Form.Select
@@ -655,7 +666,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="source_id">
                     <Form.Label>Region</Form.Label>
                     <Select
@@ -684,7 +695,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="address">
                     <Form.Label>Branch Address</Form.Label>
                     <Form.Control as="textarea" rows={5} name="address" value={formData.address} onChange={handleInputChange} />
@@ -692,7 +703,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="contact_person_email">
                     <Form.Label>Contact Person Email</Form.Label>
                     <Form.Control
@@ -706,7 +717,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="contact_person_name">
                     <Form.Label>Contact Person Name</Form.Label>
                     <Form.Control
@@ -721,7 +732,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="contact_person_mobile">
                     <Form.Label>Contact Person Mobile</Form.Label>
                     <Form.Control
@@ -735,7 +746,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="contact_person_designation">
                     <Form.Label>Contact Person Designation</Form.Label>
                     <Form.Control
@@ -750,14 +761,14 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="website">
                     <Form.Label>Website</Form.Label>
                     <Form.Control type="url" name="website" value={formData.website} onChange={handleInputChange} />
                     {validationErrors.website && <Form.Text className="text-danger">{validationErrors.website}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="social_media">
                     <Form.Label>Social Media</Form.Label>
                     <Form.Control type="url" name="social_media" value={formData.social_media} onChange={handleInputChange} />
@@ -767,7 +778,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="account_mail">
                     <Form.Label>Account Mail</Form.Label>
                     <Form.Control type="email" name="account_mail" value={formData.account_mail} onChange={handleInputChange} />
@@ -776,7 +787,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="support_mail">
                     <Form.Label>Support Mail</Form.Label>
                     <Form.Control type="email" name="support_mail" value={formData.support_mail} onChange={handleInputChange} />
@@ -843,9 +854,11 @@ const Branches = () => {
   const [officeData, setOfficeData] = useState([]);
 
   //Fetch data from redux store
-  const { state, regions, office, initialLoading } = useSelector((state: RootState) => ({
+  const { state, regions, office, initialLoading, loading, error } = useSelector((state: RootState) => ({
     state: state.Branches.branches.data,
     initialLoading: state.Branches.initialLoading,
+    loading: state.Branches.loading,
+    error: state.Branches.error,
     regions: state.Region.regions,
     office: state.OfficeTypes.officeTypes,
   }));
@@ -890,8 +903,15 @@ const Branches = () => {
         title={"Branches"}
       />
       <Row>
-        <Col md={6}>
-          <BasicInputElements state={state} regions={regionsData} office={officeData} initialLoading={initialLoading} />
+        <Col>
+          <BasicInputElements
+            state={state}
+            regions={regionsData}
+            office={officeData}
+            initialLoading={initialLoading}
+            loading={loading}
+            error={error}
+          />
         </Col>
       </Row>
     </React.Fragment>

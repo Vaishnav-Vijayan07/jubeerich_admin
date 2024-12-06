@@ -80,7 +80,7 @@ function* addCountrySaga({
       isd,
     });
     console.log(response);
-    const data = response.message;
+    const data = response?.data?.message;
 
     yield put(countryApiResponseSuccess(CountryActionTypes.ADD_COUNTRY, data));
     yield put(getCountry());
@@ -99,7 +99,7 @@ function* updateCountrySaga({
       isd,
     });
     console.log(response);
-    const data = response.message;
+    const data = response?.data?.message;
 
     yield put(
       countryApiResponseSuccess(CountryActionTypes.UPDATE_COUNTRY, data)

@@ -74,7 +74,7 @@ function* addFlagSaga({
       color
     });
     console.log(response);
-    const data = response.message;
+    const data = response?.data?.message;
 
     yield put(flagApiResponseSuccess(FlagActionTypes.ADD_FLAG, data));
     yield put(getFlag());
@@ -96,7 +96,7 @@ function* updateFlagSaga({
       color
     });
     console.log(response);
-    const data = response.message;
+    const data = response?.data?.message;
 
     yield put(flagApiResponseSuccess(FlagActionTypes.UPDATE_FLAG, data));
     yield put(getFlag());

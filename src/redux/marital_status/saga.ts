@@ -106,7 +106,7 @@ function* addMaritalStatusSaga({
       marital_status_description,
     });
     console.log(response);
-    const data = response.message;
+    const data = response?.data?.message;
 
     yield put(
       maritalStatusApiResponseSuccess(
@@ -135,7 +135,7 @@ function* updateMaritalStatusSaga({
       marital_status_name,
     });
     console.log(response);
-    const data = response.message;
+    const data = response?.data?.message;
 
     yield put(
       maritalStatusApiResponseSuccess(
