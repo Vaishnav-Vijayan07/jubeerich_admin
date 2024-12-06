@@ -17,7 +17,7 @@ const TasksMaterial = () => {
   const [incompleteTasks, setIncompleteTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(pendingTasks[0]);
   const [selectedDate, setSelectedDate] = useState<any>("");
-  const [taskPrefix, setTaskPrefix] = useState<string>('');
+  const [taskPrefix, setTaskPrefix] = useState<string>("");
 
   const selectTask = (task: TaskItemTypes) => {
     setSelectedTask(task);
@@ -63,9 +63,9 @@ const TasksMaterial = () => {
 
   const getTaskPrefix = async () => {
     try {
-      const res = await axios.get('/master_data');
+      const res = await axios.get("/master_data");
       if (res) {
-        setTaskPrefix(res?.data?.data?.[0]?.task_prefix)
+        setTaskPrefix(res?.data?.data?.[0]?.task_prefix);
       }
     } catch (error) {
       console.log(error);
@@ -75,7 +75,7 @@ const TasksMaterial = () => {
 
   useEffect(() => {
     getTaskPrefix();
-  }, [])
+  }, []);
 
   return (
     <>
@@ -86,6 +86,7 @@ const TasksMaterial = () => {
         ]}
         title={"Inbox"}
       />
+      <h4 className="m-0 mb-3">Good Day, Benjamin Newton ! Here's your to-do list for a productive day !</h4>
       <Row>
         <Col xl={4}>
           <Row>

@@ -122,10 +122,7 @@ const BasicInputElements = withSwal((props: any) => {
   const options = useMemo(() => Country.getAllCountries(), []);
 
   const validationSchema = yup.object().shape({
-    branch_name: yup
-      .string()
-      .required("Branch name is required")
-      .min(3, "Branch name must be at least 3 characters long"),
+    branch_name: yup.string().required("Branch name is required").min(3, "Branch name must be at least 3 characters long"),
     email: yup.string().email("Must be a valid email").required("Email is required"),
     phone: yup
       .string()
@@ -136,25 +133,21 @@ const BasicInputElements = withSwal((props: any) => {
     city: yup.string(),
     state: yup.string(),
     country: yup.string(),
-    pincode: yup
-      .string(),
-      // .required("Pincode is required")
-      // .matches(/^[0-9]+$/, "Pincode must be digits only")
-      // .min(5, "Pincode must be at least 5 digits long"),
+    pincode: yup.string(),
+    // .required("Pincode is required")
+    // .matches(/^[0-9]+$/, "Pincode must be digits only")
+    // .min(5, "Pincode must be at least 5 digits long"),
     contact_person_email: yup.string(),
-    contact_person_name: yup
-      .string(),
-      // .required("Contact person name is required")
-      // .min(3, "Contact person name must be at least 3 characters long"),
-    contact_person_mobile: yup
-      .string(),
-      // .required("Contact person mobile number is required")
-      // .matches(/^[0-9]+$/, "Mobile number must be digits only")
-      // .min(10, "Mobile number must be at least 10 digits long"),
-    contact_person_designation: yup
-      .string(),
-      // .required("Contact person designation is required")
-      // .min(3, "Designation must be at least 3 characters long"),
+    contact_person_name: yup.string(),
+    // .required("Contact person name is required")
+    // .min(3, "Contact person name must be at least 3 characters long"),
+    contact_person_mobile: yup.string(),
+    // .required("Contact person mobile number is required")
+    // .matches(/^[0-9]+$/, "Mobile number must be digits only")
+    // .min(10, "Mobile number must be at least 10 digits long"),
+    contact_person_designation: yup.string(),
+    // .required("Contact person designation is required")
+    // .min(3, "Designation must be at least 3 characters long"),
     website: yup.string(),
     social_media: yup.string(),
     account_mail: yup.string(),
@@ -253,7 +246,7 @@ const BasicInputElements = withSwal((props: any) => {
     e.preventDefault();
     // Validate the form using yup
     try {
-      console.log('ENTERED');
+      console.log("ENTERED");
 
       await validationSchema.validate(formData, { abortEarly: false });
       // Validation passed, handle form submission
@@ -266,7 +259,7 @@ const BasicInputElements = withSwal((props: any) => {
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: `Yes, ${isUpdate ? 'Update' : 'Create'}`,
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -330,9 +323,10 @@ const BasicInputElements = withSwal((props: any) => {
               }
             }
           }
-        }).catch((err: any) => {
-          console.log(err);
         })
+        .catch((err: any) => {
+          console.log(err);
+        });
 
       // Clear validation errors
       setValidationErrors({
@@ -407,7 +401,7 @@ const BasicInputElements = withSwal((props: any) => {
             {row.original.status ? "active" : "disabled"}
           </span>
         </React.Fragment>
-      )
+      ),
     },
     {
       Header: "Actions",
@@ -420,17 +414,19 @@ const BasicInputElements = withSwal((props: any) => {
             <i className="mdi mdi-eye-outline"></i>
           </Link>
           {/* Edit Icon */}
-          <Link to="#" className="action-icon" onClick={() => {
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => {
+              handleUpdate(row.original);
+              toggleResponsiveModal();
+            }}
+          >
             <i className="mdi mdi-square-edit-outline"></i>
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -508,22 +504,22 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleResetValues = () => {
-    console.log('ENTERED');
-    
+    console.log("ENTERED");
+
     setValidationErrors({
       branch_name: "",
       address: "",
       city: "",
       country: "",
-      region_id: ""
+      region_id: "",
     });
-    
+
     setSelectedRegion(null);
-    setFormData(initialState)
-    setSelectedOffice('')
+    setFormData(initialState);
+    setSelectedOffice("");
     setValidationErrors(initialValidationState);
     console.log(selectedRegion);
-  }
+  };
 
   useEffect(() => {
     if (selectedCountry !== null && selectedState !== null) {
@@ -555,48 +551,39 @@ const BasicInputElements = withSwal((props: any) => {
             </Modal.Header>
             <Modal.Body>
               <Row>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Branch Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="branch_name"
-                      value={formData.branch_name}
-                      onChange={handleInputChange}
-                    />
+                    <Form.Control type="text" name="branch_name" value={formData.branch_name} onChange={handleInputChange} />
                     {validationErrors.branch_name && (
                       <Form.Text className="text-danger">{validationErrors.branch_name}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Email</Form.Label>
                     <Form.Control type="text" name="email" value={formData.email} onChange={handleInputChange} />
                     {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                   </Form.Group>
                 </Col>
-              </Row>
-              <Row>
-                <Col>
+
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Phone</Form.Label>
                     <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
                     {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
                     <Form.Label className="">Pincode</Form.Label>
                     <Form.Control type="number" name="pincode" value={formData.pincode} onChange={handleInputChange} />
-                    {validationErrors.pincode && (
-                      <Form.Text className="text-danger">{validationErrors.pincode}</Form.Text>
-                    )}
+                    {validationErrors.pincode && <Form.Text className="text-danger">{validationErrors.pincode}</Form.Text>}
                   </Form.Group>
                 </Col>
-              </Row>
-              <Row>
-                <Col>
+
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="country">
                     <Form.Label>Branch Country</Form.Label>
                     <Form.Select
@@ -605,9 +592,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={formData.country}
                       onChange={handleCountryChange}
                     >
-                      <option value="">
-                        Choose..
-                      </option>
+                      <option value="">Choose..</option>
                       {options?.map((item: any) => (
                         <option
                           value={item?.name}
@@ -620,12 +605,10 @@ const BasicInputElements = withSwal((props: any) => {
                       ))}
                     </Form.Select>
 
-                    {validationErrors.country && (
-                      <Form.Text className="text-danger">{validationErrors.country}</Form.Text>
-                    )}
+                    {validationErrors.country && <Form.Text className="text-danger">{validationErrors.country}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="country">
                     <Form.Label>Branch State</Form.Label>
                     <Form.Select
@@ -634,9 +617,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={formData.state}
                       onChange={handleStateChange}
                     >
-                      <option value="">
-                        Choose..
-                      </option>
+                      <option value="">Choose..</option>
                       {states?.map((item: any) => (
                         <option
                           value={item?.name}
@@ -648,12 +629,10 @@ const BasicInputElements = withSwal((props: any) => {
                       ))}
                     </Form.Select>
 
-                    {validationErrors.country && (
-                      <Form.Text className="text-danger">{validationErrors.country}</Form.Text>
-                    )}
+                    {validationErrors.country && <Form.Text className="text-danger">{validationErrors.country}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="city">
                     <Form.Label>Branch City</Form.Label>
                     <Form.Select
@@ -662,15 +641,9 @@ const BasicInputElements = withSwal((props: any) => {
                       value={formData.city}
                       onChange={handleInputChange}
                     >
-                      <option value="">
-                        Choose..
-                      </option>
+                      <option value="">Choose..</option>
                       {cities?.map((item: any, index: number) => (
-                        <option
-                          value={item?.name}
-                          key={index}
-                          defaultValue={item.name === formData.country ? item.name : ""}
-                        >
+                        <option value={item?.name} key={index} defaultValue={item.name === formData.country ? item.name : ""}>
                           {item.name}
                         </option>
                       ))}
@@ -679,10 +652,8 @@ const BasicInputElements = withSwal((props: any) => {
                     {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
                   </Form.Group>
                 </Col>
-              </Row>
 
-              <Row>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="source_id">
                     <Form.Label>Region</Form.Label>
                     <Select
@@ -695,12 +666,10 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleRegionChanges}
                     />
 
-                    {validationErrors.region_id && (
-                      <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>
-                    )}
+                    {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col className="text-center">
+                <Col className="">
                   <Form.Group className="mb-3" controlId="source_id">
                     <Form.Label>Status</Form.Label>
                     <Form.Check
@@ -712,28 +681,16 @@ const BasicInputElements = withSwal((props: any) => {
                     />
                   </Form.Group>
                 </Col>
-              </Row>
 
-              <Row>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="address">
                     <Form.Label>Branch Address</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={5}
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.address && (
-                      <Form.Text className="text-danger">{validationErrors.address}</Form.Text>
-                    )}
+                    <Form.Control as="textarea" rows={5} name="address" value={formData.address} onChange={handleInputChange} />
+                    {validationErrors.address && <Form.Text className="text-danger">{validationErrors.address}</Form.Text>}
                   </Form.Group>
                 </Col>
-              </Row>
 
-              <Row>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="contact_person_email">
                     <Form.Label>Contact Person Email</Form.Label>
                     <Form.Control
@@ -747,7 +704,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="contact_person_name">
                     <Form.Label>Contact Person Name</Form.Label>
                     <Form.Control
@@ -761,10 +718,8 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-              </Row>
 
-              <Row>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="contact_person_mobile">
                     <Form.Label>Contact Person Mobile</Form.Label>
                     <Form.Control
@@ -778,7 +733,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="contact_person_designation">
                     <Form.Label>Contact Person Designation</Form.Label>
                     <Form.Control
@@ -792,58 +747,37 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-              </Row>
 
-              <Row>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="website">
                     <Form.Label>Website</Form.Label>
                     <Form.Control type="url" name="website" value={formData.website} onChange={handleInputChange} />
-                    {validationErrors.website && (
-                      <Form.Text className="text-danger">{validationErrors.website}</Form.Text>
-                    )}
+                    {validationErrors.website && <Form.Text className="text-danger">{validationErrors.website}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="social_media">
                     <Form.Label>Social Media</Form.Label>
-                    <Form.Control
-                      type="url"
-                      name="social_media"
-                      value={formData.social_media}
-                      onChange={handleInputChange}
-                    />
+                    <Form.Control type="url" name="social_media" value={formData.social_media} onChange={handleInputChange} />
                     {validationErrors.social_media && (
                       <Form.Text className="text-danger">{validationErrors.social_media}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
-              </Row>
 
-              <Row>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="account_mail">
                     <Form.Label>Account Mail</Form.Label>
-                    <Form.Control
-                      type="email"
-                      name="account_mail"
-                      value={formData.account_mail}
-                      onChange={handleInputChange}
-                    />
+                    <Form.Control type="email" name="account_mail" value={formData.account_mail} onChange={handleInputChange} />
                     {validationErrors.account_mail && (
                       <Form.Text className="text-danger">{validationErrors.account_mail}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="support_mail">
                     <Form.Label>Support Mail</Form.Label>
-                    <Form.Control
-                      type="email"
-                      name="support_mail"
-                      value={formData.support_mail}
-                      onChange={handleInputChange}
-                    />
+                    <Form.Control type="email" name="support_mail" value={formData.support_mail} onChange={handleInputChange} />
                     {validationErrors.support_mail && (
                       <Form.Text className="text-danger">{validationErrors.support_mail}</Form.Text>
                     )}
@@ -852,20 +786,18 @@ const BasicInputElements = withSwal((props: any) => {
               </Row>
             </Modal.Body>
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]
-                }
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 "
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal(), handleResetValues()] : [ toggleResponsiveModal(), handleResetValues()])}
+                onClick={() =>
+                  isUpdate
+                    ? [handleCancelUpdate(), toggleResponsiveModal(), handleResetValues()]
+                    : [toggleResponsiveModal(), handleResetValues()]
+                }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -956,7 +888,7 @@ const Branches = () => {
         title={"Branches"}
       />
       <Row>
-        <Col>
+        <Col md={6}>
           <BasicInputElements state={state} regions={regionsData} office={officeData} initialLoading={initialLoading} />
         </Col>
       </Row>

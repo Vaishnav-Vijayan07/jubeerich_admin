@@ -3,6 +3,9 @@
 //
 
 .page-title-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     .page-title {
         font-size: 1.25rem;
         margin: 0;
@@ -13,23 +16,24 @@
     }
 
     .page-title-right {
-        float: right;
-        margin-top: 20px;
+        // float: right;
+        // margin-top: 20px;
     }
 
     .breadcrumb {
         padding-top: 8px;
+        margin: 0;
     }
 }
 
 .page-title-box-sm {
     .page-title {
         line-height: 1 !important;
-        margin-bottom: 25px;
+        // margin-bottom: 25px;
     }
 
     .page-title-right {
-        float: right;
+        // float: right;
         margin-top: 0;
     }
 
@@ -46,7 +50,7 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
-            line-height: 70px;
+            // line-height: inherit;
         }
 
         .breadcrumb {
