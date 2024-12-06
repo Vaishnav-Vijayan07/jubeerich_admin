@@ -3,7 +3,7 @@ import { Card, Nav, Row, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
 import { RootState } from "../../../../redux/store";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import BasicInfo from "../../../lead_management/Tasks/List/BasicInfo";
 import AcademicInfo from "../../../lead_management/Tasks/List/AcademicInfo";
 import VisaProcess from "../../../lead_management/Tasks/List/VisaProcess";
@@ -36,9 +36,12 @@ const LeadDetailsMaterial = (props: Props) => {
   const { id: studentId } = useParams();
   const [basicInfo, setBasicInfo] = useState<any>({});
   const [tabValue, setTabValue] = React.useState("basic_info");
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabValue(newValue);
+    navigate(`?tab=${newValue}`);
   };
 
   const dispatch = useDispatch();
@@ -58,6 +61,12 @@ const LeadDetailsMaterial = (props: Props) => {
       console.error(err);
     }
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get("tab");
+    if (tab) setTabValue(tab);
+  }, [location.search]);
 
   useEffect(() => {
     getBasicInfo();

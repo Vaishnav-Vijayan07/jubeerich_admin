@@ -291,7 +291,7 @@ const KycDetails = withSwal((props: any) => {
       if (result.isConfirmed) {
         const res = await axios.post("/approve_kyc", { application_id: application_id, student_id: id });
         if (res) {
-          showSuccessAlert("KYC Rejected");
+          showSuccessAlert("KYC Approved");
           navigate(`/kyc_details`);
         }
       }
