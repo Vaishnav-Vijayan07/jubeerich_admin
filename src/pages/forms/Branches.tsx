@@ -152,7 +152,7 @@ const BasicInputElements = withSwal((props: any) => {
     social_media: yup.string(),
     account_mail: yup.string(),
     support_mail: yup.string(),
-    office_type: yup.string().required("Office type is required"),
+    // office_type: yup.string().required("Office type is required"),
     region_id: yup.string().required("Region ID is required"),
     updated_by: yup.string(),
     status: yup.string(),
@@ -349,6 +349,8 @@ const BasicInputElements = withSwal((props: any) => {
             errors[error.path] = error.message;
           }
         });
+        console.log(errors);
+        
         setValidationErrors(errors);
       }
     }
