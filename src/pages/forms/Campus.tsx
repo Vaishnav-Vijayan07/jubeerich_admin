@@ -19,6 +19,7 @@ import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/ac
 import { getCourse } from "../../redux/course/actions";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { access } from "fs";
+import { regrexValidation } from "../../utils/regrexValidation";
 
 interface OptionType {
   value: string;
@@ -144,6 +145,12 @@ const BasicInputElements = withSwal((props: any) => {
   //handle onchange function
   const handleInputChange = (e: any, index?: number) => {
     const { name, value } = e.target;
+
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
+    }
+
     setFormData((prevData) => {
       return {
         ...prevData,

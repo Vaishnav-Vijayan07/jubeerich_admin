@@ -32,6 +32,7 @@ import { Link } from "react-router-dom";
 import { getCountry } from "../../redux/country/actions";
 import { getRegion } from "../../redux/regions/actions";
 import { getFranchise } from "../../redux/franchise/actions";
+import { regrexValidation } from "../../utils/regrexValidation";
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -152,6 +153,11 @@ const BasicInputElements = withSwal((props: any) => {
   //handle onchange function
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
+
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
+    }
 
     if (name == "role_id" && value !== counsellor_id) {
       setFormData((prevData) => ({

@@ -20,6 +20,7 @@ import { getOfficeTypeData } from "../../redux/OfficeType/actions";
 import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 import UserBox from "./BranchDetails";
+import { regrexValidation } from "../../utils/regrexValidation";
 
 interface TableRecords {
   id: string;
@@ -228,6 +229,12 @@ const BasicInputElements = withSwal((props: any) => {
   //handle onchange function
   const handleInputChange = (e: any) => {
     const { name, value, checked } = e.target;
+
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
+    }
+    
     if (name == "status") {
       setFormData((prevData) => ({
         ...prevData,
@@ -246,8 +253,6 @@ const BasicInputElements = withSwal((props: any) => {
     e.preventDefault();
     // Validate the form using yup
     try {
-      console.log("ENTERED");
-
       await validationSchema.validate(formData, { abortEarly: false });
       // Validation passed, handle form submission
 

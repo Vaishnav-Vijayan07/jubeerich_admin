@@ -22,6 +22,7 @@ import { AUTH_SESSION_KEY } from "../../constants";
 import { error } from "console";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
+import { regrexValidation } from "../../utils/regrexValidation";
 
 interface TableRecords {
   id: number;
@@ -136,6 +137,11 @@ const BasicInputElements = withSwal((props: any) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
     const checkboxValue = checked ? true : false;
+
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
+    }
 
     setFormData((prev) => ({
       ...prev,
