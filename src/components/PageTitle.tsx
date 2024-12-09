@@ -19,26 +19,26 @@ const PageTitle = (props: PageTitleProps) => {
   return (
     <Row>
       <Col>
-        <div className="page-title-box">
+        <div className="page-title-box" style={props["title"] == "Inbox" ? { marginTop: "20px" } : {}}>
           <h4
-            className="page-title"
-            style={props["title"] == "Inbox" ? { fontWeight: "300", color: "rgba(0, 0,0 ,0.6)", lineHeight: "50px" } : {}}
+            className="page-title inter-font"
+            style={props["title"] == "Inbox" ? { fontWeight: "400", color: "#6C757D", lineHeight: "35px", fontSize: "16px" } : {}}
           >
             {props["title"]}
           </h4>
           <div className="page-title-right">
             <Breadcrumb className="m-0">
-              <Breadcrumb.Item className="m-0" href="/">
+              <Breadcrumb.Item className="m-0 inter-font" href="/">
                 Jubeerich Admin
               </Breadcrumb.Item>
 
               {(props["breadCrumbItems"] || []).map((item, index) => {
                 return item.active ? (
-                  <Breadcrumb.Item active key={index}>
+                  <Breadcrumb.Item className="inter-font" active key={index}>
                     {item.label}
                   </Breadcrumb.Item>
                 ) : (
-                  <Breadcrumb.Item key={index} href={item.path}>
+                  <Breadcrumb.Item key={index} href={item.path} className="inter-font">
                     {item.label}
                   </Breadcrumb.Item>
                 );

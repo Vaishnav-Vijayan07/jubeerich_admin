@@ -1,7 +1,7 @@
 // export const baseUrl = "https://crm.intersmarthosting.in/jubeerich/";
-export const baseUrl = "http://localhost:7700";
-// export const baseUrl = "http://43.204.72.10"
-// export const baseUrl = process.env.REACT_APP_API_URL;
+// export const baseUrl = "http://localhost:7700";
+// export const baseUrl = "https://jubeerich.intersmarthosting.in"
+export const baseUrl = process.env.REACT_APP_API_URL;
 
 export const follow_up_id = 9;
 export const not_responding_id = 7;

@@ -271,14 +271,14 @@ const MENU_ITEMS: MenuItemTypes[] = [
 
   { key: "status_management", label: "Status Management", isTitle: true, roles: ["Monitor"] },
 
-  {
-    key: "status",
-    label: "Status",
-    isTitle: false,
-    icon: "activity", // Status activity or progress
-    url: "/settings/master/status",
-    roles: ["Monitor"],
-  },
+  // {
+  //   key: "status",
+  //   label: "Status",
+  //   isTitle: false,
+  //   icon: "activity",
+  //   url: "/settings/master/status",
+  //   roles: ["Monitor"],
+  // },
   {
     key: "status_config",
     label: "Status Config",

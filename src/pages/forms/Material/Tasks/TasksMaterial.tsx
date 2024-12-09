@@ -9,6 +9,7 @@ import StudentDetailsMaterial from "./StudentDetailsMaterial";
 import ReactDatePicker from "react-datepicker";
 import calender from "../../../../assets/images/icons/calendar.svg";
 import { showErrorAlert } from "../../../../constants";
+import "react-datepicker/dist/react-datepicker.css";
 
 const TasksMaterial = () => {
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
@@ -86,12 +87,14 @@ const TasksMaterial = () => {
         ]}
         title={"Inbox"}
       />
-      <h4 className="m-0 mb-3">Good Day, Benjamin Newton ! Here's your to-do list for a productive day !</h4>
+      <h4 className="m-0 mb-3 mt-1 inter-font" style={{ fontSize: "19px", fontWeight: "400" }}>
+        Good Day, Benjamin Newton ! Here's your to-do list for a productive day !
+      </h4>
       <Row>
         <Col xl={4}>
           <Row>
             <Col>
-              <Card>
+              {/* <Card>
                 <Card.Body style={{ minHeight: "68vh" }}>
                   <Row className="pb-2" style={{ borderBottom: "1.3px solid #70707033" }}>
                     <Col>
@@ -159,7 +162,66 @@ const TasksMaterial = () => {
                     </Col>
                   </Row>
                 </Card.Body>
-              </Card>
+              </Card> */}
+
+              <div className="inbox__list">
+                <div className="inbox__list_header">
+                  <h5 className="text-secondary" style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: "16px" }}>
+                    Task List{" "}
+                    <span className="text-danger" style={{ fontWeight: 500, fontSize: "14px" }}>
+                      ({pendingTasks?.length})
+                    </span>
+                  </h5>
+
+                  <div className="calender__container">
+                    <div className="calender_img_container">
+                      <img src={calender} alt="date logo" width={16.3} className="calender-img" />
+                    </div>
+                    <ReactDatePicker
+                      minDate={new Date()}
+                      onChange={(date) => [setSelectedDate(date), getTaskList(date)]}
+                      selected={selectedDate || new Date()}
+                      dateFormat={"dd-MM-yyyy"}
+                      onKeyDown={(e) => e.preventDefault()}
+                      className="custom-react-date-picker"
+                    />
+                  </div>
+                </div>
+
+                <div className="inbox__list_body">
+                  <div className="task__list_wrapper">
+                    <TaskSectionMaterial
+                      taskPrefix={taskPrefix}
+                      title={"Past"}
+                      initialTaskId={selectedTask?.id}
+                      tasks={incompleteTasks || []}
+                      selectTask={selectTask}
+                      date={""}
+                      initialLoading={initialLoading}
+                      setSelectedDate={function (value: React.SetStateAction<string>): void {
+                        setSelectedDate(value);
+                        getTaskList(value);
+                      }}
+                    ></TaskSectionMaterial>
+                  </div>
+
+                  <div className="task__list_wrapper">
+                    <TaskSectionMaterial
+                      taskPrefix={taskPrefix}
+                      title={"Today"}
+                      initialTaskId={selectedTask?.id}
+                      tasks={pendingTasks || []}
+                      selectTask={selectTask}
+                      date={""}
+                      initialLoading={initialLoading}
+                      setSelectedDate={function (value: React.SetStateAction<string>): void {
+                        setSelectedDate(value);
+                        getTaskList(value);
+                      }}
+                    ></TaskSectionMaterial>
+                  </div>
+                </div>
+              </div>
             </Col>
           </Row>
         </Col>
