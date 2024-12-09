@@ -7,7 +7,7 @@ const INIT_STATE = {
   branch_id: null,
   loading: false,
   initialLoading: false,
-  error: {},
+  error: null,
 };
 
 interface BranchData {
@@ -146,7 +146,7 @@ const Branch = (state: State = INIT_STATE, action: BranchActionType): any => {
     case BranchActionTypes.ADD_BRANCHES:
       return { ...state, loading: true };
     case BranchActionTypes.UPDATE_BRANCHES:
-      return { ...state, loading: true};
+      return { ...state, loading: true };
     default:
       return { ...state };
   }

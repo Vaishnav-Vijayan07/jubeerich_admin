@@ -1,11 +1,7 @@
 import { all, fork, put, takeEvery, call } from "redux-saga/effects";
 import { SagaIterator } from "@redux-saga/core";
 import { RegionActionTypes } from "./constants";
-import {
-  getRegion,
-  regionApiResponseError,
-  regionApiResponseSuccess,
-} from "./actions";
+import { getRegion, regionApiResponseError, regionApiResponseSuccess } from "./actions";
 import {
   addRegionsApi,
   deleteRegionsApi,
@@ -39,7 +35,6 @@ function* getRegionSaga(): SagaIterator {
   }
 }
 
-
 function* getRegionMangerSaga(): SagaIterator {
   try {
     const response = yield call(getRegionsManagerApi);
@@ -59,14 +54,10 @@ function* getRegionByIdSaga({ payload: { id } }: RegionData): SagaIterator {
     console.log(response);
     const data = response.data;
 
-    yield put(
-      regionApiResponseSuccess(RegionActionTypes.GET_REGION_BY_ID, data)
-    );
+    yield put(regionApiResponseSuccess(RegionActionTypes.GET_REGION_BY_ID, data));
   } catch (error: any) {
     console.log(error);
-    yield put(
-      regionApiResponseError(RegionActionTypes.GET_REGION_BY_ID, error)
-    );
+    yield put(regionApiResponseError(RegionActionTypes.GET_REGION_BY_ID, error));
   }
 }
 function* deleteRegionSaga({ payload: { id } }: RegionData): SagaIterator {
@@ -83,17 +74,17 @@ function* deleteRegionSaga({ payload: { id } }: RegionData): SagaIterator {
   }
 }
 function* addRegionSaga({
-  payload: { region_name, updated_by, region_description,regional_manager_id },
+  payload: { region_name, updated_by, region_description, regional_manager_id },
 }: RegionData): SagaIterator {
   try {
     const response = yield call(addRegionsApi, {
       region_name,
       updated_by,
       region_description,
-      regional_manager_id
+      regional_manager_id,
     });
     console.log(response);
-    const data = response.message;
+    const data = response?.data?.message;
 
     yield put(regionApiResponseSuccess(RegionActionTypes.ADD_REGION, data));
     yield put(getRegion());
@@ -103,17 +94,17 @@ function* addRegionSaga({
   }
 }
 function* updateRegionSaga({
-  payload: { id, region_description, region_name, updated_by,regional_manager_id },
+  payload: { id, region_description, region_name, updated_by, regional_manager_id },
 }: RegionData): SagaIterator {
   try {
     const response = yield call(updateRegionsApi, id, {
       updated_by,
       region_description,
       region_name,
-      regional_manager_id
+      regional_manager_id,
     });
     console.log(response);
-    const data = response.message;
+    const data = response?.data?.message;
 
     yield put(regionApiResponseSuccess(RegionActionTypes.UPDATE_REGION, data));
     yield put(getRegion());
