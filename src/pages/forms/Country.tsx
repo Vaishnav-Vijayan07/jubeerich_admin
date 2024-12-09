@@ -37,6 +37,7 @@ import {
   updateCountry,
 } from "../../redux/country/actions";
 import { Link } from "react-router-dom";
+import { regrexValidation } from "../../utils/regrexValidation";
 
 interface OptionType {
   value: string;
@@ -154,6 +155,12 @@ const BasicInputElements = withSwal((props: any) => {
   //handle onchange function
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
+
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
+    }
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,

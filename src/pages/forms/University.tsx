@@ -20,6 +20,7 @@ import { getCountry } from "../../redux/country/actions";
 import { addUniversity, deleteUniversity, getUniversity, updateUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
 import useDropdownData from "../../hooks/useDropdownDatas";
+import { regrexValidation } from "../../utils/regrexValidation";
 
 interface OptionType {
   value: string;
@@ -178,6 +179,12 @@ const BasicInputElements = withSwal((props: any) => {
   //handle onchange function
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
+    
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
+    }
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,

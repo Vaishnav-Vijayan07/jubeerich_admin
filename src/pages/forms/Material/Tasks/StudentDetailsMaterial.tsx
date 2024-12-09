@@ -478,7 +478,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       });
 
       if (result.isConfirmed) {
-        const res = await axios.post(`/proceed_kyc`, { student_id: studentId, task_id: taskId });
+        const res = await axios.post(`/proceed_kyc`, { student_id: studentId, task_id: taskId, is_rejected: taskDetails?.is_rejected });
         if (res) {
           showSuccessAlert("Proceeded KYC Successfully");
           getTaskDetails();

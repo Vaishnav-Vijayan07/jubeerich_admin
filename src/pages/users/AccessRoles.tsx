@@ -21,6 +21,7 @@ import {
 } from "../../redux/users/roles/actions";
 import axios from "axios";
 import { AUTH_SESSION_KEY } from "../../constants";
+import { regrexValidation } from "../../utils/regrexValidation";
 
 interface TableRecords {
   id: string;
@@ -146,6 +147,12 @@ const BasicInputElements = withSwal((props: any) => {
   //handle onchange function
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
+
+    if (!regrexValidation(name, value)) {
+      console.error(`Invalid ${name}: ${value}`);
+      return; // Stop updating if validation fails
+    }
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
