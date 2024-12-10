@@ -773,6 +773,7 @@ const BasicInputElements = withSwal((props: any) => {
                   <Button
                     className="btn-sm btn-blue waves-effect waves-light float-end"
                     onClick={() => [openModalWithClass("modal-full-width"), handleClearModal()]}
+                    disabled={initialLoading}
                   >
                     <i className="mdi mdi-plus-circle"></i> Create Lead
                   </Button>
