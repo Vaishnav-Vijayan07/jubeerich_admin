@@ -467,6 +467,13 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         return showErrorAlert("Please choose a prefered country");
       }
 
+      let payload = {
+        student_id: studentId,
+        task_id: taskId,
+        is_rejected: taskDetails?.is_rejected,
+        assigned_country: taskDetails?.assigned_country 
+      }
+
       const result = await swal.fire({
         title: "Are you sure?",
         text: "This action cannot be undone.",
@@ -478,7 +485,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       });
 
       if (result.isConfirmed) {
-        const res = await axios.post(`/proceed_kyc`, { student_id: studentId, task_id: taskId, is_rejected: taskDetails?.is_rejected });
+        const res = await axios.post(`/proceed_kyc`, payload);
         if (res) {
           showSuccessAlert("Proceeded KYC Successfully");
           getTaskDetails();
