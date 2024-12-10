@@ -243,6 +243,7 @@ const PendingDetailsById = withSwal((props: any) => {
         student_id: studentId,
         remarks: remark,
         application_id: applicationId,
+        assigned_country_id: item?.studyPreferDetails?.studyPreference?.countryId
       };
 
       const result = await swal.fire({

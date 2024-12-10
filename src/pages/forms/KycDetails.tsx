@@ -251,8 +251,6 @@ const KycDetails = withSwal((props: any) => {
         application_id: application_id,
       };
 
-      console.log(payload);
-
       const result = await swal.fire({
         title: "Are you sure?",
         text: "This action cannot be undone.",
