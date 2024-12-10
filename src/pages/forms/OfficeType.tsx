@@ -304,21 +304,20 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <Link to="#" className="action-icon" onClick={() => {
+          {/* <Link to="#" className="action-icon" onClick={() => {
             setIsUpdate(true);
             handleUpdate(row.original);
             toggleResponsiveModal();
           }}>
             <i className="mdi mdi-square-edit-outline"></i>
-          </Link>
+          </Link> */}
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() =>
+          {/* <Link to="#" className="action-icon" onClick={() =>
             handleDelete(row.original.id)
           }>
-            {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
-          </Link>
+          </Link> */}
         </div>
       ),
     },

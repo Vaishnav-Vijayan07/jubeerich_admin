@@ -1,19 +1,19 @@
-// 
+//
 // _task.scss
-// 
+//
 
 .task-item {
-    padding-left: 12px;
-    position: relative;
+  padding-left: 12px;
+  position: relative;
 
-    &:before {
-        content: "\F01DB";
-        font-family: "Material Design Icons";
-        position: absolute;
-        left: 0;
-        font-size: 19px;
-        top: -3px;
-    }
+  &:before {
+    content: "\F01DB";
+    font-family: "Nunito";
+    position: absolute;
+    left: 0;
+    font-size: 19px;
+    top: -3px;
+  }
 }
 
 // .task-item-one {
@@ -29,15 +29,21 @@
 // }
 
 .task-item-one {
-    padding-left: 5px;
-    transition: box-shadow 0.3s ease-in-out; /* Smooth transition for the shadow */
+  background-color: #E0DEF833;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .task-item-one:hover {
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow on hover */
+  // box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow on hover */
 }
 
 .content {
-    padding-bottom: 0;
+  padding-bottom: 0;
 }
-  
+
+.task__sort_table {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

@@ -17,6 +17,7 @@ import { addStatus, deleteStatus, getStatus, updateStatus } from "../../redux/ac
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { AUTH_SESSION_KEY } from "../../constants";
+import { max } from "moment";
 import { regrexValidation } from "../../utils/regrexValidation";
 
 interface TableRecords {
@@ -259,6 +260,7 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "ID",
       accessor: "id",
       sort: false,
+      minWidth: 50,
     },
     {
       Header: "Status Name",
@@ -269,6 +271,7 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Status Description",
       accessor: "status_description",
       sort: false,
+      maxWidth: 100,
     },
     {
       Header: "Color",
@@ -290,10 +293,11 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Actions",
       accessor: "",
       sort: false,
+      maxWidth: 100,
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <FeatherIcons
+          {/* <FeatherIcons
             stroke="#28a745"
             icon="edit"
             size="15"
@@ -303,7 +307,7 @@ const BasicInputElements = withSwal((props: any) => {
               toggleResponsiveModal();
               setValidationErrors(initialValidationState);
             }}
-          />
+          /> */}
 
           {/* Delete Icon */}
           <FeatherIcons stroke="#dc3545" icon="trash-2" size="15" className="cursor-pointer text-secondary" onClick={() => handleDelete(row.original.id)} />

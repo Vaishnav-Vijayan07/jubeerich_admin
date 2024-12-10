@@ -21,6 +21,7 @@ import {
   getCourseType,
   updateCourseType,
 } from "../../redux/actions";
+import { max } from "moment";
 import { regrexValidation } from "../../utils/regrexValidation";
 
 interface OptionType {
@@ -218,13 +219,16 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Description",
       accessor: "description",
       sort: false,
+
     },
     {
       Header: "Actions",
       accessor: "",
       sort: false,
+      minWidth: 10, // Minimum width of the column
+      maxWidth: 20, // Maximum width of the column
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="">
           {/* Edit Icon */}
           <Link
             to="#"

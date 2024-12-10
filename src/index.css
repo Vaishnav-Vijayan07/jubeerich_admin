@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -6,8 +8,12 @@
   box-sizing: border-box;
 }
 
-.react-datepicker-wrapper input {
-  width: 100px;
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.inter-font {
+  font-family: "Inter", sans-serif !important;
 }
 
 .swal2-popup .swal2-html-container,
@@ -95,18 +101,42 @@ button.react-datepicker__close-icon {
 }
 
 .task__list {
-  padding: 5px;
+  /* padding: 10px; */
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .unselected-task {
   border-left: none;
-  padding: 2px 6px;
+  border-left: 3px solid #ffffff00;
+  transition: 0.5s box-shadow ease-in-out;
+}
+
+.unselected-task:hover {
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.unselected-task-pending:hover {
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
 .selected-task {
-  background-color: rgb(237, 237, 237);
+  background-color: rgb(255, 255, 255);
   border-left: 3px solid #6558dc;
-  padding-left: 3px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.unselected-task-pending {
+  border-left: none;
+  border-left: 3px solid #ffffff00;
+  transition: 0.5s box-shadow ease-in-out;
+}
+
+.selected-task-pending {
+  background-color: rgb(255, 255, 255);
+  border-left: 3px solid #f1556c;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
 .table-responsive {
@@ -290,31 +320,6 @@ ul.tl li .timestamp {
   font-size: 12px;
 }
 
-/* date picker */
-.custom-react-date-picker {
-  border: none !important;
-  width: 100%;
-  outline: none !important;
-  font-size: 12px;
-  padding: 0;
-  background-color: transparent;
-  text-align: right;
-}
-
-.react-datepicker-wrapper {
-  width: max-content !important;
-  /* position: fixed; */
-  /* margin-right: 500px !important; */
-}
-
-.react-datepicker-wrapper input {
-  cursor: pointer;
-}
-
-.calender-img {
-  margin-right: -14px;
-}
-
 .custom-html-date-input {
   border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 6px;
@@ -399,10 +404,10 @@ input[type="number"] {
   overflow: visible;
 }
 
-html[data-sidenav-size=condensed]:not([data-layout=horizontal]) .content-page{
+html[data-sidenav-size="condensed"]:not([data-layout="horizontal"]) .content-page {
   width: calc(100% - var(--ct-leftbar-width-sm));
 }
-.content-page{
+.content-page {
   width: calc(100% - var(--ct-leftbar-width));
 }
 
@@ -542,7 +547,7 @@ select::-ms-expand {
   background-color: rgb(104, 106, 112) !important;
 }
 
-.accordion-button:not(.collapsed){
+.accordion-button:not(.collapsed) {
   color: #ffffff !important;
 }
 
@@ -551,10 +556,93 @@ select::-ms-expand {
   /* background-color: rgb(218, 131, 89) !important; */
 }
 
-.accordion-button2:not(.collapsed){
+.accordion-button2:not(.collapsed) {
   color: #ff0000 !important;
 }
 
-.form-group{
+.form-group {
   width: 100%;
+}
+
+/* custom calender */
+.custom-react-date-picker {
+  border: none !important;
+  width: 100%;
+  outline: none !important;
+  font-size: 12px;
+  padding: 0;
+  background-color: transparent;
+  text-align: left;
+}
+
+.react-datepicker-wrapper {
+  width: max-content !important;
+}
+
+.react-datepicker-wrapper input {
+  cursor: pointer;
+  font-family: "Nunito";
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.calender-img {
+  /* margin-right: -14px; */
+  width: 19px;
+}
+.calender__container {
+  display: flex;
+}
+
+.calender_img_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #6658dd;
+  padding: 2px 5px;
+  border-radius: 5px;
+}
+
+.react-datepicker-wrapper input {
+  width: 120px;
+}
+
+/* inbox card design */
+.inbox__list {
+  border-radius: 20px;
+  overflow: hidden;
+  min-height: 70vh;
+  background-color: #ffffff;
+}
+
+.inbox__list_header {
+  background: #e0def8;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  padding: 25px 20px;
+}
+
+.inbox__list_body {
+  padding: 15px;
+  padding-top: 10px;
+  height: 100%;
+}
+
+.task__list_wrapper {
+  margin-top: 15px;
+}
+.border_bottom::after {
+  content: "";
+  display: block; /* Allows the pseudo-element to occupy space */
+  border-bottom: 1px solid #fff;
+  width: 60%;
+  margin: 2px auto; /* Centers the line within the parent */
+}
+
+.days_ago {
+  text-align: "center";
+  font-size: "10px";
+  font-family: "Nunito";
 }

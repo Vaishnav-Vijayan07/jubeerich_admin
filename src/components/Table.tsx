@@ -1,16 +1,8 @@
 import React, { useRef, useEffect, forwardRef, useState } from "react";
-import {
-  useTable,
-  useSortBy,
-  usePagination,
-  useRowSelect,
-  useGlobalFilter,
-  useAsyncDebounce,
-  useExpanded,
-} from "react-table";
+import { useTable, useSortBy, usePagination, useRowSelect, useGlobalFilter, useAsyncDebounce, useExpanded } from "react-table";
 import classNames from "classnames";
 import Skeleton from "react-loading-skeleton";
-import 'react-loading-skeleton/dist/skeleton.css'
+import "react-loading-skeleton/dist/skeleton.css";
 
 // components
 import Pagination from "./Pagination";
@@ -22,12 +14,7 @@ interface GlobalFilterProps {
   searchBoxClass: any;
 }
 
-const GlobalFilter = ({
-  preGlobalFilteredRows,
-  globalFilter,
-  setGlobalFilter,
-  searchBoxClass,
-}: GlobalFilterProps) => {
+const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }: GlobalFilterProps) => {
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = useState<any>(globalFilter);
   const onChange = useAsyncDebounce((value) => {
@@ -58,10 +45,7 @@ interface IndeterminateCheckboxProps {
   children?: React.ReactNode;
 }
 
-const IndeterminateCheckbox = forwardRef<
-  HTMLInputElement,
-  IndeterminateCheckboxProps
->(({ indeterminate, ...rest }, ref) => {
+const IndeterminateCheckbox = forwardRef<HTMLInputElement, IndeterminateCheckboxProps>(({ indeterminate, ...rest }, ref) => {
   const defaultRef = useRef();
   const resolvedRef: any = ref || defaultRef;
 
@@ -72,12 +56,7 @@ const IndeterminateCheckbox = forwardRef<
   return (
     <>
       <div className="form-check">
-        <input
-          type="checkbox"
-          className="form-check-input"
-          ref={resolvedRef}
-          {...rest}
-        />
+        <input type="checkbox" className="form-check-input" ref={resolvedRef} {...rest} />
         <label htmlFor="form-check-input" className="form-check-label"></label>
       </div>
     </>
@@ -108,6 +87,7 @@ interface TableProps {
   theadClass?: string;
   onSelect?: any;
   initialLoading?: boolean;
+  isTruncate?: boolean;
 }
 
 const Table = (props: TableProps) => {
@@ -117,6 +97,7 @@ const Table = (props: TableProps) => {
   const isSelectable = props["isSelectable"] || false;
   const isExpandable = props["isExpandable"] || false;
   const sizePerPageList = props["sizePerPageList"] || [];
+  const isTruncate = props["isTruncate"] || false;
 
   let otherProps: any = {};
 
@@ -146,21 +127,14 @@ const Table = (props: TableProps) => {
           return columnIds.some((id) => {
             const columnValue = row.values[id];
             if (Array.isArray(columnValue)) {
-              return columnValue.some((item: any) =>
-                JSON.stringify(item)
-                  .toLowerCase()
-                  .includes(filterValue.toLowerCase())
-              );
+              return columnValue.some((item: any) => JSON.stringify(item).toLowerCase().includes(filterValue.toLowerCase()));
             }
-            return String(columnValue)
-              .toLowerCase()
-              .includes(filterValue.toLowerCase());
+            return String(columnValue).toLowerCase().includes(filterValue.toLowerCase());
           });
         });
       },
     },
-    otherProps.hasOwnProperty("useGlobalFilter") &&
-    otherProps["useGlobalFilter"],
+    otherProps.hasOwnProperty("useGlobalFilter") && otherProps["useGlobalFilter"],
     otherProps.hasOwnProperty("useSortBy") && otherProps["useSortBy"],
     otherProps.hasOwnProperty("useExpanded") && otherProps["useExpanded"],
     otherProps.hasOwnProperty("usePagination") && otherProps["usePagination"],
@@ -172,9 +146,7 @@ const Table = (props: TableProps) => {
             id: "selection",
             Header: ({ getToggleAllPageRowsSelectedProps }: any) => (
               <div>
-                <IndeterminateCheckbox
-                  {...getToggleAllPageRowsSelectedProps()}
-                />
+                <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
               </div>
             ),
             Cell: ({ row }: any) => (
@@ -190,13 +162,8 @@ const Table = (props: TableProps) => {
         hooks.visibleColumns.push((columns: any) => [
           {
             id: "expander",
-            Header: ({
-              getToggleAllRowsExpandedProps,
-              isAllRowsExpanded,
-            }: any) => (
-              <span {...getToggleAllRowsExpandedProps()}>
-                {isAllRowsExpanded ? "-" : "+"}
-              </span>
+            Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }: any) => (
+              <span {...getToggleAllRowsExpandedProps()}>{isAllRowsExpanded ? "-" : "+"}</span>
             ),
             Cell: ({ row }) =>
               row.canExpand ? (
@@ -229,19 +196,18 @@ const Table = (props: TableProps) => {
   }, [dataTable?.state?.selectedRowIds]);
 
   const formatCellValue = (value: any): string => {
-    if (!value) return '';
-  
-    if (typeof value === 'string') {
+    if (!value) return "";
+
+    if (typeof value === "string") {
       return value;
     }
-  
+
     if (Array.isArray(value)) {
-      return value.map((data: any) => data.country_name).join(',');
+      return value.map((data: any) => data.country_name).join(",");
     }
-  
+
     return String(value);
   };
-  
 
   return (
     <>
@@ -257,20 +223,18 @@ const Table = (props: TableProps) => {
       <div className="table-responsive">
         <table
           {...dataTable.getTableProps()}
-          className={classNames(
-            "table table-centered react-table custom-table",
-            props["tableClass"]
-          )}
+          className={classNames("table table-centered react-table custom-table", props["tableClass"])}
         >
           <thead className={props["theadClass"]}>
             {(dataTable.headerGroups || []).map((headerGroup: any) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {(headerGroup.headers || []).map((column: any) => (
                   <th
-                    {...column.getHeaderProps(
-                      column.sort && column.getSortByToggleProps()
-                    )}
-                    style={{ ...(column.minWidth && { minWidth: column.minWidth }), ...(column.maxWidth && { maxWidth: column.maxWidth }) }}
+                    {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}
+                    style={{
+                      ...(column.minWidth && { minWidth: column.minWidth }),
+                      ...(column.maxWidth && { maxWidth: column.maxWidth }),
+                    }}
                     className={classNames("text-secondary", {
                       sorting_desc: column.isSortedDesc === true,
                       sorting_asc: column.isSortedDesc === false,
@@ -327,14 +291,15 @@ const Table = (props: TableProps) => {
                             className: `${cell.column.className} cursor-pointer`,
                           },
                         ])}
-                        style={{ ...(cell.minWidth && { minWidth: cell.minWidth }), ...(cell.maxWidth && { maxWidth: cell.maxWidth }) }}
+                        style={{
+                          ...(cell.minWidth && { minWidth: cell.minWidth }),
+                          ...(cell.maxWidth && { maxWidth: cell.maxWidth }),
+                        }}
                         title={`${formatCellValue(cell.value)}`}
-                        data-bs-toggle="tooltip" 
+                        data-bs-toggle="tooltip"
                         data-bs-placement="top"
                       >
-                        <span className="truncate-text">
-                          {cell.render("Cell")}
-                        </span>
+                        <span className={isTruncate ? "truncate-text" : ""}>{cell.render("Cell")}</span>
                       </td>
                     ))}
                   </tr>
@@ -344,9 +309,7 @@ const Table = (props: TableProps) => {
           </tbody>
         </table>
       </div>
-      {pagination && (
-        <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />
-      )}
+      {pagination && <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />}
     </>
   );
 };
