@@ -470,7 +470,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       let payload = {
         student_id: studentId,
         task_id: taskId,
-        is_rejected: taskDetails?.is_rejected,
         assigned_country: taskDetails?.assigned_country 
       }
 
