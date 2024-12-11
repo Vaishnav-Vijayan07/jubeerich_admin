@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import { Button, Card, Col, Dropdown, Modal, Row } from "react-bootstrap";
+import { Badge, Button, Card, Col, Dropdown, Form, Modal, Row } from "react-bootstrap";
 import classNames from "classnames";
 import { icons } from "../../../../assets/images/icons";
 import { getCountry } from "../../../../redux/country/actions";
@@ -9,10 +9,8 @@ import axios from "axios";
 import {
   branch_counsellor_id,
   counsellor_id,
-  country_manager_id,
   cre_id,
   cre_tl_id,
-  customStyles,
   follow_up_id,
   franchise_counsellor_id,
   future_leads_id,
@@ -21,27 +19,18 @@ import {
   showErrorAlert,
   showSuccessAlert,
 } from "../../../../constants";
-import DatePicker from "react-datepicker";
-import moment from "moment";
 import { refreshData } from "../../../../redux/countryReducer";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
 import swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
-import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
 import CardLoadingSkeleton from "../../../../components/SkeletonLoading/CardLoadingSkeleton1";
 import { Autocomplete, Box, Menu, MenuItem, Tabs, TextField, Tooltip, Typography } from "@mui/material";
-import Tab from "@mui/material/Tab";
-import DocumentsOverview from "../../../lead_management/Tasks/List/DocumentsOverview/DocumentsOverview";
-import RemarkModal from "../../../lead_management/Tasks/List/RemarkModal";
 import MatButton from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import CommentIcon from "@mui/icons-material/Comment";
-import HyperDatepicker from "../../../../components/Datepicker";
 import FollowupModal from "./FollowupModal";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const Comments = lazy(() => import("../../../lead_management/Tasks/List/Comments"));
-const History = lazy(() => import("../../../lead_management/Tasks/List/History"));
+const History = lazy(() => import("./History"));
 
 const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading }: any) => {
   const { userRole } = useSelector((state: RootState) => ({
@@ -78,46 +67,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     setAnchorEl(null);
   };
 
-  const tabsStyle = {
-    "& .MuiTabs-indicator": {
-      backgroundColor: "#26BCA2",
-      height: "4px",
-    },
-  };
-
-  const individualTabStyle = {
-    "&.Mui-selected": {
-      color: "black",
-      fontFamily: "'Nunito', sans-serif",
-      fontWeight: 700,
-    },
-  };
-
-  const menuStyle = {
-    maxHeight: 300, // Limit the height
-    overflowY: "auto", // Enable scrolling for overflow content
-    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-    mt: 1.5,
-    "& .MuiAvatar-root": {
-      width: 32,
-      height: 32,
-      ml: -0.5,
-      mr: 1,
-    },
-    "&::before": {
-      content: '""',
-      display: "block",
-      position: "absolute",
-      top: 0,
-      right: 14,
-      width: 10,
-      height: 10,
-      bgcolor: "background.paper",
-      transform: "translateY(-50%) rotate(45deg)",
-      zIndex: 0,
-    },
-  };
-
   const dispatch = useDispatch();
   const { Countries, user, refresh } = useSelector((state: RootState) => ({
     Countries: state?.Country?.countries,
@@ -134,9 +83,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     setStatusId(null);
   };
 
-  const handleDateChange = (date: any) => {
-    setSelectedDate(date);
-  };
   const getRoleBasedStatus = async (user_role: string) => {
     const { data } = await axios.get(`/lead_status`, {
       params: { user_role },
@@ -478,7 +424,11 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       });
 
       if (result.isConfirmed) {
-        const res = await axios.post(`/proceed_kyc`, { student_id: studentId, task_id: taskId, is_rejected: taskDetails?.is_rejected });
+        const res = await axios.post(`/proceed_kyc`, {
+          student_id: studentId,
+          task_id: taskId,
+          is_rejected: taskDetails?.is_rejected,
+        });
         if (res) {
           showSuccessAlert("Proceeded KYC Successfully");
           getTaskDetails();
@@ -553,584 +503,354 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   return (
     <>
-      <Row>
+      <div className="task__details">
         {loading ? (
           <CardLoadingSkeleton />
         ) : (
-          <Card className="ribbon-box ms-1 pb-0" style={{ fontFamily: "Nunito" }}>
-            <Card.Body style={{ padding: "10px 2px", margin: "10px", paddingBottom: "5px" }}>
-              <Row>
-                <Col>
-                  <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
-                    <span>{taskPrefix + "/" + currentDate.getFullYear() + "/" + (taskDetails?.id || "000")}</span>
-                  </div>
+          <>
+            <div className="ribbon-box" style={{ fontFamily: "Nunito", borderRadius: "10px", background: "#fff" }}>
+              <div className="p-3">
+                <Row>
+                  <Col>
+                    <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
+                      <span>{taskPrefix + "/" + currentDate.getFullYear() + "/" + (taskDetails?.id || "000")}</span>
+                    </div>
 
-                  {(userRole == cre_id || userRole == cre_tl_id) && (
-                    <Col className="d-flex gap-2 float-end">
-                      <Button
-                        className="d-flex align-items-center btn-light"
-                        disabled={taskDetails?.isCompleted ? true : false}
-                        onClick={handleFinishTask}
-                        style={{ fontSize: "12px" }}
-                      >
-                        <div className="round-circle" />
-                        {/* {taskDetails?.isCompleted ? "Task Completed" : "Mark As Completed"} */}
-                        {taskDetails?.isCompleted ? "Task Completed" : "Move to Counsellor"}
-                      </Button>
-                    </Col>
-                  )}
-
-                  <Row className="g-1 float-end">
-                    {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
-                      <Col className="d-flex gap-2">
+                    {(userRole == cre_id || userRole == cre_tl_id) && (
+                      <Col className="d-flex gap-2 float-end">
                         <Button
                           className="d-flex align-items-center btn-light"
                           disabled={taskDetails?.isCompleted ? true : false}
-                          onClick={handleCompleteTask}
+                          onClick={handleFinishTask}
+                          style={{ fontSize: "12px", background: "#EEFFF3", border: ".5px dashed #009A29" }}
                         >
                           <div className="round-circle" />
-                          Complete Task
+
+                          {taskDetails?.isCompleted ? "Task Completed" : "Move to Counsellor"}
                         </Button>
                       </Col>
                     )}
 
-                    {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
-                      <Col className="d-flex gap-2 float-end">
-                        <Button
-                          style={{ minWidth: "150px" }}
-                          disabled={taskDetails?.is_proceed_to_kyc}
-                          className="d-flex align-items-center"
-                          onClick={handleProccedToKyc}
+                    <Row className="g-1 float-end">
+                      {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                        <Col className="d-flex gap-2">
+                          <Button
+                            className="d-flex align-items-center btn-light"
+                            disabled={taskDetails?.isCompleted ? true : false}
+                            onClick={handleCompleteTask}
+                          >
+                            <div className="round-circle" />
+                            Complete Task
+                          </Button>
+                        </Col>
+                      )}
+
+                      {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                        <Col className="d-flex gap-2 float-end">
+                          <Button
+                            style={{ minWidth: "150px" }}
+                            disabled={taskDetails?.is_proceed_to_kyc}
+                            className="d-flex align-items-center"
+                            onClick={handleProccedToKyc}
+                          >
+                            <div className="round-circle" />
+                            Proceed to KYC
+                          </Button>
+                        </Col>
+                      )}
+                    </Row>
+                  </Col>
+                </Row>
+                <Row className="mt-3">
+                  <Col md={9} lg={9}>
+                    <h3 className="m-0" style={{ fontSize: "20px", fontFamily: "Inter", fontWeight: "400" }}>
+                      {taskDetails?.title}
+                    </h3>
+                    <p className="mb-2" style={{ fontSize: "15px", fontFamily: "Nunito", fontWeight: "300" }}>
+                      {taskDetails?.description}
+                    </p>
+                    <div className="d-flex">
+                      {basicData?.country_names?.map((country: any) => (
+                        <small
+                          style={{
+                            // backgroundColor: "#9dd3f5",
+                            color: "#122d3d",
+                            border: `1px solid #122d3d`,
+                            borderRadius: "5px",
+                            padding: "2px 10px",
+                            fontSize: "0.7rem",
+                          }}
+                          className={classNames("rounded-pill me-1")}
                         >
-                          <div className="round-circle" />
-                          Proceed to KYC
-                        </Button>
-                      </Col>
-                    )}
-                  </Row>
-                  <div className="clearfix"></div>
-                  <hr className="mt-3 mb-2" />
-                </Col>
-              </Row>
-              <Row className="dotted-border-bottom" style={{ paddingBottom: "20px" }}>
-                <Col md={10} lg={10}>
-                  <h3 className="m-0" style={{ fontSize: "1.3rem" }}>
-                    {taskDetails?.title}
-                  </h3>
-                  <p className="mb-2" style={{ fontSize: "0.9rem" }}>
-                    {taskDetails?.description}
-                  </p>
-                  <div className="d-flex">
-                    {basicData?.country_names?.map((country: any) => (
-                      <small
-                        style={{
-                          backgroundColor: "#9dd3f5",
-                          color: "#122d3d",
-                          border: `1px solid #122d3d`,
-                          borderRadius: "5px",
-                          padding: "2px 10px",
-                          fontSize: "0.7rem",
-                        }}
-                        className={classNames("rounded-pill me-1")}
-                      >
-                        {country}
-                      </small>
-                    ))}
-                    {!loading && (user.role == counsellor_id || user?.role == branch_counsellor_id || user?.role == franchise_counsellor_id) && (
-                      <Tooltip title="Add Country">
-                        <span onClick={handleClick}>
-                          <AddCircleOutlineIcon />
-                        </span>
-                      </Tooltip>
-                    )}
-                  </div>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    onClick={handleClose}
-                    slotProps={{
-                      paper: {
-                        elevation: 0,
-                        sx: { ...menuStyle },
-                      },
-                    }}
-                    transformOrigin={{ horizontal: "center", vertical: "top" }}
-                    anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
-                  >
-                    {countryData?.length > 0 &&
-                      countryData?.map((data: any) => (
-                        <MenuItem onClick={() => addNewCountry(data?.value)} key={data?.label}>
-                          {data?.label}
-                        </MenuItem>
+                          {country}
+                        </small>
                       ))}
-                  </Menu>
-                </Col>
+                    </div>
+                  </Col>
 
-                <Col md={2} lg={2} className="d-flex justify-content-end align-items-start mt-1">
-                  <span>
-                    <h5 className="m-0 mb-1 text-muted" style={{ fontSize: ".7rem" }}>
-                      Last Updated
-                    </h5>
-                    <h5 className="m-0 text-muted ps-1" style={{ fontSize: ".7rem" }}>
-                      {handleDateFormat(taskDetails?.updatedAt)}
-                    </h5>
-                  </span>
-                </Col>
-              </Row>
-              <Row className="mb-0">
-                <Row className="mt-3" style={{ paddingRight: "0px" }}>
-                  {/* <Col>
-                    <h4 className="text-secondary mt-1">Task Details</h4>
-                  </Col> */}
-                  <Col>
+                  <Col md={3} lg={3} className="d-flex justify-content-end align-items-end mt-1">
+                    <span>
+                      <h5 className="m-0 mb-1 text-muted font-12 text-end" style={{ fontFamily: "Inter", fontWeight: "400" }}>
+                        Last Updated
+                      </h5>
+                      <div
+                        className=""
+                        style={{
+                          background: "#E0DEF8",
+                          padding: "12px 14px",
+                          borderRadius: "5px",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img src={icons.calendarColored} alt="calender" className="me-1" width="18" />
+                        <span className="font-14">{handleDateFormat(taskDetails?.updatedAt)}</span>
+                      </div>
+                    </span>
+                  </Col>
+                </Row>
+              </div>
+
+              <div
+                className="p-0"
+                style={{ background: "#E0DEF8", borderBottomRightRadius: "10px", borderBottomLeftRadius: "10px" }}
+              >
+                <div className="" style={{ padding: "15px 30px" }}>
+                  <div className="" style={{ paddingRight: "0px" }}>
+                    <div>
+                      <div className="action-icon d-flex justify-content-end align-items-center"></div>
+                    </div>
+                  </div>
+
+                  <div className="grid-container mb-1">
+                    <div className="">
+                      <p className="mt-0 fw-light mb-0 font-14" style={{ fontSize: "0.8rem", color: "#5E5E5E" }}>
+                        Phone Number
+                      </p>
+                      <div className="d-flex align-items-center outline-none" style={{ gap: "5px" }}>
+                        <img src={icons.apple} alt="phone" className="me-1" width="16" />
+                        <input
+                          type="tel"
+                          value={basicData?.phone}
+                          style={{
+                            border: "none",
+                            outline: "none",
+                            width: "100%",
+                            fontSize: "15px",
+                            fontWeight: 600,
+                            background: "transparent",
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="">
+                      <p className="mt-0 fw-light mb-0 font-14" style={{ fontSize: "0.8rem", color: "#5E5E5E" }}>
+                        Email
+                      </p>
+                      <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                        <img src={icons.email} alt="email" className="me-1" width="17" />
+                        <input
+                          type="text"
+                          value={basicData?.email}
+                          style={{
+                            border: "none",
+                            outline: "none",
+                            fontSize: "15px",
+                            fontWeight: 600,
+                            width: "100%",
+                            background: "transparent",
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="mt-0 mb-0 fw-light font-14" style={{ fontSize: "0.8rem", color: "#5E5E5E" }}>
+                        Passport
+                      </p>
+                      <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                        <img src={icons.Layer} alt="email" className="me-1" width="17" />
+                        <input
+                          type="text"
+                          value={basicData?.passportNumber || "N/A"}
+                          style={{
+                            border: "none",
+                            outline: "none",
+                            fontSize: "15px",
+                            fontWeight: 600,
+                            width: "100%",
+                            background: "transparent",
+                          }}
+                        />
+                      </div>
+                    </div>
+
                     <div className="action-icon d-flex justify-content-end align-items-center">
-                      {/* <Tooltip title="View All Details">
+                      <Tooltip title="View All Details">
                         <MatButton
-                          sx={{ mb: 2 }}
                           onClick={() => navigate(`/leads/manage/${studentId}`)}
                           startIcon={<VisibilityIcon />}
+                          size="small"
                           variant="contained"
+                          style={{ backgroundColor: "#6658DD", boxShadow: "none" }}
                         >
                           <Typography
                             sx={{
                               fontFamily: "'Nunito', sans-serif",
                               textTransform: "none",
-                              fontWeight: "700",
+                              fontWeight: "600",
                               fontSize: "12px",
+                              padding: "3px 0px",
                             }}
                           >
                             View More
                           </Typography>
                         </MatButton>
-                      </Tooltip> */}
-                    </div>
-                  </Col>
-                </Row>
-                {/* <div className="action-icon d-flex justify-content-end align-items-center">
-                  <Tooltip title="View All Details">
-                    <MatButton
-                      onClick={() => navigate(`/leads/manage/${studentId}`)}
-                      startIcon={<VisibilityIcon />}
-                      variant="outlined"
-                    >
-                      <Typography
-                        sx={{
-                          fontFamily: "'Nunito', sans-serif",
-                          textTransform: "none",
-                          fontWeight: "600",
-                          fontSize: "12px",
-                        }}
-                      >
-                        View More
-                      </Typography>
-                    </MatButton>
-                  </Tooltip>
-                </div> */}
-                <div className="grid-container mb-1">
-                  {/* <div className="">
-                    <p className="mt-2 mb-1 text-muted fw-light">Name</p>
-                    <div className="d-flex align-items-start" style={{ gap: "5px" }}>
-                      <img src={icons.user} alt="date" className="me-1" height="16" />
-                      <h5 className="m-0 font-size-14">{basicData?.full_name}</h5>
-                    </div>
-                  </div> */}
-
-                  <div className="">
-                    <p className="mt-0 text-muted fw-light mb-0" style={{ fontSize: "0.8rem" }}>
-                      Phone Number
-                    </p>
-                    <div className="d-flex align-items-center outline-none" style={{ gap: "5px" }}>
-                      <img src={icons.apple} alt="phone" className="me-1" width="16" />
-                      <input
-                        type="tel"
-                        value={basicData?.phone}
-                        style={{
-                          border: "none",
-                          outline: "none",
-                          width: "100%",
-                          fontSize: "15px",
-                          fontWeight: 600,
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="">
-                    <p className="mt-0 text-muted fw-light mb-0" style={{ fontSize: "0.8rem" }}>
-                      Email
-                    </p>
-                    <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                      <img src={icons.email} alt="email" className="me-1" width="17" />
-                      <input
-                        type="text"
-                        value={basicData?.email}
-                        style={{
-                          border: "none",
-                          outline: "none",
-                          fontSize: "15px",
-                          fontWeight: 600,
-                          width: "100%",
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="mt-0 mb-0 text-muted fw-light" style={{ fontSize: "0.8rem" }}>
-                      Passport
-                    </p>
-                    <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                      <img src={icons.Layer} alt="email" className="me-1" width="17" />
-                      <input
-                        type="text"
-                        value={basicData?.passportNumber || "N/A"}
-                        style={{
-                          border: "none",
-                          outline: "none",
-                          fontSize: "15px",
-                          fontWeight: 600,
-                          width: "100%",
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <br className="grid-br" />
-
-                  {/* <div className="">
-                    <p className="mt-2 mb-1 text-muted fw-light">Source</p>
-                    <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                      <img src={icons.cloud} alt="source icon" className="me-1" width="16" />
-                      <h5 className="m-0 font-size-14">{basicData?.source_name}</h5>
-                    </div>
-                  </div> */}
-
-                  {/* <div className="">
-                    <p className="mt-2 mb-1 text-muted fw-light">Channel</p>
-                    <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                      <img src={icons.information} alt="cahnnel icon" className="me-1" width="16" />
-                      <h5 className="m-0 font-size-14">{basicData?.channel_name}</h5>
-                    </div>
-                  </div> */}
-
-                  {/* <div className="">
-                    <p className="mt-2 mb-1 text-muted fw-light">City</p>
-                    <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                      <img src={icons.business} alt="comapny icon" className="me-1" width="16" />
-                      <h5 className="m-0 font-size-14">{basicData?.city}</h5>
-                    </div>
-                  </div> */}
-                </div>
-
-                <div className="action-icon d-flex justify-content-end align-items-center">
-                  <Tooltip title="View All Details">
-                    <MatButton onClick={() => navigate(`/leads/manage/${studentId}`)} startIcon={<VisibilityIcon />} variant="outlined" size="small">
-                      <Typography
-                        sx={{
-                          fontFamily: "'Nunito', sans-serif",
-                          textTransform: "none",
-                          fontWeight: "600",
-                          fontSize: "12px",
-                        }}
-                      >
-                        View More
-                      </Typography>
-                    </MatButton>
-                  </Tooltip>
-                </div>
-              </Row>
-              {/* <Row>
-                <div className="grid-container mb-2">
-                  <div className="">
-                    <p className="mt-2 mb-1 text-muted fw-light">Lead Received Date</p>
-                    <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                      <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
-                      <input
-                        type="tel"
-                        value={basicData?.lead_received_date && moment(basicData?.lead_received_date).format("DD/MM/YYYY")}
-                        style={{
-                          border: "none",
-                          outline: "none",
-                          width: "100%",
-                          fontSize: "15px",
-                          fontWeight: 600,
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="">
-                    <p className="mt-2 mb-1 text-muted fw-light">Followup Date</p>
-                    <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                      <img src={icons.calender_time} alt="phone" className="me-1" width="16" />
-                      <h5 className="m-0 font-size-14">
-                        {basicData?.followup_date && moment(basicData?.followup_date).format("DD/MM/YYYY")}
-                      </h5>
-                    </div>
-                  </div>
-                </div>
-              </Row> */}
-              {taskDetails?.is_rejected && (
-                <Row className="mt-3">
-                  <div className="">
-                    <p className="mt-2 mb-1 text-danger fw-bold fs-4">Remarks</p>
-                    <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                      <img src={icons.information} alt="comapny icon" className="me-1" width="16" />
-                      <h5 className="m-0 font-size-14">{taskDetails?.kyc_remarks?.[0]?.remark}</h5>
-                    </div>
-                  </div>
-                </Row>
-              )}
-            </Card.Body>
-          </Card>
-        )}
-
-        {!loading && (
-          <Row className="d-flex align-items-stretch mb-3 ms-1 pe-1" style={{ paddingLeft: "0px", paddingRight: "0px" }}>
-            <Col md={7} style={{ paddingLeft: "0px" }}>
-              <Card className="h-100">
-                <Card.Body>
-                  <h4 className="text-secondary m-0">Status</h4>
-                  {/* <p className="mt-2 mb-2 text-muted fw-light">Change the lead status</p> */}
-                  <div className="d-flex justify-content-between align-items-center">
-                    <Autocomplete
-                      disablePortal
-                      disableClearable
-                      options={formattedStatus || []}
-                      // value={basicData?.status?.status_name ? basicData?.status?.status_name : "Change status"}
-                      value={
-                        basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
-                          ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
-                          : "Change status"
-                      }
-                      sx={{ width: 300, paddingTop: "1.2rem", flex: 1, fontSize: "0.8rem" }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          sx={{ ...inputStyle }}
-                          // label="Status"
-                        />
-                      )}
-                      onChange={(event, newValue) => {
-                        if (newValue) {
-                          handleStatusChange(newValue.value);
-                          setStatusId(newValue.value);
-                          setViewOnly(false);
-                        }
-                      }}
-                    />
-                    <span className="mt-2 ms-2">
-                      <Tooltip title="View Comments">
-                        <MatButton
-                          sx={{ marginTop: "8px" }}
-                          variant="text"
-                          color="primary"
-                          startIcon={<CommentIcon sx={{ marginLeft: "6px" }} style={{ fontSize: "2.5rem" }} />}
-                          onClick={() => [setShowRemarkModal(true), setViewOnly(true)]}
-                        />
                       </Tooltip>
-                    </span>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={5} style={{ paddingRight: "0px" }}>
-              <Card className="h-100">
-                <Card.Body>
-                  <div className="d-flex justify-content-between">
-                    <span>
-                      {/* <h4 className="text-secondary m-0">Flag</h4> */}
-                      {/* <p className="mt-2 mb-2 text-muted fw-light">Change flag</p> */}
-                    </span>
-
-                    {basicData?.user_primary_flags?.flag_name && (
-                      <small
-                        style={{
-                          backgroundColor: `${basicData?.user_primary_flags?.color}`,
-                          color: "white",
-                          border: `1px solid ${basicData?.user_primary_flags?.color}`,
-                          borderRadius: "5px",
-                          padding: "6px 18px",
-                          height: "fit-content",
-                        }}
-                        className={classNames("rounded-pill me-1")}
-                      >
-                        {basicData?.user_primary_flags?.flag_name}
-                      </small>
-                    )}
-                  </div>
-
-                  <div className="d-flex justify-content-between align-items-center">
-                    <Autocomplete
-                      disablePortal
-                      disableClearable
-                      options={formattedFlagData || []}
-                      value={basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Add Flag"}
-                      sx={{ width: "100%", paddingTop: "1.2rem" }}
-                      renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} label="Flag" />}
-                      onChange={(event, newValue) => {
-                        if (newValue) {
-                          updateFlagStatus(newValue.value);
-                          setViewOnly(false);
-                        }
-                      }}
-                    />
-                  </div>
-
-                  {/* <Dropdown>
-                    <Dropdown.Toggle className="cursor-pointer" variant="light" disabled={formattedFlagData?.length == 0}>
-                      {basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Change Flag"}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      {(formattedFlagData || [])?.map((item: any) => (
-                        <Dropdown.Item eventKey={item.value} key={item.value} onClick={() => [updateFlagStatus(item.value)]}>
-                          {item.label}
-                        </Dropdown.Item>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown> */}
-
-                  <div className="mt-2" style={{ display: "flex", flexWrap: "wrap", gap: "1px" }}>
-                    {basicData?.flags?.length > 0 &&
-                      basicData?.flags.map((data: any) => (
-                        <div
-                          style={{ border: `2px solid ${data?.color}`, backgroundColor: `${setColorOpacityRGB(data?.color)}` }}
-                          className="rounded-5 me-2 mt-1"
-                        >
-                          <div className="ps-1 pe-1 fw-bold" style={{ fontSize: "0.6rem", paddingTop: "2px" }}>
-                            {data?.flag_name}
-                            <i className="mdi mdi-close" style={{ paddingLeft: "12px" }} onClick={() => removeFlag(data?.id)}></i>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        )}
-
-        {/* {!loading && user.role == 7 && (
-          <Card>
-            <Card.Body>
-              <Row>
-                <div className="">
-                  <h4 className="text-secondary">Country</h4>
-                  <p className="mt-2 mb-2 text-muted fw-light">Use this option to assign lead to another country counselor.</p>
-                  <div className="d-flex align-items-start" style={{ gap: "5px" }}>
-                    <Dropdown>
-                      <Dropdown.Toggle className="cursor-pointer" variant="light">
-                        Choose Country
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        {(countryData || [])?.map((item: any) => (
-                          <Dropdown.Item eventKey={item.value} key={item.value} onClick={() => addNewCountry(item.value)}>
-                            {item.label}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
+                    </div>
                   </div>
                 </div>
-              </Row>
-            </Card.Body>
-          </Card>
-        )} */}
 
-        {!loading && (
-          <Card className="ms-1 mb-0">
-            <Card.Body>
-              <Row>
-                <Box sx={{ width: "100%" }}>
-                  <Tabs value={tabValue} onChange={handleTabChange} textColor="secondary" aria-label="secondary tabs example" sx={{ ...tabsStyle }}>
-                    {/* <Tab value="comments" label="Comments" sx={{ ...individualTabStyle }} /> */}
+                {taskDetails?.is_rejected && (
+                  <div className="">
+                    <div className="">
+                      <p className="mt-2 mb-1 text-danger fw-bold fs-4">Remarks</p>
+                      <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                        <img src={icons.information} alt="comapny icon" className="me-1" width="16" />
+                        <h5 className="m-0 font-size-14">{taskDetails?.kyc_remarks?.[0]?.remark}</h5>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
 
-                    <Tab value="history" label="History" sx={{ ...individualTabStyle }} />
+            <Card className="mt-3" style={{ borderRadius: "10px" }}>
+              <Card.Body>
+                <div className="action-grid-container">
+                  <div className="mx-2">
+                    <h4 className="m-0 label_heading">Status</h4>
 
-                    {/* <Tab value="attachments" label="Attachments" sx={{ ...individualTabStyle }} /> */}
-                  </Tabs>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <Autocomplete
+                        disablePortal
+                        disableClearable
+                        options={formattedStatus || []}
+                        value={
+                          basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
+                            ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
+                            : "Change status"
+                        }
+                        sx={{ width: "100%", paddingTop: "1.2rem" }}
+                        renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} />}
+                        onChange={(event, newValue) => {
+                          if (newValue) {
+                            handleStatusChange(newValue.value);
+                            setStatusId(newValue.value);
+                            setViewOnly(false);
+                          }
+                        }}
+                      />
+                    </div>
 
-                  {/* Tab content */}
-                  <Box sx={{ mt: 2 }}>
-                    {tabValue === "comments" && studentId && (
-                      <Suspense fallback={null}>
-                        <Comments studentId={studentId} />
-                      </Suspense>
-                    )}
-                    {tabValue === "history" && studentId && (
-                      <Suspense fallback={null}>
-                        <History studentId={studentId} />
-                      </Suspense>
-                    )}
-                    {tabValue === "attachments" && studentId && (
-                      <Suspense fallback={null}>
-                        <DocumentsOverview studentId={studentId} />
-                      </Suspense>
-                    )}
-                  </Box>
-                </Box>
-              </Row>
-            </Card.Body>
-          </Card>
+                    <div
+                      className="ribbon-box"
+                      style={{
+                        background: "#EEFFF2",
+                        marginTop: "15px",
+                        padding: "20px 36px",
+                        border: "0.5px solid #009A29",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      <span className="text-success">Benjamin has requested a call back on Monday.</span>
+                      <div className="ribbon-two ribbon-two-success">
+                        <span style={{ fontSize: "10px" }}>11/12/2024</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mx-2">
+                    <h4 className="m-0 label_heading">Flag</h4>
+
+                    <div className="d-flex justify-content-between align-items-center">
+                      <Autocomplete
+                        disablePortal
+                        disableClearable
+                        options={formattedFlagData || []}
+                        value={basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Add Flag"}
+                        sx={{ width: "100%", paddingTop: "1.2rem" }}
+                        renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} placeholder="Add Flag" />}
+                        onChange={(event, newValue) => {
+                          if (newValue) {
+                            updateFlagStatus(newValue.value);
+                            // setViewOnly(false);
+                          }
+                        }}
+                      />
+                    </div>
+
+                    <div className="mt-1" style={{ display: "flex", flexWrap: "wrap", gap: "1px" }}>
+                      {basicData?.flags?.length > 0 &&
+                        basicData?.flags.map((data: any) => (
+                          <div style={{ border: `1px solid ${data?.color}` }} className="rounded-2 me-2 mt-1">
+                            <div className="font-11" style={{ padding: "2px 7px" }}>
+                              {data?.flag_name}
+                              <i
+                                className="mdi mdi-close"
+                                style={{ paddingLeft: "3px", cursor: "pointer" }}
+                                onClick={() => removeFlag(data?.id)}
+                              ></i>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+
+                  <div className="mx-2">
+                    <h4 className="m-0 label_heading">Add New Country</h4>
+
+                    <div className="d-flex justify-content-between align-items-center">
+                      <Autocomplete
+                        disablePortal
+                        disableClearable
+                        options={countryData || []}
+                        value={
+                          basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Add Country"
+                        }
+                        sx={{ width: "100%", paddingTop: "1.2rem" }}
+                        renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} placeholder="Add New Country" />}
+                        onChange={(event, newValue) => {
+                          if (newValue) {
+                            addNewCountry(newValue?.value);
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+
+            <History />
+
+            <FollowupModal
+              setIsCancelModal={isCancelModal}
+              viewOnly={viewOnly}
+              setViewOnly={setViewOnly}
+              showModal={ShowRemarkModal}
+              toggleRemarkModal={setShowRemarkModal}
+              studentId={studentId}
+              statusId={statusId}
+              followup={selectedDate}
+              remarkData={remarkData}
+              callGetRemark={callGetRemark}
+              submitFollowupDate={handleFollowUpDate}
+            />
+          </>
         )}
-
-        {/* <Modal show={standard} centered onHide={toggleStandard} dialogClassName="modal-calendar-width">
-          <Modal.Header onHide={toggleStandard} closeButton>
-            <h4 className="modal-title">Choose Followup Date</h4>
-          </Modal.Header>
-
-          <Modal.Body>
-            <div className="w-100 lead-date-picker">
-              <DatePicker
-                minDate={new Date()}
-                selected={selectedDate}
-                onChange={handleDateChange}
-                inline
-                placeholderText="Choose a date"
-                className="w-100"
-              />
-            </div>
-          </Modal.Body>
-          <Modal.Footer className="mt-0">
-            <div className="text-end">
-              <Button variant="danger" className="me-1" onClick={toggleStandard}>
-                Cancel
-              </Button>
-              <Button disabled={isFollowupLoading} variant="success" type="submit" onClick={handleFollowUpDate}>
-                Submit
-              </Button>
-            </div>
-          </Modal.Footer>
-        </Modal> */}
-
-        <FollowupModal
-          setIsCancelModal={isCancelModal}
-          viewOnly={viewOnly}
-          setViewOnly={setViewOnly}
-          showModal={ShowRemarkModal}
-          toggleRemarkModal={setShowRemarkModal}
-          studentId={studentId}
-          statusId={statusId}
-          followup={selectedDate}
-          remarkData={remarkData}
-          callGetRemark={callGetRemark}
-          submitFollowupDate={handleFollowUpDate}
-        />
-
-        {/* <RemarkModal
-          setIsCancelModal={isCancelModal}
-          viewOnly={viewOnly}
-          setViewOnly={setViewOnly}
-          showModal={ShowRemarkModal}
-          toggleRemarkModal={setShowRemarkModal}
-          studentId={studentId}
-          statusId={statusId}
-          followup={selectedDate}
-          remarkData={remarkData}
-          callGetRemark={callGetRemark}
-        /> */}
-      </Row>
+      </div>
     </>
   );
 };
