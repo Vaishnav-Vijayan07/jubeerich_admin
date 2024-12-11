@@ -271,14 +271,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     dispatch(getCountry());
   }, []);
 
-  // const countryData = useMemo(() => {
-  //   if (!Countries) return [];
-  //   return Countries.map((item: any) => ({
-  //     value: item.id.toString(),
-  //     label: item.country_name,
-  //   }));
-  // }, [Countries]);
-
   const countryData = useMemo(() => {
     if (!Countries) return [];
 
@@ -416,8 +408,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       let payload = {
         student_id: studentId,
         task_id: taskId,
-        assigned_country: taskDetails?.assigned_country 
-      }
+        assigned_country: taskDetails?.assigned_country,
+      };
 
       const result = await swal.fire({
         title: "Are you sure?",
@@ -563,7 +555,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     </Row>
                   </Col>
                 </Row>
-                <Row className="mt-3">
+
+                <Row className="mt-3" style={{ alignItems: "start" }}>
                   <Col md={9} lg={9}>
                     <h3 className="m-0" style={{ fontSize: "20px", fontFamily: "Inter", fontWeight: "400" }}>
                       {taskDetails?.title}
@@ -695,7 +688,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           startIcon={<VisibilityIcon />}
                           size="small"
                           variant="contained"
-                          style={{ backgroundColor: "#6658DD", boxShadow: "none" }}
+                          style={{ backgroundColor: "#6658DD", boxShadow: "none",  }}
                         >
                           <Typography
                             sx={{
@@ -713,18 +706,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     </div>
                   </div>
                 </div>
-
-                {taskDetails?.is_rejected && (
-                  <div className="">
-                    <div className="">
-                      <p className="mt-2 mb-1 text-danger fw-bold fs-4">Remarks</p>
-                      <div className="d-flex align-items-center" style={{ gap: "5px" }}>
-                        <img src={icons.information} alt="comapny icon" className="me-1" width="16" />
-                        <h5 className="m-0 font-size-14">{taskDetails?.kyc_remarks?.[0]?.remark}</h5>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -832,10 +813,20 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     </div>
                   </div>
                 </div>
+                {taskDetails?.is_rejected && (
+                  <div className="mx-2">
+                    <p className="mt-2 mb-1 text-danger font-16">Remarks</p>
+                    <div className="d-flex align-items-center" style={{ gap: "5px" }}>
+                      <img src={icons.information} alt="comapny icon" className="me-1" width="16" />
+                      <h5 className="m-0 font-size-14">{taskDetails?.kyc_remarks?.[0]?.remark}</h5>
+                      <h5 className="m-0 font-size-14"></h5>
+                    </div>
+                  </div>
+                )}
               </Card.Body>
             </Card>
 
-            <History />
+            <History studentId={studentId} />
 
             <FollowupModal
               setIsCancelModal={isCancelModal}

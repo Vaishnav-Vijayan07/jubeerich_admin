@@ -166,7 +166,8 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Email",
       accessor: "email",
       sort: false,
-      minWidth: 150,
+      minWidth: 100,
+      isTruncate: true,
     },
     {
       Header: "City",
@@ -180,6 +181,7 @@ const BasicInputElements = withSwal((props: any) => {
       filter: "includes",
       sort: false,
       minWidth: 100,
+      isTruncate: true,
       Cell: ({ row }: any) => (
         <ul style={{ listStyle: "none", margin: "0" }}>
           {row.original.preferredCountries.map((item: any) => (
@@ -193,6 +195,7 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "office_type_name",
       sort: false,
       minWidth: 75,
+      isTruncate: true,
     },
     {
       Header: "Source",
@@ -205,7 +208,9 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "lead_received_date",
       sort: false,
       minWidth: 150,
-      Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
+      Cell: ({ row }: any) => (
+        <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
+      ),
     },
     // {
     //   Header: "Followup Date",
@@ -218,7 +223,8 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Department",
       accessor: "stage",
       sort: false,
-      minWidth: 150,
+      minWidth: 50,
+      isTruncate: true,
     },
     ...(user?.role == cre_tl_id
       ? [
@@ -226,7 +232,8 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Assigned CRE",
             accessor: "cre_name",
             sort: false,
-            minWidth: 150,
+            minWidth: 50,
+            isTruncate: true,
           },
         ]
       : []),
@@ -236,14 +243,18 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Assigned Status",
             accessor: "assigned_branch_counselor",
             sort: false,
-            minWidth: 150,
-            Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+            minWidth: 50,
+            Cell: ({ row }: any) => (
+              <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
+            ),
+            isTruncate: true,
           },
           {
             Header: "Assigned Counselor",
             accessor: "assigned_branch_counselor_name",
             sort: false,
-            minWidth: 150,
+            minWidth: 50,
+            isTruncate: true,
           },
         ]
       : []),
@@ -253,7 +264,8 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Assigned by",
             accessor: "updated_by_user",
             sort: false,
-            minWidth: 150,
+            minWidth: 50,
+            isTruncate: true,
           },
         ]
       : []),
@@ -263,8 +275,12 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Branch Assigned",
             accessor: "assigned_regional_manager",
             sort: false,
-            minWidth: 150,
-            Cell: ({ row }: any) => <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+            minWidth: 50,
+            isTruncate: true,
+
+            Cell: ({ row }: any) => (
+              <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
+            ),
           },
         ]
       : []),
@@ -274,7 +290,8 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Branch Name",
             accessor: "branch_name",
             sort: false,
-            minWidth: 150,
+            minWidth: 50,
+            isTruncate: true,
           },
         ]
       : []),
@@ -284,7 +301,9 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Assign Type",
             accessor: "assign_type",
             sort: false,
-            minWidth: 150,
+            minWidth: 50,
+            isTruncate: true,
+
             Cell: ({ row }: any) => {
               const assignType = row.original.assign_type;
 
@@ -306,7 +325,9 @@ const BasicInputElements = withSwal((props: any) => {
             Header: "Assigned counsellor",
             accessor: "counselors",
             sort: false,
-            minWidth: 150,
+            minWidth: 50,
+            isTruncate: true,
+
             Cell: ({ row }: any) => {
               const counselors = row?.original.counselors;
               return (
@@ -326,6 +347,7 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Status",
       accessor: "status",
       sort: false,
+      isTruncate: true,
     },
     {
       Header: "Actions",
@@ -646,7 +668,12 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               {/* <h1>Progress Bar = {progress}</h1> */}
               <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
-              <FileUploader onFileUpload={handleOnFileUpload} showPreview={true} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+              <FileUploader
+                onFileUpload={handleOnFileUpload}
+                showPreview={true}
+                selectedFile={selectedFile}
+                setSelectedFile={setSelectedFile}
+              />
               <div className="d-flex gap-2 justify-content-end mt-2">
                 <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
                   <i className="mdi mdi-download-circle"></i> Download Sample
@@ -732,7 +759,10 @@ const BasicInputElements = withSwal((props: any) => {
                         </Dropdown.Toggle>
                         <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                           {branchCounsellors?.map((item: any) => (
-                            <Dropdown.Item key={item.id} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
+                            <Dropdown.Item
+                              key={item.id}
+                              onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}
+                            >
                               {item.name}
                             </Dropdown.Item>
                           ))}

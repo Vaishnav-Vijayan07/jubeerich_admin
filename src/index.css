@@ -228,12 +228,29 @@ th {
   row-gap: 25px;
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 960px) {
+  .grid-container {
+    grid-template-columns: repeat(3, 1fr);
+    /* Adjust the number of columns */
+    gap: 10px;
+    /* Adjust the gap between grid items */
+  }
+
+  .grid-container > div:nth-child(4) {
+    grid-column: span 3;
+  }
+}
+
+@media screen and (max-width: 870px) {
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
     /* Adjust the number of columns */
     gap: 10px;
     /* Adjust the gap between grid items */
+  }
+
+  .grid-container > div:nth-child(4) {
+    grid-column: span 1;
   }
 }
 
@@ -557,7 +574,7 @@ select::-ms-expand {
   content: "";
   display: block; /* Allows the pseudo-element to occupy space */
   border-bottom: 1px solid #fff;
-  width: 60%;
+  width: 40px;
   margin: 2px auto; /* Centers the line within the parent */
 }
 
@@ -619,7 +636,7 @@ select::-ms-expand {
   width: 100%;
 }
 .swiper-slide {
-  min-width: 200px;
+  min-width: max-content;
   font-size: 18px;
   display: flex;
   flex-direction: column;
@@ -636,6 +653,7 @@ select::-ms-expand {
   font-family: Nunito;
   font-size: 14px;
   font-weight: 400;
+  text-align: center;
 }
 .status {
   padding: 0px 40px;
@@ -647,6 +665,7 @@ select::-ms-expand {
   font-family: Nunito;
   font-size: 12px;
   font-weight: 400;
+  text-align: center;
   margin: 0 1px;
 }
 
