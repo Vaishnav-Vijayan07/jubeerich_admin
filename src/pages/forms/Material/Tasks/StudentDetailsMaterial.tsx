@@ -9,6 +9,7 @@ import axios from "axios";
 import {
   branch_counsellor_id,
   counsellor_id,
+  country_manager_id,
   cre_id,
   cre_tl_id,
   follow_up_id,
@@ -547,7 +548,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         </Col>
                       )}
 
-                      {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                      {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id || userRole == country_manager_id) && (
                         <Col className="d-flex gap-2 float-end">
                           <Button
                             style={{ minWidth: "150px" }}
