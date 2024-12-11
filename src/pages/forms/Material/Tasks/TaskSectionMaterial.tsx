@@ -282,15 +282,15 @@ const TaskSectionMaterial = ({
       ) : (
         <>
           <Link className="text-dark" to="#" onClick={toggleTask}>
-            <h5 className="m-0">
+            <h5 className="m-0 font-15 py-2">
+              {title} <span className="text-muted font-15">({taskList.length})</span>
               <i className={classNames("mdi", { "mdi-chevron-down": collapse, "mdi-chevron-right": !collapse }, "font-18")}></i>
-              {title} <span className="text-muted font-14">({taskList.length})</span>
             </h5>
           </Link>
           <Collapse in={collapse}>
             <Card className="mb-0 shadow-none">
               <Card.Body
-                className="px-1 pt-3 pb-1"
+                className="px-1 pt-1"
                 style={{
                   maxHeight: "52vh",
                   overflowY: "auto",
