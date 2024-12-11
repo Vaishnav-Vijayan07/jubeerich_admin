@@ -600,7 +600,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       </Col>
                     )}
 
-                    {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                    {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id || userRole == country_manager_id) && (
                       <Col className="d-flex gap-2 float-end">
                         <Button
                           style={{ minWidth: "150px" }}
