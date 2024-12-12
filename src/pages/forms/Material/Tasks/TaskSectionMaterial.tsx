@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.module.css";
 import { TaskItemTypes } from "../../../lead_management/Tasks/List/data";
 import SkeletonComponent from "../../../lead_management/Tasks/List/StudyPreference/LoadingSkeleton";
 import { setColorOpacityRGB } from "../../../../utils/setColorOpacity";
-import { calculateDaysAgo, showErrorAlert } from "../../../../constants";
+import { calculateDaysAgo, reduceOpacity, showErrorAlert } from "../../../../constants";
 import { Badge, Box, Collapse, Tab, Tabs } from "@mui/material";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -40,115 +40,10 @@ const Task = ({
   const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
   const statusName = task?.student_name?.preferredCountries[0]?.country_status[0]?.status_name;
   const currentDate = new Date();
+  
 
   return (
     <>
-      {/* <Row
-        className="task__list ribbon-box"
-        onClick={() => selectTask(task)}
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto",
-          // width: "100%",
-        }}
-      >
-        <div
-          style={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            display: "inline-block", // Prevent content from stretching vertically
-          }}
-        >
-          <label className="form-check-label fs-6" htmlFor={`task-${task.id}`}>
-            <span className="text-primary" style={{ fontSize: "12px", fontWeight: "700" }}>
-              {taskPrefix + "/" + currentDate.getFullYear() + "/" + (task?.id || "000")}
-            </span>
-            &nbsp; &nbsp;
-            <b style={{ fontSize: "13px" }}>{task.title}</b>
-          </label>
-
-          <div className="mt-1">
-            {task?.student_name?.flag_details_rows?.map((flag: any) => (
-              <small
-                style={{
-                  color: "black",
-                  border: `1px solid #122d3d`,
-                  borderRadius: "5px",
-                  padding: "1px 8px",
-                  width: "fit-content",
-                  fontSize: "10px",
-                  borderColor: `${flag?.color}`,
-                  height: "max-content",
-                  textAlign: "center",
-                  whiteSpace: "nowrap",
-                  opacity: "0.8",
-                }}
-                className={classNames("rounded-pill me-1 ms-0")}
-              >
-                {flag?.flag_name}
-              </small>
-            ))}
-
-            {task?.is_rejected && (
-              <small
-                style={{
-                  backgroundColor: `red`,
-                  color: "white",
-                  border: `1px solid #122d3d`,
-                  borderRadius: "5px",
-                  padding: "1px 6px",
-                  fontSize: "0.5rem",
-                  opacity: "0.8",
-                  borderColor: `red`,
-                  height: "max-content",
-                }}
-                className={classNames("rounded-pill me-1")}
-              >
-                Rejected
-              </small>
-            )}
-          </div>
-        </div>
-
-        <div
-          style={{
-            whiteSpace: "nowrap",
-            textAlign: "right",
-            overflow: "hidden",
-            display: "flex",
-            justifyContent: "start",
-            flexDirection: "column",
-            gap: "4px",
-            padding: "2px 10px 0px 0px",
-            backgroundColor: "red",
-          }}
-        >
-          {statusName && (
-            <small
-              style={{
-                backgroundColor: `${statusColor}`,
-                color: "white",
-                border: `1px solid #122d3d`,
-                borderRadius: "5px",
-                padding: "2px 10px",
-                width: "fit-content",
-                fontSize: "0.5rem",
-                borderColor: `${statusColor}`,
-                height: "max-content",
-                textAlign: "center",
-                whiteSpace: "nowrap",
-                opacity: "0.8",
-              }}
-              className={classNames("rounded-pill ms-2")}
-            >
-              {statusName}
-            </small>
-          )}
-          <span style={{ fontSize: "0.65rem" }}>{calculateDaysAgo(task.createdAt)}</span>
-        </div>
-      </Row> */}
-
       <div
         className="task__list ribbon-box p-0"
         onClick={() => selectTask(task)}
@@ -228,12 +123,14 @@ const Task = ({
             alignItems: "center",
             flexDirection: "column",
             padding: "5px",
-            backgroundColor: `${statusColor == "primary" ? "#6C757D40" : statusColor}`,
+            backgroundColor: `${statusColor == "primary" ? "#6C757D40" : reduceOpacity(statusColor, 0.7)}`,
           }}
         >
-          <div className="border_bottom" style={{ textAlign: "center", color: "#fff", fontSize: "10px", fontFamily: "Nunito" }}>
-            {statusName}
-          </div>
+          {statusName && (
+            <div className="border_bottom" style={{ textAlign: "center", color: "#fff", fontSize: "10px", fontFamily: "Nunito" }}>
+              {statusName}
+            </div>
+          )}
           <div
             className="days_ago"
             style={statusColor == "primary" ? { color: "#000", fontSize: "10px" } : { color: "#fff", fontSize: "10px" }}
@@ -282,15 +179,15 @@ const TaskSectionMaterial = ({
       ) : (
         <>
           <Link className="text-dark" to="#" onClick={toggleTask}>
-            <h5 className="m-0">
+            <h5 className="m-0 font-15 py-2">
+              {title} <span className="text-muted font-15">({taskList.length})</span>
               <i className={classNames("mdi", { "mdi-chevron-down": collapse, "mdi-chevron-right": !collapse }, "font-18")}></i>
-              {title} <span className="text-muted font-14">({taskList.length})</span>
             </h5>
           </Link>
           <Collapse in={collapse}>
             <Card className="mb-0 shadow-none">
               <Card.Body
-                className="px-1 pt-3 pb-1"
+                className="px-1 pt-1"
                 style={{
                   maxHeight: "52vh",
                   overflowY: "auto",

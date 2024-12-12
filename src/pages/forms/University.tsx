@@ -179,7 +179,7 @@ const BasicInputElements = withSwal((props: any) => {
   //handle onchange function
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    
+
     if (!regrexValidation(name, value)) {
       console.error(`Invalid ${name}: ${value}`);
       return; // Stop updating if validation fails
@@ -322,7 +322,6 @@ const BasicInputElements = withSwal((props: any) => {
       sort: true,
       Cell: ({ row }: any) => (
         <div className="table-user">
-          {row.original.image_url && <img src={row.original.image_url} alt="university image" className="me-2 rounded-circle" />}
           <Link to="#" className="text-body fw-semibold">
             {row.original.university_name}
           </Link>
@@ -384,7 +383,10 @@ const BasicInputElements = withSwal((props: any) => {
       sort: false,
       Cell: ({ row }: any) => (
         <>
-          <span style={{fontSize:"10px"}} className={`badge rounded-pill ${row.original.is_active ? "bg-success" : "bg-danger"}`}>
+          <span
+            style={{ fontSize: "10px" }}
+            className={`badge rounded-pill ${row.original.is_active ? "bg-success" : "bg-danger"}`}
+          >
             {row.original.is_active ? "Active" : "Disabled"}
           </span>
         </>
@@ -519,13 +521,13 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                {/* <Col md={6}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Image URL</Form.Label>
                     <Form.Control type="text" name="image_url" value={formData.image_url} onChange={handleInputChange} />
                     {validationErrors.image_url && <Form.Text className="text-danger">{validationErrors.image_url}</Form.Text>}
                   </Form.Group>
-                </Col>
+                </Col> */}
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="portal_link">

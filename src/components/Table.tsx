@@ -79,6 +79,7 @@ interface TableProps {
     sort?: boolean;
     Cell?: any;
     className?: string;
+    isTruncate?: boolean
   }[];
   data: any[];
   pageSize?: any;
@@ -303,7 +304,7 @@ const Table = (props: TableProps) => {
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
                       >
-                        <span className={isTruncate ? "truncate-text" : ""}>{cell.render("Cell")}</span>
+                        <span className={cell.column.isTruncate ? "truncate-text" : ""}>{cell.render("Cell")}</span>
                       </td>
                     ))}
                   </tr>

@@ -120,3 +120,7 @@ export const truncateText = (text: string, maxLength: number) => {
   }
   return text;
 };
+
+export const reduceOpacity = (rgbaColor: any, alpha = 0.5) => {
+  return rgbaColor.replace(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/, `rgba($1, $2, $3, ${alpha})`);
+};
