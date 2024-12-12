@@ -10,6 +10,7 @@ import ReactDatePicker from "react-datepicker";
 import calender from "../../../../assets/images/icons/calendar.svg";
 import { showErrorAlert } from "../../../../constants";
 import "react-datepicker/dist/react-datepicker.css";
+import { APICore } from "../../../../helpers/api/apiCore";
 
 const TasksMaterial = () => {
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
@@ -19,40 +20,94 @@ const TasksMaterial = () => {
   const [selectedTask, setSelectedTask] = useState<TaskItemTypes>(pendingTasks[0]);
   const [selectedDate, setSelectedDate] = useState<any>("");
   const [taskPrefix, setTaskPrefix] = useState<string>("");
+  const [collapseState, setCollapseState] = useState(false);
 
   const selectTask = (task: TaskItemTypes) => {
     setSelectedTask(task);
     setSelectedTaskId(task?.id);
   };
 
+  // const getTaskList = (date: any) => {
+  //   date = date
+  //     ? moment(date).startOf("day").format("YYYY-MM-DD")
+  //     : selectedDate
+  //     ? moment(selectedDate).startOf("day").format("YYYY-MM-DD")
+  //     : moment(new Date()).startOf("day").format("YYYY-MM-DD");
+
+  //   axios
+  //     .get(`/tasks`, { params: { date: date } })
+  //     .then((res) => {
+  //       console.log("res.data.data ==>", res.data);
+
+  //       let pendingArray: any = [];
+  //       let pastArray: any = [];
+  //       res.data.data.map((item: any) => {
+  //         if (!item.isCompleted) {
+  //           pendingArray.push(item);
+  //         }
+  //       });
+
+  //       res.data.pendingTasks.map((item: any) => {
+  //         pastArray.push(item);
+  //       });
+  //       setPendingTasks(pendingArray);
+  //       setIncompleteTasks(pastArray);
+
+  //       if (selectedTaskId) {
+  //         const pendingSelected =
+  //           pendingArray?.filter((item: any) => item.id == selectedTaskId) ||
+  //           pastArray?.filter((item: any) => item?.id == selectedTaskId);
+
+  //         if (pendingSelected == null) {
+  //           setSelectedTask(pendingSelected[0]);
+  //         }
+  //       } else {
+  //         // setSelectedTask(pendingArray[0]);
+  //         if (pendingArray?.length > 0) {
+  //           setSelectedTask(pendingArray[0]);
+  //         } else {
+  //           setSelectedTask(pastArray[0]);
+  //         }
+  //       }
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => console.error(err))
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // };
+
   const getTaskList = (date: any) => {
-    date = date
-      ? moment(date).startOf("day").format("YYYY-MM-DD")
-      : selectedDate
-      ? moment(selectedDate).startOf("day").format("YYYY-MM-DD")
-      : moment(new Date()).startOf("day").format("YYYY-MM-DD");
+    // Resolve the date to fetch tasks for
+    const resolvedDate = moment(date || selectedDate || new Date())
+      .startOf("day")
+      .format("YYYY-MM-DD");
+
+    setLoading(true);
 
     axios
-      .get(`/tasks`, { params: { date: date } })
-      .then((res) => {
-        let pendingArray: any = [];
-        res.data.data.map((item: any) => {
-          if (!item.isCompleted) {
-            pendingArray.push(item);
-          }
-        });
-        setPendingTasks(pendingArray);
-        setIncompleteTasks(res.data?.pendingTasks);
+      .get(`/tasks`, { params: { date: resolvedDate } })
+      .then(({ data }) => {
+        const tasks = data?.data || [];
+        const pendingTasks = tasks.filter((task: any) => !task.isCompleted);
+        const pastTasks = data?.pendingTasks || [];
 
-        if (selectedTaskId) {
-          const pendingSelected = pendingArray?.filter((item: any) => item.id == selectedTaskId);
-          setSelectedTask(pendingSelected[0]);
-        } else {
-          setSelectedTask(pendingArray[0]);
-        }
-        setLoading(false);
+        setPendingTasks(pendingTasks);
+        setIncompleteTasks(pastTasks);
+
+        // Toggle collapse state based on pending tasks
+        setCollapseState(pendingTasks.length === 0);
+
+        // Resolve the selected task
+        const selectedTask = selectedTaskId
+          ? [...pendingTasks, ...pastTasks].find((task: any) => task.id === selectedTaskId)
+          : pendingTasks[0] || pastTasks[0];
+
+        setSelectedTask(selectedTask || null);
       })
-      .catch((err) => console.error(err))
+      .catch((error) => {
+        console.error("Error fetching task list:", error);
+      })
       .finally(() => {
         setLoading(false);
       });
@@ -78,6 +133,11 @@ const TasksMaterial = () => {
     getTaskPrefix();
   }, []);
 
+  const api = new APICore();
+  const loggedInUser = api.getLoggedInUser();
+
+  const { name } = loggedInUser;
+
   return (
     <>
       <PageTitle
@@ -88,7 +148,7 @@ const TasksMaterial = () => {
         title={"Inbox"}
       />
       <h4 className="m-0 mb-3 mt-1 inter-font" style={{ fontSize: "19px", fontWeight: "400" }}>
-        Good Day, Benjamin Newton ! Here's your to-do list for a productive day !
+        Good Day, {name} ! Here's your to-do list for a productive day !
       </h4>
       <Row>
         <Col xl={4} className="mb-3">
@@ -126,12 +186,12 @@ const TasksMaterial = () => {
                       initialTaskId={selectedTask?.id}
                       tasks={incompleteTasks || []}
                       selectTask={selectTask}
-                      date={""}
                       initialLoading={initialLoading}
                       setSelectedDate={function (value: React.SetStateAction<string>): void {
                         setSelectedDate(value);
                         getTaskList(value);
                       }}
+                      collapseState={collapseState}
                     ></TaskSectionMaterial>
                   </div>
 
@@ -142,12 +202,12 @@ const TasksMaterial = () => {
                       initialTaskId={selectedTask?.id}
                       tasks={pendingTasks || []}
                       selectTask={selectTask}
-                      date={""}
                       initialLoading={initialLoading}
                       setSelectedDate={function (value: React.SetStateAction<string>): void {
                         setSelectedDate(value);
                         getTaskList(value);
                       }}
+                      collapseState={true}
                     ></TaskSectionMaterial>
                   </div>
                 </div>

@@ -21,7 +21,7 @@ const CardLoadingSkeleton = () => (
           </Col>
         </Row>
 
-        <Row className="" style={{ paddingBottom: "20px" }}>
+        <Row className="mt-2" style={{ paddingBottom: "20px" }}>
           <Col md={9}>
             <Skeleton height={20} width={"60%"} style={{ marginBottom: "8px" }} />
             <Skeleton width="40%" height={12} style={{ marginBottom: "12px" }} />
@@ -32,9 +32,15 @@ const CardLoadingSkeleton = () => (
               ))}
             </div>
           </Col>
+          <Col className="d-flex  justify-content-end">
+            <div className="d-flex flex-column mt-2 align-items-end">
+              <Skeleton height={10} width={80} style={{ marginBottom: "2px" }} />
+              <Skeleton width={140} height={40} />
+            </div>
+          </Col>
         </Row>
 
-        <Row className="mt-3">
+        <Row className="mt-1">
           <div className="grid-container mb-2">
             {[...Array(3)].map((_, index) => (
               <div key={index}>

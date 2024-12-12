@@ -18,10 +18,10 @@ interface TaskSectionState {
   tasks: TaskItemTypes[];
   selectTask: (task: TaskItemTypes) => void;
   initialTaskId: number;
-  date: string;
   initialLoading: boolean;
   setSelectedDate: Dispatch<SetStateAction<string>>;
   taskPrefix: any;
+  collapseState: boolean;
 }
 
 const Task = ({
@@ -40,7 +40,6 @@ const Task = ({
   const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
   const statusName = task?.student_name?.preferredCountries[0]?.country_status[0]?.status_name;
   const currentDate = new Date();
-  
 
   return (
     <>
@@ -149,12 +148,16 @@ const TaskSectionMaterial = ({
   selectTask,
   initialTaskId,
   initialLoading,
-  setSelectedDate,
   taskPrefix,
+  collapseState,
 }: TaskSectionState) => {
   const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
   const [selectedTaskId, setSelectedTaskId] = useState<number>(initialTaskId);
-  const [collapse, setCollapse] = useState<boolean>(title == "Past" ? false : true);
+  const [collapse, setCollapse] = useState<boolean>(collapseState);
+
+  useEffect(() => {
+    setCollapse(collapseState);
+  }, [collapseState]);
 
   useEffect(() => {
     setTaskList(tasks);
