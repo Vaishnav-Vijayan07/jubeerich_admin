@@ -13,41 +13,59 @@ import RevenueChart from "./RevenueChart";
 
 // dummy data
 import { chatMessages } from "./data";
+import CreDashboard from "../CRE/CreDashboard";
+import CreTlDashboard from "../CRE TL/CreTlDashboard";
+import ItTeamDashboard from "../IT Team/ItTeamDashboard";
+import CounselorDashboard from "../Counselor/CounselorDashboard";
+import CountryManagerDashboard from "../Country Manager/CountryManagerDashboard";
 
 const Dashboard3 = () => {
-  return (
-    <>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Dashboards", path: "/dashboard-3" },
-          { label: "Dashboard 3", path: "/dashboard-3", active: true },
-        ]}
-        title={"Dashboard"}
-      />
+  const userInfo = JSON.parse(sessionStorage.getItem("jb_user") || "{}");
 
-      <Statistics />
+  const renderDashboard = () => {
+    switch (userInfo?.role_name) {
+      case "IT Team":
+        return <ItTeamDashboard />;
+      case "CRE":
+        return <CreDashboard />;
+      case "CRE TL":
+        return <CreTlDashboard />;
+      case "Counsellor":
+        return <CounselorDashboard />;
+      case "Country Manager":
+        return <CountryManagerDashboard />;
+      default:
+        return (
+          <>
+            <PageTitle breadCrumbItems={[{ label: "Dashboards", path: "" }]} title={"Dashboard"} />
 
-      <Row>
-        <Col xl={6}>
-          <RevenueChart />
-        </Col>
-        <Col xl={6}>
-          <PerformanceChart />
-        </Col>
-      </Row>
-      <Row>
-        <Col lg={6} xl={4}>
-          <Messages />
-        </Col>
-        <Col lg={6} xl={4}>
-          <TodoList addTodo={true} height={"310px"} />
-        </Col>
-        <Col lg={12} xl={4}>
-          <ChatList messages={chatMessages} />
-        </Col>
-      </Row>
-    </>
-  );
+            <Statistics />
+
+            <Row>
+              <Col xl={6}>
+                <RevenueChart />
+              </Col>
+              <Col xl={6}>
+                <PerformanceChart />
+              </Col>
+            </Row>
+            <Row>
+              <Col lg={6} xl={4}>
+                <Messages />
+              </Col>
+              <Col lg={6} xl={4}>
+                <TodoList addTodo={true} height={"310px"} />
+              </Col>
+              <Col lg={12} xl={4}>
+                <ChatList messages={chatMessages} />
+              </Col>
+            </Row>
+          </>
+        );
+    }
+  };
+
+  return <>{renderDashboard()}</>;
 };
 
 export default Dashboard3;
