@@ -58,9 +58,17 @@ const AllRoutes = (props: IRoutesProps) => {
               <Route
                 path={route.path}
                 element={
-                  <DefaultLayout {...props} layout={layout}>
-                    {route.element}
-                  </DefaultLayout>
+                  api.isUserAuthenticated() == true ? (
+                    <Navigate
+                      to={{
+                        pathname: "/",
+                      }}
+                    />
+                  ) : (
+                    <DefaultLayout {...props} layout={layout}>
+                      {route.element}
+                    </DefaultLayout>
+                  )
                 }
                 key={idx}
               />

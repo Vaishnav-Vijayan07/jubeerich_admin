@@ -1,11 +1,11 @@
-import React, { useRef, useEffect, forwardRef, useState } from "react";
+import React, { useRef, useEffect, forwardRef, useState, useCallback } from "react";
 import { useTable, useSortBy, usePagination, useRowSelect, useGlobalFilter, useAsyncDebounce, useExpanded } from "react-table";
 import classNames from "classnames";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { Pagination } from "@mui/material";
 
 // components
-import Pagination from "./Pagination";
 
 interface GlobalFilterProps {
   preGlobalFilteredRows: any;
@@ -79,7 +79,6 @@ interface TableProps {
     sort?: boolean;
     Cell?: any;
     className?: string;
-    isTruncate?: boolean
   }[];
   data: any[];
   pageSize?: any;
@@ -88,21 +87,29 @@ interface TableProps {
   theadClass?: string;
   onSelect?: any;
   initialLoading?: boolean;
-  isDashboard?: boolean;
   isTruncate?: boolean;
+  rowsPerPage?: any;
 }
 
-const Table = (props: TableProps) => {
+const CustomLeadTable = (props: TableProps) => {
   const isSearchable = props["isSearchable"] || false;
   const isSortable = props["isSortable"] || false;
   const pagination = props["pagination"] || false;
   const isSelectable = props["isSelectable"] || false;
   const isExpandable = props["isExpandable"] || false;
-  const sizePerPageList = props["sizePerPageList"] || [];
+  const rowsPerPage = props["rowsPerPage"] || 10;
+  const recordsLength = props["data"].length || 10;
   const isTruncate = props["isTruncate"] || false;
-  const customClass = props["tableClass"] || "";
-  const isDashboard = props["isDashboard"] || false;
-  const dashBoardClass = "table table-centered table-nowrap table-striped mb-0";
+  const records = props["data"] || [];
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const paginatedData = records.slice(startIndex, startIndex + rowsPerPage);
+
+  const handlePagination = useCallback((page: number) => {
+    setCurrentPage(page);
+  }, []);
 
   let otherProps: any = {};
 
@@ -125,7 +132,7 @@ const Table = (props: TableProps) => {
   const dataTable = useTable(
     {
       columns: props["columns"],
-      data: props["data"],
+      data: paginatedData,
       initialState: { pageSize: props["pageSize"] || 10 },
       globalFilter: (rows, columnIds, filterValue) => {
         return rows.filter((row) => {
@@ -226,16 +233,13 @@ const Table = (props: TableProps) => {
       )}
 
       <div className="table-responsive">
-        <table
-          {...dataTable.getTableProps()}
-          className={classNames(isDashboard ? dashBoardClass : `table table-centered react-table custom-table ${customClass}`)}
-        >
-          <thead >
+        <table {...dataTable.getTableProps()} className={classNames("table table-centered react-table custom-table", props["tableClass"])}>
+          <thead className={props["theadClass"]}>
             {(dataTable.headerGroups || []).map((headerGroup: any) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {(headerGroup.headers || []).map((column: any) => (
                   <th
-                    {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}
+                    {...column.getHeaderProps(column.sort)}
                     style={{
                       ...(column.minWidth && { minWidth: column.minWidth }),
                       ...(column.maxWidth && { maxWidth: column.maxWidth }),
@@ -304,7 +308,7 @@ const Table = (props: TableProps) => {
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
                       >
-                        <span className={cell.column.isTruncate ? "truncate-text" : ""}>{cell.render("Cell")}</span>
+                        <span className={isTruncate ? "truncate-text" : ""}>{cell.render("Cell")}</span>
                       </td>
                     ))}
                   </tr>
@@ -314,9 +318,18 @@ const Table = (props: TableProps) => {
           </tbody>
         </table>
       </div>
-      {pagination && <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />}
+      {pagination && (
+        <div className="d-lg-flex align-items-center text-center pb-1">
+          <Pagination
+            count={Math.ceil(recordsLength / rowsPerPage)}
+            variant="outlined"
+            color="primary"
+            onChange={(e, page) => handlePagination(page)}
+          />
+        </div>
+      )}
     </>
   );
 };
 
-export default Table;
+export default CustomLeadTable;
