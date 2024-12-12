@@ -60,7 +60,7 @@ const Task = ({
           }}
           className="p-2"
         >
-          <label className="form-check-label fs-6" htmlFor={`task-${task.id}`}>
+          <label className="form-check-label truncate-text fs-6" htmlFor={`task-${task.id}`}>
             <span
               className={classNames(title === "Past" ? "text-danger" : "text-primary")}
               style={{ fontSize: "12px", fontWeight: "700" }}
@@ -71,7 +71,7 @@ const Task = ({
             <b style={{ fontSize: "13px" }}>{task.title}</b>
           </label>
 
-          <div className="mt-1">
+          <div className="mt-0">
             {task?.student_name?.flag_details_rows?.map((flag: any) => (
               <small
                 style={{
