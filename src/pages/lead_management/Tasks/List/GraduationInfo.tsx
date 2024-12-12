@@ -7,8 +7,9 @@ import useSaveGraduationInfo from "../../../../hooks/useSaveGraduationInfo";
 import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
 import ActionButton from "./ActionButton";
 import validateFields from "../../../../helpers/validateHelper";
-import { baseUrl } from "../../../../constants";
+import { baseUrl, showErrorAlert } from "../../../../constants";
 import { regrexValidation } from "../../../../utils/regrexValidation";
+import { allowedFileTypes } from "./data";
 
 interface GraduationDetailsProps {
   title: string; // Title for the section (Primary/Secondary)
@@ -43,6 +44,12 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
   };
 
   const handleFileChange = (e: any, index: any) => {
+    
+    if (e.target.files[0] && !allowedFileTypes.includes(e.target.files[0].type)) {
+      showErrorAlert("Only PDF and image files are allowed.");
+      return;
+    }
+
     if (e.target.files && e.target.files.length > 0) {
       handleGraduationDetailsChange(e.target.name, e.target.files[0], index);
     }

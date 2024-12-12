@@ -6,6 +6,7 @@ import axios from "axios";
 import { baseUrl, showErrorAlert, showSuccessAlert } from "../../../../constants";
 import swal from "sweetalert2";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
+import { allowedFileTypes } from "./data";
 
 const initialDocumentState = {
   passport_doc: "",
@@ -44,6 +45,12 @@ const AdditionalDocuments = (props: any) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const { name } = e.target;
+
+
+    if (file && !allowedFileTypes.includes(file.type)) {
+      showErrorAlert("Only PDF and image files are allowed.");
+      return;
+    }
 
     setDocuments((prevDocs) => ({
       ...prevDocs,
@@ -231,34 +238,6 @@ const AdditionalDocuments = (props: any) => {
                       )}
                     </div>
                   </Col>
-
-                  {/* <Col md={6} lg={6} xl={6} xxl={4}>
-                                <Form.Group className="mb-2 mt-3" controlId="pte_cred">
-                                    <Form.Label>
-                                        <span className="text-danger">*</span> PTE Account Credentials
-                                    </Form.Label>
-                                    <FormInput
-                                        type="file"
-                                        name="pte_cred"
-                                        onChange={(e) =>
-                                            handleFileChange(e)
-                                        }
-                                    />
-                                </Form.Group>
-                                <div className='d-flex'>
-                                    {documentsName?.pte_cred && <a
-                                        href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.pte_cred}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-                                    >
-                                        <div className=' p-1'>
-                                            {(documentsName?.pte_cred ? "PTE Account Credentials" : "")}
-                                        </div>
-                                    </a>}
-                                    {documentsName?.pte_cred && <i onClick={() => deleteAdditionalDoc('pte_cred')} className='mdi mdi-delete mt-1 ps-1'></i>}
-                                </div>
-                            </Col> */}
 
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="lor">

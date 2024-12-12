@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../redux/store";
 import { getCourse } from "../../../../redux/course/actions";
 import { getUniversity } from "../../../../redux/University/actions";
-import { travel_history, visa_approve, visa_decline } from "./data";
+import { allowedFileTypes, travel_history, visa_approve, visa_decline } from "./data";
 import { getCountry } from "../../../../redux/country/actions";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import validateFields from "../../../../helpers/validateHelper";
@@ -495,6 +495,11 @@ const VisaProcess = withSwal((props: any) => {
   const handleFileChange = (e: any, docType: any, index: any) => {
     const file = e.target.files?.[0];
     const { name } = e.target;
+
+    if (file&& !allowedFileTypes.includes(file.type)) {
+      showErrorAlert("Only PDF and image files are allowed.");
+      return;
+    }
 
     switch (docType) {
       case visa_approve:

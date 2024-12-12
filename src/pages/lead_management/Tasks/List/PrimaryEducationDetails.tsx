@@ -32,6 +32,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
     if (e.target.files && e.target.files.length > 0) {
       onChange(e.target.name, e.target.files[0]);
     }
