@@ -18,6 +18,15 @@ const Leads = () => {
   const [branchForManager, setBranchForManager] = useState([]);
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const handlePageChange = (event:any, value:any) => {
+    setCurrentPage(value);
+  };
+
+  console.log("PAGE COUNT",currentPage)
+
   let userRole: any;
   let userBranchId: any;
   if (userInfo) {
@@ -36,7 +45,7 @@ const Leads = () => {
 
   useEffect(() => {
     fetchAllCounsellors();
-    if(userBranchId) dispatch(getBranchCounsellors(userBranchId));
+    if (userBranchId) dispatch(getBranchCounsellors(userBranchId));
   }, [userBranchId]);
 
   useEffect(() => {
@@ -113,6 +122,7 @@ const Leads = () => {
             branchCounsellors={branchCounsellor || []}
             flags={dropdownData.flags || []}
             initialLoading={initialLoading}
+            handlePageChange={handlePageChange}
           />
         </Col>
       </Row>

@@ -1,7 +1,8 @@
 import React from "react";
-import { Card } from "react-bootstrap";
+import { Card, Col, Row } from "react-bootstrap";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
+import Filters from "./Filters";
 
 type Props = {
   categories: string[];
@@ -18,7 +19,17 @@ function SingleBarGraph({ categories, series }: Props) {
     chart: {
       type: "bar",
       toolbar: {
-        show: false, // Hide toolbar if not needed
+        show: true,
+        offsetX: 0,
+        offsetY: 0,
+        tools: {
+          download: false,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+        },
       },
     },
     plotOptions: {
@@ -31,6 +42,7 @@ function SingleBarGraph({ categories, series }: Props) {
       enabled: false,
     },
     xaxis: {
+      tickPlacement: "on",
       categories, // Set X-axis labels
       title: {
         text: "Lead Type", // Title for Y-axis
@@ -53,6 +65,11 @@ function SingleBarGraph({ categories, series }: Props) {
   return (
     <Card>
       <Card.Body>
+        <Row className="mb-3">
+          <Col md={3}>
+            <Filters />
+          </Col>
+        </Row>
         <Chart options={options} series={series} type="bar" height={350} />
       </Card.Body>
     </Card>

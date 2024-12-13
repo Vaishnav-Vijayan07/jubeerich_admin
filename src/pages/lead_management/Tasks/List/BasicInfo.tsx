@@ -22,6 +22,7 @@ import { RootState } from "../../../../redux/store";
 import { refreshData } from "../../../../redux/countryReducer";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../utils/regrexValidation";
+import { allowedFileTypes } from "./data";
 
 const validationErrorsInitialState = {
   full_name: "",
@@ -96,6 +97,14 @@ const BasicInfo = withSwal((props: any) => {
     region_id: null,
     errors: {},
   });
+
+  const primaryContactRelationships = [
+    { value: "Father", label: "Father" },
+    { value: "Mother", label: "Mother" },
+    { value: "Brother", label: "Brother" },
+    { value: "Sister", label: "Sister" },
+    { value: "Spouse", label: "Spouse" },
+  ];  
 
   const [loading, setLoading] = useState(false);
   const [selectedOfficeType, setSelectedOfficeType] = useState<any>(null);
@@ -226,6 +235,11 @@ const BasicInfo = withSwal((props: any) => {
 
     console.log("itemName, itemIndex", itemName, itemIndex);
 
+    if (file && !allowedFileTypes.includes(file.type)) {
+      showErrorAlert("Only PDF and image files are allowed.");
+      return;
+    }
+
     const newPoliceClearenceDocs = [...policeClearenceDocs];
     newPoliceClearenceDocs[itemIndex] = {
       ...newPoliceClearenceDocs[itemIndex],
@@ -242,50 +256,50 @@ const BasicInfo = withSwal((props: any) => {
 
     const basicValidationRules = {
       passport_no: { required: false },
-      dob: { required: true },
+      dob: { required: false },
       gender: { required: true },
-      marital_status: { required: true },
+      marital_status: { required: false },
       nationality: { required: true },
-      secondary_number: { required: true },
+      secondary_number: { required: false },
       state: { required: true },
       country: { required: true },
-      address: { required: true },
+      address: { required: false },
     };
 
     const primaryValidationRules = {
       full_name: { required: true },
       email: { required: true },
       phone: { required: true },
-      city: { required: true },
-      office_type: { required: true },
-      remarks: { required: true },
+      city: { required: false },
+      office_type: { required: false },
+      remarks: { required: false },
       franchise_id: { required: primaryInfo?.office_type == 5 },
       region_id: { required: primaryInfo?.office_type == 4 },
     };
 
-    // const { isValid: primaryValid, errors: primaryErrors } = validateFields([primaryInfo], primaryValidationRules);
-    // const { isValid: basicValid, errors: basicErrors } = validateFields([basicInfo], basicValidationRules);
+    const { isValid: primaryValid, errors: primaryErrors } = validateFields([primaryInfo], primaryValidationRules);
+    const { isValid: basicValid, errors: basicErrors } = validateFields([basicInfo], basicValidationRules);
 
-    // console.log(basicErrors);
-    // console.log(primaryErrors);
+    console.log(basicErrors);
+    console.log(primaryErrors);
 
-    // if (!basicValid) {
-    //   setBasicInfo((prevState: any) => ({
-    //     ...prevState,
-    //     errors: basicErrors[0] || {}, // Attach errors to specific fields
-    //   }));
-    // }
+    if (!basicValid) {
+      setBasicInfo((prevState: any) => ({
+        ...prevState,
+        errors: basicErrors[0] || {}, // Attach errors to specific fields
+      }));
+    }
 
-    // if (!primaryValid) {
-    //   setPrimaryInfo((prevState: any) => ({
-    //     ...prevState,
-    //     errors: primaryErrors[0] || {}, // Attach errors to specific fields
-    //   }));
-    // }
+    if (!primaryValid) {
+      setPrimaryInfo((prevState: any) => ({
+        ...prevState,
+        errors: primaryErrors[0] || {}, // Attach errors to specific fields
+      }));
+    }
 
-    // if (!basicValid || !primaryValid) {
-    //   return;
-    // }
+    if (!basicValid || !primaryValid) {
+      return;
+    }
 
     const formData: any = new FormData();
 
@@ -752,7 +766,7 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="country">
-                <Form.Label>Country</Form.Label>
+                <Form.Label><span className="text-danger">*</span> Country</Form.Label>
                 <Select
                   className="react-select react-select-container"
                   name="country"
@@ -772,7 +786,7 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="nationality">
-                <Form.Label>Nationality</Form.Label>
+                <Form.Label><span className="text-danger">*</span> Nationality</Form.Label>
                 <FormInput
                   type="text"
                   name="nationality"
@@ -788,7 +802,7 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="state">
-                <Form.Label>State</Form.Label>
+                <Form.Label><span className="text-danger">*</span> State</Form.Label>
                 <Select
                   className="react-select react-select-container"
                   name="state"
@@ -890,7 +904,7 @@ const BasicInfo = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="emergency_contact_relationship">
                 <Form.Label>Primary Contact Relationship</Form.Label>
 
-                <Form.Control
+                {/* <Form.Control
                   as="select"
                   name="emergency_contact_relationship"
                   key="emergency_contact_relationship"
@@ -905,7 +919,22 @@ const BasicInfo = withSwal((props: any) => {
                   <option value="Brother">Brother</option>
                   <option value="Sister">Sister</option>
                   <option value="Spouse">Spouse</option>
-                </Form.Control>
+                </Form.Control> */}
+
+                <Form.Select
+                  aria-label="Select Primary Contact Relationship"
+                  key="emergency_contact_relationship"
+                  name="emergency_contact_relationship"
+                  onChange={(e) => handleInputChange(e, "emergency_contact_relationship", "basic")}
+                  value={basicInfo?.emergency_contact_relationship}
+                >
+                  <option value="">Select Primary Contact Relationship</option>
+                  {primaryContactRelationships.map((type) => (
+                    <option value={type.value} key={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </Form.Select>
                 {basicInfo?.errors?.emergency_contact_relationship && (
                   <Form.Text className="text-danger">{basicInfo?.errors?.emergency_contact_relationship}</Form.Text>
                 )}

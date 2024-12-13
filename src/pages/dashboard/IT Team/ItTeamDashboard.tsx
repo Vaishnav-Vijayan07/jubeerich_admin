@@ -56,7 +56,7 @@ function ItTeamDashboard() {
               </Spinner>
             </div>
           ) : (
-            <StackGraph categories={categories} series={series}/>
+            <StackGraph categories={categories} series={series} />
           )}
         </Col>
         <Col md={7}>
@@ -67,7 +67,7 @@ function ItTeamDashboard() {
               </Spinner>
             </div>
           ) : (
-            <LeadsTable leadsData={dummyLeadData} />
+            <LeadsTable leadsData={dummyLeadData} showOffice={true} />
           )}
         </Col>
       </Row>

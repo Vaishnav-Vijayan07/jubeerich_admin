@@ -708,3 +708,5 @@ export {
   courseTypeOptions,
   intakeMonthOptions,
 };
+
+export const allowedFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg"];
