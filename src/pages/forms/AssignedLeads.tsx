@@ -899,7 +899,7 @@ const AssignedLeads = () => {
           { label: "Master", path: "/master/university" },
           { label: "Assigned Leads", path: "/master/university", active: true },
         ]}
-        title={"Leads"}
+        title={"Assigned Leads"}
       />
       <Row>
         <Col>

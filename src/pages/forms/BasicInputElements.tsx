@@ -85,6 +85,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [filteredItems, setFilteredItems] = useState<any[]>([]); // Filtered data
   const [handleUpdateData, setHandleUpdateData] = useState<any>({});
   const [clearLeadModal, setClearLeadModal] = useState<any>(null);
+  const [clearError, setClearError] = useState<any>(null)
   // const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -362,7 +363,7 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <Link to={`/leads/manage/${row.original.id}`} className="action-icon">
+          <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Edit'>
             <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
           </Link>
 
@@ -378,7 +379,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link> */}
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)} data-bs-toggle="tooltip" data-bs-placement="bottom" title='Delete'>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -489,7 +490,7 @@ const BasicInputElements = withSwal((props: any) => {
             } else {
               dispatch(getLead(currentPage, currentLimit));
             }
-            showSuccessAlert("Bulk assignment successful.");
+            showSuccessAlert("Assigned Successfully.");
           }
         } catch (error) {
           showErrorAlert(error);
@@ -553,7 +554,7 @@ const BasicInputElements = withSwal((props: any) => {
             } else {
               dispatch(getLead(currentPage, currentLimit));
             }
-            showSuccessAlert("Bulk assignment successful.");
+            showSuccessAlert("Assigned Successfully.");
           }
         } catch (error) {
           showErrorAlert(error);
@@ -585,7 +586,7 @@ const BasicInputElements = withSwal((props: any) => {
             } else {
               dispatch(getLead(currentPage, currentLimit));
             }
-            showSuccessAlert("Bulk assignment successful.");
+            showSuccessAlert("Assigned Successfully.");
           }
         } catch (error) {
           showErrorAlert(error);
@@ -641,6 +642,7 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const openModalWithClass = (className: string) => {
+    setClearError((prev: any) => !prev);
     toggle();
   };
 
@@ -649,6 +651,7 @@ const BasicInputElements = withSwal((props: any) => {
       <Row className="justify-content-between px-2">
         <LeadsModal
           clearLeadModal={clearLeadModal}
+          clearError={clearError}
           country={country || []}
           source={source || []}
           leadTypes={leadTypes || []}

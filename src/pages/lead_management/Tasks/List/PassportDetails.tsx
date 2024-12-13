@@ -268,7 +268,7 @@ const PassportDetails = ({ studentId }: Props) => {
               <>
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId={`passport_number_${index}`}>
-                    <Form.Label>Passport Number</Form.Label>
+                    <Form.Label><span className="text-danger fs-4">* </span> Passport Number<small className="text-muted ms-1">( Use only capital letters and numbers)</small></Form.Label>
                     <FormInput
                       type="text"
                       name="passport_number"
@@ -284,7 +284,7 @@ const PassportDetails = ({ studentId }: Props) => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId={`date_of_expiry_${index}`}>
-                    <Form.Label>Date of Expiry</Form.Label>
+                    <Form.Label><span className="text-danger fs-4">* </span> Date of Expiry</Form.Label>
                     <FormInput
                       type="date"
                       name="date_of_expiry"

@@ -56,6 +56,7 @@ const LeadsModal = withSwal((props: any) => {
     setModal,
     isAssignedLeads = false,
     initialLoading,
+    clearError
   } = props;
   const api = new APICore();
   const loggedInUser = api.getLoggedInUser();
@@ -77,7 +78,6 @@ const LeadsModal = withSwal((props: any) => {
   const [selectedFranchisee, setSelectedFranchisee] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
-  // const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
   const [selectExam, setSelectExam] = useState<boolean>(false);
@@ -90,7 +90,7 @@ const LeadsModal = withSwal((props: any) => {
   const [isOfficeDisable, setIsOfficeDisable] = useState<any>(false);
 
   const validationSchema = yup.object().shape({
-    full_name: yup.string().required("Name is required"),
+    full_name: yup.string().min(3, 'Min 3 characters').max(100, 'Max 100 characters').required("Name is required"),
     preferred_country: yup.array().min(1, "At least one country must be selected").nullable(),
     email: yup.string().required("Email is required").email("Invalid email"),
     phone: yup
@@ -140,6 +140,10 @@ const LeadsModal = withSwal((props: any) => {
   useEffect(() => {
     handleCancelUpdate();
   }, [clearLeadModal]);
+
+  useEffect(() => {
+    setValidationErrors(initialValidationState);
+  }, [clearError]);
 
   const filteredOffice = useMemo(() => {
     if (!loggedInUser || !office?.length) return null;
@@ -391,7 +395,6 @@ const LeadsModal = withSwal((props: any) => {
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
-        console.log("VAL", validationError.inner);
         validationError.inner.forEach((error) => {
           if (error.path) {
             errors[error.path] = error.message;
@@ -719,7 +722,7 @@ const LeadsModal = withSwal((props: any) => {
 
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="channel_name">
-                  <Form.Label>Country</Form.Label>
+                  <Form.Label><span className="text-danger fs-4">* </span> Country</Form.Label>
                   <Select
                     styles={customStyles}
                     className="react-select react-select-container"
@@ -761,7 +764,7 @@ const LeadsModal = withSwal((props: any) => {
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="channel_name">
                   <Form.Label>
-                    <span className="text-danger fs-4"></span>Zipcode
+                    <span className="text-danger fs-4">*</span> Zipcode
                   </Form.Label>
                   <Form.Control type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
                   {validationErrors.zipcode && <Form.Text className="text-danger">{validationErrors.zipcode}</Form.Text>}
