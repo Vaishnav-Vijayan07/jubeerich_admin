@@ -7,6 +7,7 @@ import { baseUrl, showErrorAlert, showSuccessAlert } from "../../../../constants
 import swal from "sweetalert2";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { allowedFileTypes } from "./data";
+import * as yup from 'yup';
 
 const initialDocumentState = {
   passport_doc: "",
@@ -137,7 +138,6 @@ const AdditionalDocuments = (props: any) => {
       }
     } catch (error) {
       console.log(error);
-      // showErrorAlert("Internal Server Error")
       setIsLoading(false);
     }
   };
@@ -147,10 +147,6 @@ const AdditionalDocuments = (props: any) => {
       getAdditionalDoc();
     }
   }, [studentId]);
-
-  // if (isLoading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
-  // }
 
   return (
     <>
@@ -168,7 +164,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2" controlId="passport_doc">
                       <Form.Label>
-                        <span className="text-danger">*</span> Upload Passport
+                         Upload Passport
                       </Form.Label>
                       <FormInput type="file" name="passport_doc" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
@@ -192,7 +188,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2" controlId="updated_cv">
                       <Form.Label>
-                        <span className="text-danger">*</span> Upload Updated CV
+                         Upload Updated CV
                       </Form.Label>
                       <FormInput type="file" name="updated_cv" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
@@ -216,7 +212,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="profile_assessment_doc">
                       <Form.Label>
-                        <span className="text-danger">*</span> Profile Assessment Document
+                         Profile Assessment Document
                       </Form.Label>
                       <FormInput type="file" name="profile_assessment_doc" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
@@ -242,7 +238,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="lor">
                       <Form.Label>
-                        <span className="text-danger">*</span> Letter of recommendation
+                         Letter of recommendation
                       </Form.Label>
                       <FormInput type="file" name="lor" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
@@ -266,7 +262,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="sop">
                       <Form.Label>
-                        <span className="text-danger">*</span> Statement of Purpose
+                         Statement of Purpose
                       </Form.Label>
                       <FormInput type="file" name="sop" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
@@ -290,7 +286,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="gte_form">
                       <Form.Label>
-                        <span className="text-danger">*</span> Application/GTE Form
+                         Application/GTE Form
                       </Form.Label>
                       <FormInput type="file" name="gte_form" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
