@@ -10,6 +10,7 @@ import { RootState } from "../../../../../redux/store";
 import useRemoveFromApi from "../../../../../hooks/useRemoveFromApi";
 import SkeletonComponent from "../StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../../utils/regrexValidation";
+import { allowedFileTypes } from "../data";
 
 interface Props {
   student_id: string | number;
@@ -85,38 +86,28 @@ const FundPlan = ({ student_id }: Props) => {
       sponsorship_amount: { required: true },
       name_of_bank: { required: true },
     };
-    // const { isValid, errors } = validateFields(fundPlan, validationRules);
+    const { isValid, errors } = validateFields(fundPlan, validationRules);
 
-    // if (!isValid) {
-    //   // Ensure validation errors are displayed
-    //   setFundPlan((prevState: any) =>
-    //     prevState.map((exp: any, index: any) => ({
-    //       ...exp,
-    //       errors: errors[index] || {}, // Attach errors to specific fields
-    //     }))
-    //   );
-    //   return;
-    // }
+    if (!isValid) {
+      // Ensure validation errors are displayed
+      setFundPlan((prevState: any) =>
+        prevState.map((exp: any, index: any) => ({
+          ...exp,
+          errors: errors[index] || {}, // Attach errors to specific fields
+        }))
+      );
+      return;
+    }
     saveFundPlan(fundPlan);
   };
 
   const handleFundPlanInputChange = (index: number, name: string, value: string | number | File) => {
 
-    // const regexPatterns: Record<string, RegExp> = {
-    //   sponsor_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-    //   approx_annual_income: /^\+?[0-9]{0,15}(\.[0-9]+)?$/,
-    //   relation_with_sponsor: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-    //   sponsorship_amount: /^\+?[0-9]{0,15}(\.[0-9]+)?$/,
-    // };
+    if (typeof value == 'object' && !allowedFileTypes.includes(value.type)) {
+      showErrorAlert("Only PDF and image files are allowed.");
+      return;
+    }
 
-    // // Check if the field has a validation regex
-    // if (regexPatterns[name]) {
-    //   if (!regexPatterns[name].test(value.toString())) {
-    //     console.error(`Invalid ${name}: ${value}`);
-    //     return; // Stop updating if validation fails
-    //   }
-    // }
-    
     if (!regrexValidation(name, value.toString())) {
       console.error(`Invalid ${name}: ${value}`);
       return; // Stop updating if validation fails

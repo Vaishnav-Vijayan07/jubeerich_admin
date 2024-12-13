@@ -18,10 +18,10 @@ interface TaskSectionState {
   tasks: TaskItemTypes[];
   selectTask: (task: TaskItemTypes) => void;
   initialTaskId: number;
-  date: string;
   initialLoading: boolean;
   setSelectedDate: Dispatch<SetStateAction<string>>;
   taskPrefix: any;
+  collapseState: boolean;
 }
 
 const Task = ({
@@ -40,7 +40,6 @@ const Task = ({
   const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
   const statusName = task?.student_name?.preferredCountries[0]?.country_status[0]?.status_name;
   const currentDate = new Date();
-  
 
   return (
     <>
@@ -61,7 +60,7 @@ const Task = ({
           }}
           className="p-2"
         >
-          <label className="form-check-label fs-6" htmlFor={`task-${task.id}`}>
+          <label className="form-check-label truncate-text fs-6" htmlFor={`task-${task.id}`}>
             <span
               className={classNames(title === "Past" ? "text-danger" : "text-primary")}
               style={{ fontSize: "12px", fontWeight: "700" }}
@@ -72,7 +71,7 @@ const Task = ({
             <b style={{ fontSize: "13px" }}>{task.title}</b>
           </label>
 
-          <div className="mt-1">
+          <div className="mt-0">
             {task?.student_name?.flag_details_rows?.map((flag: any) => (
               <small
                 style={{
@@ -149,12 +148,16 @@ const TaskSectionMaterial = ({
   selectTask,
   initialTaskId,
   initialLoading,
-  setSelectedDate,
   taskPrefix,
+  collapseState,
 }: TaskSectionState) => {
   const [taskList, setTaskList] = useState<TaskItemTypes[]>(tasks);
   const [selectedTaskId, setSelectedTaskId] = useState<number>(initialTaskId);
-  const [collapse, setCollapse] = useState<boolean>(title == "Past" ? false : true);
+  const [collapse, setCollapse] = useState<boolean>(collapseState);
+
+  useEffect(() => {
+    setCollapse(collapseState);
+  }, [collapseState]);
 
   useEffect(() => {
     setTaskList(tasks);

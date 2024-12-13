@@ -9,7 +9,7 @@ const History = ({ studentId }: any) => {
   const [userHistory, setUserHistory] = useState([]);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("all"); // Default to "all"
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [dropdownLabel, setDropdownLabel] = useState("Choose Country");
 
   const { refresh } = useSelector((state: RootState) => ({
@@ -61,6 +61,8 @@ const History = ({ studentId }: any) => {
     console.log(selectedCountry);
   };
 
+  console.log("loading ==>", loading, userHistory?.length);
+
   return (
     <div className="history_container">
       <div className="history_heading">
@@ -69,14 +71,15 @@ const History = ({ studentId }: any) => {
 
       <div className="history_items">
         {/* history */}
-        {userHistory.length > 0 ? (
+        {!loading && userHistory?.length > 0 ? (
           <>
             <div className="swiper-slide">
               <div className="timestamp">
                 <span className="date">History</span>
+                <span style={{ color: "#fff", fontSize: "10px" }}>history</span>
               </div>
               <div className="status">
-                <span style={{color:"transparent"}}>12</span>
+                <span style={{ color: "transparent" }}>12</span>
               </div>
             </div>
 
@@ -84,10 +87,15 @@ const History = ({ studentId }: any) => {
               <div className="swiper-slide" key={item.id}>
                 <div className="timestamp">
                   <span className="date">{item.action}</span>
+                  {item?.country ? (
+                    <Badge>{item?.country ? item.country.country_name : ""}</Badge>
+                  ) : (
+                    <span style={{ color: "#fff", background:"#fff", fontSize:"10px" }}>No country</span>
+                  )}
                 </div>
                 <div className="status">
                   <span>{handleDateFormat(item.updated_on)}</span>
-                  <Badge>{item?.country ? item.country.country_name : ""}</Badge>
+                  {/* <Badge>{item?.country ? item.country.country_name : ""}</Badge> */}
                 </div>
               </div>
             ))}

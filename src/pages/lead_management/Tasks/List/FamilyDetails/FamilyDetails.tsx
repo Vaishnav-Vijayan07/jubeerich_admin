@@ -378,22 +378,6 @@ const FamilyDetails = ({ studentId }: Props) => {
     if (relation === "siblings") {
       const [_, index, siblingField] = name.split(".");
 
-      // const regexPatterns: Record<string, RegExp> = {
-      //   name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      //   occupation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      //   organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      //   designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      //   current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      // };
-  
-      // // Check if the field has a validation regex
-      // if (regexPatterns[siblingField]) {
-      //   if (!regexPatterns[siblingField].test(value.toString())) {
-      //     console.error(`Invalid ${siblingField}: ${value}`);
-      //     return; // Stop updating if validation fails
-      //   }
-      // }
-
       if (!regrexValidation(siblingField, value.toString())) {
         console.error(`Invalid ${siblingField}: ${value}`);
         return; // Stop updating if validation fails
@@ -408,22 +392,6 @@ const FamilyDetails = ({ studentId }: Props) => {
 
     } else if (relation === "children") {
       const [_, index, childField] = name.split(".");
-
-      // const regexPatterns: Record<string, RegExp> = {
-      //   name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      //   occupation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      //   organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      //   designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      //   current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-      // };
-  
-      // // Check if the field has a validation regex
-      // if (regexPatterns[childField]) {
-      //   if (!regexPatterns[childField].test(value.toString())) {
-      //     console.error(`Invalid ${childField}: ${value}`);
-      //     return; // Stop updating if validation fails
-      //   }
-      // }
 
       if (!regrexValidation(childField, value.toString())) {
         console.error(`Invalid ${childField}: ${value}`);
@@ -444,7 +412,8 @@ const FamilyDetails = ({ studentId }: Props) => {
         [`${relation}.occupation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
         [`${relation}.organization`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
         [`${relation}.designation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-        [`${relation}.current_income_source`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/
+        [`${relation}.current_income_source`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+        [`${relation}.location`]: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
       };
 
       // Check if the field has a validation regex
@@ -479,7 +448,8 @@ const FamilyDetails = ({ studentId }: Props) => {
         [`${relation}.occupation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
         [`${relation}.designation`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
         [`${relation}.organization`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
-        [`${relation}.current_income_source`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/
+        [`${relation}.current_income_source`]: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
+        [`${relation}.location`]: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
       };
   
       // Check if the field has a validation regex

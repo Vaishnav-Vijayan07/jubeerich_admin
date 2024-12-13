@@ -30,7 +30,6 @@ import MatButton from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import FollowupModal from "./FollowupModal";
 
-const Comments = lazy(() => import("../../../lead_management/Tasks/List/Comments"));
 const History = lazy(() => import("./History"));
 
 const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading }: any) => {
@@ -50,24 +49,12 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const [remarkData, setRemarkData] = useState<any>(null);
   const [viewOnly, setViewOnly] = useState<boolean>(false);
   const [isFollowupLoading, setIsFollowupLoading] = useState<boolean>(false);
-  const [tabValue, setTabValue] = React.useState("history");
   const [taskPrefix, setTaskPrefix] = useState<string>("");
   const currentDate = new Date();
   const navigate = useNavigate();
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    setTabValue(newValue);
-  };
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const dispatch = useDispatch();
   const { Countries, user, refresh } = useSelector((state: RootState) => ({
     Countries: state?.Country?.countries,
@@ -77,12 +64,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   const { dropdownData } = useDropdownData("marital,officeType,franchise,region,flags");
   const { flags } = dropdownData;
-
-  const toggleStandard = () => {
-    setStandard(!standard);
-    setSelectedDate(null);
-    setStatusId(null);
-  };
 
   const getRoleBasedStatus = async (user_role: string) => {
     const { data } = await axios.get(`/lead_status`, {
@@ -94,14 +75,16 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const formattedStatus = useMemo(() => {
     if (!status) return [];
 
-    const currentStatus = basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name;
+    // const currentStatus = basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name;
 
-    return status
-      .filter((item: any) => item.status_name !== currentStatus) // Filter out the current status
-      .map((item: any) => ({
-        value: item.id.toString(),
-        label: item.status_name,
-      }));
+    return (
+      status
+        // .filter((item: any) => item.status_name !== currentStatus) // Filter out the current status
+        .map((item: any) => ({
+          value: item.id.toString(),
+          label: item.status_name,
+        }))
+    );
   }, [status, basicData]); // Ensure basicData is included in dependencies if it's part of the logic
 
   const getBasicInfo = () => {
@@ -540,7 +523,10 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         </Col>
                       )}
 
-                      {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id || userRole == country_manager_id) && (
+                      {(userRole == counsellor_id ||
+                        userRole == franchise_counsellor_id ||
+                        userRole == branch_counsellor_id ||
+                        userRole == country_manager_id) && (
                         <Col className="d-flex gap-2 float-end">
                           <Button
                             style={{ minWidth: "150px" }}
@@ -689,7 +675,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           startIcon={<VisibilityIcon />}
                           size="small"
                           variant="contained"
-                          style={{ backgroundColor: "#6658DD", boxShadow: "none",  }}
+                          style={{ backgroundColor: "#6658DD", boxShadow: "none" }}
                         >
                           <Typography
                             sx={{
@@ -738,21 +724,23 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       />
                     </div>
 
-                    <div
-                      className="ribbon-box"
-                      style={{
-                        background: "#EEFFF2",
-                        marginTop: "15px",
-                        padding: "20px 36px",
-                        border: "0.5px solid #009A29",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      <span className="text-success">Benjamin has requested a call back on Monday.</span>
-                      <div className="ribbon-two ribbon-two-success">
-                        <span style={{ fontSize: "10px" }}>11/12/2024</span>
+                    {remarkData?.length > 0 && (
+                      <div
+                        className="ribbon-box"
+                        style={{
+                          background: "#EEFFF2",
+                          marginTop: "15px",
+                          padding: "20px 36px",
+                          border: "0.5px solid #009A29",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        <span className="text-success">{remarkData[0]?.remark}</span>
+                        <div className="ribbon-two ribbon-two-success">
+                          <span style={{ fontSize: "10px" }}>{handleDateFormat(remarkData[0]?.followup_date)}</span>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
                   <div className="mx-2">
