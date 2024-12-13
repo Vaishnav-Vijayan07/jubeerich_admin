@@ -55,9 +55,9 @@ const LeadsModal = withSwal((props: any) => {
     clearLeadModal,
     setModal,
     isAssignedLeads = false,
-    initialLoading
+    initialLoading,
   } = props;
-  const api = new APICore()
+  const api = new APICore();
   const loggedInUser = api.getLoggedInUser();
 
   const [sourceData, setSourceData] = useState<any>(source);
@@ -85,12 +85,13 @@ const LeadsModal = withSwal((props: any) => {
   const [languageForm, setLanguageForm] = useState<any[]>([{ id: "", exam_type: "", marks: "" }]);
   const [formData, setFormData] = useState(initialState);
   const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const [isOfficeDisable, setIsOfficeDisable] = useState<any>(false)
+  const [isOfficeDisable, setIsOfficeDisable] = useState<any>(false);
 
   const validationSchema = yup.object().shape({
     full_name: yup.string().required("Name is required"),
+    preferred_country: yup.array().min(1, "At least one country must be selected").nullable(),
     email: yup.string().required("Email is required").email("Invalid email"),
     phone: yup
       .string()
@@ -101,24 +102,28 @@ const LeadsModal = withSwal((props: any) => {
     channel_id: yup.string().required("Channel is required").nullable(),
     office_type: yup.string().required("Office type is required").nullable(),
     lead_received_date: yup.date().required("Date is required"),
+    zipcode: yup
+      .string()
+      .matches(/^[0-9]*$/, "Zipcode must be numbers only")
+      .required("Zipcode is required"),
     franchise_id: yup
-    .string()
-    .nullable()
-    .when('office_type', (officeType, schema) => {
+      .string()
+      .nullable()
+      .when("office_type", (officeType, schema) => {
         if (officeType === franchise_id_from_office) {
-            return schema.required("Franchise is required").nullable();
+          return schema.required("Franchise is required").nullable();
         }
         return schema.nullable();
-    }),
+      }),
     region_id: yup
-    .string()
-    .nullable()
-    .when('office_type', (officeType, schema) => {
+      .string()
+      .nullable()
+      .when("office_type", (officeType, schema) => {
         if (officeType === region_id_from_office) {
-            return schema.required("Region is required").nullable();
+          return schema.required("Region is required").nullable();
         }
         return schema.nullable();
-    }),
+      }),
   });
 
   const methods = useForm({
@@ -138,7 +143,7 @@ const LeadsModal = withSwal((props: any) => {
 
   const filteredOffice = useMemo(() => {
     if (!loggedInUser || !office?.length) return null;
-  
+
     if ([cre_tl_id, cre_id, counsellor_id].includes(loggedInUser?.role.toString())) {
       return office?.find((data: any) => data?.value == corporate_id_from_office);
     } else if ([regional_manager_id, counsellor_tl_id, branch_counsellor_id].includes(loggedInUser?.role.toString())) {
@@ -148,13 +153,12 @@ const LeadsModal = withSwal((props: any) => {
     }
     return null;
   }, [loggedInUser, office]);
-  
+
   useEffect(() => {
     if (filteredOffice) {
       setOfficeType(filteredOffice);
     }
   }, [filteredOffice]);
-
 
   useEffect(() => {
     const rolesWithOfficeDisable = [
@@ -167,7 +171,7 @@ const LeadsModal = withSwal((props: any) => {
       franchise_manager_id,
       franchise_counsellor_id,
     ];
-  
+
     if (rolesWithOfficeDisable.includes(loggedInUser?.role.toString())) {
       setIsOfficeDisable(true);
     }
@@ -175,19 +179,19 @@ const LeadsModal = withSwal((props: any) => {
 
   const setOfficeType = (data: any) => {
     setSelectedOffice(data);
-    
-    if(data?.value?.toString() == franchise_id_from_office){
-      setIsFranchiseActive(true)
-    } else if(data?.value?.toString() == region_id_from_office){
-      setActiveRegion(true)
+
+    if (data?.value?.toString() == franchise_id_from_office) {
+      setIsFranchiseActive(true);
+    } else if (data?.value?.toString() == region_id_from_office) {
+      setActiveRegion(true);
     }
 
     setFormData((prev: any) => ({
       ...prev,
       office_type: data?.value,
     }));
-  } 
-  
+  };
+
   const handleUpdate = (item: any) => {
     //update source dropdown
     const updatedSource = source?.filter((source: any) => source.value == item?.source_id);
@@ -195,11 +199,12 @@ const LeadsModal = withSwal((props: any) => {
     const updatedRegion = region?.filter((region: any) => region.value == item?.region_id);
 
     // const updatedFlag = flags?.filter((flag: any) => flag.value == item?.flag_id);
-    const updatedFlag = Array.isArray(item?.flag_details) ? item?.flag_details?.map((flag: any) => ({
-      value: flag?.id,
-      label: flag?.flag_name,
-    })): [];
-
+    const updatedFlag = Array.isArray(item?.flag_details)
+      ? item?.flag_details?.map((flag: any) => ({
+          value: flag?.id,
+          label: flag?.flag_name,
+        }))
+      : [];
 
     const updatedCtegory = leadTypes?.filter((category: any) => category.value == item?.lead_type_id);
 
@@ -261,7 +266,7 @@ const LeadsModal = withSwal((props: any) => {
       region_id: item?.region_id || "",
       franchise_id: item?.franchise_id || "",
       // flag: item?.flag_id || "",
-      flag: flagArray || []
+      flag: flagArray || [],
     }));
 
     setIsUpdate(true);
@@ -297,10 +302,10 @@ const LeadsModal = withSwal((props: any) => {
 
     let selectedFlagIds = selectedFlag?.map((data: any) => data?.value) || [];
 
-    console.log('selectedFlag',selectedFlagIds);
+    console.log("selectedFlag", selectedFlagIds);
     let exam_details = languageForm.length ? languageForm : [];
     try {
-      
+      console.log("VAL", formData?.preferred_country);
       await validationSchema.validate(formData, { abortEarly: false });
       swal
         .fire({
@@ -386,6 +391,7 @@ const LeadsModal = withSwal((props: any) => {
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
+        console.log("VAL", validationError.inner);
         validationError.inner.forEach((error) => {
           if (error.path) {
             errors[error.path] = error.message;
@@ -577,7 +583,7 @@ const LeadsModal = withSwal((props: any) => {
   };
 
   const handleCancelUpdate = () => {
-    if(isUpdate){
+    if (isUpdate) {
       setIsUpdate(false);
       handleResetValues();
     }
@@ -599,17 +605,17 @@ const LeadsModal = withSwal((props: any) => {
     setActiveRegion(false);
     setIsFranchiseActive(false);
     setSelectExam(false);
-    if(filteredOffice){
-      setOfficeType(filteredOffice)
-    } else if(loggedInUser?.role == it_team_id){
-      setOfficeType(filteredOffice)
+    if (filteredOffice) {
+      setOfficeType(filteredOffice);
+    } else if (loggedInUser?.role == it_team_id) {
+      setOfficeType(filteredOffice);
     }
   };
 
   useEffect(() => {
-    if (!loading && !error) {   
-      setModal(false)
-      if(!filteredOffice){
+    if (!loading && !error) {
+      setModal(false);
+      if (!filteredOffice) {
         setValidationErrors(initialValidationState); // Clear validation errors
         setFormData(initialState); //clear form data
       }
@@ -669,9 +675,7 @@ const LeadsModal = withSwal((props: any) => {
                     value={selectedCategory}
                     onChange={handleDropDowns}
                   />
-                  {validationErrors.lead_type_id && (
-                    <Form.Text className="text-danger">{validationErrors.lead_type_id}</Form.Text>
-                  )}
+                  {validationErrors.lead_type_id && <Form.Text className="text-danger">{validationErrors.lead_type_id}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -726,9 +730,7 @@ const LeadsModal = withSwal((props: any) => {
                     isMulti={isUpdate ? true : false} // Enable multi-select
                     onChange={handleDropDowns}
                   />
-                  {validationErrors.preferred_country && (
-                    <Form.Text className="text-danger">{validationErrors.preferred_country}</Form.Text>
-                  )}
+                  {validationErrors.preferred_country && <Form.Text className="text-danger">{validationErrors.preferred_country}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -751,15 +753,8 @@ const LeadsModal = withSwal((props: any) => {
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="lead_received_date">
                   <Form.Label>Lead Received Date</Form.Label>
-                  <Form.Control
-                    type="date"
-                    name="lead_received_date"
-                    value={formData?.lead_received_date}
-                    onChange={handleInputChange}
-                  />
-                  {validationErrors.lead_received_date && (
-                    <Form.Text className="text-danger">{validationErrors.lead_received_date}</Form.Text>
-                  )}
+                  <Form.Control type="date" name="lead_received_date" value={formData?.lead_received_date} onChange={handleInputChange} />
+                  {validationErrors.lead_received_date && <Form.Text className="text-danger">{validationErrors.lead_received_date}</Form.Text>}
                 </Form.Group>
               </Col>
 

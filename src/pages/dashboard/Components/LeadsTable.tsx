@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Card, Button } from "react-bootstrap";
 import Table from "../../../components/Table";
-import { Pagination } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-const initialCount = 2;
 const sizePerPageList = [
   {
     text: "10",
@@ -11,9 +9,9 @@ const sizePerPageList = [
   },
 ];
 
-function LeadsTable({ leadsData }: any) {
+function LeadsTable({ leadsData, showOffice }: any) {
   const records = leadsData;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const rowsPerPage = 5; // Number of rows per page
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -24,9 +22,9 @@ function LeadsTable({ leadsData }: any) {
     setCurrentPage(page);
   };
 
-  const handleViewAllLeads = ()=>{
-     navigate("/leads/manage")
-  }
+  const handleViewAllLeads = () => {
+    navigate("/leads/manage");
+  };
 
   const columns = [
     {
@@ -47,14 +45,19 @@ function LeadsTable({ leadsData }: any) {
       sort: true, // Enabled sorting
       minWidth: 150,
     },
+    ...(showOffice
+      ? [
+          {
+            Header: "Office",
+            accessor: "office_type_name",
+            sort: false,
+            minWidth: 75,
+          },
+        ]
+      : []),
+
     {
-      Header: "Office",
-      accessor: "office_type_name",
-      sort: false,
-      minWidth: 75,
-    },
-    {
-      Header: "Source",
+      Header: "Department",
       accessor: "stage",
       sort: false,
       minWidth: 75,
@@ -83,7 +86,9 @@ function LeadsTable({ leadsData }: any) {
           isDashboard={true}
         />
         <div className="d-flex justify-content-end mt-3">
-          <Button  type="button" className="btn-sm" onClick={handleViewAllLeads} >View All</Button>
+          <Button type="button" className="btn-sm" onClick={handleViewAllLeads}>
+            View All
+          </Button>
         </div>
         {/* <div className="d-flex justify-content-center">
           <Pagination

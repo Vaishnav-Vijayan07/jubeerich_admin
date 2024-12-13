@@ -86,7 +86,7 @@ function CountryManagerDashboard() {
             </Spinner>
           </div>
         ) : (
-          <LeadsTable leadsData={dummyLeadData} />
+          <LeadsTable leadsData={dummyLeadData} showOffice={true} />
         )}
       </Row>
     </>

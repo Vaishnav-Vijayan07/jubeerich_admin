@@ -28,6 +28,7 @@ import { examtypes, initialState, initialValidationState, OptionType, sizePerPag
 import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
 import { AppDispatch } from "../../redux/store";
+import { Pagination } from "@mui/material";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -61,6 +62,7 @@ const BasicInputElements = withSwal((props: any) => {
     branchForManager,
     branchCounsellors,
     initialLoading,
+    handlePageChange
   } = props;
 
   //State for handling update function
@@ -208,9 +210,7 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "lead_received_date",
       sort: false,
       minWidth: 150,
-      Cell: ({ row }: any) => (
-        <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
-      ),
+      Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
     },
     // {
     //   Header: "Followup Date",
@@ -244,9 +244,7 @@ const BasicInputElements = withSwal((props: any) => {
             accessor: "assigned_branch_counselor",
             sort: false,
             minWidth: 50,
-            Cell: ({ row }: any) => (
-              <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
-            ),
+            Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
             isTruncate: true,
           },
           {
@@ -278,9 +276,7 @@ const BasicInputElements = withSwal((props: any) => {
             minWidth: 50,
             isTruncate: true,
 
-            Cell: ({ row }: any) => (
-              <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
-            ),
+            Cell: ({ row }: any) => <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
           },
         ]
       : []),
@@ -668,12 +664,7 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               {/* <h1>Progress Bar = {progress}</h1> */}
               <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
-              <FileUploader
-                onFileUpload={handleOnFileUpload}
-                showPreview={true}
-                selectedFile={selectedFile}
-                setSelectedFile={setSelectedFile}
-              />
+              <FileUploader onFileUpload={handleOnFileUpload} showPreview={true} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
               <div className="d-flex gap-2 justify-content-end mt-2">
                 <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
                   <i className="mdi mdi-download-circle"></i> Download Sample
@@ -759,10 +750,7 @@ const BasicInputElements = withSwal((props: any) => {
                         </Dropdown.Toggle>
                         <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                           {branchCounsellors?.map((item: any) => (
-                            <Dropdown.Item
-                              key={item.id}
-                              onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}
-                            >
+                            <Dropdown.Item key={item.id} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
                               {item.name}
                             </Dropdown.Item>
                           ))}
@@ -824,17 +812,27 @@ const BasicInputElements = withSwal((props: any) => {
                   initialLoading={initialLoading}
                 />
               ) : (
-                <Table
-                  columns={columns}
-                  data={records ? records : []}
-                  pageSize={10}
-                  sizePerPageList={sizePerPageList}
-                  isSortable={true}
-                  pagination={true}
-                  isSearchable={true}
-                  tableClass="table-striped dt-responsive nowrap w-100"
-                  initialLoading={initialLoading}
-                />
+                <>
+                  <Table
+                    columns={columns}
+                    data={records ? records : []}
+                    pageSize={10}
+                    sizePerPageList={sizePerPageList}
+                    isSortable={true}
+                    pagination={false}
+                    isSearchable={true}
+                    tableClass="table-striped dt-responsive nowrap w-100"
+                    initialLoading={initialLoading}
+                  />
+                  <div className="d-flex justify-content-center">
+                    <Pagination
+                      count={Math.ceil(records.length / 2)}
+                      variant="outlined"
+                      color="primary"
+                      onChange={handlePageChange}
+                    />
+                  </div>
+                </>
               )}
             </Card.Body>
           </Card>
