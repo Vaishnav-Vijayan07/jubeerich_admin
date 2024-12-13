@@ -1,12 +1,13 @@
 import React, { memo, useState } from "react";
 import ActionButton from "./ActionButton";
 import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
-import { baseUrl } from "../../../../constants";
+import { baseUrl, showErrorAlert } from "../../../../constants";
 import { FormInput } from "../../../../components";
 import moment from "moment";
 import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
 import validateFields from "../../../../helpers/validateHelper";
 import useSaveGapData from "../../../../hooks/useSaveGapData";
+import { allowedFileTypes } from "./data";
 
 const GapRows = ({ gapData, studentId, type }: any) => {
   const [gapDetails, setGapDetails] = useState(gapData);
@@ -16,6 +17,12 @@ const GapRows = ({ gapData, studentId, type }: any) => {
     useSaveGapData(studentId);
 
   const handleGapChange = (index: number, name: string, value: any) => {
+
+    if (typeof value == 'object' && !allowedFileTypes.includes(value.type)) {
+      showErrorAlert("Only PDF and image files are allowed.");
+      return;
+    }
+
     setGapDetails((prevGap: any) =>
       prevGap.map((item: any, i: number) =>
         i === index ? { ...item, [name]: value } : item
@@ -71,7 +78,6 @@ const GapRows = ({ gapData, studentId, type }: any) => {
 
   const renderGapRows = (gap: any, index: number) => (
     <Row key={index} className="mb-4 p-2 border-bottom rounded">
-      {console.log("gap", gap)}
       {/* Start Date */}
       <Col md={4} lg={4} xl={4} xxl={4}>
         <Form.Group className="mb-3" controlId={`start_date-${index}`}>

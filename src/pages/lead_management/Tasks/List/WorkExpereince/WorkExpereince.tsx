@@ -13,6 +13,8 @@ import EmploymentHistory from ".././EmploymentHistory";
 import { useSelector } from "react-redux";
 import SkeletonComponent from "../StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../../utils/regrexValidation";
+import { showErrorAlert } from "../../../../../constants";
+import { allowedFileTypes } from "../data";
 
 const initialStateWork = {
   years: 0,
@@ -108,17 +110,10 @@ const WorkExpereince = withSwal((props: any) => {
 
   const handleWorkExperienceChange = (name: string, value: any, index: number) => {
 
-    // const regexPatterns: Record<string, RegExp> = {
-    //   designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-    // };
-
-    // // Check if the field has a validation regex
-    // if (regexPatterns[name]) {
-    //   if (!regexPatterns[name].test(value)) {
-    //     console.error(`Invalid ${name}: ${value}`);
-    //     return; // Stop updating if validation fails
-    //   }
-    // }
+    if (typeof value == 'object' && !allowedFileTypes.includes(value.type)) {
+      showErrorAlert("Only PDF and image files are allowed.");
+      return;
+    }
 
     if (!regrexValidation(name, value)) {
       console.error(`Invalid ${name}: ${value}`);

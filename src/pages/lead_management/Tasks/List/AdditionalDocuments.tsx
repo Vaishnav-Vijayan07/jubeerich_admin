@@ -6,6 +6,8 @@ import axios from "axios";
 import { baseUrl, showErrorAlert, showSuccessAlert } from "../../../../constants";
 import swal from "sweetalert2";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
+import { allowedFileTypes } from "./data";
+import * as yup from 'yup';
 
 const initialDocumentState = {
   passport_doc: "",
@@ -44,6 +46,12 @@ const AdditionalDocuments = (props: any) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const { name } = e.target;
+
+
+    if (file && !allowedFileTypes.includes(file.type)) {
+      showErrorAlert("Only PDF and image files are allowed.");
+      return;
+    }
 
     setDocuments((prevDocs) => ({
       ...prevDocs,
@@ -130,7 +138,6 @@ const AdditionalDocuments = (props: any) => {
       }
     } catch (error) {
       console.log(error);
-      // showErrorAlert("Internal Server Error")
       setIsLoading(false);
     }
   };
@@ -140,10 +147,6 @@ const AdditionalDocuments = (props: any) => {
       getAdditionalDoc();
     }
   }, [studentId]);
-
-  // if (isLoading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
-  // }
 
   return (
     <>
@@ -161,7 +164,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2" controlId="passport_doc">
                       <Form.Label>
-                        <span className="text-danger">*</span> Upload Passport
+                         Upload Passport
                       </Form.Label>
                       <FormInput type="file" name="passport_doc" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
@@ -185,7 +188,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2" controlId="updated_cv">
                       <Form.Label>
-                        <span className="text-danger">*</span> Upload Updated CV
+                         Upload Updated CV
                       </Form.Label>
                       <FormInput type="file" name="updated_cv" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
@@ -209,7 +212,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="profile_assessment_doc">
                       <Form.Label>
-                        <span className="text-danger">*</span> Profile Assessment Document
+                         Profile Assessment Document
                       </Form.Label>
                       <FormInput type="file" name="profile_assessment_doc" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
@@ -232,38 +235,10 @@ const AdditionalDocuments = (props: any) => {
                     </div>
                   </Col>
 
-                  {/* <Col md={6} lg={6} xl={6} xxl={4}>
-                                <Form.Group className="mb-2 mt-3" controlId="pte_cred">
-                                    <Form.Label>
-                                        <span className="text-danger">*</span> PTE Account Credentials
-                                    </Form.Label>
-                                    <FormInput
-                                        type="file"
-                                        name="pte_cred"
-                                        onChange={(e) =>
-                                            handleFileChange(e)
-                                        }
-                                    />
-                                </Form.Group>
-                                <div className='d-flex'>
-                                    {documentsName?.pte_cred && <a
-                                        href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.pte_cred}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-                                    >
-                                        <div className=' p-1'>
-                                            {(documentsName?.pte_cred ? "PTE Account Credentials" : "")}
-                                        </div>
-                                    </a>}
-                                    {documentsName?.pte_cred && <i onClick={() => deleteAdditionalDoc('pte_cred')} className='mdi mdi-delete mt-1 ps-1'></i>}
-                                </div>
-                            </Col> */}
-
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="lor">
                       <Form.Label>
-                        <span className="text-danger">*</span> Letter of recommendation
+                         Letter of recommendation
                       </Form.Label>
                       <FormInput type="file" name="lor" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
@@ -287,7 +262,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="sop">
                       <Form.Label>
-                        <span className="text-danger">*</span> Statement of Purpose
+                         Statement of Purpose
                       </Form.Label>
                       <FormInput type="file" name="sop" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
@@ -311,7 +286,7 @@ const AdditionalDocuments = (props: any) => {
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="gte_form">
                       <Form.Label>
-                        <span className="text-danger">*</span> Application/GTE Form
+                         Application/GTE Form
                       </Form.Label>
                       <FormInput type="file" name="gte_form" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>

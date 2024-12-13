@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
 import { FormInput } from "../../../../components";
-import { baseUrl, showSuccessAlert } from "../../../../constants";
+import { baseUrl, showErrorAlert, showSuccessAlert } from "../../../../constants";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { allowedFileTypes } from "./data";
 
 const initialDocumentState = {
   visaPage: "",
@@ -43,6 +44,12 @@ const EmploymentHistory = (props: any) => {
     const file = e.target.files?.[0];
     const { name } = e.target;
 
+
+    if (file && !allowedFileTypes.includes(file.type)) {
+      showErrorAlert("Only PDF and image files are allowed.");
+      return;
+    }
+
     setDocuments((prevDocs) => ({
       ...prevDocs,
       [name]: file,
@@ -70,12 +77,6 @@ const EmploymentHistory = (props: any) => {
       formBody.append("good_relation_with_employers", JSON.stringify(formData?.relation));
       formBody.append("submitted_forged_documents", JSON.stringify(formData?.forgotDocuments));
       formBody.append("has_abroad_work_evidence", JSON.stringify(formData?.abroadWork));
-
-      // formBody.append("served_notice_period", JSON.stringify(noticePeriod))
-      // formBody.append("terminated_from_company", JSON.stringify(terminated))
-      // formBody.append("good_relation_with_employers", JSON.stringify(relation))
-      // formBody.append("submitted_forged_documents", JSON.stringify(forgotDocuments))
-      // formBody.append("has_abroad_work_evidence", JSON.stringify(abroadWork));
 
       formBody.append("visaPage", documents.visaPage);
       formBody.append("permitCard", documents.permitCard);
@@ -128,12 +129,6 @@ const EmploymentHistory = (props: any) => {
           forgotDocuments: result?.data?.data?.submitted_forged_documents || false,
           abroadWork: result?.data?.data?.has_abroad_work_evidence || false,
         }));
-
-        // setNoticePeriod(result?.data?.data?.served_notice_period || false);
-        // setTerminated(result?.data?.data?.terminated_from_company || false);
-        // setRelation(result?.data?.data?.good_relation_with_employers || false);
-        // setForgotDocuments(result?.data?.data?.submitted_forged_documents || false);
-        // setAbroadWork(result?.data?.data?.has_abroad_work_evidence || false);
         setDocumentsName(result?.data?.data);
         setIsLoading(false);
       }
@@ -173,9 +168,7 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="noticePeriod"
                 label="Yes"
-                // checked={noticePeriod}
                 checked={formData?.noticePeriod}
-                // onChange={() => setNoticePeriod(true)}
                 onChange={(e) => handleChange(e, true)}
                 name="noticePeriod"
               />
@@ -184,9 +177,7 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="noticePeriod"
                 label="No"
-                // checked={!noticePeriod}
                 checked={!formData?.noticePeriod}
-                // onChange={() => setNoticePeriod(false)}
                 onChange={(e) => handleChange(e, false)}
                 name="noticePeriod"
               />
@@ -205,9 +196,7 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="terminated"
                 label="Yes"
-                // checked={terminated}
                 checked={formData?.terminated}
-                // onChange={() => setTerminated(true)}
                 onChange={(e) => handleChange(e, true)}
                 name="terminated"
               />
@@ -216,9 +205,7 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="terminated"
                 label="No"
-                // checked={!terminated}
                 checked={!formData?.terminated}
-                // onChange={() => setTerminated(false)}
                 onChange={(e) => handleChange(e, false)}
                 name="terminated"
               />
@@ -237,9 +224,7 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="relation"
                 label="Yes"
-                // checked={relation}
                 checked={formData?.relation}
-                // onChange={() => setRelation(true)}
                 onChange={(e) => handleChange(e, true)}
                 name="relation"
               />
@@ -248,9 +233,7 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="relation"
                 label="No"
-                // checked={!relation}
                 checked={!formData?.relation}
-                // onChange={() => setRelation(false)}
                 onChange={(e) => handleChange(e, false)}
                 name="relation"
               />
@@ -269,9 +252,7 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="forgotDocuments"
                 label="Yes"
-                // checked={forgotDocuments}
                 checked={formData?.forgotDocuments}
-                // onChange={() => setForgotDocuments(true)}
                 onChange={(e) => handleChange(e, true)}
                 name="forgotDocuments"
               />
@@ -280,9 +261,7 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="forgotDocuments"
                 label="No"
-                // checked={!forgotDocuments}
                 checked={!formData?.forgotDocuments}
-                // onChange={() => setForgotDocuments(false)}
                 onChange={(e) => handleChange(e, false)}
                 name="forgotDocuments"
               />
@@ -302,9 +281,7 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="abroadWork"
                 label="Yes"
-                // checked={abroadWork}
                 checked={formData?.abroadWork}
-                // onChange={() => setAbroadWork(true)}
                 onChange={(e) => handleChange(e, true)}
                 name="abroadWork"
               />
@@ -313,9 +290,7 @@ const EmploymentHistory = (props: any) => {
                 type="radio"
                 id="abroadWork"
                 label="No"
-                // checked={!abroadWork}
                 checked={!formData?.abroadWork}
-                // onChange={() => setAbroadWork(false)}
                 onChange={(e) => handleChange(e, false)}
                 name="abroadWork"
               />
