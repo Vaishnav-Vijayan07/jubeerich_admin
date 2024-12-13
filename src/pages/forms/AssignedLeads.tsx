@@ -432,6 +432,7 @@ const BasicInputElements = withSwal((props: any) => {
           <Link
             to="#"
             className="action-icon"
+            data-bs-toggle="tooltip" data-bs-placement="bottom" title='Edit'
             onClick={() => {
               handleUpdate(row.original);
               openModalWithClass("modal-full-width");
@@ -441,7 +442,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)} data-bs-toggle="tooltip" data-bs-placement="bottom" title='Delete'>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>

@@ -60,7 +60,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
       <Row className="pe-0">
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="universityId">
-            <Form.Label>University</Form.Label>
+            <Form.Label><span className="text-danger">*</span> University</Form.Label>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
@@ -84,7 +84,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="campusId">
-            <Form.Label>Campus</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Campus</Form.Label>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
@@ -108,7 +108,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="courseTypeId">
-            <Form.Label>Course Type</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Course Type</Form.Label>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
@@ -132,7 +132,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="streamId">
-            <Form.Label>Stream</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Stream</Form.Label>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
@@ -156,7 +156,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="courseId">
-            <Form.Label>Course</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Course</Form.Label>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
@@ -180,7 +180,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="intakeYear">
-            <Form.Label>Intake Year</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Intake Year</Form.Label>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
@@ -204,7 +204,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="intakeMonth">
-            <Form.Label>Intake Month</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Intake Month</Form.Label>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
@@ -228,7 +228,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="estimatedBudget">
-            <Form.Label>Estimated Budget</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Estimated Budget</Form.Label>
             <FormInput
               type="number"
               name="estimatedBudget"
