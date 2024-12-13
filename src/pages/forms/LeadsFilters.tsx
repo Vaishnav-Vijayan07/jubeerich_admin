@@ -43,6 +43,8 @@ const LeadsFilters = (props: any) => {
     applyFilters();
   }, [filters]);
 
+  console.log("FILTERSTATE",state)
+
   const applyFilters = () => {
     let tempItems = [...state];
     if (filters.status_id) {

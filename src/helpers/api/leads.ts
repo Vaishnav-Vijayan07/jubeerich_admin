@@ -5,8 +5,8 @@ const api = new APICore();
 const baseUrl = "/leads";
 
 //
-function getLeads() {
-  return api.get(`${baseUrl}`, {});
+function getLeads(currentPage: number, currentLimit: number) {
+  return api.get(`${baseUrl}`, { page: currentPage, limit: currentLimit });
 }
 
 function getLeadsByCreTl() {

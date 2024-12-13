@@ -195,7 +195,7 @@ const LeadTable = ({ statusData, openModalWithClass, handleUpdate, leadsData, Us
         status: item.value,
       })
       .then((res) => {
-        dispatch(getLead());
+        dispatch(getLead(1,10));;
       })
       .catch((err) => {
         console.log("err", err);
@@ -209,7 +209,7 @@ const LeadTable = ({ statusData, openModalWithClass, handleUpdate, leadsData, Us
       })
       .then((res) => {
         if (loggedInUser?.user_id == 1) {
-          dispatch(getLead());
+          dispatch(getLead(1,10));;
         } else {
           dispatch(getLeadUser());
         }
@@ -230,7 +230,7 @@ const LeadTable = ({ statusData, openModalWithClass, handleUpdate, leadsData, Us
       confirmButtonText: "Yes, delete it!",
     }).then((result: any) => {
       if (result.isConfirmed) {
-        dispatch(deleteLeads(id));
+        dispatch(deleteLeads(id, 1,20));
         // swal.fire("Deleted!", "Your item has been deleted.", "success");
       }
     });

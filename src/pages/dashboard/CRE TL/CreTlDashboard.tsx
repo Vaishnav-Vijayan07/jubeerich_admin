@@ -67,7 +67,7 @@ function CreTlDashboard() {
               </Spinner>
             </div>
           ) : (
-            <LeadsTable leadsData={dummyLeadData} />
+            <LeadsTable leadsData={dummyLeadData} showOffice={false} />
           )}
         </Col>
       </Row>

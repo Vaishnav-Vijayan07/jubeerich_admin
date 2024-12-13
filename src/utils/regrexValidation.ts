@@ -10,11 +10,11 @@ export const regexPatterns: Record<string, RegExp> = {
   full_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   city: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   address: /^[a-zA-Z0-9À-ÖØ-öø-ÿ'.,\- ]*$/,
-  phone: /^\+?[0-9]{0,15}$/,
-  secondary_number: /^\+?[0-9]{0,15}$/,
+  phone: /^\+?[0-9]{0,10}$/,
+  secondary_number: /^\+?[0-9]{0,10}$/,
   passport: /^[A-Za-z0-9]*$/, // Allow empty string
   emergency_contact_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-  emergency_contact_phone: /^\+?[0-9]{0,15}$/,
+  emergency_contact_phone: /^\+?[0-9]{0,10}$/,
   remarks: /^[a-zA-Z0-9À-ÖØ-öø-ÿ'.,\- ]*$/,
   concern_on_medical_condition_details: /^[a-zA-Z0-9À-ÖØ-öø-ÿ'.,\- ]*$/,
   criminal_offence_details: /^[a-zA-Z0-9À-ÖØ-öø-ÿ'.,\- ]*$/,
@@ -56,8 +56,7 @@ export const regexPatterns: Record<string, RegExp> = {
   occupation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
-
-  zipcode: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
+  zipcode: /^\+?[0-9]{0,15}$/,
 
   // Lead Type
   category_name: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
