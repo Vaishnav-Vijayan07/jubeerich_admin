@@ -71,7 +71,7 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
         case LeadsActionTypes.GET_LEADS: {
           return {
             ...state,
-            leads: action.payload.data.data.formattedUserPrimaryInfos,
+            leads: action.payload.data.data,
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
