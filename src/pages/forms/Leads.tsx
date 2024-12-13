@@ -19,13 +19,17 @@ const Leads = () => {
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [currentLimit, setcurrentLimit] = useState(20);
 
-  const handlePageChange = (event:any, value:any) => {
+  const handlePageChange = useCallback((event: any, value: any) => {
     setCurrentPage(value);
-  };
+  }, []);
 
-  console.log("PAGE COUNT",currentPage)
+  const handleLimitChange = useCallback((value: number) => {
+    setcurrentLimit(value);
+  }, []);
+
+  console.log("PAGE COUNT", currentPage);
 
   let userRole: any;
   let userBranchId: any;
@@ -34,14 +38,18 @@ const Leads = () => {
     userBranchId = JSON.parse(userInfo)?.branch_id;
   }
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, branchCounsellor } = useSelector((state: RootState) => ({
+  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages } = useSelector((state: RootState) => ({
     user: state.Auth.user,
-    state: state.Leads.leads,
+    state: state.Leads.leads.formattedUserPrimaryInfos,
+    totalPages: state.Leads.leads.totalPages,
+    limit: state.Leads.leads.limit,
     error: state.Leads.error,
     loading: state.Leads.loading,
     initialLoading: state.Leads.initialloading,
     branchCounsellor: state.Users?.branchCounsellor,
   }));
+
+  console.log("ROOOT", state);
 
   useEffect(() => {
     fetchAllCounsellors();
@@ -53,7 +61,7 @@ const Leads = () => {
       dispatch(getLeadsTL());
     } else {
       if (userRole) {
-        dispatch(getLead());
+        dispatch(getLead(currentPage, currentLimit));
       }
     }
 
@@ -62,7 +70,7 @@ const Leads = () => {
     }
 
     console.count("loading count");
-  }, [userRole]);
+  }, [userRole, currentPage, currentLimit]);
 
   const fetchAllCounsellors = useCallback(() => {
     axios
@@ -123,6 +131,11 @@ const Leads = () => {
             flags={dropdownData.flags || []}
             initialLoading={initialLoading}
             handlePageChange={handlePageChange}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            limit={limit}
+            currentLimit={currentLimit}
+            handleLimitChange={handleLimitChange}
           />
         </Col>
       </Row>

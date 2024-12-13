@@ -93,6 +93,10 @@ interface TableProps {
 }
 
 const Table = (props: TableProps) => {
+
+
+  console.log("FROM TABLE")
+
   const isSearchable = props["isSearchable"] || false;
   const isSortable = props["isSortable"] || false;
   const pagination = props["pagination"] || false;

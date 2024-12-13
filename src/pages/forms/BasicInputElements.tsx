@@ -19,6 +19,7 @@ import {
   cre_id,
   cre_reception_id,
   showWarningAlert,
+  MIN_DATA_ON_TABLE,
 } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
@@ -29,6 +30,7 @@ import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
 import { AppDispatch } from "../../redux/store";
 import { Pagination } from "@mui/material";
+import CustomPagination from "../../components/CustomPagination";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -62,8 +64,15 @@ const BasicInputElements = withSwal((props: any) => {
     branchForManager,
     branchCounsellors,
     initialLoading,
-    handlePageChange
+    handlePageChange,
+    currentPage,
+    totalPages,
+    limit,
+    currentLimit,
+    handleLimitChange,
   } = props;
+
+  const isPaginationNeeded = state?.length > MIN_DATA_ON_TABLE;
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
@@ -76,6 +85,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [filteredItems, setFilteredItems] = useState<any[]>([]); // Filtered data
   const [handleUpdateData, setHandleUpdateData] = useState<any>({});
   const [clearLeadModal, setClearLeadModal] = useState<any>(null);
+  const [clearError, setClearError] = useState<any>(null)
   // const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -131,6 +141,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   //handle delete function
   const handleDelete = (id: string) => {
+    console.log("DELET LOG")
     swal
       .fire({
         title: "Are you sure?",
@@ -143,7 +154,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteLeads(id));
+          dispatch(deleteLeads(id,currentPage,currentLimit));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -352,7 +363,7 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <Link to={`/leads/manage/${row.original.id}`} className="action-icon">
+          <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Edit'>
             <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
           </Link>
 
@@ -368,7 +379,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link> */}
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)} data-bs-toggle="tooltip" data-bs-placement="bottom" title='Delete'>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -441,7 +452,7 @@ const BasicInputElements = withSwal((props: any) => {
 
       if (data.status) {
         showSuccessAlert(data.message);
-        dispatch(getLead());
+        dispatch(getLead(currentPage, currentLimit));
         setIsLoading(false);
         setSelectedFile([]);
         toggleUploadModal();
@@ -449,7 +460,7 @@ const BasicInputElements = withSwal((props: any) => {
         showWarningAlert(data.message);
         downloadRjectedData(data.invalidFileLink);
         setIsLoading(false);
-        dispatch(getLead());
+        dispatch(getLead(currentPage, currentLimit));
       }
     } catch (err) {
       showErrorAlert(err);
@@ -477,9 +488,9 @@ const BasicInputElements = withSwal((props: any) => {
             if (userRole == cre_tl_id) {
               dispatch(getLeadsTL());
             } else {
-              dispatch(getLead());
+              dispatch(getLead(currentPage, currentLimit));
             }
-            showSuccessAlert("Bulk assignment successful.");
+            showSuccessAlert("Assigned Successfully.");
           }
         } catch (error) {
           showErrorAlert(error);
@@ -508,7 +519,7 @@ const BasicInputElements = withSwal((props: any) => {
           });
 
           if (data.status) {
-            dispatch(getLead());
+            dispatch(getLead(currentPage, currentLimit));
             showSuccessAlert("Bulk assignment successful.");
           }
         } catch (error) {
@@ -541,9 +552,9 @@ const BasicInputElements = withSwal((props: any) => {
             if (userRole == cre_tl_id) {
               dispatch(getLeadsTL());
             } else {
-              dispatch(getLead());
+              dispatch(getLead(currentPage, currentLimit));
             }
-            showSuccessAlert("Bulk assignment successful.");
+            showSuccessAlert("Assigned Successfully.");
           }
         } catch (error) {
           showErrorAlert(error);
@@ -573,9 +584,9 @@ const BasicInputElements = withSwal((props: any) => {
             if (userRole == cre_tl_id) {
               dispatch(getLeadsTL());
             } else {
-              dispatch(getLead());
+              dispatch(getLead(currentPage, currentLimit));
             }
-            showSuccessAlert("Bulk assignment successful.");
+            showSuccessAlert("Assigned Successfully.");
           }
         } catch (error) {
           showErrorAlert(error);
@@ -602,7 +613,7 @@ const BasicInputElements = withSwal((props: any) => {
             leads_ids: selectedValues,
           });
           if (data.status) {
-            dispatch(getLead());
+            dispatch(getLead(currentPage, currentLimit));
             showSuccessAlert("Bulk assignment successful.");
           }
         } catch (error) {
@@ -631,6 +642,7 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const openModalWithClass = (className: string) => {
+    setClearError((prev: any) => !prev);
     toggle();
   };
 
@@ -639,6 +651,7 @@ const BasicInputElements = withSwal((props: any) => {
       <Row className="justify-content-between px-2">
         <LeadsModal
           clearLeadModal={clearLeadModal}
+          clearError={clearError}
           country={country || []}
           source={source || []}
           leadTypes={leadTypes || []}
@@ -686,17 +699,19 @@ const BasicInputElements = withSwal((props: any) => {
         )}
 
         <Col lg={12} className="p-0 form__card">
-          <LeadsFilters
-            changeFilteredItemsData={changeFilteredItemsData}
-            state={state}
-            status={status || []}
-            source={source || []}
-            country={country || []}
-            userData={userData || []}
-            counsellors={counsellors || []}
-            cres={cres || []}
-            branchForManager={branchForManager || []}
-          />
+          {state && (
+            <LeadsFilters
+              changeFilteredItemsData={changeFilteredItemsData}
+              state={state || []}
+              status={status || []}
+              source={source || []}
+              country={country || []}
+              userData={userData || []}
+              counsellors={counsellors || []}
+              cres={cres || []}
+              branchForManager={branchForManager || []}
+            />
+          )}
 
           <Card className="bg-white py-3">
             <Card.Body>
@@ -824,14 +839,14 @@ const BasicInputElements = withSwal((props: any) => {
                     tableClass="table-striped dt-responsive nowrap w-100"
                     initialLoading={initialLoading}
                   />
-                  <div className="d-flex justify-content-center">
-                    <Pagination
-                      count={Math.ceil(records.length / 2)}
-                      variant="outlined"
-                      color="primary"
-                      onChange={handlePageChange}
+                  {isPaginationNeeded && (
+                    <CustomPagination
+                      handleLimitChange={handleLimitChange}
+                      totalPages={totalPages}
+                      handlePageChange={handlePageChange}
+                      currentLimit={currentLimit}
                     />
-                  </div>
+                  )}
                 </>
               )}
             </Card.Body>
