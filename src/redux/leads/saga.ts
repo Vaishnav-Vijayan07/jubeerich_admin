@@ -256,9 +256,10 @@ function* addLeads({
         yield put(getLeadsTL());
       } else if (role == counsellor_tl_id && isAssignedLeads) {
         yield put(getLeadAssignedByCounsellorTL());
-      } else {
-        yield put(getLead(1,10));
-      }
+      } 
+      // else {
+      //   yield put(getLead(1,10));
+      // }
     }
     navigate(`/leads/manage/${response?.data?.data?.userPrimaryInfo?.id}`);
   } catch (error: any) {
