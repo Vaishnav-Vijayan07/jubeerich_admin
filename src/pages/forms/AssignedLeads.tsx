@@ -250,7 +250,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteLeads(id, true));
+          dispatch(deleteLeads(id, 1,20,true));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -513,7 +513,7 @@ const BasicInputElements = withSwal((props: any) => {
             if (userRole == counsellor_tl_id) {
               dispatch(getLeadAssignedByCounsellorTL());
             } else {
-              dispatch(getLead());
+              dispatch(getLead(1,10));;
             }
             showSuccessAlert("Bulk assignment successful.");
           }
@@ -577,7 +577,7 @@ const BasicInputElements = withSwal((props: any) => {
       console.log(data);
       if (data.status) {
         showSuccessAlert(data.message);
-        dispatch(getLead());
+        dispatch(getLead(1,10));;
         setIsLoading(false);
         setSelectedFile([]);
         toggleUploadModal();

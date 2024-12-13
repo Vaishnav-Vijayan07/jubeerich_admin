@@ -29,7 +29,7 @@ const List = () => {
     if (userInfo) {
       const { user_id } = JSON.parse(userInfo);
       if (user_id == 1) {
-        dispatch(getLead());
+        dispatch(getLead(1,10));;
       } else {
         dispatch(getLeadUser());
       }

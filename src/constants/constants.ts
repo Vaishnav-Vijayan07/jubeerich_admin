@@ -14,8 +14,8 @@ export const spam_id = "45";
 export const lost_id = "44";
 export const region_id = "4";
 export const franchise_id_from_office = "5";
-export const corporate_id_from_office = "6"
-export const region_id_from_office = "4"
+export const corporate_id_from_office = "6";
+export const region_id_from_office = "4";
 
 // role ids
 export const it_team_id = "2";
@@ -33,14 +33,12 @@ export const country_manager_id = "15";
 //session user
 export const AUTH_SESSION_KEY = "jb_user";
 
+export const MIN_DATA_ON_TABLE = 20;
+
 export const customStyles = {
   option: (provided: any, state: any) => ({
     ...provided,
-    backgroundColor: state.isSelected
-      ? "#a9b3e6e2"
-      : state.isFocused
-      ? "#8a99e2"
-      : "#fff",
+    backgroundColor: state.isSelected ? "#a9b3e6e2" : state.isFocused ? "#8a99e2" : "#fff",
     color: state.isSelected ? "#fff" : state.isFocused ? "#fff" : "#333",
     padding: 10,
   }),

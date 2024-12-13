@@ -39,6 +39,8 @@ import {
 interface LeadsData {
   payload: {
     isAssignedLeads: boolean;
+    currentPage: number;
+    currentLimit: number;
     id: string;
     full_name: string;
     email: string;
@@ -71,22 +73,17 @@ interface LeadsData {
 
 const api = new APICore();
 
-/**
- * Login the user
- * @param {*} payload - username and password
- */
-
 let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 let userRole: any;
 if (userInfo) {
   userRole = JSON.parse(userInfo)?.role;
 }
 
-function* getLeads(): SagaIterator {
+function* getLeads({ payload: { currentPage,currentLimit } }: LeadsData): SagaIterator {
   try {
     let response;
     let data;
-    response = yield call(getLeadsApi);
+    response = yield call(getLeadsApi,currentPage,currentLimit);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -259,9 +256,10 @@ function* addLeads({
         yield put(getLeadsTL());
       } else if (role == counsellor_tl_id && isAssignedLeads) {
         yield put(getLeadAssignedByCounsellorTL());
-      } else {
-        yield put(getLead());
-      }
+      } 
+      // else {
+      //   yield put(getLead(1,10));
+      // }
     }
     navigate(`/leads/manage/${response?.data?.data?.userPrimaryInfo?.id}`);
   } catch (error: any) {
@@ -346,7 +344,7 @@ function* updateLeads({
       } else if (role == counsellor_tl_id && isAssignedLeads) {
         yield put(getLeadAssignedByCounsellorTL());
       } else {
-        yield put(getLead());
+        yield put(getLead(1,10));
       }
     }
   } catch (error: any) {
@@ -354,7 +352,7 @@ function* updateLeads({
   }
 }
 
-function* deleteLeads({ payload: { id, isAssignedLeads } }: LeadsData): SagaIterator {
+function* deleteLeads({ payload: { id, isAssignedLeads, currentLimit,currentPage } }: LeadsData): SagaIterator {
   try {
     const response = yield call(deleteSourcesApi, id);
     const data = response.data.message;
@@ -374,7 +372,7 @@ function* deleteLeads({ payload: { id, isAssignedLeads } }: LeadsData): SagaIter
       } else if (role == counsellor_tl_id && isAssignedLeads) {
         yield put(getLeadAssignedByCounsellorTL());
       } else {
-        yield put(getLead());
+        yield put(getLead(currentPage, currentLimit));
       }
     }
   } catch (error: any) {

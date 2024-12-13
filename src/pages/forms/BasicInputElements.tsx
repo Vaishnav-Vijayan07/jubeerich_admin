@@ -19,6 +19,7 @@ import {
   cre_id,
   cre_reception_id,
   showWarningAlert,
+  MIN_DATA_ON_TABLE,
 } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
@@ -29,6 +30,7 @@ import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
 import { AppDispatch } from "../../redux/store";
 import { Pagination } from "@mui/material";
+import CustomPagination from "../../components/CustomPagination";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -62,8 +64,15 @@ const BasicInputElements = withSwal((props: any) => {
     branchForManager,
     branchCounsellors,
     initialLoading,
-    handlePageChange
+    handlePageChange,
+    currentPage,
+    totalPages,
+    limit,
+    currentLimit,
+    handleLimitChange,
   } = props;
+
+  const isPaginationNeeded = state?.length > MIN_DATA_ON_TABLE;
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
@@ -132,6 +141,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   //handle delete function
   const handleDelete = (id: string) => {
+    console.log("DELET LOG")
     swal
       .fire({
         title: "Are you sure?",
@@ -144,7 +154,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteLeads(id));
+          dispatch(deleteLeads(id,currentPage,currentLimit));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -442,7 +452,7 @@ const BasicInputElements = withSwal((props: any) => {
 
       if (data.status) {
         showSuccessAlert(data.message);
-        dispatch(getLead());
+        dispatch(getLead(currentPage, currentLimit));
         setIsLoading(false);
         setSelectedFile([]);
         toggleUploadModal();
@@ -450,7 +460,7 @@ const BasicInputElements = withSwal((props: any) => {
         showWarningAlert(data.message);
         downloadRjectedData(data.invalidFileLink);
         setIsLoading(false);
-        dispatch(getLead());
+        dispatch(getLead(currentPage, currentLimit));
       }
     } catch (err) {
       showErrorAlert(err);
@@ -478,7 +488,7 @@ const BasicInputElements = withSwal((props: any) => {
             if (userRole == cre_tl_id) {
               dispatch(getLeadsTL());
             } else {
-              dispatch(getLead());
+              dispatch(getLead(currentPage, currentLimit));
             }
             showSuccessAlert("Assigned Successfully.");
           }
@@ -509,8 +519,8 @@ const BasicInputElements = withSwal((props: any) => {
           });
 
           if (data.status) {
-            dispatch(getLead());
-            showSuccessAlert("Assigned Successfully.");
+            dispatch(getLead(currentPage, currentLimit));
+            showSuccessAlert("Bulk assignment successful.");
           }
         } catch (error) {
           showErrorAlert(error);
@@ -542,7 +552,7 @@ const BasicInputElements = withSwal((props: any) => {
             if (userRole == cre_tl_id) {
               dispatch(getLeadsTL());
             } else {
-              dispatch(getLead());
+              dispatch(getLead(currentPage, currentLimit));
             }
             showSuccessAlert("Assigned Successfully.");
           }
@@ -574,7 +584,7 @@ const BasicInputElements = withSwal((props: any) => {
             if (userRole == cre_tl_id) {
               dispatch(getLeadsTL());
             } else {
-              dispatch(getLead());
+              dispatch(getLead(currentPage, currentLimit));
             }
             showSuccessAlert("Assigned Successfully.");
           }
@@ -603,8 +613,8 @@ const BasicInputElements = withSwal((props: any) => {
             leads_ids: selectedValues,
           });
           if (data.status) {
-            dispatch(getLead());
-            showSuccessAlert("Assigned Successfully.");
+            dispatch(getLead(currentPage, currentLimit));
+            showSuccessAlert("Bulk assignment successful.");
           }
         } catch (error) {
           showErrorAlert(error);
@@ -689,17 +699,19 @@ const BasicInputElements = withSwal((props: any) => {
         )}
 
         <Col lg={12} className="p-0 form__card">
-          <LeadsFilters
-            changeFilteredItemsData={changeFilteredItemsData}
-            state={state}
-            status={status || []}
-            source={source || []}
-            country={country || []}
-            userData={userData || []}
-            counsellors={counsellors || []}
-            cres={cres || []}
-            branchForManager={branchForManager || []}
-          />
+          {state && (
+            <LeadsFilters
+              changeFilteredItemsData={changeFilteredItemsData}
+              state={state || []}
+              status={status || []}
+              source={source || []}
+              country={country || []}
+              userData={userData || []}
+              counsellors={counsellors || []}
+              cres={cres || []}
+              branchForManager={branchForManager || []}
+            />
+          )}
 
           <Card className="bg-white py-3">
             <Card.Body>
@@ -827,14 +839,14 @@ const BasicInputElements = withSwal((props: any) => {
                     tableClass="table-striped dt-responsive nowrap w-100"
                     initialLoading={initialLoading}
                   />
-                  <div className="d-flex justify-content-center">
-                    <Pagination
-                      count={Math.ceil(records.length / 2)}
-                      variant="outlined"
-                      color="primary"
-                      onChange={handlePageChange}
+                  {isPaginationNeeded && (
+                    <CustomPagination
+                      handleLimitChange={handleLimitChange}
+                      totalPages={totalPages}
+                      handlePageChange={handlePageChange}
+                      currentLimit={currentLimit}
                     />
-                  </div>
+                  )}
                 </>
               )}
             </Card.Body>

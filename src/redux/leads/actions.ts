@@ -19,7 +19,7 @@ export interface LeadsActionType {
 }
 
 interface LeadsData {
-  isAssignedLeads: boolean
+  isAssignedLeads: boolean;
   id: string;
   full_name: string;
   email: string;
@@ -42,32 +42,25 @@ interface LeadsData {
 }
 
 // common success
-export const LeadsApiResponseSuccess = (
-  actionType: string,
-  data: LeadsData | {}
-): LeadsActionType => ({
+export const LeadsApiResponseSuccess = (actionType: string, data: LeadsData | {}): LeadsActionType => ({
   type: LeadsActionTypes.API_RESPONSE_SUCCESS,
   payload: { actionType, data },
 });
 // common error
-export const LeadsApiResponseError = (
-  actionType: string,
-  error: string
-): LeadsActionType => ({
+export const LeadsApiResponseError = (actionType: string, error: string): LeadsActionType => ({
   type: LeadsActionTypes.API_RESPONSE_ERROR,
   payload: { actionType, error },
 });
 
-export const getLead = (): LeadsActionType => ({
+export const getLead = (currentPage: number, currentLimit: number): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS,
-  payload: {},
+  payload: { currentPage, currentLimit },
 });
 
 export const getLeadsRegionalManager = (): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER,
   payload: {},
 });
-
 
 export const getLeadsTL = (): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_TL,
@@ -144,7 +137,7 @@ export const addLeads = (
     zipcode,
     exam_details,
     exam_documents,
-    navigate
+    navigate,
   },
 });
 
@@ -171,7 +164,7 @@ export const updateLeads = (
   zipcode: string | null,
   exam_details?: any,
   exam_documents?: any,
-  franchise_id?: string | null,
+  franchise_id?: string | null
 ): LeadsActionType => ({
   type: LeadsActionTypes.UPDATE_LEADS,
   payload: {
@@ -197,11 +190,11 @@ export const updateLeads = (
     zipcode,
     exam_details,
     exam_documents,
-    franchise_id
+    franchise_id,
   },
 });
 
-export const deleteLeads = (id: string, isAssignedLeads: boolean = false): LeadsActionType => ({
+export const deleteLeads = (id: string, currentPage: number, currentLimit: number, isAssignedLeads: boolean = false): LeadsActionType => ({
   type: LeadsActionTypes.DELETE_LEADS,
-  payload: { id, isAssignedLeads },
+  payload: { id, isAssignedLeads, currentPage, currentLimit },
 });

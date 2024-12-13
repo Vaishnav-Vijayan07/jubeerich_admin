@@ -90,7 +90,7 @@ const History = ({ studentId }: any) => {
                   {item?.country ? (
                     <Badge>{item?.country ? item.country.country_name : ""}</Badge>
                   ) : (
-                    <span style={{ color: "#fff", background:"#fff", fontSize:"10px" }}>No country</span>
+                    <span style={{ color: "#fff", background: "#fff", fontSize: "10px" }}>No country</span>
                   )}
                 </div>
                 <div className="status">
@@ -101,7 +101,7 @@ const History = ({ studentId }: any) => {
             ))}
           </>
         ) : (
-          <p>No lead history available for this filter.</p>
+          ""
         )}
       </div>
     </div>
