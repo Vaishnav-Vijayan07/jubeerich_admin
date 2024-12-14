@@ -137,9 +137,6 @@ function* getAllFranchiseCounsellorsTL({
     const response = yield call(getFranchiseCounsellorsTLByFranchise, franchiseId);
     const data = response?.data?.data || [];
 
-    console.log(data);
-    
-
     // NOTE - You can change this according to response format from your api
     yield put(
       adminUsersApiResponseSuccess(AdminUserActionTypes.GET_FRANCHISE_COUNSELLOR_TL, data)
@@ -286,7 +283,7 @@ function* updateAdminUser({
     // yield put(getAdminUsers());
   } catch (error: any) {
     yield put(
-      adminUsersApiResponseSuccess(
+      adminUsersApiResponseError(
         AdminUserActionTypes.UPDATE_ADMIN_USERS,
         error
       )

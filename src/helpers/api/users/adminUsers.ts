@@ -56,6 +56,8 @@ function addAdminUsers(params: {
     params.country_id = null;
   }
 
+  console.count("api called this times");
+
   return api.create(`${baseUrl}`, params);
 }
 
