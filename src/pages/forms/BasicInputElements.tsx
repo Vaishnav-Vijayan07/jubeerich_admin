@@ -826,6 +826,7 @@ const BasicInputElements = withSwal((props: any) => {
                     // sizePerPageList={sizePerPageList}
                     isSortable={true}
                     pagination={true}
+                    isCustomPaginationNeeded={true}
                     isSelectable={true}
                     isSearchable={true}
                     tableClass="table-striped dt-responsive nowrap w-100"
