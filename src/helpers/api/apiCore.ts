@@ -31,8 +31,11 @@ axios.interceptors.response.use(
           break;
 
         case 400:
-          message =
-            error?.response?.data?.error || error?.response?.data?.message;
+          message = error?.response?.data?.error || error?.response?.data?.message;
+          break;
+
+        case 409:
+          message = error?.response?.data?.error || error?.response?.data?.message;
           break;
 
         case 403:

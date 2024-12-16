@@ -56,7 +56,6 @@ interface State {
 }
 
 const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any => {
-  console.log(action.type);
   
   switch (action.type) {
     case AdminUserActionTypes.API_RESPONSE_SUCCESS:
@@ -103,7 +102,7 @@ const AdminUsers = (state: State = INIT_STATE, action: SourceActionType): any =>
           };
         }
         case AdminUserActionTypes.ADD_ADMIN_USERS: {
-          showSuccessAlert(action.payload.data);
+          showSuccessAlert(action.payload.data);          
           return {
             ...state,
             loading: false,
