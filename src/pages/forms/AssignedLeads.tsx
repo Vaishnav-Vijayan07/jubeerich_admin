@@ -810,7 +810,7 @@ const BasicInputElements = withSwal((props: any) => {
                 onSelect={handleSelectedValues}
                 initialLoading={initialLoading}
               />
-              <CustomPagination  />
+              {/* <CustomPagination  /> */}
             </Card.Body>
           </Card>
         </Col>
