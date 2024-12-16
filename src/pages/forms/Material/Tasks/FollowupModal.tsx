@@ -10,10 +10,6 @@ import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 import { refreshData } from "../../../../redux/countryReducer";
 import DatePicker from "react-datepicker";
 import { FormInput } from "../../../../components";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
-import dayjs from "dayjs";
 
 const initialFormState = {
   id: "",
@@ -44,27 +40,7 @@ const FollowupModal = withSwal((props: any) => {
   const [isLoading, setIsLoading] = useState<any>(false);
   const headerHeight = 100;
   // const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(dayjs());
-
-  const calenderStyle = {
-    "& .MuiPickersDay-root": {
-      margin: "4px", // Add spacing between days
-      padding: "12px", // Increase the padding inside each day
-      fontSize: "1rem", // Adjust font size if needed
-    },
-    "& .MuiDateCalendar-root": {
-      width: "350px", // Increase the overall width of the calendar
-    },
-    "& .MuiPickersCalendarHeader-root": {
-      fontSize: "1.25rem", // Adjust header font size
-    },
-    "& .MuiDayCalendar-header": {
-      display: "flex", // Ensure it's a flex container
-      justifyContent: "space-between", // Spread the items evenly
-      gap: "8px", // Add horizontal spacing between labels
-      padding: "0 16px",
-    },
-  };
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const scrollToStartOfTarget = () => {
     if (targetRef.current) {
@@ -103,7 +79,7 @@ const FollowupModal = withSwal((props: any) => {
         dispatch(refreshData());
         setRemarkForm(initialFormState);
         submitFollowupDate(selectedDate);
-        setSelectedDate(dayjs());
+        setSelectedDate(new Date());
         setIsLoading(false);
         return;
       }
@@ -119,7 +95,7 @@ const FollowupModal = withSwal((props: any) => {
         dispatch(refreshData());
         setRemarkForm(initialFormState);
         submitFollowupDate(selectedDate);
-        setSelectedDate(dayjs());
+        setSelectedDate(new Date());
         setIsLoading(false);
       }
     } catch (error) {
@@ -154,46 +130,25 @@ const FollowupModal = withSwal((props: any) => {
 
   const handleDateChange = (date: any) => {
     // setSelectedDate(date);
-    setSelectedDate(date ? date.toDate() : null);
+    setSelectedDate(date);
   };
 
   return (
     <>
       <Modal dialogClassName="modal-dialog-centered" show={showModal} onHide={toggleRemarkModal}>
-        <Modal.Header style={{ paddingTop: "0px" }}>
-          <h3>{viewOnly ? `Remarks` : `Followup Date`}</h3>
-        </Modal.Header>
-
         <Modal.Body style={{ paddingTop: "0px" }}>
-          <div className={`w-100 shadow-sm ${viewOnly ? "" : "border rounded mb-2"}`}>
-            {/* <DatePicker
-                            minDate={new Date()}
-                            selected={selectedDate}
-                            onChange={handleDateChange}
-                            inline
-                            placeholderText="Choose a date"
-                            className="w-100"
-                        /> */}
-            {!viewOnly && (
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <StaticDatePicker
-                  defaultValue={dayjs()}
-                  slotProps={{
-                    actionBar: {
-                      actions: [],
-                    },
-                    toolbar: {
-                      hidden: true,
-                    },
-                  }}
-                  sx={{ ...calenderStyle }}
-                  onChange={handleDateChange}
-                  value={selectedDate ? dayjs(selectedDate) : null}
-                  disablePast
-                />
-              </LocalizationProvider>
-            )}
-          </div>
+          <h3 className="mt-0 pb-1" style={{ fontFamily: "Nunito", fontSize: "20px", fontWeight: "500" }}>
+            {viewOnly ? `Remarks` : `Followup Date`}
+          </h3>
+          <DatePicker
+            minDate={new Date()}
+            selected={selectedDate}
+            onChange={handleDateChange}
+            inline
+            placeholderText="Choose a date"
+            className="w-100"
+          />
+
           <div className="row">
             {viewOnly && (
               <div style={{ minHeight: "90px", maxHeight: "250px", overflowY: "auto", scrollbarWidth: "none" }} className="col">
@@ -259,12 +214,20 @@ const FollowupModal = withSwal((props: any) => {
             </Row>
           )}
 
-          <Modal.Footer style={{ paddingBottom: "0px" }}>
-            <Button className="bg-danger" onClick={() => [toggleRemarkModal(), setTimeout(() => setViewOnly(false), 500)]}>
+          <Modal.Footer style={{ paddingBottom: "0px", paddingRight: "0" }}>
+            <Button
+              className="bg-danger"
+              style={{ border: "none", margin: "0 10px", padding: "5px 15px" }}
+              onClick={() => [toggleRemarkModal(), setTimeout(() => setViewOnly(false), 500)]}
+            >
               Close
             </Button>
             {!viewOnly && (
-              <Button className="bg-primary" onClick={() => [handleSubmit(), setViewOnly(false)]}>
+              <Button
+                style={{ border: "none", margin: "0", padding: "5px 15px" }}
+                className="bg-primary"
+                onClick={() => [handleSubmit(), setViewOnly(false)]}
+              >
                 Save
               </Button>
             )}

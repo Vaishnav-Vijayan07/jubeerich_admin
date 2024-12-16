@@ -36,9 +36,9 @@ import { regrexValidation } from "../../utils/regrexValidation";
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, BranchesData, franchiseData, CountriesData, RolesData, regionData, error, loading, initialLoading } = props;
-  console.log(franchiseData);
-  
+  const { swal, state, BranchesData, franchiseData, CountriesData, RolesData, regionData, error, loading, initialLoading } =
+    props;
+
   const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
 
@@ -131,24 +131,24 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   //handle delete function
-  const handleDelete = (id: string) => {
-    swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          dispatch(deleteAdminUsers(id));
-          // swal.fire("Deleted!", "Your item has been deleted.", "success");
-        }
-      });
-  };
+  // const handleDelete = (id: string) => {
+  //   swal
+  //     .fire({
+  //       title: "Are you sure?",
+  //       text: "This action cannot be undone.",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#3085d6",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, delete it!",
+  //     })
+  //     .then((result: any) => {
+  //       if (result.isConfirmed) {
+  //         dispatch(deleteAdminUsers(id));
+  //         // swal.fire("Deleted!", "Your item has been deleted.", "success");
+  //       }
+  //     });
+  // };
 
   //handle onchange function
   const handleInputChange = (e: any) => {
@@ -172,25 +172,27 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
-  const handleBranchChange = (
-    selectedOptions: OptionType[] | OptionsType<OptionType> | null,
-    actionMeta: ActionMeta<OptionType>
-  ) => {
-    if (Array.isArray(selectedOptions)) {
-      setSelectedBranch(selectedOptions);
-      const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
-      setFormData((prev) => ({
-        ...prev,
-        branch_ids: selectedIdsString,
-      }));
-    }
-  };
+  // const handleBranchChange = (
+  //   selectedOptions: OptionType[] | OptionsType<OptionType> | null,
+  //   actionMeta: ActionMeta<OptionType>
+  // ) => {
+  //   if (Array.isArray(selectedOptions)) {
+  //     setSelectedBranch(selectedOptions);
+  //     const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       branch_ids: selectedIdsString,
+  //     }));
+  //   }
+  // };
 
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     console.log(formData);
+
+    console.count("onsubmit triggered");
 
     // Validate the form using yup
     try {
@@ -249,6 +251,8 @@ const BasicInputElements = withSwal((props: any) => {
               if (userInfo) {
                 try {
                   const { user_id } = JSON.parse(userInfo);
+                  console.count("dispatched trigger")
+                  
                   dispatch(
                     addAdminUsers(
                       formData.employee_id,
@@ -435,37 +439,19 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const handleSelectChange = (
-    selectedOptions: OptionType[] | OptionsType<OptionType> | null,
-    actionMeta: ActionMeta<OptionType>
-  ) => {
-    if (Array.isArray(selectedOptions)) {
-      setSelectedCountry(selectedOptions);
-      const selectedIdsArray = selectedOptions?.map((option) => parseInt(option.value));
-      setFormData((prev: any) => ({
-        ...prev,
-        country_ids: selectedIdsArray,
-      }));
-    }
-  };
-
-  const customStyles2 = {
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "#a9b3e6e2" : state.isFocused ? "#8a99e2" : "#fff",
-      color: state.isSelected ? "#fff" : state.isFocused ? "#fff" : "#333",
-      padding: 10,
-    }),
-    singleValue: (provided: any, state: any) => ({
-      ...provided,
-      color: "#333", // Color of the selected option displayed in the select box
-    }),
-    menu: (provided: any) => ({
-      ...provided,
-      maxHeight: 200, // Set maxHeight of the menu (change this value as needed)
-      overflowY: "auto", // Enable scrolling if content overflows
-    }),
-  };
+  // const handleSelectChange = (
+  //   selectedOptions: OptionType[] | OptionsType<OptionType> | null,
+  //   actionMeta: ActionMeta<OptionType>
+  // ) => {
+  //   if (Array.isArray(selectedOptions)) {
+  //     setSelectedCountry(selectedOptions);
+  //     const selectedIdsArray = selectedOptions?.map((option) => parseInt(option.value));
+  //     setFormData((prev: any) => ({
+  //       ...prev,
+  //       country_ids: selectedIdsArray,
+  //     }));
+  //   }
+  // };
 
   return (
     <>
@@ -616,7 +602,9 @@ const BasicInputElements = withSwal((props: any) => {
                         {validationErrors.role_id && <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>}
                       </Form.Group>
                     </Col>
-                    {(formData?.role_id == counsellor_id || formData.role_id == branch_counsellor_id || formData.role_id == country_manager_id) && (
+                    {(formData?.role_id == counsellor_id ||
+                      formData.role_id == branch_counsellor_id ||
+                      formData.role_id == country_manager_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="role_id">
                           <Form.Label>Country</Form.Label>
@@ -686,7 +674,9 @@ const BasicInputElements = withSwal((props: any) => {
                             ))}
                           </Form.Select>
 
-                          {validationErrors.franchise_id && <Form.Text className="text-danger">{validationErrors.franchise_id}</Form.Text>}
+                          {validationErrors.franchise_id && (
+                            <Form.Text className="text-danger">{validationErrors.franchise_id}</Form.Text>
+                          )}
                         </Form.Group>
                       </Col>
                     )}
