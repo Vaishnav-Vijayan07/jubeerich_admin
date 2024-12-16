@@ -834,6 +834,7 @@ const BasicInputElements = withSwal((props: any) => {
                   />
                   <CustomPagination
                     handleLimitChange={handleLimitChange}
+                    currentPage={currentPage}
                     totalPages={totalPages}
                     handlePageChange={handlePageChange}
                     currentLimit={currentLimit}
@@ -855,6 +856,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                   <CustomPagination
                     handleLimitChange={handleLimitChange}
+                    currentPage={currentPage}
                     totalPages={totalPages}
                     handlePageChange={handlePageChange}
                     currentLimit={currentLimit}

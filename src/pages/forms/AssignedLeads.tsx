@@ -145,6 +145,12 @@ const BasicInputElements = withSwal((props: any) => {
     franchisees,
     branchCounsellors,
     initialLoading,
+    currentLimit,
+    currentPage,
+    handlePageChange,
+    handleLimitChange,
+    totalPages,
+    totalCount,
   } = props;
 
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -157,8 +163,6 @@ const BasicInputElements = withSwal((props: any) => {
   }
 
   //State for handling update function
-
-  const { currentLimit, currentPage, handlePageChange, handleLimitChange, setCurrentLimit, setCurrentPage } = usePagination();
 
   const [tableData, setTableData] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -303,7 +307,9 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "No",
       accessor: "id",
       sort: true,
-      Cell: ({ row }: any) => <span>{row.index + 1}</span>,
+      Cell: ({ row }: any) => {
+        return <span>{currentPage * currentLimit - currentLimit + row.index + 1}</span>;
+      },
     },
     {
       Header: "Name",
@@ -512,7 +518,7 @@ const BasicInputElements = withSwal((props: any) => {
           const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
 
           if (data.status) {
-            dispatch(getLeadAssigned());
+            dispatch(getLeadAssigned(currentPage, currentLimit));
             showSuccessAlert("Bulk assignment successful.");
           }
         } catch (error) {
@@ -800,7 +806,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Table
                 columns={columns}
                 data={tableData ? tableData : []}
-                pageSize={10}
+                pageSize={totalCount}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
@@ -810,7 +816,13 @@ const BasicInputElements = withSwal((props: any) => {
                 onSelect={handleSelectedValues}
                 initialLoading={initialLoading}
               />
-              <CustomPagination  />
+              <CustomPagination
+                currentPage={currentPage}
+                currentLimit={currentLimit}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+                handleLimitChange={handleLimitChange}
+              />
             </Card.Body>
           </Card>
         </Col>
@@ -821,22 +833,28 @@ const BasicInputElements = withSwal((props: any) => {
 
 const AssignedLeads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
+  const { currentLimit, currentPage, handlePageChange, handleLimitChange } = usePagination();
+
   const [counsellors, setCounsellors] = useState([]);
 
-  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
-
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag } = useSelector((state: RootState) => ({
-    user: state.Auth.user,
-    state: state.Leads.assignedLeads,
-    error: state.Leads.error,
-    loading: state.Leads.loading,
-    initialLoading: state.Leads.initialloading,
-    users: state.Users.adminUsers,
-    franchisees: state.Franchise.franchiseUsers,
-    branchCounsellor: state.Users?.branchCounsellor,
-    flag: state?.Flag?.flags,
-  }));
+  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag, limit, totalPages, totalCount } = useSelector(
+    (state: RootState) => ({
+      user: state.Auth.user,
+      state: state.Leads.assignedLeads,
+      totalPages: state.Leads.totalPages,
+      limit: state.Leads.limit,
+      totalCount: state.Leads.totalCount,
+      error: state.Leads.error,
+      loading: state.Leads.loading,
+      initialLoading: state.Leads.initialloading,
+      users: state.Users.adminUsers,
+      franchisees: state.Franchise.franchiseUsers,
+      branchCounsellor: state.Users?.branchCounsellor,
+      flag: state?.Flag?.flags,
+    })
+  );
 
   let userRole: any;
   let userBranchId: any;
@@ -848,13 +866,13 @@ const AssignedLeads = () => {
   useEffect(() => {
     dispatch(getFlag());
     if (userRole == cre_tl_id) {
-      dispatch(getLeadAssigned());
+      dispatch(getLeadAssigned(currentPage, currentLimit));
     } else {
       dispatch(getLeadAssignedByCounsellorTL());
     }
     // dispatch(getFranchise())
     fetchAllCounsellors();
-  }, []);
+  }, [userRole, currentPage, currentLimit]);
 
   const fetchAllCounsellors = () => {
     axios
@@ -928,6 +946,12 @@ const AssignedLeads = () => {
             branchCounsellors={branchCounsellor || []}
             flags={flagsData || []}
             initialLoading={initialLoading}
+            currentLimit={currentLimit}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+            handleLimitChange={handleLimitChange}
+            totalCount={totalCount}
           />
         </Col>
       </Row>
