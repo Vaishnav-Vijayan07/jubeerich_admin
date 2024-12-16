@@ -67,9 +67,9 @@ export const getLeadsTL = (currentPage: number, currentLimit: number): LeadsActi
   payload: { currentPage, currentLimit },
 });
 
-export const getLeadAssigned = (): LeadsActionType => ({
+export const getLeadAssigned = (currentPage: number, currentLimit: number): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_ASSIGNED,
-  payload: {},
+  payload: { currentPage, currentLimit },
 });
 
 export const getLeadAssignedByCounsellorTL = (): LeadsActionType => ({

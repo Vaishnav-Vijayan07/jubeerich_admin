@@ -6,9 +6,10 @@ type Props = {
   handlePageChange: any;
   totalPages: number;
   currentLimit: number;
+  currentPage: number;
 };
 
-function CustomPagination({ handleLimitChange, handlePageChange, totalPages, currentLimit }: Props) {
+function CustomPagination({ handleLimitChange, handlePageChange, totalPages, currentLimit, currentPage }: Props) {
   return (
     <>
       <div className="d-flex align-items-center justify-content-between text-center gap-2 pb-1">
@@ -26,7 +27,7 @@ function CustomPagination({ handleLimitChange, handlePageChange, totalPages, cur
         </div>
 
         <div className="float-end">
-          <Pagination count={Math.ceil(totalPages)} variant="outlined" color="primary" onChange={handlePageChange} />
+          <Pagination count={Math.ceil(totalPages)} page={currentPage} variant="outlined" color="primary" onChange={handlePageChange} />
         </div>
       </div>
     </>

@@ -127,9 +127,9 @@ function* getLeadsForTL({ payload: { currentPage, currentLimit } }: LeadsData): 
   }
 }
 
-function* getAssignedLeads(): SagaIterator {
+function* getAssignedLeads({ payload: { currentPage, currentLimit } }: LeadsData): SagaIterator {
   try {
-    let response = yield call(getAssignedLeadsByCreTl);
+    let response = yield call(getAssignedLeadsByCreTl, currentPage, currentLimit);
     let data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -340,7 +340,7 @@ function* updateLeads({
       const { role } = JSON.parse(userInfo);
 
       if (role == cre_tl_id && isAssignedLeads) {
-        yield put(getLeadAssigned());
+        yield put(getLeadAssigned( currentPage, currentLimit));
       } else if (role == cre_tl_id) {
         yield put(getLeadsTL(currentPage, currentLimit));
       } else if (role == counsellor_tl_id && isAssignedLeads) {
@@ -368,7 +368,7 @@ function* deleteLeads({ payload: { id, isAssignedLeads, currentLimit, currentPag
       const { role } = JSON.parse(userInfo);
 
       if (role == cre_tl_id && isAssignedLeads) {
-        yield put(getLeadAssigned());
+        yield put(getLeadAssigned( currentPage, currentLimit));
       } else if (role == cre_tl_id) {
         yield put(getLeadsTL(currentPage, currentLimit));
       } else if (role == counsellor_tl_id && isAssignedLeads) {

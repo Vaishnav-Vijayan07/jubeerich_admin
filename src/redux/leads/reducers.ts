@@ -112,6 +112,9 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
           return {
             ...state,
             assignedLeads: action.payload.data.data.formattedUserPrimaryInfos,
+            totalPages: action.payload.data.data.totalPages,
+            limit : action.payload.data.data.limit,
+            totalCount : action.payload.data.data.count,
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
