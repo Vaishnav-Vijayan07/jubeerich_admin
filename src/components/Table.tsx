@@ -280,7 +280,7 @@ const Table = (props: TableProps) => {
               ))
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={props.columns.length} className="text-center">
+                <td colSpan={props.columns.length + 1} className="text-center">
                   No data found...
                 </td>
               </tr>

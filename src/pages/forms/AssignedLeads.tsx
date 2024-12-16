@@ -455,7 +455,7 @@ const BasicInputElements = withSwal((props: any) => {
             <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
           </Link>
           {/* Edit Icon */}
-          <Link
+          {/* <Link
             to="#"
             className="action-icon"
             data-bs-toggle="tooltip"
@@ -467,7 +467,7 @@ const BasicInputElements = withSwal((props: any) => {
             }}
           >
             <i className="mdi mdi-square-edit-outline"></i>
-          </Link>
+          </Link> */}
 
           {/* Delete Icon */}
           <Link
