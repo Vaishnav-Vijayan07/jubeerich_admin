@@ -9,8 +9,8 @@ function getLeads(currentPage: number, currentLimit: number) {
   return api.get(`${baseUrl}`, { page: currentPage, limit: currentLimit });
 }
 
-function getLeadsByCreTl() {
-  return api.get("/leads_cre_tl", {});
+function getLeadsByCreTl(currentPage: number, currentLimit: number) {
+  return api.get("/leads_cre_tl", { page: currentPage, limit: currentLimit });
 }
 
 function getAssignedLeadsByCreTl() {
