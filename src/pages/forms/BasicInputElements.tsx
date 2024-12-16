@@ -67,12 +67,10 @@ const BasicInputElements = withSwal((props: any) => {
     handlePageChange,
     currentPage,
     totalPages,
-    limit,
+    totalCount,
     currentLimit,
     handleLimitChange,
   } = props;
-
-  const isPaginationNeeded = state?.length > MIN_DATA_ON_TABLE;
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
@@ -85,12 +83,13 @@ const BasicInputElements = withSwal((props: any) => {
   const [filteredItems, setFilteredItems] = useState<any[]>([]); // Filtered data
   const [handleUpdateData, setHandleUpdateData] = useState<any>({});
   const [clearLeadModal, setClearLeadModal] = useState<any>(null);
-  const [clearError, setClearError] = useState<any>(null)
+  const [clearError, setClearError] = useState<any>(null);
   // const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     setFilteredItems(state);
   }, [state]);
+  console.log("FROM TABLE", selectedValues);
 
   let records: TableRecords[] = filteredItems;
   // const records: TableRecords[] = filteredItems;
@@ -141,7 +140,6 @@ const BasicInputElements = withSwal((props: any) => {
 
   //handle delete function
   const handleDelete = (id: string) => {
-    console.log("DELET LOG")
     swal
       .fire({
         title: "Are you sure?",
@@ -154,7 +152,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteLeads(id,currentPage,currentLimit));
+          dispatch(deleteLeads(id, currentPage, currentLimit));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -165,9 +163,9 @@ const BasicInputElements = withSwal((props: any) => {
   const columns = [
     {
       Header: "No",
-      accessor: "id",
+      accessor: "",
       sort: false,
-      Cell: ({ row }: any) => <span>{row.index + 1}</span>,
+      Cell: ({ row }: any) => <span>{currentPage * currentLimit - currentLimit + row.index + 1}</span>,
     },
     {
       Header: "Name",
@@ -363,7 +361,7 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Edit'>
+          <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
             <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
           </Link>
 
@@ -379,7 +377,14 @@ const BasicInputElements = withSwal((props: any) => {
           </Link> */}
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)} data-bs-toggle="tooltip" data-bs-placement="bottom" title='Delete'>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => handleDelete(row.original.id)}
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="Delete"
+          >
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -486,7 +491,7 @@ const BasicInputElements = withSwal((props: any) => {
 
           if (data.status) {
             if (userRole == cre_tl_id) {
-              dispatch(getLeadsTL());
+              dispatch(getLeadsTL(currentPage, currentLimit));
             } else {
               dispatch(getLead(currentPage, currentLimit));
             }
@@ -550,7 +555,7 @@ const BasicInputElements = withSwal((props: any) => {
 
           if (data.status) {
             if (userRole == cre_tl_id) {
-              dispatch(getLeadsTL());
+              dispatch(getLeadsTL(currentPage, currentLimit));
             } else {
               dispatch(getLead(currentPage, currentLimit));
             }
@@ -582,7 +587,7 @@ const BasicInputElements = withSwal((props: any) => {
           });
           if (data.status) {
             if (userRole == cre_tl_id) {
-              dispatch(getLeadsTL());
+              dispatch(getLeadsTL(currentPage, currentLimit));
             } else {
               dispatch(getLead(currentPage, currentLimit));
             }
@@ -813,25 +818,33 @@ const BasicInputElements = withSwal((props: any) => {
                 </div>
               </div>
               {userRole == cre_tl_id || userRole == regional_manager_id || userRole == counsellor_tl_id ? (
-                <Table
-                  columns={columns}
-                  data={records ? records : []}
-                  pageSize={10}
-                  sizePerPageList={sizePerPageList}
-                  isSortable={true}
-                  pagination={true}
-                  isSelectable={true}
-                  isSearchable={true}
-                  tableClass="table-striped dt-responsive nowrap w-100"
-                  onSelect={handleSelectedValues}
-                  initialLoading={initialLoading}
-                />
+                <>
+                  <Table
+                    columns={columns}
+                    data={records ? records : []}
+                    pageSize={totalCount}
+                    // sizePerPageList={sizePerPageList}
+                    isSortable={true}
+                    pagination={true}
+                    isSelectable={true}
+                    isSearchable={true}
+                    tableClass="table-striped dt-responsive nowrap w-100"
+                    onSelect={handleSelectedValues}
+                    initialLoading={initialLoading}
+                  />
+                  <CustomPagination
+                    handleLimitChange={handleLimitChange}
+                    totalPages={totalPages}
+                    handlePageChange={handlePageChange}
+                    currentLimit={currentLimit}
+                  />
+                </>
               ) : (
                 <>
                   <Table
                     columns={columns}
                     data={records ? records : []}
-                    pageSize={10}
+                    pageSize={totalCount}
                     sizePerPageList={sizePerPageList}
                     isSortable={true}
                     pagination={false}
@@ -839,14 +852,13 @@ const BasicInputElements = withSwal((props: any) => {
                     tableClass="table-striped dt-responsive nowrap w-100"
                     initialLoading={initialLoading}
                   />
-                  {isPaginationNeeded && (
-                    <CustomPagination
-                      handleLimitChange={handleLimitChange}
-                      totalPages={totalPages}
-                      handlePageChange={handlePageChange}
-                      currentLimit={currentLimit}
-                    />
-                  )}
+
+                  <CustomPagination
+                    handleLimitChange={handleLimitChange}
+                    totalPages={totalPages}
+                    handlePageChange={handlePageChange}
+                    currentLimit={currentLimit}
+                  />
                 </>
               )}
             </Card.Body>

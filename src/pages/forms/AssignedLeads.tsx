@@ -41,6 +41,8 @@ import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
 import { getFlag } from "../../redux/flag/actions";
 import Swal from "sweetalert2";
+import { usePagination } from "../../hooks/usePagination";
+import CustomPagination from "../../components/CustomPagination";
 
 interface OptionType {
   value: string;
@@ -145,25 +147,22 @@ const BasicInputElements = withSwal((props: any) => {
     initialLoading,
   } = props;
 
-  console.log("Region from state", region);
-  console.log("cres ==>", cres);
-
-  const [tableData, setTableData] = useState([]);
-
-  //fetch token from session storage
-
-  //Table data
-  // const records: TableRecords[] = state;
+  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   let records: TableRecords[] = state;
-
-  useEffect(() => {
-    setTableData(state);
-  }, [records]);
+  let userRole: any;
+  let userBranchId: any;
+  if (userInfo) {
+    userRole = JSON.parse(userInfo)?.role;
+    userBranchId = JSON.parse(userInfo)?.branch_id;
+  }
 
   //State for handling update function
+
+  const { currentLimit, currentPage, handlePageChange, handleLimitChange, setCurrentLimit, setCurrentPage } = usePagination();
+
+  const [tableData, setTableData] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);
-
   const [selectedSource, setSelectedSource] = useState<any>(null);
   const [selectedValues, setSelectedValues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -176,7 +175,6 @@ const BasicInputElements = withSwal((props: any) => {
   const fileInputRef = useRef<any>(null);
   const [activeRegion, setActiveRegion] = useState<any>(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
-  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
@@ -224,12 +222,34 @@ const BasicInputElements = withSwal((props: any) => {
     defaultValues: initialState,
   });
 
-  let userRole: any;
-  let userBranchId: any;
-  if (userInfo) {
-    userRole = JSON.parse(userInfo)?.role;
-    userBranchId = JSON.parse(userInfo)?.branch_id;
-  }
+  useEffect(() => {
+    setTableData(state);
+  }, [records]);
+
+  useEffect(() => {
+    // Check for errors and clear the form
+    if (!loading && !error) {
+      setResponsiveModal(false);
+      setValidationErrors(initialValidationState); // Clear validation errors
+      setFormData(initialState); //clear form data
+      setSelectedCountry([]);
+      // Clear validation errors
+    }
+  }, [loading, error]);
+
+  useEffect(() => {
+    applyFilter();
+  }, [filters]);
+
+  useEffect(() => {
+    if (selectedOffice?.value == region_id) {
+      setActiveRegion(true);
+    } else {
+      setActiveRegion(false);
+      setSelectedRegion(null);
+    }
+  }, [selectedOffice]);
+
   const handleUpdate = (item: any) => {
     if (item) {
       setHandleUpdateData({ ...item });
@@ -250,7 +270,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteLeads(id, 1,20,true));
+          dispatch(deleteLeads(id, 1, 20, true));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -361,17 +381,17 @@ const BasicInputElements = withSwal((props: any) => {
     // },
     ...(user?.role == cre_tl_id
       ? [
-        {
-          Header: "Assigned CRE",
-          accessor: "cre_name",
-          // Cell: UserColumn,
-          Cell: ({ row }: any) => (
-            <span className="no-truncate-text">
-              <UserColumn row={row} />
-            </span>
-          ),
-          minWidth: 100,
-        }
+          {
+            Header: "Assigned CRE",
+            accessor: "cre_name",
+            // Cell: UserColumn,
+            Cell: ({ row }: any) => (
+              <span className="no-truncate-text">
+                <UserColumn row={row} />
+              </span>
+            ),
+            minWidth: 100,
+          },
         ]
       : []),
     ...(user?.role == cre_id || user?.role == cre_tl_id
@@ -399,20 +419,20 @@ const BasicInputElements = withSwal((props: any) => {
       : []),
     ...(user?.role == counsellor_tl_id
       ? [
-        {
-          Header: "Assigned Status",
-          accessor: "assigned_branch_counselor",
-          sort: false,
-          minWidth: 150,
-          Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
-        },
-        {
-          Header: "Assigned Counselor",
-          accessor: "assigned_branch_counselor_name",
-          sort: false,
-          minWidth: 150,
-        },
-      ]
+          {
+            Header: "Assigned Status",
+            accessor: "assigned_branch_counselor",
+            sort: false,
+            minWidth: 150,
+            Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+          },
+          {
+            Header: "Assigned Counselor",
+            accessor: "assigned_branch_counselor_name",
+            sort: false,
+            minWidth: 150,
+          },
+        ]
       : []),
     {
       Header: "Status",
@@ -432,6 +452,9 @@ const BasicInputElements = withSwal((props: any) => {
           <Link
             to="#"
             className="action-icon"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="Edit"
             onClick={() => {
               handleUpdate(row.original);
               openModalWithClass("modal-full-width");
@@ -441,7 +464,14 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => handleDelete(row.original.id)}
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="Delete"
+          >
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -512,7 +542,7 @@ const BasicInputElements = withSwal((props: any) => {
             if (userRole == counsellor_tl_id) {
               dispatch(getLeadAssignedByCounsellorTL());
             } else {
-              dispatch(getLead(1,10));;
+              dispatch(getLead(1, 10));
             }
             showSuccessAlert("Bulk assignment successful.");
           }
@@ -576,7 +606,7 @@ const BasicInputElements = withSwal((props: any) => {
       console.log(data);
       if (data.status) {
         showSuccessAlert(data.message);
-        dispatch(getLead(1,10));;
+        dispatch(getLead(1, 10));
         setIsLoading(false);
         setSelectedFile([]);
         toggleUploadModal();
@@ -596,17 +626,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  useEffect(() => {
-    // Check for errors and clear the form
-    if (!loading && !error) {
-      setResponsiveModal(false);
-      setValidationErrors(initialValidationState); // Clear validation errors
-      setFormData(initialState); //clear form data
-      setSelectedCountry([]);
-      // Clear validation errors
-    }
-  }, [loading, error]);
-
   const toggleUploadModal = () => {
     setUploadModal(!uploadModal);
   };
@@ -620,10 +639,6 @@ const BasicInputElements = withSwal((props: any) => {
     setScroll(false);
     toggle();
   };
-
-  useEffect(() => {
-    applyFilter();
-  }, [filters]);
 
   const applyFilter = () => {
     let filteredData: any = [...state];
@@ -680,15 +695,6 @@ const BasicInputElements = withSwal((props: any) => {
   const changeFilteredItemsData = (data: any) => {
     setTableData(data);
   };
-
-  useEffect(() => {
-    if (selectedOffice?.value == region_id) {
-      setActiveRegion(true);
-    } else {
-      setActiveRegion(false);
-      setSelectedRegion(null);
-    }
-  }, [selectedOffice]);
 
   return (
     <>
@@ -791,7 +797,6 @@ const BasicInputElements = withSwal((props: any) => {
                 )}
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
-              <div className="d-flex flex-wrap justify-content-end"></div>
               <Table
                 columns={columns}
                 data={tableData ? tableData : []}
@@ -805,6 +810,7 @@ const BasicInputElements = withSwal((props: any) => {
                 onSelect={handleSelectedValues}
                 initialLoading={initialLoading}
               />
+              <CustomPagination  />
             </Card.Body>
           </Card>
         </Col>

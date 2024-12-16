@@ -35,7 +35,7 @@ const FundPlanRows = ({
         {/* Type */}
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`type-${index}`}>
-            <Form.Label>Type</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Type</Form.Label>
             <Select
               name="type"
               placeholder="Select fund type"
@@ -56,7 +56,7 @@ const FundPlanRows = ({
         {/* Fund Origin */}
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`fund_origin-${index}`}>
-            <Form.Label>Fund Origin</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Fund Origin</Form.Label>
             <Select
               name="fund_origin"
               placeholder="Select fund origin"
@@ -77,7 +77,7 @@ const FundPlanRows = ({
         {/* Sponsor Name */}
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`sponsor_name-${index}`}>
-            <Form.Label>Sponsor Name</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Sponsor Name</Form.Label>
             <FormInput
               type="text"
               name="sponsor_name"
@@ -101,7 +101,7 @@ const FundPlanRows = ({
             className="mb-3"
             controlId={`approx_annual_income-${index}`}
           >
-            <Form.Label>Approx Annual Income</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Approx Annual Income</Form.Label>
             <FormInput
               type="number"
               name="approx_annual_income"
@@ -127,7 +127,7 @@ const FundPlanRows = ({
             className="mb-3"
             controlId={`relation_with_sponsor-${index}`}
           >
-            <Form.Label>Relation with sponsor</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Relation with sponsor</Form.Label>
             <FormInput
               type="text"
               name="relation_with_sponsor"
@@ -152,7 +152,7 @@ const FundPlanRows = ({
             className="mb-3"
             controlId={`sponsorship_amount-${index}`}
           >
-            <Form.Label>Sponsorship amount</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Sponsorship amount</Form.Label>
             <FormInput
               type="number"
               name="sponsorship_amount"
@@ -175,7 +175,7 @@ const FundPlanRows = ({
 
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`name_of_bank-${index}`}>
-            <Form.Label>Name of bank</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Name of bank</Form.Label>
             <FormInput
               type="text"
               name="name_of_bank"
@@ -233,7 +233,7 @@ const FundPlanRows = ({
             className="mb-3"
             controlId={`supporting_document-${index}`}
           >
-            <Form.Label>Supporting Document</Form.Label>
+            <Form.Label><span className="text-danger">*</span> Supporting Document</Form.Label>
             <Form.Control
               type="file"
               name="supporting_document"
