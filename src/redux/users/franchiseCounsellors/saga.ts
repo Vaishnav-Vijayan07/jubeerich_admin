@@ -37,7 +37,7 @@ interface UsersData {
     role_id: string;
     profileImage: File;
     branch_ids: string;
-    country_id: any;
+    country_ids: any;
     franchise_id: string
   };
   type: string;
@@ -78,7 +78,7 @@ function* addFranchiseUser({
     role_id,
     profileImage,
     branch_ids,
-    country_id,
+    country_ids,
     franchise_id
   },
 }: UsersData): SagaIterator {
@@ -95,7 +95,7 @@ function* addFranchiseUser({
       role_id,
       profileImage,
       branch_ids,
-      country_id,
+      country_ids,
       franchise_id
     });
     const data = response.data;
@@ -138,7 +138,7 @@ function* updateAdminUser({
     role_id,
     profileImage,
     branch_ids,
-    country_id,
+    country_ids,
     franchise_id
   },
 }: UsersData): SagaIterator {
@@ -155,7 +155,7 @@ function* updateAdminUser({
       role_id,
       profileImage,
       branch_ids,
-      country_id,
+      country_ids,
       franchise_id
     });
     const data = response.data.message;

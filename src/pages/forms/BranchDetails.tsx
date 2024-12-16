@@ -419,7 +419,6 @@ const BranchDetails = withSwal((props: any) => {
                       formData.role_id == regional_manager_id ? formData.region_id : null,
                       branchId,
                       formData.role_id == branch_counsellor_id ? formData.country_ids : null,
-                      null
                     )
                   );
                 } catch (err) {
@@ -449,7 +448,6 @@ const BranchDetails = withSwal((props: any) => {
                       formData.role_id == regional_manager_id ? formData.region_id : null,
                       branchId,
                       formData.role_id == branch_counsellor_id ? formData.country_ids : null,
-                      null
                     )
                   );
                 } catch (err) {

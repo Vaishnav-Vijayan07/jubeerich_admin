@@ -405,7 +405,6 @@ const FranchiseDetails = withSwal((props: any) => {
                       formData?.country_id,
                       formData.role_id == regional_manager_id ? formData.region_id : null,
                       // branchId,
-                      null,
                       formData.role_id == branch_counsellor_id ? formData.country_ids : null,
                       franchiseId
                     )
@@ -435,7 +434,6 @@ const FranchiseDetails = withSwal((props: any) => {
                       formData?.country_id,
                       formData.role_id == regional_manager_id ? formData.region_id : null,
                       // branchId,
-                      null,
                       formData.role_id == branch_counsellor_id ? formData.country_ids : null,
                       franchiseId
                     )

@@ -34,7 +34,7 @@ export const sizePerPageList = [
   },
 ];
 export interface MyInitialState {
-  country_id: string | number | readonly string[] | undefined;
+  country_id?: string | number | readonly string[] | undefined;
   id: string;
   employee_id: string;
   name: string;
@@ -49,7 +49,7 @@ export interface MyInitialState {
   branch_ids: string;
   region_id: string;
   branch_id?: string;
-  country_ids?: string;
+  country_ids?: string[];
   franchise_id?: string;
 }
 
@@ -64,7 +64,7 @@ export const initialState = {
   password: null,
   updated_by: "",
   role_id: "",
-  country_id: undefined,
+  country_ids: [],
   branch_ids: "",
   profile_image_path: "",
   region_id: "",
