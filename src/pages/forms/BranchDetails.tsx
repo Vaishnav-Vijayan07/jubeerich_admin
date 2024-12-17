@@ -139,11 +139,6 @@ const BranchDetails = withSwal((props: any) => {
       sort: false,
     },
     {
-      Header: "Country",
-      accessor: "country_name",
-      sort: false,
-    },
-    {
       Header: "Status",
       accessor: "status",
       sort: false,
@@ -411,14 +406,13 @@ const BranchDetails = withSwal((props: any) => {
                       formData.username,
                       formData.password,
                       user_id,
-                      // formData.role_id,
                       isTL ? counsellor_tl_id : formData.role_id,
                       selectedImage,
                       formData.branch_ids,
-                      formData?.country_id,
-                      formData.role_id == regional_manager_id ? formData.region_id : null,
+                      null,
+                      null,
                       branchId,
-                      formData.role_id == branch_counsellor_id ? formData.country_ids : null,
+                      null,
                     )
                   );
                 } catch (err) {
@@ -440,14 +434,13 @@ const BranchDetails = withSwal((props: any) => {
                       formData.username,
                       formData.password,
                       user_id,
-                      // formData.role_id,
                       isTL ? counsellor_tl_id : formData.role_id,
                       selectedImage,
                       formData.branch_ids,
-                      formData?.country_id,
-                      formData.role_id == regional_manager_id ? formData.region_id : null,
+                      null,
+                      null,
                       branchId,
-                      formData.role_id == branch_counsellor_id ? formData.country_ids : null,
+                      null,
                     )
                   );
                 } catch (err) {
@@ -565,14 +558,6 @@ const BranchDetails = withSwal((props: any) => {
                     </p>
                   </div>
 
-                  {/* <div className="d-flex justify-content-end pt-2 pe-3">
-                    <Button className="btn btn-primary" onClick={() => [setShowModal(true), setIsTL(true), handleCancelUpdate(), handleResetValues()]}>
-                      <i className="mdi mdi-plus-circle"></i>
-                      <span className="ms-1">
-                        Branch Counsellor TL
-                      </span>
-                    </Button>
-                  </div> */}
                 </Card.Body>
               </Card>
             </Col>
@@ -737,32 +722,6 @@ const BranchDetails = withSwal((props: any) => {
                         </Col>
                       </Row>
 
-                      <Row>
-                        <Col md={6}>
-                          <Form.Group className="mb-3" controlId="role_id">
-                            <Form.Label>Country</Form.Label>
-                            <Form.Select
-                              aria-label="Default select example"
-                              name="country_id"
-                              value={formData.country_id}
-                              onChange={handleInputChange}
-                            >
-                              <option value="" disabled selected>
-                                Choose..
-                              </option>
-                              {countryData?.map((item: any) => (
-                                <option value={item?.value} key={item?.value}>
-                                  {item.label}
-                                </option>
-                              ))}
-                            </Form.Select>
-
-                            {validationErrors.role_id && (
-                              <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>
-                            )}
-                          </Form.Group>
-                        </Col>
-                      </Row>
                       <div className="text-end">
                         <Button
                           variant="primary"

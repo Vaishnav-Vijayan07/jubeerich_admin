@@ -85,6 +85,7 @@ export const initialValidationState = {
   region_id: "",
   branch_id: "",
   franchise_id: "",
+  country_ids: []
 };
 
 export const dummyLeadData = [

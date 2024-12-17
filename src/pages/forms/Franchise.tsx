@@ -147,7 +147,7 @@ const BasicInputElements = withSwal((props: any) => {
     email: yup.string().required("Email is required"),
     address: yup.string().required("Address is required"),
     phone: yup.string().required("Phone number is required"),
-    // pocName: yup.string().required("Point of Contact Name is required"),
+    pocName: yup.string().required("Point of Contact Name is required"),
   });
 
   const adminUsersValidationSchema = yup.object().shape({

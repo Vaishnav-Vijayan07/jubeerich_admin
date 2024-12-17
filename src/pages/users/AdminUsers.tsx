@@ -83,7 +83,45 @@ const BasicInputElements = withSwal((props: any) => {
         then: yup.string().required("Password is required").min(8, "Password must be at least 8 characters long").nullable(),
         otherwise: yup.string().nullable().min(8, "Password must be at least 8 characters long"),
       }),
-    // branch_ids: yup.string().nullable().required("Branch is required").min(1, "At least one branch must be selected"),
+    branch_id: yup
+      .string()
+      .nullable()
+      .when("role_id", (roleId, schema) => {
+        if (roleId == counsellor_tl_id || roleId == branch_counsellor_id) {
+          return schema.required("Branch is required").nullable();
+        }
+        return schema.nullable();
+      }),
+    franchise_id: yup
+      .string()
+      .nullable()
+      .when("role_id", (roleId, schema) => {
+        if (roleId == franchise_counsellor_id || roleId == franchise_manager_id) {
+          return schema.required("Franchise is required").nullable();
+        }
+        return schema.nullable();
+      }),
+    country_ids: yup
+      .array()
+      .nullable()
+      .when("role_id", (roleId, schema) => {
+        if (roleId == country_manager_id || roleId == counsellor_id) {
+          return schema
+            .required("Region is required")
+            .min(1, "At least one country is required")
+            .of(yup.string().required("Country ID must be a valid string"));
+        }
+        return schema.nullable();
+      }),
+    region_id: yup
+      .string()
+      .nullable()
+      .when("role_id", (roleId, schema) => {
+        if (roleId == regional_manager_id) {
+          return schema.required("Region is required").nullable();
+        }
+        return schema.nullable();
+      }),
   });
 
   const methods = useForm({
@@ -128,26 +166,6 @@ const BasicInputElements = withSwal((props: any) => {
     setIsUpdate(true);
   };
 
-  //handle delete function
-  // const handleDelete = (id: string) => {
-  //   swal
-  //     .fire({
-  //       title: "Are you sure?",
-  //       text: "This action cannot be undone.",
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonColor: "#3085d6",
-  //       cancelButtonColor: "#d33",
-  //       confirmButtonText: "Yes, delete it!",
-  //     })
-  //     .then((result: any) => {
-  //       if (result.isConfirmed) {
-  //         dispatch(deleteAdminUsers(id));
-  //         // swal.fire("Deleted!", "Your item has been deleted.", "success");
-  //       }
-  //     });
-  // };
-
   //handle onchange function
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -170,27 +188,10 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
-  // const handleBranchChange = (
-  //   selectedOptions: OptionType[] | OptionsType<OptionType> | null,
-  //   actionMeta: ActionMeta<OptionType>
-  // ) => {
-  //   if (Array.isArray(selectedOptions)) {
-  //     setSelectedBranch(selectedOptions);
-  //     const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       branch_ids: selectedIdsString,
-  //     }));
-  //   }
-  // };
-
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     console.log(formData);
-
-    console.count("onsubmit triggered");
 
     // Validate the form using yup
     try {
@@ -231,7 +232,6 @@ const BasicInputElements = withSwal((props: any) => {
                       formData.branch_ids,
                       formData?.country_ids,
                       formData.role_id == regional_manager_id ? formData.region_id : null,
-                      // formData.role_id == counsellor_tl_id ? formData.branch_id : null,
                       formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
                         ? formData.branch_id
                         : null,
@@ -377,15 +377,6 @@ const BasicInputElements = withSwal((props: any) => {
               openModalWithClass("modal-right");
             }}
           />
-
-          {/* Delete Icon */}
-          {/* <FeatherIcons
-            stroke="#dc3545"
-            icon="trash-2"
-            size="15"
-            className="cursor-pointer text-secondary"
-            onClick={() => handleDelete(row.original.id)}
-          /> */}
         </div>
       ),
     },
@@ -425,6 +416,7 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedBranch([]);
     setSelectedCountry([]);
     setSelectedImage(null);
+    setSelectedRole(null)
   };
 
   useEffect(() => {
@@ -441,19 +433,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  // const handleSelectChange = (
-  //   selectedOptions: OptionType[] | OptionsType<OptionType> | null,
-  //   actionMeta: ActionMeta<OptionType>
-  // ) => {
-  //   if (Array.isArray(selectedOptions)) {
-  //     setSelectedCountry(selectedOptions);
-  //     const selectedIdsArray = selectedOptions?.map((option) => parseInt(option.value));
-  //     setFormData((prev: any) => ({
-  //       ...prev,
-  //       country_ids: selectedIdsArray,
-  //     }));
-  //   }
-  // };
   const handleStatusChange = (selectedOptions: OptionType[] | OptionsType<OptionType> | null) => {
     if (Array.isArray(selectedOptions)) {
       setSelectedCountry(selectedOptions);
@@ -465,13 +444,18 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  console.log("form data ==>", formData);
-
   const handleRoleChanges = (selected: any) => {
+    setSelectedCountry([]);
+    setSelectedBranch([]);
+    
     setSelectedRole(selected);
     setFormData((prev) => ({
       ...prev,
       role_id: selected.value,
+      country_ids: [],
+      branch_id: '',
+      region_id: '',
+      franchise_id: ''
     }));
   };
 
@@ -482,7 +466,7 @@ const BasicInputElements = withSwal((props: any) => {
           <h6 className="fw-medium px-3 m-0 py-2 font-13 text-uppercase bg-light">
             <span className="d-block py-1">User Management</span>
           </h6>
-          <Modal.Body>
+          <Modal.Body style={{overflowY: 'auto'}}>
             <div className="alert alert-warning" role="alert">
               <strong>Hi {loggedInUser?.name}, </strong> Enter user details.
             </div>
@@ -492,7 +476,7 @@ const BasicInputElements = withSwal((props: any) => {
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="employee_id">
-                        <Form.Label>Employee ID</Form.Label>
+                        <Form.Label><span className="text-danger fs-4">* </span> Employee ID</Form.Label>
                         <Form.Control
                           type="text"
                           name="employee_id"
@@ -507,7 +491,7 @@ const BasicInputElements = withSwal((props: any) => {
                     </Col>
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="name">
-                        <Form.Label>Name</Form.Label>
+                        <Form.Label><span className="text-danger fs-4">* </span> Name</Form.Label>
                         <Form.Control
                           type="text"
                           placeholder="Enter name"
@@ -523,7 +507,7 @@ const BasicInputElements = withSwal((props: any) => {
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="email">
-                        <Form.Label>Email</Form.Label>
+                        <Form.Label><span className="text-danger fs-4">* </span> Email</Form.Label>
                         <Form.Control
                           type="text"
                           name="email"
@@ -536,7 +520,7 @@ const BasicInputElements = withSwal((props: any) => {
                     </Col>
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="phone">
-                        <Form.Label>Phone</Form.Label>
+                        <Form.Label><span className="text-danger fs-4">* </span> Phone</Form.Label>
                         <Form.Control
                           type="text"
                           name="phone"
@@ -553,7 +537,7 @@ const BasicInputElements = withSwal((props: any) => {
                     <Col md={6}>
                       <Row>
                         <Form.Group className="mb-3" controlId="username">
-                          <Form.Label>Username</Form.Label>
+                          <Form.Label><span className="text-danger fs-4">* </span> Username</Form.Label>
                           <Form.Control
                             type="text"
                             name="username"
@@ -569,7 +553,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                       <Row>
                         <Form.Group className="mb-3" controlId="password">
-                          <Form.Label>Password</Form.Label>
+                          <Form.Label><span className="text-danger fs-4">* </span> Password</Form.Label>
                           <Form.Control
                             type="text"
                             name="password"
@@ -586,7 +570,7 @@ const BasicInputElements = withSwal((props: any) => {
 
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="address">
-                        <Form.Label>Address</Form.Label>
+                        <Form.Label><span className="text-danger fs-4">* </span> Address</Form.Label>
                         <Form.Control
                           as="textarea"
                           rows={5}
@@ -604,25 +588,8 @@ const BasicInputElements = withSwal((props: any) => {
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="role_id">
-                        <Form.Label>Role</Form.Label>
-                        {/* <Form.Select
-                          aria-label="Default select example"
-                          name="role_id"
-                          value={formData.role_id}
-                          onChange={handleInputChange}
-                        >
-                          <option value="" selected>
-                            Choose..
-                          </option>
-                          {RolesData?.map((item: any) => (
-                            <option value={item?.id} key={item?.id}>
-                              {item.role_name}
-                            </option>
-                          ))}
-                        </Form.Select> */}
-
+                        <Form.Label><span className="text-danger fs-4">* </span> Role</Form.Label>
                         <Select
-                          // styles={customStyles}
                           className="react-select react-select-container"
                           classNamePrefix="react-select"
                           name="region_id"
@@ -635,26 +602,10 @@ const BasicInputElements = withSwal((props: any) => {
                       </Form.Group>
                     </Col>
                     {(formData?.role_id == counsellor_id ||
-                      formData.role_id == branch_counsellor_id ||
                       formData.role_id == country_manager_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="role_id">
-                          <Form.Label>Country</Form.Label>
-                          {/* <Form.Select
-                            aria-label="Default select example"
-                            name="country_id"
-                            value={formData.country_id}
-                            onChange={handleInputChange}
-                          >
-                            <option value="" disabled selected>
-                              Choose..
-                            </option>
-                            {CountriesData?.map((item: any) => (
-                              <option value={item?.value} key={item?.value}>
-                                {item.label}
-                              </option>
-                            ))}
-                          </Form.Select> */}
+                          <Form.Label><span className="text-danger fs-4">* </span> Country</Form.Label>
                           <Select
                             className="react-select react-select-container"
                             classNamePrefix="react-select"
@@ -665,7 +616,7 @@ const BasicInputElements = withSwal((props: any) => {
                             isMulti={true}
                             onChange={handleStatusChange as any}
                           />
-                          {validationErrors.role_id && <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>}
+                          {validationErrors.country_ids && <Form.Text className="text-danger">{validationErrors.country_ids}</Form.Text>}
                         </Form.Group>
                       </Col>
                     )}
@@ -673,7 +624,7 @@ const BasicInputElements = withSwal((props: any) => {
                     {formData?.role_id == regional_manager_id && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="region_id">
-                          <Form.Label>Region</Form.Label>
+                          <Form.Label><span className="text-danger fs-4">* </span> Region</Form.Label>
                           <Form.Select
                             aria-label="Default select example"
                             name="region_id"
@@ -690,7 +641,7 @@ const BasicInputElements = withSwal((props: any) => {
                             ))}
                           </Form.Select>
 
-                          {validationErrors.role_id && <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>}
+                          {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
                         </Form.Group>
                       </Col>
                     )}
@@ -698,7 +649,7 @@ const BasicInputElements = withSwal((props: any) => {
                     {(formData?.role_id == franchise_manager_id || formData?.role_id == franchise_counsellor_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="franchise_id">
-                          <Form.Label>Franchise</Form.Label>
+                          <Form.Label><span className="text-danger fs-4">* </span> Franchise</Form.Label>
                           <Form.Select
                             aria-label="Default select example"
                             name="franchise_id"
@@ -725,7 +676,7 @@ const BasicInputElements = withSwal((props: any) => {
                     {(formData?.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="region_id">
-                          <Form.Label>Branch</Form.Label>
+                          <Form.Label><span className="text-danger fs-4">* </span> Branch</Form.Label>
                           <Form.Select
                             aria-label="Default select example"
                             name="branch_id"
@@ -826,23 +777,27 @@ const AdminUsers = () => {
   const [regionData, setRegionData] = useState([]);
   const [roleData, setRoleData] = useState([]);
 
-  //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector((state: RootState) => ({
+  const {
+    state,
+    error,
+    loading,
+    initialLoading,
+    Branch,
+    Franchises,
+    Countries,
+    Regions,
+    RolesData,
+  } = useSelector((state: RootState) => ({
     state: state.Users.adminUsers,
     error: state.Users.error,
     loading: state.Users.loading,
     initialLoading: state.Users.initialLoading,
-  }));
-
-  const Branch = useSelector((state: RootState) => state?.Branches?.branches?.data);
-
-  const Franchises = useSelector((state: RootState) => state?.Franchise?.franchiseUsers);
-
-  const Countries = useSelector((state: RootState) => state?.Country.countries);
-
-  const Regions = useSelector((state: RootState) => state.Region.regions);
-
-  const RolesData = useSelector((state: RootState) => state.Roles.roles);
+    Branch: state?.Branches?.branches?.data,
+    Franchises: state?.Franchise?.franchiseUsers,
+    Countries: state?.Country.countries,
+    Regions: state.Region.regions,
+    RolesData: state.Roles.roles,
+  }));  
 
   useEffect(() => {
     dispatch(getAdminUsers());
@@ -853,69 +808,34 @@ const AdminUsers = () => {
     dispatch(getFranchise());
   }, []);
 
+  // Helper function to format data
+  const formatData = (data: any, valueKey: string, labelKey: string) => {
+    return data?.map((item: any) => ({
+      value: item[valueKey]?.toString(),
+      label: item[labelKey],
+    }));
+  };
+
+  // Set state based on formatted data
   useEffect(() => {
-    if (Regions) {
-      const regionArray = Regions?.map((region: any) => ({
-        value: region.id.toString(),
-        label: region.region_name,
-      }));
-      setRegionData(regionArray);
-    }
+    if (Regions) setRegionData(formatData(Regions, "id", "region_name"));
   }, [Regions]);
 
   useEffect(() => {
-    if (RolesData) {
-      const roleArray = RolesData?.map((role: any) => ({
-        value: role.id.toString(),
-        label: role.role_name,
-      }));
-      setRoleData(roleArray);
-    }
+    if (RolesData) setRoleData(formatData(RolesData, "id", "role_name"));
   }, [RolesData]);
 
   useEffect(() => {
-    if (Regions) {
-      const regionArray = Regions?.map((region: any) => ({
-        value: region.id.toString(),
-        label: region.region_name,
-      }));
-      setRegionData(regionArray);
-    }
-  }, [Regions]);
-
-  useEffect(() => {
-    if (Branch) {
-      const branchArray = Branch?.map((branch: any) => ({
-        value: branch.id.toString(),
-        label: branch.branch_name,
-      }));
-      setBranchData(branchArray);
-    }
+    if (Branch) setBranchData(formatData(Branch, "id", "branch_name"));
   }, [Branch]);
 
   useEffect(() => {
-    if (Franchises) {
-      const franchiseArray = Franchises?.map((franchise: any) => ({
-        value: franchise.id.toString(),
-        label: franchise.name,
-      }));
-      setFranchiseData(franchiseArray);
-    }
+    if (Franchises) setFranchiseData(formatData(Franchises, "id", "name"));
   }, [Franchises]);
 
   useEffect(() => {
-    if (Countries) {
-      const countryArray = Countries?.map((country: any) => ({
-        value: country.id.toString(),
-        label: country.country_name,
-      }));
-      setCountryData(countryArray);
-    }
+    if (Countries) setCountryData(formatData(Countries, "id", "country_name"));
   }, [Countries]);
-
-  // if (initialLoading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
-  // }
 
   return (
     <React.Fragment>

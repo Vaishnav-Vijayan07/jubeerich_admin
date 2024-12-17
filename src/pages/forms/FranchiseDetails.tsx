@@ -128,11 +128,6 @@ const FranchiseDetails = withSwal((props: any) => {
       sort: false,
     },
     {
-      Header: "Country",
-      accessor: "country_name",
-      sort: false,
-    },
-    {
       Header: "Status",
       accessor: "status",
       sort: false,
@@ -402,10 +397,9 @@ const FranchiseDetails = withSwal((props: any) => {
                       isTL ? franchise_manager_id : formData.role_id,
                       selectedImage,
                       formData.branch_ids,
-                      formData?.country_id,
-                      formData.role_id == regional_manager_id ? formData.region_id : null,
-                      // branchId,
-                      formData.role_id == branch_counsellor_id ? formData.country_ids : null,
+                      null,
+                      null,
+                      null,
                       franchiseId
                     )
                   );
@@ -431,10 +425,9 @@ const FranchiseDetails = withSwal((props: any) => {
                       isTL ? franchise_manager_id : formData.role_id,
                       selectedImage,
                       formData.branch_ids,
-                      formData?.country_id,
-                      formData.role_id == regional_manager_id ? formData.region_id : null,
-                      // branchId,
-                      formData.role_id == branch_counsellor_id ? formData.country_ids : null,
+                      null,
+                      null,
+                      null,
                       franchiseId
                     )
                   );
@@ -541,6 +534,7 @@ const FranchiseDetails = withSwal((props: any) => {
                 <Button
                   className="btn btn-primary"
                   onClick={() => [setShowModal(true), setIsTL(true), handleCancelUpdate(), handleResetValues()]}
+                  disabled={franchiseCounsellorTLData?.length > 0}
                 >
                   <i className="mdi mdi-plus-circle"></i>
                   <span className="ms-1">Franchise Manager</span>
@@ -688,32 +682,6 @@ const FranchiseDetails = withSwal((props: any) => {
                         </Col>
                       </Row>
 
-                      <Row>
-                        <Col md={6}>
-                          <Form.Group className="mb-3" controlId="role_id">
-                            <Form.Label>Country</Form.Label>
-                            <Form.Select
-                              aria-label="Default select example"
-                              name="country_id"
-                              value={formData.country_id}
-                              onChange={handleInputChange}
-                            >
-                              <option value="" disabled selected>
-                                Choose..
-                              </option>
-                              {countryData?.map((item: any) => (
-                                <option value={item?.value} key={item?.value}>
-                                  {item.label}
-                                </option>
-                              ))}
-                            </Form.Select>
-
-                            {validationErrors.role_id && (
-                              <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>
-                            )}
-                          </Form.Group>
-                        </Col>
-                      </Row>
                       <div className="text-end">
                         <Button
                           variant="primary"
