@@ -41,6 +41,7 @@ interface LeadsData {
     isAssignedLeads: boolean;
     currentPage: number;
     currentLimit: number;
+    keyword?: string | undefined;
     id: string;
     full_name: string;
     email: string;
@@ -79,11 +80,11 @@ if (userInfo) {
   userRole = JSON.parse(userInfo)?.role;
 }
 
-function* getLeads({ payload: { currentPage, currentLimit } }: LeadsData): SagaIterator {
+function* getLeads({ payload: { currentPage, currentLimit, keyword } }: LeadsData): SagaIterator {
   try {
     let response;
     let data;
-    response = yield call(getLeadsApi, currentPage, currentLimit);
+    response = yield call(getLeadsApi, currentPage, currentLimit,keyword);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -115,7 +116,6 @@ function* getLeadsForTL({ payload: { currentPage, currentLimit } }: LeadsData): 
   try {
     let response;
     let data;
-    console.log("cre_tl");
     response = yield call(getLeadsByCreTl, currentPage, currentLimit);
     data = response.data;
 
@@ -244,12 +244,10 @@ function* addLeads({
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));
 
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-    console.log("userInfo ===>", userInfo);
 
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
 
-      console.log("role ==>", role);
       // if (role == cre_tl_id) {
       //   console.log("getLeadsTL called");
 
@@ -334,7 +332,6 @@ function* updateLeads({
 
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
-    console.log("userInfo ===>", userInfo);
 
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
@@ -362,7 +359,6 @@ function* deleteLeads({ payload: { id, isAssignedLeads, currentLimit, currentPag
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.DELETE_LEADS, data));
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
-    console.log("userInfo ===>", userInfo);
 
     if (userInfo) {
       const { role } = JSON.parse(userInfo);

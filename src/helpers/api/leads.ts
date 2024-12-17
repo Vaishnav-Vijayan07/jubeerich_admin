@@ -5,8 +5,17 @@ const api = new APICore();
 const baseUrl = "/leads";
 
 //
-function getLeads(currentPage: number, currentLimit: number) {
-  return api.get(`${baseUrl}`, { page: currentPage, limit: currentLimit });
+function getLeads(currentPage: number, currentLimit: number, keyword?: string | undefined) {
+  const params: any = {
+    page: currentPage,
+    limit: currentLimit,
+  };
+
+  if (keyword) {
+    params.keyword = keyword;
+  }
+
+  return api.get(`${baseUrl}`, params);
 }
 
 function getLeadsByCreTl(currentPage: number, currentLimit: number) {

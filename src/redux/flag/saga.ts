@@ -28,7 +28,6 @@ interface FlagData {
 function* getFlagSaga(): SagaIterator {
   try {
     const response = yield call(getFlagsApi);
-    console.log(response);
     const data = response.data.data;
 
     yield put(flagApiResponseSuccess(FlagActionTypes.GET_FLAG, data));
@@ -41,7 +40,6 @@ function* getFlagSaga(): SagaIterator {
 function* getFlagByIdSaga({ payload: { id } }: FlagData): SagaIterator {
   try {
     const response = yield call(getFlagByidApi, id);
-    console.log(response);
     const data = response.data;
 
     yield put(flagApiResponseSuccess(FlagActionTypes.GET_FLAG_BY_ID, data));
@@ -53,7 +51,6 @@ function* getFlagByIdSaga({ payload: { id } }: FlagData): SagaIterator {
 function* deleteFlagSaga({ payload: { id } }: FlagData): SagaIterator {
   try {
     const response = yield call(deleteFlagsApi, id);
-    console.log(response);
     const data = response.data.message;
 
     yield put(flagApiResponseSuccess(FlagActionTypes.DELETE_FLAG, data));
@@ -73,7 +70,6 @@ function* addFlagSaga({
       flag_description,
       color
     });
-    console.log(response);
     const data = response?.data?.message;
 
     yield put(flagApiResponseSuccess(FlagActionTypes.ADD_FLAG, data));
@@ -95,7 +91,6 @@ function* updateFlagSaga({
       flag_name,
       color
     });
-    console.log(response);
     const data = response?.data?.message;
 
     yield put(flagApiResponseSuccess(FlagActionTypes.UPDATE_FLAG, data));

@@ -20,6 +20,9 @@ const Leads = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setcurrentLimit] = useState(20);
+  const [close, setClose] = useState(false);
+  const [value, setValue] = useState("");
+  const [search, setSearch] = useState("");
 
   const handlePageChange = useCallback((event: any, value: any) => {
     setCurrentPage(value);
@@ -30,6 +33,22 @@ const Leads = () => {
     setCurrentPage(1);
   }, []);
 
+  const handleSearch = () => {
+    setSearch(value);
+    setCurrentPage(1);
+    setcurrentLimit(20);
+  };
+
+  const handleValue = (searchItem: string) => {
+    setValue(searchItem);
+  };
+
+  const handleClose = () => {
+    setClose(!close);
+    setValue("");
+    setSearch("");
+  };
+
   console.log("PAGE COUNT", currentPage);
 
   let userRole: any;
@@ -39,17 +58,20 @@ const Leads = () => {
     userBranchId = JSON.parse(userInfo)?.branch_id;
   }
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages, totalCount } = useSelector((state: RootState) => ({
-    user: state.Auth.user,
-    state: state.Leads.leads,
-    totalPages: state.Leads.totalPages,
-    limit: state.Leads.limit,
-    totalCount: state.Leads.totalCount,
-    error: state.Leads.error,
-    loading: state.Leads.loading,
-    initialLoading: state.Leads.initialloading,
-    branchCounsellor: state.Users?.branchCounsellor,
-  }));
+  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages, totalCount, isSearchApplied } = useSelector(
+    (state: RootState) => ({
+      user: state.Auth.user,
+      state: state.Leads.leads,
+      totalPages: state.Leads.totalPages,
+      limit: state.Leads.limit,
+      totalCount: state.Leads.totalCount,
+      isSearchApplied: state.Leads.isSearchApplied,
+      error: state.Leads.error,
+      loading: state.Leads.loading,
+      initialLoading: state.Leads.initialloading,
+      branchCounsellor: state.Users?.branchCounsellor,
+    })
+  );
 
   console.log("ROOOT", state);
 
@@ -63,7 +85,7 @@ const Leads = () => {
       dispatch(getLeadsTL(currentPage, currentLimit));
     } else {
       if (userRole) {
-        dispatch(getLead(currentPage, currentLimit));
+        dispatch(getLead(currentPage, currentLimit, search == "" ? undefined : search));
       }
     }
 
@@ -72,7 +94,7 @@ const Leads = () => {
     }
 
     console.count("loading count");
-  }, [userRole, currentPage, currentLimit]);
+  }, [userRole, currentPage, currentLimit, close, search]);
 
   const fetchAllCounsellors = useCallback(() => {
     axios
@@ -139,6 +161,11 @@ const Leads = () => {
             totalCount={totalCount}
             currentLimit={currentLimit}
             handleLimitChange={handleLimitChange}
+            handleSearch={handleSearch}
+            isSearchApplied={isSearchApplied}
+            onClose={handleClose}
+            value={value}
+            onValueChange={handleValue}
           />
         </Col>
       </Row>

@@ -31,6 +31,7 @@ import LeadsFilters from "./LeadsFilters";
 import { AppDispatch } from "../../redux/store";
 import { Pagination } from "@mui/material";
 import CustomPagination from "../../components/CustomPagination";
+import CustomSearchBox from "../../components/CustomSearchBox";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -70,6 +71,11 @@ const BasicInputElements = withSwal((props: any) => {
     totalCount,
     currentLimit,
     handleLimitChange,
+    handleSearch,
+    isSearchApplied,
+    onClose,
+    onValueChange,
+    value,
   } = props;
 
   //State for handling update function
@@ -843,6 +849,13 @@ const BasicInputElements = withSwal((props: any) => {
                 </>
               ) : (
                 <>
+                  <CustomSearchBox
+                    onSearch={handleSearch}
+                    isSearchApplied={isSearchApplied}
+                    onClose={onClose}
+                    value={value}
+                    onValueChange={onValueChange}
+                  />
                   <Table
                     columns={columns}
                     data={records ? records : []}
@@ -850,7 +863,7 @@ const BasicInputElements = withSwal((props: any) => {
                     sizePerPageList={sizePerPageList}
                     isSortable={true}
                     pagination={false}
-                    isSearchable={true}
+                    isSearchable={false}
                     tableClass="table-striped dt-responsive nowrap w-100"
                     initialLoading={initialLoading}
                   />

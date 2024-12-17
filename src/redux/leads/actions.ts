@@ -52,9 +52,9 @@ export const LeadsApiResponseError = (actionType: string, error: string): LeadsA
   payload: { actionType, error },
 });
 
-export const getLead = (currentPage: number, currentLimit: number): LeadsActionType => ({
+export const getLead = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS,
-  payload: { currentPage, currentLimit },
+  payload: { currentPage, currentLimit, keyword },
 });
 
 export const getLeadsRegionalManager = (): LeadsActionType => ({
