@@ -47,6 +47,8 @@ type Props = {
 };
 
 function CustomSearchBox({ onSearch, onClose, onValueChange, value, placeholder = "Search...", isSearchApplied }: Props) {
+  console.log("Inside custom box");
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onValueChange(e.target.value);
   };

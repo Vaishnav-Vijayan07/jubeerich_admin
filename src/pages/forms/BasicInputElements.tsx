@@ -825,6 +825,13 @@ const BasicInputElements = withSwal((props: any) => {
               </div>
               {userRole == cre_tl_id || userRole == regional_manager_id || userRole == counsellor_tl_id ? (
                 <>
+                 <CustomSearchBox
+                    onSearch={handleSearch}
+                    isSearchApplied={isSearchApplied}
+                    onClose={onClose}
+                    value={value}
+                    onValueChange={onValueChange}
+                  />
                   <Table
                     columns={columns}
                     data={records ? records : []}
@@ -834,7 +841,7 @@ const BasicInputElements = withSwal((props: any) => {
                     pagination={true}
                     isCustomPaginationNeeded={true}
                     isSelectable={true}
-                    isSearchable={true}
+                    isSearchable={false}
                     tableClass="table-striped dt-responsive nowrap w-100"
                     onSelect={handleSelectedValues}
                     initialLoading={initialLoading}

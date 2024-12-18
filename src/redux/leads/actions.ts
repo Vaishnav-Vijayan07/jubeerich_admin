@@ -62,14 +62,14 @@ export const getLeadsRegionalManager = (): LeadsActionType => ({
   payload: {},
 });
 
-export const getLeadsTL = (currentPage: number, currentLimit: number): LeadsActionType => ({
+export const getLeadsTL = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_TL,
-  payload: { currentPage, currentLimit },
+  payload: { currentPage, currentLimit, keyword },
 });
 
-export const getLeadAssigned = (currentPage: number, currentLimit: number): LeadsActionType => ({
+export const getLeadAssigned = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_ASSIGNED,
-  payload: { currentPage, currentLimit },
+  payload: { currentPage, currentLimit, keyword },
 });
 
 export const getLeadAssignedByCounsellorTL = (): LeadsActionType => ({

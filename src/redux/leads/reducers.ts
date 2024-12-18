@@ -104,12 +104,13 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             allCres: action.payload.data.data.allCres,
             totalPages: action.payload.data.data.totalPages,
             limit: action.payload.data.data.limit,
+            isSearchApplied: action.payload.data.data.isSearchApplied,
             totalCount: action.payload.data.data.count,
             loading: false,
             initialloading: false,
           };
         }
-
+        
         case LeadsActionTypes.GET_LEADS_ASSIGNED: {
           return {
             ...state,
@@ -117,6 +118,7 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             totalPages: action.payload.data.data.totalPages,
             limit: action.payload.data.data.limit,
             totalCount: action.payload.data.data.count,
+            isSearchApplied: action.payload.data.data.isSearchApplied,
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,

@@ -84,7 +84,7 @@ function* getLeads({ payload: { currentPage, currentLimit, keyword } }: LeadsDat
   try {
     let response;
     let data;
-    response = yield call(getLeadsApi, currentPage, currentLimit,keyword);
+    response = yield call(getLeadsApi, currentPage, currentLimit, keyword);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -112,11 +112,11 @@ function* getLeadsAssignedByRegionalManager(): SagaIterator {
   }
 }
 
-function* getLeadsForTL({ payload: { currentPage, currentLimit } }: LeadsData): SagaIterator {
+function* getLeadsForTL({ payload: { currentPage, currentLimit, keyword } }: LeadsData): SagaIterator {
   try {
     let response;
     let data;
-    response = yield call(getLeadsByCreTl, currentPage, currentLimit);
+    response = yield call(getLeadsByCreTl, currentPage, currentLimit, keyword);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -127,9 +127,9 @@ function* getLeadsForTL({ payload: { currentPage, currentLimit } }: LeadsData): 
   }
 }
 
-function* getAssignedLeads({ payload: { currentPage, currentLimit } }: LeadsData): SagaIterator {
+function* getAssignedLeads({ payload: { currentPage, currentLimit, keyword } }: LeadsData): SagaIterator {
   try {
-    let response = yield call(getAssignedLeadsByCreTl, currentPage, currentLimit);
+    let response = yield call(getAssignedLeadsByCreTl, currentPage, currentLimit,keyword);
     let data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -332,12 +332,11 @@ function* updateLeads({
 
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
-
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
 
       if (role == cre_tl_id && isAssignedLeads) {
-        yield put(getLeadAssigned( currentPage, currentLimit));
+        yield put(getLeadAssigned(currentPage, currentLimit));
       } else if (role == cre_tl_id) {
         yield put(getLeadsTL(currentPage, currentLimit));
       } else if (role == counsellor_tl_id && isAssignedLeads) {
@@ -359,12 +358,11 @@ function* deleteLeads({ payload: { id, isAssignedLeads, currentLimit, currentPag
     yield put(LeadsApiResponseSuccess(LeadsActionTypes.DELETE_LEADS, data));
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
-
     if (userInfo) {
       const { role } = JSON.parse(userInfo);
 
       if (role == cre_tl_id && isAssignedLeads) {
-        yield put(getLeadAssigned( currentPage, currentLimit));
+        yield put(getLeadAssigned(currentPage, currentLimit));
       } else if (role == cre_tl_id) {
         yield put(getLeadsTL(currentPage, currentLimit));
       } else if (role == counsellor_tl_id && isAssignedLeads) {
