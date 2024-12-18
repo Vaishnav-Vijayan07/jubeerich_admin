@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Row, Col, Card, Button, Dropdown, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
@@ -95,7 +95,6 @@ const BasicInputElements = withSwal((props: any) => {
   useEffect(() => {
     setFilteredItems(state);
   }, [state]);
-  console.log("FROM TABLE", selectedValues);
 
   let records: TableRecords[] = filteredItems;
   // const records: TableRecords[] = filteredItems;
@@ -104,9 +103,9 @@ const BasicInputElements = withSwal((props: any) => {
     records = filteredItems;
   }, [filteredItems]);
 
-  const changeFilteredItemsData = (data: any) => {
+  const changeFilteredItemsData = useCallback((data: any) => {
     setFilteredItems(data);
-  };
+  }, []);
 
   const handleClearModal = () => {
     setClearLeadModal((prev: any) => !prev);
@@ -166,238 +165,240 @@ const BasicInputElements = withSwal((props: any) => {
       });
   };
 
-  const columns = [
-    {
-      Header: "No",
-      accessor: "",
-      sort: false,
-      Cell: ({ row }: any) => <span>{currentPage * currentLimit - currentLimit + row.index + 1}</span>,
-    },
-    {
-      Header: "Name",
-      accessor: "full_name",
-      sort: true,
-      minWidth: 150,
-    },
-    {
-      Header: "Email",
-      accessor: "email",
-      sort: false,
-      minWidth: 100,
-      isTruncate: true,
-    },
-    {
-      Header: "City",
-      accessor: "city",
-      sort: false,
-      minWidth: 75,
-    },
-    {
-      Header: "Country",
-      accessor: "preferredCountries",
-      filter: "includes",
-      sort: false,
-      minWidth: 100,
-      isTruncate: true,
-      Cell: ({ row }: any) => (
-        <ul style={{ listStyle: "none", margin: "0" }}>
-          {row.original.preferredCountries.map((item: any) => (
-            <li>{item?.country_name}</li>
-          ))}
-        </ul>
-      ),
-    },
-    {
-      Header: "Office",
-      accessor: "office_type_name",
-      sort: false,
-      minWidth: 75,
-      isTruncate: true,
-    },
-    {
-      Header: "Source",
-      accessor: "source_name",
-      sort: false,
-      minWidth: 75,
-    },
-    {
-      Header: "Lead Received Date",
-      accessor: "lead_received_date",
-      sort: false,
-      minWidth: 150,
-      Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
-    },
-    // {
-    //   Header: "Followup Date",
-    //   accessor: "followup_date",
-    //   sort: false,
-    //   minWidth: 150,
-    //   Cell: ({ row }: any) => <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>,
-    // },
-    {
-      Header: "Department",
-      accessor: "stage",
-      sort: false,
-      minWidth: 50,
-      isTruncate: true,
-    },
-    ...(user?.role == cre_tl_id
-      ? [
-          {
-            Header: "Assigned CRE",
-            accessor: "cre_name",
-            sort: false,
-            minWidth: 50,
-            isTruncate: true,
-          },
-        ]
-      : []),
-    ...(user?.role == counsellor_tl_id
-      ? [
-          {
-            Header: "Assigned Status",
-            accessor: "assigned_branch_counselor",
-            sort: false,
-            minWidth: 50,
-            Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
-            isTruncate: true,
-          },
-          {
-            Header: "Assigned Counselor",
-            accessor: "assigned_branch_counselor_name",
-            sort: false,
-            minWidth: 50,
-            isTruncate: true,
-          },
-        ]
-      : []),
-    ...(user?.role == cre_id
-      ? [
-          {
-            Header: "Assigned by",
-            accessor: "updated_by_user",
-            sort: false,
-            minWidth: 50,
-            isTruncate: true,
-          },
-        ]
-      : []),
-    ...(user?.role == regional_manager_id
-      ? [
-          {
-            Header: "Branch Assigned",
-            accessor: "assigned_regional_manager",
-            sort: false,
-            minWidth: 50,
-            isTruncate: true,
-
-            Cell: ({ row }: any) => <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
-          },
-        ]
-      : []),
-    ...(user?.role == regional_manager_id
-      ? [
-          {
-            Header: "Branch Name",
-            accessor: "branch_name",
-            sort: false,
-            minWidth: 50,
-            isTruncate: true,
-          },
-        ]
-      : []),
-    ...(user?.role == cre_id || user?.role == cre_tl_id
-      ? [
-          {
-            Header: "Assign Type",
-            accessor: "assign_type",
-            sort: false,
-            minWidth: 50,
-            isTruncate: true,
-
-            Cell: ({ row }: any) => {
-              const assignType = row.original.assign_type;
-
-              // Define display text for each possible assignType
-              const displayText: { [key: string]: string } = {
-                direct_assign: "Direct Assigned",
-                auto_assign: "Auto Assigned",
-                null: "", // Handle the string "null" explicitly
-                undefined: "", // Handle the string "undefined" explicitly
-              };
-              return <span>{displayText[assignType] || ""}</span>;
+  const columns = useMemo(() => {
+    return [
+      {
+        Header: "No",
+        accessor: "",
+        sort: false,
+        Cell: ({ row }: any) => <span>{currentPage * currentLimit - currentLimit + row.index + 1}</span>,
+      },
+      {
+        Header: "Name",
+        accessor: "full_name",
+        sort: true,
+        minWidth: 150,
+      },
+      {
+        Header: "Email",
+        accessor: "email",
+        sort: false,
+        minWidth: 100,
+        isTruncate: true,
+      },
+      {
+        Header: "City",
+        accessor: "city",
+        sort: false,
+        minWidth: 75,
+      },
+      {
+        Header: "Country",
+        accessor: "preferredCountries",
+        filter: "includes",
+        sort: false,
+        minWidth: 100,
+        isTruncate: true,
+        Cell: ({ row }: any) => (
+          <ul style={{ listStyle: "none", margin: "0" }}>
+            {row.original.preferredCountries.map((item: any) => (
+              <li>{item?.country_name}</li>
+            ))}
+          </ul>
+        ),
+      },
+      {
+        Header: "Office",
+        accessor: "office_type_name",
+        sort: false,
+        minWidth: 75,
+        isTruncate: true,
+      },
+      {
+        Header: "Source",
+        accessor: "source_name",
+        sort: false,
+        minWidth: 75,
+      },
+      {
+        Header: "Lead Received Date",
+        accessor: "lead_received_date",
+        sort: false,
+        minWidth: 150,
+        Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
+      },
+      // {
+      //   Header: "Followup Date",
+      //   accessor: "followup_date",
+      //   sort: false,
+      //   minWidth: 150,
+      //   Cell: ({ row }: any) => <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>,
+      // },
+      {
+        Header: "Department",
+        accessor: "stage",
+        sort: false,
+        minWidth: 50,
+        isTruncate: true,
+      },
+      ...(user?.role == cre_tl_id
+        ? [
+            {
+              Header: "Assigned CRE",
+              accessor: "cre_name",
+              sort: false,
+              minWidth: 50,
+              isTruncate: true,
             },
-          },
-        ]
-      : []),
-    ...(user?.role == cre_id || user?.role == cre_reception_id
-      ? [
-          {
-            Header: "Assigned counsellor",
-            accessor: "counselors",
-            sort: false,
-            minWidth: 50,
-            isTruncate: true,
-
-            Cell: ({ row }: any) => {
-              const counselors = row?.original.counselors;
-              return (
-                <ul style={{ listStyle: "none", padding: 0 }}>
-                  {counselors && counselors.length > 0 ? (
-                    counselors.map((item: any) => <li key={item?.counselor_name}>{item?.counselor_name}</li>)
-                  ) : (
-                    <li>Not assigned</li>
-                  )}
-                </ul>
-              );
+          ]
+        : []),
+      ...(user?.role == counsellor_tl_id
+        ? [
+            {
+              Header: "Assigned Status",
+              accessor: "assigned_branch_counselor",
+              sort: false,
+              minWidth: 50,
+              Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+              isTruncate: true,
             },
-          },
-        ]
-      : []),
-    {
-      Header: "Status",
-      accessor: "status",
-      sort: false,
-      isTruncate: true,
-    },
-    {
-      Header: "Actions",
-      accessor: "",
-      sort: false,
-      Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
-          {/* Edit Icon */}
-          <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
-            <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
-          </Link>
+            {
+              Header: "Assigned Counselor",
+              accessor: "assigned_branch_counselor_name",
+              sort: false,
+              minWidth: 50,
+              isTruncate: true,
+            },
+          ]
+        : []),
+      ...(user?.role == cre_id
+        ? [
+            {
+              Header: "Assigned by",
+              accessor: "updated_by_user",
+              sort: false,
+              minWidth: 50,
+              isTruncate: true,
+            },
+          ]
+        : []),
+      ...(user?.role == regional_manager_id
+        ? [
+            {
+              Header: "Branch Assigned",
+              accessor: "assigned_regional_manager",
+              sort: false,
+              minWidth: 50,
+              isTruncate: true,
 
-          {/* <Link
-            to="#"
-            className="action-icon"
-            onClick={() => {
-              handleUpdate(row.original);
-              openModalWithClass("modal-full-width");
-            }}
-          >
-            <i className="mdi mdi-square-edit-outline"></i>
-          </Link> */}
+              Cell: ({ row }: any) => <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+            },
+          ]
+        : []),
+      ...(user?.role == regional_manager_id
+        ? [
+            {
+              Header: "Branch Name",
+              accessor: "branch_name",
+              sort: false,
+              minWidth: 50,
+              isTruncate: true,
+            },
+          ]
+        : []),
+      ...(user?.role == cre_id || user?.role == cre_tl_id
+        ? [
+            {
+              Header: "Assign Type",
+              accessor: "assign_type",
+              sort: false,
+              minWidth: 50,
+              isTruncate: true,
 
-          {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="Delete"
-          >
-            {/* <i className="mdi mdi-delete"></i> */}
-            <i className="mdi mdi-delete-outline"></i>
-          </Link>
-        </div>
-      ),
-    },
-  ];
+              Cell: ({ row }: any) => {
+                const assignType = row.original.assign_type;
+
+                // Define display text for each possible assignType
+                const displayText: { [key: string]: string } = {
+                  direct_assign: "Direct Assigned",
+                  auto_assign: "Auto Assigned",
+                  null: "", // Handle the string "null" explicitly
+                  undefined: "", // Handle the string "undefined" explicitly
+                };
+                return <span>{displayText[assignType] || ""}</span>;
+              },
+            },
+          ]
+        : []),
+      ...(user?.role == cre_id || user?.role == cre_reception_id
+        ? [
+            {
+              Header: "Assigned counsellor",
+              accessor: "counselors",
+              sort: false,
+              minWidth: 50,
+              isTruncate: true,
+
+              Cell: ({ row }: any) => {
+                const counselors = row?.original.counselors;
+                return (
+                  <ul style={{ listStyle: "none", padding: 0 }}>
+                    {counselors && counselors.length > 0 ? (
+                      counselors.map((item: any) => <li key={item?.counselor_name}>{item?.counselor_name}</li>)
+                    ) : (
+                      <li>Not assigned</li>
+                    )}
+                  </ul>
+                );
+              },
+            },
+          ]
+        : []),
+      {
+        Header: "Status",
+        accessor: "status",
+        sort: false,
+        isTruncate: true,
+      },
+      {
+        Header: "Actions",
+        accessor: "",
+        sort: false,
+        Cell: ({ row }: any) => (
+          <div className="d-flex justify-content-center align-items-center gap-2">
+            {/* Edit Icon */}
+            <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
+              <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
+            </Link>
+
+            {/* <Link
+              to="#"
+              className="action-icon"
+              onClick={() => {
+                handleUpdate(row.original);
+                openModalWithClass("modal-full-width");
+              }}
+            >
+              <i className="mdi mdi-square-edit-outline"></i>
+            </Link> */}
+
+            {/* Delete Icon */}
+            <Link
+              to="#"
+              className="action-icon"
+              onClick={() => handleDelete(row.original.id)}
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Delete"
+            >
+              {/* <i className="mdi mdi-delete"></i> */}
+              <i className="mdi mdi-delete-outline"></i>
+            </Link>
+          </div>
+        ),
+      },
+    ];
+  }, [user?.role, currentPage, currentLimit]);
 
   const handleSelectedValues = (values: any) => {
     setSelectedValues(values);
@@ -825,7 +826,7 @@ const BasicInputElements = withSwal((props: any) => {
               </div>
               {userRole == cre_tl_id || userRole == regional_manager_id || userRole == counsellor_tl_id ? (
                 <>
-                 <CustomSearchBox
+                  <CustomSearchBox
                     onSearch={handleSearch}
                     isSearchApplied={isSearchApplied}
                     onClose={onClose}
