@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Spinner, ButtonGroup, ToggleButton } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
@@ -56,6 +56,11 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedCountry, setSelectedCountry] = useState<any[]>([]);
   const [selectedRole, setSelectedRole] = useState(null);
   const animatedComponents = makeAnimated();
+  const [radioValue, setRadioValue] = useState<boolean>(true);
+  const radios = [
+    { name: 'Active', value: 'true' },
+    { name: 'Disable', value: 'false' },
+  ];
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -141,6 +146,7 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedRole(updatedRole[0]);
 
     setSelectedBranch(selectedPowerIds);
+    setRadioValue(item?.status)
 
     setFormData((prev) => ({
       ...prev,
@@ -160,6 +166,7 @@ const BasicInputElements = withSwal((props: any) => {
       country_ids: countryArray,
       profile_image_path: item?.profile_image_path,
       franchise_id: item?.franchise_id,
+      status: item?.status
     }));
 
     setSelectedCountry(item?.countries);
@@ -191,7 +198,7 @@ const BasicInputElements = withSwal((props: any) => {
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+    console.log(radioValue);
 
     // Validate the form using yup
     try {
@@ -235,7 +242,8 @@ const BasicInputElements = withSwal((props: any) => {
                       formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
                         ? formData.branch_id
                         : null,
-                      formData?.franchise_id || null
+                      formData?.franchise_id || null,
+                      radioValue
                     )
                   );
                 } catch (err) {
@@ -267,7 +275,8 @@ const BasicInputElements = withSwal((props: any) => {
                       formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
                         ? formData.branch_id
                         : null,
-                      formData?.franchise_id || null
+                      formData?.franchise_id || null,
+                      radioValue
                     )
                   );
                 } catch (err) {
@@ -417,6 +426,7 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedCountry([]);
     setSelectedImage(null);
     setSelectedRole(null)
+    setRadioValue(true)
   };
 
   useEffect(() => {
@@ -474,7 +484,7 @@ const BasicInputElements = withSwal((props: any) => {
               <Col className="bg-white">
                 <Form onSubmit={onSubmit}>
                   <Row>
-                    <Col md={6}>
+                    <Col md={4}>
                       <Form.Group className="mb-3" controlId="employee_id">
                         <Form.Label><span className="text-danger fs-4">* </span> Employee ID</Form.Label>
                         <Form.Control
@@ -489,7 +499,7 @@ const BasicInputElements = withSwal((props: any) => {
                         )}
                       </Form.Group>
                     </Col>
-                    <Col md={6}>
+                    <Col md={4}>
                       <Form.Group className="mb-3" controlId="name">
                         <Form.Label><span className="text-danger fs-4">* </span> Name</Form.Label>
                         <Form.Control
@@ -501,6 +511,26 @@ const BasicInputElements = withSwal((props: any) => {
                         />
                         {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>}
                       </Form.Group>
+                    </Col>
+                    <Col md={4}>
+                    <Row>
+                      <ButtonGroup className="mt-4">
+                        {radios.map((radio, idx) => (
+                          <ToggleButton
+                            key={idx}
+                            id={`radio-${idx}`}
+                            type="radio"
+                            variant={radioValue ? 'outline-success' : 'outline-danger'}
+                            name="status"
+                            value={radio.value}
+                            checked={radioValue.toString() == radio.value.toString()}
+                            onChange={() => setRadioValue((prev) => !prev)}
+                          >
+                            {radio.name}
+                          </ToggleButton>
+                        ))}
+                      </ButtonGroup>
+                    </Row>
                     </Col>
                   </Row>
 

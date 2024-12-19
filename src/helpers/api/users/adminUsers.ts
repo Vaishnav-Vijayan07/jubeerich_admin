@@ -50,6 +50,7 @@ function addAdminUsers(params: {
   franchise_id?: string
   region_id?: string
   branch_id?: string,
+  status?: boolean;
 }) {
   // if (params.country_id == undefined) {
   //   params.country_id = null;
@@ -78,6 +79,7 @@ function updateAdminUsers(
     franchise_id?: string;
     region_id?: string;
     branch_id?: string;
+    status?: boolean;
   }
 ) {
   // console.log(params.country_id);

@@ -51,6 +51,7 @@ export interface MyInitialState {
   branch_id?: string;
   country_ids?: string[];
   franchise_id?: string;
+  status?: any
 }
 
 export const initialState = {
@@ -69,6 +70,7 @@ export const initialState = {
   profile_image_path: "",
   region_id: "",
   franchise_id: "",
+  status: null
 };
 
 export const initialValidationState = {

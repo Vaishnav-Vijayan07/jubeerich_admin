@@ -48,6 +48,7 @@ interface UsersData {
     branch_id: string,
     region_id: string,
     franchise_id: any
+    status: boolean 
   };
   type: string;
 }
@@ -164,7 +165,8 @@ function* addAdminUser({
     country_ids,
     region_id,
     branch_id,
-    franchise_id
+    franchise_id,
+    status
   },
 }: UsersData): SagaIterator {
   try {
@@ -183,7 +185,8 @@ function* addAdminUser({
       country_ids,
       region_id,
       branch_id,
-      franchise_id
+      franchise_id,
+      status
     });
     const data = response.data;
 
@@ -232,7 +235,8 @@ function* updateAdminUser({
     country_ids,
     region_id,
     branch_id,
-    franchise_id
+    franchise_id,
+    status
   },
 }: UsersData): SagaIterator {
   try {
@@ -251,7 +255,8 @@ function* updateAdminUser({
       country_ids,
       region_id,
       branch_id,
-      franchise_id
+      franchise_id,
+      status
     });
     const data = response.data.message;
 

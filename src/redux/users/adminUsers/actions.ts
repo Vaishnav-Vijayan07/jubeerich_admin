@@ -91,7 +91,8 @@ export const addAdminUsers = (
   country_ids: any,
   region_id: any,
   branch_id: any,
-  franchise_id: any
+  franchise_id: any,
+  status: boolean
 ): AdminUsersActionType => ({
   type: AdminUserActionTypes.ADD_ADMIN_USERS,
   payload: {
@@ -109,7 +110,8 @@ export const addAdminUsers = (
     country_ids,
     region_id,
     branch_id,
-    franchise_id
+    franchise_id,
+    status
   },
 });
 
@@ -129,7 +131,8 @@ export const updateAdminUsers = (
   country_ids: any,
   region_id: any,
   branch_id: any,
-  franchise_id: any
+  franchise_id: any,
+  status: boolean
 ): AdminUsersActionType => ({
   type: AdminUserActionTypes.UPDATE_ADMIN_USERS,
   payload: {
@@ -148,7 +151,8 @@ export const updateAdminUsers = (
     country_ids,
     region_id,
     branch_id,
-    franchise_id
+    franchise_id,
+    status
   },
 });
 
