@@ -57,7 +57,7 @@ const VisaProcessRow = ({
             <Row key={index}>
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="visa_type">
-                  <Form.Label>Visa Type</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Visa Type</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -80,7 +80,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="country_id">
-                  <Form.Label>Country</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Country</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -103,7 +103,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="course_applied">
-                  <Form.Label>Course Applied</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Course Applied</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -126,7 +126,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="university_applied">
-                  <Form.Label>University Applied</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> University Applied</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -149,7 +149,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="rejection_reason">
-                  <Form.Label>Rejection Reason</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Rejection Reason</Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={1}
@@ -217,7 +217,7 @@ const VisaProcessRow = ({
             <Row key={index}>
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="visa_type">
-                  <Form.Label>Visa Type</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Visa Type</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -240,7 +240,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="country_id">
-                  <Form.Label>Country</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Country</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -263,7 +263,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="course_applied">
-                  <Form.Label>Course</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Course</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -286,7 +286,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="university_applied">
-                  <Form.Label>University Applied</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> University Applied</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -359,7 +359,7 @@ const VisaProcessRow = ({
             <Row key={index}>
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="country_id">
-                  <Form.Label>Country</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Country</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -416,7 +416,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="purpose_of_travel">
-                  <Form.Label>Purpose of Travel</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Purpose of Travel</Form.Label>
                   <FormInput
                     type="text"
                     name="purpose_of_travel"

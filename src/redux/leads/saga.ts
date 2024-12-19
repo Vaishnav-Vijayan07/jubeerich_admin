@@ -79,11 +79,11 @@ if (userInfo) {
   userRole = JSON.parse(userInfo)?.role;
 }
 
-function* getLeads({ payload: { currentPage,currentLimit } }: LeadsData): SagaIterator {
+function* getLeads({ payload: { currentPage, currentLimit } }: LeadsData): SagaIterator {
   try {
     let response;
     let data;
-    response = yield call(getLeadsApi,currentPage,currentLimit);
+    response = yield call(getLeadsApi, currentPage, currentLimit);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -111,12 +111,12 @@ function* getLeadsAssignedByRegionalManager(): SagaIterator {
   }
 }
 
-function* getLeadsForTL(): SagaIterator {
+function* getLeadsForTL({ payload: { currentPage, currentLimit } }: LeadsData): SagaIterator {
   try {
     let response;
     let data;
     console.log("cre_tl");
-    response = yield call(getLeadsByCreTl);
+    response = yield call(getLeadsByCreTl, currentPage, currentLimit);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -127,9 +127,9 @@ function* getLeadsForTL(): SagaIterator {
   }
 }
 
-function* getAssignedLeads(): SagaIterator {
+function* getAssignedLeads({ payload: { currentPage, currentLimit } }: LeadsData): SagaIterator {
   try {
-    let response = yield call(getAssignedLeadsByCreTl);
+    let response = yield call(getAssignedLeadsByCreTl, currentPage, currentLimit);
     let data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -250,15 +250,16 @@ function* addLeads({
       const { role } = JSON.parse(userInfo);
 
       console.log("role ==>", role);
-      if (role == cre_tl_id) {
-        console.log("getLeadsTL called");
+      // if (role == cre_tl_id) {
+      //   console.log("getLeadsTL called");
 
-        yield put(getLeadsTL());
-      } else if (role == counsellor_tl_id && isAssignedLeads) {
-        yield put(getLeadAssignedByCounsellorTL());
-      } else {
-        yield put(getLead(1,10));
-      }
+      //   yield put(getLeadsTL());
+      // } else if (role == counsellor_tl_id && isAssignedLeads) {
+      //   yield put(getLeadAssignedByCounsellorTL());
+      // }
+      // else {
+      //   yield put(getLead(1,10));
+      // }
     }
     navigate(`/leads/manage/${response?.data?.data?.userPrimaryInfo?.id}`);
   } catch (error: any) {
@@ -293,6 +294,8 @@ function* updateLeads({
     exam_details,
     exam_documents,
     franchise_id,
+    currentPage,
+    currentLimit,
   },
 }: LeadsData): SagaIterator {
   try {
@@ -337,13 +340,13 @@ function* updateLeads({
       const { role } = JSON.parse(userInfo);
 
       if (role == cre_tl_id && isAssignedLeads) {
-        yield put(getLeadAssigned());
+        yield put(getLeadAssigned( currentPage, currentLimit));
       } else if (role == cre_tl_id) {
-        yield put(getLeadsTL());
+        yield put(getLeadsTL(currentPage, currentLimit));
       } else if (role == counsellor_tl_id && isAssignedLeads) {
         yield put(getLeadAssignedByCounsellorTL());
       } else {
-        yield put(getLead(1,10));
+        yield put(getLead(currentPage, currentLimit));
       }
     }
   } catch (error: any) {
@@ -351,7 +354,7 @@ function* updateLeads({
   }
 }
 
-function* deleteLeads({ payload: { id, isAssignedLeads, currentLimit,currentPage } }: LeadsData): SagaIterator {
+function* deleteLeads({ payload: { id, isAssignedLeads, currentLimit, currentPage } }: LeadsData): SagaIterator {
   try {
     const response = yield call(deleteSourcesApi, id);
     const data = response.data.message;
@@ -365,9 +368,9 @@ function* deleteLeads({ payload: { id, isAssignedLeads, currentLimit,currentPage
       const { role } = JSON.parse(userInfo);
 
       if (role == cre_tl_id && isAssignedLeads) {
-        yield put(getLeadAssigned());
+        yield put(getLeadAssigned( currentPage, currentLimit));
       } else if (role == cre_tl_id) {
-        yield put(getLeadsTL());
+        yield put(getLeadsTL(currentPage, currentLimit));
       } else if (role == counsellor_tl_id && isAssignedLeads) {
         yield put(getLeadAssignedByCounsellorTL());
       } else {

@@ -9,6 +9,9 @@ const INIT_STATE = {
   leads: [],
   assignedLeads: [],
   allCres: [],
+  totalPages: 0,
+  totalCount : 0,
+  limit: 0,
   initialloading: false,
   loading: false,
   error: null,
@@ -71,7 +74,10 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
         case LeadsActionTypes.GET_LEADS: {
           return {
             ...state,
-            leads: action.payload.data.data,
+            leads: action.payload.data.data.formattedUserPrimaryInfos,
+            totalPages: action.payload.data.data.totalPages,
+            limit: action.payload.data.data.limit,
+            totalCount : action.payload.data.data.count,
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
@@ -94,6 +100,9 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             ...state,
             leads: action.payload.data.data.formattedUserPrimaryInfos,
             allCres: action.payload.data.data.allCres,
+            totalPages: action.payload.data.data.totalPages,
+            limit: action.payload.data.data.limit,
+            totalCount : action.payload.data.data.count,
             loading: false,
             initialloading: false,
           };
@@ -103,6 +112,9 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
           return {
             ...state,
             assignedLeads: action.payload.data.data.formattedUserPrimaryInfos,
+            totalPages: action.payload.data.data.totalPages,
+            limit : action.payload.data.data.limit,
+            totalCount : action.payload.data.data.count,
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,

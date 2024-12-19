@@ -41,6 +41,8 @@ import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
 import { getFlag } from "../../redux/flag/actions";
 import Swal from "sweetalert2";
+import { usePagination } from "../../hooks/usePagination";
+import CustomPagination from "../../components/CustomPagination";
 
 interface OptionType {
   value: string;
@@ -143,27 +145,28 @@ const BasicInputElements = withSwal((props: any) => {
     franchisees,
     branchCounsellors,
     initialLoading,
+    currentLimit,
+    currentPage,
+    handlePageChange,
+    handleLimitChange,
+    totalPages,
+    totalCount,
   } = props;
 
-  console.log("Region from state", region);
-  console.log("cres ==>", cres);
-
-  const [tableData, setTableData] = useState([]);
-
-  //fetch token from session storage
-
-  //Table data
-  // const records: TableRecords[] = state;
+  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   let records: TableRecords[] = state;
-
-  useEffect(() => {
-    setTableData(state);
-  }, [records]);
+  let userRole: any;
+  let userBranchId: any;
+  if (userInfo) {
+    userRole = JSON.parse(userInfo)?.role;
+    userBranchId = JSON.parse(userInfo)?.branch_id;
+  }
 
   //State for handling update function
+
+  const [tableData, setTableData] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);
-
   const [selectedSource, setSelectedSource] = useState<any>(null);
   const [selectedValues, setSelectedValues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -176,7 +179,6 @@ const BasicInputElements = withSwal((props: any) => {
   const fileInputRef = useRef<any>(null);
   const [activeRegion, setActiveRegion] = useState<any>(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
-  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
   const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
@@ -224,12 +226,34 @@ const BasicInputElements = withSwal((props: any) => {
     defaultValues: initialState,
   });
 
-  let userRole: any;
-  let userBranchId: any;
-  if (userInfo) {
-    userRole = JSON.parse(userInfo)?.role;
-    userBranchId = JSON.parse(userInfo)?.branch_id;
-  }
+  useEffect(() => {
+    setTableData(state);
+  }, [records]);
+
+  useEffect(() => {
+    // Check for errors and clear the form
+    if (!loading && !error) {
+      setResponsiveModal(false);
+      setValidationErrors(initialValidationState); // Clear validation errors
+      setFormData(initialState); //clear form data
+      setSelectedCountry([]);
+      // Clear validation errors
+    }
+  }, [loading, error]);
+
+  useEffect(() => {
+    applyFilter();
+  }, [filters]);
+
+  useEffect(() => {
+    if (selectedOffice?.value == region_id) {
+      setActiveRegion(true);
+    } else {
+      setActiveRegion(false);
+      setSelectedRegion(null);
+    }
+  }, [selectedOffice]);
+
   const handleUpdate = (item: any) => {
     if (item) {
       setHandleUpdateData({ ...item });
@@ -250,7 +274,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteLeads(id, 1,20,true));
+          dispatch(deleteLeads(id, 1, 20, true));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -283,7 +307,9 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "No",
       accessor: "id",
       sort: true,
-      Cell: ({ row }: any) => <span>{row.index + 1}</span>,
+      Cell: ({ row }: any) => {
+        return <span>{currentPage * currentLimit - currentLimit + row.index + 1}</span>;
+      },
     },
     {
       Header: "Name",
@@ -361,17 +387,17 @@ const BasicInputElements = withSwal((props: any) => {
     // },
     ...(user?.role == cre_tl_id
       ? [
-        {
-          Header: "Assigned CRE",
-          accessor: "cre_name",
-          // Cell: UserColumn,
-          Cell: ({ row }: any) => (
-            <span className="no-truncate-text">
-              <UserColumn row={row} />
-            </span>
-          ),
-          minWidth: 100,
-        }
+          {
+            Header: "Assigned CRE",
+            accessor: "cre_name",
+            // Cell: UserColumn,
+            Cell: ({ row }: any) => (
+              <span className="no-truncate-text">
+                <UserColumn row={row} />
+              </span>
+            ),
+            minWidth: 100,
+          },
         ]
       : []),
     ...(user?.role == cre_id || user?.role == cre_tl_id
@@ -399,20 +425,20 @@ const BasicInputElements = withSwal((props: any) => {
       : []),
     ...(user?.role == counsellor_tl_id
       ? [
-        {
-          Header: "Assigned Status",
-          accessor: "assigned_branch_counselor",
-          sort: false,
-          minWidth: 150,
-          Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
-        },
-        {
-          Header: "Assigned Counselor",
-          accessor: "assigned_branch_counselor_name",
-          sort: false,
-          minWidth: 150,
-        },
-      ]
+          {
+            Header: "Assigned Status",
+            accessor: "assigned_branch_counselor",
+            sort: false,
+            minWidth: 150,
+            Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+          },
+          {
+            Header: "Assigned Counselor",
+            accessor: "assigned_branch_counselor_name",
+            sort: false,
+            minWidth: 150,
+          },
+        ]
       : []),
     {
       Header: "Status",
@@ -429,19 +455,29 @@ const BasicInputElements = withSwal((props: any) => {
             <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
           </Link>
           {/* Edit Icon */}
-          <Link
+          {/* <Link
             to="#"
             className="action-icon"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="Edit"
             onClick={() => {
               handleUpdate(row.original);
               openModalWithClass("modal-full-width");
             }}
           >
             <i className="mdi mdi-square-edit-outline"></i>
-          </Link>
+          </Link> */}
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => handleDelete(row.original.id)}
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="Delete"
+          >
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -482,7 +518,7 @@ const BasicInputElements = withSwal((props: any) => {
           const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
 
           if (data.status) {
-            dispatch(getLeadAssigned());
+            dispatch(getLeadAssigned(currentPage, currentLimit));
             showSuccessAlert("Bulk assignment successful.");
           }
         } catch (error) {
@@ -512,7 +548,7 @@ const BasicInputElements = withSwal((props: any) => {
             if (userRole == counsellor_tl_id) {
               dispatch(getLeadAssignedByCounsellorTL());
             } else {
-              dispatch(getLead(1,10));;
+              dispatch(getLead(1, 10));
             }
             showSuccessAlert("Bulk assignment successful.");
           }
@@ -576,7 +612,7 @@ const BasicInputElements = withSwal((props: any) => {
       console.log(data);
       if (data.status) {
         showSuccessAlert(data.message);
-        dispatch(getLead(1,10));;
+        dispatch(getLead(1, 10));
         setIsLoading(false);
         setSelectedFile([]);
         toggleUploadModal();
@@ -596,17 +632,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  useEffect(() => {
-    // Check for errors and clear the form
-    if (!loading && !error) {
-      setResponsiveModal(false);
-      setValidationErrors(initialValidationState); // Clear validation errors
-      setFormData(initialState); //clear form data
-      setSelectedCountry([]);
-      // Clear validation errors
-    }
-  }, [loading, error]);
-
   const toggleUploadModal = () => {
     setUploadModal(!uploadModal);
   };
@@ -620,10 +645,6 @@ const BasicInputElements = withSwal((props: any) => {
     setScroll(false);
     toggle();
   };
-
-  useEffect(() => {
-    applyFilter();
-  }, [filters]);
 
   const applyFilter = () => {
     let filteredData: any = [...state];
@@ -680,15 +701,6 @@ const BasicInputElements = withSwal((props: any) => {
   const changeFilteredItemsData = (data: any) => {
     setTableData(data);
   };
-
-  useEffect(() => {
-    if (selectedOffice?.value == region_id) {
-      setActiveRegion(true);
-    } else {
-      setActiveRegion(false);
-      setSelectedRegion(null);
-    }
-  }, [selectedOffice]);
 
   return (
     <>
@@ -791,11 +803,10 @@ const BasicInputElements = withSwal((props: any) => {
                 )}
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
-              <div className="d-flex flex-wrap justify-content-end"></div>
               <Table
                 columns={columns}
                 data={tableData ? tableData : []}
-                pageSize={10}
+                pageSize={totalCount}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
@@ -804,6 +815,13 @@ const BasicInputElements = withSwal((props: any) => {
                 tableClass="table-striped dt-responsive nowrap w-100"
                 onSelect={handleSelectedValues}
                 initialLoading={initialLoading}
+              />
+              <CustomPagination
+                currentPage={currentPage}
+                currentLimit={currentLimit}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+                handleLimitChange={handleLimitChange}
               />
             </Card.Body>
           </Card>
@@ -815,22 +833,28 @@ const BasicInputElements = withSwal((props: any) => {
 
 const AssignedLeads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
+  const { currentLimit, currentPage, handlePageChange, handleLimitChange } = usePagination();
+
   const [counsellors, setCounsellors] = useState([]);
 
-  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
-
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag } = useSelector((state: RootState) => ({
-    user: state.Auth.user,
-    state: state.Leads.assignedLeads,
-    error: state.Leads.error,
-    loading: state.Leads.loading,
-    initialLoading: state.Leads.initialloading,
-    users: state.Users.adminUsers,
-    franchisees: state.Franchise.franchiseUsers,
-    branchCounsellor: state.Users?.branchCounsellor,
-    flag: state?.Flag?.flags,
-  }));
+  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag, limit, totalPages, totalCount } = useSelector(
+    (state: RootState) => ({
+      user: state.Auth.user,
+      state: state.Leads.assignedLeads,
+      totalPages: state.Leads.totalPages,
+      limit: state.Leads.limit,
+      totalCount: state.Leads.totalCount,
+      error: state.Leads.error,
+      loading: state.Leads.loading,
+      initialLoading: state.Leads.initialloading,
+      users: state.Users.adminUsers,
+      franchisees: state.Franchise.franchiseUsers,
+      branchCounsellor: state.Users?.branchCounsellor,
+      flag: state?.Flag?.flags,
+    })
+  );
 
   let userRole: any;
   let userBranchId: any;
@@ -842,13 +866,13 @@ const AssignedLeads = () => {
   useEffect(() => {
     dispatch(getFlag());
     if (userRole == cre_tl_id) {
-      dispatch(getLeadAssigned());
+      dispatch(getLeadAssigned(currentPage, currentLimit));
     } else {
       dispatch(getLeadAssignedByCounsellorTL());
     }
     // dispatch(getFranchise())
     fetchAllCounsellors();
-  }, []);
+  }, [userRole, currentPage, currentLimit]);
 
   const fetchAllCounsellors = () => {
     axios
@@ -922,6 +946,12 @@ const AssignedLeads = () => {
             branchCounsellors={branchCounsellor || []}
             flags={flagsData || []}
             initialLoading={initialLoading}
+            currentLimit={currentLimit}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+            handleLimitChange={handleLimitChange}
+            totalCount={totalCount}
           />
         </Col>
       </Row>

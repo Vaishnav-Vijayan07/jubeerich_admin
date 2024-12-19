@@ -1,7 +1,15 @@
 import { Pagination } from "@mui/material";
 import React from "react";
 
-function CustomPagination({ handleLimitChange, handlePageChange, totalPages, currentLimit }: any) {
+type Props = {
+  handleLimitChange: any;
+  handlePageChange: any;
+  totalPages: number;
+  currentLimit: number;
+  currentPage: number;
+};
+
+function CustomPagination({ handleLimitChange, handlePageChange, totalPages, currentLimit, currentPage }: Props) {
   return (
     <>
       <div className="d-flex align-items-center justify-content-between text-center gap-2 pb-1">
@@ -9,7 +17,7 @@ function CustomPagination({ handleLimitChange, handlePageChange, totalPages, cur
           <div className="d-inline-block me-3">
             <label className="me-1">Display :</label>
             <select value={currentLimit} className="form-select d-inline-block w-auto" onChange={(e) => handleLimitChange(Number(e.target.value))}>
-              {[20,50,100].map((limit) => (
+              {[10, 20, 50, 100].map((limit) => (
                 <option key={limit} value={limit}>
                   {limit}
                 </option>
@@ -19,7 +27,7 @@ function CustomPagination({ handleLimitChange, handlePageChange, totalPages, cur
         </div>
 
         <div className="float-end">
-          <Pagination count={Math.ceil(totalPages)} variant="outlined" color="primary" onChange={handlePageChange} />
+          <Pagination count={Math.ceil(totalPages)} page={currentPage} variant="outlined" color="primary" onChange={handlePageChange} />
         </div>
       </div>
     </>

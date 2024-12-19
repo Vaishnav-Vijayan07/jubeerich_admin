@@ -79,7 +79,7 @@ interface TableProps {
     sort?: boolean;
     Cell?: any;
     className?: string;
-    isTruncate?: boolean
+    isTruncate?: boolean;
   }[];
   data: any[];
   pageSize?: any;
@@ -126,13 +126,13 @@ const Table = (props: TableProps) => {
     {
       columns: props["columns"],
       data: props["data"],
-      initialState: { pageSize: props["pageSize"] || 10 },
+      initialState: { pageSize: props["pageSize"] || 500 },
       globalFilter: (rows, columnIds, filterValue) => {
         return rows.filter((row) => {
-          return columnIds.some((id) => {
+          return columnIds?.some((id) => {
             const columnValue = row.values[id];
             if (Array.isArray(columnValue)) {
-              return columnValue.some((item: any) => JSON.stringify(item).toLowerCase().includes(filterValue.toLowerCase()));
+              return columnValue?.some((item: any) => JSON.stringify(item).toLowerCase().includes(filterValue.toLowerCase()));
             }
             return String(columnValue).toLowerCase().includes(filterValue.toLowerCase());
           });
@@ -146,7 +146,7 @@ const Table = (props: TableProps) => {
     otherProps.hasOwnProperty("useRowSelect") && otherProps["useRowSelect"],
     (hooks) => {
       isSelectable &&
-        hooks.visibleColumns.push((columns: any) => [
+        hooks?.visibleColumns?.push((columns: any) => [
           {
             id: "selection",
             Header: ({ getToggleAllPageRowsSelectedProps }: any) => (
@@ -164,7 +164,7 @@ const Table = (props: TableProps) => {
         ]);
 
       isExpandable &&
-        hooks.visibleColumns.push((columns: any) => [
+        hooks.visibleColumns?.push((columns: any) => [
           {
             id: "expander",
             Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }: any) => (
@@ -230,7 +230,7 @@ const Table = (props: TableProps) => {
           {...dataTable.getTableProps()}
           className={classNames(isDashboard ? dashBoardClass : `table table-centered react-table custom-table ${customClass}`)}
         >
-          <thead >
+          <thead>
             {(dataTable.headerGroups || []).map((headerGroup: any) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {(headerGroup.headers || []).map((column: any) => (
@@ -280,7 +280,7 @@ const Table = (props: TableProps) => {
               ))
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={props.columns.length} className="text-center">
+                <td colSpan={props.columns.length + 1} className="text-center">
                   No data found...
                 </td>
               </tr>
@@ -314,7 +314,7 @@ const Table = (props: TableProps) => {
           </tbody>
         </table>
       </div>
-      {pagination && <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />}
+      {/* {pagination && <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />} */}
     </>
   );
 };

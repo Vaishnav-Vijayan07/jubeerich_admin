@@ -27,6 +27,7 @@ const Leads = () => {
 
   const handleLimitChange = useCallback((value: number) => {
     setcurrentLimit(value);
+    setCurrentPage(1);
   }, []);
 
   console.log("PAGE COUNT", currentPage);
@@ -38,11 +39,12 @@ const Leads = () => {
     userBranchId = JSON.parse(userInfo)?.branch_id;
   }
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages } = useSelector((state: RootState) => ({
+  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages, totalCount } = useSelector((state: RootState) => ({
     user: state.Auth.user,
-    state: state.Leads.leads.formattedUserPrimaryInfos,
-    totalPages: state.Leads.leads.totalPages,
-    limit: state.Leads.leads.limit,
+    state: state.Leads.leads,
+    totalPages: state.Leads.totalPages,
+    limit: state.Leads.limit,
+    totalCount: state.Leads.totalCount,
     error: state.Leads.error,
     loading: state.Leads.loading,
     initialLoading: state.Leads.initialloading,
@@ -58,7 +60,7 @@ const Leads = () => {
 
   useEffect(() => {
     if (userRole == cre_tl_id) {
-      dispatch(getLeadsTL());
+      dispatch(getLeadsTL(currentPage, currentLimit));
     } else {
       if (userRole) {
         dispatch(getLead(currentPage, currentLimit));
@@ -134,6 +136,7 @@ const Leads = () => {
             currentPage={currentPage}
             totalPages={totalPages}
             limit={limit}
+            totalCount={totalCount}
             currentLimit={currentLimit}
             handleLimitChange={handleLimitChange}
           />
