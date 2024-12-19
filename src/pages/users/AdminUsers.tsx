@@ -399,6 +399,7 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedBranch([]);
     setSelectedCountry([]);
     setSelectedImage(null);
+    setRadioValue(true);
   };
 
   //toggle modal

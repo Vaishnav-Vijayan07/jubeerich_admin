@@ -227,6 +227,7 @@ const FranchiseDetails = withSwal((props: any) => {
     setSelectedBranch([]);
     setSelectedCountry([]);
     setSelectedImage(null);
+    setRadioValue(true);
   };
 
   const handleUpdate = (item: any) => {
