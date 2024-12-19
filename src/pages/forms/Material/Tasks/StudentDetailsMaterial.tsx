@@ -779,7 +779,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         ))}
                     </div>
                   </div>
-
+                  {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && 
                   <div className="mx-2">
                     <h4 className="m-0 label_heading">Add New Country</h4>
 
@@ -800,7 +800,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         }}
                       />
                     </div>
-                  </div>
+                  </div>}
                 </div>
                 {taskDetails?.is_rejected && (
                   <div className="mx-2">

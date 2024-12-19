@@ -141,7 +141,8 @@ const BasicInputElements = withSwal((props: any) => {
       label: item.branch_name,
     }));
 
-    const countryArray = item?.countries?.map((country: any) => country?.id);
+    // const countryArray = item?.countries?.map((country: any) => country?.id);
+    const countryArray = item?.countries?.map((country: any) => country?.value);
     const updatedRole  = RolesData?.filter((role: any) => role?.value == item?.role_id);
     setSelectedRole(updatedRole[0]);
 
