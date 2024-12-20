@@ -130,6 +130,10 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             ...state,
             assignedLeads: action.payload.data.data.formattedUserPrimaryInfos,
             allCounsellorTLs: action.payload.data.data.allCounsellorTLs,
+            totalPages: action.payload.data.data.totalPages,
+            limit: action.payload.data.data.limit,
+            totalCount: action.payload.data.data.count,
+            isSearchApplied: action.payload.data.data.isSearchApplied,
             loading: false,
             initialloading: false,
           };

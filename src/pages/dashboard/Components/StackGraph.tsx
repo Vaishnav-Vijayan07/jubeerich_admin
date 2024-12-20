@@ -3,6 +3,7 @@ import { Card, Col, Row } from "react-bootstrap";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import Filters from "./Filters";
+import CustomFilter from "../../../components/CustomFilter";
 
 type Props = {
   categories: string[];
@@ -20,7 +21,7 @@ function StackGraph({ categories, series }: Props) {
       type: "bar",
       stacked: true,
       toolbar: {
-        show: true, // Ensure the toolbar is displayed
+        show: false, // Ensure the toolbar is displayed
         tools: {
           download: true, // Download option
           selection: true, // Enable selection tool
@@ -44,7 +45,7 @@ function StackGraph({ categories, series }: Props) {
     },
     xaxis: {
       categories, // Pass your categories dynamically
-      tickPlacement: "on",
+      // tickPlacement: "on",
     },
     legend: {
       position: "bottom",
@@ -59,11 +60,7 @@ function StackGraph({ categories, series }: Props) {
   return (
     <Card>
       <Card.Body>
-        <Row className="mb-3">
-          <Col md={3}>
-            <Filters />
-          </Col>
-        </Row>
+        <Row className="mb-3"></Row>
         <Chart options={options} series={series} type="bar" height={350} />
       </Card.Body>
     </Card>

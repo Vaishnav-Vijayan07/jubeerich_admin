@@ -51,8 +51,16 @@ function getAssignedLeadsRegionalMangersApi() {
   return api.get("/assigned_leads_regional_managers", {});
 }
 
-function getAssignedLeadsByCounsellorTL() {
-  return api.get("/assigned_leads_counsellor_tl", {});
+function getAssignedLeadsByCounsellorTL(currentPage: number, currentLimit: number, keyword?: string | undefined) {
+  const params: any = {
+    page: currentPage,
+    limit: currentLimit,
+  };
+
+  if (keyword) {
+    params.keyword = keyword;
+  }
+  return api.get("/assigned_leads_counsellor_tl", params);
 }
 
 function getLeadUser() {

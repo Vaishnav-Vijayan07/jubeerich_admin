@@ -159,9 +159,9 @@ function* getLeadsForCounsellorTL(): SagaIterator {
   }
 }
 
-function* getAssignedLeadsByCounsellorTL(): SagaIterator {
+function* getAssignedLeadsByCounsellorTL({ payload: { currentPage, currentLimit, keyword } }: LeadsData): SagaIterator {
   try {
-    let response = yield call(getAssignedLeadsByCounsellorTLAPI);
+    let response = yield call(getAssignedLeadsByCounsellorTLAPI, currentPage, currentLimit, keyword);
     let data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -340,7 +340,7 @@ function* updateLeads({
       } else if (role == cre_tl_id) {
         yield put(getLeadsTL(currentPage, currentLimit));
       } else if (role == counsellor_tl_id && isAssignedLeads) {
-        yield put(getLeadAssignedByCounsellorTL());
+        yield put(getLeadAssignedByCounsellorTL(currentPage, currentLimit));
       } else {
         yield put(getLead(currentPage, currentLimit));
       }
@@ -366,7 +366,7 @@ function* deleteLeads({ payload: { id, isAssignedLeads, currentLimit, currentPag
       } else if (role == cre_tl_id) {
         yield put(getLeadsTL(currentPage, currentLimit));
       } else if (role == counsellor_tl_id && isAssignedLeads) {
-        yield put(getLeadAssignedByCounsellorTL());
+        yield put(getLeadAssignedByCounsellorTL(currentPage, currentLimit));
       } else {
         yield put(getLead(currentPage, currentLimit));
       }

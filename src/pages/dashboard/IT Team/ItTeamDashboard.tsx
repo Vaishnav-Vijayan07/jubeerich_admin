@@ -5,6 +5,7 @@ import LeadsTable from "../Components/LeadsTable";
 import { dummyLeadData } from "../../users/data";
 import StackGraph from "../Components/StackGraph";
 import Spinner from "react-bootstrap/Spinner";
+import CustomFilter from "../../../components/CustomFilter";
 
 const categories = ["Corporate", "Branch", "Franchise"];
 const series = [

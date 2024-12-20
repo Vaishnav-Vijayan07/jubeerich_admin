@@ -1,6 +1,7 @@
 import React from "react";
 import PageTitle from "../../../components/PageTitle";
 import StatCards from "../Components/StatCards";
+import CustomFilter from "../../../components/CustomFilter";
 
 const statCardsItems = [
   { id: 1, title: "Total leads", stats: "10000", icon: "fe-users", bgColor: "#5bc0de" }, // Blue for general data
@@ -16,6 +17,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     return (
       <>
         <PageTitle breadCrumbItems={[{ label: "Dashboard", path: "" }]} title="Dashboard" />
+        <CustomFilter/>
         <StatCards statCardsItems={statCardsItems} />
         <Component {...props} />
       </>

@@ -553,9 +553,9 @@ const BasicInputElements = withSwal((props: any) => {
 
           if (data.status) {
             if (userRole == counsellor_tl_id) {
-              dispatch(getLeadAssignedByCounsellorTL());
+              dispatch(getLeadAssignedByCounsellorTL(currentPage, currentLimit));
             } else {
-              dispatch(getLead(1, 10));
+              dispatch(getLead(currentPage, currentLimit));
             }
             showSuccessAlert("Bulk assignment successful.");
           }
@@ -616,9 +616,12 @@ const BasicInputElements = withSwal((props: any) => {
         },
       });
 
+
+      return
+
       if (data.status) {
         showSuccessAlert(data.message);
-        dispatch(getLead(1, 10));
+        dispatch(getLead(currentPage, currentLimit));
         setIsLoading(false);
         setSelectedFile([]);
         toggleUploadModal();
@@ -911,7 +914,7 @@ const AssignedLeads = () => {
     if (userRole == cre_tl_id) {
       dispatch(getLeadAssigned(currentPage, currentLimit, search == "" ? undefined : search));
     } else {
-      dispatch(getLeadAssignedByCounsellorTL());
+      dispatch(getLeadAssignedByCounsellorTL(currentPage, currentLimit, search == "" ? undefined : search));
     }
     // dispatch(getFranchise())
     fetchAllCounsellors();
