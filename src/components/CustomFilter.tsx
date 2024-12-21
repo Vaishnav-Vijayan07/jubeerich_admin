@@ -1,7 +1,25 @@
 import React, { useState } from "react";
 import { Card, Form, Row, Col, Button } from "react-bootstrap";
+import ReactDatePicker from "react-datepicker";
+import calender from "../assets/images/icons/calendar.svg";
 
 type FilterType = "today" | "weekly" | "monthly" | "custom";
+
+const styles: any = {
+  filterItem: (isSelected: any) => ({
+    padding: "10px 20px",
+    borderRadius: "8px",
+    textAlign: "center",
+    cursor: "pointer",
+    backgroundColor: isSelected ? "#3f6eb4" : "#f1f1f1",
+    color: isSelected ? "#fff" : "#333",
+    fontWeight: isSelected ? "bold" : "normal",
+    transition: "background-color 0.3s, color 0.3s",
+  }),
+  row: {
+    marginTop: "20px",
+  },
+};
 
 const CustomFilter: React.FC = () => {
   const [filterType, setFilterType] = useState<FilterType>("today");
@@ -11,6 +29,15 @@ const CustomFilter: React.FC = () => {
   const [customStartDate, setCustomStartDate] = useState<string>("");
   const [customEndDate, setCustomEndDate] = useState<string>("");
   const [selectedWeek, setSelectedWeek] = useState<string>("");
+  const filters = ["today", "weekly", "monthly", "custom"];
+
+  const handleFilterClick = (type: any) => {
+    setFilterType(type);
+  };
+
+  const handleFilter = (type: any) => {
+    console.log("type", type);
+  };
 
   // Get the week number for a given date
   const getWeekNumber = (date: Date): string => {
@@ -62,17 +89,12 @@ const CustomFilter: React.FC = () => {
         <Form>
           {/* Filter Type Selection */}
           <Form.Group className="mb-3">
-            <Row>
-              {["today", "weekly", "monthly", "custom"].map((type) => (
-                <Col key={type} xs={6} md={3}>
-                  <Form.Check
-                    type="radio"
-                    id={`filter-${type}`}
-                    label={type.charAt(0).toUpperCase() + type.slice(1)}
-                    name="filterType"
-                    checked={filterType === type}
-                    onChange={() => setFilterType(type as FilterType)}
-                  />
+            <Row style={styles.row}>
+              {filters.map((type) => (
+                <Col key={type} md={3}>
+                  <div style={styles.filterItem(filterType === type)} onClick={() => handleFilterClick(type)}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </div>
                 </Col>
               ))}
             </Row>
@@ -80,26 +102,31 @@ const CustomFilter: React.FC = () => {
 
           {/* Custom Date Range */}
           {filterType === "custom" && (
-            <Row className="mb-3">
-              <Col md={6}>
+            <Row className="mb-3" md={6}>
+              <Col md={2}>
                 <Form.Group>
                   <Form.Label>From Date</Form.Label>
                   <Form.Control type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} />
                 </Form.Group>
               </Col>
-              <Col md={6}>
+              <Col md={2}>
                 <Form.Group>
                   <Form.Label>To Date</Form.Label>
                   <Form.Control type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} />
                 </Form.Group>
+              </Col>
+              <Col md={2} className="d-flex align-items-end">
+                <Button variant="primary" type="button" onClick={()=>handleFilter("custom")}>
+                  Apply
+                </Button>
               </Col>
             </Row>
           )}
 
           {/* Weekly Selection */}
           {filterType === "weekly" && (
-            <Row className="mb-3">
-              <Col md={4}>
+            <Row className="mb-3" md={6}>
+              <Col md={2}>
                 <Form.Group>
                   <Form.Label>Year</Form.Label>
                   <Form.Select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
@@ -111,7 +138,7 @@ const CustomFilter: React.FC = () => {
                   </Form.Select>
                 </Form.Group>
               </Col>
-              <Col md={4}>
+              <Col md={2}>
                 <Form.Group>
                   <Form.Label>Month</Form.Label>
                   <Form.Select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
@@ -123,11 +150,16 @@ const CustomFilter: React.FC = () => {
                   </Form.Select>
                 </Form.Group>
               </Col>
-              <Col md={4}>
+              <Col md={2}>
                 <Form.Group>
                   <Form.Label>Date</Form.Label>
                   <Form.Control type="date" value={selectedDate} onChange={(e) => handleDateSelection(e.target.value)} />
                 </Form.Group>
+              </Col>
+              <Col md={2} className="d-flex align-items-end">
+              <Button variant="primary" type="button" onClick={()=>handleFilter("weekly")}>
+                Apply
+              </Button>
               </Col>
               {selectedWeek && (
                 <Col md={12} className="mt-2">
@@ -139,8 +171,8 @@ const CustomFilter: React.FC = () => {
 
           {/* Monthly Selection */}
           {filterType === "monthly" && (
-            <Row className="mb-3">
-              <Col md={6}>
+            <Row className="mb-3" md={6}>
+              <Col md={2}>
                 <Form.Group>
                   <Form.Label>Year</Form.Label>
                   <Form.Select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
@@ -152,7 +184,7 @@ const CustomFilter: React.FC = () => {
                   </Form.Select>
                 </Form.Group>
               </Col>
-              <Col md={6}>
+              <Col md={2}>
                 <Form.Group>
                   <Form.Label>Month</Form.Label>
                   <Form.Select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
@@ -164,13 +196,13 @@ const CustomFilter: React.FC = () => {
                   </Form.Select>
                 </Form.Group>
               </Col>
+              <Col md={2} className="d-flex align-items-end">
+              <Button variant="primary" type="button" onClick={()=>handleFilter("monthly")}>
+                Apply
+              </Button>
+              </Col>
             </Row>
           )}
-          <Row className="float-end">
-            <Col>
-              <Button className="btn-sm">Apply</Button>
-            </Col>
-          </Row>
         </Form>
       </Card.Body>
     </Card>

@@ -7,31 +7,7 @@ import StackGraph from "../Components/StackGraph";
 import Spinner from "react-bootstrap/Spinner";
 import CustomFilter from "../../../components/CustomFilter";
 
-const categories = ["Corporate", "Branch", "Franchise"];
-const series = [
-  {
-    name: "New lead",
-    data: [44, 55, 41],
-  },
-  {
-    name: "Spam",
-    data: [13, 23, 20],
-  },
-  {
-    name: "Follow up",
-    data: [11, 17, 15],
-  },
-  {
-    name: "Not responding",
-    data: [17, 22, 19],
-  },
-  {
-    name: "Failed",
-    data: [9, 14, 12],
-  },
-];
-
-function ItTeamDashboard() {
+function ItTeamDashboard({ categories, series, latestLeadsCount }: any) {
   const [isStackGraphLoading, setIsStackGraphLoading] = useState(true);
   const [isLeadsTableLoading, setIsLeadsTableLoading] = useState(true);
 
@@ -68,7 +44,7 @@ function ItTeamDashboard() {
               </Spinner>
             </div>
           ) : (
-            <LeadsTable leadsData={dummyLeadData} showOffice={true} />
+            <LeadsTable leadsData={latestLeadsCount} showOffice={true} />
           )}
         </Col>
       </Row>

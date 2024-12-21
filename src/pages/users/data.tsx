@@ -172,4 +172,16 @@ export const dummyLeadData = [
     stage: "Support",
     status: "Active",
   },
+  {
+    id: 7,
+    full_name: "Emily Davis",
+    email: "emily.davis@example.com",
+    city: "London",
+    preferredCountries: "UK, Germany",
+    office_type_name: "Local",
+    source_name: "Referral",
+    lead_received_date: "2024-12-02",
+    stage: "Support",
+    status: "Active",
+  },
 ];

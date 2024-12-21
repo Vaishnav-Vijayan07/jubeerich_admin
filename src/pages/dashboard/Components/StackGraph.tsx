@@ -48,7 +48,7 @@ function StackGraph({ categories, series }: Props) {
       // tickPlacement: "on",
     },
     legend: {
-      position: "bottom",
+      position: "top",
       horizontalAlign: "center",
     },
     fill: {
