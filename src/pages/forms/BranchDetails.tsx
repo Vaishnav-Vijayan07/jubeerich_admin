@@ -28,6 +28,7 @@ import { RootState } from "../../redux/store";
 import { withSwal } from "react-sweetalert2";
 import * as yup from "yup";
 import { getBranches } from "../../helpers";
+import PageTitle from "../../components/PageTitle";
 
 export const initialState = {
   id: "",
@@ -515,6 +516,15 @@ const BranchDetails = withSwal((props: any) => {
 
   return (
     <>
+      <PageTitle
+        breadCrumbItems={[
+          { label: "Master", path: "/settings/master/branches" },
+          { label: "Branches", path: "/settings/master/branches" },
+          { label: "Branch Details", path: "/settings/master/branch_detials", active: true },
+        ]}
+        title={"Branch Details"}
+      />
+
       <Card>
         <Card.Body>
           <Row>

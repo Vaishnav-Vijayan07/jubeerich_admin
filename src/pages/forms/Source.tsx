@@ -482,8 +482,8 @@ const Sources = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/sources" },
-          { label: "Lead Sources", path: "/master/sources", active: true },
+          { label: "Master", path: "/settings/master/source" },
+          { label: "Lead Sources", path: "/settings/master/source", active: true },
         ]}
         title={"Lead Sources"}
       />

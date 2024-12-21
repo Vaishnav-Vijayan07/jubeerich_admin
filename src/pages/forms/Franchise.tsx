@@ -892,8 +892,8 @@ const Franchise = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/franchise" },
-          { label: "Franchise Users", path: "/master/franchise", active: true },
+          { label: "Master", path: "/settings/master/franchise" },
+          { label: "Franchise Users", path: "/settings/master/franchise", active: true },
         ]}
         title={"Franchise Users"}
       />
