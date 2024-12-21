@@ -108,12 +108,12 @@ export const regexPatterns: Record<string, RegExp> = {
   stream_description: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
 
   // Course
-  course_name: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
-  course_description: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
+  course_name: /^(?!.* {3})[^\s]{1,}$/,
+  course_description: /^(?!.* {3})[^\s]{1,}$/,
 
   // Campus
-  campus_name: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
-  location: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
+  campus_name: /^(?!.* {3})[^\s]{1,}$/,
+  location: /^(?!.* {3})[^\s]{1,}$/,
 
   // Status
   status_name: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
