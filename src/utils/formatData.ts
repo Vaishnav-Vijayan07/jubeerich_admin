@@ -45,3 +45,7 @@ export const formatString = (str: string) => {
     .toLowerCase() // Convert entire string to lowercase
     .replace(/^\w/, (c: string) => c.toUpperCase()); // Capitalize the first character
 };
+
+export const capitalizeFirstChar = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};

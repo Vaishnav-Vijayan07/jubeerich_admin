@@ -1,6 +1,7 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
 import IconCards from "./IconCards";
+import { capitalizeFirstChar } from "../../../utils/formatData";
 
 type StatCardsItem = {
   id: number;
@@ -19,8 +20,8 @@ function StatCards({ statCardsItems }: Props) {
     <>
       <Row>
         {statCardsItems.map((item) => (
-          <Col md={3} key={item.id}>
-            <IconCards title={item.title} stats={item.stats} icon={item.icon} bgColor={item.bgColor}/>
+          <Col md={2} key={item.id}>
+            <IconCards title={capitalizeFirstChar(item.title)} stats={item.stats} icon={item.icon} bgColor={item.bgColor}/>
           </Col>
         ))}
       </Row>

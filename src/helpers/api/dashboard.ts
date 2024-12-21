@@ -4,7 +4,7 @@ const api = new APICore();
 
 //
 function getDashboard() {
-  const baseUrl = "/dash_board";
+  const baseUrl = "/dashboard";
   return api.get(`${baseUrl}`, {});
 }
 
