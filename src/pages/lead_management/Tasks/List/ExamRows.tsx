@@ -56,7 +56,7 @@ const ExamData: React.FC<ExamDataProps> = ({
         <Form.Group className="mb-3" controlId="listening_score">
           <Form.Label><span className="text-danger">*</span> Listening Score</Form.Label>
           <Form.Control
-            type="text"
+            type="number"
             name="listening_score"
             value={item.listening_score}
             onChange={(e) => {
@@ -70,7 +70,7 @@ const ExamData: React.FC<ExamDataProps> = ({
         <Form.Group className="mb-3" controlId="speaking_score">
           <Form.Label><span className="text-danger">*</span> Speaking Score</Form.Label>
           <Form.Control
-            type="text"
+            type="number"
             name="speaking_score"
             value={item.speaking_score}
             onChange={(e) => {
@@ -84,7 +84,7 @@ const ExamData: React.FC<ExamDataProps> = ({
         <Form.Group className="mb-3" controlId="reading_score">
           <Form.Label><span className="text-danger">*</span> Reading Score</Form.Label>
           <Form.Control
-            type="text"
+            type="number"
             name="reading_score"
             value={item.reading_score}
             onChange={(e) => {
@@ -98,7 +98,7 @@ const ExamData: React.FC<ExamDataProps> = ({
         <Form.Group className="mb-3" controlId="writing_score">
           <Form.Label><span className="text-danger">*</span> Writing Score</Form.Label>
           <Form.Control
-            type="text"
+            type="number"
             name="writing_score"
             value={item.writing_score}
             onChange={(e) => {
@@ -112,7 +112,7 @@ const ExamData: React.FC<ExamDataProps> = ({
         <Form.Group className="mb-3" controlId="marks">
           <Form.Label><span className="text-danger">*</span> Overall Score</Form.Label>
           <Form.Control
-            type="text"
+            type="number"
             name="overall_score"
             value={item.overall_score}
             onChange={(e) => {

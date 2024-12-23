@@ -1,10 +1,10 @@
 export const regexPatterns: Record<string, RegExp> = {
   // Exams
-  listening_score: /^\+?[0-9]{0,3}$/,
-  speaking_score: /^\+?[0-9]{0,3}$/,
-  reading_score: /^\+?[0-9]{0,3}$/,
-  writing_score: /^\+?[0-9]{0,3}$/,
-  overall_score: /^\+?[0-9]{0,3}$/,
+  listening_score: /^(100(\.0{1,2})?|(\d{0,2}(\.\d{1,2})?))$/,
+  speaking_score: /^(100(\.0{1,2})?|(\d{0,2}(\.\d{1,2})?))$/,
+  reading_score: /^(100(\.0{1,2})?|(\d{0,2}(\.\d{1,2})?))$/,
+  writing_score: /^(100(\.0{1,2})?|(\d{0,2}(\.\d{1,2})?))$/,
+  overall_score: /^(100(\.0{1,2})?|(\d{0,2}(\.\d{1,2})?))$/,
 
   // Basic Info
   // full_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
