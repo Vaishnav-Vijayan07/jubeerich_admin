@@ -186,8 +186,8 @@ const KycApproval = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/university" },
-          { label: "Assigned Leads", path: "/master/university", active: true },
+          // { label: "KYC Approval", path: "/kyc_details" },
+          { label: "KYC Approval", path: "/kyc_details", active: true },
         ]}
         title={"KYC Approval"}
       />
