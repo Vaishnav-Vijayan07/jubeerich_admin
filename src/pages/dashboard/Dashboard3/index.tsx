@@ -25,15 +25,15 @@ const Dashboard3 = () => {
   const renderDashboard = () => {
     switch (userInfo?.role_name) {
       case "IT Team":
-        return <ItTeamDashboard />;
-      case "CRE":
-        return <CreDashboard />;
-      case "CRE TL":
-        return <CreTlDashboard />;
-      case "Counsellor":
-        return <CounselorDashboard />;
-      case "Country Manager":
-        return <CountryManagerDashboard />;
+        return <ItTeamDashboard userRole={userInfo?.role_name} />;
+      // case "CRE":
+      //   return <CreDashboard userRole={userInfo?.role_name}/>;
+      // case "CRE TL":
+      //   return <CreTlDashboard userRole={userInfo?.role_name}/>;
+      // case "Counsellor":
+      //   return <CounselorDashboard userRole={userInfo?.role_name}/>;
+      // case "Country Manager":
+      //   return <CountryManagerDashboard userRole={userInfo?.role_name}/>;
       default:
         return (
           <>

@@ -31,6 +31,7 @@ import Stream from "./stream/reducers";
 import refreshReducer from "./countryReducer";
 import DropDownReducer from "./dropDown/reducers";
 import KYC from "./KYC/reducers";
+import StatusTypes from "./status/statusType/reducers";
 
 export default combineReducers({
   Auth,
@@ -64,4 +65,5 @@ export default combineReducers({
   DropDownReducer,
   KYC,
   refreshReducer,
+  StatusTypes
 });

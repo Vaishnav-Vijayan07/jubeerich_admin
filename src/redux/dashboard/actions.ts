@@ -17,7 +17,25 @@ export const DashboardApiResponseError = (actionType: string, error: string): Da
   payload: { actionType, error },
 });
 
-export const getDashboard = (): DashboardActionType => ({
+export const getDashboard = ({
+  filterType,
+  year,
+  month,
+  fromDate,
+  toDate,
+}: {
+  filterType?: string;
+  year?: string;
+  month?: string;
+  fromDate?: string;
+  toDate?: string;
+} = {}): DashboardActionType => ({
   type: DashboardActionTypes.GET_DASHBOARD,
-  payload: {},
+  payload: {
+    filterType,
+    year,
+    month,
+    fromDate,
+    toDate,
+  },
 });

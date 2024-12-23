@@ -1,6 +1,7 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
 import IconCards from "./IconCards";
+import { capitalizeFirstChar } from "../../../utils/formatData";
 
 type StatCardsItem = {
   id: number;
@@ -17,13 +18,19 @@ type Props = {
 function StatCards({ statCardsItems }: Props) {
   return (
     <>
-      <Row>
-        {statCardsItems.map((item) => (
-          <Col md={3} key={item.id}>
-            <IconCards title={item.title} stats={item.stats} icon={item.icon} bgColor={item.bgColor}/>
-          </Col>
-        ))}
-      </Row>
+      <Row className="justify-content-between">
+  {statCardsItems.map((item) => (
+    <Col mx={1} key={item.id} className="mb-3">
+      <IconCards
+        title={capitalizeFirstChar(item.title)}
+        stats={item.stats}
+        icon={item.icon}
+        bgColor={item.bgColor}
+      />
+    </Col>
+  ))}
+</Row>
+
     </>
   );
 }

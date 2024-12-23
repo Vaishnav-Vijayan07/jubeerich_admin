@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Row, Col, Card, Form, Button, Dropdown, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
@@ -43,6 +43,7 @@ import { getFlag } from "../../redux/flag/actions";
 import Swal from "sweetalert2";
 import { usePagination } from "../../hooks/usePagination";
 import CustomPagination from "../../components/CustomPagination";
+import CustomSearchBox from "../../components/CustomSearchBox";
 
 interface OptionType {
   value: string;
@@ -151,6 +152,11 @@ const BasicInputElements = withSwal((props: any) => {
     handleLimitChange,
     totalPages,
     totalCount,
+    handleSearch,
+    isSearchApplied,
+    onClose,
+    value,
+    onValueChange,
   } = props;
 
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -283,7 +289,6 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const UserColumn = ({ row }: any) => {
-    console.log("row", row);
     return (
       <>
         <Dropdown className="btn-group" style={{ maxHeight: "150px", overflow: "visible !important" }}>
@@ -302,189 +307,191 @@ const BasicInputElements = withSwal((props: any) => {
     );
   };
 
-  const columns = [
-    {
-      Header: "No",
-      accessor: "id",
-      sort: true,
-      Cell: ({ row }: any) => {
-        return <span>{currentPage * currentLimit - currentLimit + row.index + 1}</span>;
+  const columns = useMemo(() => {
+    return [
+      {
+        Header: "No",
+        accessor: "id",
+        sort: true,
+        Cell: ({ row }: any) => {
+          return <span>{currentPage * currentLimit - currentLimit + row.index + 1}</span>;
+        },
       },
-    },
-    {
-      Header: "Name",
-      accessor: "full_name",
-      sort: true,
-      minWidth: 150,
-    },
-    {
-      Header: "Email",
-      accessor: "email",
-      sort: true,
-      minWidth: 150,
-    },
-    {
-      Header: "City",
-      accessor: "city",
-      sort: false,
-      minWidth: 100,
-    },
-    {
-      Header: "Country",
-      accessor: "preferredCountries",
-      sort: false,
-      minWidth: 100,
-      Cell: ({ row }: any) => (
-        <ul style={{ listStyle: "none" }}>
-          {row.original.preferredCountries.map((item: any) => (
-            <li>{item?.country_name}</li>
-          ))}
-        </ul>
-      ),
-    },
-    {
-      Header: "Office",
-      accessor: "office_type_name",
-      sort: false,
-      minWidth: 100,
-    },
-    {
-      Header: "Source",
-      accessor: "source_name",
-      sort: false,
-      minWidth: 100,
-    },
-    {
-      Header: "Lead Received Date",
-      accessor: "lead_received_date",
-      sort: false,
-      minWidth: 150,
-      Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
-    },
-    // {
-    //   Header: "Followup Date",
-    //   accessor: "followup_date",
-    //   sort: false,
-    //   minWidth: 100,
-    //   Cell: ({ row }: any) => <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>,
-    // },
-    {
-      Header: "Department",
-      accessor: "stage",
-      sort: false,
-      minWidth: 150,
-    },
-    // {
-    //   Header: "Assigned CRE",
-    //   accessor: "cre_name",
-    //   // Cell: UserColumn,
-    //   Cell: ({ row }: any) => (
-    //     <span className="no-truncate-text">
-    //       <UserColumn row={row} />
-    //     </span>
-    //   ),
-    //   minWidth: 100,
-    // },
-    ...(user?.role == cre_tl_id
-      ? [
-          {
-            Header: "Assigned CRE",
-            accessor: "cre_name",
-            // Cell: UserColumn,
-            Cell: ({ row }: any) => (
-              <span className="no-truncate-text">
-                <UserColumn row={row} />
-              </span>
-            ),
-            minWidth: 100,
-          },
-        ]
-      : []),
-    ...(user?.role == cre_id || user?.role == cre_tl_id
-      ? [
-          {
-            Header: "Assign Type",
-            accessor: "assign_type",
-            sort: false,
-            Cell: ({ row }: any) => {
-              const assignType = row.original.assign_type;
-
-              // Define display text for each possible assignType
-              const displayText: { [key: string]: string } = {
-                direct_assign: "Direct Assigned",
-                auto_assign: "Auto Assigned",
-                null: "", // Handle the string "null" explicitly
-                undefined: "", // Handle the string "undefined" explicitly
-              };
-
-              // Return the corresponding display text or "Unknown" if not found
-              return <span>{displayText[assignType] || ""}</span>;
+      {
+        Header: "Name",
+        accessor: "full_name",
+        sort: true,
+        minWidth: 150,
+      },
+      {
+        Header: "Email",
+        accessor: "email",
+        sort: true,
+        minWidth: 150,
+      },
+      {
+        Header: "City",
+        accessor: "city",
+        sort: false,
+        minWidth: 100,
+      },
+      {
+        Header: "Country",
+        accessor: "preferredCountries",
+        sort: false,
+        minWidth: 100,
+        Cell: ({ row }: any) => (
+          <ul style={{ listStyle: "none" }}>
+            {row.original.preferredCountries.map((item: any) => (
+              <li>{item?.country_name}</li>
+            ))}
+          </ul>
+        ),
+      },
+      {
+        Header: "Office",
+        accessor: "office_type_name",
+        sort: false,
+        minWidth: 100,
+      },
+      {
+        Header: "Source",
+        accessor: "source_name",
+        sort: false,
+        minWidth: 100,
+      },
+      {
+        Header: "Lead Received Date",
+        accessor: "lead_received_date",
+        sort: false,
+        minWidth: 150,
+        Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
+      },
+      // {
+      //   Header: "Followup Date",
+      //   accessor: "followup_date",
+      //   sort: false,
+      //   minWidth: 100,
+      //   Cell: ({ row }: any) => <span>{row.original.followup_date && moment(row.original.followup_date).format("DD/MM/YYYY")}</span>,
+      // },
+      {
+        Header: "Department",
+        accessor: "stage",
+        sort: false,
+        minWidth: 150,
+      },
+      // {
+      //   Header: "Assigned CRE",
+      //   accessor: "cre_name",
+      //   // Cell: UserColumn,
+      //   Cell: ({ row }: any) => (
+      //     <span className="no-truncate-text">
+      //       <UserColumn row={row} />
+      //     </span>
+      //   ),
+      //   minWidth: 100,
+      // },
+      ...(user?.role == cre_tl_id
+        ? [
+            {
+              Header: "Assigned CRE",
+              accessor: "cre_name",
+              // Cell: UserColumn,
+              Cell: ({ row }: any) => (
+                <span className="no-truncate-text">
+                  <UserColumn row={row} />
+                </span>
+              ),
+              minWidth: 100,
             },
-          },
-        ]
-      : []),
-    ...(user?.role == counsellor_tl_id
-      ? [
-          {
-            Header: "Assigned Status",
-            accessor: "assigned_branch_counselor",
-            sort: false,
-            minWidth: 150,
-            Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
-          },
-          {
-            Header: "Assigned Counselor",
-            accessor: "assigned_branch_counselor_name",
-            sort: false,
-            minWidth: 150,
-          },
-        ]
-      : []),
-    {
-      Header: "Status",
-      accessor: "status",
-      sort: false,
-    },
-    {
-      Header: "Actions",
-      accessor: "",
-      sort: false,
-      Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
-          <Link to={`/leads/manage/${row.original.id}`} className="action-icon">
-            <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
-          </Link>
-          {/* Edit Icon */}
-          {/* <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="Edit"
-            onClick={() => {
-              handleUpdate(row.original);
-              openModalWithClass("modal-full-width");
-            }}
-          >
-            <i className="mdi mdi-square-edit-outline"></i>
-          </Link> */}
+          ]
+        : []),
+      ...(user?.role == cre_id || user?.role == cre_tl_id
+        ? [
+            {
+              Header: "Assign Type",
+              accessor: "assign_type",
+              sort: false,
+              Cell: ({ row }: any) => {
+                const assignType = row.original.assign_type;
 
-          {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="Delete"
-          >
-            {/* <i className="mdi mdi-delete"></i> */}
-            <i className="mdi mdi-delete-outline"></i>
-          </Link>
-        </div>
-      ),
-    },
-  ];
+                // Define display text for each possible assignType
+                const displayText: { [key: string]: string } = {
+                  direct_assign: "Direct Assigned",
+                  auto_assign: "Auto Assigned",
+                  null: "", // Handle the string "null" explicitly
+                  undefined: "", // Handle the string "undefined" explicitly
+                };
+
+                // Return the corresponding display text or "Unknown" if not found
+                return <span>{displayText[assignType] || ""}</span>;
+              },
+            },
+          ]
+        : []),
+      ...(user?.role == counsellor_tl_id
+        ? [
+            {
+              Header: "Assigned Status",
+              accessor: "assigned_branch_counselor",
+              sort: false,
+              minWidth: 150,
+              Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+            },
+            {
+              Header: "Assigned Counselor",
+              accessor: "assigned_branch_counselor_name",
+              sort: false,
+              minWidth: 150,
+            },
+          ]
+        : []),
+      {
+        Header: "Status",
+        accessor: "status",
+        sort: false,
+      },
+      {
+        Header: "Actions",
+        accessor: "",
+        sort: false,
+        Cell: ({ row }: any) => (
+          <div className="d-flex justify-content-center align-items-center gap-2">
+            <Link to={`/leads/manage/${row.original.id}`} className="action-icon">
+              <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
+            </Link>
+            {/* Edit Icon */}
+            {/* <Link
+              to="#"
+              className="action-icon"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Edit"
+              onClick={() => {
+                handleUpdate(row.original);
+                openModalWithClass("modal-full-width");
+              }}
+            >
+              <i className="mdi mdi-square-edit-outline"></i>
+            </Link> */}
+
+            {/* Delete Icon */}
+            <Link
+              to="#"
+              className="action-icon"
+              onClick={() => handleDelete(row.original.id)}
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Delete"
+            >
+              {/* <i className="mdi mdi-delete"></i> */}
+              <i className="mdi mdi-delete-outline"></i>
+            </Link>
+          </div>
+        ),
+      },
+    ];
+  }, [currentPage, currentLimit, user]);
 
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
@@ -497,9 +504,9 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedRegion(null);
   };
 
-  const handleSelectedValues = (values: any) => {
+  const handleSelectedValues = useCallback((values: any) => {
     setSelectedValues(values);
-  };
+  }, []);
 
   const handleAssignBulk = async (user_ids: any, cre_id: any) => {
     if (user_ids.length > 0) {
@@ -546,9 +553,9 @@ const BasicInputElements = withSwal((props: any) => {
 
           if (data.status) {
             if (userRole == counsellor_tl_id) {
-              dispatch(getLeadAssignedByCounsellorTL());
+              dispatch(getLeadAssignedByCounsellorTL(currentPage, currentLimit));
             } else {
-              dispatch(getLead(1, 10));
+              dispatch(getLead(currentPage, currentLimit));
             }
             showSuccessAlert("Bulk assignment successful.");
           }
@@ -609,10 +616,12 @@ const BasicInputElements = withSwal((props: any) => {
         },
       });
 
-      console.log(data);
+
+      return
+
       if (data.status) {
         showSuccessAlert(data.message);
-        dispatch(getLead(1, 10));
+        dispatch(getLead(currentPage, currentLimit));
         setIsLoading(false);
         setSelectedFile([]);
         toggleUploadModal();
@@ -698,9 +707,9 @@ const BasicInputElements = withSwal((props: any) => {
     setTableData(filteredData);
   };
 
-  const changeFilteredItemsData = (data: any) => {
+  const changeFilteredItemsData = useCallback((data: any) => {
     setTableData(data);
-  };
+  }, []); // No dependencies
 
   return (
     <>
@@ -803,6 +812,13 @@ const BasicInputElements = withSwal((props: any) => {
                 )}
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
+              <CustomSearchBox
+                onSearch={handleSearch}
+                isSearchApplied={isSearchApplied}
+                onClose={onClose}
+                value={value}
+                onValueChange={onValueChange}
+              />
               <Table
                 columns={columns}
                 data={tableData ? tableData : []}
@@ -810,8 +826,9 @@ const BasicInputElements = withSwal((props: any) => {
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
+                isCustomPaginationNeeded={true}
                 isSelectable={true}
-                isSearchable={true}
+                isSearchable={false}
                 tableClass="table-striped dt-responsive nowrap w-100"
                 onSelect={handleSelectedValues}
                 initialLoading={initialLoading}
@@ -834,18 +851,48 @@ const BasicInputElements = withSwal((props: any) => {
 const AssignedLeads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
-  const { currentLimit, currentPage, handlePageChange, handleLimitChange } = usePagination();
+  const { currentLimit, currentPage, setCurrentPage, setCurrentLimit } = usePagination();
 
   const [counsellors, setCounsellors] = useState([]);
 
+  const [close, setClose] = useState(false);
+  const [value, setValue] = useState("");
+  const [search, setSearch] = useState("");
+
+  const handlePageChange = useCallback((event: any, value: any) => {
+    setCurrentPage(value);
+  }, []);
+
+  const handleLimitChange = useCallback((value: number) => {
+    setCurrentLimit(value);
+    setCurrentPage(1);
+  }, []);
+
+  const handleSearch = useCallback(() => {
+    setSearch(value);
+    setCurrentPage(1);
+    setCurrentLimit(20);
+  }, [value]);
+
+  const handleValue = useCallback((searchItem: string) => {
+    setValue(searchItem);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setClose(!close);
+    setValue("");
+    setSearch("");
+  }, []);
+
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag, limit, totalPages, totalCount } = useSelector(
-    (state: RootState) => ({
+  const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag, limit, totalPages, totalCount, isSearchApplied } =
+    useSelector((state: RootState) => ({
       user: state.Auth.user,
       state: state.Leads.assignedLeads,
       totalPages: state.Leads.totalPages,
       limit: state.Leads.limit,
       totalCount: state.Leads.totalCount,
+      isSearchApplied: state.Leads.isSearchApplied,
       error: state.Leads.error,
       loading: state.Leads.loading,
       initialLoading: state.Leads.initialloading,
@@ -853,8 +900,7 @@ const AssignedLeads = () => {
       franchisees: state.Franchise.franchiseUsers,
       branchCounsellor: state.Users?.branchCounsellor,
       flag: state?.Flag?.flags,
-    })
-  );
+    }));
 
   let userRole: any;
   let userBranchId: any;
@@ -866,19 +912,18 @@ const AssignedLeads = () => {
   useEffect(() => {
     dispatch(getFlag());
     if (userRole == cre_tl_id) {
-      dispatch(getLeadAssigned(currentPage, currentLimit));
+      dispatch(getLeadAssigned(currentPage, currentLimit, search == "" ? undefined : search));
     } else {
-      dispatch(getLeadAssignedByCounsellorTL());
+      dispatch(getLeadAssignedByCounsellorTL(currentPage, currentLimit, search == "" ? undefined : search));
     }
     // dispatch(getFranchise())
     fetchAllCounsellors();
-  }, [userRole, currentPage, currentLimit]);
+  }, [userRole, currentPage, currentLimit, search]);
 
   const fetchAllCounsellors = () => {
     axios
       .get("/get_all_counsellors")
       .then((res) => {
-        console.log("Counsillers", res.data.data);
         setCounsellors(res.data.data);
       })
       .catch((err) => {
@@ -952,6 +997,11 @@ const AssignedLeads = () => {
             handlePageChange={handlePageChange}
             handleLimitChange={handleLimitChange}
             totalCount={totalCount}
+            handleSearch={handleSearch}
+            isSearchApplied={isSearchApplied}
+            onClose={handleClose}
+            value={value}
+            onValueChange={handleValue}
           />
         </Col>
       </Row>

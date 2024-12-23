@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef, useState } from "react";
+import React, { useRef, useEffect, forwardRef, useState, memo } from "react";
 import { useTable, useSortBy, usePagination, useRowSelect, useGlobalFilter, useAsyncDebounce, useExpanded } from "react-table";
 import classNames from "classnames";
 import Skeleton from "react-loading-skeleton";
@@ -329,4 +329,4 @@ const Table = (props: TableProps) => {
   );
 };
 
-export default Table;
+export default memo(Table);

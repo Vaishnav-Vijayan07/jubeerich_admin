@@ -3,6 +3,7 @@ import { Card, Col, Row } from "react-bootstrap";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import Filters from "./Filters";
+import CustomFilter from "../../../components/CustomFilter";
 
 type Props = {
   categories: string[];
@@ -15,12 +16,14 @@ type SeriesItems = {
 };
 
 function StackGraph({ categories, series }: Props) {
+  const isDataPresent = series.length > 0;
+
   const options: ApexOptions = {
     chart: {
       type: "bar",
       stacked: true,
       toolbar: {
-        show: true, // Ensure the toolbar is displayed
+        show: false, // Ensure the toolbar is displayed
         tools: {
           download: true, // Download option
           selection: true, // Enable selection tool
@@ -44,10 +47,10 @@ function StackGraph({ categories, series }: Props) {
     },
     xaxis: {
       categories, // Pass your categories dynamically
-      tickPlacement: "on",
+      // tickPlacement: "on",
     },
     legend: {
-      position: "bottom",
+      position: "top",
       horizontalAlign: "center",
     },
     fill: {
@@ -57,14 +60,17 @@ function StackGraph({ categories, series }: Props) {
   };
 
   return (
-    <Card>
+    <Card style={{ minHeight: "500px" }}>
       <Card.Body>
-        <Row className="mb-3">
-          <Col md={3}>
-            <Filters />
-          </Col>
-        </Row>
-        <Chart options={options} series={series} type="bar" height={350} />
+        {isDataPresent ? (
+          <Chart options={options} series={series} type="bar" height={350} />
+        ) : (
+          <Row className="justify-content-center">
+            <Col md="6" className="text-center">
+              <h4>No data available</h4>
+            </Col>
+          </Row>
+        )}
       </Card.Body>
     </Card>
   );
