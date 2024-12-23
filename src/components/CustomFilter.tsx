@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { Card, Form, Row, Col, Button } from "react-bootstrap";
 import ReactDatePicker from "react-datepicker";
 import calender from "../assets/images/icons/calendar.svg";
-
-type FilterType = "today" | "weekly" | "monthly" | "custom";
+import { useDispatch } from "react-redux";
+import { getDashboard } from "../redux/actions";
 
 const styles: any = {
   filterItem: (isSelected: any) => ({
@@ -21,22 +21,28 @@ const styles: any = {
   },
 };
 
-const CustomFilter: React.FC = () => {
-  const [filterType, setFilterType] = useState<FilterType>("today");
-  const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
-  const [selectedMonth, setSelectedMonth] = useState<string>((new Date().getMonth() + 1).toString());
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [customStartDate, setCustomStartDate] = useState<string>("");
-  const [customEndDate, setCustomEndDate] = useState<string>("");
-  const [selectedWeek, setSelectedWeek] = useState<string>("");
-  const filters = ["today", "weekly", "monthly", "custom"];
+const CustomFilter = ({
+  filterType,
+  setFilterType,
+  selectedYear,
+  setSelectedYear,
+  selectedMonth,
+  setSelectedMonth,
+  selectedDate,
+  setSelectedDate,
+  customStartDate,
+  setCustomStartDate,
+  customEndDate,
+  setCustomEndDate,
+  selectedWeek,
+  setSelectedWeek,
+  filters,
+  handleFilter,
+}: any) => {
+  const dispatch = useDispatch();
 
-  const handleFilterClick = (type: any) => {
+  const handleFilterApplyClick = (type: any) => {
     setFilterType(type);
-  };
-
-  const handleFilter = (type: any) => {
-    console.log("type", type);
   };
 
   // Get the week number for a given date
@@ -44,6 +50,21 @@ const CustomFilter: React.FC = () => {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
     const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7).toString();
+  };
+
+  const handleFilterApply = (filterType: any) => {
+    handleFilter(filterType);
+  };
+
+  const handleClearFilter = () => {
+    setFilterType("");
+    setSelectedYear(new Date().getFullYear().toString());
+    setSelectedMonth((new Date().getMonth() + 1).toString());
+    setSelectedDate("");
+    setCustomStartDate("");
+    setCustomEndDate("");
+    setSelectedWeek("");
+    dispatch(getDashboard());
   };
 
   // Handle date selection and automatically set week
@@ -90,13 +111,18 @@ const CustomFilter: React.FC = () => {
           {/* Filter Type Selection */}
           <Form.Group className="mb-3">
             <Row style={styles.row}>
-              {filters.map((type) => (
-                <Col key={type} md={3}>
-                  <div style={styles.filterItem(filterType === type)} onClick={() => handleFilterClick(type)}>
+              {filters.map((type: any) => (
+                <Col key={type} md={2}>
+                  <div style={styles.filterItem(filterType === type)} onClick={() => handleFilterApplyClick(type)}>
                     {type.charAt(0).toUpperCase() + type.slice(1)}
                   </div>
                 </Col>
               ))}
+              <Col className="d-flex align-items-end justify-content-end">
+                <Button type="button" onClick={handleClearFilter}>
+                  Clear
+                </Button>
+              </Col>
             </Row>
           </Form.Group>
 
@@ -116,7 +142,7 @@ const CustomFilter: React.FC = () => {
                 </Form.Group>
               </Col>
               <Col md={2} className="d-flex align-items-end">
-                <Button variant="primary" type="button" onClick={()=>handleFilter("custom")}>
+                <Button variant="primary" type="button" onClick={() => handleFilterApply("custom")}>
                   Apply
                 </Button>
               </Col>
@@ -157,9 +183,9 @@ const CustomFilter: React.FC = () => {
                 </Form.Group>
               </Col>
               <Col md={2} className="d-flex align-items-end">
-              <Button variant="primary" type="button" onClick={()=>handleFilter("weekly")}>
-                Apply
-              </Button>
+                <Button variant="primary" type="button" onClick={() => handleFilterApply("weekly")}>
+                  Apply
+                </Button>
               </Col>
               {selectedWeek && (
                 <Col md={12} className="mt-2">
@@ -197,9 +223,9 @@ const CustomFilter: React.FC = () => {
                 </Form.Group>
               </Col>
               <Col md={2} className="d-flex align-items-end">
-              <Button variant="primary" type="button" onClick={()=>handleFilter("monthly")}>
-                Apply
-              </Button>
+                <Button variant="primary" type="button" onClick={() => handleFilterApply("monthly")}>
+                  Apply
+                </Button>
               </Col>
             </Row>
           )}
@@ -209,4 +235,4 @@ const CustomFilter: React.FC = () => {
   );
 };
 
-export default CustomFilter;
+export default memo(CustomFilter);

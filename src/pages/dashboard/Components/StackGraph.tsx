@@ -16,6 +16,8 @@ type SeriesItems = {
 };
 
 function StackGraph({ categories, series }: Props) {
+  const isDataPresent = series.length > 0;
+
   const options: ApexOptions = {
     chart: {
       type: "bar",
@@ -58,10 +60,17 @@ function StackGraph({ categories, series }: Props) {
   };
 
   return (
-    <Card>
+    <Card style={{ minHeight: "500px" }}>
       <Card.Body>
-        <Row className="mb-3"></Row>
-        <Chart options={options} series={series} type="bar" height={350} />
+        {isDataPresent ? (
+          <Chart options={options} series={series} type="bar" height={350} />
+        ) : (
+          <Row className="justify-content-center">
+            <Col md="6" className="text-center">
+              <h4>No data available</h4>
+            </Col>
+          </Row>
+        )}
       </Card.Body>
     </Card>
   );
