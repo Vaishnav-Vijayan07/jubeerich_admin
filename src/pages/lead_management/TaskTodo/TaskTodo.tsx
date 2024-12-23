@@ -80,8 +80,8 @@ const TaskTodo = () => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: "Todo", path: "/apps/tasks/list" },
-                    { label: "Todo List", path: "/apps/tasks/list", active: true },
+                    { label: "Todo", path: "/leads/ordinary_tasks" },
+                    { label: "Todo List", path: "/leads/ordinary_tasks", active: true },
                 ]}
                 title={"Tasks Todo"}
             />

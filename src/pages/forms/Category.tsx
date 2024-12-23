@@ -432,8 +432,8 @@ const Category = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/category" },
-          { label: "Lead Type", path: "/master/category", active: true },
+          { label: "Master", path: "/settings/master/type" },
+          { label: "Lead Type", path: "/settings/master/type", active: true },
         ]}
         title={"Lead Type"}
       />

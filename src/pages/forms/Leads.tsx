@@ -126,8 +126,8 @@ const Leads = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/leads" },
-          { label: "Leads", path: "/master/leads", active: true },
+          { label: "Master", path: "/leads/manage" },
+          { label: "Leads", path: "/leads/manage", active: true },
         ]}
         title={"Leads"}
       />

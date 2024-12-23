@@ -367,7 +367,7 @@ const BasicInputElements = withSwal((props: any) => {
         >
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Campus Management</h4>
+              <h4 className="modal-title">Course Management</h4>
             </Modal.Header>
             <Modal.Body>
               <Form.Group className="mb-3" controlId="course_name">
@@ -546,8 +546,8 @@ const Course = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "" },
-          { label: "Courses", path: "", active: true },
+          { label: "Master", path: "/settings/master/course" },
+          { label: "Courses", path: "/settings/master/course", active: true },
         ]}
         title={"Courses"}
       />
