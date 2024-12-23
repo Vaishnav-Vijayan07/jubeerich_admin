@@ -427,8 +427,9 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedBranch([]);
     setSelectedCountry([]);
     setSelectedImage(null);
-    setSelectedRole(null)
-    setRadioValue(true)
+    setSelectedRole(null);
+    setSelectedRole(null);
+    setRadioValue(true);
   };
 
   useEffect(() => {
