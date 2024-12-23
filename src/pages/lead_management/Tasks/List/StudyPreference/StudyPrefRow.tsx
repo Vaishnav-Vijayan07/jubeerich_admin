@@ -64,7 +64,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              isDisabled={!readOnly}
+              // isDisabled={!readOnly}
               options={dropdownData?.universities}
               value={
                 item?.universityId
@@ -88,7 +88,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              isDisabled={!readOnly}
+              // isDisabled={!readOnly}
               options={dropdownData?.campuses}
               value={
                 item?.campusId
@@ -112,7 +112,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              isDisabled={!readOnly}
+              // isDisabled={!readOnly}
               options={dropdownData?.courseTypes}
               value={
                 item?.courseTypeId
@@ -136,7 +136,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              isDisabled={!readOnly}
+              // isDisabled={!readOnly}
               options={dropdownData?.streams}
               value={
                 item?.streamId
@@ -160,7 +160,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              isDisabled={!readOnly}
+              // isDisabled={!readOnly}
               options={dropdownData?.courses}
               value={
                 item?.courseId
@@ -184,7 +184,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              isDisabled={!readOnly}
+              // isDisabled={!readOnly}
               options={intakeYearList}
               value={
                 item.intakeYear
@@ -208,7 +208,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              isDisabled={!readOnly}
+              // isDisabled={!readOnly}
               options={intakeMonthOptions}
               value={
                 item?.intakeMonth
@@ -234,7 +234,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
               name="estimatedBudget"
               placeholder="Enter estimated budget"
               key="estimatedBudget"
-              readOnly={!readOnly}
+              // readOnly={!readOnly}
               value={item?.estimatedBudget || ""}
               onChange={(e: any) => handleStudyPreferenceChange(index, "estimatedBudget", e.target.value)}
               min={0}
@@ -344,7 +344,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             className="mt-4"
             type="submit"
             onClick={handleSave}
-            disabled={saveLoading || !isEditable} // Disable button while loading
+            // disabled={saveLoading || !isEditable} // Disable button while loading
           >
             Save Details
           </Button>
