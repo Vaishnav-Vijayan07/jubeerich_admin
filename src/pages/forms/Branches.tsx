@@ -596,7 +596,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="country">
                     <Form.Label><span className="text-danger fs-4">* </span> Branch Country</Form.Label>
-                    {/* <Select
+                    <Select
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
@@ -610,9 +610,9 @@ const BasicInputElements = withSwal((props: any) => {
                       })}
                       value={selectedCountry}
                       onChange={handleDropDowns}
-                    /> */}
+                    />
 
-                    <FormInput
+                    {/* <FormInput
                       type="text"
                       name="country"
                       placeholder="Enter country"
@@ -620,7 +620,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={formData?.country} // Change to basicInfo
                       onChange={handleInputChange}
                     // disabled={true}
-                    />
+                    /> */}
 
                     {validationErrors.country && <Form.Text className="text-danger">{validationErrors.country}</Form.Text>}
                   </Form.Group>
@@ -629,7 +629,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="state">
                     <Form.Label><span className="text-danger fs-4">* </span> Branch State</Form.Label>
-                    {/* <Select
+                    <Select
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
@@ -644,8 +644,9 @@ const BasicInputElements = withSwal((props: any) => {
                       value={selectedState}
                       onChange={handleDropDowns}
                       isDisabled={!selectedCountry}
-                    /> */}
-                    <FormInput
+                    />
+
+                    {/* <FormInput
                       type="text"
                       name="state"
                       placeholder="Enter state"
@@ -653,7 +654,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={formData?.state} // Change to basicInfo
                       onChange={handleInputChange}
                     // disabled={true}
-                    />
+                    /> */}
 
                     {validationErrors.state && <Form.Text className="text-danger">{validationErrors.state}</Form.Text>}
                   </Form.Group>
@@ -662,7 +663,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="city">
                     <Form.Label><span className="text-danger fs-4">* </span> Branch City</Form.Label>
-                    {/* <Select
+                    <Select
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
@@ -671,8 +672,9 @@ const BasicInputElements = withSwal((props: any) => {
                       value={selectedCity}
                       onChange={handleDropDowns}
                       isDisabled={!selectedState}
-                    /> */}
-                    <FormInput
+                    />
+                    
+                    {/* <FormInput
                       type="text"
                       name="city"
                       placeholder="Enter city"
@@ -680,7 +682,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={formData?.city} // Change to basicInfo
                       onChange={handleInputChange}
                     // disabled={true}
-                    />
+                    /> */}
 
                     {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
                   </Form.Group>

@@ -767,7 +767,7 @@ const BasicInfo = withSwal((props: any) => {
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="country">
                 <Form.Label><span className="text-danger">*</span> Country</Form.Label>
-                {/* <Select
+                <Select
                   className="react-select react-select-container"
                   name="country"
                   options={allCountries?.map((item: any) => {
@@ -779,8 +779,9 @@ const BasicInfo = withSwal((props: any) => {
                   })}
                   value={selectedNation}
                   onChange={(selected) => handleDropDowns(selected, { name: "country" }, "basic")}
-                /> */}
-                  <FormInput
+                />
+
+                  {/* <FormInput
                     type="text"
                     name="country"
                     placeholder="Enter country"
@@ -788,7 +789,7 @@ const BasicInfo = withSwal((props: any) => {
                     value={basicInfo?.country} // Change to basicInfo
                     onChange={(e) => handleInputChange(e, "country", "basic")}
                     // disabled={true}
-                  />
+                  /> */}
                 {basicInfo?.errors?.country && <Form.Text className="text-danger">{basicInfo?.errors?.country}</Form.Text>}
               </Form.Group>
             </Col>
@@ -801,10 +802,10 @@ const BasicInfo = withSwal((props: any) => {
                   name="nationality"
                   placeholder="Enter nationality"
                   key="nationality"
-                  // value={selectedNationality} // Change to basicInfo
-                  value={basicInfo?.nationality} // Change to basicInfo
+                  value={selectedNationality} // Change to basicInfo
+                  // value={basicInfo?.nationality} // Change to basicInfo
                   onChange={(e) => handleInputChange(e, "nationality", "basic")}
-                  // disabled={true}
+                  disabled={true}
                 />
                 {basicInfo?.errors?.nationality && <Form.Text className="text-danger">{basicInfo?.errors?.nationality}</Form.Text>}
               </Form.Group>
@@ -813,7 +814,7 @@ const BasicInfo = withSwal((props: any) => {
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="state">
                 <Form.Label><span className="text-danger">*</span> State</Form.Label>
-                {/* <Select
+                <Select
                   className="react-select react-select-container"
                   name="state"
                   options={allStates?.map((item: any) => {
@@ -825,8 +826,9 @@ const BasicInfo = withSwal((props: any) => {
                   value={selectedState}
                   onChange={(selected) => handleDropDowns(selected, { name: "state" }, "basic")}
                   isDisabled={!selectedNation?.value}
-                /> */}
-                  <FormInput
+                />
+
+                  {/* <FormInput
                     type="text"
                     name="state"
                     placeholder="Enter state"
@@ -834,7 +836,7 @@ const BasicInfo = withSwal((props: any) => {
                     value={basicInfo?.state} // Change to basicInfo
                     onChange={(e) => handleInputChange(e, "state", "basic")}
                     // disabled={true}
-                  />
+                  /> */}
                 {basicInfo?.errors?.state && <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>}
               </Form.Group>
             </Col>
