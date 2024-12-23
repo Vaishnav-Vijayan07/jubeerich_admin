@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { regrexValidation } from "../../utils/regrexValidation";
 import axios from "axios";
+import { FormInput } from "../../components";
 
 interface TableRecords {
   id: string;
@@ -484,7 +485,7 @@ const BasicInputElements = withSwal((props: any) => {
           setSelectedCity(selected);
           updatedFormData.city = selected?.value;
           break;
-        case "region":
+        case "region_id":
           setSelectedRegion(selected);
           updatedFormData.region_id = selected?.value;
           break;
@@ -595,7 +596,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="country">
                     <Form.Label><span className="text-danger fs-4">* </span> Branch Country</Form.Label>
-                    <Select
+                    {/* <Select
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
@@ -609,6 +610,16 @@ const BasicInputElements = withSwal((props: any) => {
                       })}
                       value={selectedCountry}
                       onChange={handleDropDowns}
+                    /> */}
+
+                    <FormInput
+                      type="text"
+                      name="country"
+                      placeholder="Enter country"
+                      key="country"
+                      value={formData?.country} // Change to basicInfo
+                      onChange={handleInputChange}
+                    // disabled={true}
                     />
 
                     {validationErrors.country && <Form.Text className="text-danger">{validationErrors.country}</Form.Text>}
@@ -618,7 +629,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="state">
                     <Form.Label><span className="text-danger fs-4">* </span> Branch State</Form.Label>
-                    <Select
+                    {/* <Select
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
@@ -633,6 +644,15 @@ const BasicInputElements = withSwal((props: any) => {
                       value={selectedState}
                       onChange={handleDropDowns}
                       isDisabled={!selectedCountry}
+                    /> */}
+                    <FormInput
+                      type="text"
+                      name="state"
+                      placeholder="Enter state"
+                      key="state"
+                      value={formData?.state} // Change to basicInfo
+                      onChange={handleInputChange}
+                    // disabled={true}
                     />
 
                     {validationErrors.state && <Form.Text className="text-danger">{validationErrors.state}</Form.Text>}
@@ -642,7 +662,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="city">
                     <Form.Label><span className="text-danger fs-4">* </span> Branch City</Form.Label>
-                    <Select
+                    {/* <Select
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
@@ -651,6 +671,15 @@ const BasicInputElements = withSwal((props: any) => {
                       value={selectedCity}
                       onChange={handleDropDowns}
                       isDisabled={!selectedState}
+                    /> */}
+                    <FormInput
+                      type="text"
+                      name="city"
+                      placeholder="Enter city"
+                      key="city"
+                      value={formData?.city} // Change to basicInfo
+                      onChange={handleInputChange}
+                    // disabled={true}
                     />
 
                     {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
