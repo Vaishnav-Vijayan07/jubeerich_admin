@@ -188,7 +188,12 @@ const BasicInputElements = withSwal((props: any) => {
     },
     {
       Header: "Name",
-      accessor: "name",
+      accessor: "type_name",
+      sort: true,
+    },
+    {
+      Header: "Priority",
+      accessor: "priority",
       sort: true,
     },
     {
@@ -333,12 +338,15 @@ const StatusType = () => {
   const dispatch = useDispatch<AppDispatch>();
   //Fetch data from redux store
   const { state, loading, success, error, initialloading } = useSelector((state: RootState) => ({
-    state: state.StatusTypes.types,
+    state: state.StatusTypes.types.data,
     loading: state.StatusTypes.loading,
     success: state.StatusTypes.success,
     error: state.StatusTypes.error,
     initialloading: state.StatusTypes.initialloading,
   }));
+
+
+  console.log("STATE", state);
 
   useEffect(() => {
     dispatch(getStatusType());
@@ -364,7 +372,7 @@ const StatusType = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state} loading={loading} success={success} error={error} initialLoading={initialloading} />
+          <BasicInputElements state={state || []} loading={loading} success={success} error={error} initialLoading={initialloading} />
         </Col>
       </Row>
     </React.Fragment>
