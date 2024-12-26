@@ -19,7 +19,7 @@ function SingleBarGraph({ categories, series }: Props) {
     chart: {
       type: "bar",
       toolbar: {
-        show: true,
+        show: false,
         offsetX: 0,
         offsetY: 0,
         tools: {
@@ -65,11 +65,6 @@ function SingleBarGraph({ categories, series }: Props) {
   return (
     <Card>
       <Card.Body>
-        <Row className="mb-3">
-          <Col md={3}>
-            <Filters />
-          </Col>
-        </Row>
         <Chart options={options} series={series} type="bar" height={350} />
       </Card.Body>
     </Card>
