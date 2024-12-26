@@ -78,6 +78,8 @@ const BasicInputElements = withSwal((props: any) => {
     value,
   } = props;
 
+  const isDataPresent = state && state.length > 0;
+
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedValues, setSelectedValues] = useState([]);
@@ -857,13 +859,15 @@ const BasicInputElements = withSwal((props: any) => {
                 </>
               ) : (
                 <>
-                  <CustomSearchBox
-                    onSearch={handleSearch}
-                    isSearchApplied={isSearchApplied}
-                    onClose={onClose}
-                    value={value}
-                    onValueChange={onValueChange}
-                  />
+                  {isDataPresent && (
+                    <CustomSearchBox
+                      onSearch={handleSearch}
+                      isSearchApplied={isSearchApplied}
+                      onClose={onClose}
+                      value={value}
+                      onValueChange={onValueChange}
+                    />
+                  )}
                   <Table
                     columns={columns}
                     data={records ? records : []}
@@ -875,14 +879,15 @@ const BasicInputElements = withSwal((props: any) => {
                     tableClass="table-striped dt-responsive nowrap w-100"
                     initialLoading={initialLoading}
                   />
-
-                  <CustomPagination
-                    handleLimitChange={handleLimitChange}
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    handlePageChange={handlePageChange}
-                    currentLimit={currentLimit}
-                  />
+                  {isDataPresent && (
+                    <CustomPagination
+                      handleLimitChange={handleLimitChange}
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      handlePageChange={handlePageChange}
+                      currentLimit={currentLimit}
+                    />
+                  )}
                 </>
               )}
             </Card.Body>

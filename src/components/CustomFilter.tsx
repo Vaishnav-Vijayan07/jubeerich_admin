@@ -34,8 +34,6 @@ const CustomFilter = ({
   setCustomStartDate,
   customEndDate,
   setCustomEndDate,
-  selectedWeek,
-  setSelectedWeek,
   filters,
   handleFilter,
 }: any) => {
@@ -63,15 +61,12 @@ const CustomFilter = ({
     setSelectedDate("");
     setCustomStartDate("");
     setCustomEndDate("");
-    setSelectedWeek("");
     dispatch(getDashboard());
   };
 
   // Handle date selection and automatically set week
   const handleDateSelection = (date: string) => {
     setSelectedDate(date);
-    const selectedDateObj = new Date(date);
-    setSelectedWeek(getWeekNumber(selectedDateObj));
   };
 
   // Generate array of years (current year and 5 years back)
@@ -187,11 +182,6 @@ const CustomFilter = ({
                   Apply
                 </Button>
               </Col>
-              {selectedWeek && (
-                <Col md={12} className="mt-2">
-                  <p className="mb-0">Selected Week: Week {selectedWeek}</p>
-                </Col>
-              )}
             </Row>
           )}
 

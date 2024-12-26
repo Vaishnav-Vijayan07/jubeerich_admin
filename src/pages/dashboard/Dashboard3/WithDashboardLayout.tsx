@@ -21,7 +21,6 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [customStartDate, setCustomStartDate] = useState<string>("");
     const [customEndDate, setCustomEndDate] = useState<string>("");
-    const [selectedWeek, setSelectedWeek] = useState<string>("");
     const filters = ["weekly", "monthly", "custom"];
 
     const { cards, loading, categories, series, latestLeadsCount } = useSelector((state: RootState) => ({
@@ -82,8 +81,6 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
           setCustomStartDate={setCustomStartDate}
           customEndDate={customEndDate}
           setCustomEndDate={setCustomEndDate}
-          selectedWeek={selectedWeek}
-          setSelectedWeek={setSelectedWeek}
           filters={filters}
           handleFilter={handleFilter}
         />

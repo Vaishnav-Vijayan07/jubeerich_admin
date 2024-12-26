@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import WithDashboardLayout from "../Dashboard3/WithDashboardLayout";
 import { Row, Col } from "react-bootstrap";
 import LeadsTable from "../Components/LeadsTable";
 import StackGraph from "../Components/StackGraph";
-import Spinner from "react-bootstrap/Spinner";
 
 function ItTeamDashboard({ categories, series, latestLeadsCount }: any) {
   return (
