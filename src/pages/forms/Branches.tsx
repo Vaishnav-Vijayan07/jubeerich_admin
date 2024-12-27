@@ -663,7 +663,7 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={12} lg={6}>
                   <Form.Group className="mb-3" controlId="city">
                     <Form.Label><span className="text-danger fs-4">* </span> Branch City</Form.Label>
-                    <Select
+                    {/* <Select
                       styles={customStyles}
                       className="react-select react-select-container"
                       classNamePrefix="react-select"
@@ -672,9 +672,9 @@ const BasicInputElements = withSwal((props: any) => {
                       value={selectedCity}
                       onChange={handleDropDowns}
                       isDisabled={!selectedState}
-                    />
+                    /> */}
                     
-                    {/* <FormInput
+                    <FormInput
                       type="text"
                       name="city"
                       placeholder="Enter city"
@@ -682,7 +682,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={formData?.city} // Change to basicInfo
                       onChange={handleInputChange}
                     // disabled={true}
-                    /> */}
+                    />
 
                     {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
                   </Form.Group>
