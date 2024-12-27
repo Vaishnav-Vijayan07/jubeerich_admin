@@ -56,7 +56,7 @@ function StackGraph({ categories, series }: Props) {
     fill: {
       opacity: 1,
     },
-    colors: ["#306315ff", "#f7915eff", "#5de36aff", "#f53b22ff", "#e35d71ff"],
+    colors: ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
   };
 
   return (
