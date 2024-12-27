@@ -329,13 +329,13 @@ const StudyPreferenceRow = ({ studyPreference, countryName, dropdownData, studyP
             console.log("Study Preference Item:", studyPreferenceData, item, index); // Log the item
             return renderStudyprefRows(item, index, isEditable);
           })}
-          {isEditable && (
+          {/* {isEditable && ( */}
             <Row className="pe-0">
               <Row className="mb-2 pe-0">
                 <ActionButton label="Add More" iconClass="mdi mdi-plus" onClick={addMoreStudyPreference} />
               </Row>
             </Row>
-          )}
+          {/* )} */}
         </Row>
 
         <Row>
