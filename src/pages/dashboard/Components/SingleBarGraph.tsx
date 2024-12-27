@@ -15,6 +15,8 @@ type SeriesItems = {
 };
 
 function SingleBarGraph({ categories, series }: Props) {
+  const isDataPresent = series.length > 0;
+
   const options: ApexOptions = {
     chart: {
       type: "bar",
@@ -65,7 +67,19 @@ function SingleBarGraph({ categories, series }: Props) {
   return (
     <Card>
       <Card.Body>
-        <Chart options={options} series={series} type="bar" height={350} />
+        {isDataPresent ? (
+          <Row>
+            <Col md={12}>
+              <Chart options={options} series={series} type="bar" height={350} />
+            </Col>
+          </Row>
+        ) : (
+          <Row>
+            <Col md={12}>
+              <h4 className="text-center mt-3">No data available</h4>
+            </Col>
+          </Row>
+        )}
       </Card.Body>
     </Card>
   );
