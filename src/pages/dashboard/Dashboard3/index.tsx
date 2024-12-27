@@ -31,7 +31,7 @@ const Dashboard3 = () => {
       case "CRE TL":
         return <CreTlDashboard userRole={userInfo?.role_name}/>;
       case "Counsellor":
-      //   return <CounselorDashboard userRole={userInfo?.role_name}/>;
+        return <CounselorDashboard userRole={userInfo?.role_name}/>;
       // case "Country Manager":
       //   return <CountryManagerDashboard userRole={userInfo?.role_name}/>;
       default:
