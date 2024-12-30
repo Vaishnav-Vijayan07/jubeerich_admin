@@ -12,14 +12,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { addCategory, deleteCategory, getCategory, updateCategory } from "../../redux/actions";
+import { addCategory, addStatus, deleteCategory, getCategory, updateCategory } from "../../redux/actions";
 import { AUTH_SESSION_KEY } from "../../constants";
 import { error } from "console";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { Slider } from "@mui/material";
-import { getStatusType } from "../../redux/status/statusType/actions";
+import { addStatusType, deleteStatusType, getStatusType, updateStatusType } from "../../redux/status/statusType/actions";
 
 interface TableRecords {
   id: number;
@@ -114,7 +114,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteCategory(type_id));
+          dispatch(deleteStatusType(type_id));
           //clear form data
           if (isUpdate) {
             setFormData(initialFormData);
@@ -161,8 +161,10 @@ const BasicInputElements = withSwal((props: any) => {
             // Validation passed, handle form submission
             if (isUpdate) {
               // dispatch(updateCategory(formData.id, formData.category_name, formData.category_description));
+              dispatch(updateStatusType(formData.id, formData.type_name, formData.priority));
             } else {
               // dispatch(addCategory(formData.category_name, formData.category_description));
+              dispatch(addStatusType(formData.type_name, formData.priority));
             }
           }
         });

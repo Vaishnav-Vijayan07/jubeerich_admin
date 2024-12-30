@@ -34,7 +34,7 @@ export const getStatusType = (): StatusTypeActionType => ({
   payload: {},
 });
 
-export const addStatus = (type_name: string, priority: number): StatusTypeActionType => ({
+export const addStatusType = (type_name: string, priority: number): StatusTypeActionType => ({
   type: StatusTypeActionTypes.ADD_STATUS_TYPE,
   payload: {
     type_name,
@@ -51,7 +51,7 @@ export const updateStatusType = (id: string, type_name: string, priority: number
   },
 });
 
-export const deleteStatusType = (id: string): StatusTypeActionType => ({
+export const deleteStatusType = (id: string | number): StatusTypeActionType => ({
   type: StatusTypeActionTypes.DELETE_STATUS_TYPE,
   payload: { id },
 });
