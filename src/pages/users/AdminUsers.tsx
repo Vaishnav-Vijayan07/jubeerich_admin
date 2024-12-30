@@ -68,7 +68,7 @@ const BasicInputElements = withSwal((props: any) => {
       .string()
       .required("Phone number is required")
       .matches(/^\d{10}$/, "Phone number must be a valid 10-digit number"),
-    address: yup.string().required("Address is required"),
+    // address: yup.string().required("Address is required").nullable(),
     username: yup.string().required("Username is required").min(4, "Username must be at least 4 characters long"),
     role_id: yup.string().nullable().required("Role is required"),
     password: yup
@@ -111,7 +111,7 @@ const BasicInputElements = withSwal((props: any) => {
       id: item.id,
       employee_id: item.employee_id,
       name: item.name,
-      email: item.email,
+      email: item.email.trim(),
       phone: item.phone,
       address: item.address,
       username: item.username,
