@@ -11,15 +11,16 @@ import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { getFlag } from "../../redux/flag/actions";
+import { usePagination } from "../../hooks/usePagination";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   const [counsellors, setCounsellors] = useState([]);
   const [branchForManager, setBranchForManager] = useState([]);
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
+  const {currentPage, setCurrentPage,currentLimit, setCurrentLimit} = usePagination();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentLimit, setcurrentLimit] = useState(20);
+
   const [close, setClose] = useState(false);
   const [value, setValue] = useState("");
   const [search, setSearch] = useState("");
@@ -29,14 +30,14 @@ const Leads = () => {
   }, []);
 
   const handleLimitChange = useCallback((value: number) => {
-    setcurrentLimit(value);
+    setCurrentLimit(value);
     setCurrentPage(1);
   }, []);
 
   const handleSearch = () => {
     setSearch(value);
     setCurrentPage(1);
-    setcurrentLimit(20);
+    setCurrentLimit(20);
   };
 
   const handleValue = (searchItem: string) => {
@@ -82,7 +83,7 @@ const Leads = () => {
 
   useEffect(() => {
     if (userRole == cre_tl_id) {
-      dispatch(getLeadsTL(currentPage, currentLimit));
+      dispatch(getLeadsTL(currentPage, currentLimit, search == "" ? undefined : search));
     } else {
       if (userRole) {
         dispatch(getLead(currentPage, currentLimit, search == "" ? undefined : search));
@@ -126,8 +127,8 @@ const Leads = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/leads" },
-          { label: "Leads", path: "/master/leads", active: true },
+          { label: "Master", path: "/leads/manage" },
+          { label: "Leads", path: "/leads/manage", active: true },
         ]}
         title={"Leads"}
       />

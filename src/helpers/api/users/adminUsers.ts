@@ -46,15 +46,15 @@ function addAdminUsers(params: {
   role_id: string;
   profileImage: File;
   branch_ids: string;
-  country_id: any;
+  country_ids: any;
   franchise_id?: string
   region_id?: string
   branch_id?: string,
-  country_ids?: string,
+  status?: boolean;
 }) {
-  if (params.country_id == undefined) {
-    params.country_id = null;
-  }
+  // if (params.country_id == undefined) {
+  //   params.country_id = null;
+  // }
 
   console.count("api called this times");
 
@@ -75,17 +75,17 @@ function updateAdminUsers(
     role_id: string;
     profileImage: File;
     branch_ids: string;
-    country_id: any;
+    country_ids: any;
     franchise_id?: string;
     region_id?: string;
     branch_id?: string;
-    country_ids?: string
+    status?: boolean;
   }
 ) {
-  console.log(params.country_id);
-  if (params.country_id == undefined) {
-    params.country_id = null;
-  }
+  // console.log(params.country_id);
+  // if (params.country_id == undefined) {
+  //   params.country_id = null;
+  // }
 
   return api.update(`${baseUrl}/${id}`, params);
 }

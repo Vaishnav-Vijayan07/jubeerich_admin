@@ -507,10 +507,10 @@ const MaritalStatus = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/marital_status" },
+          { label: "Master", path: "/settings/master/marital_status" },
           {
             label: "Marital Status",
-            path: "/master/marital_status",
+            path: "/settings/master/marital_status",
             active: true,
           },
         ]}

@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Card, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
+import { Button, ButtonGroup, Card, Col, Form, Modal, Row, Spinner, ToggleButton } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import Table from "../../components/Table";
 import axios from "axios";
@@ -28,6 +28,7 @@ import { RootState } from "../../redux/store";
 import { withSwal } from "react-sweetalert2";
 import * as yup from "yup";
 import { getBranches } from "../../helpers";
+import PageTitle from "../../components/PageTitle";
 
 export const initialState = {
   id: "",
@@ -75,6 +76,11 @@ const BranchDetails = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const [countryData, setCountryData] = useState([]);
   const [isTL, setIsTL] = useState<boolean>(false);
+  const [radioValue, setRadioValue] = useState<boolean>(true);
+  const radios = [
+    { name: 'Active', value: 'true' },
+    { name: 'Disable', value: 'false' },
+  ];
   const dispatch = useDispatch();
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
@@ -136,11 +142,6 @@ const BranchDetails = withSwal((props: any) => {
     {
       Header: "Role",
       accessor: "role",
-      sort: false,
-    },
-    {
-      Header: "Country",
-      accessor: "country_name",
       sort: false,
     },
     {
@@ -239,6 +240,7 @@ const BranchDetails = withSwal((props: any) => {
     setSelectedBranch([]);
     setSelectedCountry([]);
     setSelectedImage(null);
+    setRadioValue(true);
   };
 
   const handleUpdate = (item: any) => {
@@ -287,6 +289,7 @@ const BranchDetails = withSwal((props: any) => {
 
     // Update selected branches
     setSelectedBranch(selectedPowerIds);
+    setRadioValue(item?.status)
 
     // Set the form data with the updated values
     setFormData((prev: any) => ({
@@ -411,15 +414,14 @@ const BranchDetails = withSwal((props: any) => {
                       formData.username,
                       formData.password,
                       user_id,
-                      // formData.role_id,
                       isTL ? counsellor_tl_id : formData.role_id,
                       selectedImage,
                       formData.branch_ids,
-                      formData?.country_id,
-                      formData.role_id == regional_manager_id ? formData.region_id : null,
+                      null,
+                      null,
                       branchId,
-                      formData.role_id == branch_counsellor_id ? formData.country_ids : null,
-                      null
+                      null,
+                      radioValue
                     )
                   );
                 } catch (err) {
@@ -441,15 +443,14 @@ const BranchDetails = withSwal((props: any) => {
                       formData.username,
                       formData.password,
                       user_id,
-                      // formData.role_id,
                       isTL ? counsellor_tl_id : formData.role_id,
                       selectedImage,
                       formData.branch_ids,
-                      formData?.country_id,
-                      formData.role_id == regional_manager_id ? formData.region_id : null,
+                      null,
+                      null,
                       branchId,
-                      formData.role_id == branch_counsellor_id ? formData.country_ids : null,
-                      null
+                      null,
+                      radioValue
                     )
                   );
                 } catch (err) {
@@ -515,6 +516,15 @@ const BranchDetails = withSwal((props: any) => {
 
   return (
     <>
+      <PageTitle
+        breadCrumbItems={[
+          { label: "Master", path: "/settings/master/branches" },
+          { label: "Branches", path: "/settings/master/branches" },
+          { label: "Branch Details", path: "/settings/master/branch_detials", active: true },
+        ]}
+        title={"Branch Details"}
+      />
+
       <Card>
         <Card.Body>
           <Row>
@@ -567,14 +577,6 @@ const BranchDetails = withSwal((props: any) => {
                     </p>
                   </div>
 
-                  {/* <div className="d-flex justify-content-end pt-2 pe-3">
-                    <Button className="btn btn-primary" onClick={() => [setShowModal(true), setIsTL(true), handleCancelUpdate(), handleResetValues()]}>
-                      <i className="mdi mdi-plus-circle"></i>
-                      <span className="ms-1">
-                        Branch Counsellor TL
-                      </span>
-                    </Button>
-                  </div> */}
                 </Card.Body>
               </Card>
             </Col>
@@ -626,7 +628,7 @@ const BranchDetails = withSwal((props: any) => {
                   <Col className="bg-white">
                     <Form onSubmit={onSubmit}>
                       <Row>
-                        <Col md={6}>
+                        <Col md={4}>
                           <Form.Group className="mb-3" controlId="employee_id">
                             <Form.Label>Employee ID</Form.Label>
                             <Form.Control
@@ -641,7 +643,7 @@ const BranchDetails = withSwal((props: any) => {
                             )}
                           </Form.Group>
                         </Col>
-                        <Col md={6}>
+                        <Col md={4}>
                           <Form.Group className="mb-3" controlId="name">
                             <Form.Label>Name</Form.Label>
                             <Form.Control
@@ -654,8 +656,27 @@ const BranchDetails = withSwal((props: any) => {
                             {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>}
                           </Form.Group>
                         </Col>
+                        <Col md={4}>
+                          <Row>
+                            <ButtonGroup className="mt-3" style={{paddingTop: '4px'}}>
+                              {radios.map((radio, idx) => (
+                                <ToggleButton
+                                  key={idx}
+                                  id={`radio-${idx}`}
+                                  type="radio"
+                                  variant={radioValue ? 'outline-success' : 'outline-danger'}
+                                  name="status"
+                                  value={radio.value}
+                                  checked={radioValue.toString() == radio.value.toString()}
+                                  onChange={() => setRadioValue((prev) => !prev)}
+                                >
+                                  {radio.name}
+                                </ToggleButton>
+                              ))}
+                            </ButtonGroup>
+                          </Row>
+                        </Col>
                       </Row>
-
                       <Row>
                         <Col md={6}>
                           <Form.Group className="mb-3" controlId="email">
@@ -739,32 +760,6 @@ const BranchDetails = withSwal((props: any) => {
                         </Col>
                       </Row>
 
-                      <Row>
-                        <Col md={6}>
-                          <Form.Group className="mb-3" controlId="role_id">
-                            <Form.Label>Country</Form.Label>
-                            <Form.Select
-                              aria-label="Default select example"
-                              name="country_id"
-                              value={formData.country_id}
-                              onChange={handleInputChange}
-                            >
-                              <option value="" disabled selected>
-                                Choose..
-                              </option>
-                              {countryData?.map((item: any) => (
-                                <option value={item?.value} key={item?.value}>
-                                  {item.label}
-                                </option>
-                              ))}
-                            </Form.Select>
-
-                            {validationErrors.role_id && (
-                              <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>
-                            )}
-                          </Form.Group>
-                        </Col>
-                      </Row>
                       <div className="text-end">
                         <Button
                           variant="primary"

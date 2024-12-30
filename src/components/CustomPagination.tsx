@@ -1,5 +1,5 @@
 import { Pagination } from "@mui/material";
-import React from "react";
+import React, { memo } from "react";
 
 type Props = {
   handleLimitChange: any;
@@ -10,6 +10,9 @@ type Props = {
 };
 
 function CustomPagination({ handleLimitChange, handlePageChange, totalPages, currentLimit, currentPage }: Props) {
+
+  console.log("Inside Custom Pagination");
+
   return (
     <>
       <div className="d-flex align-items-center justify-content-between text-center gap-2 pb-1">
@@ -17,7 +20,7 @@ function CustomPagination({ handleLimitChange, handlePageChange, totalPages, cur
           <div className="d-inline-block me-3">
             <label className="me-1">Display :</label>
             <select value={currentLimit} className="form-select d-inline-block w-auto" onChange={(e) => handleLimitChange(Number(e.target.value))}>
-              {[20, 50, 100].map((limit) => (
+              {[10, 20, 50, 100].map((limit) => (
                 <option key={limit} value={limit}>
                   {limit}
                 </option>
@@ -34,4 +37,4 @@ function CustomPagination({ handleLimitChange, handlePageChange, totalPages, cur
   );
 }
 
-export default CustomPagination;
+export default memo(CustomPagination);

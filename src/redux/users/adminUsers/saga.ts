@@ -44,11 +44,11 @@ interface UsersData {
     role_id: string;
     profileImage: File;
     branch_ids: string;
-    country_id: any;
+    country_ids: any;
     branch_id: string,
     region_id: string,
-    country_ids: string,
     franchise_id: any
+    status: boolean 
   };
   type: string;
 }
@@ -162,11 +162,11 @@ function* addAdminUser({
     role_id,
     profileImage,
     branch_ids,
-    country_id,
+    country_ids,
     region_id,
     branch_id,
-    country_ids,
-    franchise_id
+    franchise_id,
+    status
   },
 }: UsersData): SagaIterator {
   try {
@@ -182,11 +182,11 @@ function* addAdminUser({
       role_id,
       profileImage,
       branch_ids,
-      country_id,
+      country_ids,
       region_id,
       branch_id,
-      country_ids,
-      franchise_id
+      franchise_id,
+      status
     });
     const data = response.data;
 
@@ -232,11 +232,11 @@ function* updateAdminUser({
     role_id,
     profileImage,
     branch_ids,
-    country_id,
+    country_ids,
     region_id,
     branch_id,
-    country_ids,
-    franchise_id
+    franchise_id,
+    status
   },
 }: UsersData): SagaIterator {
   try {
@@ -252,11 +252,11 @@ function* updateAdminUser({
       role_id,
       profileImage,
       branch_ids,
-      country_id,
+      country_ids,
       region_id,
       branch_id,
-      country_ids,
-      franchise_id
+      franchise_id,
+      status
     });
     const data = response.data.message;
 

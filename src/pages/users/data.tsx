@@ -34,7 +34,7 @@ export const sizePerPageList = [
   },
 ];
 export interface MyInitialState {
-  country_id: string | number | readonly string[] | undefined;
+  country_id?: string | number | readonly string[] | undefined;
   id: string;
   employee_id: string;
   name: string;
@@ -49,8 +49,9 @@ export interface MyInitialState {
   branch_ids: string;
   region_id: string;
   branch_id?: string;
-  country_ids?: string;
+  country_ids?: string[];
   franchise_id?: string;
+  status?: any
 }
 
 export const initialState = {
@@ -64,11 +65,12 @@ export const initialState = {
   password: null,
   updated_by: "",
   role_id: "",
-  country_id: undefined,
+  country_ids: [],
   branch_ids: "",
   profile_image_path: "",
   region_id: "",
   franchise_id: "",
+  status: null
 };
 
 export const initialValidationState = {
@@ -85,6 +87,7 @@ export const initialValidationState = {
   region_id: "",
   branch_id: "",
   franchise_id: "",
+  country_ids: []
 };
 
 export const dummyLeadData = [
@@ -159,6 +162,18 @@ export const dummyLeadData = [
     lead_received_date: "2024-11-20",
     stage: "Sales",
     status: "Inactive",
+  },
+  {
+    id: 7,
+    full_name: "Emily Davis",
+    email: "emily.davis@example.com",
+    city: "London",
+    preferredCountries: "UK, Germany",
+    office_type_name: "Local",
+    source_name: "Referral",
+    lead_received_date: "2024-12-02",
+    stage: "Support",
+    status: "Active",
   },
   {
     id: 7,

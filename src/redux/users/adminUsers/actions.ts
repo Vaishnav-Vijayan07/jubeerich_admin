@@ -88,11 +88,11 @@ export const addAdminUsers = (
   role_id: string,
   profileImage: File | null,
   branch_ids: string,
-  country_id: any,
+  country_ids: any,
   region_id: any,
   branch_id: any,
-  country_ids: any,
-  franchise_id: any
+  franchise_id: any,
+  status: boolean
 ): AdminUsersActionType => ({
   type: AdminUserActionTypes.ADD_ADMIN_USERS,
   payload: {
@@ -107,11 +107,11 @@ export const addAdminUsers = (
     role_id,
     profileImage,
     branch_ids,
-    country_id,
+    country_ids,
     region_id,
     branch_id,
-    country_ids,
-    franchise_id
+    franchise_id,
+    status
   },
 });
 
@@ -128,11 +128,11 @@ export const updateAdminUsers = (
   role_id: string,
   profileImage: File | null,
   branch_ids: string,
-  country_id: any,
+  country_ids: any,
   region_id: any,
   branch_id: any,
-  country_ids: any,
-  franchise_id: any
+  franchise_id: any,
+  status: boolean
 ): AdminUsersActionType => ({
   type: AdminUserActionTypes.UPDATE_ADMIN_USERS,
   payload: {
@@ -148,11 +148,11 @@ export const updateAdminUsers = (
     role_id,
     profileImage,
     branch_ids,
-    country_id,
+    country_ids,
     region_id,
     branch_id,
-    country_ids,
-    franchise_id
+    franchise_id,
+    status
   },
 });
 
