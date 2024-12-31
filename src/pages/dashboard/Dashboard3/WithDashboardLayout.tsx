@@ -23,14 +23,14 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     const [customEndDate, setCustomEndDate] = useState<string>(new Date().toISOString().split("T")[0]);
     const filters = ["weekly", "monthly", "custom"];
 
-    const { cards, loading, categories, series, latestLeadsCount } = useSelector((state: RootState) => ({
+    const { cards, loading, categories, series, latestLeadsCount, pieData } = useSelector((state: RootState) => ({
       cards: state.Dashboard.dashboard.data?.statCards,
       categories: state.Dashboard.dashboard.data?.categories,
       series: state.Dashboard.dashboard.data?.series,
       latestLeadsCount: state.Dashboard.dashboard.data?.latestLeadsCount,
+      pieData: state.Dashboard.dashboard.data?.applicationData,
       loading: state.Dashboard.loading,
     }));
-
 
     const handleFilter = (filterType: any) => {
       switch (filterType) {
@@ -65,6 +65,8 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
       return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
     }
 
+    
+
     return (
       <>
         <PageTitle breadCrumbItems={[{ label: "Dashboard", path: "" }]} title="Dashboard" />
@@ -85,7 +87,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
           handleFilter={handleFilter}
         />
         <StatCards statCardsItems={cards || []} />
-        <Component {...props} categories={categories || []} series={series || []} latestLeadsCount={latestLeadsCount} />
+        <Component {...props} categories={categories || []} series={series || []} latestLeadsCount={latestLeadsCount} pieData={pieData || {}} />
       </>
     );
   };
