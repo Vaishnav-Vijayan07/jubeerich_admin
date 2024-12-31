@@ -124,3 +124,24 @@ export const truncateText = (text: string, maxLength: number) => {
 export const reduceOpacity = (rgbaColor: any, alpha = 0.5) => {
   return rgbaColor.replace(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/, `rgba($1, $2, $3, ${alpha})`);
 };
+
+export function rgbaToHex(rgba: string): string {
+  // Match RGBA format: rgba(r, g, b, a) or rgb(r, g, b)
+  const match = rgba.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)$/);
+
+  // If no match, return default HEX color
+  if (!match) return "#5e72e4";
+
+  // Extract RGB values
+  const r = parseInt(match[1], 10);
+  const g = parseInt(match[2], 10);
+  const b = parseInt(match[3], 10);
+
+  // Convert RGB values to HEX
+  const hex =
+    `#${r.toString(16).padStart(2, "0")}` +
+    `${g.toString(16).padStart(2, "0")}` +
+    `${b.toString(16).padStart(2, "0")}`;
+
+  return hex;
+}
