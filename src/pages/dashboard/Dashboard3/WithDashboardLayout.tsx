@@ -18,9 +18,9 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     const [filterType, setFilterType] = useState<FilterType>("");
     const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
     const [selectedMonth, setSelectedMonth] = useState<string>((new Date().getMonth() + 1).toString());
-    const [selectedDate, setSelectedDate] = useState<string>("");
-    const [customStartDate, setCustomStartDate] = useState<string>("");
-    const [customEndDate, setCustomEndDate] = useState<string>("");
+    const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
+    const [customStartDate, setCustomStartDate] = useState<string>(new Date().toISOString().split("T")[0]);
+    const [customEndDate, setCustomEndDate] = useState<string>(new Date().toISOString().split("T")[0]);
     const filters = ["weekly", "monthly", "custom"];
 
     const { cards, loading, categories, series, latestLeadsCount } = useSelector((state: RootState) => ({
