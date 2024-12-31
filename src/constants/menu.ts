@@ -288,6 +288,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Monitor"],
     children: [
       {
+        key: "status",
+        label: "Status",
+        url: "/settings/master/status",
+        parentKey: "master",
+      },
+      {
         key: "status_config",
         label: "Config",
         url: "/settings/status/status_config",
