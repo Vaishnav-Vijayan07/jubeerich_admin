@@ -21,8 +21,10 @@ interface SubMenus {
 }
 
 const MenuItemWithChildren = ({ item, linkClassName, subMenuClassNames, activeMenuItems, toggleMenu }: SubMenus) => {
+  
   const [open, setOpen] = useState<boolean>(activeMenuItems!.includes(item.key));
-  // ;
+
+  console.log("open =====>", open);
 
   useEffect(() => {
     setOpen(activeMenuItems!.includes(item.key));
@@ -53,7 +55,11 @@ const MenuItemWithChildren = ({ item, linkClassName, subMenuClassNames, activeMe
           </span>
         )}
         <span className="menu-text"> {item.label} </span>
-        {!item.badge ? <span className="menu-arrow"></span> : <span className={`badge bg-${item.badge.variant} rounded-pill ms-auto`}>{item.badge.text}</span>}
+        {!item.badge ? (
+          <span className="menu-arrow"></span>
+        ) : (
+          <span className={`badge bg-${item.badge.variant} rounded-pill ms-auto`}>{item.badge.text}</span>
+        )}
       </Link>
       <Collapse in={open}>
         <div>
@@ -102,7 +108,12 @@ const MenuItem = ({ item, className, linkClassName }: SubMenus) => {
 
 const MenuItemLink = ({ item, className }: SubMenus) => {
   return (
-    <Link to={item.url!} target={item.target} className={classNames("side-nav-link-ref menu-link", className)} data-menu-key={item.key}>
+    <Link
+      to={item.url!}
+      target={item.target}
+      className={classNames("side-nav-link-ref menu-link", className)}
+      data-menu-key={item.key}
+    >
       {item.icon && (
         <span className="menu-icon">
           <FeatherIcon icon={item.icon} />{" "}
@@ -129,10 +140,14 @@ const AppMenu = ({ menuItems }: AppMenuProps) => {
 
   const [activeMenuItems, setActiveMenuItems] = useState<Array<string>>([]);
 
+  console.log("activeMenuItems", activeMenuItems);
+
   /*
    * toggle the menus
    */
   const toggleMenu = (menuItem: MenuItemTypes, show: boolean) => {
+    console.log("clicked ===>", menuItem, show);
+
     if (show) setActiveMenuItems([menuItem["key"], ...findAllParent(menuItems, menuItem)]);
   };
 
@@ -194,9 +209,19 @@ const AppMenu = ({ menuItems }: AppMenuProps) => {
               ) : (
                 <>
                   {item.children ? (
-                    <MenuItemWithChildren item={item} toggleMenu={toggleMenu} subMenuClassNames="sub-menu" activeMenuItems={activeMenuItems} linkClassName="menu-link" />
+                    <MenuItemWithChildren
+                      item={item}
+                      toggleMenu={toggleMenu}
+                      subMenuClassNames="sub-menu"
+                      activeMenuItems={activeMenuItems}
+                      linkClassName="menu-link"
+                    />
                   ) : (
-                    <MenuItem item={item} linkClassName="menu-link" className={activeMenuItems!.includes(item.key) ? "menuitem-active" : ""} />
+                    <MenuItem
+                      item={item}
+                      linkClassName="menu-link"
+                      className={activeMenuItems!.includes(item.key) ? "menuitem-active" : ""}
+                    />
                   )}
                 </>
               )}

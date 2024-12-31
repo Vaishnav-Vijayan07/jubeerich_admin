@@ -192,7 +192,7 @@ const Table = (props: TableProps) => {
     }
   );
 
-  console.log("TABLEPAGINATION",dataTable)
+  // console.log("TABLEPAGINATION",dataTable)
 
   let rows = pagination ? dataTable.page : dataTable.rows;
 
