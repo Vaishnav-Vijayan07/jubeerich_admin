@@ -83,7 +83,6 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
-            hasLoadedInitially: true,
           };
         }
 
@@ -271,7 +270,7 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
       }
 
     case LeadsActionTypes.GET_LEADS:
-      return { ...state, loading: true, initialloading: !state.hasLoadedInitially, error: null };
+      return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER:
       return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.GET_LEADS_TL:
