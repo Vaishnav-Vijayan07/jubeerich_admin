@@ -813,10 +813,6 @@ const BasicInputElements = withSwal((props: any) => {
               <h4 className="header-title mb-4">Manage Leads</h4>
               <CustomSearchBox
                 onSearch={handleSearch}
-                isSearchApplied={isSearchApplied}
-                onClose={onClose}
-                value={value}
-                onValueChange={onValueChange}
               />
               <Table
                 columns={columns}
