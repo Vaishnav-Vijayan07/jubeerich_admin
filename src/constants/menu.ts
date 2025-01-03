@@ -77,7 +77,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
   { key: "kyc_details", label: "KYC Approval", isTitle: true, roles: ["KYC Approval"] },
 
   {
-    key: "kycApproval",
+    key: "kycPending",
     label: "KYC Pending",
     isTitle: false,
     icon: "clock", // Icon representing pending action
