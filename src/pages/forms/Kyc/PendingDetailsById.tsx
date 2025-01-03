@@ -6,7 +6,7 @@ import ProgramAvailabiltyCheck from "./ProgramAvailabiltyCheck";
 import CampusCheck from "./CampusCheck";
 import EntryRequirementCheck from "./EntryRequirementCheck";
 import DocumentQualityCheck from "./DocumentQualityCheck";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { baseUrl, showSuccessAlert } from "../../../constants";
 import moment from "moment";
@@ -22,6 +22,8 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { RootState } from "../../../redux/store";
+import { useSelector } from "react-redux";
 
 const steps = [
   "Program Availability",
@@ -38,6 +40,8 @@ const PendingDetailsById = withSwal((props: any) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [remark, setRemark] = useState<any>("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  // const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
   const [current, setCurrent] = useState(0);
 
@@ -50,7 +54,10 @@ const PendingDetailsById = withSwal((props: any) => {
   });
   const [expanded, setExpanded] = React.useState<string | false>(false);
 
-  console.log("ITEM IN ID", item);
+  useEffect(() => {
+    searchParams.set("step", steps[current]);
+    setSearchParams(searchParams);
+  }, [current]);
 
   const CheckTypes = {
     availability: "availability",
@@ -84,11 +91,11 @@ const PendingDetailsById = withSwal((props: any) => {
 
   const studentId = useMemo(() => item?.studyPreferDetails?.studyPreference?.userPrimaryInfoId, [item]);
   const applicationId = useMemo(() => item?.existApplication?.id, [item]);
+  const eligibilityId = useMemo(() => item?.checks?.eligibility_remarks?.id, [item]);
   const isChecksCompleted = useMemo(() => item?.existApplication?.is_application_checks_passed, [item]);
   const universityId = useMemo(() => item?.studyPreferDetails?.preferred_university?.id, [item]);
   const comments = useMemo(() => item?.existApplication?.comments || "", [item]);
   const reference_id = useMemo(() => item?.existApplication?.reference_id || 0, [item]);
-  const application_fee = useMemo(() => item?.studyPreferDetails?.preferred_courses?.campuses?.[0]?.campus_course?.application_fee || 0, [item]);
 
   item &&
     !item.assigned_user &&
@@ -117,27 +124,6 @@ const PendingDetailsById = withSwal((props: any) => {
         }
       });
 
-  const availabilityCheck = useMemo(
-    () => ({
-      id: item?.existApplication?.id,
-      country_name: item?.studyPreferDetails?.studyPreference?.country?.country_name || "N/A",
-      university_name: item?.studyPreferDetails?.preferred_university?.university_name || "N/A",
-      stream_name: item?.studyPreferDetails?.preferred_stream?.stream_name || "N/A",
-      program_name: item?.studyPreferDetails?.preferred_courses?.course_name || "N/A",
-      intake_applying_for: `${item?.studyPreferDetails?.intakeMonth || "N/A"} / ${item?.studyPreferDetails?.intakeYear || "N/A"}`,
-      course_link: item?.studyPreferDetails?.preferred_courses?.campuses?.[0]?.campus_course?.course_link,
-    }),
-    [item]
-  );
-
-  const campusCheck = useMemo(
-    () => ({
-      id: item?.existApplication?.id,
-      campus_name: item?.studyPreferDetails?.preferred_campus?.campus_name || "N/A",
-    }),
-    [item]
-  );
-
   const getApplicationsById = async (id: any) => {
     try {
       const result = await axios.get(`${baseUrl}/api/application/${id}`);
@@ -149,6 +135,12 @@ const PendingDetailsById = withSwal((props: any) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleStepClick = (index: number) => {
+    const step = steps[index];
+    console.log("step", step);
+    setCurrent(index);
   };
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -243,7 +235,7 @@ const PendingDetailsById = withSwal((props: any) => {
         student_id: studentId,
         remarks: remark,
         application_id: applicationId,
-        assigned_country_id: item?.studyPreferDetails?.studyPreference?.countryId
+        assigned_country_id: item?.studyPreferDetails?.studyPreference?.countryId,
       };
 
       const result = await swal.fire({
@@ -315,8 +307,8 @@ const PendingDetailsById = withSwal((props: any) => {
           <Card.Body>
             <Box sx={{ width: "100%" }}>
               <Stepper activeStep={current} alternativeLabel>
-                {steps.map((label) => (
-                  <Step key={label}>
+                {steps.map((label, index) => (
+                  <Step key={label} onClick={() => handleStepClick(index)}>
                     <StepLabel>{label}</StepLabel>
                   </Step>
                 ))}
@@ -326,38 +318,15 @@ const PendingDetailsById = withSwal((props: any) => {
         </Card>
       </Row>
 
-      {current === 0 && <ProgramAvailabiltyCheck data={availabilityCheck} />}
-      {current === 1 && <CampusCheck data={campusCheck} />}
-      {current === 2 && <EntryRequirementCheck studentId={studentId} />}
-      {current === 3 && <DocumentQuantityCheck studentId={studentId} />}
-      {current === 4 && <DocumentQualityCheck studentId={studentId} handleFormData={handleCheckChange} quality={qualityForm} />}
-      {current === 5 && <PreviousImmigrationCheck studentId={studentId} />}
-      {current === 6 && <ApplicationFeeCheck studentId={studentId} fee={application_fee} />}
-
-      <Row style={{ padding: "0px" }}>
-        <Col md={12} style={{ padding: "0px" }}>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-            <FormInput
-              labelClassName="ms-2"
-              name="remarks"
-              type="textarea"
-              rows="6"
-              label="Remarks"
-              value={remark}
-              onChange={(e) => setRemark(e.target?.value)}
-            />
-          </Form.Group>
-        </Col>
-        {item?.assigned_user && (
-          <FormButtons
-            studentId={studentId}
-            handleNavigation={buttonNavigations}
-            current={current}
-            handleReject={handleRejection}
-            handleProceed={handleProceedApplication}
-          />
-        )}
-      </Row>
+      {current === 0 && <ProgramAvailabiltyCheck application_id={id} type={CheckTypes.availability} eligibility_id={eligibilityId} />}
+      {current === 1 && <CampusCheck application_id={id} type={CheckTypes.campus} eligibility_id={eligibilityId} />}
+      {current === 2 && (
+        <EntryRequirementCheck studentId={studentId} application_id={id} type={CheckTypes.entry_requirement} eligibility_id={eligibilityId} />
+      )}
+      {current === 3 && <DocumentQuantityCheck studentId={studentId} application_id={id} type={CheckTypes.quantity} eligibility_id={eligibilityId} />}
+      {current === 4 && <DocumentQualityCheck studentId={studentId} handleFormData={handleCheckChange} quality={qualityForm} application_id={id} type={CheckTypes.quality} eligibility_id={eligibilityId} />}
+      {current === 5 && <PreviousImmigrationCheck studentId={studentId} application_id={id} type={CheckTypes.immigration} eligibility_id={eligibilityId} />}
+      {current === 6 && <ApplicationFeeCheck studentId={studentId} application_id={id} type={CheckTypes.application_fee} eligibility_id={eligibilityId} />}
     </>
   );
 });
