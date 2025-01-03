@@ -14,6 +14,7 @@ const StudyPreference = withSwal((props: any) => {
   //create state for item
   const [item, setItem] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [initialFetch, setInitialFetch] = useState<boolean>(true);
 
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
@@ -21,6 +22,7 @@ const StudyPreference = withSwal((props: any) => {
 
   const getStudyPrefData = async () => {
     setLoading(true);
+    setInitialFetch(true)
 
     try {
       const { data } = await axios.get(`/study_preferences_details/${studentId}`);
@@ -40,7 +42,7 @@ const StudyPreference = withSwal((props: any) => {
       getStudyPrefData();
     }
   }, [dropdownData.universities.length, dropdownData.campuses.length, refresh, studentId]);
-
+  
   return (
     <>
       {loading ? (
@@ -54,9 +56,12 @@ const StudyPreference = withSwal((props: any) => {
                 studyPreference={values?.studyDetails}
                 parentIndex={index}
                 countryName={values?.country_name}
+                countryId={values?.country_id}
                 studyPreferenceId={values?.studyPreferenceId}
                 dropdownData={dropdownData}
                 isEditable={values?.isEditable}
+                initialFetch={initialFetch}
+                setInitialFetch={setInitialFetch}
               />
             ))}
         </Row>
