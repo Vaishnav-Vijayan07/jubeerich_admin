@@ -24,8 +24,6 @@ const MenuItemWithChildren = ({ item, linkClassName, subMenuClassNames, activeMe
   
   const [open, setOpen] = useState<boolean>(activeMenuItems!.includes(item.key));
 
-  console.log("open =====>", open);
-
   useEffect(() => {
     setOpen(activeMenuItems!.includes(item.key));
   }, [activeMenuItems, item]);
