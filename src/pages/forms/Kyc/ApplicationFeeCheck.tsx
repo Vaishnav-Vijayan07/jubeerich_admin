@@ -90,6 +90,7 @@ function ApplicationFeeCheck({
       const { data } = await axios.patch(`/application_receipt/${application_id}`, formData);
       if (data?.status) {
         showSuccessAlert(data?.message);
+        setSelectedFile(null);
         dispatch(refreshData());
       } else {
         showErrorAlert(data?.message);
@@ -135,7 +136,7 @@ function ApplicationFeeCheck({
                       </Button>
                     )}
                   </div>
-                  {applicaiton_reciept !== "" && (
+                  {applicaiton_reciept !== "" && applicaiton_reciept !== null && (
                     <div className="d-flex align-items-center">
                       <i className="mdi mdi-eye text-primary me-2"></i>
                       <a
