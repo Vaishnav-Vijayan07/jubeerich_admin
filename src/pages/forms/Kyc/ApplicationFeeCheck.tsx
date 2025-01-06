@@ -18,7 +18,7 @@ function ApplicationFeeCheck({
   universityId,
   application_id,
   type,
-  eligibility_id
+  eligibility_id,
 }: any) {
   const navigate = useNavigate();
   const [fee, setFee] = useState<any>("");
@@ -52,10 +52,10 @@ function ApplicationFeeCheck({
     setShowRemark(true);
   };
 
-  const saveRemark = async () => {
+  const saveRemark = async (value:string) => {
     try {
       await axios.post(`/checks_remarks/${type}/${application_id}`, {
-        remarks: remarks == "" ? null : remarks,
+        remarks: value == "" ? null : value,
         eligibility_id,
       });
       dispatch(refreshData());
@@ -88,7 +88,7 @@ function ApplicationFeeCheck({
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection showRemark={showRemark} remarks={remarks} setRemarks={setRemarks} saveRemark={saveRemark} showRemarkBox={showRemarkBox} />
+      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
       <FormButtons
         type={type}
         current={current}
@@ -98,7 +98,7 @@ function ApplicationFeeCheck({
         country_id={country_id}
         application_id={application_id}
         remarks={remarks}
-        successNavigate ={successNavigate}
+        successNavigate={successNavigate}
       />
     </>
   );
