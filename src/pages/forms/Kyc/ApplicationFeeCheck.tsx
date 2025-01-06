@@ -7,6 +7,8 @@ import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import RemarksSection from "../../../components/CheckRemarkTextBox";
 import FormButtons from "./FormButtons";
 import { useNavigate } from "react-router-dom";
+import { FormInput } from "../../../components";
+import { baseUrl, showErrorAlert, showSuccessAlert } from "../../../constants";
 
 function ApplicationFeeCheck({
   current,
@@ -25,6 +27,8 @@ function ApplicationFeeCheck({
   const [remarks, setRemarks] = useState<string>("");
   const [showRemark, setShowRemark] = useState<boolean>(false);
   const [isCheckPassed, setIsCheckPassed] = useState<boolean>(false);
+  const [applicaiton_reciept, setApplicationReciept] = useState<string>("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const dispatch = useDispatch();
 
@@ -40,6 +44,7 @@ function ApplicationFeeCheck({
     try {
       const { data } = await axios.get(`/checks/${type}/${application_id}`);
       setFee(data.data?.checks);
+      setApplicationReciept(data.data?.checks?.application_reciept);
       setRemarks(data.data?.remarks?.remarks);
       setIsCheckPassed(data.data?.remarks?.isCheckPassed);
       setShowRemark(data.data?.remarks?.remarks ? true : false);
@@ -52,7 +57,7 @@ function ApplicationFeeCheck({
     setShowRemark(true);
   };
 
-  const saveRemark = async (value:string) => {
+  const saveRemark = async (value: string) => {
     try {
       await axios.post(`/checks_remarks/${type}/${application_id}`, {
         remarks: value == "" ? null : value,
@@ -61,6 +66,36 @@ function ApplicationFeeCheck({
       dispatch(refreshData());
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]; // Get the first selected file
+    if (file) {
+      if (file.type === "application/pdf") {
+        setSelectedFile(file);
+      } else {
+        setSelectedFile(null);
+      }
+    }
+  };
+
+  const handleUploadReciept = async () => {
+    const formData = new FormData();
+    if (selectedFile) {
+      formData.append("application_reciept", selectedFile);
+    }
+
+    try {
+      const { data } = await axios.patch(`/application_receipt/${application_id}`, formData);
+      if (data?.status) {
+        showSuccessAlert(data?.message);
+        dispatch(refreshData());
+      } else {
+        showErrorAlert(data?.message);
+      }
+    } catch (error) {
+      showErrorAlert(error);
     }
   };
 
@@ -79,11 +114,42 @@ function ApplicationFeeCheck({
         <Card>
           <Card.Body>
             <Row>
-              <Form.Group controlId="fee">
-                <Form.Label>
-                  {`Application Fee`} - {fee?.fee}
-                </Form.Label>
-              </Form.Group>
+              <Col className="d-flex align-items-center">
+                <Form.Group controlId="fee">
+                  <Form.Label>
+                    {`Application Fee`} - {fee?.fee}
+                  </Form.Label>
+                </Form.Group>
+              </Col>
+
+              <Col md={3} className="d-flex gap-2">
+                <Form.Group className="mb-3" controlId={`payslip_document`}>
+                  <Form.Label>
+                    <span className="text-danger">*</span> Applicaton Fee Reciept
+                  </Form.Label>
+                  <div className="d-flex ">
+                    <FormInput type="file" name="payslip_document" accept="application/pdf" onChange={(e) => handleFileChange(e)} />
+                    {selectedFile && (
+                      <Button variant="primary" type="submit" className="ms-2" onClick={handleUploadReciept}>
+                        Upload
+                      </Button>
+                    )}
+                  </div>
+                  {applicaiton_reciept !== "" && (
+                    <div className="d-flex align-items-center">
+                      <i className="mdi mdi-eye text-primary me-2"></i>
+                      <a
+                        href={`${baseUrl}/uploads/application_receipts/${applicaiton_reciept}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-decoration-none"
+                      >
+                        application reciept
+                      </a>
+                    </div>
+                  )}
+                </Form.Group>
+              </Col>
             </Row>
           </Card.Body>
         </Card>
