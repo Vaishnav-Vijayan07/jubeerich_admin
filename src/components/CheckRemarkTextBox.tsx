@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Row, Col, Button, Form } from "react-bootstrap";
 import FormInput from "./FormInput"; // Assuming FormInput is a custom component
+import classNames from "classnames";
 
 interface Props {
   showRemark?: boolean;
@@ -30,7 +31,10 @@ const RemarksSection = ({ showRemark, remarks, saveRemark }: Props) => {
         <Col md={3}>
           <div className="d-flex align-items-center">
             <h5 className="me-2">Remark</h5>
-            <i className="mdi mdi-pencil font-18 text-primary edit-icon" onClick={handleEdit}></i>
+            <i
+              className={classNames("mdi", isEdit ? "mdi-close" : "mdi-pencil", "font-18 text-primary edit-icon")}
+              onClick={handleEdit}
+            ></i>
           </div>
           <p>{remarks}</p>
         </Col>
