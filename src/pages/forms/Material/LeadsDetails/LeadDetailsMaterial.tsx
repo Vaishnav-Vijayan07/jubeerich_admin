@@ -20,9 +20,9 @@ import axios from "axios";
 import { icons } from "../../../../assets/images/icons";
 import moment from "moment";
 import DocumentsOverview from "../../../lead_management/Tasks/List/DocumentsOverview/DocumentsOverview";
-import History from "../../../lead_management/Tasks/List/History";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Tab, Tabs, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import History from "../Tasks/History";
 
 interface Props {}
 
