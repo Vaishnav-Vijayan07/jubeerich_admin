@@ -21,8 +21,6 @@ const Leads = () => {
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
   const { currentPage, setCurrentPage, currentLimit, setCurrentLimit } = usePagination();
 
-
-
   const handlePageChange = useCallback((event: any, value: any) => {
     setCurrentPage(value);
   }, []);
@@ -74,10 +72,10 @@ const Leads = () => {
 
   useEffect(() => {
     if (userRole == cre_tl_id) {
-      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ?   undefined : searchValue));
+      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue));
     } else {
       if (userRole) {
-        dispatch(getLead(currentPage, currentLimit,  searchValue == "" ?   undefined : searchValue));
+        dispatch(getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue));
       }
     }
 
