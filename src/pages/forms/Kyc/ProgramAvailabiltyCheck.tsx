@@ -10,45 +10,14 @@ import { showSuccessAlert } from "../../../constants";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import FormButtons from "./FormButtons";
+import { useRemarks } from "../../../hooks/useChecksData";
 
 function ProgramAvailabiltyCheck({ current, handleStepChange, student_id, country_id, application_id, type, eligibility_id }: any) {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
-  const [data, setData] = useState<any>(null);
-  const [remarks, setRemarks] = useState<string>("");
-  const [showRemark, setShowRemark] = useState<boolean>(false);
-
-  const fetchData = async () => {
-    try {
-      const { data } = await axios.get(`/checks/${type}/${application_id}`);
-      setData(data.data?.checks);
-      setRemarks(data.data?.remarks?.remarks);
-      setShowRemark(data.data?.remarks?.remarks ? true : false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const showRemarkBox = () => {
-    setShowRemark(true);
-  };
-
-  const saveRemark = async () => {
-    try {
-      await axios.post(`/checks_remarks/${type}/${application_id}`, {
-        remarks: remarks == "" ? null : remarks,
-        eligibility_id,
-      });
-      dispatch(refreshData());
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [application_id, refresh]);
+  const { data, remarks, showRemark, saveRemark } = useRemarks({
+    type,
+    application_id,
+    eligibility_id,
+  });
 
   return (
     <>
@@ -99,7 +68,9 @@ function ProgramAvailabiltyCheck({ current, handleStepChange, student_id, countr
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection showRemark={showRemark} remarks={remarks} setRemarks={setRemarks} saveRemark={saveRemark} showRemarkBox={showRemarkBox} />
+
+      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
+
       <FormButtons
         type={type}
         current={current}
