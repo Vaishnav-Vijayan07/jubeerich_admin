@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef, useState } from "react";
+import React, { useRef, useEffect, forwardRef, useState, memo } from "react";
 import { useTable, useSortBy, usePagination, useRowSelect, useGlobalFilter, useAsyncDebounce, useExpanded } from "react-table";
 import classNames from "classnames";
 import Skeleton from "react-loading-skeleton";
@@ -89,6 +89,7 @@ interface TableProps {
   onSelect?: any;
   initialLoading?: boolean;
   isDashboard?: boolean;
+  isCustomPaginationNeeded?: boolean;
   isTruncate?: boolean;
 }
 
@@ -102,7 +103,10 @@ const Table = (props: TableProps) => {
   const isTruncate = props["isTruncate"] || false;
   const customClass = props["tableClass"] || "";
   const isDashboard = props["isDashboard"] || false;
+  const isCustomPaginationNeeded = props["isCustomPaginationNeeded"] || false;
   const dashBoardClass = "table table-centered table-nowrap table-striped mb-0";
+
+  const {initialLoading} = props
 
   let otherProps: any = {};
 
@@ -187,6 +191,8 @@ const Table = (props: TableProps) => {
         ]);
     }
   );
+
+  console.log("TABLEPAGINATION",dataTable)
 
   let rows = pagination ? dataTable.page : dataTable.rows;
 
@@ -314,9 +320,13 @@ const Table = (props: TableProps) => {
           </tbody>
         </table>
       </div>
-      {/* {pagination && <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />} */}
+      {!initialLoading && (
+        <>
+          {(pagination && !isCustomPaginationNeeded) && <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />}
+        </>
+      )}
     </>
   );
 };
 
-export default Table;
+export default memo(Table);

@@ -5,16 +5,42 @@ const api = new APICore();
 const baseUrl = "/leads";
 
 //
-function getLeads(currentPage: number, currentLimit: number) {
-  return api.get(`${baseUrl}`, { page: currentPage, limit: currentLimit });
+function getLeads(currentPage: number, currentLimit: number, keyword?: string | undefined) {
+  const params: any = {
+    page: currentPage,
+    limit: currentLimit,
+  };
+
+  if (keyword) {
+    params.keyword = keyword;
+  }
+
+  return api.get(`${baseUrl}`, params);
 }
 
-function getLeadsByCreTl(currentPage: number, currentLimit: number) {
-  return api.get("/leads_cre_tl", { page: currentPage, limit: currentLimit });
+function getLeadsByCreTl(currentPage: number, currentLimit: number, keyword?: string | undefined) {
+  const params: any = {
+    page: currentPage,
+    limit: currentLimit,
+  };
+
+  if (keyword) {
+    params.keyword = keyword;
+  }
+  return api.get("/leads_cre_tl", params);
 }
 
-function getAssignedLeadsByCreTl(currentPage: number, currentLimit: number) {
-  return api.get("/assigned_leads_cre_tl", { page: currentPage, limit: currentLimit });
+function getAssignedLeadsByCreTl(currentPage: number, currentLimit: number, keyword?: string | undefined) {
+  const params: any = {
+    page: currentPage,
+    limit: currentLimit,
+  };
+
+  if (keyword) {
+    params.keyword = keyword;
+  }
+
+  return api.get("/assigned_leads_cre_tl", params);
 }
 
 function getLeadsByCounsellorTL() {
@@ -25,8 +51,16 @@ function getAssignedLeadsRegionalMangersApi() {
   return api.get("/assigned_leads_regional_managers", {});
 }
 
-function getAssignedLeadsByCounsellorTL() {
-  return api.get("/assigned_leads_counsellor_tl", {});
+function getAssignedLeadsByCounsellorTL(currentPage: number, currentLimit: number, keyword?: string | undefined) {
+  const params: any = {
+    page: currentPage,
+    limit: currentLimit,
+  };
+
+  if (keyword) {
+    params.keyword = keyword;
+  }
+  return api.get("/assigned_leads_counsellor_tl", params);
 }
 
 function getLeadUser() {

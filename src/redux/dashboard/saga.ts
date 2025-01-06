@@ -1,7 +1,6 @@
 import { all, fork, put, takeEvery, call } from "redux-saga/effects";
 import { SagaIterator } from "@redux-saga/core";
 
-
 // helpers
 import { getDashboard as getDashboardApi } from "../../helpers/";
 
@@ -11,13 +10,20 @@ import { DashboardApiResponseError, DashboardApiResponseSuccess } from "./action
 // constants
 import { DashboardActionTypes } from "./constants";
 
-/**
- * Login the user
- * @param {*} payload - username and password
- */
-function* getDashboard(): SagaIterator {
+interface DashBoard {
+  payload: {
+    filterType?: string;
+    year?: string;
+    month?: string;
+    fromDate?: string;
+    toDate?: string;
+  };
+  type: string;
+}
+
+function* getDashboard({ payload: { filterType, year, month, fromDate, toDate } }: DashBoard): SagaIterator {
   try {
-    const response = yield call(getDashboardApi);
+    const response = yield call(getDashboardApi, filterType, year, month, fromDate, toDate);
     const data = response.data;
 
     // NOTE - You can change this according to response format from your api

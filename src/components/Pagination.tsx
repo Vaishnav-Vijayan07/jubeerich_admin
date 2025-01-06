@@ -19,6 +19,9 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps) => {
     tableProps.state.pageIndex
   );
 
+  console.log("TABLEPAGINATION",tableProps.pageCount)
+  console.log("TABLEPAGINATION",tableProps.state.pageIndex)
+
   useEffect(() => {
     setPageCount(tableProps.pageCount);
     setPageIndex(tableProps.state.pageIndex);

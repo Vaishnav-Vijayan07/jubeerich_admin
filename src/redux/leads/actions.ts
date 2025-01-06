@@ -52,9 +52,9 @@ export const LeadsApiResponseError = (actionType: string, error: string): LeadsA
   payload: { actionType, error },
 });
 
-export const getLead = (currentPage: number, currentLimit: number): LeadsActionType => ({
+export const getLead = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS,
-  payload: { currentPage, currentLimit },
+  payload: { currentPage, currentLimit, keyword },
 });
 
 export const getLeadsRegionalManager = (): LeadsActionType => ({
@@ -62,19 +62,19 @@ export const getLeadsRegionalManager = (): LeadsActionType => ({
   payload: {},
 });
 
-export const getLeadsTL = (currentPage: number, currentLimit: number): LeadsActionType => ({
+export const getLeadsTL = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_TL,
-  payload: { currentPage, currentLimit },
+  payload: { currentPage, currentLimit, keyword },
 });
 
-export const getLeadAssigned = (currentPage: number, currentLimit: number): LeadsActionType => ({
+export const getLeadAssigned = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_ASSIGNED,
-  payload: { currentPage, currentLimit },
+  payload: { currentPage, currentLimit, keyword },
 });
 
-export const getLeadAssignedByCounsellorTL = (): LeadsActionType => ({
+export const getLeadAssignedByCounsellorTL = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
-  payload: {},
+  payload: {currentPage, currentLimit, keyword},
 });
 
 export const getLeadsByCounsellorTL = (): LeadsActionType => ({

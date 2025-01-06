@@ -661,8 +661,8 @@ const University = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/university" },
-          { label: "University", path: "/master/university", active: true },
+          { label: "Master", path: "/settings/master/university" },
+          { label: "University", path: "/settings/master/university", active: true },
         ]}
         title={"University"}
       />

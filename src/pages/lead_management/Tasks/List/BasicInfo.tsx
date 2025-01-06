@@ -780,6 +780,16 @@ const BasicInfo = withSwal((props: any) => {
                   value={selectedNation}
                   onChange={(selected) => handleDropDowns(selected, { name: "country" }, "basic")}
                 />
+
+                  {/* <FormInput
+                    type="text"
+                    name="country"
+                    placeholder="Enter country"
+                    key="country"
+                    value={basicInfo?.country} // Change to basicInfo
+                    onChange={(e) => handleInputChange(e, "country", "basic")}
+                    // disabled={true}
+                  /> */}
                 {basicInfo?.errors?.country && <Form.Text className="text-danger">{basicInfo?.errors?.country}</Form.Text>}
               </Form.Group>
             </Col>
@@ -793,6 +803,7 @@ const BasicInfo = withSwal((props: any) => {
                   placeholder="Enter nationality"
                   key="nationality"
                   value={selectedNationality} // Change to basicInfo
+                  // value={basicInfo?.nationality} // Change to basicInfo
                   onChange={(e) => handleInputChange(e, "nationality", "basic")}
                   disabled={true}
                 />
@@ -816,6 +827,16 @@ const BasicInfo = withSwal((props: any) => {
                   onChange={(selected) => handleDropDowns(selected, { name: "state" }, "basic")}
                   isDisabled={!selectedNation?.value}
                 />
+
+                  {/* <FormInput
+                    type="text"
+                    name="state"
+                    placeholder="Enter state"
+                    key="state"
+                    value={basicInfo?.state} // Change to basicInfo
+                    onChange={(e) => handleInputChange(e, "state", "basic")}
+                    // disabled={true}
+                  /> */}
                 {basicInfo?.errors?.state && <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>}
               </Form.Group>
             </Col>

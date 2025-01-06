@@ -81,7 +81,6 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
         }
 
         case KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER: {
-          console.log("AUTO====>", action.payload.data);
 
           showSuccessAlert(action.payload.data.data);
           return {
@@ -90,7 +89,6 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
         }
 
         case KYCActionTypes.ASSIGN_APPLICATION_MEMBER: {
-          console.log("ASSIGN====>", action.payload.data);
 
           showSuccessAlert(action.payload.data.data);
           return {

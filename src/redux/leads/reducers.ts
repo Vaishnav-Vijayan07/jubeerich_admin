@@ -10,7 +10,8 @@ const INIT_STATE = {
   assignedLeads: [],
   allCres: [],
   totalPages: 0,
-  totalCount : 0,
+  totalCount: 0,
+  isSearchApplied: false,
   limit: 0,
   initialloading: false,
   loading: false,
@@ -77,7 +78,8 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             leads: action.payload.data.data.formattedUserPrimaryInfos,
             totalPages: action.payload.data.data.totalPages,
             limit: action.payload.data.data.limit,
-            totalCount : action.payload.data.data.count,
+            totalCount: action.payload.data.data.count,
+            isSearchApplied: action.payload.data.data.isSearchApplied,
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
@@ -102,19 +104,21 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             allCres: action.payload.data.data.allCres,
             totalPages: action.payload.data.data.totalPages,
             limit: action.payload.data.data.limit,
-            totalCount : action.payload.data.data.count,
+            isSearchApplied: action.payload.data.data.isSearchApplied,
+            totalCount: action.payload.data.data.count,
             loading: false,
             initialloading: false,
           };
         }
-
+        
         case LeadsActionTypes.GET_LEADS_ASSIGNED: {
           return {
             ...state,
             assignedLeads: action.payload.data.data.formattedUserPrimaryInfos,
             totalPages: action.payload.data.data.totalPages,
-            limit : action.payload.data.data.limit,
-            totalCount : action.payload.data.data.count,
+            limit: action.payload.data.data.limit,
+            totalCount: action.payload.data.data.count,
+            isSearchApplied: action.payload.data.data.isSearchApplied,
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
@@ -126,6 +130,10 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             ...state,
             assignedLeads: action.payload.data.data.formattedUserPrimaryInfos,
             allCounsellorTLs: action.payload.data.data.allCounsellorTLs,
+            totalPages: action.payload.data.data.totalPages,
+            limit: action.payload.data.data.limit,
+            totalCount: action.payload.data.data.count,
+            isSearchApplied: action.payload.data.data.isSearchApplied,
             loading: false,
             initialloading: false,
           };

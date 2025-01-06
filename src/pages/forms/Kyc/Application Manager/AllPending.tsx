@@ -222,7 +222,7 @@ const AllPending = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "" },
+          // { label: "Master", path: "" },
           { label: `All Applications(${isPendingPage ? "Pending" : "Assigned"})`, path: "", active: true },
         ]}
         title={`All Applications(${isPendingPage ? "Pending" : "Assigned"})`}

@@ -28,6 +28,7 @@ import { getCountry } from "../../redux/country/actions";
 import { RootState } from "../../redux/store";
 import { withSwal } from "react-sweetalert2";
 import * as yup from "yup";
+import PageTitle from "../../components/PageTitle";
 
 export const initialState = {
   id: "",
@@ -227,6 +228,7 @@ const FranchiseDetails = withSwal((props: any) => {
     setSelectedBranch([]);
     setSelectedCountry([]);
     setSelectedImage(null);
+    setRadioValue(true);
   };
 
   const handleUpdate = (item: any) => {
@@ -500,6 +502,15 @@ const FranchiseDetails = withSwal((props: any) => {
 
   return (
     <>
+      <PageTitle
+        breadCrumbItems={[
+          { label: "Master", path: "/settings/master/franchise" },
+          { label: "Franchise", path: "/settings/master/franchise" },
+          { label: "Franchise Details", path: "/settings/master/franchise_details", active: true },
+        ]}
+        title={"Franchise Details"}
+      />
+
       <Card>
         <Card.Body>
           <Row>

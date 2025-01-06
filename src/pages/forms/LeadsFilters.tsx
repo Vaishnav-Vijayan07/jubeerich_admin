@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import Select, { ActionMeta, OptionsType } from "react-select";
 import { Button, Card, Col, Collapse, Form, Row } from "react-bootstrap";
 import { AUTH_SESSION_KEY, cre_id, cre_reception_id, cre_tl_id, customStyles, regional_manager_id } from "../../constants";
@@ -327,4 +327,4 @@ const LeadsFilters = (props: any) => {
   );
 };
 
-export default LeadsFilters;
+export default memo(LeadsFilters);

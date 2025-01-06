@@ -280,12 +280,32 @@ const MENU_ITEMS: MenuItemTypes[] = [
   //   roles: ["Monitor"],
   // },
   {
-    key: "status_config",
-    label: "Status Config",
+    key: "status",
+    label: "Status",
     isTitle: false,
     icon: "tool", // Configuration tool
     url: "/settings/master/status_config",
     roles: ["Monitor"],
+    children: [
+      {
+        key: "status",
+        label: "Status",
+        url: "/settings/master/status",
+        parentKey: "master",
+      },
+      {
+        key: "status_config",
+        label: "Config",
+        url: "/settings/status/status_config",
+        parentKey: "master",
+      },
+      {
+        key: "status_type",
+        label: "Type",
+        url: "/settings/status/status_type",
+        parentKey: "master",
+      },
+    ],
   },
 
   {

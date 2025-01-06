@@ -531,8 +531,8 @@ const Channel = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/channels" },
-          { label: "Lead Channels", path: "/master/channels", active: true },
+          { label: "Master", path: "/settings/master/channel" },
+          { label: "Lead Channels", path: "/settings/master/channel", active: true },
         ]}
         title={"Lead Channels"}
       />

@@ -12,17 +12,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import {
-  addCategory,
-  deleteCategory,
-  getCategory,
-  updateCategory,
-} from "../../redux/actions";
+import { addCategory, addStatus, deleteCategory, getCategory, updateCategory } from "../../redux/actions";
 import { AUTH_SESSION_KEY } from "../../constants";
 import { error } from "console";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { Slider } from "@mui/material";
+import { addStatusType, deleteStatusType, getStatusType, updateStatusType } from "../../redux/status/statusType/actions";
 
 interface TableRecords {
   id: number;
@@ -52,13 +49,12 @@ const sizePerPageList = [
 
 const initialFormData = {
   id: "",
-  category_name: "",
-  category_description: ""
+  type_name: "",
+  priority: 1,
 };
 
 const initialValidationState = {
-  category_name: "",
-  category_description: "",
+  type_name: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
@@ -73,9 +69,7 @@ const BasicInputElements = withSwal((props: any) => {
   //Input data
   const [formData, setFormData] = useState(initialFormData);
 
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -83,11 +77,7 @@ const BasicInputElements = withSwal((props: any) => {
   const records: TableRecords[] = state;
 
   const validationSchema = yup.object().shape({
-    category_name: yup
-      .string()
-      .required("Category name is required"),
-    category_description: yup
-      .string()
+    type_name: yup.string().required("Type name is required"),
   });
 
   /*
@@ -105,13 +95,13 @@ const BasicInputElements = withSwal((props: any) => {
   const handleUpdate = (item: any) => {
     setFormData({
       id: item?.id,
-      category_name: item?.name,
-      category_description: item?.description
+      type_name: item?.type_name,
+      priority: item?.priority,
     });
     setIsUpdate(true);
   };
 
-  const handleDelete = (category_id: number) => {
+  const handleDelete = (type_id: number) => {
     swal
       .fire({
         title: "Are you sure?",
@@ -124,7 +114,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteCategory(category_id));
+          dispatch(deleteStatusType(type_id));
           //clear form data
           if (isUpdate) {
             setFormData(initialFormData);
@@ -135,8 +125,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   //handle onchange function
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked, type } = e.target;
-    const checkboxValue = checked ? true : false;
+    const { name, value, type } = e.target;
 
     if (!regrexValidation(name, value)) {
       console.error(`Invalid ${name}: ${value}`);
@@ -145,51 +134,40 @@ const BasicInputElements = withSwal((props: any) => {
 
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checkboxValue : value,
+      [name]: value,
     }));
   };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log("FORMDATA", formData);
+
     try {
       await validationSchema.validate(formData, { abortEarly: false });
 
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          if (userInfo) {
-            const { user_id } = JSON.parse(userInfo);
+        .fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
             // Validation passed, handle form submission
             if (isUpdate) {
-              dispatch(
-                updateCategory(
-                  formData.id,
-                  formData.category_name,
-                  formData.category_description,
-                )
-              );
+              // dispatch(updateCategory(formData.id, formData.category_name, formData.category_description));
+              dispatch(updateStatusType(formData.id, formData.type_name, formData.priority));
             } else {
-              dispatch(
-                addCategory(
-                  formData.category_name,
-                  formData.category_description,
-                )
-              );
+              // dispatch(addCategory(formData.category_name, formData.category_description));
+              dispatch(addStatusType(formData.type_name, formData.priority));
             }
           }
-        }
-      });
-      
+        });
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
@@ -211,51 +189,36 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => <span>{row.index + 1}</span>,
     },
     {
-      Header: "Lead Type Name",
-      accessor: "name",
+      Header: "Name",
+      accessor: "type_name",
       sort: true,
     },
     {
-      Header: "Lead Type Description",
-      accessor: "description",
-      sort: false,
+      Header: "Priority",
+      accessor: "priority",
+      sort: true,
     },
-    // {
-    //   Header: "Status",
-    //   accessor: "status",
-    //   sort: true,
-    //   Cell: ({ row }: any) => (
-    //     <React.Fragment>
-    //       <span
-    //         className={classNames("badge", {
-    //           "badge-soft-success": row.original.status === true,
-    //           "badge-soft-danger": row.original.status === false,
-    //         })}
-    //       >
-    //         {row.original.status ? "active" : "disabled"}
-    //       </span>
-    //     </React.Fragment>
-    //   ),
-    // },
     {
       Header: "Actions",
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
-          {/* <Link to="#" className="action-icon" onClick={() => {
-            setIsUpdate(true);
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => {
+              setIsUpdate(true);
+              handleUpdate(row.original);
+              toggleResponsiveModal();
+            }}
+          >
             <i className="mdi mdi-square-edit-outline"></i>
           </Link>
 
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             <i className="mdi mdi-delete-outline"></i>
-          </Link> */}
+          </Link>
         </div>
       ),
     },
@@ -296,75 +259,49 @@ const BasicInputElements = withSwal((props: any) => {
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
-              <h4 className="modal-title">Lead Type Management</h4>
+              <h4 className="modal-title">Status Type Management</h4>
             </Modal.Header>
             <Modal.Body>
               <Form.Group className="mb-3" controlId="validationCustom01">
-                <Form.Label>Lead Type Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="category_name"
-                  value={formData.category_name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.category_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.category_name}
-                  </Form.Text>
-                )}
+                <Form.Label>Type</Form.Label>
+                <Form.Control type="text" name="type_name" value={formData.type_name} onChange={handleInputChange} />
+                {validationErrors.type_name && <Form.Text className="text-danger">{validationErrors.type_name}</Form.Text>}
               </Form.Group>
-
-              <Form.Group className="mb-3" controlId="validationCustom01">
-                <Form.Label>Lead Type Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  name="category_description"
-                  value={formData.category_description}
-                  onChange={handleInputChange}
+              <Form.Group className="mb-3" controlId="validationCustom02">
+                <Form.Label>Priority (1 to 5)</Form.Label>
+                <Slider
+                  aria-label="Priority"
+                  value={formData.priority}
+                  min={1}
+                  max={5}
+                  marks={[
+                    { value: 1, label: "1" },
+                    { value: 2, label: "2" },
+                    { value: 3, label: "3" },
+                    { value: 4, label: "4" },
+                    { value: 5, label: "5" },
+                  ]}
+                  step={null}
+                  onChange={(event: any, value: number | number[]) => setFormData({ ...formData, priority: value as number })}
                 />
-                {validationErrors.category_description && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.category_description}
-                  </Form.Text>
-                )}
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-            <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-3 ms-2"
-                onClick={() =>[setFormData(initialFormData)]
-                }
-              >
+              <Button variant="primary" id="button-addon2" className="mt-3 ms-2" onClick={() => [setFormData(initialFormData)]}>
                 Clear
               </Button>
               <Button
                 variant="danger"
                 id="button-addon2"
                 className="mt-3 "
-                onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(), handleResetValues()]
-                }
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-3"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-3">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -375,13 +312,10 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
-                <i className="mdi mdi-plus-circle"></i> Add Lead Type
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
+                <i className="mdi mdi-plus-circle"></i> Add Status Type
               </Button>
-              <h4 className="header-title mb-4">Manage Lead Type</h4>
+              <h4 className="header-title mb-4">Manage Status Type</h4>
               <Table
                 columns={columns}
                 data={records ? records : []}
@@ -402,21 +336,22 @@ const BasicInputElements = withSwal((props: any) => {
   );
 });
 
-const Category = () => {
+const StatusType = () => {
   const dispatch = useDispatch<AppDispatch>();
   //Fetch data from redux store
-  const { state, loading, success, error, initialloading } = useSelector(
-    (state: RootState) => ({
-      state: state.Category.category.data,
-      loading: state.Category.loading,
-      success: state.Category.success,
-      error: state.Category.error,
-      initialloading: state.Category.initialloading,
-    })
-  );
+  const { state, loading, success, error, initialloading } = useSelector((state: RootState) => ({
+    state: state.StatusTypes.types.data,
+    loading: state.StatusTypes.loading,
+    success: state.StatusTypes.success,
+    error: state.StatusTypes.error,
+    initialloading: state.StatusTypes.initialloading,
+  }));
+
+
+  console.log("STATE", state);
 
   useEffect(() => {
-    dispatch(getCategory());
+    dispatch(getStatusType());
   }, []);
 
   // if (initialloading) {
@@ -432,23 +367,17 @@ const Category = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/type" },
-          { label: "Lead Type", path: "/settings/master/type", active: true },
+          { label: "Status", path: "/status/status_type" },
+          { label: "Status Type", path: "/status/status_type", active: true },
         ]}
-        title={"Lead Type"}
+        title={"Status Type"}
       />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            loading={loading}
-            success={success}
-            error={error}
-            initialLoading={initialloading}
-          />
+          <BasicInputElements state={state || []} loading={loading} success={success} error={error} initialLoading={initialloading} />
         </Col>
       </Row>
     </React.Fragment>
   );
 };
-export default Category;
+export default StatusType;

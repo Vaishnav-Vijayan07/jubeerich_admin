@@ -12,15 +12,6 @@ const sizePerPageList = [
 function LeadsTable({ leadsData, showOffice }: any) {
   const records = leadsData;
   const navigate = useNavigate();
-  const rowsPerPage = 5; // Number of rows per page
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const paginatedData = records.slice(startIndex, startIndex + rowsPerPage);
-
-  const handlePagination = (page: number) => {
-    setCurrentPage(page);
-  };
 
   const handleViewAllLeads = () => {
     navigate("/leads/manage");
@@ -41,15 +32,22 @@ function LeadsTable({ leadsData, showOffice }: any) {
     },
     {
       Header: "Country",
-      accessor: "preferredCountries",
+      accessor: "",
       sort: true, // Enabled sorting
       minWidth: 150,
+      Cell: ({ row }: any) => (
+        <ul style={{ listStyle: "none", margin: "0" }}>
+          {row.original.preferredCountries.map((item: any) => (
+            <li>{item?.country_name}</li>
+          ))}
+        </ul>
+      ),
     },
     ...(showOffice
       ? [
           {
             Header: "Office",
-            accessor: "office_type_name",
+            accessor: "office_type_name.office_type_name",
             sort: false,
             minWidth: 75,
           },
@@ -67,6 +65,16 @@ function LeadsTable({ leadsData, showOffice }: any) {
       accessor: "status",
       sort: false,
       minWidth: 75,
+      Cell: ({ row }: any) => {
+        const { preferredStatus } = row.original;
+        return (
+          <ul style={{ listStyle: "none", margin: "0" }}>
+            {preferredStatus.map((item: any) => (
+              <li>{item?.status_name}</li>
+            ))}
+          </ul>
+        );
+      },
     },
   ];
 
@@ -75,7 +83,7 @@ function LeadsTable({ leadsData, showOffice }: any) {
       <Card.Body>
         <Table
           columns={columns}
-          data={paginatedData}
+          data={leadsData ? leadsData : []}
           pageSize={2}
           sizePerPageList={sizePerPageList}
           isSortable={true}
@@ -90,14 +98,6 @@ function LeadsTable({ leadsData, showOffice }: any) {
             View All
           </Button>
         </div>
-        {/* <div className="d-flex justify-content-center">
-          <Pagination
-            count={Math.ceil(records.length / rowsPerPage)}
-            variant="outlined"
-            color="primary"
-            onChange={(e, page) => handlePagination(page)}
-          />
-        </div> */}
       </Card.Body>
     </Card>
   );

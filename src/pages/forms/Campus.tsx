@@ -14,7 +14,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { getUniversity } from "../../redux/University/actions";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
 import { getCourse } from "../../redux/course/actions";
 import useDropdownData from "../../hooks/useDropdownDatas";
@@ -67,6 +67,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { swal, state, university, error, loading, courseData, initialLoading } = props;
 
   //fetch token from session storage
@@ -243,7 +244,11 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Course Configuration",
       accessor: "",
       Cell: ({ row }: any) => (
-        <a href={`/settings/master/configure_courses/${row.original.id}`} className="">
+        // <a href={`/settings/master/configure_courses/${row.original.id}`} className="">
+        //   <i className="mdi mdi-cog"></i> Course Configuration
+        // </a>
+
+        <a onClick={() => navigate(`/settings/master/configure_courses/${row.original.id}`)} className="">
           <i className="mdi mdi-cog"></i> Course Configuration
         </a>
       ),
@@ -461,8 +466,8 @@ const Campus = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/campus" },
-          { label: "Campus", path: "/master/campus", active: true },
+          { label: "Master", path: "/settings/master/campus" },
+          { label: "Campus", path: "/settings/master/campus", active: true },
         ]}
         title={"Campus"}
       />

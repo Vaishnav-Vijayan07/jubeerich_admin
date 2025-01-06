@@ -87,6 +87,7 @@ const CourseType = React.lazy(() => import("../pages/forms/CourseType"));
 const Course = React.lazy(() => import("../pages/forms/Course"));
 const Stream = React.lazy(() => import("../pages/forms/Stream"));
 const StatusConfig = React.lazy(() => import("../pages/status/StatusConfiguration"));
+const StatusType = React.lazy(() => import("../pages/status/StatusType"));
 const SubStatus = React.lazy(() => import("../pages/status/SubStatus"));
 const CheckLists = React.lazy(() => import("../pages/forms/CheckLists"));
 
@@ -482,10 +483,17 @@ const settingsRoutes = {
           route: PrivateRoute,
         },
         {
-          path: "/settings/master/status_config",
+          path: "/settings/status/status_config",
           name: "Status Config",
           // element: <StatusConfig />,
           element: <PrivateRoute roles={["Monitor"]} component={StatusConfig} />,
+          route: PrivateRoute,
+        },
+        {
+          path: "/settings/status/status_type",
+          name: "Status Config",
+          // element: <StatusConfig />,
+          element: <PrivateRoute roles={["Monitor"]} component={StatusType} />,
           route: PrivateRoute,
         },
         {
