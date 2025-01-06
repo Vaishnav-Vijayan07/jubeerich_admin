@@ -6,9 +6,14 @@ import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../components";
 import axios from "axios";
 import RemarksSection from "../../../components/CheckRemarkTextBox";
+import { showSuccessAlert } from "../../../constants";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import FormButtons from "./FormButtons";
 
-function ProgramAvailabiltyCheck({ application_id, type, eligibility_id }: any) {
+function ProgramAvailabiltyCheck({ current, handleStepChange, student_id, country_id, application_id, type, eligibility_id }: any) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
   const [data, setData] = useState<any>(null);
   const [remarks, setRemarks] = useState<string>("");
@@ -94,7 +99,17 @@ function ProgramAvailabiltyCheck({ application_id, type, eligibility_id }: any) 
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection  showRemark={showRemark} remarks={remarks} setRemarks={setRemarks} saveRemark={saveRemark} showRemarkBox={showRemarkBox} />
+      <RemarksSection showRemark={showRemark} remarks={remarks} setRemarks={setRemarks} saveRemark={saveRemark} showRemarkBox={showRemarkBox} />
+      <FormButtons
+        type={type}
+        current={current}
+        isCheckPassed={data?.isCheckPassed}
+        handleStepChange={handleStepChange}
+        student_id={student_id}
+        country_id={country_id}
+        application_id={application_id}
+        remarks={remarks}
+      />
     </>
   );
 }

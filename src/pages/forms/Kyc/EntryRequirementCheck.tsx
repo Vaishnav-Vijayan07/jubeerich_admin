@@ -7,16 +7,18 @@ import { RootState } from "../../../redux/store";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../components";
 import RemarksSection from "../../../components/CheckRemarkTextBox";
+import FormButtons from "./FormButtons";
 
 export const types = {
   education: "education",
   visa: "visa",
 };
 
-function EntryRequirementCheck({ studentId, application_id, type, eligibility_id }: any) {
+function EntryRequirementCheck({  current, handleStepChange, studentId, country_id, application_id, type, eligibility_id }: any) {
   const dispatch = useDispatch();
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
   const [remarks, setRemarks] = useState<string>("");
+  const [isCheckPassed, setIsCheckPassed] = useState<boolean>(false);
   const [showRemark, setShowRemark] = useState<boolean>(false);
   const [educationDetails, setEducationDetails] = useState<any>([]);
   const [gapDetails, setGapDetails] = useState<any>([]);
@@ -43,6 +45,7 @@ function EntryRequirementCheck({ studentId, application_id, type, eligibility_id
       setEducationDetails(edDetails.length > 0 ? edDetails : []);
       setGapDetails(detailsResponse?.data?.data?.gapReasons);
       setRemarks(checkDetails.data.data?.remarks?.remarks);
+      setIsCheckPassed(checkDetails.data.data?.remarks?.isCheckPassed);
       setShowRemark(checkDetails.data.data?.remarks?.remarks ? true : false);
     } catch (error) {
       console.log(error);
@@ -147,6 +150,16 @@ function EntryRequirementCheck({ studentId, application_id, type, eligibility_id
         </Card>
       </Row>
       <RemarksSection  showRemark={showRemark} remarks={remarks} setRemarks={setRemarks} saveRemark={saveRemark} showRemarkBox={showRemarkBox} />
+      <FormButtons
+        type={type}
+        current={current}
+        isCheckPassed={isCheckPassed}
+        handleStepChange={handleStepChange}
+        student_id={studentId}
+        country_id={country_id}
+        application_id={application_id}
+        remarks={remarks}
+      />
     </>
   );
 }

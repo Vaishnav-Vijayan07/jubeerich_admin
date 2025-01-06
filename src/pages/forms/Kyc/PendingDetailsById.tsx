@@ -35,39 +35,26 @@ const steps = [
   "Application Fee",
 ];
 
+const CheckTypes = {
+  availability: "availability",
+  campus: "campus",
+  entry_requirement: "entry_requirement",
+  quantity: "quantity",
+  quality: "quality",
+  immigration: "immigration",
+  application_fee: "application_fee",
+};
+
 const PendingDetailsById = withSwal((props: any) => {
   const { swal } = props;
   const navigate = useNavigate();
   const { id } = useParams();
-  const [remark, setRemark] = useState<any>("");
   const [searchParams, setSearchParams] = useSearchParams();
-  // const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
-
   const [current, setCurrent] = useState(0);
-
   const [item, setItem] = useState<any>(null);
-  const [checks, setChecks] = useState<any>({});
-  const [qualityForm, setQualityForm] = useState<any>({
-    formatting: false,
-    clarity: false,
-    scanning: false,
-  });
+
   const [expanded, setExpanded] = React.useState<string | false>(false);
-
-  useEffect(() => {
-    searchParams.set("step", steps[current]);
-    setSearchParams(searchParams);
-  }, [current]);
-
-  const CheckTypes = {
-    availability: "availability",
-    campus: "campus",
-    entry_requirement: "entry_requirement",
-    quantity: "quantity",
-    quality: "quality",
-    immigration: "immigration",
-    application_fee: "application_fee",
-  };
+  // const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
   const formattedItem = useMemo(
     () => ({
@@ -90,6 +77,7 @@ const PendingDetailsById = withSwal((props: any) => {
   );
 
   const studentId = useMemo(() => item?.studyPreferDetails?.studyPreference?.userPrimaryInfoId, [item]);
+  const country_id = useMemo(() => item?.studyPreferDetails?.studyPreference?.countryId, [item]);
   const applicationId = useMemo(() => item?.existApplication?.id, [item]);
   const eligibilityId = useMemo(() => item?.checks?.eligibility_remarks?.id, [item]);
   const isChecksCompleted = useMemo(() => item?.existApplication?.is_application_checks_passed, [item]);
@@ -124,23 +112,19 @@ const PendingDetailsById = withSwal((props: any) => {
         }
       });
 
+  const handleStepChange = (value: number) => {
+    setCurrent(value);
+  };
+
   const getApplicationsById = async (id: any) => {
     try {
       const result = await axios.get(`${baseUrl}/api/application/${id}`);
       if (result) {
         setItem(result?.data?.data);
-        setChecks(result?.data?.data?.checks);
-        setQualityForm(result?.data?.data?.checks?.quality_check);
       }
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handleStepClick = (index: number) => {
-    const step = steps[index];
-    console.log("step", step);
-    setCurrent(index);
   };
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -148,147 +132,13 @@ const PendingDetailsById = withSwal((props: any) => {
   };
 
   useEffect(() => {
+    searchParams.set("step", steps[current]);
+    setSearchParams(searchParams);
+  }, [current]);
+
+  useEffect(() => {
     if (id) getApplicationsById(id);
   }, []);
-
-  const buttonNavigations = async (type: "next" | "prev") => {
-    if (type === "next") {
-      if (isChecksCompleted) {
-        setCurrent(current + 1);
-      } else {
-        const result = await swal.fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, Save",
-        });
-
-        if (result.isConfirmed) {
-          handleChecks(current);
-          setCurrent(current + 1);
-        }
-      }
-    } else {
-      setCurrent(current - 1);
-    }
-  };
-
-  const submitChecks = async (checkType: any) => {
-    try {
-      let payload;
-
-      if (checkType == CheckTypes.quality) {
-        payload = {
-          application_id: applicationId,
-          check_type: checkType,
-          quality_value: qualityForm,
-        };
-      } else {
-        payload = {
-          application_id: applicationId,
-          check_type: checkType,
-        };
-      }
-
-      const res = await axios.put(`/check_application`, payload);
-
-      if (res) {
-        showSuccessAlert("Approved Suucessfully");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleChecks = (index: any) => {
-    switch (index) {
-      case 0:
-        if (!checks?.availability_check) submitChecks(CheckTypes.availability);
-        break;
-      case 1:
-        if (!checks?.campus_check) submitChecks(CheckTypes.campus);
-        break;
-      case 2:
-        if (!checks?.entry_requirement_check) submitChecks(CheckTypes.entry_requirement);
-        break;
-      case 3:
-        if (!checks?.quantity_check) submitChecks(CheckTypes.quantity);
-        break;
-      case 4:
-        if (!(checks?.quality_check?.clarity && checks?.quality_check?.scanning && checks?.quality_check?.formatting))
-          submitChecks(CheckTypes.quality);
-        break;
-      case 5:
-        if (!checks?.immigration_check) submitChecks(CheckTypes.immigration);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const rejectApplication = async (id: any) => {
-    try {
-      let payload = {
-        student_id: studentId,
-        remarks: remark,
-        application_id: applicationId,
-        assigned_country_id: item?.studyPreferDetails?.studyPreference?.countryId,
-      };
-
-      const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
-      });
-
-      if (result.isConfirmed) {
-        const res = await axios.post(`/kyc_reject`, payload);
-        if (res) {
-          showSuccessAlert("Rejected Succesfully");
-          navigate("/kyc_details/applications/pending");
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleRejection = (value: number) => {
-    rejectApplication(value);
-  };
-
-  const handleCheckChange = (name: any, checked: any) => {
-    setQualityForm((prev: any) => ({
-      ...prev,
-      [name]: checked,
-    }));
-  };
-
-  const handleProceedApplication = async (value: any) => {
-    if (!value) return;
-
-    try {
-      // If all checks are completed, proceed to submit the application checks.
-      if (!isChecksCompleted) {
-        await submitChecks(CheckTypes.application_fee);
-      }
-
-      // Navigate to the specified page, passing the required state.
-      navigate("/kyc_details/pending/portal_details", {
-        state: { universityId, applicationId, comments, reference_id },
-      });
-    } catch (error) {
-      console.error("Error submitting application checks:", error);
-      // Optionally, display an error message to the user here
-    }
-  };
 
   return (
     <>
@@ -308,7 +158,7 @@ const PendingDetailsById = withSwal((props: any) => {
             <Box sx={{ width: "100%" }}>
               <Stepper activeStep={current} alternativeLabel>
                 {steps.map((label, index) => (
-                  <Step key={label} onClick={() => handleStepClick(index)}>
+                  <Step key={label}>
                     <StepLabel>{label}</StepLabel>
                   </Step>
                 ))}
@@ -318,15 +168,86 @@ const PendingDetailsById = withSwal((props: any) => {
         </Card>
       </Row>
 
-      {current === 0 && <ProgramAvailabiltyCheck application_id={id} type={CheckTypes.availability} eligibility_id={eligibilityId} />}
-      {current === 1 && <CampusCheck application_id={id} type={CheckTypes.campus} eligibility_id={eligibilityId} />}
-      {current === 2 && (
-        <EntryRequirementCheck studentId={studentId} application_id={id} type={CheckTypes.entry_requirement} eligibility_id={eligibilityId} />
+      {current === 0 && (
+        <ProgramAvailabiltyCheck
+          student_id={studentId}
+          country_id={country_id}
+          application_id={id}
+          type={CheckTypes.availability}
+          eligibility_id={eligibilityId}
+          handleStepChange={handleStepChange}
+          current={current}
+        />
       )}
-      {current === 3 && <DocumentQuantityCheck studentId={studentId} application_id={id} type={CheckTypes.quantity} eligibility_id={eligibilityId} />}
-      {current === 4 && <DocumentQualityCheck studentId={studentId} handleFormData={handleCheckChange} quality={qualityForm} application_id={id} type={CheckTypes.quality} eligibility_id={eligibilityId} />}
-      {current === 5 && <PreviousImmigrationCheck studentId={studentId} application_id={id} type={CheckTypes.immigration} eligibility_id={eligibilityId} />}
-      {current === 6 && <ApplicationFeeCheck studentId={studentId} application_id={id} type={CheckTypes.application_fee} eligibility_id={eligibilityId} />}
+      {current === 1 && (
+        <CampusCheck
+          student_id={studentId}
+          country_id={country_id}
+          application_id={id}
+          type={CheckTypes.campus}
+          eligibility_id={eligibilityId}
+          handleStepChange={handleStepChange}
+          current={current}
+        />
+      )}
+      {current === 2 && (
+        <EntryRequirementCheck
+          studentId={studentId}
+          country_id={country_id}
+          application_id={id}
+          type={CheckTypes.entry_requirement}
+          eligibility_id={eligibilityId}
+          handleStepChange={handleStepChange}
+          current={current}
+        />
+      )}
+      {current === 3 && (
+        <DocumentQuantityCheck
+          country_id={country_id}
+          studentId={studentId}
+          application_id={id}
+          type={CheckTypes.quantity}
+          eligibility_id={eligibilityId}
+          handleStepChange={handleStepChange}
+          current={current}
+        />
+      )}
+      {current === 4 && (
+        <DocumentQualityCheck
+          studentId={studentId}
+          country_id={country_id}
+          handleStepChange={handleStepChange}
+          current={current}
+          application_id={id}
+          type={CheckTypes.quality}
+          eligibility_id={eligibilityId}
+        />
+      )}
+      {current === 5 && (
+        <PreviousImmigrationCheck
+          country_id={country_id}
+          studentId={studentId}
+          application_id={id}
+          type={CheckTypes.immigration}
+          eligibility_id={eligibilityId}
+          handleStepChange={handleStepChange}
+          current={current}
+        />
+      )}
+      {current === 6 && (
+        <ApplicationFeeCheck
+          country_id={country_id}
+          studentId={studentId}
+          application_id={id}
+          type={CheckTypes.application_fee}
+          eligibility_id={eligibilityId}
+          handleStepChange={handleStepChange}
+          current={current}
+          universityId={universityId}
+          comments={comments}
+          reference_id={reference_id}
+        />
+      )}
     </>
   );
 });

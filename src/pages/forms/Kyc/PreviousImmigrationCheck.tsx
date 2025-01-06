@@ -12,11 +12,13 @@ import { RootState } from "../../../redux/store";
 import { refreshData } from "../../../redux/countryReducer";
 import { FormInput } from "../../../components";
 import RemarksSection from "../../../components/CheckRemarkTextBox";
+import FormButtons from "./FormButtons";
 
-function PreviousImmigrationCheck({ studentId, application_id, type, eligibility_id }: any) {
+function PreviousImmigrationCheck({ current, handleStepChange, studentId, country_id, application_id, type, eligibility_id }: any) {
   const dispatch = useDispatch();
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
   const [remarks, setRemarks] = useState<string>("");
+  const [isCheckPassed, setIsCheckPassed] = useState<boolean>(false);
   const [showRemark, setShowRemark] = useState<boolean>(false);
   const [visaApprovals, setVisaApprovals] = useState<any>([]);
   const [visaDeclines, setVisaDeclines] = useState<any>([]);
@@ -31,6 +33,7 @@ function PreviousImmigrationCheck({ studentId, application_id, type, eligibility
       setVisaApprovals(visaData.data?.visaDetails?.previousVisaApprovals);
       setVisaDeclines(visaData.data?.visaDetails?.previousVisaDeclines);
       setRemarks(checkData.data.data?.remarks?.remarks);
+      setIsCheckPassed(checkData.data.data?.remarks?.isCheckPassed);
       setShowRemark(checkData.data.data?.remarks?.remarks ? true : false);
     } catch (error) {
       console.log(error);
@@ -241,6 +244,16 @@ function PreviousImmigrationCheck({ studentId, application_id, type, eligibility
         </Card>
       </Row>
       <RemarksSection  showRemark={showRemark} remarks={remarks} setRemarks={setRemarks} saveRemark={saveRemark} showRemarkBox={showRemarkBox} />
+      <FormButtons
+        type={type}
+        current={current}
+        isCheckPassed={isCheckPassed}
+        handleStepChange={handleStepChange}
+        student_id={studentId}
+        country_id={country_id}
+        application_id={application_id}
+        remarks={remarks}
+      />
     </>
   );
 }
