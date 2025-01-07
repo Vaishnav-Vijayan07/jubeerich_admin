@@ -29,9 +29,7 @@ function FormButtons({
   localData,
 }: any) {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams()
-
-  console.log("STEP",searchParams.get("step"))
+  const [searchParams] = useSearchParams();
 
   const checkChangeInData = () => {
     return JSON.stringify(qualityForm) !== JSON.stringify(localData);
@@ -79,18 +77,31 @@ function FormButtons({
       const result = await Swal.fire({
         title: "Are you sure?",
         text: "This action cannot be undone.",
-        icon: "warning",
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
         confirmButtonText: "Yes, Save",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {
-        handleChecks(type);
+        await handleChecks(type);
+        handleStepChange(current + 1);
       }
+    } else {
+      handleStepChange(current + 1);
     }
-    handleStepChange(current + 1);
   };
 
   const handleNavigation = (type: "next" | "prev") => {
@@ -101,10 +112,10 @@ function FormButtons({
     }
   };
 
-  const handleChecks = (type: any) => {
+  const handleChecks = async (type: any) => {
     switch (type) {
       case "availability":
-        submitChecks(CheckTypes.availability);
+        await submitChecks(CheckTypes.availability);
         break;
       case "campus":
         submitChecks(CheckTypes.campus);
@@ -143,9 +154,9 @@ function FormButtons({
         };
       }
 
-      const res = await axios.put(`/check_application`, payload);
+      const { data } = await axios.put(`/check_application`, payload);
 
-      if (res) {
+      if (data?.status) {
         showSuccessAlert("Approved Suucessfully");
       }
     } catch (error) {
@@ -171,18 +182,29 @@ function FormButtons({
     <>
       <Row>
         <Col className="d-flex justify-content-end">
-          <Button variant="danger" className="me-2" onClick={() => rejectApplication(application_id)}>
+          <Button
+            style={{ backgroundColor: "#F1556C", color: "white", border: "none", borderRadius: "5px" }}
+            className="me-2"
+            onClick={() => rejectApplication(application_id)}
+          >
             Reject
           </Button>
 
           {current !== 0 && (
-            <Button variant="success" className="me-2" onClick={() => handleNavigation("prev")}>
+            <Button
+              style={{ backgroundColor: "#B3ACEE", color: "white", border: "none", borderRadius: "5px" }}
+              className="me-2"
+              onClick={() => handleNavigation("prev")}
+            >
               Previous
             </Button>
           )}
 
           {current !== 6 ? (
-            <Button variant="success" onClick={() => handleNavigation("next")}>
+            <Button
+              style={{ backgroundColor: "#6658DD", color: "white", border: "none", borderRadius: "5px" }}
+              onClick={() => handleNavigation("next")}
+            >
               Next
             </Button>
           ) : (

@@ -4,6 +4,8 @@ import { FormInput } from "../../../components";
 import RemarksSection from "../../../components/CheckRemarkTextBox";
 import FormButtons from "./FormButtons";
 import { useRemarks } from "../../../hooks/useChecksData";
+import CheckHeadings from "../../../components/CheckHeadings";
+import CheckQuality from "../../../components/ApplicationChecks/CheckQuality";
 
 function DocumentQualityCheck({ studentId, country_id, current, handleStepChange, application_id, type, eligibility_id }: any) {
   const { remarks, showRemark, saveRemark, isCheckPassed, localData, qualityForm, setQualityForm } = useRemarks({
@@ -23,9 +25,7 @@ function DocumentQualityCheck({ studentId, country_id, current, handleStepChange
   return (
     <>
       <Row>
-        <h4 className="py-1" style={{ width: "max-content", color: "#1976d2", fontWeight: "800" }}>
-          Document Quality Check
-        </h4>
+        <CheckHeadings title={"Document Quality Check"} />
       </Row>
       <Row className="mt-2">
         <Card>
@@ -35,6 +35,21 @@ function DocumentQualityCheck({ studentId, country_id, current, handleStepChange
               <FormInput label="Clarity" name="clarity" type="checkbox" checked={qualityForm?.clarity} onChange={handleCheckChange} />
               <FormInput label="Scanning" name="scanning" type="checkbox" checked={qualityForm?.scanning} onChange={handleCheckChange} />
             </Row>
+          </Card.Body>
+        </Card>
+      </Row>
+      <Row className="mt-2">
+        <Card className="basic-card">
+          <Card.Body className="d-flex gap-2 justify-content-center">
+            <Col md={4} className="doc-quantity-item">
+              <CheckQuality type={"format"} label={"Formatting"} name={"formatting"} onChange={handleCheckChange} checked={qualityForm?.formatting} />
+            </Col>
+            <Col md={4} className="doc-quantity-item">
+              <CheckQuality type={"format"} label={"Clarity"} name={"clarity"} onChange={handleCheckChange} checked={qualityForm?.clarity} />
+            </Col>
+            <Col md={4} className="doc-quantity-item">
+              <CheckQuality type={"scan"} label={"Scanning"} name={"scanning"} onChange={handleCheckChange} checked={qualityForm?.formatting} />
+            </Col>
           </Card.Body>
         </Card>
       </Row>

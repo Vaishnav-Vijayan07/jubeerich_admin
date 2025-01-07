@@ -826,3 +826,21 @@ select::-ms-expand {
   border-radius: 50%;
   background-color: #e0def8;
 }
+
+/* Application Check Sections */
+
+.basic-card {
+  padding: 2px;
+  box-shadow: 0px 0px 17px -1px rgba(205, 207, 207, 1);
+}
+
+.program-availability-col {
+  border-right: 1px solid #d6d7dd;
+}
+
+.doc-quantity-item {
+  width: 301px;
+  height: 91px;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='5' ry='5' stroke='%23333' stroke-width='1' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 5px;
+}
