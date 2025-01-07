@@ -65,7 +65,8 @@ const PendingDetailsById = withSwal((props: any) => {
       course_name: item?.studyPreferDetails?.preferred_courses?.course_name || "N/A",
       office_type_name: item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.office_type_name?.office_type_name || "N/A",
       source_name: item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.source_name?.source_name || "N/A",
-      lead_received_date: moment(item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.lead_received_date).format("DD-MM-YYYY") || "N/A",
+      lead_received_date:
+        moment(item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.lead_received_date).format("DD-MM-YYYY") || "N/A",
       date: "2021-01-12 18:30:00",
       assigned_by: "Counsellor",
       assign_type: item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.assign_type || "N/A",
@@ -143,7 +144,17 @@ const PendingDetailsById = withSwal((props: any) => {
   return (
     <>
       <Row className="mt-2">
-        <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
+        <Accordion
+          expanded={expanded === "panel1"}
+          onChange={handleChange("panel1")}
+          sx={{
+            boxShadow: "none", // Removes the box shadow
+            "&:before": {
+              display: "none", // Removes the default divider line
+            },
+          }}
+          style={{ borderRadius: "10px" }}
+        >
           <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
             <Typography sx={{ width: "33%", flexShrink: 0 }}>Basic Details</Typography>
           </AccordionSummary>
@@ -153,7 +164,7 @@ const PendingDetailsById = withSwal((props: any) => {
         </Accordion>
       </Row>
       <Row className="pt-2">
-        <Card>
+        <Card style={{borderRadius: "10px"}}>
           <Card.Body>
             <Box sx={{ width: "100%" }}>
               <Stepper activeStep={current} alternativeLabel>

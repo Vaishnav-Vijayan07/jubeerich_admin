@@ -11,7 +11,15 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import FormButtons from "./FormButtons";
 
-function ProgramAvailabiltyCheck({ current, handleStepChange, student_id, country_id, application_id, type, eligibility_id }: any) {
+function ProgramAvailabiltyCheck({
+  current,
+  handleStepChange,
+  student_id,
+  country_id,
+  application_id,
+  type,
+  eligibility_id,
+}: any) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
@@ -58,48 +66,85 @@ function ProgramAvailabiltyCheck({ current, handleStepChange, student_id, countr
         </h4>
       </Row>
       <Row className="mt-2">
-        <Card>
+        <Card style={{ borderRadius: "10px" }}>
           <Card.Body>
-            <Row>
-              <Col md={3}>
-                <h5>Country</h5>
-                <p>{data?.country_name || "N/A"}</p>
-              </Col>
+            <div className="d-flex justify-content-between gap-2 align-items-center">
+              <div className="border_right d-flex justify-content-center">
+                <div className="w-auto">
+                  <h5 className="checks_font_h5">Country</h5>
+                  <p className="checks_font_p">{data?.country_name || "N/A"}</p>
+                </div>
+              </div>
 
-              <Col md={3}>
-                <h5>University</h5>
-                <p>{data?.university_name || "N/A"}</p>
-              </Col>
+              <div className="separator"></div>
 
-              <Col md={3}>
-                <h5>Intake applying for</h5>
-                <p>{data?.intake_applying_for || "N/A"}</p>
-              </Col>
+              <div className="border_right d-flex justify-content-center">
+                <div className="w-auto">
+                  <h5 className="checks_font_h5">University</h5>
+                  <p className="checks_font_p">{data?.university_name || "N/A"}</p>
+                </div>
+              </div>
 
-              <Col md={3}>
-                <h5>Course Link</h5>
-                <p>
-                  <a href={data?.course_link} target="_blank" rel="noopener noreferrer">
-                    {data?.course_link || "N/A"}
-                  </a>
-                </p>
-              </Col>
-            </Row>
-            <Row className="mt-2 mb-2">
-              <Col md={3}>
-                <h5>Stream</h5>
-                <p>{data?.stream_name}</p>
-              </Col>
+              <div className="separator"></div>
 
-              <Col md={3}>
-                <h5>Program</h5>
-                <p>{data?.program_name}</p>
-              </Col>
-            </Row>
+              <div className="border_right d-flex justify-content-center">
+                <div className="w-auto">
+                  <h5 className="checks_font_h5">Intake applying for</h5>
+                  <p className="checks_font_p">{data?.intake_applying_for || "N/A"}</p>
+                </div>
+              </div>
+
+              <div className="separator"></div>
+
+              <div className="border_right d-flex justify-content-center">
+                <div className="w-auto">
+                  <h5 className="checks_font_h5">Course Link</h5>
+                  <p className="checks_font_p">
+                    <a
+                      href={data?.course_link}
+                      onClick={(e) => {
+                        if(data?.course_link == "N/A"){
+                          e.preventDefault(); // Prevent the default click action
+                        }
+                      }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {console.log("Course link ===>", data?.course_link)}
+                      {data?.course_link == "N/A" ? "N/A" : "Click Here"}
+                    </a>
+                  </p>
+                </div>
+              </div>
+
+              <div className="separator"></div>
+
+              <div className="border_right d-flex justify-content-center">
+                <div className="w-auto">
+                  <h5 className="checks_font_h5">Stream</h5>
+                  <p className="checks_font_p">{data?.stream_name}</p>
+                </div>
+              </div>
+
+              <div className="separator"></div>
+
+              <div className="d-flex justify-content-center">
+                <div className="w-auto">
+                  <h5 className="checks_font_h5 m-0 p-0">Program</h5>
+                  <p className="checks_font_p m-0 p-0">{data?.program_name}</p>
+                </div>
+              </div>
+            </div>
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection showRemark={showRemark} remarks={remarks} setRemarks={setRemarks} saveRemark={saveRemark} showRemarkBox={showRemarkBox} />
+      {/* <RemarksSection
+        showRemark={showRemark}
+        remarks={remarks}
+        setRemarks={setRemarks}
+        saveRemark={saveRemark}
+        showRemarkBox={showRemarkBox}
+      /> */}
       <FormButtons
         type={type}
         current={current}
