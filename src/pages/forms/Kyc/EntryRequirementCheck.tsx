@@ -56,10 +56,10 @@ function EntryRequirementCheck({  current, handleStepChange, studentId, country_
     setShowRemark(true);
   };
 
-  const saveRemark = async () => {
+  const saveRemark = async (value:string) => {
     try {
       await axios.post(`/checks_remarks/${type}/${application_id}`, {
-        remarks: remarks == "" ? null : remarks,
+        remarks: value == "" ? null : value,
         eligibility_id,
       });
       dispatch(refreshData());
@@ -149,7 +149,7 @@ function EntryRequirementCheck({  current, handleStepChange, studentId, country_
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection  showRemark={showRemark} remarks={remarks} setRemarks={setRemarks} saveRemark={saveRemark} showRemarkBox={showRemarkBox} />
+      <RemarksSection  showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
       <FormButtons
         type={type}
         current={current}
