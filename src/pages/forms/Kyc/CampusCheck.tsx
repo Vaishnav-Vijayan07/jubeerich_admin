@@ -8,6 +8,12 @@ import { FormInput } from "../../../components";
 import RemarksSection from "../../../components/CheckRemarkTextBox";
 import FormButtons from "./FormButtons";
 import { useRemarks } from "../../../hooks/useChecksData";
+import CheckHeadings from "../../../components/CheckHeadings";
+
+const styles = {
+  h5: { fontWeight: "600px", fontSize: "16px" },
+  p: { fontWeight: "500px", fontSize: "14px" },
+};
 
 function CampusCheck({ current, handleStepChange, student_id, country_id, application_id, type, eligibility_id }: any) {
   const { data, remarks, showRemark, saveRemark } = useRemarks({
@@ -19,17 +25,15 @@ function CampusCheck({ current, handleStepChange, student_id, country_id, applic
   return (
     <>
       <Row>
-        <h4 className="py-1" style={{ width: "max-content", color: "#1976d2", fontWeight: "800" }}>
-          Campus Check
-        </h4>
+     <CheckHeadings title={"Campus Check"} />
       </Row>
       <Row className="mt-2">
-        <Card>
+        <Card className="basic-card">
           <Card.Body>
             <Row className="mt-1 mb-2">
               <Col md={6}>
-                <h5>Campus</h5>
-                <p>{data?.campus_name}</p>
+                <h5 style={styles.h5} >Campus</h5>
+                <p style={styles.p}>{data?.campus_name}</p>
               </Col>
             </Row>
           </Card.Body>

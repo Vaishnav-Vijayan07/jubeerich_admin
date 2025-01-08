@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Card, Form, Row } from "react-bootstrap";
+import { Card, Col, Button, Row } from "react-bootstrap";
 import BasicDetails from "./BasicDetails";
-import FormButtons from "./FormButtons";
 import ProgramAvailabiltyCheck from "./ProgramAvailabiltyCheck";
 import CampusCheck from "./CampusCheck";
 import EntryRequirementCheck from "./EntryRequirementCheck";
@@ -13,17 +12,12 @@ import moment from "moment";
 import DocumentQuantityCheck from "./DocumentQuantityCheck";
 import PreviousImmigrationCheck from "./PreviousImmigrationCheck";
 import ApplicationFeeCheck from "./ApplicationFeeCheck";
-import { Col } from "react-bootstrap";
-import { FormInput } from "../../../components";
 import { withSwal } from "react-sweetalert2";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { RootState } from "../../../redux/store";
+import ApplicationStepper from "../../../components/ApplicationStepper";
 import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const steps = [
   "Program Availability",
@@ -45,16 +39,24 @@ const CheckTypes = {
   application_fee: "application_fee",
 };
 
+type StepperDataItem = {
+  label: string;
+  isCompleted: boolean;
+};
+
+type StepperData = StepperDataItem[];
+
 const PendingDetailsById = withSwal((props: any) => {
   const { swal } = props;
   const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [steps, setSteps] = useState<StepperData>([]);
   const [current, setCurrent] = useState(0);
   const [item, setItem] = useState<any>(null);
 
   const [expanded, setExpanded] = React.useState<string | false>(false);
-  // const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
+  const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
   const formattedItem = useMemo(
     () => ({
@@ -81,7 +83,6 @@ const PendingDetailsById = withSwal((props: any) => {
   const country_id = useMemo(() => item?.studyPreferDetails?.studyPreference?.countryId, [item]);
   const applicationId = useMemo(() => item?.existApplication?.id, [item]);
   const eligibilityId = useMemo(() => item?.checks?.eligibility_remarks?.id, [item]);
-  const isChecksCompleted = useMemo(() => item?.existApplication?.is_application_checks_passed, [item]);
   const universityId = useMemo(() => item?.studyPreferDetails?.preferred_university?.id, [item]);
   const comments = useMemo(() => item?.existApplication?.comments || "", [item]);
   const reference_id = useMemo(() => item?.existApplication?.reference_id || 0, [item]);
@@ -128,25 +129,43 @@ const PendingDetailsById = withSwal((props: any) => {
     }
   };
 
+  const getStepperData = async (application_id: any) => {
+    try {
+      const { data } = await axios.get(`${baseUrl}/api/stepper_data/${application_id}`);
+      setSteps(data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
 
   useEffect(() => {
-    searchParams.set("step", steps[current]);
+    searchParams.set("step", steps[current]?.label);
     setSearchParams(searchParams);
-  }, [current]);
+  }, [current, steps[current]]);
 
   useEffect(() => {
     if (id) getApplicationsById(id);
   }, []);
 
+  useEffect(() => {
+    if (id) getStepperData(id);
+  }, [current]);
+
   return (
     <>
       <Row className="mt-2">
-        <Accordion
+        <Col md={10} className="p-0">
+          <Accordion
+            style={{ boxShadow: "0px 0px 17px -1px rgba(205,207,207,1)", borderRadius: "8px", padding: "0px 15px 0px 15Px" }}
+           
           expanded={expanded === "panel1"}
+           
           onChange={handleChange("panel1")}
+          
           sx={{
             boxShadow: "none", // Removes the box shadow
             "&:before": {
@@ -155,26 +174,24 @@ const PendingDetailsById = withSwal((props: any) => {
           }}
           style={{ borderRadius: "10px" }}
         >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
-            <Typography sx={{ width: "33%", flexShrink: 0 }}>Basic Details</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <BasicDetails data={formattedItem} studentId={studentId} />
-          </AccordionDetails>
-        </Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+              <Typography sx={{ width: "33%", flexShrink: 0, fontWeight: 300 }}>Basic Details</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <BasicDetails data={formattedItem} studentId={studentId} />
+            </AccordionDetails>
+          </Accordion>
+        </Col>
+        <Col md={2} className="pe-0" style={{maxHeight:"48px"}}>
+          <Button className="h-100 w-100" style={{ boxShadow: "0px 0px 17px -1px rgba(205,207,207,1)",backgroundColor: "#eefff2", color: "#009a29", border: "none",borderRadius: "8px" }}>
+            View Summary
+          </Button>
+        </Col>
       </Row>
       <Row className="pt-2">
-        <Card style={{borderRadius: "10px"}}>
+        <Card style={{boxShadow: "0px 0px 17px -1px rgba(205,207,207,1)",borderRadius: "8px"}} style={{borderRadius: "10px"}}>
           <Card.Body>
-            <Box sx={{ width: "100%" }}>
-              <Stepper activeStep={current} alternativeLabel>
-                {steps.map((label, index) => (
-                  <Step key={label}>
-                    <StepLabel>{label}</StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
-            </Box>
+            <ApplicationStepper steps={steps} current={current} />
           </Card.Body>
         </Card>
       </Row>

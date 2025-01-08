@@ -8,13 +8,84 @@ import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../components";
 import RemarksSection from "../../../components/CheckRemarkTextBox";
 import FormButtons from "./FormButtons";
+import CheckHeadings from "../../../components/CheckHeadings";
+import RequirementCheck from "../../../components/ApplicationChecks/RequirementCheck";
 
 export const types = {
   education: "education",
   visa: "visa",
 };
 
-function EntryRequirementCheck({  current, handleStepChange, studentId, country_id, application_id, type, eligibility_id }: any) {
+type EducationDetail = {
+  qualification: string; // e.g., "Bachelor of Science"
+  school_name: string; // e.g., "XYZ University"
+  start_date?: string | null; // ISO format date string, nullable
+  end_date?: string | null; // ISO format date string, nullable
+  percentage?: string | number | null; // Percentage as a string, number, or nullable
+};
+
+type EducationDetailsArray = EducationDetail[];
+
+const eDetails: EducationDetailsArray = [
+  {
+    qualification: "Bachelor of Science in Computer Science",
+    school_name: "XYZ University",
+    start_date: "2015-08-01",
+    end_date: "2019-05-15",
+    percentage: 85,
+  },
+  {
+    qualification: "Master of Science in Data Science",
+    school_name: "ABC University",
+    start_date: "2020-01-10",
+    end_date: "2022-04-20",
+    percentage: "90%",
+  },
+  {
+    qualification: "Diploma in Web Development",
+    school_name: "Online Academy",
+    start_date: "2018-06-01",
+    end_date: "2019-06-01",
+    percentage: 88,
+  },
+  {
+    qualification: "High School Diploma",
+    school_name: "City High School",
+    start_date: "2013-06-01",
+    end_date: "2015-05-01",
+    percentage: "78%",
+  },
+  {
+    qualification: "Certificate in Graphic Design",
+    school_name: "Creative Arts College",
+    start_date: "2019-09-01",
+    end_date: "2020-06-01",
+    percentage: null,
+  },
+  {
+    qualification: "Ph.D. in Artificial Intelligence",
+    school_name: "Tech University",
+    start_date: "2022-08-01",
+    end_date: null, // Ongoing
+    percentage: null,
+  },
+  {
+    qualification: "Bachelor of Business Administration",
+    school_name: "Commerce University",
+    start_date: "2014-08-01",
+    end_date: "2018-06-01",
+    percentage: 72,
+  },
+  {
+    qualification: "Associate Degree in Marketing",
+    school_name: "Marketing College",
+    start_date: "2016-01-01",
+    end_date: "2018-12-31",
+    percentage: 80,
+  },
+];
+
+function EntryRequirementCheck({ current, handleStepChange, studentId, country_id, application_id, type, eligibility_id }: any) {
   const dispatch = useDispatch();
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
   const [remarks, setRemarks] = useState<string>("");
@@ -56,7 +127,7 @@ function EntryRequirementCheck({  current, handleStepChange, studentId, country_
     setShowRemark(true);
   };
 
-  const saveRemark = async (value:string) => {
+  const saveRemark = async (value: string) => {
     try {
       await axios.post(`/checks_remarks/${type}/${application_id}`, {
         remarks: value == "" ? null : value,
@@ -75,19 +146,17 @@ function EntryRequirementCheck({  current, handleStepChange, studentId, country_
   return (
     <>
       <Row>
-        <h4 className="py-1" style={{ width: "max-content", color: "#1976d2", fontWeight: "800" }}>
-          Entry Requirement Check
-        </h4>
+        <CheckHeadings title={"Entry Requirement Check"} />
       </Row>
 
       <Row className="mt-2">
-        <Card>
+        <Card className="basic-card">
           <Card.Body>
             <Row className="mb-2">
-              <div className="text-start mt-2 ps-1">
-                <h5 className="font-weight-bold text-danger">Qualifications:</h5>
+              {/* <div className="text-start mt-2 ps-1">
+                <h5 className="font-weight-bold text-danger">Qualifications:</h5> */}
 
-                {educationDetails?.length > 0 ? (
+              {/* {educationDetails?.length > 0 ? (
                   educationDetails?.map((qual: any, index: number) => (
                     <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                       <p className="mb-1 font-15">
@@ -116,9 +185,9 @@ function EntryRequirementCheck({  current, handleStepChange, studentId, country_
                   <div className="d-flex justify-content-center align-items-center border border-secondary mt-2 me-2">
                     <h4 className="text-muted">No Documents Uploaded</h4>
                   </div>
-                )}
+                )} */}
 
-                <h5 className="font-weight-bold text-danger">Periods of Gap:</h5>
+              {/* <h5 className="font-weight-bold text-danger">Periods of Gap:</h5>
 
                 {gapDetails?.length > 0 ? (
                   gapDetails?.map((gap: any, index: any) => (
@@ -143,13 +212,23 @@ function EntryRequirementCheck({  current, handleStepChange, studentId, country_
                   <div className="d-flex justify-content-center align-items-center border border-secondary mt-2 me-2">
                     <h4 className="text-muted">No Documents Uploaded</h4>
                   </div>
-                )}
-              </div>
+                )} */}
+              {/* </div> */}
+              <RequirementCheck data={eDetails} type={"Qualifications"} />
             </Row>
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection  showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
+      <Row className="mt-2">
+        <Card className="basic-card">
+          <Card.Body>
+            <Row className="mb-2">
+              <RequirementCheck data={[]} type={"Periods of Gap"} />
+            </Row>
+          </Card.Body>
+        </Card>
+      </Row>
+      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
       <FormButtons
         type={type}
         current={current}

@@ -9,7 +9,7 @@
 }
 
 body {
-  font-family: "Inter", sans-serif;
+  font-family:"Nunito";
 }
 
 .inter-font {
@@ -851,4 +851,77 @@ select::-ms-expand {
   font-size: 14px;
   font-weight: 500;
   color: #6C757D;
+}
+
+/* Application Check Sections */
+
+.basic-card {
+  padding: 2px;
+  box-shadow: 0px 0px 17px -1px rgba(205, 207, 207, 1);
+}
+
+.program-availability-col {
+  border-right: 1px solid #d6d7dd;
+}
+
+.doc-quantity-item {
+  width: 301px;
+  height: 91px;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='5' ry='5' stroke='%23333' stroke-width='1' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 5px;
+}
+
+.application-fee-col {
+  width: 357px;
+  height: 62px;
+  background-color: #e0def8;
+  border-radius: 5px;
+}
+
+.application-fee-col-text {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.application-fee-col-amount-col {
+  background-color: #6658dd;
+  color: white;
+  width: 116px;
+  height: 38px;
+  border-radius: 5px;
+}
+
+.view-all-container {
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='5' ry='5' stroke='%236657DDFF' stroke-width='2' stroke-dasharray='2%2c 5' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 38.2px 0px #0000001A;
+  padding: 10px;
+}
+.portal-box-container {
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 38.2px 0px #0000001A;
+  padding: 10px;
+}
+
+.portal-input-box{
+  width: 257px;
+  height: 38px;
+  border-radius: 4px;
+  border:1px solid #B3ACEE99 ;
+}
+
+.portal-box-items p {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.reference-details-button{
+  background-color: #6658DD;
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 172px;
+  height: 38px;
 }

@@ -9,6 +9,7 @@ import axios from "axios";
 import RemarksSection from "../../../components/CheckRemarkTextBox";
 import FormButtons from "./FormButtons";
 import { useRemarks } from "../../../hooks/useChecksData";
+import CheckHeadings from "../../../components/CheckHeadings";
 
 function DocumentQuantityCheck({ current, handleStepChange, studentId, country_id, application_id, type, eligibility_id }: any) {
   const { isCheckPassed, remarks, showRemark, saveRemark } = useRemarks({
@@ -20,9 +21,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
   return (
     <>
       <Row>
-        <h4 className="py-1" style={{ width: "max-content", color: "#1976d2", fontWeight: "800" }}>
-          Document Quantity Check
-        </h4>
+        <CheckHeadings title={"Document Quantity Check"}/>
       </Row>
       <Row className="mt-2">
         <Card>

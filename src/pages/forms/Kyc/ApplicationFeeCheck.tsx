@@ -7,6 +7,11 @@ import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import RemarksSection from "../../../components/CheckRemarkTextBox";
 import FormButtons from "./FormButtons";
 import { useNavigate } from "react-router-dom";
+import { FormInput } from "../../../components";
+import { baseUrl, showErrorAlert, showSuccessAlert } from "../../../constants";
+import CheckHeadings from "../../../components/CheckHeadings";
+import { FileText } from "lucide-react";
+import FileUpload from "../../../components/ApplicationChecks/RecieptUpload";
 
 function ApplicationFeeCheck({
   current,
@@ -25,6 +30,7 @@ function ApplicationFeeCheck({
   const [remarks, setRemarks] = useState<string>("");
   const [showRemark, setShowRemark] = useState<boolean>(false);
   const [isCheckPassed, setIsCheckPassed] = useState<boolean>(false);
+  const [applicaiton_reciept, setApplicationReciept] = useState<string>("");
 
   const dispatch = useDispatch();
 
@@ -40,6 +46,7 @@ function ApplicationFeeCheck({
     try {
       const { data } = await axios.get(`/checks/${type}/${application_id}`);
       setFee(data.data?.checks);
+      setApplicationReciept(data.data?.checks?.application_reciept);
       setRemarks(data.data?.remarks?.remarks);
       setIsCheckPassed(data.data?.remarks?.isCheckPassed);
       setShowRemark(data.data?.remarks?.remarks ? true : false);
@@ -48,11 +55,7 @@ function ApplicationFeeCheck({
     }
   };
 
-  const showRemarkBox = () => {
-    setShowRemark(true);
-  };
-
-  const saveRemark = async (value:string) => {
+  const saveRemark = async (value: string) => {
     try {
       await axios.post(`/checks_remarks/${type}/${application_id}`, {
         remarks: value == "" ? null : value,
@@ -64,6 +67,10 @@ function ApplicationFeeCheck({
     }
   };
 
+  const viewReceipt = (applicaiton_reciept:string) => {
+    window.open(`${baseUrl}/uploads/application_receipts/${applicaiton_reciept}`, "_blank");
+  };
+
   useEffect(() => {
     fetchData();
   }, [application_id, refresh]);
@@ -71,20 +78,43 @@ function ApplicationFeeCheck({
   return (
     <>
       <Row>
-        <h4 className="py-1" style={{ width: "max-content", color: "#1976d2", fontWeight: "800" }}>
-          Application Fee Check
-        </h4>
+        <Col md={6}>
+          <CheckHeadings title="Application Fee Check" />
+        </Col>
+        <Col md={6} className="d-flex justify-content-end">
+          <FileUpload application_id={application_id} />
+        </Col>
       </Row>
       <Row className="mt-2">
-        <Card>
-          <Card.Body>
-            <Row>
-              <Form.Group controlId="fee">
-                <Form.Label>
-                  {`Application Fee`} - {fee?.fee}
-                </Form.Label>
-              </Form.Group>
-            </Row>
+        <Card className="basic-card">
+          <Card.Body className="d-flex gap-2 align-items-center">
+            <div className="d-flex justify-content-between align-items-center application-fee-col p-2">
+              <div className="fs-4 text-dark">Application Fee Check</div>
+              <div className="application-fee-col-amount-col p-1 d-flex align-items-center justify-content-center">
+                <span>{fee?.fee}/-</span>
+              </div>
+            </div>
+
+            {applicaiton_reciept !== "" && applicaiton_reciept !== null && (
+              <div>
+                <div
+                  style={{
+                    width: "280px",
+                    height: "53px",
+                    backgroundColor: "#e0ddf8",
+                    borderRadius: "5px",
+                    padding: "8px 12px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                  onClick={() => viewReceipt(applicaiton_reciept)}
+                >
+                  <FileText color="#6657de" strokeWidth={0.5} />
+                  <p style={{ margin: 0, fontSize: "14px", fontWeight: "500", color: "#333" }}>Receipt</p>
+                </div>
+              </div>
+            )}
           </Card.Body>
         </Card>
       </Row>
