@@ -827,6 +827,32 @@ select::-ms-expand {
   background-color: #e0def8;
 }
 
+.border_right h5,
+.border_right p {
+  padding: 0;
+  margin: 0;
+}
+
+.separator {
+  width: 1px; /* Thickness of the separator line */
+  height: 40px; /* Height of the separator */
+  background-color: #d6d7dd; /* Separator line color */
+}
+
+.checks_font_h5 {
+  font-family: Nunito;
+  font-size: 16px;
+  font-weight: 600;
+  color: #343A40;
+}
+
+.checks_font_p {
+  font-family: Nunito;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6C757D;
+}
+
 /* Application Check Sections */
 
 .basic-card {

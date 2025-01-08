@@ -387,13 +387,43 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
 
     switch (field) {
       case 'universityId':
+        updatedPrefs[index]['campusId'] = '';
+        updatedPrefs[index]['courseTypeId'] = '';
+        updatedPrefs[index]['streamId'] = '';
+        updatedPrefs[index]['courseId'] = '';
+        
         setSelectedFormDataMap((prevMap: any) => {
           prevMap.set(index, updatedPrefs[index]);
           return new Map(prevMap);
         });
         fetchCampusByUniversity(index);
         break;
+      case 'campusId':
+        updatedPrefs[index]['courseTypeId'] = '';
+        updatedPrefs[index]['streamId'] = '';
+        updatedPrefs[index]['courseId'] = '';
+        
+        setSelectedFormDataMap((prevMap: any) => {
+          prevMap.set(index, updatedPrefs[index]);
+          return new Map(prevMap);
+        });
+        break;
+      case 'courseTypeId':
+        updatedPrefs[index]['streamId'] = '';
+        updatedPrefs[index]['courseId'] = '';
+
+        setSelectedFormDataMap((prevMap: any) => {
+          prevMap.set(index, updatedPrefs[index]);
+          return new Map(prevMap);
+        });
+        break
       case 'streamId':
+        updatedPrefs[index]['courseId'] = '';
+
+        setSelectedFormDataMap((prevMap: any) => {
+          prevMap.set(index, updatedPrefs[index]);
+          return new Map(prevMap);
+        });
         fetchCourseList(index);
         break;
       default:

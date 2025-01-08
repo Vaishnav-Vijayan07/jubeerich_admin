@@ -67,7 +67,8 @@ const PendingDetailsById = withSwal((props: any) => {
       course_name: item?.studyPreferDetails?.preferred_courses?.course_name || "N/A",
       office_type_name: item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.office_type_name?.office_type_name || "N/A",
       source_name: item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.source_name?.source_name || "N/A",
-      lead_received_date: moment(item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.lead_received_date).format("DD-MM-YYYY") || "N/A",
+      lead_received_date:
+        moment(item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.lead_received_date).format("DD-MM-YYYY") || "N/A",
       date: "2021-01-12 18:30:00",
       assigned_by: "Counsellor",
       assign_type: item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.assign_type || "N/A",
@@ -157,28 +158,27 @@ const PendingDetailsById = withSwal((props: any) => {
   return (
     <>
       <Row className="mt-2">
-        <Col md={10} className="p-0">
-          <Accordion
-            style={{ boxShadow: "0px 0px 17px -1px rgba(205,207,207,1)", borderRadius: "8px", padding: "0px 15px 0px 15Px" }}
-            expanded={expanded === "panel1"}
-            onChange={handleChange("panel1")}
-          >
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
-              <Typography sx={{ width: "33%", flexShrink: 0, fontWeight: 300 }}>Basic Details</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <BasicDetails data={formattedItem} studentId={studentId} />
-            </AccordionDetails>
-          </Accordion>
-        </Col>
-        <Col md={2} className="pe-0" style={{maxHeight:"48px"}}>
-          <Button className="h-100 w-100" style={{ boxShadow: "0px 0px 17px -1px rgba(205,207,207,1)",backgroundColor: "#eefff2", color: "#009a29", border: "none",borderRadius: "8px" }}>
-            View Summary
-          </Button>
-        </Col>
+        <Accordion
+          expanded={expanded === "panel1"}
+          onChange={handleChange("panel1")}
+          sx={{
+            boxShadow: "none", // Removes the box shadow
+            "&:before": {
+              display: "none", // Removes the default divider line
+            },
+          }}
+          style={{ borderRadius: "10px" }}
+        >
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+            <Typography sx={{ width: "33%", flexShrink: 0 }}>Basic Details</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <BasicDetails data={formattedItem} studentId={studentId} />
+          </AccordionDetails>
+        </Accordion>
       </Row>
       <Row className="pt-2">
-        <Card style={{boxShadow: "0px 0px 17px -1px rgba(205,207,207,1)",borderRadius: "8px"}}>
+        <Card style={{borderRadius: "10px"}}>
           <Card.Body>
             <ApplicationStepper steps={steps} current={current} />
           </Card.Body>
