@@ -38,8 +38,8 @@ function PortalDetails({}: Props) {
         </Col>
       </Row>
       <Row>
-        <Card>
-          <Card.Body className="d-flex gap-2">
+        <Card style={{ zIndex: "1" }}>
+          <Card.Body className="d-flex gap-3">
             <Col md={3}>
               <ViewAllDetails applicationId={applicationId} />
               <PortalDetailsBox data={portalData || []} />
