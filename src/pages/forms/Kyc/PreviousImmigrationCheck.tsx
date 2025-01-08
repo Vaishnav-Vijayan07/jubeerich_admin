@@ -13,6 +13,8 @@ import { refreshData } from "../../../redux/countryReducer";
 import { FormInput } from "../../../components";
 import RemarksSection from "../../../components/CheckRemarkTextBox";
 import FormButtons from "./FormButtons";
+import CheckHeadings from "../../../components/CheckHeadings";
+import RequirementCheck from "../../../components/ApplicationChecks/RequirementCheck";
 
 function PreviousImmigrationCheck({ current, handleStepChange, studentId, country_id, application_id, type, eligibility_id }: any) {
   const dispatch = useDispatch();
@@ -44,7 +46,7 @@ function PreviousImmigrationCheck({ current, handleStepChange, studentId, countr
     setShowRemark(true);
   };
 
-  const saveRemark = async (value:string) => {
+  const saveRemark = async (value: string) => {
     try {
       await axios.post(`/checks_remarks/${type}/${application_id}`, {
         remarks: value == "" ? null : value,
@@ -152,15 +154,12 @@ function PreviousImmigrationCheck({ current, handleStepChange, studentId, countr
   return (
     <>
       <Row>
-        <h4 className="py-1" style={{ width: "max-content", color: "#1976d2", fontWeight: "800" }}>
-          Previous Immigration History Check
-        </h4>
+        <CheckHeadings title="Previous Immigration" />
       </Row>
-      <Row className="mt-2">
+      {/* <Row className="mt-2">
         <Card>
           <Card.Body>
             <Row className="ms-3 me-3">
-              {/* Visa Approvals */}
               <Row className="mt-2">
                 <span className="border bg-secondary rounded-2">
                   <Form.Label className="fs-4 mt-1 text-white">Previous Visa Approval</Form.Label>
@@ -198,9 +197,15 @@ function PreviousImmigrationCheck({ current, handleStepChange, studentId, countr
                     <h4 className="text-muted">No Documents Uploaded</h4>
                   </div>
                 )}
-              </Row>
-
-              {/* Visa Declines */}
+              </Row> 
+            </Row>
+          </Card.Body>
+        </Card>
+      </Row> */}
+      {/* <Row>
+        <Card>
+          <Card.Body>
+            <Row className="ms-3 me-3">
               <Row className="mt-2">
                 <span className="border bg-secondary rounded-2">
                   <Form.Label className="fs-4 mt-1 text-white">Previous Visa Declines</Form.Label>
@@ -238,12 +243,26 @@ function PreviousImmigrationCheck({ current, handleStepChange, studentId, countr
                     <h4 className="text-muted">No Documents Uploaded</h4>
                   </div>
                 )}
-              </Row>
+              </Row> 
             </Row>
           </Card.Body>
         </Card>
+      </Row> */}
+      <Row className="mt-2">
+        <Card className="basic-card">
+          <Card.Body>
+            <RequirementCheck type="Previous Visa Approvals" data={visaApprovals} />
+          </Card.Body>
+        </Card>
       </Row>
-      <RemarksSection  showRemark={showRemark} remarks={remarks} saveRemark={saveRemark}/>
+      <Row className="mt-2">
+        <Card className="basic-card">
+          <Card.Body>
+            <RequirementCheck type="Previous Visa Declines" data={visaDeclines} />
+          </Card.Body>
+        </Card>
+      </Row>
+      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
       <FormButtons
         type={type}
         current={current}
