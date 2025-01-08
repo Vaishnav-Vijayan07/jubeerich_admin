@@ -1,16 +1,18 @@
 import React from "react";
 import { Form } from "react-bootstrap";
 import SvgType from "./QrSvg";
+import { CircleCheck, CircleX } from "lucide-react";
 
 type Props = {
   label: string;
   name: string;
   type: string;
+  id: string;
   checked: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-function CheckQuality({ label, checked, onChange, name, type }: Props) {
+function CheckQuality({ label, checked, onChange, name, type, id }: Props) {
   return (
     <div className="d-flex align-items-center justify-content-center p-3 ">
       <div className="d-flex align-items-center">
@@ -26,8 +28,18 @@ function CheckQuality({ label, checked, onChange, name, type }: Props) {
           <SvgType type={type} />
         </div>
         <span className="fw-medium fs-5">{label}</span>
+        {checked ? (
+         <CircleCheck color="#10da43" className="ms-3" />
+        )
+        :
+        (
+          <CircleX color="#e40707"  className="ms-3"/>
+        )
+      }
         <Form.Check
           type="checkbox"
+          id={id}
+          hidden={true}
           name={name}
           checked={checked}
           onChange={onChange}
