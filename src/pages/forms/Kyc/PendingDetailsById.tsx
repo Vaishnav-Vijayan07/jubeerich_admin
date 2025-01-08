@@ -158,9 +158,14 @@ const PendingDetailsById = withSwal((props: any) => {
   return (
     <>
       <Row className="mt-2">
-        <Accordion
+        <Col md={10} className="p-0">
+          <Accordion
+            style={{ boxShadow: "0px 0px 17px -1px rgba(205,207,207,1)", borderRadius: "8px", padding: "0px 15px 0px 15Px" }}
+           
           expanded={expanded === "panel1"}
+           
           onChange={handleChange("panel1")}
+          
           sx={{
             boxShadow: "none", // Removes the box shadow
             "&:before": {
@@ -169,16 +174,22 @@ const PendingDetailsById = withSwal((props: any) => {
           }}
           style={{ borderRadius: "10px" }}
         >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
-            <Typography sx={{ width: "33%", flexShrink: 0 }}>Basic Details</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <BasicDetails data={formattedItem} studentId={studentId} />
-          </AccordionDetails>
-        </Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+              <Typography sx={{ width: "33%", flexShrink: 0, fontWeight: 300 }}>Basic Details</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <BasicDetails data={formattedItem} studentId={studentId} />
+            </AccordionDetails>
+          </Accordion>
+        </Col>
+        <Col md={2} className="pe-0" style={{maxHeight:"48px"}}>
+          <Button className="h-100 w-100" style={{ boxShadow: "0px 0px 17px -1px rgba(205,207,207,1)",backgroundColor: "#eefff2", color: "#009a29", border: "none",borderRadius: "8px" }}>
+            View Summary
+          </Button>
+        </Col>
       </Row>
       <Row className="pt-2">
-        <Card style={{borderRadius: "10px"}}>
+        <Card style={{boxShadow: "0px 0px 17px -1px rgba(205,207,207,1)",borderRadius: "8px"}} style={{borderRadius: "10px"}}>
           <Card.Body>
             <ApplicationStepper steps={steps} current={current} />
           </Card.Body>

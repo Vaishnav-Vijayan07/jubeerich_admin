@@ -28,7 +28,7 @@ function RequirementCheck({ data,type }: Props) {
 
     console.log("DATAAAAA",data)
 
-  if (data?.length == 0) {
+  if (!data) {
     return (
       <div>
         <div className="mb-1">
