@@ -2,6 +2,7 @@ import React, { memo, useState } from "react";
 import { Card, Form, Row, Col, Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { getDashboard } from "../redux/actions";
+import { getWeeklyDateRange } from "../utils/date_helpers";
 
 const styles: any = {
   filterItem: (isSelected: any) => ({
@@ -36,6 +37,7 @@ const CustomFilter = ({
   handleFilter,
 }: any) => {
   const dispatch = useDispatch();
+  const [selectedWeek, setSelectedWeek] = useState<string>("");
 
   const handleFilterApplyClick = (type: any) => {
     setFilterType(type);
@@ -59,6 +61,8 @@ const CustomFilter = ({
 
   // Handle date selection and automatically set week
   const handleDateSelection = (date: string) => {
+    const { startDate, endDate } = getWeeklyDateRange(selectedYear, selectedMonth, date);
+    setSelectedWeek(`${startDate} - ${endDate}`);
     setSelectedDate(date);
   };
 
@@ -175,6 +179,11 @@ const CustomFilter = ({
                   Apply
                 </Button>
               </Col>
+              {selectedWeek && (
+                <Col md={12} className="mt-2">
+                  <p className="mb-0">Selected Week: {selectedWeek}</p>
+                </Col>
+              )}
             </Row>
           )}
 

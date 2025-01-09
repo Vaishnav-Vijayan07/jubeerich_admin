@@ -14,10 +14,11 @@ function getStatusConfig() {
 }
 
 function addStatus(params: {
-  status_name: string,
-  status_description: string,
-  color: string,
-  updated_by: string,
+  status_name: string;
+  status_description: string;
+  color: string;
+  updated_by: string;
+  type_id: string;
 }) {
   return api.create(`${baseUrl}`, params);
 }
@@ -25,10 +26,11 @@ function addStatus(params: {
 function updateStatus(
   id: string,
   params: {
-    status_name: string,
-    status_description: string,
-    color: string,
-    updated_by: string,
+    status_name: string;
+    status_description: string;
+    color: string;
+    updated_by: string;
+    type_id: string;
   }
 ) {
   return api.update(`${baseUrl}/${id}`, params);

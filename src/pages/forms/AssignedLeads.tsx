@@ -476,7 +476,7 @@ const BasicInputElements = withSwal((props: any) => {
             </Link> */}
 
             {/* Delete Icon */}
-            <Link
+            {/* <Link
               to="#"
               className="action-icon"
               onClick={() => handleDelete(row.original.id)}
@@ -484,9 +484,8 @@ const BasicInputElements = withSwal((props: any) => {
               data-bs-placement="bottom"
               title="Delete"
             >
-              {/* <i className="mdi mdi-delete"></i> */}
               <i className="mdi mdi-delete-outline"></i>
-            </Link>
+            </Link> */}
           </div>
         ),
       },
@@ -814,10 +813,6 @@ const BasicInputElements = withSwal((props: any) => {
               <h4 className="header-title mb-4">Manage Leads</h4>
               <CustomSearchBox
                 onSearch={handleSearch}
-                isSearchApplied={isSearchApplied}
-                onClose={onClose}
-                value={value}
-                onValueChange={onValueChange}
               />
               <Table
                 columns={columns}

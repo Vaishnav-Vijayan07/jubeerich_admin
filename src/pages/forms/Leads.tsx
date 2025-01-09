@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Row, Col, Spinner } from "react-bootstrap";
+import { debounce } from "lodash";
 
 // components
 import PageTitle from "../../components/PageTitle";
@@ -10,20 +11,15 @@ import { AUTH_SESSION_KEY, counsellor_tl_id, cre_tl_id, regional_manager_id } fr
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
-import { getFlag } from "../../redux/flag/actions";
 import { usePagination } from "../../hooks/usePagination";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   const [counsellors, setCounsellors] = useState([]);
   const [branchForManager, setBranchForManager] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
-  const {currentPage, setCurrentPage,currentLimit, setCurrentLimit} = usePagination();
-
-
-  const [close, setClose] = useState(false);
-  const [value, setValue] = useState("");
-  const [search, setSearch] = useState("");
+  const { currentPage, setCurrentPage, currentLimit, setCurrentLimit } = usePagination();
 
   const handlePageChange = useCallback((event: any, value: any) => {
     setCurrentPage(value);
@@ -34,23 +30,16 @@ const Leads = () => {
     setCurrentPage(1);
   }, []);
 
-  const handleSearch = () => {
-    setSearch(value);
-    setCurrentPage(1);
-    setCurrentLimit(20);
+  const handleSearch = (value: any) => {
+    setSearchValue(value);
+    if (userRole == cre_tl_id) {
+      dispatch(getLeadsTL(1, 20, value));
+    } else {
+      if (userRole) {
+        dispatch(getLead(1, 20, value));
+      }
+    }
   };
-
-  const handleValue = (searchItem: string) => {
-    setValue(searchItem);
-  };
-
-  const handleClose = () => {
-    setClose(!close);
-    setValue("");
-    setSearch("");
-  };
-
-  console.log("PAGE COUNT", currentPage);
 
   let userRole: any;
   let userBranchId: any;
@@ -83,10 +72,10 @@ const Leads = () => {
 
   useEffect(() => {
     if (userRole == cre_tl_id) {
-      dispatch(getLeadsTL(currentPage, currentLimit, search == "" ? undefined : search));
+      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue));
     } else {
       if (userRole) {
-        dispatch(getLead(currentPage, currentLimit, search == "" ? undefined : search));
+        dispatch(getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue));
       }
     }
 
@@ -95,7 +84,7 @@ const Leads = () => {
     }
 
     console.count("loading count");
-  }, [userRole, currentPage, currentLimit, close, search]);
+  }, [userRole, currentPage, currentLimit]);
 
   const fetchAllCounsellors = useCallback(() => {
     axios
@@ -163,10 +152,6 @@ const Leads = () => {
             currentLimit={currentLimit}
             handleLimitChange={handleLimitChange}
             handleSearch={handleSearch}
-            isSearchApplied={isSearchApplied}
-            onClose={handleClose}
-            value={value}
-            onValueChange={handleValue}
           />
         </Col>
       </Row>

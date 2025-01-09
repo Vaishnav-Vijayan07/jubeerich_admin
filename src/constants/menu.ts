@@ -50,7 +50,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Assigned Leads"],
   },
   {
-    key: "leads",
+    key: "assigned_regional_manager_leads",
     label: "Assigned Leads",
     isTitle: false,
     icon: "user-tag", // Lead assigned to a manager
@@ -77,7 +77,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
   { key: "kyc_details", label: "KYC Approval", isTitle: true, roles: ["KYC Approval"] },
 
   {
-    key: "kycApproval",
+    key: "kycPending",
     label: "KYC Pending",
     isTitle: false,
     icon: "clock", // Icon representing pending action
@@ -161,7 +161,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Monitor"],
     children: [
       {
-        key: "category",
+        key: "lead_type",
         label: "Lead Type",
         url: "/settings/master/type",
         parentKey: "master",
@@ -240,31 +240,31 @@ const MENU_ITEMS: MenuItemTypes[] = [
         key: "course_type",
         label: "Course Type",
         url: "/settings/master/course_type",
-        parentKey: "master",
+        parentKey: "academic_management",
       },
       {
         key: "stream",
         label: "Stream",
         url: "/settings/master/stream",
-        parentKey: "master",
+        parentKey: "academic_management",
       },
       {
         key: "course",
         label: "Course",
         url: "/settings/master/course",
-        parentKey: "master",
+        parentKey: "academic_management",
       },
       {
         key: "university",
         label: "University",
         url: "/settings/master/university",
-        parentKey: "master",
+        parentKey: "academic_management",
       },
       {
         key: "campus",
         label: "Campus",
         url: "/settings/master/campus",
-        parentKey: "master",
+        parentKey: "academic_management",
       },
     ],
   },
@@ -280,30 +280,30 @@ const MENU_ITEMS: MenuItemTypes[] = [
   //   roles: ["Monitor"],
   // },
   {
-    key: "status",
-    label: "Status",
+    key: "status_configuration",
+    label: "Status Config",
     isTitle: false,
     icon: "tool", // Configuration tool
     url: "/settings/master/status_config",
     roles: ["Monitor"],
     children: [
       {
+        key: "status_type",
+        label: "Status Type",
+        url: "/settings/status/status_type",
+        parentKey: "status_configuration",
+      },
+      {
         key: "status",
         label: "Status",
         url: "/settings/master/status",
-        parentKey: "master",
+        parentKey: "status_configuration",
       },
       {
         key: "status_config",
         label: "Config",
         url: "/settings/status/status_config",
-        parentKey: "master",
-      },
-      {
-        key: "status_type",
-        label: "Type",
-        url: "/settings/status/status_type",
-        parentKey: "master",
+        parentKey: "status_configuration",
       },
     ],
   },

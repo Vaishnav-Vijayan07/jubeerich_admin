@@ -17,14 +17,14 @@ const GrandParentDetailsForm = ({
 }: ParentDetailsFormProps) => {
 
   const parentTypeMap: { [key: string]: string } = {
-    paternal_grand_mother_info: 'Paternal Grand Mother',
-    paternal_grand_father_info: 'Paternal Grand Father',
-    maternal_grand_mother_info: 'Maternal Grand Mother',
-    maternal_grand_father_info: 'Maternal Grand Father',
-    paternal_grand_mother_info_spouse: 'Paternal Grand Mother Spouse',
-    paternal_grand_father_info_spouse: 'Paternal Grand Father Spouse',
-    maternal_grand_mother_info_spouse: 'Maternal Grand Mother Spouse',
-    maternal_grand_father_info_spouse: 'Maternal Grand Father Spouse',
+    paternal_grand_mother_info: "Paternal Grandmother's",
+    paternal_grand_father_info: "Paternal Grandfather's",
+    maternal_grand_mother_info: "Maternal Grandmother's",
+    maternal_grand_father_info: "Maternal Grandfather's",
+    paternal_grand_mother_info_spouse: "Spouse's Paternal Grandmother's",
+    paternal_grand_father_info_spouse: "Spouse's Paternal Grandfather's",
+    maternal_grand_mother_info_spouse: "Spouse's Maternal Grandmother's",
+    maternal_grand_father_info_spouse: "Spouse's Maternal Grandfather's",
     father_in_law_info: 'Father In Law',
     mother_in_law_info: 'Father In Law',
   };
@@ -43,7 +43,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.name`}
-              placeholder={`Enter name of ${parentTypeName?.toLowerCase()}`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} name`}
               onChange={onChange}
               value={parentDetails?.name}
             />
@@ -55,7 +55,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.occupation`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s occupation`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} occupation`}
               onChange={onChange}
               value={parentDetails?.occupation}
             />
@@ -70,7 +70,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.annual_income`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s annual income`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} annual income`}
               onChange={onChange}
               value={parentDetails?.annual_income}
             />
@@ -82,7 +82,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.organization`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s organization`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} organization`}
               onChange={onChange}
               value={parentDetails?.organization}
             />
@@ -97,7 +97,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.age`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s age`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} age`}
               onChange={onChange}
               value={parentDetails?.age}
             />
@@ -113,7 +113,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="date"
               name={`${parentType}.dob`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s dob`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} dob`}
               onChange={onChange}
               value={parentDetails?.dob}
               max={moment().format("YYYY-MM-DD")}
@@ -130,7 +130,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.location`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s location`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} location`}
               onChange={onChange}
               value={parentDetails?.location}
             />
@@ -146,7 +146,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.designation`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s designation`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} designation`}
               onChange={onChange}
               value={parentDetails?.designation}
             />
@@ -162,7 +162,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.duration`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s duration`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} duration`}
               onChange={onChange}
               value={parentDetails?.duration}
             />
@@ -202,7 +202,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.monthly_salary`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s monthly salary`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} monthly salary`}
               onChange={onChange}
               value={parentDetails?.monthly_salary}
             />
@@ -242,7 +242,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.current_income_source`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()}'s current income source`}
+              placeholder={`Enter ${parentTypeName?.toLowerCase()} current income source`}
               onChange={onChange}
               value={parentDetails?.current_income_source}
             />

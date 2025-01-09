@@ -72,10 +72,6 @@ const BasicInputElements = withSwal((props: any) => {
     currentLimit,
     handleLimitChange,
     handleSearch,
-    isSearchApplied,
-    onClose,
-    onValueChange,
-    value,
   } = props;
 
   const isDataPresent = state && state.length > 0;
@@ -841,13 +837,7 @@ const BasicInputElements = withSwal((props: any) => {
               </div>
               {userRole == cre_tl_id || userRole == regional_manager_id || userRole == counsellor_tl_id ? (
                 <>
-                  <CustomSearchBox
-                    onSearch={handleSearch}
-                    isSearchApplied={isSearchApplied}
-                    onClose={onClose}
-                    value={value}
-                    onValueChange={onValueChange}
-                  />
+                  <CustomSearchBox onSearch={handleSearch} />
                   <Table
                     columns={columns}
                     data={records ? records : []}
@@ -872,15 +862,8 @@ const BasicInputElements = withSwal((props: any) => {
                 </>
               ) : (
                 <>
-                  {isDataPresent && (
-                    <CustomSearchBox
-                      onSearch={handleSearch}
-                      isSearchApplied={isSearchApplied}
-                      onClose={onClose}
-                      value={value}
-                      onValueChange={onValueChange}
-                    />
-                  )}
+                  <CustomSearchBox onSearch={handleSearch} />
+
                   <Table
                     columns={columns}
                     data={records ? records : []}
