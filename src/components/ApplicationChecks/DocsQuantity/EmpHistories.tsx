@@ -1,7 +1,5 @@
 import React from "react";
 import CardData from "./CardData";
-import { getFileName } from "../../../utils/formatData";
-import { FileWarning } from "lucide-react";
 import NoDoc from "../NoDoc";
 
 type Props = {
