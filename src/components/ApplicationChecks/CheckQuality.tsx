@@ -25,7 +25,7 @@ function CheckQuality({ label, checked, onChange, name, type, id }: Props) {
             marginRight: "12px",
           }}
         >
-          {/* <SvgType type={type} /> */}
+          <SvgType type={type} />
         </div>
         <span className="fw-medium fs-5">{label}</span>
         {checked ? (
