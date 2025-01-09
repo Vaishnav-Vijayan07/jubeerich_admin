@@ -2,16 +2,17 @@ import * as yup from "yup";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import Select, { ActionMeta, OptionsType } from "react-select";
+import Select from "react-select";
 import { withSwal } from "react-sweetalert2";
 import { AppDispatch } from "../../redux/store";
-import { addLeads, deleteLeads, getLead, getLeadAssigned, getLeadAssignedByCounsellorTL, updateLeads } from "../../redux/actions";
+import { addLeads, updateLeads } from "../../redux/actions";
 import {
-  baseUrl,
+  AUTH_SESSION_KEY,
   branch_counsellor_id,
   corporate_id_from_office,
   counsellor_id,
   counsellor_tl_id,
+  country_manager_id,
   cre_id,
   cre_tl_id,
   customStyles,
@@ -22,11 +23,8 @@ import {
   region_id,
   region_id_from_office,
   regional_manager_id,
-  showErrorAlert,
-  showSuccessAlert,
 } from "../../constants";
-import { examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
-import axios from "axios";
+import { initialState, initialValidationState, OptionType } from "./data";
 import moment from "moment";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -63,11 +61,10 @@ const LeadsModal = withSwal((props: any) => {
 
   const [sourceData, setSourceData] = useState<any>(source);
   const [channelData, setChannelData] = useState<any>(channels);
-  const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<OptionType[]>();
   const [selectedSource, setSelectedSource] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
-  // const [selectedFlag, setSelectedFlag] = useState<any>(null);
   const [selectedFlag, setSelectedFlag] = useState<any>(null);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<any>([]);
@@ -78,16 +75,24 @@ const LeadsModal = withSwal((props: any) => {
   const [selectedFranchisee, setSelectedFranchisee] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
-  const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
   const [selectExam, setSelectExam] = useState<boolean>(false);
-  const fileInputRef = useRef<any>(null);
   const [languageForm, setLanguageForm] = useState<any[]>([{ id: "", exam_type: "", marks: "" }]);
   const [formData, setFormData] = useState(initialState);
   const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [isOfficeDisable, setIsOfficeDisable] = useState<any>(false);
+
+  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  
+  let loggedUserCountries: any;
+  let role_id: any;
+  if (userInfo) {
+    let { countries, role } = JSON.parse(userInfo);
+    loggedUserCountries = countries;
+    role_id = role;
+  }
 
   const validationSchema = yup.object().shape({
     full_name: yup.string().min(3, 'Min 3 characters').max(100, 'Max 100 characters').required("Name is required"),
@@ -124,11 +129,6 @@ const LeadsModal = withSwal((props: any) => {
         }
         return schema.nullable();
       }),
-  });
-
-  const methods = useForm({
-    resolver: yupResolver(validationSchema), // Integrate yup with react-hook-form
-    defaultValues: initialState,
   });
 
   useEffect(() => {
@@ -195,6 +195,15 @@ const LeadsModal = withSwal((props: any) => {
       office_type: data?.value,
     }));
   };
+  
+  const formattedCountries = useMemo(() => {
+    if ([counsellor_id, country_manager_id].includes(role_id?.toString())) {
+      return country?.filter((data: any) => 
+        loggedUserCountries.includes(data?.value?.toString())
+      ) || [];
+    }
+    return country || [];
+  }, [country]);
 
   const handleUpdate = (item: any) => {
     //update source dropdown
@@ -301,7 +310,7 @@ const LeadsModal = withSwal((props: any) => {
     let countries: any;
 
     if (isUpdate) {
-      countries = selectedCountry.map((data: any) => data?.value);
+      countries = selectedCountry?.map((data: any) => data?.value);
     }
 
     let selectedFlagIds = selectedFlag?.map((data: any) => data?.value) || [];
@@ -728,7 +737,8 @@ const LeadsModal = withSwal((props: any) => {
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
                     name="preferred_country"
-                    options={country}
+                    // options={country}
+                    options={formattedCountries}
                     value={selectedCountry}
                     isMulti={isUpdate ? true : false} // Enable multi-select
                     onChange={handleDropDowns}
