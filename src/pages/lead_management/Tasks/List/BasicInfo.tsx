@@ -949,7 +949,7 @@ const BasicInfo = withSwal((props: any) => {
                   onChange={(e) => handleInputChange(e, "emergency_contact_relationship", "basic")}
                   value={basicInfo?.emergency_contact_relationship}
                 >
-                  <option value="">Select Primary Contact Relationship</option>
+                  <option value="" disabled>Select Primary Contact Relationship</option>
                   {primaryContactRelationships.map((type) => (
                     <option value={type.value} key={type.value}>
                       {type.label}
