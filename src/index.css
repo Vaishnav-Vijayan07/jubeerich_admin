@@ -754,3 +754,17 @@ select::-ms-expand {
   border-radius: 50%;
   background-color: #e0def8;
 }
+
+
+input::placeholder,
+textarea::placeholder {
+  color: rgb(171, 168, 168) !important; /* Change placeholder text color */
+  opacity: 0.3; /* Adjust transparency */
+  font-weight: 400 !important;
+}
+
+.react-select__placeholder.css-1wa3eu0-placeholder {
+  color: rgb(138, 135, 135) !important; /* Change placeholder text color */
+  opacity: 0.8; /* Adjust transparency */
+  font-weight: 400 !important;
+}
