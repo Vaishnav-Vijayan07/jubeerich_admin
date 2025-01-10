@@ -410,7 +410,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         if (res) {
           showSuccessAlert("Proceeded KYC Successfully");
           getTaskDetails();
-          getTaskList();
+          getTaskList(null, true);
         }
       }
     } catch (error) {
