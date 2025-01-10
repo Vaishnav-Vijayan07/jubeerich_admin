@@ -153,10 +153,10 @@ function EntryRequirementCheck({ current, handleStepChange, studentId, country_i
         <Card className="basic-card">
           <Card.Body>
             <Row className="mb-2">
-              {/* <div className="text-start mt-2 ps-1">
-                <h5 className="font-weight-bold text-danger">Qualifications:</h5> */}
+              <div className="text-start mt-2 ps-1">
+                <h5 className="font-weight-bold text-danger">Qualifications:</h5>
 
-              {/* {educationDetails?.length > 0 ? (
+              {educationDetails?.length > 0 ? (
                   educationDetails?.map((qual: any, index: number) => (
                     <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                       <p className="mb-1 font-15">
@@ -185,9 +185,9 @@ function EntryRequirementCheck({ current, handleStepChange, studentId, country_i
                   <div className="d-flex justify-content-center align-items-center border border-secondary mt-2 me-2">
                     <h4 className="text-muted">No Documents Uploaded</h4>
                   </div>
-                )} */}
+                )}
 
-              {/* <h5 className="font-weight-bold text-danger">Periods of Gap:</h5>
+              <h5 className="font-weight-bold text-danger">Periods of Gap:</h5>
 
                 {gapDetails?.length > 0 ? (
                   gapDetails?.map((gap: any, index: any) => (
@@ -212,8 +212,8 @@ function EntryRequirementCheck({ current, handleStepChange, studentId, country_i
                   <div className="d-flex justify-content-center align-items-center border border-secondary mt-2 me-2">
                     <h4 className="text-muted">No Documents Uploaded</h4>
                   </div>
-                )} */}
-              {/* </div> */}
+                )}
+              </div>
               <RequirementCheck data={eDetails} type={"Qualifications"} />
             </Row>
           </Card.Body>

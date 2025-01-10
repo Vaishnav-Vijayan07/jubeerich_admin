@@ -41,9 +41,9 @@ export function formatChangedFields(apiResponse: any[]) {
 export const formatString = (str: string) => {
   // Remove underscores, capitalize first character, and lowercase the rest
   return str
-    .replace(/_/g, " ") // Replace underscores with spaces
-    .toLowerCase() // Convert entire string to lowercase
-    .replace(/^\w/, (c: string) => c.toUpperCase()); // Capitalize the first character
+    ?.replace(/_/g, " ") // Replace underscores with spaces
+    ?.toLowerCase() // Convert entire string to lowercase
+    ?.replace(/^\w/, (c: string) => c.toUpperCase()); // Capitalize the first character
 };
 
 export const capitalizeFirstChar = (str: string) => {

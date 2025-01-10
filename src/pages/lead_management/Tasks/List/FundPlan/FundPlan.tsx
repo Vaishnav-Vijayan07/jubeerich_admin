@@ -77,7 +77,6 @@ const FundPlan = ({ student_id }: Props) => {
       type: { required: true },
       fund_origin: { required: true },
       has_min_6_months_backup: { required: true },
-      source_of_funds: { required: true },
       sponsor_name: { required: true },
       approx_annual_income: { required: true },
       itr_status: { required: true },
@@ -87,6 +86,8 @@ const FundPlan = ({ student_id }: Props) => {
       name_of_bank: { required: true },
     };
     const { isValid, errors } = validateFields(fundPlan, validationRules);
+
+    console.log("ERRRRRR",errors)
 
     if (!isValid) {
       // Ensure validation errors are displayed
