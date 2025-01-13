@@ -127,7 +127,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
             <div
               className="w-100 cursor-pointer"
               onClick={() => toggleItem(additionalDocs ? 0 : -1)}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer"}}
             >
               <Row className="w-100">
                 <Col md={12}>

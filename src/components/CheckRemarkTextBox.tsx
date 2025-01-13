@@ -43,6 +43,7 @@ const RemarksSection = ({ showRemark, remarks, saveRemark }: Props) => {
             <Col md={12} style={{ padding: "0px" }}>
               <Form.Group className="mb-3" controlId="remarksTextarea">
                 <FormInput
+                  className="remark-text-area"
                   labelClassName="ms-2"
                   name="remarks"
                   type="textarea"
