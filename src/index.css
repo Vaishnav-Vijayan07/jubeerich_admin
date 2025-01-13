@@ -315,11 +315,6 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-/* Hide increment and decrement arrows in Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
 .modal-calendar-width .modal-dialog {
   display: flex;
   justify-content: center;
@@ -931,12 +926,12 @@ select::-ms-expand {
   box-sizing: border-box;
   border-radius: 10px;
   background-color: #ffffff;
-  box-shadow: 0px 4px 38.2px 0px #0000001A;
+  box-shadow: 0px 4px 38.2px 0px #0000001a;
   padding: 15px;
-  height: 100%; /* Ensure equal height boxes */
+  height: auto;
   display: flex;
   flex-direction: column; /* Stack content */
-  justify-content: space-between; /* Spread out content */
+  justify-content: space-between;
 }
 
 .qualification-container {
@@ -953,6 +948,12 @@ select::-ms-expand {
   background-color: #f8f9fa;
 }
 
+.remark-text-area{
+  border-radius: 5px;
+  resize: none;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 38.2px 0px #0000001a;
+}
 
 input::placeholder,
 textarea::placeholder {

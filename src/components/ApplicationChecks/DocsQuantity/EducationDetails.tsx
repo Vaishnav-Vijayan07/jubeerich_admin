@@ -19,33 +19,31 @@ type GroupedEducationInfo = {
 
 // Props type for a component:
 type Props = {
-  EducationInfo: GroupedEducationInfo;
+  EducationInfo: Educationitem[];
 };
 
 function EducationDetails({ EducationInfo }: Props) {
-  if (!EducationInfo || Object.keys(EducationInfo).length === 0) return <NoDoc />;
+  if (!EducationInfo || EducationInfo.length === 0) return <NoDoc />;
 
   return (
     <>
-      {Object.entries(EducationInfo).map(([company, docs]) => (
-        <div key={company} className="mb-4">
-          <h3>{`${company} - ${docs[0]?.qualification} - ${docs[0]?.board_name}`}</h3>
+      {EducationInfo.map((docs: Educationitem) => (
+        <div key={docs.id} className="mb-4">
+          <h3>{`${docs?.school_name} - ${docs?.qualification} - ${docs?.board_name}`}</h3>
           <div className="row">
-            {docs.map((doc) => (
-              <div key={doc.id} className="row">
-                <div className="col-3 mb-1">
-                  <CardData type="Mark Sheet" folder="educationDocuments" filename={doc.mark_sheet} />
-                </div>
-
-                <div className="col-3 mb-1">
-                  <CardData type="Admit Card" folder="educationDocuments" filename={doc.admit_card} />
-                </div>
-
-                <div className="col-3 mb-1">
-                  <CardData type="Certificate" folder="educationDocuments" filename={doc.certificate} />
-                </div>
+            <div className="row">
+              <div className="col-3 mb-1">
+                <CardData type="Mark Sheet" folder="educationDocuments" filename={docs?.mark_sheet} />
               </div>
-            ))}
+
+              <div className="col-3 mb-1">
+                <CardData type="Admit Card" folder="educationDocuments" filename={docs?.admit_card} />
+              </div>
+
+              <div className="col-3 mb-1">
+                <CardData type="Certificate" folder="educationDocuments" filename={docs?.certificate} />
+              </div>
+            </div>
           </div>
         </div>
       ))}

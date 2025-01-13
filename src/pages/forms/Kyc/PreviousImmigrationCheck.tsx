@@ -15,6 +15,7 @@ import RemarksSection from "../../../components/CheckRemarkTextBox";
 import FormButtons from "./FormButtons";
 import CheckHeadings from "../../../components/CheckHeadings";
 import RequirementCheck from "../../../components/ApplicationChecks/RequirementCheck";
+import ImmigrationDetails from "../../../components/ApplicationChecks/DocsQuantity/ImmigrationDetails";
 
 function PreviousImmigrationCheck({ current, handleStepChange, studentId, country_id, application_id, type, eligibility_id }: any) {
   const dispatch = useDispatch();
@@ -156,109 +157,20 @@ function PreviousImmigrationCheck({ current, handleStepChange, studentId, countr
       <Row>
         <CheckHeadings title="Previous Immigration" />
       </Row>
-      {/* <Row className="mt-2">
-        <Card>
-          <Card.Body>
-            <Row className="ms-3 me-3">
-              <Row className="mt-2">
-                <span className="border bg-secondary rounded-2">
-                  <Form.Label className="fs-4 mt-1 text-white">Previous Visa Approval</Form.Label>
-                </span>
-                {visaApprovals?.length > 0 ? (
-                  visaApprovals.map((data: any, index: number) => (
-                    <Row key={index} className="ms-3">
-                      <Row className="mt-3">
-                        <Form.Group className="mb-2" controlId="country_name">
-                          <Form.Label>
-                            {`Country`} - {data?.approved_country?.country_name}
-                          </Form.Label>
-                        </Form.Group>
-                      </Row>
-                      <Row>
-                        <Form.Group className="mb-2" controlId="visa_type">
-                          <Form.Label>
-                            {`Visa Type`} - {formatVisaName(data?.visa_type)}
-                          </Form.Label>
-                        </Form.Group>
-                      </Row>
-                      <Row>
-                        <Col md={6} lg={6} xl={6} xxl={4}>
-                          <Form.Group className="mb-2" controlId="approved_letter">
-                            <Form.Label>Approved Letter</Form.Label>
-                            <FileDisplay fileName={data?.approved_letter} filePath={""} />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <hr className="mt-3" />
-                    </Row>
-                  ))
-                ) : (
-                  <div className="d-flex justify-content-center align-items-center border border-secondary mt-2 me-2">
-                    <h4 className="text-muted">No Documents Uploaded</h4>
-                  </div>
-                )}
-              </Row> 
-            </Row>
-          </Card.Body>
-        </Card>
-      </Row> */}
-      {/* <Row>
-        <Card>
-          <Card.Body>
-            <Row className="ms-3 me-3">
-              <Row className="mt-2">
-                <span className="border bg-secondary rounded-2">
-                  <Form.Label className="fs-4 mt-1 text-white">Previous Visa Declines</Form.Label>
-                </span>
-                {visaDeclines?.length > 0 ? (
-                  visaDeclines.map((data: any, index: number) => (
-                    <Row key={index} className="ms-3">
-                      <Row className="mt-3">
-                        <Form.Group className="mb-2" controlId="country_name">
-                          <Form.Label>
-                            {`Country`} - {data?.declined_country?.country_name}
-                          </Form.Label>
-                        </Form.Group>
-                      </Row>
-                      <Row>
-                        <Form.Group className="mb-2" controlId="visa_type">
-                          <Form.Label>
-                            {`Visa Type`} - {formatVisaName(data?.visa_type)}
-                          </Form.Label>
-                        </Form.Group>
-                      </Row>
-                      <Row>
-                        <Col md={6} lg={6} xl={6} xxl={4}>
-                          <Form.Group className="mb-1" controlId="declined_letter">
-                            <Form.Label>Declined Letter</Form.Label>
-                            <FileDisplay fileName={data?.declined_letter} filePath={""} />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <hr className="mt-3" />
-                    </Row>
-                  ))
-                ) : (
-                  <div className="d-flex justify-content-center align-items-center border border-secondary mt-2 me-2">
-                    <h4 className="text-muted">No Documents Uploaded</h4>
-                  </div>
-                )}
-              </Row> 
-            </Row>
-          </Card.Body>
-        </Card>
-      </Row> */}
+     
       <Row className="mt-2">
         <Card className="basic-card">
           <Card.Body>
-            <RequirementCheck type="Previous Visa Approvals" data={visaApprovals} />
+            <CheckHeadings  title="Previous Visa Approvals"/>
+            <ImmigrationDetails  VisaData={visaApprovals}/>
           </Card.Body>
         </Card>
       </Row>
       <Row className="mt-2">
         <Card className="basic-card">
           <Card.Body>
-            <RequirementCheck type="Previous Visa Declines" data={visaDeclines} />
+            <CheckHeadings  title="Previous Visa Declines"/>
+            <ImmigrationDetails VisaData={visaDeclines}/>
           </Card.Body>
         </Card>
       </Row>
