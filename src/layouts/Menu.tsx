@@ -148,7 +148,7 @@ const AppMenu = ({ menuItems }: AppMenuProps) => {
     return matchingMenuItem;
   }, [menuItems]);
 
-  // sets the active menu
+  // sets the
   useEffect(() => {
     const currentPath = location.pathname.replaceAll(process.env.PUBLIC_URL || "", "");
     const activeMenuItem = findActiveMenuItem(currentPath);
