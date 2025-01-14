@@ -16,32 +16,6 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 const App = () => {
-  const dispatch = useDispatch();
-  let userInfo = sessionStorage.getItem("jb_user");
-
-
-  const branch_id = useSelector((state: RootState) => state?.Branches?.branch_id);
-
-  const Branch = useSelector((state: RootState) => state?.Branches?.branches?.data);
-
-  useEffect(() => {
-    if (userInfo) {
-      // dispatch(getBranches());
-      // dispatch(getHistory());
-      // dispatch(getStatus());
-    }
-  }, []);
-
-  // useEffect(() => {
-  //   //Set branch id to session storage on initial render if there is no branch_id is in session storage
-  //   if (Branch) {
-  //     if (!branch_id) {
-  //       sessionStorage.setItem("branch_id", Branch[0]?.id);
-  //     }
-  //   }
-  //   dispatch(fetchBranchIdFromSessionStorage());
-  // }, [Branch]);
-
   return (
     <>
       <React.Fragment>

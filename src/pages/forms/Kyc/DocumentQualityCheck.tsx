@@ -8,7 +8,7 @@ import CheckHeadings from "../../../components/CheckHeadings";
 import CheckQuality from "../../../components/ApplicationChecks/CheckQuality";
 
 function DocumentQualityCheck({ studentId, country_id, current, handleStepChange, application_id, type, eligibility_id }: any) {
-  const { remarks, showRemark, saveRemark, isCheckPassed, localData, qualityForm, setQualityForm } = useRemarks({
+  const { remarks, showRemark, saveRemark, isCheckPassed, localData, qualityForm, setQualityForm,remark, setRemark } = useRemarks({
     type,
     application_id,
     eligibility_id,
@@ -24,6 +24,10 @@ function DocumentQualityCheck({ studentId, country_id, current, handleStepChange
       [name]: checked,
     }));
   };
+
+  const onRemarkChange = (value: string)=>{
+    setRemark(value);
+  }
 
   const handleDivClickForCheck = (type: "formatting" | "clarity" | "scanning") => {
     const cbox = document.getElementById(type) as HTMLInputElement;
@@ -75,7 +79,7 @@ function DocumentQualityCheck({ studentId, country_id, current, handleStepChange
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
+      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark}  onRemarkChange={onRemarkChange}/>
       <FormButtons
         type={type}
         current={current}
@@ -87,6 +91,8 @@ function DocumentQualityCheck({ studentId, country_id, current, handleStepChange
         remarks={remarks}
         qualityForm={qualityForm}
         localData={localData}
+        remark={remark}
+        eligibility_id={eligibility_id}
       />
     </>
   );

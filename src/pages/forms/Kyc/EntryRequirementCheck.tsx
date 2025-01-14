@@ -27,6 +27,13 @@ function EntryRequirementCheck({ current, handleStepChange, studentId, country_i
   const [educationDetails, setEducationDetails] = useState<any>([]);
   const [graduationDetails, setGraduationDetails] = useState<any>([]);
   const [gapDetails, setGapDetails] = useState<any>([]);
+  const [remark, setRemark] = useState<string>("");
+
+
+
+  const onRemarkChange = (value:string)=>{
+    setRemark(value); 
+  }
 
   const fetchEducationalCheck = async () => {
     try {
@@ -193,7 +200,7 @@ function EntryRequirementCheck({ current, handleStepChange, studentId, country_i
         </Card>
       </Row>
 
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
+      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} onRemarkChange={onRemarkChange} />
       <FormButtons
         type={type}
         current={current}
@@ -203,6 +210,8 @@ function EntryRequirementCheck({ current, handleStepChange, studentId, country_i
         country_id={country_id}
         application_id={application_id}
         remarks={remarks}
+        remark={remark}
+        eligibility_id={eligibility_id}
       />
     </>
   );

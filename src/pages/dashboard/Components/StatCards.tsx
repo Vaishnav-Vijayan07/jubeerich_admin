@@ -19,18 +19,12 @@ function StatCards({ statCardsItems }: Props) {
   return (
     <>
       <Row className="justify-content-between">
-  {statCardsItems.map((item) => (
-    <Col mx={1} key={item.id} className="mb-3">
-      <IconCards
-        title={capitalizeFirstChar(item.title)}
-        stats={item.stats}
-        icon={item.icon}
-        bgColor={item.bgColor}
-      />
-    </Col>
-  ))}
-</Row>
-
+        {statCardsItems.map((item) => (
+          <Col mx={1} key={item.id} className="mb-3">
+            <IconCards title={capitalizeFirstChar(item.title)} stats={item.stats} icon={item.icon} bgColor={item.bgColor} />
+          </Col>
+        ))}
+      </Row>
     </>
   );
 }
