@@ -31,6 +31,11 @@ function ApplicationFeeCheck({
   const [showRemark, setShowRemark] = useState<boolean>(false);
   const [isCheckPassed, setIsCheckPassed] = useState<boolean>(false);
   const [applicaiton_reciept, setApplicationReciept] = useState<string>("");
+  const [remark, setRemark] = useState<string>("");
+
+  const onRemarkChange = (value: string) => {
+    setRemark(value);
+  };
 
   const dispatch = useDispatch();
 
@@ -67,7 +72,7 @@ function ApplicationFeeCheck({
     }
   };
 
-  const viewReceipt = (applicaiton_reciept:string) => {
+  const viewReceipt = (applicaiton_reciept: string) => {
     window.open(`${baseUrl}/uploads/application_receipts/${applicaiton_reciept}`, "_blank");
   };
 
@@ -118,7 +123,7 @@ function ApplicationFeeCheck({
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
+      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} onRemarkChange={onRemarkChange} />
       <FormButtons
         type={type}
         current={current}
@@ -129,6 +134,8 @@ function ApplicationFeeCheck({
         application_id={application_id}
         remarks={remarks}
         successNavigate={successNavigate}
+        remark ={remark}
+        eligibility_id = {eligibility_id}
       />
     </>
   );

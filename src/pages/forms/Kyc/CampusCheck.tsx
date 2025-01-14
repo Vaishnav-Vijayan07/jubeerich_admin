@@ -16,11 +16,15 @@ const styles = {
 };
 
 function CampusCheck({ current, handleStepChange, student_id, country_id, application_id, type, eligibility_id }: any) {
-  const { data, remarks, showRemark, saveRemark } = useRemarks({
+  const { data, remarks, showRemark, saveRemark,remark,setRemark } = useRemarks({
     type,
     application_id,
     eligibility_id,
   });
+
+  const onRemarkChange = (value: string) => {
+    setRemark(value);
+  };
 
   return (
     <>
@@ -39,7 +43,7 @@ function CampusCheck({ current, handleStepChange, student_id, country_id, applic
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
+      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} onRemarkChange={onRemarkChange} />
       <FormButtons
         type={type}
         current={current}
@@ -49,6 +53,8 @@ function CampusCheck({ current, handleStepChange, student_id, country_id, applic
         country_id={country_id}
         application_id={application_id}
         remarks={remarks}
+        remark = {remark}
+        eligibility_id = {eligibility_id}
       />
     </>
   );
