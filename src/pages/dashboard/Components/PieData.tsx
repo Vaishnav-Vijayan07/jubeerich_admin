@@ -54,7 +54,7 @@ function PieData({ labels, pieSeries }: Props) {
   };
 
   return (
-    <Card>
+    <Card className="h-100">
       <Card.Body>
         <Chart options={options} series={pieSeries} type="donut" height={350} />
       </Card.Body>
