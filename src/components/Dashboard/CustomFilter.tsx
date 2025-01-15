@@ -1,8 +1,8 @@
 import React, { memo, useState } from "react";
 import { Card, Form, Row, Col, Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { getDashboard } from "../redux/actions";
-import { getWeeklyDateRange } from "../utils/date_helpers";
+import { getDashboard } from "../../redux/actions";
+import { getWeeklyDateRange } from "../../utils/date_helpers";
 
 const styles: any = {
   filterItem: (isSelected: any) => ({
@@ -22,6 +22,7 @@ const styles: any = {
 
 const CustomFilter = ({
   filterType,
+  setValue,
   setFilterType,
   selectedYear,
   setSelectedYear,
@@ -35,6 +36,8 @@ const CustomFilter = ({
   setCustomEndDate,
   filters,
   handleFilter,
+  currentCountry,
+  setCurrentCountry
 }: any) => {
   const dispatch = useDispatch();
   const [selectedWeek, setSelectedWeek] = useState<string>("");
@@ -42,8 +45,6 @@ const CustomFilter = ({
   const handleFilterApplyClick = (type: any) => {
     setFilterType(type);
   };
-
-  // Get the week number for a given date
 
   const handleFilterApply = (filterType: any) => {
     handleFilter(filterType);
@@ -55,8 +56,9 @@ const CustomFilter = ({
     setSelectedMonth((new Date().getMonth() + 1).toString());
     setSelectedDate("");
     setCustomStartDate("");
+    setCurrentCountry(1)
     setCustomEndDate("");
-    dispatch(getDashboard());
+    dispatch(currentCountry ? getDashboard({ country_id: 1 }) : getDashboard());
   };
 
   // Handle date selection and automatically set week

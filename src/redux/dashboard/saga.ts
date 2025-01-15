@@ -17,13 +17,14 @@ interface DashBoard {
     month?: string;
     fromDate?: string;
     toDate?: string;
+    country_id?: string | number
   };
   type: string;
 }
 
-function* getDashboard({ payload: { filterType, year, month, fromDate, toDate } }: DashBoard): SagaIterator {
+function* getDashboard({ payload: { filterType, year, month, fromDate, toDate,country_id } }: DashBoard): SagaIterator {
   try {
-    const response = yield call(getDashboardApi, filterType, year, month, fromDate, toDate);
+    const response = yield call(getDashboardApi, filterType, year, month, fromDate, toDate,country_id);
     const data = response.data;
 
     // NOTE - You can change this according to response format from your api
