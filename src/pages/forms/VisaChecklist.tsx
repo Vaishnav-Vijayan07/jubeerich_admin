@@ -16,6 +16,7 @@ import {
   addChannel,
   addVisaChecklist,
   deleteChannel,
+  deleteVisaChecklist,
   getChannel,
   getVisaChecklist,
   updateChannel,
@@ -72,7 +73,6 @@ const fieldTypeOptions = [
   { value: "checkbox", label: "Checkbox" },
   { value: "textarea", label: "Textarea" },
   { value: "radio", label: "Radio" },
-  { value: "file", label: "File Upload" },
   { value: "select", label: "Dropdown" },
 ];
 
@@ -136,7 +136,7 @@ const BasicInputElements = withSwal((props: any) => {
       })
       .then((result: any) => {
         if (result.isConfirmed) {
-          dispatch(deleteChannel(id));
+          dispatch(deleteVisaChecklist(id));
           if (isUpdate) {
             setFormData(initialState);
           }
@@ -230,6 +230,15 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Field name and type",
       accessor: "",
       sort: false,
+      Cell: ({ row }: any) => (
+        <ul style={{ listStyle: "none" }}>
+          {row.original.fields?.map((item: any) => (
+            <li>
+              {item?.field_name} - {item?.field_type}
+            </li>
+          ))}
+        </ul>
+      ),
     },
     {
       Header: "Actions",

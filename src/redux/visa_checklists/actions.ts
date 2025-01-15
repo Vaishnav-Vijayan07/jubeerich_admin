@@ -60,7 +60,7 @@ export const updateVisaCheklist = (id: string, step_name: string, description: s
   },
 });
 
-export const deleteVisaChecklist = (itemId: string, status_id: string | undefined): VisaChecklistActionType => ({
+export const deleteVisaChecklist = (id: string): VisaChecklistActionType => ({
   type: VisaChecklistActionTypes.DELETE_VISA_CHECKLIST,
-  payload: { itemId, status_id },
+  payload: { id },
 });
