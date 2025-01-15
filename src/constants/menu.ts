@@ -226,6 +226,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         url: "/settings/master/franchise",
         parentKey: "master",
       },
+      {
+        key: "visa_checklists",
+        label: "Visa Checklists",
+        url: "/settings/master/visa_checklists",
+        parentKey: "master",
+      },
     ],
   },
 

@@ -49,6 +49,7 @@ const KycDetails = React.lazy(() => import("../pages/forms/KycDetails"));
 const PendingDetails = React.lazy(() => import("../pages/forms/Kyc/PendingDetails"));
 const PendingDetailsByID = React.lazy(() => import("../pages/forms/Kyc/PendingDetailsById"));
 const PortalDetails = React.lazy(() => import("../pages/forms/Kyc/PortDetails"));
+const VisaCheckLists = React.lazy(() => import("../pages/forms/VisaChecklist"));
 
 const SubmittedDetails = React.lazy(() => import("../pages/forms/Kyc/SubmittedApplication"));
 
@@ -479,9 +480,14 @@ const settingsRoutes = {
           name: "Checklists",
           // element: <CheckLists />,
           element: <PrivateRoute roles={["Monitor"]} component={CheckLists} />,
-
           route: PrivateRoute,
         },
+        {
+          path: "/settings/master/visa_checklists",
+          name: "Visa Checklists",
+          element: <PrivateRoute roles={["Monitor"]} component={VisaCheckLists} />,
+          route: PrivateRoute,
+        }, 
         {
           path: "/settings/status/status_config",
           name: "Status Config",
