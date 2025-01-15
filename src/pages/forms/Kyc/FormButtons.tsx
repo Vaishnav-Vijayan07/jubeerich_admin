@@ -2,7 +2,7 @@ import axios from "axios";
 import React from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import Swal from "sweetalert2";
-import { showSuccessAlert } from "../../../constants";
+import { showErrorAlert, showSuccessAlert, showWarningAlert } from "../../../constants";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const CheckTypes = {
@@ -25,8 +25,10 @@ function FormButtons({
   country_id,
   application_id,
   remarks,
+  remark,
   qualityForm,
   localData,
+  eligibility_id,
 }: any) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -36,14 +38,32 @@ function FormButtons({
   };
 
   const rejectApplication = async (id: any) => {
+    console.log("REMARKK", remark);
+    console.log("REMARKK", remarks);
+
+    let remarksModified = "";
+
+    const isRejectionSaveRequired = remarks !== remark;
+
+    if (remark == "") {
+      return showWarningAlert("Please enter remarks for rejection");
+    }
+    if (!remarks || isRejectionSaveRequired) {
+      const isRemarkUpdated = await saveRemark(remark);
+      if (!isRemarkUpdated) {
+        return showErrorAlert("Something went wrong while saving remark");
+      }
+      remarksModified = `${remark}-Rejected from ${searchParams.get("step")}`;
+    } else {
+      remarksModified = `${remarks}-Rejected from ${searchParams.get("step")}`;
+    }
+
     let payload = {
       student_id: student_id,
-      remarks: `${remarks}-Rejected from ${searchParams.get("step")}`,
+      remarks: remarksModified,
       application_id: application_id,
       assigned_country_id: country_id,
     };
-
-    console.log("payload", payload);
 
     try {
       const result = await Swal.fire({
@@ -69,6 +89,19 @@ function FormButtons({
   };
 
   console.log("isCheckPassed", isCheckPassed);
+
+  const saveRemark = async (value: string) => {
+    try {
+      const { data } = await axios.post(`/checks_remarks/${type}/${application_id}`, {
+        remarks: value === "" ? null : value,
+        eligibility_id,
+      });
+      return data;
+    } catch (error) {
+      console.error("Error saving remark:", error);
+      return null;
+    }
+  };
 
   const handleNext = async () => {
     const isChangeDetectionNeeded = type === "quality" && checkChangeInData();

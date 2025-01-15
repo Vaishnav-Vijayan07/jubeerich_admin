@@ -67,8 +67,7 @@ const PendingDetailsById = withSwal((props: any) => {
       course_name: item?.studyPreferDetails?.preferred_courses?.course_name || "N/A",
       office_type_name: item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.office_type_name?.office_type_name || "N/A",
       source_name: item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.source_name?.source_name || "N/A",
-      lead_received_date:
-        moment(item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.lead_received_date).format("DD-MM-YYYY") || "N/A",
+      lead_received_date: moment(item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.lead_received_date).format("DD-MM-YYYY") || "N/A",
       date: "2021-01-12 18:30:00",
       assigned_by: "Counsellor",
       assign_type: item?.studyPreferDetails?.studyPreference?.userPrimaryInfo?.assign_type || "N/A",

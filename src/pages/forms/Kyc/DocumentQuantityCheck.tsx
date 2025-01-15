@@ -17,6 +17,8 @@ import FundDetails from "../../../components/ApplicationChecks/DocsQuantity/Fund
 import NoDoc from "../../../components/ApplicationChecks/NoDoc";
 import VisaDeclineDetails from "../../../components/ApplicationChecks/DocsQuantity/VisaDecline";
 import AdditionalDocs from "../../../components/ApplicationChecks/DocsQuantity/AdditionalDocs";
+import GraduationDetails from "../../../components/ApplicationChecks/DocsQuantity/GraduationInfo";
+import GapDocs from "../../../components/ApplicationChecks/DocsQuantity/GapDocs";
 
 const PersonIcon = () => (
   <svg width="23" height="24" viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -39,7 +41,7 @@ const PersonIcon = () => (
 );
 
 function DocumentQuantityCheck({ current, handleStepChange, studentId, country_id, application_id, type, eligibility_id }: any) {
-  const { isCheckPassed, remarks, showRemark, saveRemark } = useRemarks({
+  const { isCheckPassed, remarks, showRemark, saveRemark, remark, setRemark } = useRemarks({
     type,
     application_id,
     eligibility_id,
@@ -50,13 +52,20 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
   const [policeDocs, setPoliceDocs] = useState<any>(null);
   const [fundPlan, setFundPlan] = useState<any>([]);
   const [examDocs, setExamDocs] = useState<any>([]);
+  const [educationGaps, setEducationGaps] = useState<any>([]);
+  const [workGaps, setWorkGaps] = useState<any>([]);
   const [visaDeclines, setVisaDeclines] = useState<any>([]);
   const [visaApprovals, setVisaApprovals] = useState<any>([]);
   const [workInfoDocs, setWorkInfoDocs] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [educationDocs, setEducationDocs] = useState<any>([]);
+  const [graduationDocs, setGraduationDocs] = useState<any>([]);
   const [additionalDocs, setAdditionalDocs] = useState<any>(null);
   const [notFound, setNotFound] = useState<any>(false);
+
+  const onRemarkChange = (value: string) => {
+    setRemark(value);
+  };
 
   const fetchAllDocs = async () => {
     try {
@@ -70,10 +79,13 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
         setVisaDeclines(result?.data?.data?.previousVisaDeclines);
         setVisaApprovals(result?.data?.data?.previousVisaApprovals);
         setExamDocs(result?.data?.data?.exams);
+        setEducationGaps(result?.data?.educationGaps);
+        setWorkGaps(result?.data?.workGaps);
         setPoliceDocs(result?.data?.data?.basic_info_details?.police_clearance_docs);
-        setWorkInfoDocs(result?.data?.workInfo);
+        setWorkInfoDocs(result?.data?.data?.userWorkInfos);
         setFundPlan(result?.data?.data?.fundPlan);
-        setEducationDocs(result?.data?.educationInfo);
+        setEducationDocs(result?.data?.data?.educationDetails);
+        setGraduationDocs(result?.data?.data?.graduationDetails);
         setIsLoading(false);
       }
     } catch (error) {
@@ -116,11 +128,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
       <Row className="mt-2">
         <Card className="basic-card">
           <Card.Body className="p-0">
-            <div
-              className="w-100 cursor-pointer"
-              onClick={() => toggleItem(additionalDocs ? 0 : -1)}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="w-100 cursor-pointer" onClick={() => toggleItem(additionalDocs ? 0 : -1)} style={{ cursor: "pointer" }}>
               <Row className="w-100">
                 <Col md={12}>
                   <div className="d-flex justify-content-between align-items-center p-2">
@@ -234,7 +242,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
       <Row className="mt-2">
         <Card className="basic-card">
           <Card.Body className="p-0">
-            <div className="w-100 cursor-pointer" onClick={() => toggleItem(fundPlan.length == 0 ? -1 : 3)} style={{ cursor: "pointer" }}>
+            <div className="w-100 cursor-pointer" onClick={() => toggleItem(fundPlan?.length == 0 ? -1 : 3)} style={{ cursor: "pointer" }}>
               <Row className="w-100">
                 <Col md={12}>
                   <div className="d-flex justify-content-between align-items-center p-2">
@@ -276,7 +284,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
           <Card.Body className="p-0">
             <div
               className="w-100 cursor-pointer"
-              onClick={() => toggleItem(Object.keys(educationDocs).length == 0 ? -1 : 4)}
+              onClick={() => toggleItem(educationDocs?.length == 0 && graduationDocs?.length == 0 ? -1 : 4)}
               style={{ cursor: "pointer" }}
             >
               <Row className="w-100">
@@ -287,7 +295,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
                       <span style={{ fontSize: "14px", fontWeight: 500 }}>Education Details</span>
                     </div>
                     <div className="me-3">
-                      {Object.keys(educationDocs).length == 0 ? (
+                      {educationDocs?.length == 0 && graduationDocs?.length == 0 ? (
                         <NoDoc />
                       ) : activeId === 4 ? (
                         <i className="fas fa-chevron-up"></i>
@@ -308,6 +316,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
                 }}
               >
                 <EducationDetails EducationInfo={educationDocs || []} />
+                <GraduationDetails GraduationInfo={graduationDocs || []} />
               </div>
             )}
           </Card.Body>
@@ -318,11 +327,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
       <Row className="mt-2">
         <Card className="basic-card">
           <Card.Body className="p-0">
-            <div
-              className="w-100 cursor-pointer"
-              onClick={() => toggleItem(Object.keys(workInfoDocs)?.length == 0 ? -1 : 5)}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="w-100 cursor-pointer" onClick={() => toggleItem(workInfoDocs?.length == 0 ? -1 : 5)} style={{ cursor: "pointer" }}>
               <Row className="w-100">
                 <Col md={12}>
                   <div className="d-flex justify-content-between align-items-center p-2">
@@ -331,7 +336,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
                       <span style={{ fontSize: "14px", fontWeight: 500 }}>Work Experiences</span>
                     </div>
                     <div className="me-3">
-                      {Object.keys(workInfoDocs)?.length == 0 ? (
+                      {workInfoDocs?.length == 0 ? (
                         <NoDoc />
                       ) : activeId === 5 ? (
                         <i className="fas fa-chevron-up"></i>
@@ -358,11 +363,56 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
         </Card>
       </Row>
 
+      {/* Gap Documents */}
+      <Row className="mt-2">
+        <Card className="basic-card">
+          <Card.Body className="p-0">
+            <div
+              className="w-100 cursor-pointer"
+              onClick={() => toggleItem(educationGaps?.length == 0 && workGaps?.length == 0 ? -1 : 9)}
+              style={{ cursor: "pointer" }}
+            >
+              <Row className="w-100">
+                <Col md={12}>
+                  <div className="d-flex justify-content-between align-items-center p-2">
+                    <div className="d-flex gap-1 align-items-center">
+                      <PersonIcon />
+                      <span style={{ fontSize: "14px", fontWeight: 500 }}>Gap Documents</span>
+                    </div>
+                    <div className="me-3">
+                      {educationGaps?.length == 0 && workGaps?.length == 0 ? (
+                        <NoDoc />
+                      ) : activeId === 9 ? (
+                        <i className="fas fa-chevron-up"></i>
+                      ) : (
+                        <i className="fas fa-chevron-down"></i>
+                      )}
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+
+            {activeId === 9 && (
+              <div
+                className="p-3 border-top"
+                style={{
+                  transition: "all 0.3s ease-in-out",
+                }}
+              >
+                <GapDocs GapInfo={educationGaps || []} type="Education" />
+                <GapDocs GapInfo={workGaps || []} type="Work" />
+              </div>
+            )}
+          </Card.Body>
+        </Card>
+      </Row>
+
       {/* Exam Data */}
       <Row className="mt-2">
         <Card className="basic-card">
           <Card.Body className="p-0">
-            <div className="w-100 cursor-pointer" onClick={() => toggleItem(examDocs.length == 0 ? -1 : 6)} style={{ cursor: "pointer" }}>
+            <div className="w-100 cursor-pointer" onClick={() => toggleItem(examDocs?.length == 0 ? -1 : 6)} style={{ cursor: "pointer" }}>
               <Row className="w-100">
                 <Col md={12}>
                   <div className="d-flex justify-content-between align-items-center p-2">
@@ -371,7 +421,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
                       <span style={{ fontSize: "14px", fontWeight: 500 }}>Exam Details</span>
                     </div>
                     <div className="me-3">
-                      {examDocs.length == 0 ? (
+                      {examDocs?.length == 0 ? (
                         <NoDoc />
                       ) : activeId === 6 ? (
                         <i className="fas fa-chevron-up"></i>
@@ -466,7 +516,7 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
         </Card>
       </Row>
 
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
+      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} onRemarkChange={onRemarkChange} />
       <FormButtons
         type={type}
         current={current}
@@ -476,6 +526,8 @@ function DocumentQuantityCheck({ current, handleStepChange, studentId, country_i
         country_id={country_id}
         application_id={application_id}
         remarks={remarks}
+        remark={remark}
+        eligibility_id={eligibility_id}
       />
     </>
   );

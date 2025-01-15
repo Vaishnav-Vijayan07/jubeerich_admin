@@ -3,7 +3,7 @@ import { Card, Col, Row } from "react-bootstrap";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import Filters from "./Filters";
-import CustomFilter from "../../../components/CustomFilter";
+import CustomFilter from "../../../components/Dashboard/CustomFilter";
 
 type Props = {
   categories: string[];
@@ -56,7 +56,7 @@ function StackGraph({ categories, series }: Props) {
     fill: {
       opacity: 1,
     },
-    colors: ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
+    colors: ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e","#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e","#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
   };
 
   return (

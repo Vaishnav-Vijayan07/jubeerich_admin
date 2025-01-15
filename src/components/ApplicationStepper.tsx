@@ -1,6 +1,7 @@
 import React from "react";
 import { Check } from "lucide-react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { showWarningAlert } from "../constants";
 
 type StepperDataItem = {
   label: string;
@@ -10,11 +11,12 @@ type StepperDataItem = {
 type StepperData = StepperDataItem[];
 
 type Props = {
-  steps:StepperData;
+  steps: StepperData;
   current: number;
 };
 
 const ApplicationStepper = ({ steps, current }: Props) => {
+
   return (
     <div className="p-1">
       <div className="row d-flex gap-3 ">
@@ -22,7 +24,7 @@ const ApplicationStepper = ({ steps, current }: Props) => {
           <div
             key={index}
             className={`col d-flex flex-column align-items-center position-relative border ${current == index ? "opacity-100" : "opacity-25"} `}
-            style={{width:"158px",height:"82px", borderColor: "#e9ecef", backgroundColor: "#6657dd", borderRadius: "5px", padding: " 10px" }}
+            style={{ width: "158px", height: "82px", borderColor: "#e9ecef", backgroundColor: "#6657dd", borderRadius: "5px", padding: " 10px" }}
           >
             {/* Circle with tick */}
             <div

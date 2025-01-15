@@ -13,6 +13,7 @@ interface UseRemarksProps {
 export const useRemarks = ({ type, application_id, eligibility_id }: UseRemarksProps) => {
   const [data, setData] = useState<any>(null);
   const [remarks, setRemarks] = useState<string>("");
+  const [remark, setRemark] = useState<string>("");
   const [showRemark, setShowRemark] = useState<boolean>(false);
   const [isCheckPassed, setIsCheckPassed] = useState<boolean>(false);
   const [localData, setLocalData] = useState<any>({
@@ -42,6 +43,7 @@ export const useRemarks = ({ type, application_id, eligibility_id }: UseRemarksP
     }
   };
 
+  
   const saveRemark = async (value: string) => {
     try {
       await axios.post(`/checks_remarks/${type}/${application_id}`, {
@@ -66,6 +68,8 @@ export const useRemarks = ({ type, application_id, eligibility_id }: UseRemarksP
     isCheckPassed,
     localData,
     qualityForm,
-    setQualityForm
+    setQualityForm,
+    remark,
+    setRemark
   };
 };

@@ -3,6 +3,8 @@ import { DashboardActionTypes } from "./constants";
 
 const INIT_STATE = {
   dashboard: [],
+  countries : [],
+  countryWiseLoading : false,
   loading: false,
   error: {},
   success: false,
@@ -53,7 +55,7 @@ interface DashboardActionType {
   type: DashboardActionTypes.API_RESPONSE_SUCCESS | DashboardActionTypes.API_RESPONSE_ERROR | DashboardActionTypes.GET_DASHBOARD;
   payload: {
     actionType?: string;
-    data?: DashboardData | {};
+    data?: any;
     error?: string;
   };
 }
@@ -69,9 +71,11 @@ const Dashboard = (state: State = INIT_STATE, action: DashboardActionType): any 
     case DashboardActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
         case DashboardActionTypes.GET_DASHBOARD: {
+          console.log("ACTION",action.payload.data)
           return {
             ...state,
             dashboard: action.payload.data,
+            countries: action.payload.data.countries,
             loading: false,
           };
         }

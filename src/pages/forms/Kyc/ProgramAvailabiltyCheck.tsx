@@ -10,20 +10,16 @@ const styles = {
   p: { fontWeight: "500px", fontSize: "14px" },
 };
 
-function ProgramAvailabiltyCheck({
-  current,
-  handleStepChange,
-  student_id,
-  country_id,
-  application_id,
-  type,
-  eligibility_id,
-}: any) {
-  const { data, remarks, showRemark, saveRemark } = useRemarks({
+function ProgramAvailabiltyCheck({ current, handleStepChange, student_id, country_id, application_id, type, eligibility_id }: any) {
+  const { data, remarks, showRemark, saveRemark, remark, setRemark } = useRemarks({
     type,
     application_id,
     eligibility_id,
   });
+
+  const onRemarkChange = (value: string) => {
+    setRemark(value);
+  };
 
   return (
     <>
@@ -34,22 +30,22 @@ function ProgramAvailabiltyCheck({
         <Card className="basic-card">
           <Card.Body>
             <Row>
-              <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col" >
+              <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
                 <h5 style={styles?.h5}>Country</h5>
                 <p style={styles?.p}>{data?.country_name || "N/A"}</p>
               </Col>
 
-              <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col" >
+              <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
                 <h5 style={styles?.h5}>University</h5>
                 <p style={styles?.p}>{data?.university_name || "N/A"}</p>
               </Col>
 
-              <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col" >
+              <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
                 <h5 style={styles?.h5}>Intake applying for</h5>
                 <p style={styles?.p}>{data?.intake_applying_for || "N/A"}</p>
               </Col>
 
-              <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col" >
+              <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
                 <h5 style={styles?.h5}>Course Link</h5>
                 <p style={styles?.p}>
                   <a href={data?.course_link} target="_blank" rel="noopener noreferrer">
@@ -58,7 +54,7 @@ function ProgramAvailabiltyCheck({
                 </p>
               </Col>
 
-              <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col" >
+              <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
                 <h5 style={styles?.h5}>Stream</h5>
                 <p style={styles?.p}>{data?.stream_name}</p>
               </Col>
@@ -72,7 +68,7 @@ function ProgramAvailabiltyCheck({
         </Card>
       </Row>
 
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} />
+      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} onRemarkChange={onRemarkChange} />
 
       <FormButtons
         type={type}
@@ -83,6 +79,8 @@ function ProgramAvailabiltyCheck({
         country_id={country_id}
         application_id={application_id}
         remarks={remarks}
+        remark={remark}
+        eligibility_id = {eligibility_id}
       />
     </>
   );

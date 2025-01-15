@@ -7,22 +7,39 @@ interface Props {
   showRemark?: boolean;
   remarks?: string;
   saveRemark?: (value: string) => void;
+  onRemarkChange?: (value: string) => void;
 }
 
-const RemarksSection = ({ showRemark, remarks, saveRemark }: Props) => {
+const RemarksSection = ({ showRemark, remarks, saveRemark, onRemarkChange }: Props) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [remark, setRemark] = useState<string>("");
 
   const handleEdit = () => {
     setIsEdit(!isEdit);
     setRemark(remarks || "");
+
+    if (onRemarkChange) {
+      onRemarkChange(remarks || "");
+    }
   };
+
+  const handleRemarkChange = (value: string) => {
+    setRemark(value);
+    if (onRemarkChange) {
+      onRemarkChange(value);
+    }
+  };
+
   const handleSave = () => {
     if (saveRemark) {
       saveRemark(remark);
     }
     setIsEdit(false);
     setRemark("");
+
+    if (onRemarkChange) {
+      onRemarkChange("");
+    }
   };
 
   return (
@@ -31,10 +48,7 @@ const RemarksSection = ({ showRemark, remarks, saveRemark }: Props) => {
         <Col md={3}>
           <div className="d-flex align-items-center">
             <h5 className="me-2">Remark</h5>
-            <i
-              className={classNames("mdi", isEdit ? "mdi-close" : "mdi-pencil", "font-18 text-primary edit-icon")}
-              onClick={handleEdit}
-            ></i>
+            <i className={classNames("mdi", isEdit ? "mdi-close" : "mdi-pencil", "font-18 text-primary edit-icon")} onClick={handleEdit}></i>
           </div>
           <p>{remarks}</p>
         </Col>
@@ -43,12 +57,13 @@ const RemarksSection = ({ showRemark, remarks, saveRemark }: Props) => {
             <Col md={12} style={{ padding: "0px" }}>
               <Form.Group className="mb-3" controlId="remarksTextarea">
                 <FormInput
+                  className="remark-text-area"
                   labelClassName="ms-2"
                   name="remarks"
                   type="textarea"
                   rows="6"
                   value={remark}
-                  onChange={(e) => setRemark(e.target?.value)}
+                  onChange={(e) => handleRemarkChange(e.target?.value)}
                 />
               </Form.Group>
             </Col>
