@@ -389,14 +389,11 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         return showErrorAlert("Please choose a prefered country");
       }
 
-      console.log('basicData?.studyPreferences',basicData?.studyPreferences);
-      
-
       let payload = {
         student_id: studentId,
         task_id: taskId,
         assigned_country: taskDetails?.assigned_country,
-        study_pref_id: taskDetails.is_rejected ? basicData?.studyPreferences?.[0]?.id : null,
+        study_pref_id: taskDetails.is_rejected ? taskDetails?.study_preference_detail_id : null,
       };
 
       const result = await swal.fire({
