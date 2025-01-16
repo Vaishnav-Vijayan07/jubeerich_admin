@@ -50,7 +50,7 @@ function StackGraph({ categories, series }: Props) {
       // tickPlacement: "on",
     },
     legend: {
-      position: "top",
+      position: "right",
       horizontalAlign: "center",
     },
     fill: {
@@ -60,10 +60,10 @@ function StackGraph({ categories, series }: Props) {
   };
 
   return (
-    <Card style={{ minHeight: "500px" }}>
+    <Card className="h-100">
       <Card.Body>
         {isDataPresent ? (
-          <Chart options={options} series={series} type="bar" height={350} />
+          <Chart options={options} series={series} type="bar" height={350}  />
         ) : (
           <Row className="justify-content-center">
             <Col md="6" className="text-center">

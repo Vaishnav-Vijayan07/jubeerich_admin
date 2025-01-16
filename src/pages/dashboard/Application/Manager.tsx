@@ -7,6 +7,7 @@ import Spinner from "react-bootstrap/Spinner";
 import PieData from "../Components/PieData";
 import { useDispatch } from "react-redux";
 import { getDashboard } from "../../../redux/actions";
+import ApplicationsTable from "../Components/ApplicationsTable";
 
 function ManagerDashboard({ categories, series, latestLeadsCount, pieData }: any) {
   const labels = pieData?.pieCategories;
@@ -14,17 +15,27 @@ function ManagerDashboard({ categories, series, latestLeadsCount, pieData }: any
 
   return (
     <>
-      <Row>
-        <Col md={5}>
+      <Row className="d-flex align-items-stretch mb-2">
+        <Col md={9}>
           <StackGraph categories={categories} series={series} />
         </Col>
-        <Col md={7}>
-          <PieData labels={labels || []} pieSeries={pieSeries || []} />
+        <Col md={3}>
+          <div className="h-100">
+            <PieData labels={labels || []} pieSeries={pieSeries || []} />
+          </div>
         </Col>
       </Row>
-      {/* <Row>
-        <LeadsTable leadsData={latestLeadsCount} showOffice={true} />
-      </Row> */}
+      <Row className="mt-3">
+        <Col md={12}>
+          <h4 className="text-primary">My Applications</h4>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col md={12}>
+          <ApplicationsTable leadsData={latestLeadsCount} />
+        </Col>
+      </Row>
     </>
   );
 }
