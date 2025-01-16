@@ -15,6 +15,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
   return function WithDashboardLayoutComponent(props: any) {
     const dispatch = useDispatch();
     const { userRole } = props;
+    const isApplicationSide = userRole === "Application Manager";
 
     const [currentCountry, setCurrentCountry] = useState(1);
     const [filterType, setFilterType] = useState<FilterType>("");
@@ -45,7 +46,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     };
 
     const handleFilter = (filterType: any, country_id?: any) => {
-      if (userRole === "Application Manager") {
+      if (isApplicationSide) {
         switch (filterType) {
           case "monthly":
             dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, country_id }));
@@ -85,7 +86,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     };
 
     useEffect(() => {
-      dispatch(userRole == "Application Manager" ? getDashboard({ country_id: currentCountry }) : getDashboard());
+      dispatch(isApplicationSide ? getDashboard({ country_id: currentCountry }) : getDashboard());
     }, []);
 
     if (loading) {
@@ -111,9 +112,9 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
           filters={filters}
           handleFilter={handleFilter}
           setCurrentCountry={setCurrentCountry}
-          currentCountry={userRole == "Application Manager" ? currentCountry : undefined}
+          currentCountry={isApplicationSide ? currentCountry : undefined}
         />
-        {userRole == "Application Manager" && (
+        {isApplicationSide && (
           <CountryFilter countries={countries} onCountryChange={handleCountryClick} currentCountry={currentCountry} />
         )}
         <StatCards statCardsItems={cards || []} />
