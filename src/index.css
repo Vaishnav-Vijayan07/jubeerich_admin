@@ -947,3 +947,8 @@ select::-ms-expand {
   text-align: center;
   background-color: #f8f9fa;
 }
+
+.swiper-wrapper {
+  display: flex;
+  gap: 30px;
+}

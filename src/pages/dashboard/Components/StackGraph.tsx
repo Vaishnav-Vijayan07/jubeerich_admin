@@ -3,7 +3,7 @@ import { Card, Col, Row } from "react-bootstrap";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import Filters from "./Filters";
-import CustomFilter from "../../../components/CustomFilter";
+import CustomFilter from "../../../components/Dashboard/CustomFilter";
 
 type Props = {
   categories: string[];
@@ -50,20 +50,20 @@ function StackGraph({ categories, series }: Props) {
       // tickPlacement: "on",
     },
     legend: {
-      position: "top",
+      position: "right",
       horizontalAlign: "center",
     },
     fill: {
       opacity: 1,
     },
-    colors: ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
+    colors: ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e","#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e","#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
   };
 
   return (
-    <Card style={{ minHeight: "500px" }}>
+    <Card className="h-100">
       <Card.Body>
         {isDataPresent ? (
-          <Chart options={options} series={series} type="bar" height={350} />
+          <Chart options={options} series={series} type="bar" height={350}  />
         ) : (
           <Row className="justify-content-center">
             <Col md="6" className="text-center">

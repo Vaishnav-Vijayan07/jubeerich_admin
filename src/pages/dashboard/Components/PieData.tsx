@@ -10,7 +10,6 @@ type Props = {
 };
 
 function PieData({ labels, pieSeries }: Props) {
-
   const options: ApexOptions = {
     chart: {
       type: "pie",
@@ -55,13 +54,8 @@ function PieData({ labels, pieSeries }: Props) {
   };
 
   return (
-    <Card>
+    <Card className="h-100">
       <Card.Body>
-        <Row className="mb-3">
-          <Col>
-            <Filters />
-          </Col>
-        </Row>
         <Chart options={options} series={pieSeries} type="donut" height={350} />
       </Card.Body>
     </Card>

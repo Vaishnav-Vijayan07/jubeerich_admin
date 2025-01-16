@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import PageTitle from "../../../components/PageTitle";
 import StatCards from "../Components/StatCards";
-import CustomFilter from "../../../components/CustomFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { getDashboard } from "../../../redux/actions";
 import { RootState } from "../../../redux/store";
 import { Spinner } from "react-bootstrap";
+import CustomFilter from "../../../components/Dashboard/CustomFilter";
+import CountryFilter from "../../../components/Dashboard/CountryFilter";
 
 type FilterType = "today" | "weekly" | "monthly" | "custom" | "";
 
@@ -15,6 +16,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     const dispatch = useDispatch();
     const { userRole } = props;
 
+    const [currentCountry, setCurrentCountry] = useState(1);
     const [filterType, setFilterType] = useState<FilterType>("");
     const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
     const [selectedMonth, setSelectedMonth] = useState<string>((new Date().getMonth() + 1).toString());
@@ -23,49 +25,72 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     const [customEndDate, setCustomEndDate] = useState<string>(new Date().toISOString().split("T")[0]);
     const filters = ["weekly", "monthly", "custom"];
 
-    const { cards, loading, categories, series, latestLeadsCount, pieData } = useSelector((state: RootState) => ({
+    const { cards, loading, categories, series, latestLeadsCount, pieData, countries } = useSelector((state: RootState) => ({
       cards: state.Dashboard.dashboard.data?.statCards,
       categories: state.Dashboard.dashboard.data?.categories,
       series: state.Dashboard.dashboard.data?.series,
       latestLeadsCount: state.Dashboard.dashboard.data?.latestLeadsCount,
+      countries: state.Dashboard.dashboard.data?.countries,
       pieData: state.Dashboard.dashboard.data?.applicationData,
       loading: state.Dashboard.loading,
     }));
 
-    const handleFilter = (filterType: any) => {
-      switch (filterType) {
-        case "monthly":
-          dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth }));
-          break;
+    console.log("COUNTRY", currentCountry);
 
-        case "weekly":
-          dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, fromDate: selectedDate }));
-          break;
+    const handleCountryClick = (id: any) => {
+      console.log("COUNTRY", id);
 
-        case "custom":
-          dispatch(getDashboard({ filterType, fromDate: customStartDate, toDate: customEndDate }));
-          break;
+      setCurrentCountry(id);
+      handleFilter(filterType, id);
+    };
 
-        // case "today":
-        //   const today = new Date();
-        //   dispatch(getDashboard({ startDate: today, endDate: today }));
-        //   break;
+    const handleFilter = (filterType: any, country_id?: any) => {
+      if (userRole === "Application Manager") {
+        switch (filterType) {
+          case "monthly":
+            dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, country_id }));
+            break;
 
-        default:
-          dispatch(getDashboard({}));
-          break;
+          case "weekly":
+            dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, fromDate: selectedDate, country_id }));
+            break;
+
+          case "custom":
+            dispatch(getDashboard({ filterType, fromDate: customStartDate, toDate: customEndDate, country_id }));
+            break;
+
+          default:
+            dispatch(getDashboard({ country_id: country_id }));
+            break;
+        }
+      } else {
+        switch (filterType) {
+          case "monthly":
+            dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth }));
+            break;
+
+          case "weekly":
+            dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, fromDate: selectedDate }));
+            break;
+
+          case "custom":
+            dispatch(getDashboard({ filterType, fromDate: customStartDate, toDate: customEndDate }));
+            break;
+
+          default:
+            dispatch(getDashboard({}));
+            break;
+        }
       }
     };
 
     useEffect(() => {
-      dispatch(getDashboard());
+      dispatch(userRole == "Application Manager" ? getDashboard({ country_id: currentCountry }) : getDashboard());
     }, []);
 
     if (loading) {
       return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
     }
-
-    
 
     return (
       <>
@@ -85,9 +110,21 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
           setCustomEndDate={setCustomEndDate}
           filters={filters}
           handleFilter={handleFilter}
+          setCurrentCountry={setCurrentCountry}
+          currentCountry={userRole == "Application Manager" ? currentCountry : undefined}
         />
+        {userRole == "Application Manager" && (
+          <CountryFilter countries={countries} onCountryChange={handleCountryClick} currentCountry={currentCountry} />
+        )}
         <StatCards statCardsItems={cards || []} />
-        <Component {...props} categories={categories || []} series={series || []} latestLeadsCount={latestLeadsCount} pieData={pieData || {}} />
+        <Component
+          {...props}
+          categories={categories || []}
+          series={series || []}
+          latestLeadsCount={latestLeadsCount}
+          pieData={pieData || {}}
+          countries={countries || []}
+        />
       </>
     );
   };

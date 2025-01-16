@@ -1,7 +1,9 @@
-import React from "react";
-import { Col, Row } from "react-bootstrap";
-import IconCards from "./IconCards";
-import { capitalizeFirstChar } from "../../../utils/formatData";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper-bundle.css'; // Import Swiper styles
+import { Row } from 'react-bootstrap';
+import IconCards from './IconCards'; // Replace with your actual IconCards import
+import { formatString } from '../../../utils/formatData';
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 
 type StatCardsItem = {
   id: number;
@@ -14,19 +16,30 @@ type StatCardsItem = {
 type Props = {
   statCardsItems: StatCardsItem[];
 };
+const StatCards = ({ statCardsItems }:Props) => {
 
-function StatCards({ statCardsItems }: Props) {
   return (
     <>
-      <Row className="justify-content-between">
-        {statCardsItems.map((item) => (
-          <Col mx={1} key={item.id} className="mb-3">
-            <IconCards title={capitalizeFirstChar(item.title)} stats={item.stats} icon={item.icon} bgColor={item.bgColor} />
-          </Col>
+      <Swiper
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+        spaceBetween={20}
+        slidesPerView={4}
+      >
+        {statCardsItems.map((item: StatCardsItem) => (
+          <SwiperSlide key={item.id}>
+            <Row className="justify-content-center">
+              <IconCards
+                title={formatString(item.title)}
+                stats={item.stats}
+                icon={item.icon}
+                bgColor={item.bgColor}
+              />
+            </Row>
+          </SwiperSlide>
         ))}
-      </Row>
+      </Swiper>
     </>
   );
-}
+};
 
 export default StatCards;

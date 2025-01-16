@@ -23,12 +23,14 @@ export const getDashboard = ({
   month,
   fromDate,
   toDate,
+  country_id
 }: {
   filterType?: string;
   year?: string;
   month?: string;
   fromDate?: string;
   toDate?: string;
+  country_id?: string | number
 } = {}): DashboardActionType => ({
   type: DashboardActionTypes.GET_DASHBOARD,
   payload: {
@@ -37,5 +39,6 @@ export const getDashboard = ({
     month,
     fromDate,
     toDate,
+    country_id
   },
 });
