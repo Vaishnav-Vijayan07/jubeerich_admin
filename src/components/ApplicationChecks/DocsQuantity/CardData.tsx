@@ -10,7 +10,7 @@ type Props = {
 
 function CardData({ type, filename,folder }: Props) {
   const handleFileView = () => {
-    window.open(`${baseUrl}/uploads/${folder}/${filename}`, "_blank");
+    window.open(`${baseUrl}uploads/${folder}/${filename}`, "_blank");
   };
 
   return (

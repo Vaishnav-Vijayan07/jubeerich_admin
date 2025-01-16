@@ -101,7 +101,7 @@ const VisaProcess = withSwal((props: any) => {
     setLoading(true);
 
     try {
-      const response = await axios.get(`${baseUrl}/api/visa_process/${studentId}`);
+      const response = await axios.get(`${baseUrl}api/visa_process/${studentId}`);
       console.log("response", response);
 
       if (response && response.data) {
@@ -213,7 +213,7 @@ const VisaProcess = withSwal((props: any) => {
         setLoading(true);
 
         try {
-          let result = await axios.delete(`${baseUrl}/api/delete_visa_item/${formName}/${id}`);
+          let result = await axios.delete(`${baseUrl}api/delete_visa_item/${formName}/${id}`);
           showSuccessAlert(result.data.message);
           setVisaApproveDocs([]);
           setVisaDeclinedDocs([]);
@@ -335,7 +335,7 @@ const VisaProcess = withSwal((props: any) => {
       if (confirmationResult.isConfirmed) {
         setLoading(true);
         try {
-          const response = await axios.post(`${baseUrl}/api/visa_decline_process/`, newFormData, {
+          const response = await axios.post(`${baseUrl}api/visa_decline_process/`, newFormData, {
             headers: {
               "content-type": "multipart/form-data",
             },
@@ -412,7 +412,7 @@ const VisaProcess = withSwal((props: any) => {
         setLoading(true);
 
         try {
-          const response = await axios.post(`${baseUrl}/api/visa_approve_process/`, newFormData, {
+          const response = await axios.post(`${baseUrl}api/visa_approve_process/`, newFormData, {
             headers: {
               "content-type": "multipart/form-data",
             },
@@ -476,7 +476,7 @@ const VisaProcess = withSwal((props: any) => {
         setLoading(true);
 
         try {
-          const response = await axios.post(`${baseUrl}/api/travel_history/`, body);
+          const response = await axios.post(`${baseUrl}api/travel_history/`, body);
           console.log("response", response);
           showSuccessAlert(response.data.message);
           getVisaProcess();

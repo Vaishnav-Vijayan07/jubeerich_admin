@@ -267,26 +267,26 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   //handle delete function
-  const handleDelete = (id: string) => {
-    swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          dispatch(deleteLeads(id, 1, 20, true));
-          if (isUpdate) {
-            setFormData(initialState);
-          }
-        }
-      });
-  };
+  // const handleDelete = (id: string) => {
+  //   swal
+  //     .fire({
+  //       title: "Are you sure?",
+  //       text: "This action cannot be undone.",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#3085d6",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, delete it!",
+  //     })
+  //     .then((result: any) => {
+  //       if (result.isConfirmed) {
+  //         dispatch(deleteLeads(id, 1, 20, true));
+  //         if (isUpdate) {
+  //           setFormData(initialState);
+  //         }
+  //       }
+  //     });
+  // };
 
   const UserColumn = ({ row }: any) => {
     return (
@@ -853,6 +853,9 @@ const AssignedLeads = () => {
   const [close, setClose] = useState(false);
   const [value, setValue] = useState("");
   const [search, setSearch] = useState("");
+
+  console.log("value ==>", value);
+  
 
   const handlePageChange = useCallback((event: any, value: any) => {
     setCurrentPage(value);

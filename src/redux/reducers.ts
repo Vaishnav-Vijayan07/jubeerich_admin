@@ -32,6 +32,7 @@ import refreshReducer from "./countryReducer";
 import DropDownReducer from "./dropDown/reducers";
 import KYC from "./KYC/reducers";
 import StatusTypes from "./status/statusType/reducers";
+import VisaChecklists from "./visa_checklists/reducers";
 
 export default combineReducers({
   Auth,
@@ -65,5 +66,6 @@ export default combineReducers({
   DropDownReducer,
   KYC,
   refreshReducer,
-  StatusTypes
+  StatusTypes,
+  VisaChecklists
 });

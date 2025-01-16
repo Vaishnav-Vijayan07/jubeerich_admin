@@ -361,7 +361,7 @@ const FranchiseDetails = withSwal((props: any) => {
 
   const getFranchiseDetails = async () => {
     try {
-      let { data } = await axios.get(`${baseUrl}/api/franchise/${franchiseId}`);
+      let { data } = await axios.get(`${baseUrl}api/franchise/${franchiseId}`);
       setFranchiseDetails(data?.data);
     } catch (error) {
       console.log(error);

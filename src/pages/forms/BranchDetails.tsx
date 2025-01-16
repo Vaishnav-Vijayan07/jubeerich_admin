@@ -373,7 +373,7 @@ const BranchDetails = withSwal((props: any) => {
 
   const getBranchDetails = async () => {
     try {
-      let { data } = await axios.get(`${baseUrl}/api/branches/${branchId}`);
+      let { data } = await axios.get(`${baseUrl}api/branches/${branchId}`);
       setBranchDetails(data?.data);
     } catch (error) {
       console.log(error);

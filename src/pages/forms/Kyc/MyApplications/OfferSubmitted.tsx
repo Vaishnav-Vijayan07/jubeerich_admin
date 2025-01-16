@@ -60,7 +60,7 @@ const OfferSubmitted = () => {
   const handleDownload = (event: any, file_path: any) => {
     event.preventDefault();
 
-    const fileUrl = `${baseUrl}/${file_path}`;
+    const fileUrl = `${baseUrl}${file_path}`;
 
     const link = document.createElement("a");
     link.setAttribute("target", "_blank");

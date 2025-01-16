@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Card, Button, Form } from "react-bootstrap";
 import Dropzone from "react-dropzone";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../constants";
+import { set } from "react-hook-form";
 
 interface FileType extends File {
   preview?: string;
@@ -17,11 +18,13 @@ interface FileUploaderProps {
   getAttachedFiles?: () => void;
 }
 
-const FileUploader = (props:any) => {
+const FileUploader = (props: any) => {
   const [selectedFiles, setSelectedFiles] = useState<FileType[]>([]);
   const [fileType, setFileType] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { leadId } = props;
+
+  console.log("selectedFiles ==>", props);
 
   /**
    * Handled the accepted files and shows the preview
@@ -104,6 +107,10 @@ const FileUploader = (props:any) => {
     if (props.onFileUpload) props.onFileUpload(newFiles);
   };
 
+  useEffect(() => {
+    setSelectedFiles([]);
+  }, [props.clearFiles]);
+
   return (
     <>
       <Dropzone {...props} onDrop={(acceptedFiles) => handleAcceptedFiles(acceptedFiles)}>
@@ -155,7 +162,6 @@ const FileUploader = (props:any) => {
               </Card>
             );
           })}
-
         </form>
       )}
     </>
