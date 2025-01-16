@@ -206,7 +206,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
               <div className="d-flex align-items-center">
                 <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
-                  href={`${baseUrl}/uploads/fundDocuments/${plan?.supporting_document}`}
+                  href={`${baseUrl}uploads/fundDocuments/${plan?.supporting_document}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"

@@ -374,7 +374,7 @@ const BasicInputElements = withSwal((props: any) => {
               <img
                 src={
                   isImage
-                    ? `${baseUrl}/${row.original.profile_image_path}`
+                    ? `${baseUrl}${row.original.profile_image_path}`
                     : profilePic
                 }
                 alt=""

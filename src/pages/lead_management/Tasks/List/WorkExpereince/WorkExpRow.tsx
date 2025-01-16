@@ -106,7 +106,7 @@ const WorkExpRow = ({
               <div className="d-flex align-items-center">
                 <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
-                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.bank_statement}`}
+                  href={`${baseUrl}uploads/workDocuments/${workExperience?.bank_statement}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
@@ -143,7 +143,7 @@ const WorkExpRow = ({
               <div className="d-flex align-items-center">
                 <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
-                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.experience_certificate}`}
+                  href={`${baseUrl}uploads/workDocuments/${workExperience?.experience_certificate}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
@@ -180,7 +180,7 @@ const WorkExpRow = ({
               <div className="d-flex align-items-center">
                 <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
-                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.job_offer_document}`}
+                  href={`${baseUrl}uploads/workDocuments/${workExperience?.job_offer_document}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
@@ -217,7 +217,7 @@ const WorkExpRow = ({
               <div className="d-flex align-items-center">
                 <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
-                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.appointment_document}`}
+                  href={`${baseUrl}uploads/workDocuments/${workExperience?.appointment_document}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
@@ -254,7 +254,7 @@ const WorkExpRow = ({
               <div className="d-flex align-items-center">
                 <i className="mdi mdi-eye text-primary me-2"></i>
                 <a
-                  href={`${baseUrl}/uploads/workDocuments/${workExperience?.payslip_document}`}
+                  href={`${baseUrl}uploads/workDocuments/${workExperience?.payslip_document}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"

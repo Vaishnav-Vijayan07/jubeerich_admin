@@ -322,7 +322,7 @@ const BasicInputElements = withSwal((props: any) => {
           <>
             <div className="table-user">
               <img
-                src={isImage ? `${baseUrl}/${row.original.profile_image_path}` : profilePic}
+                src={isImage ? `${baseUrl}${row.original.profile_image_path}` : profilePic}
                 alt=""
                 className="me-2 rounded-circle"
               />

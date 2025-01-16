@@ -311,7 +311,7 @@ const EmploymentHistory = (props: any) => {
           <div className="d-flex mb-2">
             {documentsName?.visa_page && (
               <a
-                href={`${baseUrl}/uploads/experienceHistoryDocs/${documentsName?.visa_page}`}
+                href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.visa_page}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
@@ -332,7 +332,7 @@ const EmploymentHistory = (props: any) => {
           <div className="d-flex mb-2">
             {documentsName?.permit_card && (
               <a
-                href={`${baseUrl}/uploads/experienceHistoryDocs/${documentsName?.permit_card}`}
+                href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.permit_card}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
@@ -354,7 +354,7 @@ const EmploymentHistory = (props: any) => {
           <div className="d-flex mb-2">
             {documentsName?.salary_account_statement && (
               <a
-                href={`${baseUrl}/uploads/experienceHistoryDocs/${documentsName?.salary_account_statement}`}
+                href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.salary_account_statement}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
@@ -376,7 +376,7 @@ const EmploymentHistory = (props: any) => {
           <div className="d-flex mb-2">
             {documentsName?.supporting_documents && (
               <a
-                href={`${baseUrl}/uploads/experienceHistoryDocs/${documentsName?.supporting_documents}`}
+                href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.supporting_documents}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
