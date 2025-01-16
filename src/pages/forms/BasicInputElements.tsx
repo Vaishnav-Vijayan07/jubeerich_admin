@@ -225,7 +225,9 @@ const BasicInputElements = withSwal((props: any) => {
         accessor: "lead_received_date",
         sort: false,
         minWidth: 150,
-        Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
+        Cell: ({ row }: any) => (
+          <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
+        ),
       },
       // {
       //   Header: "Followup Date",
@@ -259,7 +261,9 @@ const BasicInputElements = withSwal((props: any) => {
               accessor: "assigned_branch_counselor",
               sort: false,
               minWidth: 50,
-              Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+              Cell: ({ row }: any) => (
+                <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
+              ),
               isTruncate: true,
             },
             {
@@ -291,7 +295,9 @@ const BasicInputElements = withSwal((props: any) => {
               minWidth: 50,
               isTruncate: true,
 
-              Cell: ({ row }: any) => <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
+              Cell: ({ row }: any) => (
+                <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
+              ),
             },
           ]
         : []),
@@ -380,7 +386,13 @@ const BasicInputElements = withSwal((props: any) => {
         Cell: ({ row }: any) => (
           <div className="d-flex justify-content-center align-items-center gap-2">
             {/* Edit Icon */}
-            <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
+            <Link
+              to={`/leads/manage/${row.original.id}`}
+              className="action-icon"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Edit"
+            >
               <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
             </Link>
 
@@ -440,7 +452,7 @@ const BasicInputElements = withSwal((props: any) => {
   const handleOnFileUpload = (files: any) => {
     setSelectedFile(files);
     console.log(".files =>", files);
-    
+
     // setProgress(0)
   };
 
@@ -465,7 +477,7 @@ const BasicInputElements = withSwal((props: any) => {
 
     try {
       console.log("started");
-      
+
       const { data } = await axios.post(`/excel_import`, formData, {
         // onUploadProgress: (progressEvent: ProgressEvent) => {
         //   console.log('progressEvent',progressEvent.loaded);
@@ -480,28 +492,27 @@ const BasicInputElements = withSwal((props: any) => {
       });
 
       console.log("data ==========>", data);
-      
 
       if (data.status) {
         showSuccessAlert(data.message);
         dispatch(getLead(currentPage, currentLimit));
         setIsLoading(false);
         setSelectedFile([]);
-        setClearFiles(true);
+        setClearFiles(!clearFiles);
         toggleUploadModal();
       } else {
         showWarningAlert(data.message);
         downloadRjectedData(data.invalidFileLink);
         setIsLoading(false);
         setSelectedFile([]);
-        setClearFiles(true);
+        setClearFiles(!clearFiles);
         dispatch(getLead(currentPage, currentLimit));
       }
     } catch (err) {
       showErrorAlert(err);
       setIsLoading(false);
       setSelectedFile([]);
-      setClearFiles(true);
+      setClearFiles(!clearFiles);
     }
   };
 
@@ -714,7 +725,13 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               {/* <h1>Progress Bar = {progress}</h1> */}
               <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
-              <FileUploader onFileUpload={handleOnFileUpload} showPreview={true} selectedFile={selectedFile} setSelectedFile={setSelectedFile} clearFiles={clearFiles} />
+              <FileUploader
+                onFileUpload={handleOnFileUpload}
+                showPreview={true}
+                selectedFile={selectedFile}
+                setSelectedFile={setSelectedFile}
+                clearFiles={clearFiles}
+              />
               <div className="d-flex gap-2 justify-content-end mt-2">
                 <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
                   <i className="mdi mdi-download-circle"></i> Download Sample
@@ -802,7 +819,10 @@ const BasicInputElements = withSwal((props: any) => {
                         </Dropdown.Toggle>
                         <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                           {branchCounsellors?.map((item: any) => (
-                            <Dropdown.Item key={item.id} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
+                            <Dropdown.Item
+                              key={item.id}
+                              onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}
+                            >
                               {item.name}
                             </Dropdown.Item>
                           ))}

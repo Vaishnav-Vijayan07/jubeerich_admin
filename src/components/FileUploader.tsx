@@ -45,7 +45,6 @@ const FileUploader = (props: any) => {
     }
 
     if (props.onFileUpload) props.onFileUpload(allFiles);
-
   };
 
   const handleUpload = async (e: any) => {
@@ -109,7 +108,7 @@ const FileUploader = (props: any) => {
   };
 
   useEffect(() => {
-    if (props.clearFiles) setSelectedFiles([]);
+    setSelectedFiles([]);
   }, [props.clearFiles]);
 
   return (
