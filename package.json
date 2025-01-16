@@ -133,6 +133,7 @@
     "@types/react-text-mask": "^5.4.9",
     "@types/redux-saga": "^0.10.5",
     "@types/sortablejs": "^1.10.7",
+    "@types/swiper": "^6.0.0",
     "postcss-custom-properties": "^12.1.4",
     "prettier": "^2.3.2"
   },
