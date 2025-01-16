@@ -443,7 +443,8 @@ const BasicInputElements = withSwal((props: any) => {
     const filePath = file;
     const link = document.createElement("a");
     link.download = "rejected.xlsx";
-    link.href = process.env.REACT_APP_API_URL + filePath;
+    // link.href = process.env.REACT_APP_API_URL + filePath;
+    link.href = `${process.env.REACT_APP_API_URL}/${filePath}`
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -479,13 +480,6 @@ const BasicInputElements = withSwal((props: any) => {
       console.log("started");
 
       const { data } = await axios.post(`/excel_import`, formData, {
-        // onUploadProgress: (progressEvent: ProgressEvent) => {
-        //   console.log('progressEvent',progressEvent.loaded);
-        //   console.log('progressEvent',progressEvent.total);
-
-        //   const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        //   setProgress(percentCompleted)
-        // },
         headers: {
           "Content-Type": "multipart/form-data",
         },
