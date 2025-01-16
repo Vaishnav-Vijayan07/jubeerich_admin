@@ -997,7 +997,7 @@ const LeadsModal = withSwal((props: any) => {
                               ref={fileInputRef}
                             />
                             {selectedFileName[index]?.exam_documents && (
-                              <a href={`${baseUrl}/uploads/${selectedFileName[index].exam_documents}`}>
+                              <a href={`${baseUrl}uploads/${selectedFileName[index].exam_documents}`}>
                                 {selectedFileName[index].exam_documents}
                               </a>
                             )}

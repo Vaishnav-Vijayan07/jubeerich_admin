@@ -31,11 +31,11 @@ function updateCampaigns(
   }
 ) {
 
-  return api.update(`${baseUrl}/${id}`, params);
+  return api.update(`${baseUrl}${id}`, params);
 }
 
 function deleteCampaigns(id: string) {
-  return api.delete(`${baseUrl}/${id}`, {});
+  return api.delete(`${baseUrl}${id}`, {});
 }
 
 export { getCampaigns, addCampaigns, updateCampaigns, deleteCampaigns };

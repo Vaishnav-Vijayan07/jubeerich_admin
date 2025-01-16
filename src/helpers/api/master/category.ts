@@ -20,11 +20,11 @@ function updateCategory(params: {
   name: string;
   description: string;
 }) {
-  return api.update(`${baseUrl}/${params.id}`, params);
+  return api.update(`${baseUrl}${params.id}`, params);
 }
 
 function deleteCategory(params: { id: number }) {
-  return api.delete(`${baseUrl}/${params.id}`, params);
+  return api.delete(`${baseUrl}${params.id}`, params);
 }
 
 export { getCategory, addCategory, updateCategory, deleteCategory };
