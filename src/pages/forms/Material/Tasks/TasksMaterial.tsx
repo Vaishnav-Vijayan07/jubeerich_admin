@@ -77,7 +77,7 @@ const TasksMaterial = () => {
   //     });
   // };
 
-  const getTaskList = (date: any) => {
+  const getTaskList = (date: any, resetSelectedId: boolean = false) => {
     // Resolve the date to fetch tasks for
     const resolvedDate = moment(date || selectedDate || new Date())
       .startOf("day")
@@ -99,7 +99,7 @@ const TasksMaterial = () => {
         setCollapseState(pendingTasks.length === 0);
 
         // Resolve the selected task
-        const selectedTask = selectedTaskId
+        const selectedTask = (selectedTaskId && !resetSelectedId)
           ? [...pendingTasks, ...pastTasks].find((task: any) => task.id === selectedTaskId)
           : pendingTasks[0] || pastTasks[0];
 

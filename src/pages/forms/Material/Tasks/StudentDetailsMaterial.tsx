@@ -393,6 +393,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         student_id: studentId,
         task_id: taskId,
         assigned_country: taskDetails?.assigned_country,
+        study_pref_id: taskDetails.is_rejected ? taskDetails?.study_preference_detail_id : null,
       };
 
       const result = await swal.fire({
@@ -410,7 +411,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         if (res) {
           showSuccessAlert("Proceeded KYC Successfully");
           getTaskDetails();
-          getTaskList();
+          getTaskList(null, true);
         }
       }
     } catch (error) {
