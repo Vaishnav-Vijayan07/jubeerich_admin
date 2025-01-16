@@ -3,7 +3,6 @@ import WithDashboardLayout from "../Dashboard3/WithDashboardLayout";
 import { Row, Col } from "react-bootstrap";
 import LeadsTable from "../Components/LeadsTable";
 import StackGraph from "../Components/StackGraph";
-import Spinner from "react-bootstrap/Spinner";
 import PieData from "../Components/PieData";
 
 function CountryManagerDashboard({ categories, series, latestLeadsCount, pieData }: any) {
@@ -12,7 +11,7 @@ function CountryManagerDashboard({ categories, series, latestLeadsCount, pieData
 
   return (
     <>
-      <Row>
+      <Row className="d-flex align-items-stretch mb-2">
         <Col md={5}>
           <StackGraph categories={categories} series={series} />
         </Col>
@@ -21,7 +20,9 @@ function CountryManagerDashboard({ categories, series, latestLeadsCount, pieData
         </Col>
       </Row>
       <Row>
-        <LeadsTable leadsData={latestLeadsCount} showOffice={true} />
+        <Col md={12}>
+          <LeadsTable leadsData={latestLeadsCount} showOffice={true} />
+        </Col>
       </Row>
     </>
   );

@@ -22,7 +22,7 @@ const StatCards = ({ statCardsItems }:Props) => {
     <>
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, A11y]}
-        spaceBetween={20}
+        spaceBetween={10}
         slidesPerView={4}
       >
         {statCardsItems.map((item: StatCardsItem) => (

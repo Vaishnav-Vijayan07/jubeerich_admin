@@ -47,7 +47,7 @@ const CustomFilter = ({
   };
 
   const handleFilterApply = (filterType: any) => {
-    handleFilter(filterType);
+    handleFilter(filterType,currentCountry);
   };
 
   const handleClearFilter = () => {
@@ -56,9 +56,9 @@ const CustomFilter = ({
     setSelectedMonth((new Date().getMonth() + 1).toString());
     setSelectedDate("");
     setCustomStartDate("");
-    setCurrentCountry(1)
+    setCurrentCountry(currentCountry)
     setCustomEndDate("");
-    dispatch(currentCountry ? getDashboard({ country_id: 1 }) : getDashboard());
+    dispatch(currentCountry ? getDashboard({ country_id: currentCountry }) : getDashboard());
   };
 
   // Handle date selection and automatically set week
