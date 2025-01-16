@@ -19,6 +19,7 @@ import ItTeamDashboard from "../IT Team/ItTeamDashboard";
 import CounselorDashboard from "../Counselor/CounselorDashboard";
 import CountryManagerDashboard from "../Country Manager/CountryManagerDashboard";
 import ManagerDashboard from "../Application/Manager";
+import ApplicationTeamDashboard from "../Application/Team";
 
 const Dashboard3 = () => {
   const userInfo = JSON.parse(sessionStorage.getItem("jb_user") || "{}");
@@ -37,6 +38,8 @@ const Dashboard3 = () => {
         return <CountryManagerDashboard userRole={userInfo?.role_name}/>;
       case "Application Manager":
         return <ManagerDashboard userRole={userInfo?.role_name}/>
+      case "Application Team":
+        return <ApplicationTeamDashboard userRole={userInfo?.role_name}/>
       default:
         return (
           <>
