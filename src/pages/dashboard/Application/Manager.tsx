@@ -15,7 +15,7 @@ function ManagerDashboard({ categories, series, latestLeadsCount, pieData }: any
 
   return (
     <>
-      <Row className="d-flex  mb-2">
+      <Row className="d-flex align-items-stretch mb-2">
         <Col md={9}>
           <StackGraph categories={categories} series={series} />
         </Col>
