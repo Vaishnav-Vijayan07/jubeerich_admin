@@ -1,12 +1,7 @@
-import React, { useState, useEffect } from "react";
 import WithDashboardLayout from "../Dashboard3/WithDashboardLayout";
 import { Row, Col, Form } from "react-bootstrap";
-import LeadsTable from "../Components/LeadsTable";
 import StackGraph from "../Components/StackGraph";
-import Spinner from "react-bootstrap/Spinner";
 import PieData from "../Components/PieData";
-import { useDispatch } from "react-redux";
-import { getDashboard } from "../../../redux/actions";
 import ApplicationsTable from "../Components/ApplicationsTable";
 
 function ManagerDashboard({ categories, series, latestLeadsCount, pieData }: any) {
@@ -16,10 +11,10 @@ function ManagerDashboard({ categories, series, latestLeadsCount, pieData }: any
   return (
     <>
       <Row className="d-flex align-items-stretch mb-2">
-        <Col md={9}>
+        <Col md={6}>
           <StackGraph categories={categories} series={series} />
         </Col>
-        <Col md={3}>
+        <Col md={6}>
           <div className="h-100">
             <PieData labels={labels || []} pieSeries={pieSeries || []} />
           </div>
