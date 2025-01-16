@@ -73,7 +73,7 @@ function ApplicationFeeCheck({
   };
 
   const viewReceipt = (applicaiton_reciept: string) => {
-    window.open(`${baseUrl}/uploads/application_receipts/${applicaiton_reciept}`, "_blank");
+    window.open(`${baseUrl}uploads/application_receipts/${applicaiton_reciept}`, "_blank");
   };
 
   useEffect(() => {

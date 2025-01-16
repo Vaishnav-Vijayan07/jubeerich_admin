@@ -119,7 +119,7 @@ const PendingDetailsById = withSwal((props: any) => {
 
   const getApplicationsById = async (id: any) => {
     try {
-      const result = await axios.get(`${baseUrl}/api/application/${id}`);
+      const result = await axios.get(`${baseUrl}api/application/${id}`);
       if (result) {
         setItem(result?.data?.data);
       }
@@ -130,7 +130,7 @@ const PendingDetailsById = withSwal((props: any) => {
 
   const getStepperData = async (application_id: any) => {
     try {
-      const { data } = await axios.get(`${baseUrl}/api/stepper_data/${application_id}`);
+      const { data } = await axios.get(`${baseUrl}api/stepper_data/${application_id}`);
       setSteps(data?.data);
     } catch (error) {
       console.log(error);

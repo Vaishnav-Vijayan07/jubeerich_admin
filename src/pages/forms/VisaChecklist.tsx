@@ -415,8 +415,26 @@ const BasicInputElements = withSwal((props: any) => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <h6 className="mb-0">Field {index + 1}</h6>
                       {formData.fields.length > 1 && (
-                        <Button variant="danger" size="sm" className="float-end" onClick={() => handleRemoveField(index)}>
-                          <i className="mdi mdi-delete-outline"></i>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          className="float-end d-flex align-items-center justify-content-center"
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M3 6h18"></path>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                          </svg>
                         </Button>
                       )}
                     </div>

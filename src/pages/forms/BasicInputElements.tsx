@@ -88,6 +88,8 @@ const BasicInputElements = withSwal((props: any) => {
   const [handleUpdateData, setHandleUpdateData] = useState<any>({});
   const [clearLeadModal, setClearLeadModal] = useState<any>(null);
   const [clearError, setClearError] = useState<any>(null);
+  const [clearFiles, setClearFiles] = useState<any>(false);
+
   // const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -437,6 +439,8 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleOnFileUpload = (files: any) => {
     setSelectedFile(files);
+    console.log(".files =>", files);
+    
     // setProgress(0)
   };
 
@@ -460,6 +464,8 @@ const BasicInputElements = withSwal((props: any) => {
     setIsLoading(true);
 
     try {
+      console.log("started");
+      
       const { data } = await axios.post(`/excel_import`, formData, {
         // onUploadProgress: (progressEvent: ProgressEvent) => {
         //   console.log('progressEvent',progressEvent.loaded);
@@ -473,21 +479,29 @@ const BasicInputElements = withSwal((props: any) => {
         },
       });
 
+      console.log("data ==========>", data);
+      
+
       if (data.status) {
         showSuccessAlert(data.message);
         dispatch(getLead(currentPage, currentLimit));
         setIsLoading(false);
         setSelectedFile([]);
+        setClearFiles(true);
         toggleUploadModal();
       } else {
         showWarningAlert(data.message);
         downloadRjectedData(data.invalidFileLink);
         setIsLoading(false);
+        setSelectedFile([]);
+        setClearFiles(true);
         dispatch(getLead(currentPage, currentLimit));
       }
     } catch (err) {
       showErrorAlert(err);
       setIsLoading(false);
+      setSelectedFile([]);
+      setClearFiles(true);
     }
   };
 
@@ -700,7 +714,7 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               {/* <h1>Progress Bar = {progress}</h1> */}
               <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
-              <FileUploader onFileUpload={handleOnFileUpload} showPreview={true} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+              <FileUploader onFileUpload={handleOnFileUpload} showPreview={true} selectedFile={selectedFile} setSelectedFile={setSelectedFile} clearFiles={clearFiles} />
               <div className="d-flex gap-2 justify-content-end mt-2">
                 <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
                   <i className="mdi mdi-download-circle"></i> Download Sample

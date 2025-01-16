@@ -129,7 +129,7 @@ const AdditionalDocuments = (props: any) => {
   const getAdditionalDoc = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get(`${baseUrl}/api/additional_docs/${studentId}`);
+      const res = await axios.get(`${baseUrl}api/additional_docs/${studentId}`);
       if (res?.status) {
         console.log("Data ====>>>>>>>", res?.data?.data);
 
@@ -171,7 +171,7 @@ const AdditionalDocuments = (props: any) => {
                     <div className="d-flex">
                       {documentsName?.passport_doc && (
                         <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.passport_doc}`}
+                          href={`${baseUrl}uploads/studentAdditionalDocs/${documentsName?.passport_doc}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
@@ -195,7 +195,7 @@ const AdditionalDocuments = (props: any) => {
                     <div className="d-flex">
                       {documentsName?.updated_cv && (
                         <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.updated_cv}`}
+                          href={`${baseUrl}uploads/studentAdditionalDocs/${documentsName?.updated_cv}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
@@ -219,7 +219,7 @@ const AdditionalDocuments = (props: any) => {
                     <div className="d-flex">
                       {documentsName?.profile_assessment_doc && (
                         <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.profile_assessment_doc}`}
+                          href={`${baseUrl}uploads/studentAdditionalDocs/${documentsName?.profile_assessment_doc}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
@@ -245,7 +245,7 @@ const AdditionalDocuments = (props: any) => {
                     <div className="d-flex">
                       {documentsName?.lor && (
                         <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.lor}`}
+                          href={`${baseUrl}uploads/studentAdditionalDocs/${documentsName?.lor}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
@@ -269,7 +269,7 @@ const AdditionalDocuments = (props: any) => {
                     <div className="d-flex">
                       {documentsName?.sop && (
                         <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.sop}`}
+                          href={`${baseUrl}uploads/studentAdditionalDocs/${documentsName?.sop}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
@@ -293,7 +293,7 @@ const AdditionalDocuments = (props: any) => {
                     <div className="d-flex">
                       {documentsName?.gte_form && (
                         <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.gte_form}`}
+                          href={`${baseUrl}uploads/studentAdditionalDocs/${documentsName?.gte_form}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
