@@ -113,7 +113,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   }, [flags, basicData?.flags]);
 
   const handleStatusChange = async (status_id: number) => {
-    let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
+    // let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
+    let country_id = taskDetails?.assigned_country;
 
     if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
       // toggleStandard();
