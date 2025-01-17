@@ -19,7 +19,11 @@ type Props = {
 const StatCards = ({ statCardsItems }: Props) => {
   return (
     <>
-      <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]} spaceBetween={20} slidesPerView={4}>
+      <Swiper
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+        spaceBetween={10}
+        slidesPerView={4}
+      >
         {statCardsItems.map((item: StatCardsItem) => (
           <SwiperSlide key={item.id}>
             <Row className="justify-content-center">

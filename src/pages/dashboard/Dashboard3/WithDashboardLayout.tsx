@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PageTitle from "../../../components/PageTitle";
 import StatCards from "../Components/StatCards";
 import { useDispatch, useSelector } from "react-redux";
-import { getDashboard } from "../../../redux/actions";
+import { getDashboard, getDashCountries } from "../../../redux/actions";
 import { RootState } from "../../../redux/store";
 import { Spinner } from "react-bootstrap";
 import CustomFilter from "../../../components/Dashboard/CustomFilter";
@@ -17,7 +17,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     const { userRole } = props;
     const isApplicationSide = userRole === "Application Manager";
 
-    const [currentCountry, setCurrentCountry] = useState(1);
+    const [currentCountry, setCurrentCountry] = useState(10);
     const [filterType, setFilterType] = useState<FilterType>("");
     const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
     const [selectedMonth, setSelectedMonth] = useState<string>((new Date().getMonth() + 1).toString());
@@ -31,15 +31,14 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
       categories: state.Dashboard.dashboard.data?.categories,
       series: state.Dashboard.dashboard.data?.series,
       latestLeadsCount: state.Dashboard.dashboard.data?.latestLeadsCount,
-      countries: state.Dashboard.dashboard.data?.countries,
+      countries: state.DashboardCountries.countries.data,
       pieData: state.Dashboard.dashboard.data?.applicationData,
       loading: state.Dashboard.loading,
     }));
-
-    console.log("COUNTRY", currentCountry);
+    
+    console.log("COUNTRY", selectedDate);
 
     const handleCountryClick = (id: any) => {
-      console.log("COUNTRY", id);
 
       setCurrentCountry(id);
       handleFilter(filterType, id);
@@ -89,6 +88,18 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
       dispatch(isApplicationSide ? getDashboard({ country_id: currentCountry }) : getDashboard());
     }, []);
 
+    useEffect(() => {
+      if (isApplicationSide) {
+        dispatch(getDashCountries());
+      }
+    }, []);
+
+    useEffect(() => {
+      if (countries && countries.length > 0) {
+        setCurrentCountry(countries[0].id); // Assuming each country object has an `id` field
+      }
+    }, [countries]);
+
     if (loading) {
       return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
     }
@@ -114,9 +125,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
           setCurrentCountry={setCurrentCountry}
           currentCountry={isApplicationSide ? currentCountry : undefined}
         />
-        {isApplicationSide && (
-          <CountryFilter countries={countries} onCountryChange={handleCountryClick} currentCountry={currentCountry} />
-        )}
+        {isApplicationSide && <CountryFilter countries={countries} onCountryChange={handleCountryClick} currentCountry={currentCountry} />}
         <StatCards statCardsItems={cards || []} />
         <Component
           {...props}
