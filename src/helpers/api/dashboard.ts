@@ -17,8 +17,8 @@ function getDashboard(
 
   console.log("params", country_id);
 
-  if(country_id){
-    params["country_id"] = country_id
+  if (country_id) {
+    params["country_id"] = country_id;
   }
 
   // Based on the filter type, we populate the params accordingly
@@ -49,7 +49,12 @@ function getDashboard(
   console.log("params", params);
 
   const baseUrl = "/dashboard";
-  return api.get(baseUrl, params );
+  return api.get(baseUrl, params);
 }
 
-export { getDashboard };
+function getCountriesApi() {
+  const baseUrl = "/countries_by_admin";
+  return api.get(baseUrl, {});
+}
+
+export { getDashboard, getCountriesApi };
