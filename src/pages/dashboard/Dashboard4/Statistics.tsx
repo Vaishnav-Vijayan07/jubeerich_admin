@@ -16,7 +16,7 @@ const Statistics = ({ data }: any) => {
       <Row>
         {data?.map((item: any) => (
           <Col md={6} xl={3}>
-            <StatisticsWidget4 avatar={`${baseUrl}/${item.profile_image_path}`} name={item.name} position={"executive"} />
+            <StatisticsWidget4 avatar={`${baseUrl}${item.profile_image_path}`} name={item.name} position={"executive"} />
           </Col>
         ))}
       </Row>

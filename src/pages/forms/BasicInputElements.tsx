@@ -444,7 +444,7 @@ const BasicInputElements = withSwal((props: any) => {
     const link = document.createElement("a");
     link.download = "rejected.xlsx";
     // link.href = process.env.REACT_APP_API_URL + filePath;
-    link.href = `${process.env.REACT_APP_API_URL}/${filePath}`
+    link.href = `${process.env.REACT_APP_API_URL}/${filePath}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

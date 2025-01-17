@@ -294,7 +294,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             {item?.errors?.admit_card && <Form.Text className="text-danger">{item.errors.admit_card}</Form.Text>}
             {typeof item?.admit_card === "string" && (
               <div className="mt-2">
-                <a href={`${baseUrl}/uploads/graduationDocuments/${item?.admit_card}`} target="_blank" rel="noopener noreferrer">
+                <a href={`${baseUrl}uploads/graduationDocuments/${item?.admit_card}`} target="_blank" rel="noopener noreferrer">
                   <i className="mdi mdi-download me-1"></i> admit_card
                 </a>
               </div>
@@ -309,7 +309,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             {item?.errors?.certificate && <Form.Text className="text-danger">{item.errors.certificate}</Form.Text>}
             {typeof item?.certificate === "string" && (
               <div className="mt-2">
-                <a href={`${baseUrl}/uploads/graduationDocuments/${item?.certificate}`} target="_blank" rel="noopener noreferrer">
+                <a href={`${baseUrl}uploads/graduationDocuments/${item?.certificate}`} target="_blank" rel="noopener noreferrer">
                   <i className="mdi mdi-download me-1"></i> certificate
                 </a>
               </div>
@@ -326,7 +326,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             {typeof item?.registration_certificate === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/graduationDocuments/${item?.registration_certificate}`}
+                  href={`${baseUrl}uploads/graduationDocuments/${item?.registration_certificate}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -344,7 +344,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             {typeof item?.grading_scale_info === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/graduationDocuments/${item?.grading_scale_info}`}
+                  href={`${baseUrl}uploads/graduationDocuments/${item?.grading_scale_info}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -364,7 +364,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             {typeof item?.backlog_certificate === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/graduationDocuments/${item?.backlog_certificate}`}
+                  href={`${baseUrl}uploads/graduationDocuments/${item?.backlog_certificate}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -384,7 +384,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             {typeof item?.individual_marksheet === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/graduationDocuments/${item?.individual_marksheet}`}
+                  href={`${baseUrl}uploads/graduationDocuments/${item?.individual_marksheet}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -402,7 +402,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             {item?.errors?.transcript && <Form.Text className="text-danger">{item.errors.transcript}</Form.Text>}
             {typeof item?.transcript === "string" && (
               <div className="mt-2">
-                <a href={`${baseUrl}/uploads/graduationDocuments/${item?.transcript}`} target="_blank" rel="noopener noreferrer">
+                <a href={`${baseUrl}uploads/graduationDocuments/${item?.transcript}`} target="_blank" rel="noopener noreferrer">
                   <i className="mdi mdi-download me-1"></i> transcript
                 </a>
               </div>

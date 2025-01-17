@@ -340,7 +340,7 @@ const VisaProcess = withSwal((props: any) => {
               "content-type": "multipart/form-data",
             },
           });
-          // const response = await axios.post(`${baseUrl}/api/visa_decline_process/`, body);
+          // const response = await axios.post(`${baseUrl}api/visa_decline_process/`, body);
           console.log("response", response);
           showSuccessAlert(response.data.message);
           setVisaDeclinedDocs([]);
@@ -417,7 +417,7 @@ const VisaProcess = withSwal((props: any) => {
               "content-type": "multipart/form-data",
             },
           });
-          // const response = await axios.post(`${baseUrl}/api/visa_approve_process/`, body);
+          // const response = await axios.post(`${baseUrl}api/visa_approve_process/`, body);
           console.log("response", response);
           showSuccessAlert(response.data.message);
           setVisaApproveDocs([]);

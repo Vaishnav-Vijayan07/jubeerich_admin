@@ -29,11 +29,11 @@ function updateCourseApi(
     stream_id: number | string;
   }
 ) {
-  return api.update(`${baseUrl}/${id}`, params);
+  return api.update(`${baseUrl}${id}`, params);
 }
 
 function deleteCourseApi(id: string) {
-  return api.delete(`${baseUrl}/${id}`, {});
+  return api.delete(`${baseUrl}${id}`, {});
 }
 
 export { getCourseApi, addCourseApi, updateCourseApi, deleteCourseApi };

@@ -87,16 +87,16 @@ function updateAdminUsers(
   //   params.country_id = null;
   // }
 
-  return api.update(`${baseUrl}/${id}`, params);
+  return api.update(`${baseUrl}${id}`, params);
 }
 
 function deleteAdminUsers(id: string) {
-  return api.delete(`${baseUrl}/${id}`, {});
+  return api.delete(`${baseUrl}${id}`, {});
 }
 
 function updateBranch(id: string, params: { branchIds: string[] }) {
   const baseUrl = "/admin_users_branch";
-  return api.update(`${baseUrl}/${id}`, params);
+  return api.update(`${baseUrl}${id}`, params);
 }
 
 export {

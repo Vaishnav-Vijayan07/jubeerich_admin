@@ -24,11 +24,11 @@ function updateVisaChecklistApi(
     fields: Array<any>;
   }
 ) {
-  return api.update(`${baseUrl}/${id}`, params);
+  return api.update(`${baseUrl}${id}`, params);
 }
 
 function deleteVisaChecklistApi(id: string) {
-  return api.delete(`${baseUrl}/${id}`, {});
+  return api.delete(`${baseUrl}${id}`, {});
 }
 
 export { getVisaChecklistApi, addVisaChecklistApi, updateVisaChecklistApi, deleteVisaChecklistApi };

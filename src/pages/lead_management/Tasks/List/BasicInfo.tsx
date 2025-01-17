@@ -1152,7 +1152,7 @@ const BasicInfo = withSwal((props: any) => {
                       <div className="d-flex align-items-center">
                         <i className="mdi mdi-eye text-primary me-2"></i>
                         <a
-                          href={`${baseUrl}/uploads/policeClearenceDocuments/${certificate.certificate}`}
+                          href={`${baseUrl}uploads/policeClearenceDocuments/${certificate.certificate}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-decoration-none"

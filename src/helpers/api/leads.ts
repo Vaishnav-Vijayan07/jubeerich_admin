@@ -125,12 +125,12 @@ function updateLeads(
 ) {
   console.log("params ==>", params);
 
-  // return api.update(`${baseUrl}/${id}`, params);
-  return api.updateWithMultipleFile(`${baseUrl}/${id}`, params, exam_documents);
+  // return api.update(`${baseUrl}${id}`, params);
+  return api.updateWithMultipleFile(`${baseUrl}${id}`, params, exam_documents);
 }
 
 function deleteLeads(id: string) {
-  return api.delete(`${baseUrl}/${id}`, {});
+  return api.delete(`${baseUrl}${id}`, {});
 }
 
 export {

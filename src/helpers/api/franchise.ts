@@ -8,13 +8,7 @@ function getFranchiseUsersApi() {
   return api.get(`${baseUrl}`, {});
 }
 
-function addFranchiseUsersApi(params: {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  pocName: string;
-}) {
+function addFranchiseUsersApi(params: { name: string; email: string; phone: string; address: string; pocName: string }) {
   return api.create(`${baseUrl}`, params);
 }
 
@@ -28,11 +22,11 @@ function updateFranchiseUsersApi(
     pocName: string;
   }
 ) {
-  return api.update(`${baseUrl}/${id}`, params);
+  return api.update(`${baseUrl}${id}`, params);
 }
 
 function deleteFranchiseUsersApi(id: string) {
-  return api.delete(`${baseUrl}/${id}`, {});
+  return api.delete(`${baseUrl}${id}`, {});
 }
 
 function addFranchiseAdminUsersApi(params: {

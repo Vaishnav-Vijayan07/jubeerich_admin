@@ -10,7 +10,7 @@ function getAllHistories() {
 }
 
 function getHistoriesById(id: string) {
-  return api.get(`${baseUrl}/${id}`, {});
+  return api.get(`${baseUrl}${id}`, {});
 }
 
 function getHistoriesByLeadId(id: string) {
@@ -49,11 +49,11 @@ function updateHistory(
     follow_up_date: string;
   }
 ) {
-  return api.update(`${baseUrl}/${id}`, params);
+  return api.update(`${baseUrl}${id}`, params);
 }
 
 function deleteHistory(id: string) {
-  return api.delete(`${baseUrl}/${id}`, {});
+  return api.delete(`${baseUrl}${id}`, {});
 }
 
 export { getAllHistories, getHistoriesById, addHistory, updateHistory, deleteHistory, getHistoriesByLeadId };

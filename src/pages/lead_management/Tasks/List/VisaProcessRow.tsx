@@ -173,7 +173,7 @@ const VisaProcessRow = ({
                 <div className="d-flex mb-2">
                   {data?.decline_letter && (
                     <a
-                      href={`${baseUrl}/uploads/${data?.decline_letter}`}
+                      href={`${baseUrl}uploads/${data?.decline_letter}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
@@ -315,7 +315,7 @@ const VisaProcessRow = ({
                 <div className="d-flex mb-2">
                   {data?.approve_letter && (
                     <a
-                      href={`${baseUrl}/uploads/${data?.approve_letter}`}
+                      href={`${baseUrl}uploads/${data?.approve_letter}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"

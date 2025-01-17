@@ -81,7 +81,7 @@ const AdditionalDocuments = (props: any) => {
       });
 
       if (result.isConfirmed) {
-        const res = await axios.post(`${baseUrl}/api/additional_docs/${studentId}`, formData, {
+        const res = await axios.post(`${baseUrl}api/additional_docs/${studentId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -113,7 +113,7 @@ const AdditionalDocuments = (props: any) => {
       });
 
       if (result.isConfirmed) {
-        const res = await axios.delete(`${baseUrl}/api/additional_docs/${studentId}/${fieldName}`);
+        const res = await axios.delete(`${baseUrl}api/additional_docs/${studentId}/${fieldName}`);
         if (res) {
           showSuccessAlert("Document Deleted Succesfully");
           getAdditionalDoc();

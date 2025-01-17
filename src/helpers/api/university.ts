@@ -41,11 +41,11 @@ function updateUniversitysApi(
     is_active: boolean;
   }
 ) {
-  return api.update(`${baseUrl}/${id}`, params);
+  return api.update(`${baseUrl}${id}`, params);
 }
 
 function deleteUniversitysApi(id: string) {
-  return api.delete(`${baseUrl}/${id}`, {});
+  return api.delete(`${baseUrl}${id}`, {});
 }
 
 export { getUniversitysApi, addUniversitysApi, updateUniversitysApi, deleteUniversitysApi };

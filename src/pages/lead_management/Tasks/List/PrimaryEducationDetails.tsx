@@ -152,7 +152,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
             {typeof details?.mark_sheet === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/educationDocuments/${details.mark_sheet}`}
+                  href={`${baseUrl}uploads/educationDocuments/${details.mark_sheet}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -180,7 +180,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
             {typeof details?.certificate === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/educationDocuments/${details.certificate}`}
+                  href={`${baseUrl}uploads/educationDocuments/${details.certificate}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -208,7 +208,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
             {typeof details?.admit_card === "string" && (
               <div className="mt-2">
                 <a
-                  href={`${baseUrl}/uploads/educationDocuments/${details.admit_card}`}
+                  href={`${baseUrl}uploads/educationDocuments/${details.admit_card}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

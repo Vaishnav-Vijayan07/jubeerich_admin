@@ -374,7 +374,7 @@ const BasicInputElements = withSwal((props: any) => {
               <img
                 src={
                   isImage
-                    ? `${baseUrl}/${row.original.profile_image_path}`
+                    ? `${baseUrl}${row.original.profile_image_path}`
                     : profilePic
                 }
                 alt=""
@@ -437,7 +437,7 @@ const BasicInputElements = withSwal((props: any) => {
     //     <div className="d-flex justify-content-center align-items-center gap-2">
     //       {row.original.profile_image_path ? (
     //         <img
-    //           src={`${baseUrl}/${row.original.profile_image_path}`}
+    //           src={`${baseUrl}${row.original.profile_image_path}`}
     //           alt="Profile Image"
     //           width={100}
     //           height={100}
@@ -753,7 +753,7 @@ const BasicInputElements = withSwal((props: any) => {
                         )}
                         {!selectedImage && isUpdate && (
                           <div className="mt-3">
-                            <img src={`${baseUrl}/${formData.profile_image_path}`} alt="Selected" style={{ maxWidth: "100px" }} />
+                            <img src={`${baseUrl}${formData.profile_image_path}`} alt="Selected" style={{ maxWidth: "100px" }} />
                           </div>
                         )}
                       </Form.Group>

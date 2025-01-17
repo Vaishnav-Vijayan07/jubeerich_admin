@@ -150,7 +150,7 @@ const DocumentsOverview = (props: any) => {
 
                             {fileName && <Col className="col-auto">
                                 <a
-                                    href={`${baseUrl}/uploads/${filePath}/${fileName}`}
+                                    href={`${baseUrl}uploads/${filePath}/${fileName}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     id="btn-download"

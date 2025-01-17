@@ -138,7 +138,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
             <div className="d-flex align-items-center">
               <i className="mdi mdi-eye text-primary me-2"></i>
               <a
-                href={`${baseUrl}/uploads/gapDocuments/${gap.supporting_document}`}
+                href={`${baseUrl}uploads/gapDocuments/${gap.supporting_document}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-decoration-none"
