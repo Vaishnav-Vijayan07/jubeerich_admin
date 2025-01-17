@@ -439,12 +439,43 @@ const BasicInputElements = withSwal((props: any) => {
     document.body.removeChild(link);
   };
 
+  // const downloadRjectedData = (file: any) => {
+  //   const filePath = file;
+
+  //   console.log("filePath ===>", filePath);
+    
+  //   const link = document.createElement("a");
+  //   link.download = "rejected.xlsx";
+  //   // link.href = process.env.REACT_APP_API_URL + filePath;
+  //   link.href = `${process.env.REACT_APP_API_URL}${filePath}`;
+
+  //   console.log("process.env.REACT_APP_API_URL ==>", process.env.REACT_APP_API_URL);
+    
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
+
   const downloadRjectedData = (file: any) => {
     const filePath = file;
+    console.log("filePath ===>", filePath);
+  
+    const apiUrl = process.env.REACT_APP_API_URL;
+  
+    // Ensure exactly one '/' between base URL and file path
+    const url =
+      apiUrl?.endsWith("/") && filePath.startsWith("/")
+        ? `${apiUrl}${filePath.substring(1)}`
+        : apiUrl?.endsWith("/") || filePath.startsWith("/")
+        ? `${apiUrl}${filePath}`
+        : `${apiUrl}/${filePath}`;
+  
+    console.log("Generated URL:", url);
+  
     const link = document.createElement("a");
     link.download = "rejected.xlsx";
-    // link.href = process.env.REACT_APP_API_URL + filePath;
-    link.href = `${process.env.REACT_APP_API_URL}/${filePath}`;
+    link.href = url;
+  
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
