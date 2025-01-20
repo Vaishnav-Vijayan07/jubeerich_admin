@@ -26,20 +26,18 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     const [customEndDate, setCustomEndDate] = useState<string>(new Date().toISOString().split("T")[0]);
     const filters = ["weekly", "monthly", "custom"];
 
-    const { cards, loading, categories, series, latestLeadsCount, pieData, countries } = useSelector((state: RootState) => ({
+    const { cards, loading, categories, series, latestLeadsCount, pieData, countries, colors } = useSelector((state: RootState) => ({
       cards: state.Dashboard.dashboard.data?.statCards,
       categories: state.Dashboard.dashboard.data?.categories,
       series: state.Dashboard.dashboard.data?.series,
       latestLeadsCount: state.Dashboard.dashboard.data?.latestLeadsCount,
+      colors: state.Dashboard.dashboard.data?.colorsForGraph,
       countries: state.DashboardCountries.countries.data,
       pieData: state.Dashboard.dashboard.data?.applicationData,
       loading: state.Dashboard.loading,
     }));
-    
-    console.log("COUNTRY", selectedDate);
 
     const handleCountryClick = (id: any) => {
-
       setCurrentCountry(id);
       handleFilter(filterType, id);
     };
@@ -134,6 +132,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
           latestLeadsCount={latestLeadsCount}
           pieData={pieData || {}}
           countries={countries || []}
+          colors={colors}
         />
       </>
     );

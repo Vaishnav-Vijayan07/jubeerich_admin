@@ -8,6 +8,7 @@ import CustomFilter from "../../../components/Dashboard/CustomFilter";
 type Props = {
   categories: string[];
   series: SeriesItems[];
+  colors?: string[] | null;
 };
 
 type SeriesItems = {
@@ -15,7 +16,7 @@ type SeriesItems = {
   data: number[];
 };
 
-function StackGraph({ categories, series }: Props) {
+function StackGraph({ categories, series, colors }: Props) {
   const isDataPresent = series.length > 0;
 
   const options: ApexOptions = {
@@ -56,14 +57,16 @@ function StackGraph({ categories, series }: Props) {
     fill: {
       opacity: 1,
     },
-    colors: ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e","#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e","#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
+    colors: colors
+      ? colors
+      : ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
   };
 
   return (
     <Card className="h-100">
       <Card.Body>
         {isDataPresent ? (
-          <Chart options={options} series={series} type="bar" height={350}  />
+          <Chart options={options} series={series} type="bar" height={350} />
         ) : (
           <Row className="justify-content-center">
             <Col md="6" className="text-center">
