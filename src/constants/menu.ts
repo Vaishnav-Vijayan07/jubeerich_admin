@@ -232,6 +232,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         url: "/settings/master/visa_checklists",
         parentKey: "master",
       },
+      {
+        key: "visa_configuration",
+        label: "Visa Configuration",
+        url: "/settings/master/visa_configuration",
+        parentKey: "master",
+      },
     ],
   },
 
@@ -277,14 +283,6 @@ const MENU_ITEMS: MenuItemTypes[] = [
 
   { key: "status_management", label: "Status Management", isTitle: true, roles: ["Monitor"] },
 
-  // {
-  //   key: "status",
-  //   label: "Status",
-  //   isTitle: false,
-  //   icon: "activity",
-  //   url: "/settings/master/status",
-  //   roles: ["Monitor"],
-  // },
   {
     key: "status_configuration",
     label: "Status Config",

@@ -8,6 +8,10 @@ function getVisaChecklistApi() {
   return api.get(`${baseUrl}`, {});
 }
 
+function getVisaConfigApi() {
+  return api.get(`/get_visa_configurations`, {});
+}
+
 function addVisaChecklistApi(params: {
     step_name: string;
     description: string;
@@ -31,4 +35,4 @@ function deleteVisaChecklistApi(id: string) {
   return api.delete(`${baseUrl}${id}`, {});
 }
 
-export { getVisaChecklistApi, addVisaChecklistApi, updateVisaChecklistApi, deleteVisaChecklistApi };
+export { getVisaChecklistApi, addVisaChecklistApi, updateVisaChecklistApi, deleteVisaChecklistApi, getVisaConfigApi };

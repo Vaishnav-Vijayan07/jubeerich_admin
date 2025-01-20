@@ -233,7 +233,7 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <ul style={{ listStyle: "none" }}>
           {row.original.fields?.map((item: any) => (
-            <li>
+            <li key={item?.id}>
               {item?.field_name} - {item?.field_type}
             </li>
           ))}

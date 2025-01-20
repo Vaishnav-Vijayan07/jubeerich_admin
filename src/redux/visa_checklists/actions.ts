@@ -6,6 +6,7 @@ export interface VisaChecklistActionType {
     | VisaChecklistActionTypes.API_RESPONSE_SUCCESS
     | VisaChecklistActionTypes.API_RESPONSE_ERROR
     | VisaChecklistActionTypes.GET_VISA_CHECKLIST
+    | VisaChecklistActionTypes.GET_VISA_CONFIG
     | VisaChecklistActionTypes.GET_VISA_CHECKLIST_BY_ID
     | VisaChecklistActionTypes.ADD_VISA_CHECKLIST
     | VisaChecklistActionTypes.UPDATE_VISA_CHECKLIST
@@ -33,6 +34,11 @@ export const VisaChecklistApiResponseError = (actionType: string, error: string)
 
 export const getVisaChecklist = (): VisaChecklistActionType => ({
   type: VisaChecklistActionTypes.GET_VISA_CHECKLIST,
+  payload: {},
+});
+
+export const getVisaConfiguration = (): VisaChecklistActionType => ({
+  type: VisaChecklistActionTypes.GET_VISA_CONFIG,
   payload: {},
 });
 

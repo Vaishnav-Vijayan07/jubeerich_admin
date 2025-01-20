@@ -9,7 +9,8 @@ import {
   getVisaChecklistApi,
   addVisaChecklistApi,
   updateVisaChecklistApi,
-  deleteVisaChecklistApi
+  deleteVisaChecklistApi,
+  getVisaConfigApi
 } from "../../helpers";
 
 // actions
@@ -48,6 +49,19 @@ function* getVisaChecklists(): SagaIterator {
   } catch (error: any) {
     console.log("Error", error);
     yield put(VisaChecklistApiResponseError(VisaChecklistActionTypes.GET_VISA_CHECKLIST, error));
+  }
+}
+
+function* getVisaConfig(): SagaIterator {
+  try {
+    const response = yield call(getVisaConfigApi);
+    const data = response.data.data;
+
+    // NOTE - You can change this according to response format from your api
+    yield put(VisaChecklistApiResponseSuccess(VisaChecklistActionTypes.GET_VISA_CONFIG, { data }));
+  } catch (error: any) {
+    console.log("Error", error);
+    yield put(VisaChecklistApiResponseError(VisaChecklistActionTypes.GET_VISA_CONFIG, error));
   }
 }
 
@@ -99,6 +113,10 @@ export function* watchGetVisaChecklists() {
   yield takeEvery(VisaChecklistActionTypes.GET_VISA_CHECKLIST, getVisaChecklists);
 }
 
+export function* watchGetVisaConfig() {
+  yield takeEvery(VisaChecklistActionTypes.GET_VISA_CONFIG, getVisaConfig);
+}
+
 export function* watchaddVisaChecklists() {
   yield takeEvery(VisaChecklistActionTypes.ADD_VISA_CHECKLIST, addVisaChecklist);
 }
@@ -117,6 +135,7 @@ function* VisaChecklistSaga() {
     fork(watchaddVisaChecklists),
     fork(watchUpdateVisaChecklists),
     fork(watchDeleteVisaChecklists),
+    fork(watchGetVisaConfig)
   ]);
 }
 
