@@ -15,14 +15,11 @@ function PreviousImmigrationCheck({ current, handleStepChange, studentId, countr
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
   const [remarks, setRemarks] = useState<string>("");
   const [isCheckPassed, setIsCheckPassed] = useState<boolean>(false);
-  const [showRemark, setShowRemark] = useState<boolean>(false);
   const [visaApprovals, setVisaApprovals] = useState<any>([]);
   const [visaDeclines, setVisaDeclines] = useState<any>([]);
   const [remark, setRemark] = useState<string>("");
 
-  const onRemarkChange = (value: string) => {
-    setRemark(value);
-  };
+  
 
   const fetchImmigrationDetails = async () => {
     try {
@@ -34,28 +31,14 @@ function PreviousImmigrationCheck({ current, handleStepChange, studentId, countr
       setVisaApprovals(visaData.data?.visaDetails?.previousVisaApprovals);
       setVisaDeclines(visaData.data?.visaDetails?.previousVisaDeclines);
       setRemarks(checkData.data.data?.remarks?.remarks);
+      setRemark(checkData.data.data?.remarks?.remarks);
       setIsCheckPassed(checkData.data.data?.remarks?.isCheckPassed);
-      setShowRemark(checkData.data.data?.remarks?.remarks ? true : false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const showRemarkBox = () => {
-    setShowRemark(true);
-  };
 
-  const saveRemark = async (value: string) => {
-    try {
-      await axios.post(`/checks_remarks/${type}/${application_id}`, {
-        remarks: value == "" ? null : value,
-        eligibility_id,
-      });
-      dispatch(refreshData());
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     fetchImmigrationDetails();
@@ -83,7 +66,7 @@ function PreviousImmigrationCheck({ current, handleStepChange, studentId, countr
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} onRemarkChange={onRemarkChange} />
+      <RemarksSection remark={remark} onRemarkChange={setRemark} />
       <FormButtons
         type={type}
         current={current}

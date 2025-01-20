@@ -11,15 +11,11 @@ const styles = {
 };
 
 function ProgramAvailabiltyCheck({ current, handleStepChange, student_id, country_id, application_id, type, eligibility_id }: any) {
-  const { data, remarks, showRemark, saveRemark, remark, setRemark } = useRemarks({
+  const { data, remarks, remark, setRemark } = useRemarks({
     type,
     application_id,
     eligibility_id,
   });
-
-  const onRemarkChange = (value: string) => {
-    setRemark(value);
-  };
 
   return (
     <>
@@ -68,7 +64,7 @@ function ProgramAvailabiltyCheck({ current, handleStepChange, student_id, countr
         </Card>
       </Row>
 
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} onRemarkChange={onRemarkChange} />
+      <RemarksSection remark={remark} onRemarkChange={setRemark} />
 
       <FormButtons
         type={type}
@@ -80,7 +76,7 @@ function ProgramAvailabiltyCheck({ current, handleStepChange, student_id, countr
         application_id={application_id}
         remarks={remarks}
         remark={remark}
-        eligibility_id = {eligibility_id}
+        eligibility_id={eligibility_id}
       />
     </>
   );

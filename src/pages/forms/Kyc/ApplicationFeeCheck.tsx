@@ -28,14 +28,9 @@ function ApplicationFeeCheck({
   const navigate = useNavigate();
   const [fee, setFee] = useState<any>("");
   const [remarks, setRemarks] = useState<string>("");
-  const [showRemark, setShowRemark] = useState<boolean>(false);
   const [isCheckPassed, setIsCheckPassed] = useState<boolean>(false);
   const [applicaiton_reciept, setApplicationReciept] = useState<string>("");
   const [remark, setRemark] = useState<string>("");
-
-  const onRemarkChange = (value: string) => {
-    setRemark(value);
-  };
 
   const dispatch = useDispatch();
 
@@ -53,20 +48,8 @@ function ApplicationFeeCheck({
       setFee(data.data?.checks);
       setApplicationReciept(data.data?.checks?.application_reciept);
       setRemarks(data.data?.remarks?.remarks);
+      setRemark(data.data?.remarks?.remarks);
       setIsCheckPassed(data.data?.remarks?.isCheckPassed);
-      setShowRemark(data.data?.remarks?.remarks ? true : false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const saveRemark = async (value: string) => {
-    try {
-      await axios.post(`/checks_remarks/${type}/${application_id}`, {
-        remarks: value == "" ? null : value,
-        eligibility_id,
-      });
-      dispatch(refreshData());
     } catch (error) {
       console.log(error);
     }
@@ -123,7 +106,7 @@ function ApplicationFeeCheck({
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} onRemarkChange={onRemarkChange} />
+      <RemarksSection remark={remark} onRemarkChange={setRemark} />
       <FormButtons
         type={type}
         current={current}
@@ -134,8 +117,8 @@ function ApplicationFeeCheck({
         application_id={application_id}
         remarks={remarks}
         successNavigate={successNavigate}
-        remark ={remark}
-        eligibility_id = {eligibility_id}
+        remark={remark}
+        eligibility_id={eligibility_id}
       />
     </>
   );

@@ -79,7 +79,7 @@ function DocumentQualityCheck({ studentId, country_id, current, handleStepChange
           </Card.Body>
         </Card>
       </Row>
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark}  onRemarkChange={onRemarkChange}/>
+     <RemarksSection remark={remark} onRemarkChange={setRemark} />
       <FormButtons
         type={type}
         current={current}

@@ -38,16 +38,14 @@ function FormButtons({
   };
 
   const rejectApplication = async (id: any) => {
-    console.log("REMARKK", remark);
-    console.log("REMARKK", remarks);
-
     let remarksModified = "";
 
     const isRejectionSaveRequired = remarks !== remark;
 
-    if (remark == "") {
+    if (remark == "" || remark == null) {
       return showWarningAlert("Please enter remarks for rejection");
     }
+
     if (!remarks || isRejectionSaveRequired) {
       const isRemarkUpdated = await saveRemark(remark);
       if (!isRemarkUpdated) {
@@ -69,11 +67,22 @@ function FormButtons({
       const result = await Swal.fire({
         title: "Are you sure?",
         text: "This action cannot be undone.",
-        icon: "warning",
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: "Yes, Reject",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {
@@ -88,14 +97,15 @@ function FormButtons({
     }
   };
 
-  console.log("isCheckPassed", isCheckPassed);
-
   const saveRemark = async (value: string) => {
     try {
       const { data } = await axios.post(`/checks_remarks/${type}/${application_id}`, {
         remarks: value === "" ? null : value,
         eligibility_id,
       });
+
+      console.log(data);
+
       return data;
     } catch (error) {
       console.error("Error saving remark:", error);
@@ -103,7 +113,27 @@ function FormButtons({
     }
   };
 
+  const handleRemarkChange = async () => {
+    let isRemarkChanged = remark !== remarks;
+    console.log(isRemarkChanged);
+
+    if (isRemarkChanged) {
+      if (remark == "") {
+        return showWarningAlert("Please provide a remark");
+      }
+
+      const data = await saveRemark(remark);
+      if (data.status) {
+        showSuccessAlert(data.message);
+      } else {
+        showErrorAlert(data.message);
+      }
+    }
+  };
+
   const handleNext = async () => {
+    await handleRemarkChange();
+
     const isChangeDetectionNeeded = type === "quality" && checkChangeInData();
 
     if (!isCheckPassed || isChangeDetectionNeeded) {
@@ -172,19 +202,14 @@ function FormButtons({
 
   const submitChecks = async (checkType: any) => {
     try {
-      let payload;
+      let payload = {
+        application_id,
+        check_type: checkType,
+        quality_value: undefined,
+      };
 
-      if (checkType == CheckTypes.quality) {
-        payload = {
-          application_id: application_id,
-          check_type: checkType,
-          quality_value: qualityForm,
-        };
-      } else {
-        payload = {
-          application_id: application_id,
-          check_type: checkType,
-        };
+      if (checkType === CheckTypes.quality) {
+        payload.quality_value = qualityForm;
       }
 
       const { data } = await axios.put(`/check_application`, payload);
@@ -200,6 +225,9 @@ function FormButtons({
   const handleProceedApplication = async () => {
     try {
       // If all checks are completed, proceed to submit the application checks.
+
+      await handleRemarkChange();
+
       if (!isCheckPassed) {
         await submitChecks(CheckTypes.application_fee);
       }

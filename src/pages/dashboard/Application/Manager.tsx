@@ -4,11 +4,9 @@ import StackGraph from "../Components/StackGraph";
 import PieData from "../Components/PieData";
 import ApplicationsTable from "../Components/ApplicationsTable";
 
-function ManagerDashboard({ categories, series, latestLeadsCount, pieData,colors }: any) {
+function ManagerDashboard({ categories, series, latestLeadsCount, pieData, colors }: any) {
   const labels = pieData?.pieCategories;
   const pieSeries = pieData?.pieSeries;
-
-  console.log(colors)
 
   return (
     <>
