@@ -13,16 +13,26 @@ type StepperData = StepperDataItem[];
 type Props = {
   steps: StepperData;
   current: number;
+  isClickEnabled: boolean;
+  setCurrent: (index: number) => void;
 };
 
-const ApplicationStepper = ({ steps, current }: Props) => {
+const ApplicationStepper = ({ steps, current, isClickEnabled, setCurrent }: Props) => {
+  const handleStepClick = (index: number) => {
+    if (!isClickEnabled) {
+      showWarningAlert("Please complete all steps");
+      return;
+    }
+    setCurrent(index);
+  };
 
   return (
     <div className="p-1">
       <div className="row d-flex gap-3 ">
-        {steps.map((step: StepperDataItem, index: any) => (
+        {steps.map((step: StepperDataItem, index: number) => (
           <div
             key={index}
+            onClick={() => handleStepClick(index)}
             className={`col d-flex flex-column align-items-center position-relative border ${current == index ? "opacity-100" : "opacity-25"} `}
             style={{ width: "158px", height: "82px", borderColor: "#e9ecef", backgroundColor: "#6657dd", borderRadius: "5px", padding: " 10px" }}
           >

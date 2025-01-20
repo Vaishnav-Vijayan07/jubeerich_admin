@@ -52,6 +52,7 @@ const PendingDetailsById = withSwal((props: any) => {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const [steps, setSteps] = useState<StepperData>([]);
+  const [isClickEnabled, setIsClickEnabled] = useState(false);
   const [current, setCurrent] = useState(0);
   const [item, setItem] = useState<any>(null);
 
@@ -132,6 +133,7 @@ const PendingDetailsById = withSwal((props: any) => {
     try {
       const { data } = await axios.get(`${baseUrl}api/stepper_data/${application_id}`);
       setSteps(data?.data);
+      setIsClickEnabled(data?.isClickEnabled);
     } catch (error) {
       console.log(error);
     }
@@ -195,7 +197,7 @@ const PendingDetailsById = withSwal((props: any) => {
       <Row className="pt-2">
         <Card style={{ boxShadow: "0px 0px 17px -1px rgba(205,207,207,1)", borderRadius: "8px" }}>
           <Card.Body>
-            <ApplicationStepper steps={steps} current={current} />
+            <ApplicationStepper steps={steps} current={current} isClickEnabled={isClickEnabled} setCurrent={setCurrent} />
           </Card.Body>
         </Card>
       </Row>

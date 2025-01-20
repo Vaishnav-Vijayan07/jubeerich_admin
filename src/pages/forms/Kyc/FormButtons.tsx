@@ -115,7 +115,6 @@ function FormButtons({
 
   const handleRemarkChange = async () => {
     let isRemarkChanged = remark !== remarks;
-    console.log(isRemarkChanged);
 
     if (isRemarkChanged) {
       if (remark == "") {
