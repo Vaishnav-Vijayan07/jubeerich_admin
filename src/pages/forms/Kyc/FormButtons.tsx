@@ -252,7 +252,7 @@ function FormButtons({
 
           {current !== 0 && (
             <Button
-              style={{ backgroundColor: "#B3ACEE", color: "white", border: "none", borderRadius: "5px" }}
+              style={{ backgroundColor: "#6658DD", color: "white", border: "none", borderRadius: "5px" }}
               className="me-2"
               onClick={() => handleNavigation("prev")}
             >

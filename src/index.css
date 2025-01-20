@@ -952,3 +952,8 @@ select::-ms-expand {
   display: flex;
   gap: 30px;
 }
+
+.remark-text-area{
+  box-shadow: 0px 0px 17px -1px rgba(205, 207, 207, 1);
+  resize: none;
+}
