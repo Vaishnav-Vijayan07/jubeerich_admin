@@ -27,10 +27,10 @@ const FileUpload = () => {
                 file uploads with image previews.
               </p>
 
-              <FileUploader
+              {/* <FileUploader
                 onFileUpload={(files:any) => {
                 }}
-              />
+              /> */}
             </Card.Body>
           </Card>
         </Col>
