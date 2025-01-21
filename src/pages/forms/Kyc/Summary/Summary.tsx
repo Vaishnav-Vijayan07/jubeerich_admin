@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 import CheckHeadings from '../../../../components/CheckHeadings'
 import { Button, Card, Col, Row } from 'react-bootstrap'
 import { additionalDocs, applicationFeeCheck, AvailabilityCheck, campusCheck, educationCheck, educationDocs, empHistories, examDocs, fundPlan, gapCheck, graduationCheck, graduationDocs, policeDocs, qualityCheck, visaApproved, visaDeclined, workInfoDocs } from './data'
@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom'
 import CheckQuality from '../../../../components/ApplicationChecks/CheckQuality'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ImmigrationDetails from '../../../../components/ApplicationChecks/DocsQuantity/ImmigrationDetails'
-import VisaDeclineDetails from '../../../../components/ApplicationChecks/DocsQuantity/VisaDecline'
 import AdditionalDocs from '../../../../components/ApplicationChecks/DocsQuantity/AdditionalDocs'
 import FundDetails from '../../../../components/ApplicationChecks/DocsQuantity/FundDetails'
 import EducationDetails from '../../../../components/ApplicationChecks/DocsQuantity/EducationDetails'
@@ -36,6 +35,21 @@ const Summary = () => {
         immigration_check: true,
         application_fee_check: true
     });
+    
+    const qualityCheckRef = useRef<HTMLDivElement>(null);
+    const entryRequirementRef = useRef<HTMLDivElement>(null);
+    const quantityCheckRef = useRef<HTMLDivElement>(null);
+    const immigrationRef = useRef<HTMLDivElement>(null);
+    const applicationFeeRef = useRef<HTMLDivElement>(null);
+    const campusRef = useRef<HTMLDivElement>(null);
+    const availabilityRef = useRef<HTMLDivElement>(null);
+    const [qualityCheckHeight, setQualityCheckHeight] = useState(0);
+    const [entryRequirementHeight, setEntryRequirementHeight] = useState(0);
+    const [quantityCheckHeight, setQuantityCheckHeight] = useState(0);
+    const [immigrationHeight, setImmigrationHeight] = useState(0);
+    const [applicationFeeHeight, setApplicationFeeHeight] = useState(0);
+    const [campusHeight, setCampusHeight] = useState(0);
+    const [availabilityHeight, setAvailabilityHeight] = useState(0);
 
     const remarksType = {
         availability_check: 'availability_check',
@@ -321,6 +335,62 @@ const Summary = () => {
         )
     }
 
+    useEffect(() => {
+        const updateHeights = () => {
+            // For quality check section
+            if (qualityCheckRef.current instanceof HTMLElement) {
+                const height = qualityCheckRef.current.offsetHeight;
+                setQualityCheckHeight(height);
+            }
+            
+            // For entry requirement section
+            if (entryRequirementRef.current instanceof HTMLElement) {
+                const height = entryRequirementRef.current.offsetHeight;
+                setEntryRequirementHeight(height);
+            }
+
+            // For quantity check section
+            if (quantityCheckRef.current instanceof HTMLElement) {
+                const height = quantityCheckRef.current.offsetHeight;
+                setQuantityCheckHeight(height);
+            }
+
+            // For immigration check section
+            if (immigrationRef.current instanceof HTMLElement) {
+                const height = immigrationRef.current.offsetHeight;
+                setImmigrationHeight(height);
+            }
+
+            // For application fee check section
+            if (applicationFeeRef.current instanceof HTMLElement) {
+                const height = applicationFeeRef.current.offsetHeight;
+                setApplicationFeeHeight(height);
+            }
+
+            // For campus check section
+            if (campusRef.current instanceof HTMLElement) {
+                const height = campusRef.current.offsetHeight;
+                setCampusHeight(height);
+            }
+
+            // For availability check section
+            if (availabilityRef.current instanceof HTMLElement) {
+                const height = availabilityRef.current.offsetHeight;
+                setAvailabilityHeight(height);
+            }
+        };
+    
+        updateHeights();
+        window.addEventListener('resize', updateHeights);
+        
+        // Also update heights when tab changes
+        if (tabValue || quantityTabValue || visaTabValue) {
+            updateHeights();
+        }
+        
+        return () => window.removeEventListener('resize', updateHeights);
+    }, [summaryData, isRemarksHide, tabValue, quantityTabValue, visaTabValue]);
+
     return (
         <>
             <div style={{ marginLeft: '20px', marginRight: '20px' }}>
@@ -355,7 +425,7 @@ const Summary = () => {
                 <Row className="mt-1">
                     <Card className="rounded-4">
                         {isRemarksHide.availability_check ? (
-                            <Card.Body>
+                            <Card.Body ref={availabilityRef}>
                                 <Row>
                                     <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
                                         <h5 style={styles?.h5}>Country</h5>
@@ -393,7 +463,7 @@ const Summary = () => {
                                 </Row>
                             </Card.Body>
                         ) : (
-                            <Card.Body>
+                            <Card.Body style={{ height: `${availabilityHeight}px` }}>
                                 <Row>
                                     <Col md={6} className='ms-4'>
                                         <SummaryRemarks remarks={summaryData?.remarks?.availability_check} />
@@ -415,11 +485,10 @@ const Summary = () => {
                 <Row className='mt-2'>
                     <CheckHeadings title={"Campus Check"} />
                 </Row>
-
                 <Row className="mt-1">
                     <Card className="rounded-4 position-relative" style={{ overflow: "hidden" }}>
                         {isRemarksHide?.campus_check ? (
-                            <Card.Body>
+                            <Card.Body ref = {campusRef}>
                                 <Row className="mt-1 mb-2">
                                     <Col md={6}>
                                         <h5 style={styles.h5}>Campus</h5>
@@ -428,7 +497,7 @@ const Summary = () => {
                                 </Row>
                             </Card.Body>
                         ) : (
-                            <Card.Body>
+                            <Card.Body style={{ height: `${campusHeight}px` }}>
                                 <Row className="mt-1 mb-2">
                                     <Col md={6} className='ms-4'>
                                         <SummaryRemarks remarks={summaryData?.remarks?.campus_check} />
@@ -437,7 +506,6 @@ const Summary = () => {
                             </Card.Body>
                         )}
 
-                        {/* Side Remarks Panel */}
                         <div
                             className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
                             style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.campus_check) ? "0" : "1200px" }}
@@ -455,7 +523,7 @@ const Summary = () => {
                     <Card className="rounded-4">
 
                         {isRemarksHide?.entry_requirement ? (
-                            <Card.Body style={{ paddingTop: '0px' }}>
+                            <Card.Body style={{ paddingTop: '0px' }} ref={entryRequirementRef}>
                                 <Row>
                                     <Tabs
                                         value={tabValue}
@@ -536,7 +604,7 @@ const Summary = () => {
                                 </Row>
                             </Card.Body>
                         ) : (
-                            <Card.Body style={{ paddingTop: '0px' }}>
+                            <Card.Body style={{ height: `${entryRequirementHeight}px`, paddingTop: '0px' }}>
                                 <Row>
                                     <Col md={6} className='ms-4'>
                                         <SummaryRemarks remarks={summaryData?.remarks?.entry_requirement_check} />
@@ -544,7 +612,6 @@ const Summary = () => {
                                 </Row>
                             </Card.Body>
                         )}
-                        {/* Side Remarks Panel */}
                         <div
                             className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
                             style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.entry_requirement) ? "0" : "1200px" }}
@@ -561,7 +628,7 @@ const Summary = () => {
                 <Row className="mt-1">
                     <Card className="rounded-4">
                         {isRemarksHide?.quality_check ? (
-                            <Card.Body className="d-flex gap-2 justify-content-center">
+                            <Card.Body ref={qualityCheckRef} className="d-flex gap-2 justify-content-center">
                                 <Col md={4} className="doc-quantity-item">
                                     <CheckQuality
                                         id={"formatting"}
@@ -594,7 +661,7 @@ const Summary = () => {
                                 </Col>
                             </Card.Body>
                         ) : (
-                            <Card.Body style={{ paddingTop: '0px' }}>
+                            <Card.Body style={{ height: `${qualityCheckHeight}px`, paddingTop: '0px' }}>
                                 <Row>
                                     <Col md={6} className='ms-4'>
                                         <SummaryRemarks remarks={summaryData?.remarks?.quality_check} />
@@ -619,7 +686,7 @@ const Summary = () => {
                 <Row className="mt-1">
                     <Card className="bodrer rounded-4">
                         {isRemarksHide?.quantity_check ? (
-                            <Card.Body style={{ paddingTop: '0px', paddingBottom: '1rem' }}>
+                            <Card.Body style={{ paddingTop: '0px', paddingBottom: '1rem' }} ref={quantityCheckRef}>
                                 <Row>
                                     <Tabs
                                         value={quantityTabValue}
@@ -751,7 +818,7 @@ const Summary = () => {
                                 </Collapse>
                             </Card.Body>
                         ) : (
-                            <Card.Body style={{ paddingTop: '0px', paddingBottom: '1rem' }}>
+                            <Card.Body style={{ paddingTop: '0px', paddingBottom: '1rem', height: `${quantityCheckHeight}px` }}>
                                 <Row>
                                     <Col md={6} className='ms-4'>
                                         <SummaryRemarks remarks={summaryData?.remarks?.quantity_check} />
@@ -773,11 +840,10 @@ const Summary = () => {
                 <Row className='mt-2'>
                     <CheckHeadings title={"Previous Immigration Check"} />
                 </Row>
-
                 <Row className="mt-1">
                     <Card className="bodrer rounded-4">
                         {isRemarksHide?.immigration_check ? (
-                            <Card.Body style={{ paddingTop: '0px', paddingBottom: '1rem' }}>
+                            <Card.Body style={{ paddingTop: '0px', paddingBottom: '1rem' }} ref={immigrationRef}>
                                 <Row>
                                     <Tabs
                                         value={visaTabValue}
@@ -817,7 +883,7 @@ const Summary = () => {
                                 </Row>
                             </Card.Body>
                         ) : (
-                            <Card.Body style={{ paddingTop: '0px' }}>
+                            <Card.Body style={{ paddingTop: '0px', height: `${immigrationHeight}px` }}>
                                 <Row>
                                     <Col md={6} className='ms-4'>
                                         <SummaryRemarks remarks={summaryData?.remarks?.immigration_check} />
@@ -843,7 +909,7 @@ const Summary = () => {
                 <Row className="mt-1">
                     <Card className="rounded-4">
                         {isRemarksHide?.application_fee_check ? (
-                            <Card.Body className="d-flex gap-2 align-items-center">
+                            <Card.Body className="d-flex gap-2 align-items-center" ref={applicationFeeRef}>
                                 <div className="d-flex justify-content-between align-items-center application-fee-col p-2">
                                     <div className="fs-14 fw-semibold text-dark">Application Fee Check</div>
                                     <div className="application-fee-col-amount-col p-1 d-flex align-items-center justify-content-center">
@@ -852,7 +918,7 @@ const Summary = () => {
                                 </div>
                             </Card.Body>
                         ) : (
-                            <Card.Body style={{ paddingTop: '0px' }}>
+                            <Card.Body style={{ paddingTop: '0px', height: `${applicationFeeHeight}px` }}>
                                 <Row>
                                     <Col md={6} className='ms-4'>
                                         <SummaryRemarks remarks={summaryData?.remarks?.application_fee_check} />
