@@ -10,7 +10,7 @@ function getAllChecklists() {
 }
 
 function getChecklistById(id:string) {
-    return api.get(`${baseUrl}${id}`, {});
+    return api.get(`${baseUrl}/${id}`, {});
 }
 
 function addChecklist(params: {
@@ -36,11 +36,11 @@ function updateChecklist(
     }
 ) {
 
-    return api.update(`${baseUrl}${id}`, params);
+    return api.update(`${baseUrl}/${id}`, params);
 }
 
 function deleteChecklist(id: string) {
-    return api.delete(`${baseUrl}${id}`, {});
+    return api.delete(`${baseUrl}/${id}`, {});
 }
 
 export { getAllChecklists, getChecklistById, addChecklist, updateChecklist, deleteChecklist };

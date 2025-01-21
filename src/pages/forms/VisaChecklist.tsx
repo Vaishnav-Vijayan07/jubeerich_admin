@@ -195,8 +195,7 @@ const BasicInputElements = withSwal((props: any) => {
     step_name: yup
       .string()
       .required("Step name is required")
-      .min(3, "Step name must be at least 3 characters long")
-      .matches(/^[a-zA-Z0-9\s_]+$/, "Step name can only contain letters, numbers, spaces and underscores"),
+      .min(3, "Step name must be at least 3 characters long"),
     description: yup.string(),
     fields: yup
       .array()
@@ -205,8 +204,7 @@ const BasicInputElements = withSwal((props: any) => {
           field_name: yup
             .string()
             .required("Field name is required")
-            .min(2, "Field name must be at least 2 characters long")
-            .matches(/^[a-zA-Z0-9\s_]+$/, "Field name can only contain letters, numbers, spaces and underscores"),
+            .min(2, "Field name must be at least 2 characters long"),
           field_type: yup
             .string()
             .required("Field type is required")

@@ -19,11 +19,11 @@ function updateCourseTypeApi(
     description: string;
   }
 ) {
-  return api.update(`${baseUrl}${id}`, params);
+  return api.update(`${baseUrl}/${id}`, params);
 }
 
 function deleteCourseTypeApi(id: string) {
-  return api.delete(`${baseUrl}${id}`, {});
+  return api.delete(`${baseUrl}/${id}`, {});
 }
 
 export { getCourseTypeApi, addCourseTypeApi, updateCourseTypeApi, deleteCourseTypeApi };

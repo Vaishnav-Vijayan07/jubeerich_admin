@@ -33,11 +33,11 @@ function updateStatus(
     type_id: string;
   }
 ) {
-  return api.update(`${baseUrl}${id}`, params);
+  return api.update(`${baseUrl}/${id}`, params);
 }
 
 function deleteStatus(id: string) {
-  return api.delete(`${baseUrl}${id}`, {});
+  return api.delete(`${baseUrl}/${id}`, {});
 }
 
 export { addStatus, getStatus, deleteStatus, updateStatus, getStatusConfig };
