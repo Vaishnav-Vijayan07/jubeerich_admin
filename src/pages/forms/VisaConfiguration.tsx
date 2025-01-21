@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Badge } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
@@ -18,13 +18,13 @@ interface TableRecords {
   id: number;
   country_name: string;
   visa_checklists: Array<{
-    id: number;
+    id: string;
     step_name: string;
   }>;
 }
 
 interface FormData {
-  visa_checklist_ids: number[];
+  visa_checklist_ids: string[];
   country_id: string;
 }
 
@@ -41,19 +41,36 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedChecklists, setSelectedChecklists] = useState<any>(null);
   const animatedComponents = makeAnimated();
 
+  // const validationSchema = yup.object().shape({
+  //   visa_checklist_ids: yup.array().min(1, "At least one checklist must be selected").required("Visa checklist is required"),
+  //   country_id: yup.string().required("Country is required"),
+  // });
+
   const validationSchema = yup.object().shape({
-    visa_checklist_ids: yup.array().min(1, "At least one checklist must be selected").required("Visa checklist is required"),
+    visa_checklist_ids: yup
+      .array()
+      .transform((value, originalValue) => {
+        // Handle string representations like [""] and convert to an empty array
+        if (typeof originalValue === "string") {
+          try {
+            const parsedValue = JSON.parse(originalValue);
+            return Array.isArray(parsedValue) ? parsedValue : [];
+          } catch {
+            return [];
+          }
+        }
+        return value;
+      })
+      .test(
+        "non-empty-array",
+        "At least one checklist must be selected",
+        (value) => Array.isArray(value) && value.filter((item) => item).length > 0
+      )
+      .required("Visa checklist is required"),
     country_id: yup.string().required("Country is required"),
   });
-  // Add console logs to track state changes
-  useEffect(() => {
-    console.log("FormData changed:", formData);
-    console.log("Selected Checklists changed:", selectedChecklists);
-  }, [formData, selectedChecklists]);
 
   const handleUpdate = (item: TableRecords) => {
-    console.log("Updating with item:", item); // Debug log
-
     if (!item || !item.visa_checklists) {
       console.error("Invalid item data:", item);
       return;
@@ -65,9 +82,6 @@ const BasicInputElements = withSwal((props: any) => {
         value: checklist.id,
         label: checklist.step_name,
       }));
-
-      console.log("Selected options created:", selectedOptions); // Debug log
-
       // First update the checklists state
       setSelectedChecklists(selectedOptions);
 
@@ -76,11 +90,6 @@ const BasicInputElements = withSwal((props: any) => {
         visa_checklist_ids: item.visa_checklists.map((c) => c.id),
         country_id: item.id.toString(),
       });
-
-      console.log("Form data set to:", {
-        visa_checklist_ids: item.visa_checklists.map((c) => c.id),
-        country_id: item.id.toString(),
-      }); // Debug log
     } catch (error) {
       console.error("Error in handleUpdate:", error);
     }
@@ -107,7 +116,7 @@ const BasicInputElements = withSwal((props: any) => {
             axios
               .put(`/configure_visa`, {
                 country_id: formData.country_id,
-                visa_checklist_ids: formData.visa_checklist_ids,
+                visa_checklist_ids: formData.visa_checklist_ids.filter((id) => id !== "" && id !== null && id !== undefined),
               })
               .then((res) => {
                 showSuccessAlert(res.data.message);
@@ -172,20 +181,6 @@ const BasicInputElements = withSwal((props: any) => {
     },
   ];
 
-  const handleChecklistChange = (selected: any) => {
-    console.log("Checklist change:", selected); // Debug log
-
-    setSelectedChecklists(selected);
-    setFormData((prev) => {
-      const newData = {
-        ...prev,
-        visa_checklist_ids: selected ? selected.map((option: any) => option.value) : [],
-      };
-      console.log("Updated form data:", newData); // Debug log
-      return newData;
-    });
-  };
-
   const toggleResponsiveModal = () => {
     if (responsiveModal) {
       // Modal is closing
@@ -195,9 +190,40 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleResetValues = () => {
-    console.log("Resetting values"); // Debug log
     setFormData(initialState);
     setSelectedChecklists(null);
+  };
+
+  const handleChecklistChange = (selected: any, index: number) => {
+    const updatedChecklists = [...formData.visa_checklist_ids];
+    updatedChecklists[index] = selected ? selected.value : null;
+    setFormData((prev) => ({
+      ...prev,
+      visa_checklist_ids: updatedChecklists.filter(Boolean), // Remove null/empty values
+    }));
+  };
+
+  const addChecklist = () => {
+    if (formData.visa_checklist_ids.length < visaChecklists.length) {
+      setFormData((prev) => ({
+        ...prev,
+        visa_checklist_ids: [...prev.visa_checklist_ids, ""],
+      }));
+    }
+  };
+
+  const removeChecklist = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      visa_checklist_ids: prev.visa_checklist_ids.filter((_, i) => i !== index),
+    }));
+  };
+
+  const getAvailableOptions = (currentIndex: number) => {
+    return visaChecklists.filter((option: any) => {
+      const isSelected = formData.visa_checklist_ids.some((id, index) => id === option.value && index !== currentIndex);
+      return !isSelected;
+    });
   };
 
   return (
@@ -206,16 +232,16 @@ const BasicInputElements = withSwal((props: any) => {
         <Modal
           show={responsiveModal}
           onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-          backdrop="static" // Prevent closing on outside click
+          dialogClassName="modal-dialog-centered modal-lg"
+          backdrop="static"
         >
           <Form onSubmit={onSubmit}>
-            <Modal.Header closeButton>
+            <Modal.Header closeButton className="border-bottom">
               <h4 className="modal-title">Visa Configuration</h4>
             </Modal.Header>
-            <Modal.Body>
-              <Form.Group className="mb-3">
-                <Form.Label>Country</Form.Label>
+            <Modal.Body className="p-4">
+              <Form.Group className="mb-4">
+                <Form.Label className="fw-bold">Country</Form.Label>
                 <Select
                   className="react-select"
                   options={countries}
@@ -224,25 +250,57 @@ const BasicInputElements = withSwal((props: any) => {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Visa Checklists</Form.Label>
-                <Select
-                  closeMenuOnSelect={false}
-                  components={animatedComponents}
-                  isMulti
-                  className="react-select"
-                  options={visaChecklists}
-                  value={selectedChecklists}
-                  onChange={handleChecklistChange}
-                />
-              </Form.Group>
+              <div className="mb-3">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <Form.Label className="fw-bold m-0">Visa Checklists</Form.Label>
+                  <Badge className="px-2 py-1">
+                    {formData.visa_checklist_ids.length} of {visaChecklists.length} selected
+                  </Badge>
+                </div>
+
+                <div className="checklist-container border rounded p-3 bg-light">
+                  {formData.visa_checklist_ids.map((checklistId, index) => (
+                    <div key={index} className="d-flex align-items-center gap-2 mb-3">
+                      <div className="flex-grow-1">
+                        <div className="d-flex align-items-center gap-2">
+                          <span className="text-muted">{index + 1}.</span>
+                          <Select
+                            closeMenuOnSelect={true}
+                            components={animatedComponents}
+                            className="react-select flex-grow-1"
+                            options={getAvailableOptions(index)}
+                            value={visaChecklists.find((checklist: any) => checklist.value === checklistId)}
+                            onChange={(selected) => handleChecklistChange(selected, index)}
+                            placeholder="Select checklist item..."
+                          />
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => removeChecklist(index)}
+                            className="d-flex align-items-center justify-content-center p-1"
+                          >
+                            <FeatherIcons icon="x" size="16" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {formData.visa_checklist_ids.length < visaChecklists.length && (
+                    <Button variant="outline-primary" onClick={addChecklist} className="w-100 mt-2">
+                      <FeatherIcons icon="plus" size="16" className="me-1" />
+                      Add More Checklist
+                    </Button>
+                  )}
+                </div>
+              </div>
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="danger" onClick={toggleResponsiveModal}>
-                Close
+            <Modal.Footer className="border-top">
+              <Button variant="light" onClick={toggleResponsiveModal}>
+                Cancel
               </Button>
-              <Button type="submit" variant="success">
-                Submit
+              <Button type="submit" variant="primary" disabled={formData.visa_checklist_ids.length === 0}>
+                Save Changes
               </Button>
             </Modal.Footer>
           </Form>
