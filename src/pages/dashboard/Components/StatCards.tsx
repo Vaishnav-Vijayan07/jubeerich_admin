@@ -4,6 +4,8 @@ import { Row } from "react-bootstrap";
 import IconCards from "./IconCards"; // Replace with your actual IconCards import
 import { formatString } from "../../../utils/formatData";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 type StatCardsItem = {
   id: number;
@@ -22,7 +24,10 @@ const StatCards = ({ statCardsItems }: Props) => {
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, A11y]}
         spaceBetween={10}
-        slidesPerView={4}
+        slidesPerView={5}
+        navigation = {true}
+        pagination={{ clickable: true }}
+
       >
         {statCardsItems.map((item: StatCardsItem) => (
           <SwiperSlide key={item.id}>
