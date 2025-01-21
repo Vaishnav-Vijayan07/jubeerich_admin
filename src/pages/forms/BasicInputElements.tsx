@@ -225,9 +225,7 @@ const BasicInputElements = withSwal((props: any) => {
         accessor: "lead_received_date",
         sort: false,
         minWidth: 150,
-        Cell: ({ row }: any) => (
-          <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>
-        ),
+        Cell: ({ row }: any) => <span>{row.original.lead_received_date && moment(row.original.lead_received_date).format("DD/MM/YYYY")}</span>,
       },
       // {
       //   Header: "Followup Date",
@@ -261,9 +259,7 @@ const BasicInputElements = withSwal((props: any) => {
               accessor: "assigned_branch_counselor",
               sort: false,
               minWidth: 50,
-              Cell: ({ row }: any) => (
-                <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
-              ),
+              Cell: ({ row }: any) => <>{row?.original.assigned_branch_counselor ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
               isTruncate: true,
             },
             {
@@ -295,9 +291,7 @@ const BasicInputElements = withSwal((props: any) => {
               minWidth: 50,
               isTruncate: true,
 
-              Cell: ({ row }: any) => (
-                <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>
-              ),
+              Cell: ({ row }: any) => <>{row?.original.assigned_counsellor_tl ? <span>Assigned</span> : <span>{"Not Assigned"}</span>}</>,
             },
           ]
         : []),
@@ -383,20 +377,18 @@ const BasicInputElements = withSwal((props: any) => {
         Header: "Actions",
         accessor: "",
         sort: false,
-        Cell: ({ row }: any) => (
-          <div className="d-flex justify-content-center align-items-center gap-2">
-            {/* Edit Icon */}
-            <Link
-              to={`/leads/manage/${row.original.id}`}
-              className="action-icon"
-              data-bs-toggle="tooltip"
-              data-bs-placement="bottom"
-              title="Edit"
-            >
-              <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
-            </Link>
+        Cell: ({ row }: any) => {
+          const { isDeleteEnabled } = row.original;
+          console.log(isDeleteEnabled);
 
-            {/* <Link
+          return (
+            <div className="d-flex justify-content-center align-items-center gap-2">
+              {/* Edit Icon */}
+              <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
+                <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
+              </Link>
+
+              {/* <Link
               to="#"
               className="action-icon"
               onClick={() => {
@@ -407,20 +399,23 @@ const BasicInputElements = withSwal((props: any) => {
               <i className="mdi mdi-square-edit-outline"></i>
             </Link> */}
 
-            {/* Delete Icon */}
-            <Link
-              to="#"
-              className="action-icon"
-              onClick={() => handleDelete(row.original.id)}
-              data-bs-toggle="tooltip"
-              data-bs-placement="bottom"
-              title="Delete"
-            >
-              {/* <i className="mdi mdi-delete"></i> */}
-              <i className="mdi mdi-delete-outline"></i>
-            </Link>
-          </div>
-        ),
+              {/* Delete Icon */}
+              {isDeleteEnabled && (
+                <Link
+                  to="#"
+                  className="action-icon"
+                  onClick={() => handleDelete(row.original.id)}
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Delete"
+                >
+                  {/* <i className="mdi mdi-delete"></i> */}
+                  <i className="mdi mdi-delete-outline"></i>
+                </Link>
+              )}
+            </div>
+          );
+        },
       },
     ];
   }, [user?.role, currentPage, currentLimit]);
@@ -469,6 +464,8 @@ const BasicInputElements = withSwal((props: any) => {
         : apiUrl?.endsWith("/") || filePath.startsWith("/")
         ? `${apiUrl}${filePath}`
         : `${apiUrl}/${filePath}`;
+
+    console.log("Generated URL:", url);
 
     const link = document.createElement("a");
     link.download = "rejected.xlsx";
@@ -842,10 +839,7 @@ const BasicInputElements = withSwal((props: any) => {
                         </Dropdown.Toggle>
                         <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
                           {branchCounsellors?.map((item: any) => (
-                            <Dropdown.Item
-                              key={item.id}
-                              onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}
-                            >
+                            <Dropdown.Item key={item.id} onClick={() => handleBranchCounsellorAssignBulk(selectedValues, item.id)}>
                               {item.name}
                             </Dropdown.Item>
                           ))}
