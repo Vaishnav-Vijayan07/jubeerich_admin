@@ -351,11 +351,8 @@ const Summary = () => {
 
         // For quantity check section
         if (quantityCheckRef.current instanceof HTMLElement) {
-            console.log('Entered');
-            
             const height = quantityCheckRef.current.offsetHeight;
             setQuantityCheckHeight(height);
-            console.log('height',height);
         }
 
         // For immigration check section
@@ -1220,79 +1217,79 @@ const Summary = () => {
                                 </Tabs>
 
                                 <Box>
-                                        {quantityTabValue == "additional_docs" && (
-                                            <Suspense fallback={null}>
-                                                <div className='p-2'>
-                                                    <AdditionalDocs AdditionalDocsData={summaryData?.additionalDocs || {}} />
-                                                </div>
-                                            </Suspense>
-                                        )}
+                                    {quantityTabValue == "additional_docs" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-2'>
+                                                <AdditionalDocs AdditionalDocsData={summaryData?.additionalDocs || {}} />
+                                            </div>
+                                        </Suspense>
+                                    )}
 
-                                        {quantityTabValue == "previous_visa_approval" && (
-                                            <Suspense fallback={null}>
-                                                <div className='p-2'>
-                                                    <ImmigrationDetails VisaData={summaryData?.visaApproved || []} />
-                                                </div>
-                                            </Suspense>
-                                        )}
+                                    {quantityTabValue == "previous_visa_approval" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-2'>
+                                                <ImmigrationDetails VisaData={summaryData?.visaApproved || []} />
+                                            </div>
+                                        </Suspense>
+                                    )}
 
-                                        {quantityTabValue == "previous_visa_declines" && (
-                                            <Suspense fallback={null}>
-                                                <div className='p-3'>
-                                                    <ImmigrationDetails VisaData={summaryData?.visaDeclined || []} />
-                                                </div>
-                                            </Suspense>
-                                        )}
+                                    {quantityTabValue == "previous_visa_declines" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-3'>
+                                                <ImmigrationDetails VisaData={summaryData?.visaDeclined || []} />
+                                            </div>
+                                        </Suspense>
+                                    )}
 
-                                        {quantityTabValue == "fund_plan" && (
-                                            <Suspense fallback={null}>
-                                                <div className='p-3'>
-                                                    <FundDetails Fundinfo={summaryData?.fundPlan || []} />
-                                                </div>
-                                            </Suspense>
-                                        )}
+                                    {quantityTabValue == "fund_plan" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-3'>
+                                                <FundDetails Fundinfo={summaryData?.fundPlan || []} />
+                                            </div>
+                                        </Suspense>
+                                    )}
 
-                                        {quantityTabValue == "education_details" && (
-                                            <Suspense fallback={null}>
-                                                <div className='p-3'>
-                                                    <EducationDetails EducationInfo={summaryData?.educationDocs || []} />
-                                                    <GraduationDetails GraduationInfo={summaryData?.graduationDocs || []} />
-                                                </div>
-                                            </Suspense>
-                                        )}
+                                    {quantityTabValue == "education_details" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-3'>
+                                                <EducationDetails EducationInfo={summaryData?.educationDocs || []} />
+                                                <GraduationDetails GraduationInfo={summaryData?.graduationDocs || []} />
+                                            </div>
+                                        </Suspense>
+                                    )}
 
-                                        {quantityTabValue == "exam_details" && (
-                                            <Suspense fallback={null}>
-                                                <div className='p-3'>
-                                                    <ExamData Exams={summaryData?.examDocs || []} />
-                                                </div>
-                                            </Suspense>
-                                        )}
+                                    {quantityTabValue == "exam_details" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-3'>
+                                                <ExamData Exams={summaryData?.examDocs || []} />
+                                            </div>
+                                        </Suspense>
+                                    )}
 
-                                        {quantityTabValue == "work_info" && (
-                                            <Suspense fallback={null}>
-                                                <div className='p-3'>
-                                                    <WorkInfos WorkInfo={summaryData?.workInfoDocs || []} />
-                                                </div>
-                                            </Suspense>
-                                        )}
+                                    {quantityTabValue == "work_info" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-3'>
+                                                <WorkInfos WorkInfo={summaryData?.workInfoDocs || []} />
+                                            </div>
+                                        </Suspense>
+                                    )}
 
-                                        {quantityTabValue == "police_documents" && (
-                                            <Suspense fallback={null}>
-                                                <div className='p-3'>
-                                                    <PoliceDocs PoliceDocs={summaryData?.policeDocs || []} />
-                                                </div>
-                                            </Suspense>
-                                        )}
+                                    {quantityTabValue == "police_documents" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-3'>
+                                                <PoliceDocs PoliceDocs={summaryData?.policeDocs || []} />
+                                            </div>
+                                        </Suspense>
+                                    )}
 
-                                        {quantityTabValue == "emp_histories" && (
-                                            <Suspense fallback={null}>
-                                                <div className='p-3'>
-                                                    <EmpHistories userEmploymentHistories={summaryData?.empHistories || {}} />
-                                                </div>
-                                            </Suspense>
-                                        )}
-                                    </Box>
+                                    {quantityTabValue == "emp_histories" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-3'>
+                                                <EmpHistories userEmploymentHistories={summaryData?.empHistories || {}} />
+                                            </div>
+                                        </Suspense>
+                                    )}
+                                </Box>
                             </Row>
                             <Row>
                                 <Col md={4} className='ms-1'>
