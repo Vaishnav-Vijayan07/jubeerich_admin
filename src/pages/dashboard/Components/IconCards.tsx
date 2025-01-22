@@ -11,7 +11,7 @@ type Props = {
 function IconCards({ icon, title, stats, bgColor }: Props) {
   return (
     <>
-      <div className="widget-rounded-circle card">
+      <div className="widget-rounded-circle card w-100">
         <div className="card-body">
           <div className="row">
             <div className="col-6">

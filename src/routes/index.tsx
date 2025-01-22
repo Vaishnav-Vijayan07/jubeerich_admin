@@ -51,7 +51,6 @@ const PendingDetailsByID = React.lazy(() => import("../pages/forms/Kyc/PendingDe
 const PortalDetails = React.lazy(() => import("../pages/forms/Kyc/PortDetails"));
 const VisaCheckLists = React.lazy(() => import("../pages/forms/VisaChecklist"));
 const VisaConfiguration = React.lazy(() => import("../pages/forms/VisaConfiguration"));
-
 const SubmittedDetails = React.lazy(() => import("../pages/forms/Kyc/SubmittedApplication"));
 
 // uikit

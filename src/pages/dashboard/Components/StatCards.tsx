@@ -1,11 +1,12 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css"; // Import Swiper styles
-import { Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import IconCards from "./IconCards"; // Replace with your actual IconCards import
 import { formatString } from "../../../utils/formatData";
-import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 type StatCardsItem = {
   id: number;
@@ -17,28 +18,43 @@ type StatCardsItem = {
 
 type Props = {
   statCardsItems: StatCardsItem[];
+  role?: string;
 };
-const StatCards = ({ statCardsItems }: Props) => {
-  return (
-    <>
-      <Swiper
-        modules={[Navigation, Pagination, Scrollbar, A11y]}
-        spaceBetween={10}
-        slidesPerView={5}
-        navigation = {true}
-        pagination={{ clickable: true }}
-
-      >
-        {statCardsItems.map((item: StatCardsItem) => (
-          <SwiperSlide key={item.id}>
-            <Row className="justify-content-center">
-              <IconCards title={formatString(item.title)} stats={item.stats} icon={item.icon} bgColor={item.bgColor} />
+const StatCards = ({ statCardsItems, role }: Props) => {
+  console.log(role);
+  const renderCard = () => {
+    switch (role) {
+      case "Application Manager":
+      case "Application Team":
+        return (
+          <>
+            <Swiper modules={[Navigation, Pagination]} spaceBetween={5} slidesPerView={6} >
+              {statCardsItems.map((item: StatCardsItem) => (
+                <SwiperSlide key={item.id}>
+                  <Row className="justify-content-center">
+                    <IconCards title={formatString(item.title)} stats={item.stats} icon={item.icon} bgColor={item.bgColor} />
+                  </Row>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </>
+        );
+      default:
+        return (
+          <>
+            <Row classname="justify-content-between">
+              {statCardsItems.map((item) => (
+                <Col mx={1} key={item.id} className="mb-3">
+                  <IconCards title={formatString(item.title)} stats={item.stats} icon={item.icon} bgColor={item.bgColor} />
+                </Col>
+              ))}
             </Row>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </>
-  );
+          </>
+        );
+    }
+  };
+
+  return <>{renderCard()}</>;
 };
 
 export default StatCards;

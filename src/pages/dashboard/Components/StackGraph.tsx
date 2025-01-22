@@ -2,8 +2,6 @@ import React from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import Filters from "./Filters";
-import CustomFilter from "../../../components/Dashboard/CustomFilter";
 
 type Props = {
   categories: string[];
@@ -22,37 +20,27 @@ function StackGraph({ categories, series, colors }: Props) {
   const options: ApexOptions = {
     chart: {
       type: "bar",
+      height: 350,
       stacked: true,
       toolbar: {
-        show: false, // Ensure the toolbar is displayed
-        tools: {
-          download: true, // Download option
-          selection: true, // Enable selection tool
-          zoom: true, // Enable zoom tool
-          zoomin: true, // Enable zoom in
-          zoomout: true, // Enable zoom out
-          pan: true, // Enable pan tool
-          reset: true, // Add reset zoom button
-        },
-        autoSelected: "zoom", // Default selected tool
+        show: true,
+        offsetX: 0,
+        offsetY: -20,
       },
+    },
+    xaxis: {
+      type: "category",
+      categories: categories,
+      tickPlacement: "on",
+    },
+    legend: {
+      position: "top",
+      offsetY: 20,
     },
     plotOptions: {
       bar: {
-        horizontal: false,
         columnWidth: "20%",
       },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    xaxis: {
-      categories, // Pass your categories dynamically
-      // tickPlacement: "on",
-    },
-    legend: {
-      position: "right",
-      horizontalAlign: "center",
     },
     fill: {
       opacity: 1,
