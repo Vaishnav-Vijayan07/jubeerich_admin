@@ -26,11 +26,11 @@ function updateAccessRole(
   }
 ) {
 
-  return api.update(`${baseUrl}${id}`, params);
+  return api.update(`${baseUrl}/${id}`, params);
 }
 
 function deleteAccessRoles(id: string) {
-  return api.delete(`${baseUrl}${id}`, {});
+  return api.delete(`${baseUrl}/${id}`, {});
 }
 
 export { getAccessRoles, addAccessRole, updateAccessRole, deleteAccessRoles };

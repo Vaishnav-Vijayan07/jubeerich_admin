@@ -22,11 +22,11 @@ function updateChannels(
     updated_by: string;
   }
 ) {
-  return api.update(`${baseUrl}${id}`, params);
+  return api.update(`${baseUrl}/${id}`, params);
 }
 
 function deleteChannels(id: string) {
-  return api.delete(`${baseUrl}${id}`, {});
+  return api.delete(`${baseUrl}/${id}`, {});
 }
 
 export { getChannels, addChannels, updateChannels, deleteChannels };
