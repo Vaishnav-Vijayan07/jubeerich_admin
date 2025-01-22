@@ -390,7 +390,7 @@ const Summary = () => {
         }
         
         return () => window.removeEventListener('resize', updateHeights);
-    }, [summaryData, isRemarksHide, tabValue, quantityTabValue, visaTabValue]);
+    }, [summaryData, isRemarksHide, tabValue, quantityTabValue, visaTabValue, isOpen]);
 
     const contentStyleActive: React.CSSProperties = {
         opacity: 1,
@@ -434,7 +434,7 @@ const Summary = () => {
                 </Row>
 
                 {/* Availability Check */}
-                <Row className='mt-4'>
+                {/* <Row className='mt-4'>
                     <CheckHeadings title={"Program Availability Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -493,9 +493,9 @@ const Summary = () => {
                             <RemarkSection type={remarksType.availability_check} />
                         </div>
                     </Card>
-                </Row>
+                </Row> */}
 
-                {/* <Row className='mt-4'>
+                <Row className='mt-4'>
                     <CheckHeadings title={"Program Availability Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -507,7 +507,7 @@ const Summary = () => {
                                 ...(isRemarksHide.availability_check && contentStyleActive),
                                 position: 'absolute',
                                 width: '100%',
-                                display: isRemarksHide.availability_check ? 'block' : 'none'
+                                // display: isRemarksHide.availability_check ? 'block' : 'none'
                             }}
                         >
                             <Row>
@@ -571,10 +571,10 @@ const Summary = () => {
                             <RemarkSection type={remarksType.availability_check} />
                         </div>
                     </Card>
-                </Row> */}
+                </Row>
 
                 {/* Campus Check  */}
-                <Row className='mt-2'>
+                {/* <Row className='mt-2'>
                     <CheckHeadings title={"Campus Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -605,9 +605,9 @@ const Summary = () => {
                             <RemarkSection type={remarksType.campus_check} />
                         </div>
                     </Card>
-                </Row>
+                </Row> */}
 
-                {/* <Row className='mt-2'>
+                <Row className='mt-2'>
                     <CheckHeadings title={"Campus Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -619,7 +619,7 @@ const Summary = () => {
                                 ...(isRemarksHide?.campus_check && contentStyleActive),
                                 position: 'absolute',
                                 width: '100%',
-                                display: isRemarksHide?.campus_check ? 'block' : 'none'
+                                // display: isRemarksHide?.campus_check ? 'block' : 'none'
                             }}
                         >
                             <Row className="mt-1 mb-2">
@@ -654,10 +654,10 @@ const Summary = () => {
                             <RemarkSection type={remarksType.campus_check} />
                         </div>
                     </Card>
-                </Row> */}
+                </Row>
 
                 {/* Entry Requirement Check */}
-                <Row className='mt-2'>
+                {/* <Row className='mt-2'>
                     <CheckHeadings title={"Entry Requirement Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -760,9 +760,9 @@ const Summary = () => {
                             <RemarkSection type={remarksType.entry_requirement} />
                         </div>
                     </Card>
-                </Row>
+                </Row> */}
 
-                {/* <Row className='mt-2'>
+                <Row className='mt-2'>
                     <CheckHeadings title={"Entry Requirement Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -775,7 +775,7 @@ const Summary = () => {
                                 ...(isRemarksHide?.entry_requirement && contentStyleActive),
                                 position: 'absolute',
                                 width: '100%',
-                                display: isRemarksHide?.entry_requirement ? 'block' : 'none'
+                                // display: isRemarksHide?.entry_requirement ? 'block' : 'none'
                             }}
                         >
                             <Row>
@@ -859,7 +859,7 @@ const Summary = () => {
 
                         <Card.Body
                             style={{
-                                minHeight: `${entryRequirementHeight}px !important`,
+                                minHeight: `${entryRequirementHeight}px`,
                                 paddingTop: '0px',
                                 ...contentStyleNonActive,
                                 ...(!isRemarksHide?.entry_requirement && contentStyleActive)
@@ -882,10 +882,10 @@ const Summary = () => {
                             <RemarkSection type={remarksType.entry_requirement} />
                         </div>
                     </Card>
-                </Row> */}
+                </Row>
 
                 {/* Document Quality Check */}
-                <Row className='mt-2'>
+                {/* <Row className='mt-2'>
                     <CheckHeadings title={"Document Quality Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -939,9 +939,9 @@ const Summary = () => {
                             <RemarkSection type={remarksType.quality_check} />
                         </div>
                     </Card>
-                </Row>
+                </Row> */}
 
-                {/* <Row className='mt-2'>
+                <Row className='mt-2'>
                     <CheckHeadings title={"Document Quality Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -953,7 +953,7 @@ const Summary = () => {
                                 ...(isRemarksHide?.quality_check && contentStyleActive),
                                 position: 'absolute',
                                 width: '100%',
-                                display: isRemarksHide?.quality_check ? 'block' : 'none'
+                                // display: isRemarksHide?.quality_check ? 'block' : 'none'
                             }}
                             className="d-flex gap-2 justify-content-center"
                         >
@@ -1014,7 +1014,7 @@ const Summary = () => {
                             <RemarkSection type={remarksType.quality_check} />
                         </div>
                     </Card>
-                </Row> */}
+                </Row>
 
                 {/* Document Quantity Check */}
                 <Row className='mt-2'>
@@ -1187,7 +1187,7 @@ const Summary = () => {
                                 ...(isRemarksHide?.quantity_check && contentStyleActive),
                                 position: 'absolute',
                                 width: '100%',
-                                display: isRemarksHide?.quantity_check ? 'block' : 'none'
+                                // display: isRemarksHide?.quantity_check ? 'block' : 'none'
                             }}
                         >
                             <Row>
@@ -1330,7 +1330,7 @@ const Summary = () => {
                             style={{
                                 paddingTop: '0px',
                                 paddingBottom: '1rem',
-                                minHeight: `${quantityCheckHeight}px !important`,
+                                minHeight: `${quantityCheckHeight}px`,
                                 ...contentStyleNonActive,
                                 ...(!isRemarksHide?.quantity_check && contentStyleActive)
                             }}
@@ -1355,7 +1355,7 @@ const Summary = () => {
                 </Row> */}
 
                 {/* Previous Immigration Check */}
-                <Row className='mt-2'>
+                {/* <Row className='mt-2'>
                     <CheckHeadings title={"Previous Immigration Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -1416,9 +1416,9 @@ const Summary = () => {
                             <RemarkSection type={remarksType.immigration_check} />
                         </div>
                     </Card>
-                </Row>
+                </Row> */}
 
-                {/* <Row className='mt-2'>
+                <Row className='mt-2'>
                     <CheckHeadings title={"Previous Immigration Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -1432,7 +1432,7 @@ const Summary = () => {
                                 ...(isRemarksHide?.immigration_check && contentStyleActive),
                                 position: 'absolute',
                                 width: '100%',
-                                display: isRemarksHide?.immigration_check ? 'block' : 'none'
+                                // display: isRemarksHide?.immigration_check ? 'block' : 'none'
                             }}
                         >
                             <Row>
@@ -1477,7 +1477,7 @@ const Summary = () => {
                         <Card.Body
                             style={{
                                 paddingTop: '0px',
-                                minHeight: `${immigrationHeight}px !important`,
+                                minHeight: `${immigrationHeight}px`,
                                 ...contentStyleNonActive,
                                 ...(!isRemarksHide?.immigration_check && contentStyleActive)
                             }}
@@ -1499,10 +1499,10 @@ const Summary = () => {
                             <RemarkSection type={remarksType.immigration_check} />
                         </div>
                     </Card>
-                </Row> */}
+                </Row>
 
                 {/* Application Fee Check */}
-                <Row>
+                {/* <Row>
                     <Col md={6}>
                         <CheckHeadings title="Application Fee Check" />
                     </Col>
@@ -1534,7 +1534,62 @@ const Summary = () => {
                             <RemarkSection type={remarksType.application_fee_check} />
                         </div>
                     </Card>
-                </Row>
+                </Row> */}
+
+<Row>
+    <Col md={6}>
+        <CheckHeadings title="Application Fee Check" />
+    </Col>
+</Row>
+<Row className="mt-1">
+    <Card className="rounded-4 position-relative" style={{ overflow: "hidden" }}>
+        <Card.Body
+            ref={applicationFeeRef}
+            style={{
+                ...contentStyleNonActive,
+                ...(isRemarksHide.application_fee_check && contentStyleActive),
+                position: 'absolute',
+                width: '100%',
+            }}
+        >
+            <div className="d-flex gap-2 align-items-center">
+                <div className="d-flex justify-content-between align-items-center application-fee-col p-2">
+                    <div className="fs-14 fw-semibold text-dark">Application Fee Check</div>
+                    <div className="application-fee-col-amount-col p-1 d-flex align-items-center justify-content-center">
+                        <span>{summaryData?.applicationFeeCheck?.fee} /-</span>
+                    </div>
+                </div>
+            </div>
+        </Card.Body>
+
+        <Card.Body
+            style={{
+                paddingTop: '0px',
+                minHeight: `${applicationFeeHeight}px`,
+                ...contentStyleNonActive,
+                ...(!isRemarksHide.application_fee_check && contentStyleActive),
+            }}
+        >
+            <Row>
+                <Col md={6} className="ms-4">
+                    <SummaryRemarks remarks={summaryData?.remarks?.application_fee_check} />
+                </Col>
+            </Row>
+        </Card.Body>
+
+        <div
+            className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
+            style={{
+                ...remarkPanelStyle,
+                right: getRemarkSectionPosition(remarksType.application_fee_check) ? "0" : "96%",
+            }}
+        >
+            <RemarkSection type={remarksType.application_fee_check} />
+        </div>
+    </Card>
+</Row>
+
+
             </div>
         </>
     )
