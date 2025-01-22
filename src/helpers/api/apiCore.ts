@@ -27,7 +27,7 @@ axios.interceptors.response.use(
     } else {
       switch (error?.response?.status) {
         case 401:
-          message = "Invalid credentials";
+          message = error?.response?.data?.error || error?.response?.data?.message;
           break;
 
         case 400:

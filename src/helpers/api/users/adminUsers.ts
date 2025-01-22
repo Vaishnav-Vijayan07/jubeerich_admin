@@ -3,7 +3,7 @@ import { APICore } from "../apiCore";
 
 const api = new APICore();
 
-const baseUrl = "/admin_users/";
+const baseUrl = "/admin_users";
 const baseUrlBranchCounsellor = "/get_all_counsellors";
 const baseUrlBranchCounsellorTL = '/get_all_counsellors_tl'
 const baseUrlFranchiseCounsellor = '/get_all_franchise_counsellors'
