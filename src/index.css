@@ -990,6 +990,9 @@ select::-ms-expand {
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  padding: 0;
+  margin: 0;
+  z-index: 9999;
 }
 
 .remark-button-section {

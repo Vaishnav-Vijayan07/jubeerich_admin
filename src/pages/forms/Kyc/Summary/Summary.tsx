@@ -323,12 +323,13 @@ const Summary = () => {
         return (
             <>
                 <button
+                    onClick={() => toggleRemarks(type)}
                     className="toggle-btn"
                     style={{ ...remarkButtonStyle, left: getRemarkButtonPosition(type) ? "-20px" : "35px" }}
                 >
                     <i className={`mdi ${getRemarkButtonPosition(type) ? 'mdi-chevron-double-left' : 'mdi-chevron-double-right'}`}></i>
                 </button>
-                <p className='remark-button-section cursor-pointer' onClick={() => toggleRemarks(type)}>
+                <p className='remark-button-section cursor-pointer'>
                     Remarks
                 </p>
             </>
