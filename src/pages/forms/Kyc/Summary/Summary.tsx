@@ -64,7 +64,6 @@ const Summary = () => {
     const viewSummary = async () => {
         try {
             const { data } = await axios.get(`/view_summary/${id}`);
-            console.log('DATA', data?.data);
             setSummaryData(data?.data)
 
         } catch (error) {
@@ -1222,7 +1221,7 @@ const Summary = () => {
                                 <Box>
                                     {quantityTabValue == "additional_docs" && (
                                         <Suspense fallback={null}>
-                                            <div className='p-2'>
+                                            <div className='p-2 pe-5'>
                                                 <AdditionalDocs AdditionalDocsData={summaryData?.additionalDocs || {}} />
                                             </div>
                                         </Suspense>
@@ -1271,7 +1270,7 @@ const Summary = () => {
 
                                     {quantityTabValue == "work_info" && (
                                         <Suspense fallback={null}>
-                                            <div className='p-3'>
+                                            <div className='p-0 pe-4'>
                                                 <WorkInfos WorkInfo={summaryData?.workInfoDocs || []} />
                                             </div>
                                         </Suspense>
@@ -1279,7 +1278,7 @@ const Summary = () => {
 
                                     {quantityTabValue == "police_documents" && (
                                         <Suspense fallback={null}>
-                                            <div className='p-3'>
+                                            <div className='p-2 pe-5'>
                                                 <PoliceDocs PoliceDocs={summaryData?.policeDocs || []} />
                                             </div>
                                         </Suspense>
@@ -1287,7 +1286,7 @@ const Summary = () => {
 
                                     {quantityTabValue == "emp_histories" && (
                                         <Suspense fallback={null}>
-                                            <div className='p-3'>
+                                            <div className='p-1 pt-2 pe-5'>
                                                 <EmpHistories userEmploymentHistories={summaryData?.empHistories || {}} />
                                             </div>
                                         </Suspense>
@@ -1317,7 +1316,7 @@ const Summary = () => {
                                 </Col>
                             </Row>
                             <Collapse in={isOpen}>
-                                <Row className='me-0' id="example-collapse-text">
+                                <Row className='me-4' id="example-collapse-text">
                                     <div className="mt-2">
                                         <Tabs
                                             value={quantityTabValue}
