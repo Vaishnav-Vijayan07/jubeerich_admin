@@ -237,7 +237,7 @@ const Summary = () => {
 
     const contentStyleNonActive: React.CSSProperties = {
         opacity: 0,
-        transition: "all 0.8s ease-in-out",
+        transition: "all 0.6s ease-in-out",
         transform: 'translateX(90%)',
         pointerEvents: 'none'
     };
