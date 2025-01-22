@@ -14,7 +14,7 @@ type Exam = {
 };
 
 function ExamData({ Exams }: Props) {
-  if (!Exams) return <NoDoc />;
+  if (!Exams?.length) return <NoDoc />;
 
   return (
     <div className="row">
