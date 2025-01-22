@@ -286,12 +286,12 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Type",
       accessor: "course_type.type_name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Stream",
       accessor: "stream.stream_name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Actions",

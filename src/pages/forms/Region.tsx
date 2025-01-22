@@ -263,12 +263,12 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Regional Manager",
       accessor: "regional_manager",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Slug",
       accessor: "slug",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Region Description",

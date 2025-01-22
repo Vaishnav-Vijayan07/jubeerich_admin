@@ -331,12 +331,12 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Country",
       accessor: "country_name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Location",
       accessor: "location",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Description",
@@ -370,7 +370,7 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Username",
       accessor: "username",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Password",
@@ -380,7 +380,7 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Status",
       accessor: "is_active",
-      sort: false,
+      sort: true,
       Cell: ({ row }: any) => (
         <>
           <span

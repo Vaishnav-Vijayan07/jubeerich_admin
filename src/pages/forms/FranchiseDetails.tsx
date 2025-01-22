@@ -116,7 +116,7 @@ const FranchiseDetails = withSwal((props: any) => {
     {
       Header: "Email",
       accessor: "email",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Phone",
@@ -126,12 +126,12 @@ const FranchiseDetails = withSwal((props: any) => {
     {
       Header: "Name",
       accessor: "name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Role",
       accessor: "role",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Status",

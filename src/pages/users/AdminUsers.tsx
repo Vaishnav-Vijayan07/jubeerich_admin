@@ -337,17 +337,17 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Name",
       accessor: "name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Email",
       accessor: "email",
-      sort: false,
+      sort: true,
     },
     {
       Header: "User Name",
       accessor: "username",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Phone",
@@ -357,11 +357,11 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Role",
       accessor: "role",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Country",
-      accessor: "country.country_name",
+      accessor: "countries",
       sort: false,
       Cell: ({ row }: any) => (
         <ul style={{ listStyle: "none" }}>

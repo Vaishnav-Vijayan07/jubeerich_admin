@@ -194,7 +194,7 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Email",
       accessor: "email",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Phone",
@@ -204,17 +204,17 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "City",
       accessor: "city",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Region",
       accessor: "region_name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Status",
       accessor: "status",
-      sort: false,
+      sort: true,
       Cell: ({ row }: any) => (
         <React.Fragment>
           <span

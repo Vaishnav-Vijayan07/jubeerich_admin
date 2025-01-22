@@ -271,12 +271,12 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Country Code",
       accessor: "country_code",
-      sort: false,
+      sort: true,
     },
     {
       Header: "ISD Code",
       accessor: "isd",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Actions",
