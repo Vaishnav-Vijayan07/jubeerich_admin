@@ -189,6 +189,7 @@ const PendingDetailsById = withSwal((props: any) => {
               border: "none",
               borderRadius: "8px",
             }}
+            onClick={() => { navigate('/kyc_details/view_summary') }}
           >
             View Summary
           </Button>

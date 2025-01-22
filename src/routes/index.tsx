@@ -13,6 +13,7 @@ import OfferSubmitted from "../pages/forms/Kyc/MyApplications/OfferSubmitted";
 import LeadDetailsMaterial from "../pages/forms/Material/LeadsDetails/LeadDetailsMaterial";
 import TasksMaterial from "../pages/forms/Material/Tasks/TasksMaterial";
 import TaskPrefix from "../pages/forms/taskPrefix";
+import Summary from "../pages/forms/Kyc/Summary/Summary";
 
 // lazy load all the views
 
@@ -236,6 +237,12 @@ const crmAppRoutes = {
     //   element: <KycDetails />,
     //   route: PrivateRoute,
     // },
+    {
+      path: "/kyc_details/view_summary",
+      name: "View Summary",
+      element: <Summary />,
+      route: PrivateRoute,
+    },
   ],
 };
 
