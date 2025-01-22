@@ -374,7 +374,7 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Status",
       accessor: "status",
-      sort: true,
+      sort: false,
       Cell: ({ row }: any) => (
         <>
           <span style={{ fontSize: "10px" }} className={`badge rounded-pill ${row.original.status ? "bg-success" : "bg-danger"}`}>

@@ -319,14 +319,14 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Monitor", "Manage Franchise"],
   },
 
-  {
-    key: "roles",
-    label: "Access Roles",
-    isTitle: false,
-    icon: "key", // Key for roles and access
-    url: "/user_management/access_roles",
-    roles: ["Monitor"],
-  },
+  // {
+  //   key: "roles",
+  //   label: "Access Roles",
+  //   isTitle: false,
+  //   icon: "key", // Key for roles and access
+  //   url: "/user_management/access_roles",
+  //   roles: ["Monitor"],
+  // },
   {
     key: "user_creation",
     label: "User Creation",
