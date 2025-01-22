@@ -550,13 +550,14 @@ const Summary = () => {
                         <Card.Body
                             style={{
                                 minHeight: `${availabilityHeight}px`,
+                                paddingTop: '0px',
                                 ...contentStyleNonActive,
                                 ...(!isRemarksHide.availability_check && contentStyleActive)
                             }}
                         >
                             <Row>
-                                <Col md={6} className='ms-4'>
-                                    <SummaryRemarks remarks={summaryData?.remarks?.availability_check} />
+                                <Col md={12} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.availability_check} height={availabilityHeight}/>
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -633,13 +634,14 @@ const Summary = () => {
                         <Card.Body
                             style={{
                                 minHeight: `${campusHeight}px`,
+                                paddingTop: '0px',
                                 ...contentStyleNonActive,
                                 ...(!isRemarksHide?.campus_check && contentStyleActive)
                             }}
                         >
                             <Row className="mt-1 mb-2">
-                                <Col md={6} className='ms-4'>
-                                    <SummaryRemarks remarks={summaryData?.remarks?.campus_check} />
+                                <Col md={12} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.campus_check} height={campusHeight} />
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -866,8 +868,8 @@ const Summary = () => {
                             }}
                         >
                             <Row>
-                                <Col md={6} className='ms-4'>
-                                    <SummaryRemarks remarks={summaryData?.remarks?.entry_requirement_check} />
+                                <Col md={12} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.entry_requirement_check} height={entryRequirementHeight} />
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -998,8 +1000,8 @@ const Summary = () => {
                             }}
                         >
                             <Row>
-                                <Col md={6} className='ms-4'>
-                                    <SummaryRemarks remarks={summaryData?.remarks?.quality_check} />
+                                <Col md={12} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.quality_check} height={qualityCheckHeight}/>
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -1350,8 +1352,8 @@ const Summary = () => {
                             }}
                         >
                             <Row>
-                                <Col md={6} className='ms-4'>
-                                    <SummaryRemarks remarks={summaryData?.remarks?.quantity_check} />
+                                <Col md={12} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.quantity_check} height={quantityCheckHeight} />
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -1497,8 +1499,8 @@ const Summary = () => {
                             }}
                         >
                             <Row>
-                                <Col md={6} className='ms-4'>
-                                    <SummaryRemarks remarks={summaryData?.remarks?.immigration_check} />
+                                <Col md={12} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.immigration_check} height={immigrationHeight} />
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -1585,8 +1587,8 @@ const Summary = () => {
                             }}
                         >
                             <Row>
-                                <Col md={6} className="ms-4">
-                                    <SummaryRemarks remarks={summaryData?.remarks?.application_fee_check} />
+                                <Col md={12} className="ms-4">
+                                    <SummaryRemarks remarks={summaryData?.remarks?.application_fee_check} height={applicationFeeHeight} />
                                 </Col>
                             </Row>
                         </Card.Body>
