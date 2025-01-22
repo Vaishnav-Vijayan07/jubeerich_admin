@@ -1,9 +1,8 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react'
 import CheckHeadings from '../../../../components/CheckHeadings'
 import { Button, Card, Col, Row } from 'react-bootstrap'
-import { additionalDocs, applicationFeeCheck, AvailabilityCheck, campusCheck, educationCheck, educationDocs, empHistories, examDocs, fundPlan, gapCheck, graduationCheck, graduationDocs, policeDocs, qualityCheck, visaApproved, visaDeclined, workInfoDocs } from './data'
-import { Box, ButtonBase, Tab, Tabs } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { Box, Tab, Tabs } from '@mui/material'
+import { useNavigate, useParams } from 'react-router-dom'
 import CheckQuality from '../../../../components/ApplicationChecks/CheckQuality'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ImmigrationDetails from '../../../../components/ApplicationChecks/DocsQuantity/ImmigrationDetails'
@@ -20,6 +19,7 @@ import Collapse from 'react-bootstrap/Collapse';
 import SummaryRemarks from './SummaryRemarks'
 
 const Summary = () => {
+    const { id } = useParams();
     const [tabValue, setTabValue] = useState("educational_qualification");
     const [visaTabValue, setVisaTabValue] = useState("previous_visa_approval");
     const [quantityTabValue, setQuantityTabValue] = useState("additional_docs");
@@ -63,7 +63,7 @@ const Summary = () => {
 
     const viewSummary = async () => {
         try {
-            const { data } = await axios.get('/view_summary/1');
+            const { data } = await axios.get(`/view_summary/${id}`);
             console.log('DATA', data?.data);
             setSummaryData(data?.data)
 
@@ -211,6 +211,38 @@ const Summary = () => {
         borderBottomLeftRadius: "8px",
     }
 
+    const remarkButtonStyle: React.CSSProperties = {
+        position: "absolute",
+        top: "50%",
+        // left: isRemarksHide ? "-20px" : "35px",
+        transform: "translateY(-50%)",
+        backgroundColor: "#ddd",
+        color: "#6f42c1",
+        border: "none",
+        borderRadius: "50%",
+        width: "30px",
+        height: "30px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+        cursor: "pointer",
+    }
+
+    const contentStyleActive: React.CSSProperties = {
+        opacity: 1,
+        transition: "all 0.6s ease-in-out",
+        transform: 'translateX(0)',
+        pointerEvents: 'all'
+    };
+
+    const contentStyleNonActive: React.CSSProperties = {
+        opacity: 0,
+        transition: "all 0.6s ease-in-out",
+        transform: 'translateX(-20px)',
+        pointerEvents: 'none'
+    };
+
     const getRemarkSectionPosition = (type: string) => {
         switch (type) {
             case remarksType.availability_check:
@@ -230,24 +262,6 @@ const Summary = () => {
             default:
                 break;
         }
-    }
-
-    const remarkButtonStyle: React.CSSProperties = {
-        position: "absolute",
-        top: "50%",
-        // left: isRemarksHide ? "-20px" : "35px",
-        transform: "translateY(-50%)",
-        backgroundColor: "#ddd",
-        color: "#6f42c1",
-        border: "none",
-        borderRadius: "50%",
-        width: "30px",
-        height: "30px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        cursor: "pointer",
     }
 
     const getRemarkButtonPosition = (type: string) => {
@@ -287,10 +301,6 @@ const Summary = () => {
         }
     }
 
-    useEffect(() => {
-        viewSummary()
-    }, [])
-
     const toggleRemarks = (type: string) => {
         switch (type) {
             case remarksType.availability_check:
@@ -318,23 +328,6 @@ const Summary = () => {
                 break;
         }
     };
-
-    const RemarkSection = ({ type }: any) => {
-        return (
-            <>
-                <button
-                    onClick={() => toggleRemarks(type)}
-                    className="toggle-btn"
-                    style={{ ...remarkButtonStyle, left: getRemarkButtonPosition(type) ? "-20px" : "35px" }}
-                >
-                    <i className={`mdi ${getRemarkButtonPosition(type) ? 'mdi-chevron-double-left' : 'mdi-chevron-double-right'}`}></i>
-                </button>
-                <p className='remark-button-section cursor-pointer'>
-                    Remarks
-                </p>
-            </>
-        )
-    }
 
     const updateHeights = () => {
         // For quality check section
@@ -379,6 +372,28 @@ const Summary = () => {
             setAvailabilityHeight(height);
         }
     };
+
+    const RemarkSection = ({ type }: any) => {
+        return (
+            <>
+                <button
+                    onClick={() => toggleRemarks(type)}
+                    className="toggle-btn"
+                    style={{ ...remarkButtonStyle, left: getRemarkButtonPosition(type) ? "-20px" : "35px" }}
+                >
+                    <i className={`mdi ${getRemarkButtonPosition(type) ? 'mdi-chevron-double-left' : 'mdi-chevron-double-right'}`}></i>
+                </button>
+                <p className='remark-button-section cursor-pointer'>
+                    Remarks
+                </p>
+            </>
+        )
+    }
+
+    useEffect(() => {
+        viewSummary()
+    }, [])
+
     useEffect(() => {
         updateHeights();
         window.addEventListener('resize', updateHeights);
@@ -390,20 +405,6 @@ const Summary = () => {
 
         return () => window.removeEventListener('resize', updateHeights);
     }, [summaryData, isRemarksHide, tabValue, quantityTabValue, visaTabValue, isOpen]);
-
-    const contentStyleActive: React.CSSProperties = {
-        opacity: 1,
-        transition: "all 0.6s ease-in-out",
-        transform: 'translateX(0)',
-        pointerEvents: 'all'
-    };
-
-    const contentStyleNonActive: React.CSSProperties = {
-        opacity: 0,
-        transition: "all 0.6s ease-in-out",
-        transform: 'translateX(-20px)',
-        pointerEvents: 'none'
-    };
 
     return (
         <>

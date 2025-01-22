@@ -237,7 +237,7 @@ const crmAppRoutes = {
     //   route: PrivateRoute,
     // },
     {
-      path: "/kyc_details/view_summary",
+      path: "/kyc_details/view_summary/:id",
       name: "View Summary",
       element: <Summary />,
       route: PrivateRoute,
