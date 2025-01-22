@@ -124,7 +124,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
           currentCountry={isApplicationSide ? currentCountry : undefined}
         />
         {isApplicationSide && <CountryFilter countries={countries} onCountryChange={handleCountryClick} currentCountry={currentCountry} />}
-        <StatCards statCardsItems={cards || []} />
+        <StatCards statCardsItems={cards || []} role={userRole}/>
         <Component
           {...props}
           categories={categories || []}

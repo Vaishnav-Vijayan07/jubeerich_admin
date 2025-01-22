@@ -62,8 +62,6 @@ function updateFranchiseAdminUsersApi(
     franchise_id: string;
   }
 ) {
-  console.log(params);
-  
   return api.update(`/admin_users/${id}`, params);
 }
 
