@@ -992,7 +992,7 @@ select::-ms-expand {
   cursor: pointer;
   padding: 0;
   margin: 0;
-  z-index: 9999;
+  z-index: 100;
 }
 
 .remark-button-section {
