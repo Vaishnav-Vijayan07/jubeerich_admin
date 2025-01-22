@@ -391,6 +391,20 @@ const Summary = () => {
         return () => window.removeEventListener('resize', updateHeights);
     }, [summaryData, isRemarksHide, tabValue, quantityTabValue, visaTabValue]);
 
+    const contentStyleActive: React.CSSProperties = {
+        opacity: 1,
+        transition: "all 0.6s ease-in-out",
+        transform: 'translateX(0)',
+        pointerEvents: 'all'
+    };
+    
+    const contentStyleNonActive: React.CSSProperties = {
+        opacity: 0,
+        transition: "all 0.6s ease-in-out",
+        transform: 'translateX(-20px)',
+        pointerEvents: 'none'
+    };
+
     return (
         <>
             <div style={{ marginLeft: '20px', marginRight: '20px' }}>
@@ -471,15 +485,92 @@ const Summary = () => {
                                 </Row>
                             </Card.Body>
                         )}
-                        {/* Side Remarks Panel */}
                         <div
                             className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
-                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.availability_check) ? "0" : "1200px" }}
+                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.availability_check) ? "0" : "96%" }}
                         >
                             <RemarkSection type={remarksType.availability_check} />
                         </div>
                     </Card>
                 </Row>
+
+                {/* <Row className='mt-4'>
+                    <CheckHeadings title={"Program Availability Check"} />
+                </Row>
+                <Row className="mt-1">
+                    <Card className="rounded-4 position-relative" style={{ overflow: "hidden" }}>
+                        <Card.Body
+                            ref={availabilityRef}
+                            style={{
+                                ...contentStyleNonActive,
+                                ...(isRemarksHide.availability_check && contentStyleActive),
+                                position: 'absolute',
+                                width: '100%',
+                                display: isRemarksHide.availability_check ? 'block' : 'none'
+                            }}
+                        >
+                            <Row>
+                                <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
+                                    <h5 style={styles?.h5}>Country</h5>
+                                    <p style={styles?.p}>{summaryData?.AvailabilityCheck?.country || "N/A"}</p>
+                                </Col>
+
+                                <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
+                                    <h5 style={styles?.h5}>University</h5>
+                                    <p style={styles?.p}>{summaryData?.AvailabilityCheck?.university || "N/A"}</p>
+                                </Col>
+
+                                <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
+                                    <h5 style={styles?.h5}>Intake applying for</h5>
+                                    <p style={styles?.p}>{summaryData?.AvailabilityCheck?.intake || "N/A"}</p>
+                                </Col>
+
+                                <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
+                                    <h5 style={styles?.h5}>Course Link</h5>
+                                    <p style={styles?.p}>
+                                        <a href={summaryData?.AvailabilityCheck?.course_link} target="_blank" rel="noopener noreferrer">
+                                            {summaryData?.AvailabilityCheck?.course_link || "N/A"}
+                                        </a>
+                                    </p>
+                                </Col>
+
+                                <Col md={2} className="d-flex flex-column align-content-center text-center program-availability-col">
+                                    <h5 style={styles?.h5}>Stream</h5>
+                                    <p style={styles?.p}>{summaryData?.AvailabilityCheck?.stream}</p>
+                                </Col>
+
+                                <Col md={2} className="d-flex flex-column align-content-center text-center">
+                                    <h5 style={styles?.h5}>Program</h5>
+                                    <p style={styles?.p}>{summaryData?.AvailabilityCheck?.program}</p>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+
+                        <Card.Body
+                            style={{
+                                minHeight: `${availabilityHeight}px`,
+                                ...contentStyleNonActive,
+                                ...(!isRemarksHide.availability_check && contentStyleActive)
+                            }}
+                        >
+                            <Row>
+                                <Col md={6} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.availability_check} />
+                                </Col>
+                            </Row>
+                        </Card.Body>
+
+                        <div
+                            className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
+                            style={{
+                                ...remarkPanelStyle,
+                                right: getRemarkSectionPosition(remarksType.availability_check) ? "0" : "96%"
+                            }}
+                        >
+                            <RemarkSection type={remarksType.availability_check} />
+                        </div>
+                    </Card>
+                </Row> */}
 
                 {/* Campus Check  */}
                 <Row className='mt-2'>
@@ -488,7 +579,7 @@ const Summary = () => {
                 <Row className="mt-1">
                     <Card className="rounded-4 position-relative" style={{ overflow: "hidden" }}>
                         {isRemarksHide?.campus_check ? (
-                            <Card.Body ref = {campusRef}>
+                            <Card.Body ref={campusRef} style={isRemarksHide?.campus_check ? { ...contentStyleActive } : { ...contentStyleNonActive }}>
                                 <Row className="mt-1 mb-2">
                                     <Col md={6}>
                                         <h5 style={styles.h5}>Campus</h5>
@@ -498,22 +589,71 @@ const Summary = () => {
                             </Card.Body>
                         ) : (
                             <Card.Body style={{ height: `${campusHeight}px` }}>
-                                <Row className="mt-1 mb-2">
-                                    <Col md={6} className='ms-4'>
-                                        <SummaryRemarks remarks={summaryData?.remarks?.campus_check} />
-                                    </Col>
-                                </Row>
+                                    <Row className="mt-1 mb-2" >
+                                        <Col md={6} className='ms-4'>
+                                            <SummaryRemarks remarks={summaryData?.remarks?.campus_check} />
+                                        </Col>
+                                    </Row>
                             </Card.Body>
                         )}
 
                         <div
                             className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
-                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.campus_check) ? "0" : "1200px" }}
+                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.campus_check) ? "0" : "96%" }}
                         >
                             <RemarkSection type={remarksType.campus_check} />
                         </div>
                     </Card>
                 </Row>
+
+                {/* <Row className='mt-2'>
+                    <CheckHeadings title={"Campus Check"} />
+                </Row>
+                <Row className="mt-1">
+                    <Card className="rounded-4 position-relative" style={{ overflow: "hidden" }}>
+                        <Card.Body
+                            ref={campusRef}
+                            style={{
+                                ...contentStyleNonActive,
+                                ...(isRemarksHide?.campus_check && contentStyleActive),
+                                position: 'absolute',
+                                width: '100%',
+                                display: isRemarksHide?.campus_check ? 'block' : 'none'
+                            }}
+                        >
+                            <Row className="mt-1 mb-2">
+                                <Col md={6}>
+                                    <h5 style={styles.h5}>Campus</h5>
+                                    <p style={styles.p}>{summaryData?.campusCheck?.university}</p>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+
+                        <Card.Body
+                            style={{
+                                minHeight: `${campusHeight}px`,
+                                ...contentStyleNonActive,
+                                ...(!isRemarksHide?.campus_check && contentStyleActive)
+                            }}
+                        >
+                            <Row className="mt-1 mb-2">
+                                <Col md={6} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.campus_check} />
+                                </Col>
+                            </Row>
+                        </Card.Body>
+
+                        <div
+                            className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
+                            style={{
+                                ...remarkPanelStyle,
+                                right: getRemarkSectionPosition(remarksType.campus_check) ? "0" : "96%"
+                            }}
+                        >
+                            <RemarkSection type={remarksType.campus_check} />
+                        </div>
+                    </Card>
+                </Row> */}
 
                 {/* Entry Requirement Check */}
                 <Row className='mt-2'>
@@ -614,12 +754,134 @@ const Summary = () => {
                         )}
                         <div
                             className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
-                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.entry_requirement) ? "0" : "1200px" }}
+                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.entry_requirement) ? "0" : "96%" }}
                         >
                             <RemarkSection type={remarksType.entry_requirement} />
                         </div>
                     </Card>
                 </Row>
+
+                {/* <Row className='mt-2'>
+                    <CheckHeadings title={"Entry Requirement Check"} />
+                </Row>
+                <Row className="mt-1">
+                    <Card className="rounded-4 position-relative" style={{ overflow: "hidden" }}>
+                        <Card.Body
+                            ref={entryRequirementRef}
+                            style={{
+                                paddingTop: '0px',
+                                ...contentStyleNonActive,
+                                ...(isRemarksHide?.entry_requirement && contentStyleActive),
+                                position: 'absolute',
+                                width: '100%',
+                                display: isRemarksHide?.entry_requirement ? 'block' : 'none'
+                            }}
+                        >
+                            <Row>
+                                <Tabs
+                                    value={tabValue}
+                                    onChange={(event, newValue) => handleTabChange(event, newValue, tabTypes.entry_requirement)}
+                                    textColor="secondary"
+                                    variant="scrollable"
+                                    aria-label="secondary tabs example"
+                                    sx={{ ...tabsStyle }}
+                                >
+                                    {entryRequirementTabsData.map((tab) => (
+                                        <Tab
+                                            key={tab.value}
+                                            value={tab.value}
+                                            label={tab.label}
+                                            sx={{ ...individualTabStyle }}
+                                        />
+                                    ))}
+                                </Tabs>
+
+                                <Box sx={{ p: 4 }}>
+                                    {tabValue == "educational_qualification" && (
+                                        <Suspense fallback={null}>
+                                            {summaryData?.educationCheck?.length > 0 && (
+                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+                                                    {summaryData?.educationCheck?.map((data: any) => (
+                                                        <div style={{ ...educationCheckStyles }}>
+                                                            <div className='ps-2 pt-2'>
+                                                                <p className='fs-14 fw-semibold' style={{ lineHeight: '18px' }}>School Name: {data?.school_name}</p>
+                                                                <p className='fs-14 fw-semibold'>Start Date: {data?.start_date}</p>
+                                                                <p className='fs-14 fw-semibold'>End Date: {data?.end_date}</p>
+                                                                <p className='fs-14 fw-semibold'>Percentage: {data?.percentage}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </Suspense>
+                                    )}
+
+                                    {tabValue == "graduation_qualifications" && (
+                                        <Suspense fallback={null}>
+                                            {summaryData?.graduationCheck?.length > 0 && (
+                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+                                                    {summaryData?.graduationCheck?.map((data: any) => (
+                                                        <div style={{ ...educationCheckStyles }}>
+                                                            <div className='ps-2 pt-2'>
+                                                                <p className='fs-14 fw-semibold' style={{ lineHeight: '18px' }}>College Name: {data?.school_name}</p>
+                                                                <p className='fs-14 fw-semibold'>Start Date: {data?.start_date}</p>
+                                                                <p className='fs-14 fw-semibold'>End Date: {data?.end_date}</p>
+                                                                <p className='fs-14 fw-semibold'>Percentage: {data?.percentage}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </Suspense>
+                                    )}
+
+                                    {tabValue == "gap_periods" && (
+                                        <Suspense fallback={null}>
+                                            {summaryData?.gapCheck?.length > 0 && (
+                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+                                                    {summaryData?.gapCheck?.map((data: any) => (
+                                                        <div style={{ ...educationCheckStyles }}>
+                                                            <div className='ps-2 pt-2'>
+                                                                <p className='fs-14 fw-semibold' style={{ lineHeight: '18px' }}>School Name: {data?.reason}</p>
+                                                                <p className='fs-14 fw-semibold'>Start Date: {data?.from}</p>
+                                                                <p className='fs-14 fw-semibold'>End Date: {data?.to}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </Suspense>
+                                    )}
+                                </Box>
+                            </Row>
+                        </Card.Body>
+
+                        <Card.Body
+                            style={{
+                                minHeight: `${entryRequirementHeight}px !important`,
+                                paddingTop: '0px',
+                                ...contentStyleNonActive,
+                                ...(!isRemarksHide?.entry_requirement && contentStyleActive)
+                            }}
+                        >
+                            <Row>
+                                <Col md={6} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.entry_requirement_check} />
+                                </Col>
+                            </Row>
+                        </Card.Body>
+
+                        <div
+                            className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
+                            style={{
+                                ...remarkPanelStyle,
+                                right: getRemarkSectionPosition(remarksType.entry_requirement) ? "0" : "96%"
+                            }}
+                        >
+                            <RemarkSection type={remarksType.entry_requirement} />
+                        </div>
+                    </Card>
+                </Row> */}
 
                 {/* Document Quality Check */}
                 <Row className='mt-2'>
@@ -669,15 +931,89 @@ const Summary = () => {
                                 </Row>
                             </Card.Body>
                         )}
-                        {/* Side Remarks Panel */}
                         <div
                             className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
-                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.quality_check) ? "0" : "1200px" }}
+                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.quality_check) ? "0" : "96%" }}
                         >
                             <RemarkSection type={remarksType.quality_check} />
                         </div>
                     </Card>
                 </Row>
+
+                {/* <Row className='mt-2'>
+                    <CheckHeadings title={"Document Quality Check"} />
+                </Row>
+                <Row className="mt-1">
+                    <Card className="rounded-4 position-relative" style={{ overflow: "hidden" }}>
+                        <Card.Body
+                            ref={qualityCheckRef}
+                            style={{
+                                ...contentStyleNonActive,
+                                ...(isRemarksHide?.quality_check && contentStyleActive),
+                                position: 'absolute',
+                                width: '100%',
+                                display: isRemarksHide?.quality_check ? 'block' : 'none'
+                            }}
+                            className="d-flex gap-2 justify-content-center"
+                        >
+                            <Col md={4} className="doc-quantity-item">
+                                <CheckQuality
+                                    id={"formatting"}
+                                    type={"format"}
+                                    label={"Formatting"}
+                                    name={"formatting"}
+                                    onChange={() => { }}
+                                    checked={summaryData?.qualityCheck.formatting}
+                                />
+                            </Col>
+                            <Col md={4} className="doc-quantity-item">
+                                <CheckQuality
+                                    id={"clarity"}
+                                    type={"clarity"}
+                                    label={"Clarity"}
+                                    name={"clarity"}
+                                    onChange={() => { }}
+                                    checked={summaryData?.qualityCheck.clarity}
+                                />
+                            </Col>
+                            <Col md={4} className="doc-quantity-item">
+                                <CheckQuality
+                                    id={"scanning"}
+                                    type={"scan"}
+                                    label={"Scanning"}
+                                    name={"scanning"}
+                                    onChange={() => { }}
+                                    checked={summaryData?.qualityCheck.scanning}
+                                />
+                            </Col>
+                        </Card.Body>
+
+                        <Card.Body
+                            style={{
+                                minHeight: `${qualityCheckHeight}px`,
+                                paddingTop: '0px',
+                                ...contentStyleNonActive,
+                                ...(!isRemarksHide?.quality_check && contentStyleActive)
+                            }}
+                        >
+                            <Row>
+                                <Col md={6} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.quality_check} />
+                                </Col>
+                            </Row>
+                        </Card.Body>
+
+                        <div
+                            className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
+                            style={{
+                                ...remarkPanelStyle,
+                                right: getRemarkSectionPosition(remarksType.quality_check) ? "0" : "96%"
+                            }}
+                        >
+                            <RemarkSection type={remarksType.quality_check} />
+                        </div>
+                    </Card>
+                </Row> */}
 
                 {/* Document Quantity Check */}
                 <Row className='mt-2'>
@@ -826,15 +1162,196 @@ const Summary = () => {
                                 </Row>
                             </Card.Body>
                         )}
-                        {/* Side Remarks Panel */}
+
                         <div
                             className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
-                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.quantity_check) ? "0" : "1200px" }}
+                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.quantity_check) ? "0" : "96%" }}
                         >
                             <RemarkSection type={remarksType.quantity_check} />
                         </div>
                     </Card>
                 </Row>
+
+                {/* <Row className='mt-2'>
+                    <CheckHeadings title={"Document Quantity Check"} />
+                </Row>
+                <Row className="mt-1">
+                    <Card className="border rounded-4 position-relative" style={{ overflow: "hidden" }}>
+                        <Card.Body
+                            ref={quantityCheckRef}
+                            style={{
+                                paddingTop: '0px',
+                                paddingBottom: '1rem',
+                                ...contentStyleNonActive,
+                                ...(isRemarksHide?.quantity_check && contentStyleActive),
+                                position: 'absolute',
+                                width: '100%',
+                                display: isRemarksHide?.quantity_check ? 'block' : 'none'
+                            }}
+                        >
+                            <Row>
+                                <Tabs
+                                    value={quantityTabValue}
+                                    onChange={(event, newValue) => handleTabChange(event, newValue, tabTypes.quantity)}
+                                    textColor="secondary"
+                                    variant="scrollable"
+                                    aria-label="secondary tabs example"
+                                    sx={{ ...tabsStyle }}
+                                >
+                                    {quantityTabItems.map((tab) =>
+                                        quantityTabValue === tab.value && (
+                                            <Tab
+                                                key={tab.value}
+                                                value={tab.value}
+                                                label={tab.label}
+                                                sx={{ ...individualTabStyleCustom }}
+                                            />
+                                        )
+                                    )}
+                                </Tabs>
+
+                                <Box>
+                                        {quantityTabValue == "additional_docs" && (
+                                            <Suspense fallback={null}>
+                                                <div className='p-2'>
+                                                    <AdditionalDocs AdditionalDocsData={summaryData?.additionalDocs || {}} />
+                                                </div>
+                                            </Suspense>
+                                        )}
+
+                                        {quantityTabValue == "previous_visa_approval" && (
+                                            <Suspense fallback={null}>
+                                                <div className='p-2'>
+                                                    <ImmigrationDetails VisaData={summaryData?.visaApproved || []} />
+                                                </div>
+                                            </Suspense>
+                                        )}
+
+                                        {quantityTabValue == "previous_visa_declines" && (
+                                            <Suspense fallback={null}>
+                                                <div className='p-3'>
+                                                    <ImmigrationDetails VisaData={summaryData?.visaDeclined || []} />
+                                                </div>
+                                            </Suspense>
+                                        )}
+
+                                        {quantityTabValue == "fund_plan" && (
+                                            <Suspense fallback={null}>
+                                                <div className='p-3'>
+                                                    <FundDetails Fundinfo={summaryData?.fundPlan || []} />
+                                                </div>
+                                            </Suspense>
+                                        )}
+
+                                        {quantityTabValue == "education_details" && (
+                                            <Suspense fallback={null}>
+                                                <div className='p-3'>
+                                                    <EducationDetails EducationInfo={summaryData?.educationDocs || []} />
+                                                    <GraduationDetails GraduationInfo={summaryData?.graduationDocs || []} />
+                                                </div>
+                                            </Suspense>
+                                        )}
+
+                                        {quantityTabValue == "exam_details" && (
+                                            <Suspense fallback={null}>
+                                                <div className='p-3'>
+                                                    <ExamData Exams={summaryData?.examDocs || []} />
+                                                </div>
+                                            </Suspense>
+                                        )}
+
+                                        {quantityTabValue == "work_info" && (
+                                            <Suspense fallback={null}>
+                                                <div className='p-3'>
+                                                    <WorkInfos WorkInfo={summaryData?.workInfoDocs || []} />
+                                                </div>
+                                            </Suspense>
+                                        )}
+
+                                        {quantityTabValue == "police_documents" && (
+                                            <Suspense fallback={null}>
+                                                <div className='p-3'>
+                                                    <PoliceDocs PoliceDocs={summaryData?.policeDocs || []} />
+                                                </div>
+                                            </Suspense>
+                                        )}
+
+                                        {quantityTabValue == "emp_histories" && (
+                                            <Suspense fallback={null}>
+                                                <div className='p-3'>
+                                                    <EmpHistories userEmploymentHistories={summaryData?.empHistories || {}} />
+                                                </div>
+                                            </Suspense>
+                                        )}
+                                    </Box>
+                            </Row>
+                            <Row>
+                                <Col md={4} className='ms-1'>
+                                    <button
+                                        style={{ ...buttonStyle }}
+                                        type="button"
+                                        className="w-25"
+                                        onClick={() => setIsOpen((prev: any) => !prev)}
+                                        aria-controls="example-collapse-text"
+                                        aria-expanded={isOpen}
+                                    >
+                                        View All <i className={`mdi ${isOpen ? 'mdi-chevron-up' : 'mdi-chevron-down'}`}></i>
+                                    </button>
+                                </Col>
+                            </Row>
+                            <Collapse in={isOpen}>
+                                <Row className='me-0' id="example-collapse-text">
+                                    <div className="mt-2">
+                                        <Tabs
+                                            value={quantityTabValue}
+                                            onChange={(event, newValue) => handleTabChange(event, newValue, tabTypes.quantity)}
+                                            textColor="secondary"
+                                            variant="scrollable"
+                                            scrollButtons={false}
+                                            aria-label="secondary tabs example"
+                                            sx={{ ...tabsStyle }}
+                                        >
+                                            {quantityTabItems.map((tab) =>
+                                                <Tab
+                                                    key={tab.value}
+                                                    value={tab.value}
+                                                    label={tab.label}
+                                                    sx={{ ...individualTabStyleCustom }}
+                                                />
+                                            )}
+                                        </Tabs>
+                                    </div>
+                                </Row>
+                            </Collapse>
+                        </Card.Body>
+
+                        <Card.Body
+                            style={{
+                                paddingTop: '0px',
+                                paddingBottom: '1rem',
+                                minHeight: `${quantityCheckHeight}px !important`,
+                                ...contentStyleNonActive,
+                                ...(!isRemarksHide?.quantity_check && contentStyleActive)
+                            }}
+                        >
+                            <Row>
+                                <Col md={6} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.quantity_check} />
+                                </Col>
+                            </Row>
+                        </Card.Body>
+
+                        <div
+                            className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
+                            style={{
+                                ...remarkPanelStyle,
+                                right: getRemarkSectionPosition(remarksType.quantity_check) ? "0" : "96%"
+                            }}
+                        >
+                            <RemarkSection type={remarksType.quantity_check} />
+                        </div>
+                    </Card>
+                </Row> */}
 
                 {/* Previous Immigration Check */}
                 <Row className='mt-2'>
@@ -893,12 +1410,95 @@ const Summary = () => {
                         )}
                         <div
                             className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
-                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.immigration_check) ? "0" : "1200px" }}
+                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.immigration_check) ? "0" : "96%" }}
                         >
                             <RemarkSection type={remarksType.immigration_check} />
                         </div>
                     </Card>
                 </Row>
+
+                {/* <Row className='mt-2'>
+                    <CheckHeadings title={"Previous Immigration Check"} />
+                </Row>
+                <Row className="mt-1">
+                    <Card className="border rounded-4 position-relative" style={{ overflow: "hidden" }}>
+                        <Card.Body
+                            ref={immigrationRef}
+                            style={{
+                                paddingTop: '0px',
+                                paddingBottom: '1rem',
+                                ...contentStyleNonActive,
+                                ...(isRemarksHide?.immigration_check && contentStyleActive),
+                                position: 'absolute',
+                                width: '100%',
+                                display: isRemarksHide?.immigration_check ? 'block' : 'none'
+                            }}
+                        >
+                            <Row>
+                                <Tabs
+                                    value={visaTabValue}
+                                    onChange={(event, newValue) => handleTabChange(event, newValue, tabTypes.visa)}
+                                    textColor="secondary"
+                                    variant="scrollable"
+                                    aria-label="secondary tabs example"
+                                    sx={{ ...tabsStyle }}
+                                >
+                                    {immigrationTabsData.map((tab) => (
+                                        <Tab
+                                            key={tab.value}
+                                            value={tab.value}
+                                            label={tab.label}
+                                            sx={{ ...individualTabStyle }}
+                                        />
+                                    ))}
+                                </Tabs>
+
+                                <Box>
+                                    {visaTabValue == "previous_visa_approval" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-2'>
+                                                <ImmigrationDetails VisaData={summaryData?.visaApproved} />
+                                            </div>
+                                        </Suspense>
+                                    )}
+
+                                    {visaTabValue == "previous_visa_declines" && (
+                                        <Suspense fallback={null}>
+                                            <div className='p-3'>
+                                                <ImmigrationDetails VisaData={summaryData?.visaDeclined} />
+                                            </div>
+                                        </Suspense>
+                                    )}
+                                </Box>
+                            </Row>
+                        </Card.Body>
+
+                        <Card.Body
+                            style={{
+                                paddingTop: '0px',
+                                minHeight: `${immigrationHeight}px !important`,
+                                ...contentStyleNonActive,
+                                ...(!isRemarksHide?.immigration_check && contentStyleActive)
+                            }}
+                        >
+                            <Row>
+                                <Col md={6} className='ms-4'>
+                                    <SummaryRemarks remarks={summaryData?.remarks?.immigration_check} />
+                                </Col>
+                            </Row>
+                        </Card.Body>
+
+                        <div
+                            className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
+                            style={{
+                                ...remarkPanelStyle,
+                                right: getRemarkSectionPosition(remarksType.immigration_check) ? "0" : "96%"
+                            }}
+                        >
+                            <RemarkSection type={remarksType.immigration_check} />
+                        </div>
+                    </Card>
+                </Row> */}
 
                 {/* Application Fee Check */}
                 <Row>
@@ -928,7 +1528,7 @@ const Summary = () => {
                         )}
                         <div
                             className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
-                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.application_fee_check) ? "0" : "1200px" }}
+                            style={{ ...remarkPanelStyle, right: getRemarkSectionPosition(remarksType.application_fee_check) ? "0" : "96%" }}
                         >
                             <RemarkSection type={remarksType.application_fee_check} />
                         </div>
