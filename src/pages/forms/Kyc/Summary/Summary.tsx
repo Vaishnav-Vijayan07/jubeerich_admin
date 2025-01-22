@@ -35,7 +35,7 @@ const Summary = () => {
         immigration_check: true,
         application_fee_check: true
     });
-    
+
     const qualityCheckRef = useRef<HTMLDivElement>(null);
     const entryRequirementRef = useRef<HTMLDivElement>(null);
     const quantityCheckRef = useRef<HTMLDivElement>(null);
@@ -336,59 +336,61 @@ const Summary = () => {
         )
     }
 
-    useEffect(() => {
-        const updateHeights = () => {
-            // For quality check section
-            if (qualityCheckRef.current instanceof HTMLElement) {
-                const height = qualityCheckRef.current.offsetHeight;
-                setQualityCheckHeight(height);
-            }
+    const updateHeights = () => {
+        // For quality check section
+        if (qualityCheckRef.current instanceof HTMLElement) {
+            const height = qualityCheckRef.current.offsetHeight;
+            setQualityCheckHeight(height);
+        }
+
+        // For entry requirement section
+        if (entryRequirementRef.current instanceof HTMLElement) {
+            const height = entryRequirementRef.current.offsetHeight;
+            setEntryRequirementHeight(height);
+        }
+
+        // For quantity check section
+        if (quantityCheckRef.current instanceof HTMLElement) {
+            console.log('Entered');
             
-            // For entry requirement section
-            if (entryRequirementRef.current instanceof HTMLElement) {
-                const height = entryRequirementRef.current.offsetHeight;
-                setEntryRequirementHeight(height);
-            }
+            const height = quantityCheckRef.current.offsetHeight;
+            setQuantityCheckHeight(height);
+            console.log('height',height);
+        }
 
-            // For quantity check section
-            if (quantityCheckRef.current instanceof HTMLElement) {
-                const height = quantityCheckRef.current.offsetHeight;
-                setQuantityCheckHeight(height);
-            }
+        // For immigration check section
+        if (immigrationRef.current instanceof HTMLElement) {
+            const height = immigrationRef.current.offsetHeight;
+            setImmigrationHeight(height);
+        }
 
-            // For immigration check section
-            if (immigrationRef.current instanceof HTMLElement) {
-                const height = immigrationRef.current.offsetHeight;
-                setImmigrationHeight(height);
-            }
+        // For application fee check section
+        if (applicationFeeRef.current instanceof HTMLElement) {
+            const height = applicationFeeRef.current.offsetHeight;
+            setApplicationFeeHeight(height);
+        }
 
-            // For application fee check section
-            if (applicationFeeRef.current instanceof HTMLElement) {
-                const height = applicationFeeRef.current.offsetHeight;
-                setApplicationFeeHeight(height);
-            }
+        // For campus check section
+        if (campusRef.current instanceof HTMLElement) {
+            const height = campusRef.current.offsetHeight;
+            setCampusHeight(height);
+        }
 
-            // For campus check section
-            if (campusRef.current instanceof HTMLElement) {
-                const height = campusRef.current.offsetHeight;
-                setCampusHeight(height);
-            }
-
-            // For availability check section
-            if (availabilityRef.current instanceof HTMLElement) {
-                const height = availabilityRef.current.offsetHeight;
-                setAvailabilityHeight(height);
-            }
-        };
-    
+        // For availability check section
+        if (availabilityRef.current instanceof HTMLElement) {
+            const height = availabilityRef.current.offsetHeight;
+            setAvailabilityHeight(height);
+        }
+    };
+    useEffect(() => {
         updateHeights();
         window.addEventListener('resize', updateHeights);
-        
+
         // Also update heights when tab changes
-        if (tabValue || quantityTabValue || visaTabValue) {
+        if (tabValue || quantityTabValue || visaTabValue || isOpen) {
             updateHeights();
         }
-        
+
         return () => window.removeEventListener('resize', updateHeights);
     }, [summaryData, isRemarksHide, tabValue, quantityTabValue, visaTabValue, isOpen]);
 
@@ -398,7 +400,7 @@ const Summary = () => {
         transform: 'translateX(0)',
         pointerEvents: 'all'
     };
-    
+
     const contentStyleNonActive: React.CSSProperties = {
         opacity: 0,
         transition: "all 0.6s ease-in-out",
@@ -1017,7 +1019,7 @@ const Summary = () => {
                 </Row>
 
                 {/* Document Quantity Check */}
-                <Row className='mt-2'>
+                {/* <Row className='mt-2'>
                     <CheckHeadings title={"Document Quantity Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -1123,7 +1125,13 @@ const Summary = () => {
                                 </Row>
                                 <Row>
                                     <Col md={4} className='ms-1'>
-                                        <button style={{ ...buttonStyle }} type="button" className="w-25" onClick={() => setIsOpen((prev: any) => !prev)} aria-controls="example-collapse-text" aria-expanded={isOpen}>View All <i className={`mdi ${isOpen ? 'mdi-chevron-up' : 'mdi-chevron-down'}`}></i></button>
+                                        <button style={{ ...buttonStyle }} type="button" className="w-25" onClick={() => {
+                                            setIsOpen((prev: any) => {
+                                                const newState = !prev;
+                                                if (!newState) updateHeights();
+                                                return newState;
+                                            });
+                                        }} aria-controls="example-collapse-text" aria-expanded={isOpen}>View All <i className={`mdi ${isOpen ? 'mdi-chevron-up' : 'mdi-chevron-down'}`}></i></button>
                                     </Col>
                                 </Row>
                                 <Collapse in={isOpen}>
@@ -1171,9 +1179,9 @@ const Summary = () => {
                             <RemarkSection type={remarksType.quantity_check} />
                         </div>
                     </Card>
-                </Row>
+                </Row> */}
 
-                {/* <Row className='mt-2'>
+                <Row className='mt-2'>
                     <CheckHeadings title={"Document Quantity Check"} />
                 </Row>
                 <Row className="mt-1">
@@ -1292,7 +1300,15 @@ const Summary = () => {
                                         style={{ ...buttonStyle }}
                                         type="button"
                                         className="w-25"
-                                        onClick={() => setIsOpen((prev: any) => !prev)}
+                                        onClick={() => {
+                                            setIsOpen((prev: any) => {
+                                                const newState = !prev;
+                                                setTimeout(() => {
+                                                    updateHeights();
+                                                }, 200);
+                                                return newState;
+                                            });
+                                        }}
                                         aria-controls="example-collapse-text"
                                         aria-expanded={isOpen}
                                     >
@@ -1352,7 +1368,7 @@ const Summary = () => {
                             <RemarkSection type={remarksType.quantity_check} />
                         </div>
                     </Card>
-                </Row> */}
+                </Row>
 
                 {/* Previous Immigration Check */}
                 {/* <Row className='mt-2'>
@@ -1536,58 +1552,58 @@ const Summary = () => {
                     </Card>
                 </Row> */}
 
-<Row>
-    <Col md={6}>
-        <CheckHeadings title="Application Fee Check" />
-    </Col>
-</Row>
-<Row className="mt-1">
-    <Card className="rounded-4 position-relative" style={{ overflow: "hidden" }}>
-        <Card.Body
-            ref={applicationFeeRef}
-            style={{
-                ...contentStyleNonActive,
-                ...(isRemarksHide.application_fee_check && contentStyleActive),
-                position: 'absolute',
-                width: '100%',
-            }}
-        >
-            <div className="d-flex gap-2 align-items-center">
-                <div className="d-flex justify-content-between align-items-center application-fee-col p-2">
-                    <div className="fs-14 fw-semibold text-dark">Application Fee Check</div>
-                    <div className="application-fee-col-amount-col p-1 d-flex align-items-center justify-content-center">
-                        <span>{summaryData?.applicationFeeCheck?.fee} /-</span>
-                    </div>
-                </div>
-            </div>
-        </Card.Body>
+                <Row>
+                    <Col md={6}>
+                        <CheckHeadings title="Application Fee Check" />
+                    </Col>
+                </Row>
+                <Row className="mt-1">
+                    <Card className="rounded-4 position-relative" style={{ overflow: "hidden" }}>
+                        <Card.Body
+                            ref={applicationFeeRef}
+                            style={{
+                                ...contentStyleNonActive,
+                                ...(isRemarksHide.application_fee_check && contentStyleActive),
+                                position: 'absolute',
+                                width: '100%',
+                            }}
+                        >
+                            <div className="d-flex gap-2 align-items-center">
+                                <div className="d-flex justify-content-between align-items-center application-fee-col p-2">
+                                    <div className="fs-14 fw-semibold text-dark">Application Fee Check</div>
+                                    <div className="application-fee-col-amount-col p-1 d-flex align-items-center justify-content-center">
+                                        <span>{summaryData?.applicationFeeCheck?.fee} /-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </Card.Body>
 
-        <Card.Body
-            style={{
-                paddingTop: '0px',
-                minHeight: `${applicationFeeHeight}px`,
-                ...contentStyleNonActive,
-                ...(!isRemarksHide.application_fee_check && contentStyleActive),
-            }}
-        >
-            <Row>
-                <Col md={6} className="ms-4">
-                    <SummaryRemarks remarks={summaryData?.remarks?.application_fee_check} />
-                </Col>
-            </Row>
-        </Card.Body>
+                        <Card.Body
+                            style={{
+                                paddingTop: '0px',
+                                minHeight: `${applicationFeeHeight}px`,
+                                ...contentStyleNonActive,
+                                ...(!isRemarksHide.application_fee_check && contentStyleActive),
+                            }}
+                        >
+                            <Row>
+                                <Col md={6} className="ms-4">
+                                    <SummaryRemarks remarks={summaryData?.remarks?.application_fee_check} />
+                                </Col>
+                            </Row>
+                        </Card.Body>
 
-        <div
-            className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
-            style={{
-                ...remarkPanelStyle,
-                right: getRemarkSectionPosition(remarksType.application_fee_check) ? "0" : "96%",
-            }}
-        >
-            <RemarkSection type={remarksType.application_fee_check} />
-        </div>
-    </Card>
-</Row>
+                        <div
+                            className={`remarks-panel ${isRemarksHide ? "visible" : ""}`}
+                            style={{
+                                ...remarkPanelStyle,
+                                right: getRemarkSectionPosition(remarksType.application_fee_check) ? "0" : "96%",
+                            }}
+                        >
+                            <RemarkSection type={remarksType.application_fee_check} />
+                        </div>
+                    </Card>
+                </Row>
 
 
             </div>
