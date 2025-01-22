@@ -378,7 +378,7 @@ const Summary = () => {
                 <button
                     onClick={() => toggleRemarks(type)}
                     className="toggle-btn"
-                    style={{ ...remarkButtonStyle, left: getRemarkButtonPosition(type) ? "-20px" : "35px" }}
+                    style={{ ...remarkButtonStyle, left: getRemarkButtonPosition(type) ? "-20px" : "40px" }}
                 >
                     <i className={`mdi ${getRemarkButtonPosition(type) ? 'mdi-chevron-double-left' : 'mdi-chevron-double-right'}`}></i>
                 </button>
