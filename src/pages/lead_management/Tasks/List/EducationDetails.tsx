@@ -311,7 +311,7 @@ const EducationDetails = withSwal((props: any) => {
           <Row className="mt-4">
             <Col md={12}>
               <Form.Group className="mb-3">
-                <Form.Label>Have gap in education?</Form.Label>
+                <Form.Label>Education Gap?</Form.Label>
                 <div>
                   <Form.Check inline label="Yes" type="radio" name="hasGap" value="yes" checked={hasGap === "yes"} onChange={handleGapChange} />
                   <Form.Check inline label="No" type="radio" name="hasGap" value="no" checked={hasGap === "no"} onChange={handleGapChange} />

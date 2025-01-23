@@ -15,7 +15,7 @@ type DocItem = {
 type PoliceDocs = DocItem[];
 
 function PoliceDocs({ PoliceDocs }: Props) {
-  if (!PoliceDocs) return <NoDoc />;
+  if (!PoliceDocs?.length) return <NoDoc />;
 
   return (
     <div className="row">

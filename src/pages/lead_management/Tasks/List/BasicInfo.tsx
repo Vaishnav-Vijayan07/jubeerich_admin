@@ -104,7 +104,7 @@ const BasicInfo = withSwal((props: any) => {
     { value: "Brother", label: "Brother" },
     { value: "Sister", label: "Sister" },
     { value: "Spouse", label: "Spouse" },
-  ];  
+  ];
 
   const [loading, setLoading] = useState(false);
   const [selectedOfficeType, setSelectedOfficeType] = useState<any>(null);
@@ -132,8 +132,6 @@ const BasicInfo = withSwal((props: any) => {
       const { data } = await axios.get(`/basicStudentInfo/${studentId}`);
       const { primaryInfo, basicInfo: basicInfoFromApi } = data.data;
 
-      console.log("primaryInfo =>", primaryInfo);
-      console.log("basicInfo =>", basicInfoFromApi);
       const { preferredCountries, ...rest } = primaryInfo;
 
       setBasicInfo(basicInfoFromApi ? basicInfoFromApi : basicInfo);
@@ -233,7 +231,6 @@ const BasicInfo = withSwal((props: any) => {
     const file = e.target.files ? e.target.files[0] : null;
     const [itemName, itemIndex] = name.split(".");
 
-    console.log("itemName, itemIndex", itemName, itemIndex);
 
     if (file && !allowedFileTypes.includes(file.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
@@ -251,37 +248,31 @@ const BasicInfo = withSwal((props: any) => {
 
   // save details api
   const saveStudentBasicInfo = async () => {
-    console.log(primaryInfo);
-    console.log(basicInfo);
-
     const basicValidationRules = {
       passport_no: { required: false },
       dob: { required: false },
-      gender: { required: true },
+      gender: { required: true, message: "Please choose gender" },
       marital_status: { required: false },
-      nationality: { required: true },
+      nationality: { required: true, message: "Please choose nationality" },
       secondary_number: { required: false },
-      state: { required: true },
-      country: { required: true },
+      state: { required: true, message: "Please choose state" },
+      country: { required: true, message: "Please choose country" },
       address: { required: false },
     };
 
     const primaryValidationRules = {
-      full_name: { required: true },
-      email: { required: true },
-      phone: { required: true },
+      full_name: { required: true, message: "Please enter full name" },
+      email: { required: true, message: "Please enter email" },
+      phone: { required: true, message: "Please enter phone" },
       city: { required: false },
       office_type: { required: false },
       remarks: { required: false },
-      franchise_id: { required: primaryInfo?.office_type == 5 },
-      region_id: { required: primaryInfo?.office_type == 4 },
+      franchise_id: { required: primaryInfo?.office_type == 5, message: "Please select franchise" },
+      region_id: { required: primaryInfo?.office_type == 4, message: "Please select region" },
     };
 
     const { isValid: primaryValid, errors: primaryErrors } = validateFields([primaryInfo], primaryValidationRules);
     const { isValid: basicValid, errors: basicErrors } = validateFields([basicInfo], basicValidationRules);
-
-    console.log(basicErrors);
-    console.log(primaryErrors);
 
     if (!basicValid) {
       setBasicInfo((prevState: any) => ({
@@ -305,8 +296,6 @@ const BasicInfo = withSwal((props: any) => {
 
     const { errors: errorsBasicInfo, ...withOutErrorsBasicInfo } = basicInfo;
     const { errors: errorsPrimaryInfo, ...withOutErrorsPrimaryInfo } = primaryInfo;
-
-    console.log(policeClearenceDocs);
 
     policeClearenceDocs.forEach((doc: { certificate: any; country_name: any; id?: any }, index: number) => {
       // Start the index at 1
@@ -345,13 +334,24 @@ const BasicInfo = withSwal((props: any) => {
 
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to save the changes?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: `Yes, Save`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -363,7 +363,6 @@ const BasicInfo = withSwal((props: any) => {
               },
             })
             .then((res) => {
-              console.log("res: =>", res);
               setLoading(false);
               showSuccessAlert(res.data.message);
               dispatch(refreshData());
@@ -382,8 +381,6 @@ const BasicInfo = withSwal((props: any) => {
   };
 
   const handleDropDowns = (selected: any, { name }: any, type: "basic" | "primary") => {
-    console.log(selected, name, type);
-
     if (type === "primary") {
       setPrimaryInfo((prev: any) => {
         let updatedPrimary = { ...prev };
@@ -696,7 +693,7 @@ const BasicInfo = withSwal((props: any) => {
                 </Form.Group>
               </Col>
             )}
-            
+
             {/* <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="passport_no">
                 <Form.Label>Passport No</Form.Label>
@@ -766,7 +763,9 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="country">
-                <Form.Label><span className="text-danger">*</span> Country</Form.Label>
+                <Form.Label>
+                  <span className="text-danger">*</span> Country
+                </Form.Label>
                 <Select
                   className="react-select react-select-container"
                   name="country"
@@ -781,7 +780,7 @@ const BasicInfo = withSwal((props: any) => {
                   onChange={(selected) => handleDropDowns(selected, { name: "country" }, "basic")}
                 />
 
-                  {/* <FormInput
+                {/* <FormInput
                     type="text"
                     name="country"
                     placeholder="Enter country"
@@ -796,7 +795,9 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="nationality">
-                <Form.Label><span className="text-danger">*</span> Nationality</Form.Label>
+                <Form.Label>
+                  <span className="text-danger">*</span> Nationality
+                </Form.Label>
                 <FormInput
                   type="text"
                   name="nationality"
@@ -813,7 +814,9 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="state">
-                <Form.Label><span className="text-danger">*</span> State</Form.Label>
+                <Form.Label>
+                  <span className="text-danger">*</span> State
+                </Form.Label>
                 <Select
                   className="react-select react-select-container"
                   name="state"
@@ -828,7 +831,7 @@ const BasicInfo = withSwal((props: any) => {
                   isDisabled={!selectedNation?.value}
                 />
 
-                  {/* <FormInput
+                {/* <FormInput
                     type="text"
                     name="state"
                     placeholder="Enter state"
@@ -949,7 +952,9 @@ const BasicInfo = withSwal((props: any) => {
                   onChange={(e) => handleInputChange(e, "emergency_contact_relationship", "basic")}
                   value={basicInfo?.emergency_contact_relationship}
                 >
-                  <option value="" disabled>Select Primary Contact Relationship</option>
+                  <option value="" disabled>
+                    Select Primary Contact Relationship
+                  </option>
                   {primaryContactRelationships.map((type) => (
                     <option value={type.value} key={type.value}>
                       {type.label}
@@ -1157,7 +1162,7 @@ const BasicInfo = withSwal((props: any) => {
                           rel="noopener noreferrer"
                           className="text-decoration-none"
                         >
-                          Download Document
+                          View Document
                         </a>
                       </div>
                     )}
