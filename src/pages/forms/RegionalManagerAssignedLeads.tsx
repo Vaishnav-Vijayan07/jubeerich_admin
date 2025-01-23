@@ -110,7 +110,7 @@ const RegionalManagerAssignedLeads = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "" },
+          // { label: "Master", path: "" },
           { label: "Assigned Leads", path: "", active: true },
         ]}
         title={"Assigned Leads"}

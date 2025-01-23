@@ -16,7 +16,7 @@ const Details = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Tickets", path: "/apps/tickets/details" },
+          // { label: "Tickets", path: "/apps/tickets/details" },
           {
             label: "Ticket Detail",
             path: "/apps/tickets/details",

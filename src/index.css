@@ -953,6 +953,12 @@ select::-ms-expand {
   gap: 30px;
 }
 
+.btn.hover-custom:hover {
+  background-color: inherit !important; /* Retain the original background color */
+  color: inherit !important; /* Retain the original text color */
+  border-color: inherit !important; /* Retain the original border color */
+}
+
 .remarks-panel {
   position: absolute;
   top: 0;
@@ -990,6 +996,9 @@ select::-ms-expand {
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  padding: 0;
+  margin: 0;
+  z-index: 100;
 }
 
 .remark-button-section {

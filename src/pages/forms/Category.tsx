@@ -114,13 +114,24 @@ const BasicInputElements = withSwal((props: any) => {
   const handleDelete = (category_id: number) => {
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to delete this category?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: `Yes, delete it!`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -157,13 +168,24 @@ const BasicInputElements = withSwal((props: any) => {
 
       swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to ${isUpdate ? "update" : "create"} this category?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+        confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -237,28 +259,28 @@ const BasicInputElements = withSwal((props: any) => {
     //     </React.Fragment>
     //   ),
     // },
-    {
-      Header: "Actions",
-      accessor: "",
-      sort: false,
-      Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
-          {/* <Link to="#" className="action-icon" onClick={() => {
-            setIsUpdate(true);
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
-            <i className="mdi mdi-square-edit-outline"></i>
-          </Link>
+    // {
+    //   Header: "Actions",
+    //   accessor: "",
+    //   sort: false,
+    //   Cell: ({ row }: any) => (
+    //     <div className="d-flex justify-content-center align-items-center gap-2">
+    //       <Link to="#" className="action-icon" onClick={() => {
+    //         setIsUpdate(true);
+    //         handleUpdate(row.original);
+    //         toggleResponsiveModal();
+    //       }}>
+    //         <i className="mdi mdi-square-edit-outline"></i>
+    //       </Link>
 
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
-            <i className="mdi mdi-delete-outline"></i>
-          </Link> */}
-        </div>
-      ),
-    },
+    //       <Link to="#" className="action-icon" onClick={() =>
+    //         handleDelete(row.original.id)
+    //       }>
+    //         <i className="mdi mdi-delete-outline"></i>
+    //       </Link>
+    //     </div>
+    //   ),
+    // },
   ];
 
   const handleCancelUpdate = () => {
@@ -432,7 +454,6 @@ const Category = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/type" },
           { label: "Lead Type", path: "/settings/master/type", active: true },
         ]}
         title={"Lead Type"}

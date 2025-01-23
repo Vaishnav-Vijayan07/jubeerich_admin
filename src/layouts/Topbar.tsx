@@ -84,11 +84,11 @@ const Notifications: NotificationItem[] = [
 
 // get the profilemenu
 const ProfileMenus = [
-  {
-    label: "My Account",
-    icon: "fe-user",
-    redirectTo: "#",
-  },
+  // {
+  //   label: "My Account",
+  //   icon: "fe-user",
+  //   redirectTo: "#",
+  // },
   {
     label: "Logout",
     icon: "fe-log-out",
@@ -290,9 +290,9 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
             {/* <li className="app-search dropdown d-none d-sm-block">
               <TopbarSearch items={SearchResults} />
             </li> */}
-            <li className="dropdown notification-list">
+            {/* <li className="dropdown notification-list">
               <NotificationDropdown notifications={Notifications} />
-            </li>
+            </li> */}
             <li className="dropdown">
               <ProfileDropdown profilePic={profilePic} menuItems={ProfileMenus} username={name} userTitle={name} />
             </li>

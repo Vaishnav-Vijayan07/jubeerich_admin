@@ -311,7 +311,7 @@ const KycDetails = withSwal((props: any) => {
     <div>
       <PageTitle
         breadCrumbItems={[
-          // { label: "KYC Details", path: "/kyc_details" },
+          { label: "KYC", path: "/kyc_details" },
           { label: "KYC Details", path: "/kyc_details/:id", active: true },
         ]}
         title={"KYC Details"}
