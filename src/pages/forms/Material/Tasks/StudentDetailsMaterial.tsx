@@ -320,10 +320,9 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           id: taskId,
         });
 
-        console.log("res ==>", res.data);
 
         getTaskDetails();
-        getTaskList();
+        getTaskList(null,true);
 
         // Show success alert
         showSuccessAlert(res.data.message);
