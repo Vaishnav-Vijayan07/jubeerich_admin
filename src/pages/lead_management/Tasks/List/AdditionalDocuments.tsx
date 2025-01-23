@@ -166,7 +166,7 @@ const AdditionalDocuments = (props: any) => {
                       <Form.Label>
                          Upload Passport
                       </Form.Label>
-                      <FormInput type="file" name="passport_doc" onChange={(e) => handleFileChange(e)} />
+                      <FormInput type="file" accept="image/*,application/pdf" name="passport_doc" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.passport_doc && (
@@ -190,7 +190,7 @@ const AdditionalDocuments = (props: any) => {
                       <Form.Label>
                          Upload Updated CV
                       </Form.Label>
-                      <FormInput type="file" name="updated_cv" onChange={(e) => handleFileChange(e)} />
+                      <FormInput type="file" accept="image/*,application/pdf" name="updated_cv" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.updated_cv && (
@@ -214,7 +214,7 @@ const AdditionalDocuments = (props: any) => {
                       <Form.Label>
                          Profile Assessment Document
                       </Form.Label>
-                      <FormInput type="file" name="profile_assessment_doc" onChange={(e) => handleFileChange(e)} />
+                      <FormInput type="file" accept="image/*,application/pdf" name="profile_assessment_doc" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.profile_assessment_doc && (
@@ -240,7 +240,7 @@ const AdditionalDocuments = (props: any) => {
                       <Form.Label>
                          Letter of recommendation
                       </Form.Label>
-                      <FormInput type="file" name="lor" onChange={(e) => handleFileChange(e)} />
+                      <FormInput type="file" accept="image/*,application/pdf" name="lor" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.lor && (
@@ -264,7 +264,7 @@ const AdditionalDocuments = (props: any) => {
                       <Form.Label>
                          Statement of Purpose
                       </Form.Label>
-                      <FormInput type="file" name="sop" onChange={(e) => handleFileChange(e)} />
+                      <FormInput type="file" accept="image/*,application/pdf" name="sop" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.sop && (
@@ -288,7 +288,7 @@ const AdditionalDocuments = (props: any) => {
                       <Form.Label>
                          Application/GTE Form
                       </Form.Label>
-                      <FormInput type="file" name="gte_form" onChange={(e) => handleFileChange(e)} />
+                      <FormInput type="file" accept="image/*,application/pdf" name="gte_form" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.gte_form && (

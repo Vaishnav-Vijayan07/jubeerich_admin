@@ -332,7 +332,7 @@ const BasicInputElements = withSwal((props: any) => {
       {
         Header: "City",
         accessor: "city",
-        sort: false,
+        sort: true,
         minWidth: 100,
       },
       {
@@ -351,7 +351,7 @@ const BasicInputElements = withSwal((props: any) => {
       {
         Header: "Office",
         accessor: "office_type_name",
-        sort: false,
+        sort: true,
         minWidth: 100,
       },
       {

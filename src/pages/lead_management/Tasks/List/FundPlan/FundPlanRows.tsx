@@ -198,6 +198,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
             </Form.Label>
             <Form.Control
               type="file"
+              accept="image/*,application/pdf" 
               name="supporting_document"
               onChange={(e: any) => handleFundPlanInputChange(index, e.target.name, e.target.files?.[0])}
             />

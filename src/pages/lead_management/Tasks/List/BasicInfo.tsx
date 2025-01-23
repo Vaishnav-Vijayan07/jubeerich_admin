@@ -1146,7 +1146,7 @@ const BasicInfo = withSwal((props: any) => {
                 <Col md={6}>
                   <Form.Group className="">
                     <Form.Label>Upload Certificate</Form.Label>
-                    <Form.Control type="file" name={`certificate.${index}`} onChange={handlePoliceClearenceDocs} />
+                    <Form.Control type="file" accept="image/*,application/pdf" name={`certificate.${index}`} onChange={handlePoliceClearenceDocs} />
 
                     {certificate.certificate && certificate.certificate !== "null" && typeof certificate.certificate === "string" && (
                       <div className="d-flex align-items-center">

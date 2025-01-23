@@ -124,6 +124,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
           <Form.Label><span className="text-danger">*</span> Supporting Document</Form.Label>
           <Form.Control
             type="file"
+            accept="image/*,application/pdf"
             name="supporting_document"
             onChange={(e: any) =>
               handleGapChange(index, e.target.name, e.target.files?.[0])

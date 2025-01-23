@@ -144,6 +144,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
             <Form.Control
               name="mark_sheet"
               type="file"
+              accept="image/*,application/pdf" 
               onChange={handleFileChange}
             />
             {details?.errors?.mark_sheet && (
@@ -172,6 +173,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
             <Form.Control
               name="certificate"
               type="file"
+              accept="image/*,application/pdf" 
               onChange={handleFileChange}
             />
             {details?.errors?.certificate && (
@@ -200,6 +202,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
             <Form.Control
               name="admit_card"
               type="file"
+              accept="image/*,application/pdf" 
               onChange={handleFileChange}
             />
             {details?.errors?.admit_card && (
