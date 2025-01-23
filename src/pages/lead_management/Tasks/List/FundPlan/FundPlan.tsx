@@ -74,16 +74,16 @@ const FundPlan = ({ student_id }: Props) => {
     console.log(fundPlan);
 
     const validationRules = {
-      type: { required: true },
-      fund_origin: { required: true },
-      has_min_6_months_backup: { required: true },
-      sponsor_name: { required: true },
-      approx_annual_income: { required: true },
-      itr_status: { required: true },
-      supporting_document: { required: true },
-      relation_with_sponsor: { required: true },
-      sponsorship_amount: { required: true },
-      name_of_bank: { required: true },
+      type: { required: true, message: "Please select a fund type" },
+      fund_origin: { required: true, message: "Please select a fund origin" },
+      has_min_6_months_backup: { required: true, message: "Please select an option" },
+      sponsor_name: { required: true, message: "Please enter sponsor name" },
+      approx_annual_income: { required: true, message: "Please enter sponsor annual income" },
+      itr_status: { required: true, message: "Please select an option" },
+      supporting_document: { required: true, message: "Please upload supporting document" },
+      relation_with_sponsor: { required: true, message: "Please enter relation with sponsor" },
+      sponsorship_amount: { required: true, message: "Please enter sponsorship amount" },
+      name_of_bank: { required: true, message: "Please enter name of bank" },
     };
     const { isValid, errors } = validateFields(fundPlan, validationRules);
 

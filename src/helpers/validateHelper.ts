@@ -13,9 +13,7 @@ const validateFields = (formDataArray: any[], rules: any) => {
 
       // Check if the field is required and if the value is missing or empty
       if (rule.required && !value) {
-        newErrors[index][field] = `${field
-          .replace(/_/g, " ")
-          .replace(/\b\w/g, (char) => char.toUpperCase())} is required`;
+        newErrors[index][field] = rule.message || "Field is required";
       } else if (rule.custom && typeof rule.custom === "function") {
         const customError = rule.custom(value); // Custom validation rule (if provided)
         if (customError) {

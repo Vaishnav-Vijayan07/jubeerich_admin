@@ -160,8 +160,8 @@ const PassportDetails = ({ studentId }: Props) => {
     console.log("passportDetails", passportDetails);
 
     const validationRules = {
-      date_of_expiry: { required: true },
-      passport_number: { required: true },
+      date_of_expiry: { required: true,message:"Please select a date of expiry" },
+      passport_number: { required: true, message:"Please enter a passport number" },
     };
 
     const { errors, isValid } = validateFields(passportDetails.passports, validationRules);

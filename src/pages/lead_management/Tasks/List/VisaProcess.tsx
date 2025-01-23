@@ -284,11 +284,11 @@ const VisaProcess = withSwal((props: any) => {
 
   const submitDeclinedVisa = async () => {
     const validationRules = {
-      course_applied: { required: true },
-      country_id: { required: true },
-      rejection_reason: { required: true }, // Assuming it's optional
-      university_applied: { required: true },
-      visa_type: { required: true },
+      course_applied: { required: true,message:"Please enter a course applied" },
+      country_id: { required: true,message:"Please select a country" },
+      rejection_reason: { required: true, message: "Please enter a rejection reason" }, 
+      university_applied: { required: true,message:"Please enter a university applied" },
+      visa_type: { required: true, message: "Please enter a visa type" },
     };
 
     const { isValid, errors } = validateFields(visaDeclineFormData, validationRules);
@@ -361,10 +361,10 @@ const VisaProcess = withSwal((props: any) => {
 
   const submitApprovedVisa = async () => {
     const validationRules = {
-      course_applied: { required: true },
-      country_id: { required: true },
-      university_applied: { required: true },
-      visa_type: { required: true },
+      course_applied: { required: true, message: "Please enter a course applied" },
+      country_id: { required: true, message: "Please select a country" },
+      university_applied: { required: true, message: "Please enter a university applied" },
+      visa_type: { required: true, message: "Please enter a visa type" },
     };
 
     const { isValid, errors } = validateFields(visaApproveFormData, validationRules);
@@ -438,10 +438,10 @@ const VisaProcess = withSwal((props: any) => {
 
   const submitTravelHistory = async () => {
     const validationRules = {
-      country_id: { required: true },
-      start_date: { required: true },
-      end_date: { required: true },
-      purpose_of_travel: { required: true },
+      country_id: { required: true, message: "Please select a country" },
+      start_date: { required: true, message: "Please select a start date" },
+      end_date: { required: true, message: "Please select an end date" },
+      purpose_of_travel: { required: true, message: "Please enter a purpose of travel" },
     };
 
     const { isValid, errors } = validateFields(travelHistoryFormData, validationRules);

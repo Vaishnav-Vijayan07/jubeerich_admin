@@ -26,6 +26,17 @@ function StackGraph({ categories, series, colors }: Props) {
         show: true,
         offsetX: 0,
         offsetY: -20,
+        tools: {
+          reset: `
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+      <path
+        fill="currentColor"
+        d="M2 12c0 5.523 4.477 10 10 10s10-4.477 10-10S17.523 2 12 2v2a8 8 0 1 1-4.5 1.385V8h2V2h-6v2H6a9.99 9.99 0 0 0-4 8"
+      ></path>
+    </svg>
+          `,
+          download: false,
+        },
       },
     },
     xaxis: {
@@ -44,6 +55,9 @@ function StackGraph({ categories, series, colors }: Props) {
     },
     fill: {
       opacity: 1,
+    },
+    dataLabels: {
+      enabled: false,
     },
     colors: colors
       ? colors
