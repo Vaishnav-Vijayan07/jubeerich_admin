@@ -908,7 +908,7 @@ const AdminUsers = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "User Management", path: "/user_management/user_creation" },
+          // { label: "User Management", path: "/user_management/user_creation" },
           {
             label: "Admin Users",
             path: "/user_management/user_creation",

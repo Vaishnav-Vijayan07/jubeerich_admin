@@ -528,7 +528,7 @@ const Region = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/region" },
+          // { label: "Master", path: "/settings/master/region" },
           { label: "Regions", path: "/settings/master/region", active: true },
         ]}
         title={"Regions"}

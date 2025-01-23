@@ -516,7 +516,7 @@ const AccessRoles = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "User Management", path: "/user_management/access_roles" },
+          // { label: "User Management", path: "/user_management/access_roles" },
           {
             label: "Access Roles",
             path: "/user_management/access_roles",

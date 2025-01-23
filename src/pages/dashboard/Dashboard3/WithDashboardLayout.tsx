@@ -104,7 +104,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
 
     return (
       <>
-        <PageTitle breadCrumbItems={[{ label: "Dashboard", path: "" }]} title="Dashboard" />
+        <PageTitle breadCrumbItems={[{ label: "Dashboard", path: "", active: true }]} title="Dashboard" />
         <CustomFilter
           filterType={filterType}
           setFilterType={setFilterType}

@@ -275,7 +275,7 @@ const TaskList = withSwal(({ swal }: any) => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Todo", path: "/apps/tasks/list" },
+          // { label: "Todo", path: "/apps/tasks/list" },
           { label: "Todo List", path: "/apps/tasks/list", active: true },
         ]}
         title={"Tasks List"}

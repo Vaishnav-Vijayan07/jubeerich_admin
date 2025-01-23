@@ -914,7 +914,6 @@ const Branches = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/branches" },
           { label: "Branches", path: "/settings/master/branches", active: true },
         ]}
         title={"Branches"}

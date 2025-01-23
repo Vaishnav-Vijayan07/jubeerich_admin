@@ -710,7 +710,7 @@ const VisaChecklist = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/visa_checklists" },
+          // { label: "Master", path: "/settings/master/visa_checklists" },
           { label: "Visa Checklists", path: "/settings/master/visa_checklists", active: true },
         ]}
         title={"Visa Checklists"}

@@ -380,7 +380,7 @@ const VisaConfiguration = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/visa_configuration" },
+          // { label: "Master", path: "/settings/master/visa_configuration" },
           {
             label: "Visa Config",
             path: "/settings/master/visa_configuration",

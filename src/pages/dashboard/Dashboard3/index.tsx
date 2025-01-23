@@ -46,7 +46,7 @@ const Dashboard3 = () => {
       default:
         return (
           <>
-            <PageTitle breadCrumbItems={[{ label: "Dashboards", path: "" }]} title={"Dashboard"} />
+            <PageTitle breadCrumbItems={[{ label: "Dashboards", path: "", active: true }]} title={"Dashboard"} />
 
             <Statistics />
 

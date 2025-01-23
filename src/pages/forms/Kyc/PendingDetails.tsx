@@ -72,7 +72,7 @@ const PendingDetails = (props: Props) => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Applications", path: "" },
+          // { label: "Applications", path: "" },
           { label: "Pending", path: "", active: true },
         ]}
         title={"Applications-Pending"}

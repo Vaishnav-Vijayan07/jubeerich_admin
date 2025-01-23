@@ -23,7 +23,6 @@ const Editors = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Forms", path: "/forms/editors" },
           { label: "Editors", path: "/forms/editors", active: true },
         ]}
         title={"Editors"}

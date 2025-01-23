@@ -294,7 +294,7 @@ const TaskPrefix = () => {
         <React.Fragment>
             <PageTitle
                 breadCrumbItems={[
-                    { label: "Master", path: "/settings/master/task_prefix" },
+                    // { label: "Master", path: "/settings/master/task_prefix" },
                     { label: "Task Prefix", path: "/settings/master/task_prefix", active: true },
                 ]}
                 title={"Task Prefix"}

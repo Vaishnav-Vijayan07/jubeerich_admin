@@ -504,7 +504,6 @@ const FranchiseDetails = withSwal((props: any) => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/franchise" },
           { label: "Franchise", path: "/settings/master/franchise" },
           { label: "Franchise Details", path: "/settings/master/franchise_details", active: true },
         ]}

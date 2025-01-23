@@ -377,7 +377,6 @@ const CheckLists = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/master/checklist" },
           { label: "Checklist", path: "/master/checklist", active: true },
         ]}
         title={`Check Lists - ${statusData}`}

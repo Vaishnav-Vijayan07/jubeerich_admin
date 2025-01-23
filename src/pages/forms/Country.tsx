@@ -500,7 +500,6 @@ const Country = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/country" },
           { label: "Countries", path: "/settings/master/country", active: true },
         ]}
         title={"Countries"}

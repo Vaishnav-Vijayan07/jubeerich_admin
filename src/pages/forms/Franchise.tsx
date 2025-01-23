@@ -482,7 +482,6 @@ const Franchise = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/franchise" },
           { label: "Franchise Users", path: "/settings/master/franchise", active: true },
         ]}
         title={"Franchise Users"}

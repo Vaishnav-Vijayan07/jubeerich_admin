@@ -62,7 +62,7 @@ const List = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Leads", path: "/leads/leads_list" },
+          // { label: "Leads", path: "/leads/leads_list" },
           { label: "Leads List", path: "/leads/leads_list", active: true },
         ]}
         title={"Leads List"}
