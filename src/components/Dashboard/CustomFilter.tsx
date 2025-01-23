@@ -37,17 +37,18 @@ const CustomFilter = ({
   filters,
   handleFilter,
   currentCountry,
-  setCurrentCountry
+  setCurrentCountry,
+  selectedWeek,
+  setSelectedWeek,
 }: any) => {
   const dispatch = useDispatch();
-  const [selectedWeek, setSelectedWeek] = useState<string>("");
 
   const handleFilterApplyClick = (type: any) => {
     setFilterType(type);
   };
 
   const handleFilterApply = (filterType: any) => {
-    handleFilter(filterType,currentCountry);
+    handleFilter(filterType, currentCountry);
   };
 
   const handleClearFilter = () => {
@@ -56,7 +57,7 @@ const CustomFilter = ({
     setSelectedMonth((new Date().getMonth() + 1).toString());
     setSelectedDate("");
     setCustomStartDate("");
-    setCurrentCountry(currentCountry)
+    setCurrentCountry(currentCountry);
     setCustomEndDate("");
     dispatch(currentCountry ? getDashboard({ country_id: currentCountry }) : getDashboard());
   };
@@ -76,27 +77,6 @@ const CustomFilter = ({
     value: (i + 1).toString(),
     label: new Date(2024, i, 1).toLocaleString("default", { month: "long" }),
   }));
-
-  const divComponent = () => {
-    if (filterType === "custom") {
-      return (
-        <Row className="mb-3">
-          <Col md={6}>
-            <Form.Group>
-              <Form.Label>From Date</Form.Label>
-              <Form.Control type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} />
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group>
-              <Form.Label>To Date</Form.Label>
-              <Form.Control type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} />
-            </Form.Group>
-          </Col>
-        </Row>
-      );
-    }
-  };
 
   return (
     <Card className="bg-white">
@@ -172,7 +152,7 @@ const CustomFilter = ({
               </Col>
               <Col md={2}>
                 <Form.Group>
-                  <Form.Label>Date</Form.Label>
+                  <Form.Label>Week Start Date</Form.Label>
                   <Form.Control type="date" value={selectedDate} onChange={(e) => handleDateSelection(e.target.value)} />
                 </Form.Group>
               </Col>

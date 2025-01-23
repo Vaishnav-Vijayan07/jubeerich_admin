@@ -81,16 +81,16 @@ const WorkExpereince = withSwal((props: any) => {
 
   const saveWorkData = useCallback(async () => {
     const validationRules = {
-      years: { required: true },
-      designation: { required: true },
-      company: { required: true },
-      from: { required: true },
-      to: { required: true },
-      bank_statement: { required: true },
-      job_offer_document: { required: true },
-      appointment_document: { required: true },
-      payslip_document: { required: true },
-      experience_certificate: { required: true },
+      years: { required: true, message: "Please enter the number of years" },
+      designation: { required: true, message: "Please enter a designation" },
+      company: { required: true, message: "Please enter a company name" },
+      from: { required: true, message: "Please select a start date" },
+      to: { required: true, message: "Please select an end date" },
+      bank_statement: { required: true, message: "Please upload a bank statement" },
+      job_offer_document: { required: true, message: "Please upload a job offer document" },
+      appointment_document: { required: true, message: "Please upload an appointment document" },
+      payslip_document: { required: true, message: "Please upload a payslip document" },
+      experience_certificate: { required: true, message: "Please upload an experience certificate" },
     };
 
     const { isValid, errors } = validateFields(workExperienceFromApi, validationRules);

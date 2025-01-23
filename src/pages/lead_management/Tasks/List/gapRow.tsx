@@ -55,10 +55,10 @@ const GapRows = ({ gapData, studentId, type }: any) => {
 
   const saveGap = async () => {
     const validationRules = {
-      start_date: { required: true },
-      end_date: { required: true },
-      reason: { required: true },
-      supporting_document: { required: true },
+      start_date: { required: true, message:"Please select a start date" },
+      end_date: { required: true, message:"Please select an end date" },
+      reason: { required: true, message:"Please enter a reason" },
+      supporting_document: { required: true , message:"Please upload a supporting document" },
     };
 
     const { isValid, errors } = validateFields(gapDetails, validationRules);

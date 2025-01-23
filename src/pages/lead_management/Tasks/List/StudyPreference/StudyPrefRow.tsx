@@ -433,14 +433,14 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
 
   const handleSave = async () => {
     const validationRules = {
-      universityId: { required: true },
-      campusId: { required: true },
-      courseTypeId: { required: true },
-      streamId: { required: true },
-      courseId: { required: true },
-      intakeYear: { required: true },
-      intakeMonth: { required: true },
-      estimatedBudget: { required: true },
+      universityId: { required: true,message : "Please select university" },
+      campusId: { required: true,message : "Please select campus" },
+      courseTypeId: { required: true ,message : "Please select course type" },
+      streamId: { required: true ,message : "Please select stream" },
+      courseId: { required: true ,message : "Please select course" },
+      intakeYear: { required: true ,message : "Please select intake year" },
+      intakeMonth: { required: true ,message : "Please select intake month" },
+      estimatedBudget: { required: true,message : "Please enter estimated budget" },
     };
 
     const { isValid, errors } = validateFields(studyPreferenceData, validationRules);

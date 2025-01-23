@@ -19,6 +19,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
 
     const [currentCountry, setCurrentCountry] = useState(10);
     const [filterType, setFilterType] = useState<FilterType>("");
+    const [selectedWeek, setSelectedWeek] = useState<string>("");
     const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
     const [selectedMonth, setSelectedMonth] = useState<string>((new Date().getMonth() + 1).toString());
     const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
@@ -122,9 +123,11 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
           handleFilter={handleFilter}
           setCurrentCountry={setCurrentCountry}
           currentCountry={isApplicationSide ? currentCountry : undefined}
+          selectedWeek={selectedWeek}
+          setSelectedWeek={setSelectedWeek}
         />
         {isApplicationSide && <CountryFilter countries={countries} onCountryChange={handleCountryClick} currentCountry={currentCountry} />}
-        <StatCards statCardsItems={cards || []} role={userRole}/>
+        <StatCards statCardsItems={cards || []} role={userRole} />
         <Component
           {...props}
           categories={categories || []}

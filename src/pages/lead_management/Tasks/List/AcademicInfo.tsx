@@ -143,43 +143,44 @@ const AcademicInfo = withSwal((props: any) => {
     }
   };
 
-  const handleSaveAcademicInfo = () => {
-    console.log(academicInfoFromApi);
+  // const handleSaveAcademicInfo = () => {
+  //   console.log(academicInfoFromApi);
 
-    const validationRules = {
-      qualification: { required: true },
-      place: { required: true },
-      percentage: { required: true },
-      year_of_passing: { required: true },
-      backlogs: { required: true },
-    };
+  //   const validationRules = {
+  //     qualification: { required: true, message: "Please choose a qualification" },
+  //     place: { required: true, message: "Please choose a place" },
+  //     percentage: { required: true, message: "Please choose a percentage" },
+  //     year_of_passing: { required: true, message: "Please choose a year of passing" },
+  //     backlogs: { required: true, message: "Please choose the number of backlogs" },
+  //   };
 
-    const { isValid, errors } = validateFields(academicInfoFromApi, validationRules);
+  //   const { isValid, errors } = validateFields(academicInfoFromApi, validationRules);
 
-    console.log(errors);
+  //   console.log(errors);
 
-    if (!isValid) {
-      setAcademicInfoFromApi((prevState: any) =>
-        prevState.map((exp: any, index: any) => ({
-          ...exp,
-          errors: errors[index] || {},
-        }))
-      );
-      return;
-    }
-    saveStudentAcademicInfo(academicInfoFromApi);
-  };
+  //   if (!isValid) {
+  //     setAcademicInfoFromApi((prevState: any) =>
+  //       prevState.map((exp: any, index: any) => ({
+  //         ...exp,
+  //         errors: errors[index] || {},
+  //       }))
+  //     );
+  //     return;
+  //   }
+  //   saveStudentAcademicInfo(academicInfoFromApi);
+  // };
 
   const handleSaveExamInfo = () => {
     const validationRules = {
-      exam_type: { required: true },
-      listening_score: { required: true },
-      speaking_score: { required: true },
-      reading_score: { required: true },
-      writing_score: { required: true },
-      overall_score: { required: true },
-      exam_date: { required: true },
-      score_card: { required: true },
+      exam_type: { required: true, message: "Please choose an exam type" },
+      listening_score: { required: true, message: "Please enter a listening score" },
+      speaking_score: { required: true, message: "Please enter a speaking score" },
+      reading_score: { required: true, message: "Please enter a reading score" },
+      writing_score: { required: true, message: "Please enter a writing score" },
+      overall_score: { required: true, message: "Please enter an overall score" },
+      exam_date: { required: true, message: "Please select an exam date" },
+      score_card: { required: true, message: "Please upload a score card" },
+      qualification: { required: true, message: "Please choose a qualification" },
     };
 
     const { isValid, errors } = validateFields(examForm, validationRules);

@@ -8,6 +8,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+
 type StatCardsItem = {
   id: number;
   title: string;
@@ -21,14 +22,13 @@ type Props = {
   role?: string;
 };
 const StatCards = ({ statCardsItems, role }: Props) => {
-  console.log(role);
   const renderCard = () => {
     switch (role) {
       case "Application Manager":
       case "Application Team":
         return (
           <>
-            <Swiper modules={[Navigation, Pagination]} spaceBetween={5} slidesPerView={6} >
+            <Swiper modules={[Navigation, Pagination]} spaceBetween={5} slidesPerView={6}>
               {statCardsItems.map((item: StatCardsItem) => (
                 <SwiperSlide key={item.id}>
                   <Row className="justify-content-center">

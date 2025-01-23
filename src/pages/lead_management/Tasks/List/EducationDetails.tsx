@@ -130,8 +130,7 @@ const EducationDetails = withSwal((props: any) => {
 
   // Handlers for primary education state update
   const handlePrimaryChange = (name: string, value: any) => {
-
-    if (typeof value == 'object' && !allowedFileTypes.includes(value.type)) {
+    if (typeof value == "object" && !allowedFileTypes.includes(value.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
       return;
     }
@@ -149,17 +148,16 @@ const EducationDetails = withSwal((props: any) => {
 
   // Handlers for secondary education state update
   const handleSecondaryChange = (name: string, value: any) => {
-
-    if (typeof value == 'object' && !allowedFileTypes.includes(value.type)) {
+    if (typeof value == "object" && !allowedFileTypes.includes(value.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
       return;
     }
-    
+
     if (!regrexValidation(name, value)) {
       console.error(`Invalid ${name}: ${value}`);
       return; // Stop updating if validation fails
     }
-    
+
     setSecondaryDetails((prevDetails: any) => ({
       ...prevDetails,
       [name]: value,
@@ -168,14 +166,14 @@ const EducationDetails = withSwal((props: any) => {
 
   const handleSavePrimary = async () => {
     const validationRules = {
-      startDate: { required: true },
-      endDate: { required: true },
-      percentage: { required: true },
-      mark_sheet: { required: true },
-      certificate: { required: true },
-      admit_card: { required: true },
-      board_name: { required: true },
-      school_name: { required: true },
+      startDate: { required: true, message: "Please select a start date" },
+      endDate: { required: true, message: "Please select an end date" },
+      percentage: { required: true, message: "Please enter a percentage" },
+      mark_sheet: { required: true, message: "Please upload a mark sheet" },
+      certificate: { required: true, message: "Please upload a certificate" },
+      admit_card: { required: true, message: "Please upload an admit card" },
+      board_name: { required: true, message: "Please enter a board name" },
+      school_name: { required: true, message: "Please enter a school name" },
     };
 
     const { isValid, errors } = validateFields([primaryDetails], validationRules);
@@ -194,14 +192,14 @@ const EducationDetails = withSwal((props: any) => {
 
   const handleSaveSecondary = async () => {
     const validationRules = {
-      startDate: { required: true },
-      endDate: { required: true },
-      percentage: { required: true },
-      mark_sheet: { required: true },
-      certificate: { required: true },
-      admit_card: { required: true },
-      board_name: { required: true },
-      school_name: { required: true },
+      startDate: { required: true, message: "Please select a start date" },
+      endDate: { required: true, message: "Please select an end date" },
+      percentage: { required: true, message: "Please enter a percentage" },
+      mark_sheet: { required: true, message: "Please upload a mark sheet" },
+      certificate: { required: true, message: "Please upload a certificate" },
+      admit_card: { required: true, message: "Please upload an admit card" },
+      board_name: { required: true, message: "Please enter a board name" },
+      school_name: { required: true, message: "Please enter a school name" },
     };
 
     const { isValid, errors } = validateFields([secondaryDetails], validationRules);
@@ -253,11 +251,7 @@ const EducationDetails = withSwal((props: any) => {
 
           <>
             <Row>
-              <PrimaryEducationDetails
-                title="Secondary Education Details"
-                details={secondaryDetails}
-                onChange={handleSecondaryChange}
-              />
+              <PrimaryEducationDetails title="Secondary Education Details" details={secondaryDetails} onChange={handleSecondaryChange} />
             </Row>
 
             {/* Move Save Button below Secondary Education Section */}
@@ -319,24 +313,8 @@ const EducationDetails = withSwal((props: any) => {
               <Form.Group className="mb-3">
                 <Form.Label>Have gap in education?</Form.Label>
                 <div>
-                  <Form.Check
-                    inline
-                    label="Yes"
-                    type="radio"
-                    name="hasGap"
-                    value="yes"
-                    checked={hasGap === "yes"}
-                    onChange={handleGapChange}
-                  />
-                  <Form.Check
-                    inline
-                    label="No"
-                    type="radio"
-                    name="hasGap"
-                    value="no"
-                    checked={hasGap === "no"}
-                    onChange={handleGapChange}
-                  />
+                  <Form.Check inline label="Yes" type="radio" name="hasGap" value="yes" checked={hasGap === "yes"} onChange={handleGapChange} />
+                  <Form.Check inline label="No" type="radio" name="hasGap" value="no" checked={hasGap === "no"} onChange={handleGapChange} />
                 </div>
               </Form.Group>
             </Col>
