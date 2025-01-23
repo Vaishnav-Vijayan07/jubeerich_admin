@@ -29,7 +29,7 @@ const PageTitle = (props: PageTitleProps) => {
           <div className="page-title-right">
             <Breadcrumb className="m-0">
               <Breadcrumb.Item className="m-0 inter-font" href="/">
-                Jubeerich Admin
+                Jubeerich
               </Breadcrumb.Item>
 
               {(props["breadCrumbItems"] || []).map((item, index) => {
