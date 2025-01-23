@@ -416,7 +416,7 @@ const Stream = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/stream" },
+          // { label: "Master", path: "/settings/master/stream" },
           { label: "Streams", path: "/settings/master/stream", active: true },
         ]}
         title={"Streams"}

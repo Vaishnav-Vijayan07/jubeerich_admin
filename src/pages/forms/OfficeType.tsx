@@ -536,7 +536,7 @@ const OfficeType = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/office_type" },
+          // { label: "Master", path: "/settings/master/office_type" },
           {
             label: "Office Types ",
             path: "/settings/master/office_type",

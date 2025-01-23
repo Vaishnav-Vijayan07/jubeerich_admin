@@ -7,6 +7,7 @@ import { VisaChecklistActionTypes } from "./constants";
 
 const INIT_STATE = {
   visaChecklist: [],
+  visaConfig: [],
   loading: false,
   initialloading: false,
   error: null,
@@ -17,13 +18,15 @@ interface VisaChecklistData {
   id: string;
   step_name: string;
   description: string;
-  fields: Array<any>;}
+  fields: Array<any>;
+}
 
 export interface VisaChecklistActionType {
   type:
     | VisaChecklistActionTypes.API_RESPONSE_SUCCESS
     | VisaChecklistActionTypes.API_RESPONSE_ERROR
     | VisaChecklistActionTypes.GET_VISA_CHECKLIST
+    | VisaChecklistActionTypes.GET_VISA_CONFIG
     | VisaChecklistActionTypes.ADD_VISA_CHECKLIST
     | VisaChecklistActionTypes.UPDATE_VISA_CHECKLIST
     | VisaChecklistActionTypes.DELETE_VISA_CHECKLIST;
@@ -49,6 +52,16 @@ const VisaChecklist = (state: State = INIT_STATE, action: VisaChecklistActionTyp
           return {
             ...state,
             visaChecklist: action.payload.data,
+            loading: false,
+            initialloading: false,
+            hasLoadedInitially: true,
+          };
+        }
+
+        case VisaChecklistActionTypes.GET_VISA_CONFIG: {
+          return {
+            ...state,
+            visaConfig: action.payload.data,
             loading: false,
             initialloading: false,
             hasLoadedInitially: true,
@@ -103,6 +116,16 @@ const VisaChecklist = (state: State = INIT_STATE, action: VisaChecklistActionTyp
             hasLoadedInitially: true,
           };
         }
+        case VisaChecklistActionTypes.GET_VISA_CONFIG: {
+          return {
+            ...state,
+            error: action.payload.error,
+            loading: false,
+            visaConfig: [],
+            initialloading: false,
+            hasLoadedInitially: true,
+          };
+        }
         case VisaChecklistActionTypes.ADD_VISA_CHECKLIST: {
           showErrorAlert(action.payload.error);
           return {
@@ -133,8 +156,11 @@ const VisaChecklist = (state: State = INIT_STATE, action: VisaChecklistActionTyp
         default:
           return { ...state };
       }
-      
+
     case VisaChecklistActionTypes.GET_VISA_CHECKLIST:
+      return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
+
+    case VisaChecklistActionTypes.GET_VISA_CONFIG:
       return { ...state, loading: true, initialloading: !state.hasLoadedInitially };
     case VisaChecklistActionTypes.ADD_VISA_CHECKLIST:
       return { ...state, loading: true };

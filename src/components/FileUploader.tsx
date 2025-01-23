@@ -29,23 +29,42 @@ const FileUploader = (props: any) => {
   /**
    * Handled the accepted files and shows the preview
    */
+  // const handleAcceptedFiles = (files: FileType[]) => {
+  //   var allFiles = files;
+
+  //   if (props.showPreview) {
+  //     (files || []).map((file) =>
+  //       Object.assign(file, {
+  //         preview: file["type"].split("/")[0] === "image" ? URL.createObjectURL(file) : null,
+  //         formattedSize: formatBytes(file.size),
+  //       })
+  //     );
+  //     allFiles = [...selectedFiles];
+  //     allFiles.push(...files);
+  //     setSelectedFiles(allFiles);
+  //   }
+
+  //   if (props.onFileUpload) props.onFileUpload(allFiles);
+  // };
+
   const handleAcceptedFiles = (files: FileType[]) => {
-    var allFiles = files;
-
+    if (!files || files.length === 0) return; // Ensure files exist
+  
+    const file = files[0]; // Only handle the first file
+  
     if (props.showPreview) {
-      (files || []).map((file) =>
-        Object.assign(file, {
-          preview: file["type"].split("/")[0] === "image" ? URL.createObjectURL(file) : null,
-          formattedSize: formatBytes(file.size),
-        })
-      );
-      allFiles = [...selectedFiles];
-      allFiles.push(...files);
-      setSelectedFiles(allFiles);
+      // Add preview and formatted size to the file
+      Object.assign(file, {
+        preview: file["type"].split("/")[0] === "image" ? URL.createObjectURL(file) : null,
+        formattedSize: formatBytes(file.size),
+      });
+  
+      setSelectedFiles([file]); // Replace the existing file with the new one
     }
-
-    if (props.onFileUpload) props.onFileUpload(allFiles);
+  
+    if (props.onFileUpload) props.onFileUpload([file]); // Pass only the single file to the callback
   };
+  
 
   const handleUpload = async (e: any) => {
     e.preventDefault();
@@ -113,7 +132,7 @@ const FileUploader = (props: any) => {
 
   return (
     <>
-      <Dropzone {...props} onDrop={(acceptedFiles) => handleAcceptedFiles(acceptedFiles)}>
+      <Dropzone {...props} maxFiles={1} multiple={false} onDrop={(acceptedFiles) => handleAcceptedFiles(acceptedFiles)}>
         {({ getRootProps, getInputProps }) => (
           <div className="dropzone px-2 py-0">
             <div className="dz-message needsclick" {...getRootProps()}>

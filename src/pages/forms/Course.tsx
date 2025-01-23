@@ -286,12 +286,12 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Type",
       accessor: "course_type.type_name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Stream",
       accessor: "stream.stream_name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Actions",
@@ -546,7 +546,6 @@ const Course = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/course" },
           { label: "Courses", path: "/settings/master/course", active: true },
         ]}
         title={"Courses"}

@@ -232,6 +232,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         url: "/settings/master/visa_checklists",
         parentKey: "master",
       },
+      {
+        key: "visa_configuration",
+        label: "Visa Configuration",
+        url: "/settings/master/visa_configuration",
+        parentKey: "master",
+      },
     ],
   },
 
@@ -277,14 +283,6 @@ const MENU_ITEMS: MenuItemTypes[] = [
 
   { key: "status_management", label: "Status Management", isTitle: true, roles: ["Monitor"] },
 
-  // {
-  //   key: "status",
-  //   label: "Status",
-  //   isTitle: false,
-  //   icon: "activity",
-  //   url: "/settings/master/status",
-  //   roles: ["Monitor"],
-  // },
   {
     key: "status_configuration",
     label: "Status Config",
@@ -321,14 +319,14 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Monitor", "Manage Franchise"],
   },
 
-  {
-    key: "roles",
-    label: "Access Roles",
-    isTitle: false,
-    icon: "key", // Key for roles and access
-    url: "/user_management/access_roles",
-    roles: ["Monitor"],
-  },
+  // {
+  //   key: "roles",
+  //   label: "Access Roles",
+  //   isTitle: false,
+  //   icon: "key", // Key for roles and access
+  //   url: "/user_management/access_roles",
+  //   roles: ["Monitor"],
+  // },
   {
     key: "user_creation",
     label: "User Creation",

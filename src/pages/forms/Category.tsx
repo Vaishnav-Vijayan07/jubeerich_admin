@@ -237,28 +237,28 @@ const BasicInputElements = withSwal((props: any) => {
     //     </React.Fragment>
     //   ),
     // },
-    {
-      Header: "Actions",
-      accessor: "",
-      sort: false,
-      Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
-          {/* <Link to="#" className="action-icon" onClick={() => {
-            setIsUpdate(true);
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
-            <i className="mdi mdi-square-edit-outline"></i>
-          </Link>
+    // {
+    //   Header: "Actions",
+    //   accessor: "",
+    //   sort: false,
+    //   Cell: ({ row }: any) => (
+    //     <div className="d-flex justify-content-center align-items-center gap-2">
+    //       <Link to="#" className="action-icon" onClick={() => {
+    //         setIsUpdate(true);
+    //         handleUpdate(row.original);
+    //         toggleResponsiveModal();
+    //       }}>
+    //         <i className="mdi mdi-square-edit-outline"></i>
+    //       </Link>
 
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
-            <i className="mdi mdi-delete-outline"></i>
-          </Link> */}
-        </div>
-      ),
-    },
+    //       <Link to="#" className="action-icon" onClick={() =>
+    //         handleDelete(row.original.id)
+    //       }>
+    //         <i className="mdi mdi-delete-outline"></i>
+    //       </Link>
+    //     </div>
+    //   ),
+    // },
   ];
 
   const handleCancelUpdate = () => {
@@ -432,7 +432,6 @@ const Category = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/type" },
           { label: "Lead Type", path: "/settings/master/type", active: true },
         ]}
         title={"Lead Type"}

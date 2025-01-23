@@ -228,17 +228,17 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Location",
       accessor: "location",
-      sort: false,
+      sort: true,
     },
     {
       Header: "University",
       accessor: "university",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Country",
       accessor: "country",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Course Configuration",
@@ -466,7 +466,6 @@ const Campus = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/campus" },
           { label: "Campus", path: "/settings/master/campus", active: true },
         ]}
         title={"Campus"}

@@ -518,7 +518,6 @@ const BranchDetails = withSwal((props: any) => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/branches" },
           { label: "Branches", path: "/settings/master/branches" },
           { label: "Branch Details", path: "/settings/master/branch_detials", active: true },
         ]}

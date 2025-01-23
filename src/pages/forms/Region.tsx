@@ -263,12 +263,12 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Regional Manager",
       accessor: "regional_manager",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Slug",
       accessor: "slug",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Region Description",
@@ -528,7 +528,7 @@ const Region = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/region" },
+          // { label: "Master", path: "/settings/master/region" },
           { label: "Regions", path: "/settings/master/region", active: true },
         ]}
         title={"Regions"}

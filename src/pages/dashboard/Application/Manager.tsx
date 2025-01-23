@@ -4,7 +4,7 @@ import StackGraph from "../Components/StackGraph";
 import PieData from "../Components/PieData";
 import ApplicationsTable from "../Components/ApplicationsTable";
 
-function ManagerDashboard({ categories, series, latestLeadsCount, pieData }: any) {
+function ManagerDashboard({ categories, series, latestLeadsCount, pieData, colors }: any) {
   const labels = pieData?.pieCategories;
   const pieSeries = pieData?.pieSeries;
 
@@ -12,7 +12,7 @@ function ManagerDashboard({ categories, series, latestLeadsCount, pieData }: any
     <>
       <Row className="d-flex align-items-stretch mb-2">
         <Col md={6}>
-          <StackGraph categories={categories} series={series} />
+          <StackGraph categories={categories} series={series} colors={colors} />
         </Col>
         <Col md={6}>
           <div className="h-100">

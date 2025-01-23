@@ -27,30 +27,34 @@ import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 
+// Interfaces
 interface TableRecords {
   id: string;
   step_name: string;
   description: string;
-  fields: Array<any>;
+  fields: Array<FieldData>;
 }
 
+interface FieldData {
+  field_name: string;
+  field_type: string;
+}
+
+interface ValidationErrors {
+  step_name?: string;
+  description?: string;
+  fields?: Array<{
+    field_name?: string;
+    field_type?: string;
+  }>;
+}
+
+// Constants
 const sizePerPageList = [
-  {
-    text: "10",
-    value: 10,
-  },
-  {
-    text: "25",
-    value: 25,
-  },
-  {
-    text: "50",
-    value: 50,
-  },
-  {
-    text: "100",
-    value: 100,
-  },
+  { text: "10", value: 10 },
+  { text: "25", value: 25 },
+  { text: "50", value: 50 },
+  { text: "100", value: 100 },
 ];
 
 const initialState = {
@@ -60,21 +64,50 @@ const initialState = {
   fields: [{ field_name: "", field_type: "" }],
 };
 
-const initialValidationState = {
+const initialValidationState: ValidationErrors = {
   step_name: "",
   description: "",
-  fields: "",
+  fields: [],
 };
 
 const fieldTypeOptions = [
   { value: "text", label: "Text" },
   { value: "number", label: "Number" },
   { value: "date", label: "Date" },
-  { value: "checkbox", label: "Checkbox" },
+  // { value: "checkbox", label: "Checkbox" },
   { value: "textarea", label: "Textarea" },
   { value: "radio", label: "Radio" },
-  { value: "select", label: "Dropdown" },
+  // { value: "select", label: "Dropdown" },
 ];
+
+// Validation Schema
+const validationSchema = yup.object().shape({
+  step_name: yup
+    .string()
+    .required("Step name is required")
+    .min(3, "Step name must be at least 3 characters long")
+    .matches(/^[a-zA-Z0-9\s_]+$/, "Step name can only contain letters, numbers, spaces and underscores"),
+  description: yup.string(),
+  fields: yup
+    .array()
+    .of(
+      yup.object().shape({
+        field_name: yup
+          .string()
+          .required("Field name is required")
+          .min(2, "Field name must be at least 2 characters long")
+          .matches(/^[a-zA-Z0-9\s_]+$/, "Field name can only contain letters, numbers, spaces and underscores"),
+        field_type: yup
+          .string()
+          .required("Field type is required")
+          .oneOf(
+            fieldTypeOptions.map((option) => option.value),
+            "Invalid field type selected"
+          ),
+      })
+    )
+    .min(1, "At least one field is required"),
+});
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -93,20 +126,95 @@ const BasicInputElements = withSwal((props: any) => {
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
-  //validation errors
-  const [validationErrors, setValidationErrors] = useState(initialValidationState);
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(initialValidationState);
 
+  // Update the error handling in onSubmit
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await validationSchema.validate(formData, { abortEarly: false });
+
+      swal
+        .fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+        })
+        .then((result: any) => {
+          if (result.isConfirmed && userInfo) {
+            if (isUpdate) {
+              dispatch(updateVisaCheklist(formData.id, formData.step_name, formData.description, formData.fields));
+              setIsUpdate(false);
+            } else {
+              dispatch(addVisaChecklist(formData.step_name, formData.description, formData.fields));
+            }
+          }
+        });
+    } catch (validationError) {
+      if (validationError instanceof yup.ValidationError) {
+        const errors: ValidationErrors = {
+          fields: [],
+        };
+
+        validationError.inner.forEach((error) => {
+          if (error.path) {
+            if (error.path.includes("fields")) {
+              const matches = error.path.match(/fields\[(\d+)\]\.(.+)/);
+              if (matches) {
+                const [_, indexStr, field] = matches;
+                const index = parseInt(indexStr);
+                if (!errors.fields) {
+                  errors.fields = [];
+                }
+                // Ensure the array has enough elements
+                while (errors.fields.length <= index) {
+                  errors.fields.push({});
+                }
+                errors.fields[index] = {
+                  ...errors.fields[index],
+                  [field]: error.message,
+                };
+              }
+            } else {
+              (errors as any)[error.path] = error.message;
+            }
+          }
+        });
+        setValidationErrors(errors);
+      }
+    }
+  };
+
+  // Update the validation schema to match these types
   const validationSchema = yup.object().shape({
-    step_name: yup.string().required("channel name is required").min(3, "channel name must be at least 3 characters long"),
+    step_name: yup
+      .string()
+      .required("Step name is required")
+      .min(3, "Step name must be at least 3 characters long"),
     description: yup.string(),
-  });
-
-  /*
-   * form methods
-   */
-  const methods = useForm({
-    resolver: yupResolver(validationSchema), // Integrate yup with react-hook-form
-    defaultValues: initialState,
+    fields: yup
+      .array()
+      .of(
+        yup.object().shape({
+          field_name: yup
+            .string()
+            .required("Field name is required")
+            .min(2, "Field name must be at least 2 characters long"),
+          field_type: yup
+            .string()
+            .required("Field type is required")
+            .oneOf(
+              fieldTypeOptions.map((option) => option.value),
+              "Invalid field type selected"
+            ),
+        })
+      )
+      .min(1, "At least one field is required"),
   });
 
   const handleUpdate = (item: any) => {
@@ -160,54 +268,54 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   //handle form submission
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // const onSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
 
-    // Validate the form using yup
-    try {
-      // Validation passed, handle form submission
-      await validationSchema.validate(formData, { abortEarly: false });
+  //   // Validate the form using yup
+  //   try {
+  //     // Validation passed, handle form submission
+  //     await validationSchema.validate(formData, { abortEarly: false });
 
-      swal
-        .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
-        })
-        .then((result: any) => {
-          if (result.isConfirmed) {
-            if (userInfo) {
-              const { user_id } = JSON.parse(userInfo);
-              if (isUpdate) {
-                // Handle update logic
-                dispatch(updateVisaCheklist(formData?.id, formData?.step_name, formData?.description, formData?.fields));
-                setIsUpdate(false);
-              } else {
-                // Handle add logic
-                dispatch(addVisaChecklist(formData?.step_name, formData?.description, formData?.fields));
-              }
-            }
-          }
-        });
+  //     swal
+  //       .fire({
+  //         title: "Are you sure?",
+  //         text: "This action cannot be undone.",
+  //         icon: "warning",
+  //         showCancelButton: true,
+  //         confirmButtonColor: "#3085d6",
+  //         cancelButtonColor: "#d33",
+  //         confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+  //       })
+  //       .then((result: any) => {
+  //         if (result.isConfirmed) {
+  //           if (userInfo) {
+  //             const { user_id } = JSON.parse(userInfo);
+  //             if (isUpdate) {
+  //               // Handle update logic
+  //               dispatch(updateVisaCheklist(formData?.id, formData?.step_name, formData?.description, formData?.fields));
+  //               setIsUpdate(false);
+  //             } else {
+  //               // Handle add logic
+  //               dispatch(addVisaChecklist(formData?.step_name, formData?.description, formData?.fields));
+  //             }
+  //           }
+  //         }
+  //       });
 
-      // ... Rest of the form submission logic ...
-    } catch (validationError) {
-      // Handle validation errors
-      if (validationError instanceof yup.ValidationError) {
-        const errors: any = {};
-        validationError.inner.forEach((error) => {
-          if (error.path) {
-            errors[error.path] = error.message;
-          }
-        });
-        setValidationErrors(errors);
-      }
-    }
-  };
+  //     // ... Rest of the form submission logic ...
+  //   } catch (validationError) {
+  //     // Handle validation errors
+  //     if (validationError instanceof yup.ValidationError) {
+  //       const errors: any = {};
+  //       validationError.inner.forEach((error) => {
+  //         if (error.path) {
+  //           errors[error.path] = error.message;
+  //         }
+  //       });
+  //       setValidationErrors(errors);
+  //     }
+  //   }
+  // };
 
   const columns = [
     {
@@ -233,7 +341,7 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <ul style={{ listStyle: "none" }}>
           {row.original.fields?.map((item: any) => (
-            <li>
+            <li key={item?.id}>
               {item?.field_name} - {item?.field_type}
             </li>
           ))}
@@ -335,7 +443,7 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Header closeButton>
               <h4 className="modal-title">Visa Checklist Management</h4>
             </Modal.Header>
-            <Modal.Body>
+            {/* <Modal.Body>
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="step_name">
@@ -360,46 +468,6 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
               </Row>
-
-              {/* <div className="mb-3">
-                <label className="form-label">Fields</label>
-                {formData?.fields?.map((field, index) => (
-                  <div key={index} className="mb-3 p-3 border rounded">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <h6 className="mb-0">Field {index + 1}</h6>
-                      {formData.fields.length > 1 && (
-                        <Button variant="danger" size="sm" onClick={() => handleRemoveField(index)}>
-                          <i className="mdi mdi-delete-outline"></i>
-                        </Button>
-                      )}
-                    </div>
-
-                    <Form.Group className="mb-2">
-                      <Form.Label>Field Name</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={field.field_name}
-                        onChange={(e) => handleFieldChange(index, "field_name", e.target.value)}
-                      />
-                    </Form.Group>
-
-                    <Form.Group>
-                      <Form.Label>Field Type</Form.Label>
-                      <Select
-                        value={fieldTypeOptions.find((option) => option.value === field.field_type)}
-                        options={fieldTypeOptions}
-                        onChange={(option) => handleFieldChange(index, "field_type", option?.value || "")}
-                        styles={customStyles}
-                      />
-                    </Form.Group>
-                  </div>
-                ))}
-
-                <Button variant="primary" onClick={handleAddField} className="mt-2">
-                  <i className="mdi mdi-plus-circle me-1"></i>
-                  Add Field
-                </Button>
-              </div> */}
 
               <div className="mb-3">
                 <div className="d-flex justify-content-between align-items-center mb-3">
@@ -462,6 +530,109 @@ const BasicInputElements = withSwal((props: any) => {
                             styles={customStyles}
                             placeholder="Select field type"
                           />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                  </div>
+                ))}
+              </div>
+            </Modal.Body> */}
+
+            <Modal.Body>
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="step_name">
+                    <Form.Label>Step Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="step_name"
+                      value={formData.step_name}
+                      onChange={handleInputChange}
+                      isInvalid={!!validationErrors.step_name}
+                    />
+                    <Form.Control.Feedback type="invalid">{validationErrors.step_name}</Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="description">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      isInvalid={!!validationErrors.description}
+                    />
+                    <Form.Control.Feedback type="invalid">{validationErrors.description}</Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <div className="mb-3">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <label className="form-label mb-0">Fields</label>
+                  <Button variant="primary" size="sm" onClick={handleAddField}>
+                    <i className="mdi mdi-plus-circle me-1"></i>
+                    Add Field
+                  </Button>
+                </div>
+
+                {formData.fields.map((field, index) => (
+                  <div key={index} className="mb-3 p-3 border rounded">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <h6 className="mb-0">Field {index + 1}</h6>
+                      {formData.fields.length > 1 && (
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          className="float-end d-flex align-items-center justify-content-center"
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          <i className="mdi mdi-delete-outline"></i>
+                        </Button>
+                      )}
+                    </div>
+
+                    <Row>
+                      <Col md={6}>
+                        <Form.Group className="mb-2">
+                          <Form.Label>Field Name</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={field.field_name}
+                            onChange={(e) => handleFieldChange(index, "field_name", e.target.value)}
+                            placeholder="Enter field name"
+                            isInvalid={!!validationErrors.fields?.[index]?.field_name}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {validationErrors.fields?.[index]?.field_name}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                      </Col>
+
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Field Type</Form.Label>
+                          <Select
+                            value={fieldTypeOptions.find((option) => option.value === field.field_type)}
+                            options={fieldTypeOptions}
+                            onChange={(option) => handleFieldChange(index, "field_type", option?.value || "")}
+                            styles={{
+                              ...customStyles,
+                              control: (base, state) => ({
+                                ...base,
+                                borderColor: validationErrors.fields?.[index]?.field_type ? "#dc3545" : base.borderColor,
+                                "&:hover": {
+                                  borderColor: validationErrors.fields?.[index]?.field_type ? "#dc3545" : base.borderColor,
+                                },
+                              }),
+                            }}
+                            placeholder="Select field type"
+                          />
+                          {validationErrors.fields?.[index]?.field_type && (
+                            <div className="text-danger mt-1 small">{validationErrors.fields[index].field_type}</div>
+                          )}
                         </Form.Group>
                       </Col>
                     </Row>
@@ -539,7 +710,7 @@ const VisaChecklist = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/visa_checklists" },
+          // { label: "Master", path: "/settings/master/visa_checklists" },
           { label: "Visa Checklists", path: "/settings/master/visa_checklists", active: true },
         ]}
         title={"Visa Checklists"}

@@ -20,11 +20,11 @@ function updateStatusTypeApi(
     priority: number;
   }
 ) {
-  return api.update(`${baseUrl}${id}`, params);
+  return api.update(`${baseUrl}/${id}`, params);
 }
 
 function deleteStatusTypeApi(id: string) {
-  return api.delete(`${baseUrl}${id}`, {});
+  return api.delete(`${baseUrl}/${id}`, {});
 }
 
 export { addStatusTypeApi, getStatusTypeApi, deleteStatusTypeApi, updateStatusTypeApi };

@@ -2,12 +2,11 @@ import React from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import Filters from "./Filters";
-import CustomFilter from "../../../components/Dashboard/CustomFilter";
 
 type Props = {
   categories: string[];
   series: SeriesItems[];
+  colors?: string[] | null;
 };
 
 type SeriesItems = {
@@ -15,55 +14,47 @@ type SeriesItems = {
   data: number[];
 };
 
-function StackGraph({ categories, series }: Props) {
+function StackGraph({ categories, series, colors }: Props) {
   const isDataPresent = series.length > 0;
 
   const options: ApexOptions = {
     chart: {
       type: "bar",
+      height: 350,
       stacked: true,
       toolbar: {
-        show: false, // Ensure the toolbar is displayed
-        tools: {
-          download: true, // Download option
-          selection: true, // Enable selection tool
-          zoom: true, // Enable zoom tool
-          zoomin: true, // Enable zoom in
-          zoomout: true, // Enable zoom out
-          pan: true, // Enable pan tool
-          reset: true, // Add reset zoom button
-        },
-        autoSelected: "zoom", // Default selected tool
+        show: true,
+        offsetX: 0,
+        offsetY: -20,
       },
+    },
+    xaxis: {
+      type: "category",
+      categories: categories,
+      tickPlacement: "on",
+    },
+    legend: {
+      position: "top",
+      offsetY: 20,
     },
     plotOptions: {
       bar: {
-        horizontal: false,
         columnWidth: "20%",
       },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    xaxis: {
-      categories, // Pass your categories dynamically
-      // tickPlacement: "on",
-    },
-    legend: {
-      position: "right",
-      horizontalAlign: "center",
     },
     fill: {
       opacity: 1,
     },
-    colors: ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e","#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e","#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
+    colors: colors
+      ? colors
+      : ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
   };
 
   return (
     <Card className="h-100">
       <Card.Body>
         {isDataPresent ? (
-          <Chart options={options} series={series} type="bar" height={350}  />
+          <Chart options={options} series={series} type="bar" height={350} />
         ) : (
           <Row className="justify-content-center">
             <Col md="6" className="text-center">

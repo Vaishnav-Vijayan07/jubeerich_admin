@@ -380,7 +380,7 @@ const StatusConfiguration = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/status_config" },
+          // { label: "Master", path: "/settings/master/status_config" },
           {
             label: "Status Config",
             path: "/settings/master/status_config",

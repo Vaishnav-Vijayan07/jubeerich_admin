@@ -2,7 +2,7 @@ import { APICore } from "../apiCore";
 
 const api = new APICore();
 
-const baseUrl = "/branches";
+const baseUrl = "/branches/";
 
 //
 function getBranches() {
@@ -59,11 +59,11 @@ function updateBranches(
     updated_by: string;
   }
 ) {
-  return api.update(`${baseUrl}${id}`, params);
+  return api.update(`${baseUrl}/${id}`, params);
 }
 
 function deleteBranches(id: string) {
-  return api.delete(`${baseUrl}${id}`, {});
+  return api.delete(`${baseUrl}/${id}`, {});
 }
 
 export { getBranches, addBranches, updateBranches, deleteBranches };

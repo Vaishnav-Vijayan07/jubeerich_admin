@@ -237,7 +237,7 @@ const Submitted = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "" },
+          // { label: "Master", path: "" },
           { label: "Application(Submitted)", path: "", active: true },
         ]}
         title={"Application(Submitted)"}

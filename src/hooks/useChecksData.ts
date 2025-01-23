@@ -34,6 +34,7 @@ export const useRemarks = ({ type, application_id, eligibility_id }: UseRemarksP
       const { data } = await axios.get(`/checks/${type}/${application_id}`);
       setData(data.data?.checks);
       setRemarks(data.data?.remarks?.remarks);
+      setRemark(data.data?.remarks?.remarks);
       setIsCheckPassed(data?.data?.remarks?.isCheckPassed);
       setQualityForm(data.data?.remarks?.qualityForm);
       setLocalData(data.data?.remarks?.qualityForm);

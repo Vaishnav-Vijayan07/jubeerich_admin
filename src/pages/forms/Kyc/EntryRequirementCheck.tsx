@@ -19,21 +19,13 @@ export const types = {
 };
 
 function EntryRequirementCheck({ current, handleStepChange, studentId, country_id, application_id, type, eligibility_id }: any) {
-  const dispatch = useDispatch();
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
   const [remarks, setRemarks] = useState<string>("");
   const [isCheckPassed, setIsCheckPassed] = useState<boolean>(false);
-  const [showRemark, setShowRemark] = useState<boolean>(false);
   const [educationDetails, setEducationDetails] = useState<any>([]);
   const [graduationDetails, setGraduationDetails] = useState<any>([]);
   const [gapDetails, setGapDetails] = useState<any>([]);
   const [remark, setRemark] = useState<string>("");
-
-
-
-  const onRemarkChange = (value:string)=>{
-    setRemark(value); 
-  }
 
   const fetchEducationalCheck = async () => {
     try {
@@ -50,22 +42,8 @@ function EntryRequirementCheck({ current, handleStepChange, studentId, country_i
       setGraduationDetails(graduationDetails);
       setGapDetails(detailsResponse?.data?.data?.gapReasons);
       setRemarks(checkDetails.data.data?.remarks?.remarks);
+      setRemark(checkDetails.data.data?.remarks?.remarks);
       setIsCheckPassed(checkDetails.data.data?.remarks?.isCheckPassed);
-      setShowRemark(checkDetails.data.data?.remarks?.remarks ? true : false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  console.log("isCheckPassed", isCheckPassed);
-
-  const saveRemark = async (value: string) => {
-    try {
-      await axios.post(`/checks_remarks/${type}/${application_id}`, {
-        remarks: value == "" ? null : value,
-        eligibility_id,
-      });
-      dispatch(refreshData());
     } catch (error) {
       console.log(error);
     }
@@ -200,7 +178,7 @@ function EntryRequirementCheck({ current, handleStepChange, studentId, country_i
         </Card>
       </Row>
 
-      <RemarksSection showRemark={showRemark} remarks={remarks} saveRemark={saveRemark} onRemarkChange={onRemarkChange} />
+      <RemarksSection remark={remark} onRemarkChange={setRemark} />
       <FormButtons
         type={type}
         current={current}

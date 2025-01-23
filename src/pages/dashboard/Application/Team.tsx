@@ -3,12 +3,12 @@ import { Row, Col, Form } from "react-bootstrap";
 import StackGraph from "../Components/StackGraph";
 import ApplicationsTable from "../Components/ApplicationsTable";
 
-function ApplicationTeamDashboard({ categories, series, latestLeadsCount }: any) {
+function ApplicationTeamDashboard({ categories, series, latestLeadsCount,colors }: any) {
   return (
     <>
       <Row className="d-flex align-items-stretch mb-2">
         <Col md={6}>
-          <StackGraph categories={categories} series={series} />
+          <StackGraph categories={categories} series={series} colors={colors} />
         </Col>
         <Col md={6}>
           <ApplicationsTable leadsData={latestLeadsCount} />

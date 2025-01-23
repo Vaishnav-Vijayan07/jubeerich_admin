@@ -292,12 +292,12 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Slug",
       accessor: "slug",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Lead Source",
       accessor: "source_name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Actions",
@@ -531,7 +531,6 @@ const Channel = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/channel" },
           { label: "Lead Channels", path: "/settings/master/channel", active: true },
         ]}
         title={"Lead Channels"}
