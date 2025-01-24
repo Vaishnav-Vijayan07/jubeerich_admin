@@ -86,6 +86,8 @@ const PassportDetails = ({ studentId }: Props) => {
   const handleInputChange = (e: any, index?: number) => {
     const { name, value } = e.target;
 
+    console.log(name, value);
+
     // Convert the passport number to uppercase if the name matches 'passport_number' (or the appropriate field name)
     let updatedValue = value;
     if (name === "passport_number") {
@@ -193,8 +195,6 @@ const PassportDetails = ({ studentId }: Props) => {
   };
 
   const removePassport = (index: number, itemId: any) => {
-    console.log(index, itemId);
-
     if (itemId === 0) {
       const { passports } = passportDetails;
       const updatedPassports = [...passports];
@@ -212,7 +212,12 @@ const PassportDetails = ({ studentId }: Props) => {
   const savePassportDetails = async () => {
     const validationRules = {
       date_of_expiry: { required: true, message: "Please select a date of expiry" },
-      passport_number: { required: true, message: "Please enter a passport number" },
+      passport_number: {
+        required: true,
+        message: "Please enter a passport number",
+        format: /^[A-Z0-9]{8,10}$/, // Example: Passport number must be alphanumeric and 8-10 characters long
+        formatMessage: "Passport number must be alphanumeric and 8-10 characters long",
+      },
     };
 
     const { errors, isValid } = validateFields(passportDetails.passports, validationRules);

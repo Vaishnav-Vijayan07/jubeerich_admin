@@ -276,7 +276,7 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
             <button className="button-toggle-menu" onClick={handleLeftMenuCallBack}>
               <i className="mdi mdi-menu" />
             </button>
-            <span>{role_name}</span>
+            <span style={{ fontWeight: 'bold', color: 'white' }}>{role_name}</span>
 
             {/* <div className="dropdown d-none d-xl-block">
               <CreateNew otherOptions={otherOptions} />
