@@ -15,11 +15,9 @@ type SeriesItems = {
 };
 
 function StackGraph({ categories, series, colors }: Props) {
-
-
   console.log(series);
   console.log(categories);
-
+  console.log(colors);
 
   const isDataPresent = series.length > 0;
 
@@ -53,9 +51,9 @@ function StackGraph({ categories, series, colors }: Props) {
     legend: {
       position: "top",
       offsetY: 20,
-      labels:{
-        useSeriesColors : true
-      }
+      labels: {
+        useSeriesColors: true,
+      },
     },
     plotOptions: {
       bar: {
@@ -72,6 +70,9 @@ function StackGraph({ categories, series, colors }: Props) {
       ? colors
       : ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
   };
+
+  console.log("Series data:", series);
+  console.log("Colors:", options.colors);
 
   return (
     <Card className="h-100">
