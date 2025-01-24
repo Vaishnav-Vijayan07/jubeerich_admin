@@ -353,7 +353,7 @@ const BasicInputElements = withSwal((props: any) => {
               Cell: ({ row }: any) => {
                 const counselors = row?.original.counselors;
                 return (
-                  <ul style={{ listStyle: "none", padding: 0 }}>
+                  <ul style={{ listStyle: "none", padding: 0, margin:0 }}>
                     {counselors && counselors.length > 0 ? (
                       counselors.map((item: any) => <li key={item?.counselor_name}>{item?.counselor_name}</li>)
                     ) : (
