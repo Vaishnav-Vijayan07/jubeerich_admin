@@ -720,7 +720,7 @@ const AssignedLeads = () => {
   console.log("value ==>", value);
   
 
-  const handlePageChange = useCallback((event: any, value: any) => {
+  const handlePageChange = useCallback((value: any) => {
     setCurrentPage(value);
   }, []);
 
