@@ -393,7 +393,7 @@ const BasicInputElements = withSwal((props: any) => {
           console.log(isDeleteEnabled);
 
           return (
-            <div className="d-flex justify-content-center align-items-center gap-2">
+            <div className="d-flex gap-2">
               {/* Edit Icon */}
               <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
                 <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>

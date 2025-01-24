@@ -308,12 +308,12 @@ th {
   font-size: calc(var(--ct-menu-item-font-size) * 1);
 }
 
-/* Hide increment and decrement arrows in WebKit browsers */
+/* Hide increment and decrement arrows in WebKit browsers
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
+} */
 
 .modal-calendar-width .modal-dialog {
   display: flex;
@@ -1033,3 +1033,4 @@ select::-ms-expand {
 .dropdown-menu.show{
   z-index: 1;
 }
+
