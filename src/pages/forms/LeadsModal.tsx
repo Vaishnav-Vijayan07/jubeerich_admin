@@ -759,7 +759,7 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Group className="mb-3 mt-1" controlId="channel_name">
                   <Form.Label>Remarks</Form.Label>
                   <Form.Control type="text" name="remarks" value={formData.remarks} onChange={handleInputChange} />
                   {validationErrors.remarks && <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>}
@@ -767,7 +767,7 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Group className="mb-3 mt-1" controlId="channel_name">
                   <Form.Label>City</Form.Label>
                   <Form.Control type="text" name="city" value={formData.city} onChange={handleInputChange} />
                   {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
@@ -775,7 +775,7 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="lead_received_date">
+                <Form.Group className="mb-3 mt-1" controlId="lead_received_date">
                   <Form.Label>Lead Received Date</Form.Label>
                   <Form.Control type="date" name="lead_received_date" value={formData?.lead_received_date} onChange={handleInputChange} />
                   {validationErrors.lead_received_date && <Form.Text className="text-danger">{validationErrors.lead_received_date}</Form.Text>}
@@ -793,7 +793,7 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="flag">
+                <Form.Group className="mb-3 mt-1" controlId="flag">
                   <Form.Label>
                     {/* <span className="text-danger fs-4">* </span> Flag */}
                     Flag

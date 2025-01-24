@@ -198,7 +198,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             </Form.Label>
             <FormInput
               type="text"
-              placeholder="University name"
+              placeholder="Enter University name"
               name="university_name"
               value={item?.university_name}
               onChange={(e) => handleFieldChange(e, index)}
@@ -214,7 +214,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             </Form.Label>
             <FormInput
               type="text"
-              placeholder="College name"
+              placeholder="Enter College name"
               name="college_name"
               value={item?.college_name}
               onChange={(e) => handleFieldChange(e, index)}
