@@ -4,7 +4,7 @@ export const usePagination = (initialPage: number = 1, initialLimit: number = 20
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [currentLimit, setCurrentLimit] = useState(initialLimit);
 
-  const handlePageChange = useCallback((event: any, value: number) => {
+  const handlePageChange = useCallback((value: number) => {
     setCurrentPage(value);
   }, []);
 

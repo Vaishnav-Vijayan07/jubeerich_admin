@@ -15,6 +15,12 @@ type SeriesItems = {
 };
 
 function StackGraph({ categories, series, colors }: Props) {
+
+
+  console.log(series);
+  console.log(categories);
+
+
   const isDataPresent = series.length > 0;
 
   const options: ApexOptions = {
@@ -47,6 +53,9 @@ function StackGraph({ categories, series, colors }: Props) {
     legend: {
       position: "top",
       offsetY: 20,
+      labels:{
+        useSeriesColors : true
+      }
     },
     plotOptions: {
       bar: {

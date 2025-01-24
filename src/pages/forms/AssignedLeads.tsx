@@ -260,7 +260,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [selectedOffice]);
 
-
   const UserColumn = ({ row }: any) => {
     return (
       <>
@@ -674,9 +673,7 @@ const BasicInputElements = withSwal((props: any) => {
                 )}
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
-              <CustomSearchBox
-                onSearch={handleSearch}
-              />
+              <CustomSearchBox onSearch={handleSearch} />
               <Table
                 columns={columns}
                 data={tableData ? tableData : []}
@@ -716,9 +713,6 @@ const AssignedLeads = () => {
   const [close, setClose] = useState(false);
   const [value, setValue] = useState("");
   const [search, setSearch] = useState("");
-
-  console.log("value ==>", value);
-  
 
   const handlePageChange = useCallback((value: any) => {
     setCurrentPage(value);
@@ -820,12 +814,7 @@ const AssignedLeads = () => {
 
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Assigned Leads", path: "/leads/assigned/manage", active: true },
-        ]}
-        title={"Assigned Leads"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Assigned Leads", path: "/leads/assigned/manage", active: true }]} title={"Assigned Leads"} />
       <Row>
         <Col>
           <BasicInputElements
