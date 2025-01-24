@@ -78,6 +78,10 @@ const useSaveStudentAcademicInfo = (
         `examRecords[${index}][overall_score]`,
         item.overall_score
       );
+      formData.append(
+        `examRecords[${index}][exam_remarks]`,
+        item.exam_remarks
+      );
       formData.append(`examRecords[${index}][exam_date]`, item.exam_date);
       formData.append(`examRecords[${index}][updated_by]`, userId);
       if (typeof item?.score_card === "object") {
