@@ -1,6 +1,6 @@
-import { themeAlpine, AllCommunityModule, ModuleRegistry, provideGlobalGridOptions } from 'ag-grid-community';
+import { themeAlpine, AllCommunityModule, ModuleRegistry, provideGlobalGridOptions, ValidationModule } from 'ag-grid-community';
 
-ModuleRegistry.registerModules([AllCommunityModule]);
+ModuleRegistry.registerModules([AllCommunityModule, ValidationModule]);
 provideGlobalGridOptions({ theme: "legacy"});
 
 export const defaultTheme = themeAlpine;

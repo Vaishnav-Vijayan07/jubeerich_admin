@@ -32,6 +32,7 @@ import { AppDispatch } from "../../redux/store";
 import { Pagination } from "@mui/material";
 import CustomPagination from "../../components/CustomPagination";
 import CustomSearchBox from "../../components/CustomSearchBox";
+import LeadApprovalTable from "./LeadApprovalTable";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -89,15 +90,29 @@ const BasicInputElements = withSwal((props: any) => {
   const [clearLeadModal, setClearLeadModal] = useState<any>(null);
   const [clearError, setClearError] = useState<any>(null);
   const [clearFiles, setClearFiles] = useState<any>(false);
+  const [openApproveModal, setOpenApproveModal] = useState<boolean>(false);
+  const [responseData, setResponseData] = useState<any>(null);
+  const [approvalOptionsData, setApprovalOptionsData] = useState<any>(null);
 
-  // const [progress, setProgress] = useState(0);
+  const getSlugOptions = async() => {
+    try {
+      const { data } = await axios.get(`/get_slug_options`);
+      console.log(data);
+      setApprovalOptionsData(data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
+  useEffect(() => {
+    getSlugOptions();
+  }, [])
+  
   useEffect(() => {
     setFilteredItems(state);
   }, [state]);
 
   let records: TableRecords[] = filteredItems;
-  // const records: TableRecords[] = filteredItems;
 
   useEffect(() => {
     records = filteredItems;
@@ -516,7 +531,7 @@ const BasicInputElements = withSwal((props: any) => {
     try {
       console.log("started");
 
-      const { data } = await axios.post(`/excel_import`, formData, {
+      const { data } = await axios.post(`/validate_excel_import`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -524,21 +539,40 @@ const BasicInputElements = withSwal((props: any) => {
 
       console.log("data ==========>", data);
 
+      // if (data.status) {
+      //   showSuccessAlert(data.message);
+      //   dispatch(getLead(currentPage, currentLimit));
+      //   setIsLoading(false);
+      //   setSelectedFile([]);
+      //   setClearFiles(!clearFiles);
+      //   toggleUploadModal();
+      // } else {
+      //   showWarningAlert(data.message);
+      //   downloadRjectedData(data.invalidFileLink);
+      //   setIsLoading(false);
+      //   setSelectedFile([]);
+      //   setClearFiles(!clearFiles);
+      //   dispatch(getLead(currentPage, currentLimit));
+      // }
+
       if (data.status) {
         showSuccessAlert(data.message);
-        dispatch(getLead(currentPage, currentLimit));
         setIsLoading(false);
         setSelectedFile([]);
+        if (data?.invalidFileLink) downloadRjectedData(data.invalidFileLink);
         setClearFiles(!clearFiles);
         toggleUploadModal();
+        setOpenApproveModal(true);
+        setResponseData(data);
       } else {
         showWarningAlert(data.message);
-        downloadRjectedData(data.invalidFileLink);
         setIsLoading(false);
         setSelectedFile([]);
         setClearFiles(!clearFiles);
         dispatch(getLead(currentPage, currentLimit));
+        toggleApproveModal();
       }
+
     } catch (err) {
       showErrorAlert(err);
       setIsLoading(false);
@@ -725,6 +759,10 @@ const BasicInputElements = withSwal((props: any) => {
     toggle();
   };
 
+  const toggleApproveModal = () => {
+    setOpenApproveModal((prev: any) => !prev);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -749,6 +787,8 @@ const BasicInputElements = withSwal((props: any) => {
           handleUpdateData={handleUpdateData}
           initialLoading={initialLoading}
         />
+
+        <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData}/>
 
         {user?.role == it_team_id && (
           <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
