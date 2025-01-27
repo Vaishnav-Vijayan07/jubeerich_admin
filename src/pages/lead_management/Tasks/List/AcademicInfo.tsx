@@ -31,6 +31,7 @@ const initialStateExam = {
   writing_score: "",
   overall_score: "",
   exam_date: "",
+  exam_reamrks: "",
   score_card: null,
   errors: {},
 };
@@ -180,7 +181,7 @@ const AcademicInfo = withSwal((props: any) => {
       overall_score: { required: true, message: "Please enter an overall score" },
       exam_date: { required: true, message: "Please select an exam date" },
       score_card: { required: true, message: "Please upload a score card" },
-      qualification: { required: true, message: "Please choose a qualification" },
+      exam_remarks: { required: false, message: "Please choose a exam remarks" },
     };
 
     const { isValid, errors } = validateFields(examForm, validationRules);
@@ -294,6 +295,7 @@ const AcademicInfo = withSwal((props: any) => {
                         writing_score: "",
                         overall_score: "",
                         exam_date: "",
+                        exam_remarks: "",
                         score_card: null,
                       })
                     }

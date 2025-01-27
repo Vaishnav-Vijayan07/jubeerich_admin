@@ -15,10 +15,6 @@ type SeriesItems = {
 };
 
 function StackGraph({ categories, series, colors }: Props) {
-  console.log(series);
-  console.log(categories);
-  console.log(colors);
-
   const isDataPresent = series.length > 0;
 
   const options: ApexOptions = {
@@ -29,7 +25,7 @@ function StackGraph({ categories, series, colors }: Props) {
       toolbar: {
         show: true,
         offsetX: 0,
-        offsetY: -20,
+        offsetY: 0,
         tools: {
           reset: `
              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">

@@ -8,10 +8,10 @@ function ItTeamDashboard({ categories, series, latestLeadsCount,colors }: any) {
   return (
     <>
       <Row>
-        <Col md={5}>
+        <Col md={6}>
           <StackGraph categories={categories} series={series} colors={colors} />
         </Col>
-        <Col md={7}>
+        <Col md={6}>
           <LeadsTable leadsData={latestLeadsCount} showOffice={true} />
         </Col>
       </Row>

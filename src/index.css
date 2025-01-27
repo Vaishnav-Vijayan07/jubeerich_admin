@@ -1034,3 +1034,17 @@ select::-ms-expand {
   z-index: 1;
 }
 
+.apexcharts-canvas{
+  width: 100% !important;
+}
+.apexcharts-canvas svg{
+  width: 100% !important;
+}
+.apexcharts-legend{
+  top:1px !important;
+}
+.apexcharts-toolbar{
+  top: -23px !important;
+  right: -25px !important;
+}
+

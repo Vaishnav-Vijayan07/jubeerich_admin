@@ -120,8 +120,7 @@ const BasicInfo = withSwal((props: any) => {
   const [allStates, setAllStates] = useState<any>([]);
   const [selectedState, setSelectedState] = useState<any>(null);
   const [selectedNationality, setSelectedNationality] = useState<any>(null);
-
-  console.log("selectedNation ===>", selectedNation);
+  const [policeCountry, setPoliceCountry] = useState<any>([]);
 
   const dispatch = useDispatch();
   const { refresh } = useSelector((state: RootState) => ({
@@ -132,12 +131,13 @@ const BasicInfo = withSwal((props: any) => {
     setLoading(true);
     try {
       const { data } = await axios.get(`/basicStudentInfo/${studentId}`);
-      const { primaryInfo, basicInfo: basicInfoFromApi } = data.data;
+      const { primaryInfo, basicInfo: basicInfoFromApi, policeCountries } = data.data;
 
       const { preferredCountries, ...rest } = primaryInfo;
 
       setBasicInfo(basicInfoFromApi ? basicInfoFromApi : basicInfo);
-      setPoliceClearenceDocs(basicInfoFromApi ? basicInfoFromApi.police_clearance_docs : policeClearenceDocs);
+      setPoliceClearenceDocs(basicInfoFromApi ? basicInfoFromApi?.police_clearance_docs : policeClearenceDocs);
+
       setPrimaryInfo(rest);
 
       const countries = primaryInfo?.preferredCountries?.map((item: any) => {
@@ -151,6 +151,7 @@ const BasicInfo = withSwal((props: any) => {
       setSelectedNation(
         basicInfoFromApi?.country ? { label: basicInfoFromApi?.country || null, value: basicInfoFromApi?.country || null } : null
       );
+      setPoliceCountry(policeCountries?.length == 0 ? [] : policeCountries);
 
       setSelectedState(basicInfoFromApi?.state ? { label: basicInfoFromApi?.state, value: basicInfoFromApi?.state } : null);
 
@@ -231,9 +232,9 @@ const BasicInfo = withSwal((props: any) => {
   };
 
   const handlePoliceClearenceDocs = (e: any) => {
-    const { value, name } = e.target;
+    const { name } = e.target;
 
-    const file = e.target.files ? e.target.files[0] : null;
+    const file = e.target.files[0];
     const [itemName, itemIndex] = name.split(".");
 
     if (file && !allowedFileTypes.includes(file.type)) {
@@ -244,9 +245,29 @@ const BasicInfo = withSwal((props: any) => {
     const newPoliceClearenceDocs = [...policeClearenceDocs];
     newPoliceClearenceDocs[itemIndex] = {
       ...newPoliceClearenceDocs[itemIndex],
-      [itemName]: file ? file : value.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ' -]/g, ""),
+      [itemName]: file,
     };
 
+    setPoliceClearenceDocs(newPoliceClearenceDocs);
+  };
+
+  const handlePoliceCountries = (name: any, fieldValue?: any) => {
+    const { value } = fieldValue;
+    const [itemName, itemIndex] = name.split(".");
+
+    const newPoliceCountries = [...policeCountry];
+    newPoliceCountries[itemIndex] = {
+      value: fieldValue?.value,
+      label: fieldValue?.label,
+    };
+
+    const newPoliceClearenceDocs = [...policeClearenceDocs];
+    newPoliceClearenceDocs[itemIndex] = {
+      ...newPoliceClearenceDocs[itemIndex],
+      [itemName]: value,
+    };
+
+    setPoliceCountry(newPoliceCountries);
     setPoliceClearenceDocs(newPoliceClearenceDocs);
   };
 
@@ -257,7 +278,6 @@ const BasicInfo = withSwal((props: any) => {
       dob: { required: false },
       gender: { required: true, message: "Please choose gender" },
       marital_status: { required: false },
-      nationality: { required: true, message: "Please choose nationality" },
       secondary_number: { required: false },
       state: { required: true, message: "Please choose state" },
       country: { required: true, message: "Please choose country" },
@@ -300,6 +320,7 @@ const BasicInfo = withSwal((props: any) => {
 
     const { errors: errorsBasicInfo, ...withOutErrorsBasicInfo } = basicInfo;
     const { errors: errorsPrimaryInfo, ...withOutErrorsPrimaryInfo } = primaryInfo;
+
 
     policeClearenceDocs.forEach((doc: { certificate: any; country_name: any; id?: any }, index: number) => {
       // Start the index at 1
@@ -1136,12 +1157,18 @@ const BasicInfo = withSwal((props: any) => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Country Name</Form.Label>
-                    <Form.Control
-                      type="text"
+                    <Select
+                      className="react-select react-select-container"
                       name={`country_name.${index}`}
-                      placeholder="Enter Country Name"
-                      value={certificate.country_name || ""}
-                      onChange={handlePoliceClearenceDocs}
+                      options={allCountries?.map((item: any) => {
+                        return {
+                          label: item.name,
+                          value: item?.name,
+                          iso: item?.Iso3,
+                        };
+                      })}
+                      value={policeCountry && policeCountry[index]}
+                      onChange={(selectedOption: any) => handlePoliceCountries(`country_name.${index}`, selectedOption)}
                     />
                   </Form.Group>
                 </Col>
