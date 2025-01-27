@@ -69,6 +69,9 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
         cellEditorParams: {
           values: formattedData.sources,
         },
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
+        },
       },
       {
         field: 'channel',
@@ -80,11 +83,49 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
         cellEditorParams: {
           values: formattedData.channels,
         },
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
+        },
       },
-      { field: 'full_name', headerName: 'Name', sortable: true, filter: true, editable: true },
-      { field: 'email', headerName: 'Email', sortable: true, filter: true, editable: true },
-      { field: 'phone', headerName: 'Phone', sortable: true, filter: true, editable: true },
-      { field: 'city', headerName: 'City', sortable: true, filter: true, editable: true },
+      {
+        field: 'full_name',
+        headerName: 'Name',
+        sortable: true,
+        filter: true, editable: true,
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
+        },
+      },
+      {
+        field: 'email',
+        headerName: 'Email',
+        sortable: true,
+        filter: true,
+        editable: true,
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
+        },
+      },
+      {
+        field: 'phone',
+        headerName: 'Phone',
+        sortable: true,
+        filter: true,
+        editable: true,
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
+        },
+      },
+      {
+        field: 'city',
+        headerName: 'City',
+        sortable: true,
+        filter: true,
+        editable: true,
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
+        },
+      },
       {
         field: 'office_type',
         headerName: 'Office Type',
@@ -94,6 +135,9 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
         cellEditor: 'agSelectCellEditor',
         cellEditorParams: {
           values: formattedData.officeTypes,
+        },
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
         },
       },
       {
@@ -106,6 +150,9 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
         cellEditorParams: {
           values: [...formattedData.regions, ...formattedData.franchises],
         },
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
+        },
       },
       {
         field: 'preferred_country_code',
@@ -117,8 +164,20 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
         cellEditorParams: {
           values: formattedData.countries,
         },
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
+        },
       },
-      { field: 'lead_received_date', headerName: 'Date', sortable: true, filter: true, editable: true },
+      {
+        field: 'lead_received_date', 
+        headerName: 'Date', 
+        sortable: true, 
+        filter: true, 
+        editable: true, 
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
+        },
+      },
       {
         field: 'ielts',
         headerName: 'IELTS',
@@ -129,8 +188,11 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
         cellEditorParams: {
           values: ['Yes', 'No']
         },
+        cellClassRules: {
+          'cell-error': (params: any) => !params.value,
+        },
       },
-      { field: 'error', headerName: 'Error', sortable: true, filter: true, editable: true, sortIndex: 0, sort: 'desc' },
+      { field: 'error', headerName: 'Error', sortable: true, filter: true, editable: true, sortIndex: 0, sort: 'desc'},
       {
         field: 'delete',
         headerName: 'Actions',
@@ -139,7 +201,7 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
             <span>
               <i onClick={() => {
                 const index = params.node.rowIndex;
-                handleDeleteRow(index);
+                handleDeleteRow(index, rowData);
               }}
                 className='mdi mdi-delete-outline fs-4'></i>
             </span>
@@ -165,8 +227,8 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
     console.log('currentData', currentData);
 
     try {
-      // const { data } = await axios.post('/approve_leads', { lead_data: selectedItems });
-      // console.log('Response', data?.data);
+      const { data } = await axios.post('/approve_leads', { lead_data: selectedItems });
+      console.log('Response', data?.data);
     } catch (error) {
       console.log(error);
     }
@@ -196,13 +258,18 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
     return currentData;
   }, [gridApi]);
 
-  const handleDeleteRow = (index: number) => {
+  const handleDeleteRow = (index: number, data: any) => {
     console.log('index', index);
-    console.log('rowData', rowData);
-    
-    const updatedData = rowData.filter((_, i) => i != index);
+    const currentData = getCurrentTableData();
+    console.log('currentData', currentData);
+
+    const updatedData = currentData.filter((_, i) => i != index);
     console.log('updatedData', updatedData);
-    setRowData(updatedData);
+    // setRowData(updatedData);
+
+    // if(rowData.length && updatedData.length) {
+    //   setRowData(updatedData);
+    // }
   };
 
   return (
