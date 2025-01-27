@@ -283,7 +283,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
     const currentCountries = basicData?.country_names;
 
-    return Countries.filter((item: any) => !basicData?.country_ids?.includes(item?.id))
+    return Countries.filter((item: any) => !basicData?.all_country_ids?.includes(item?.id))
       .filter((item: any) => !currentCountries?.includes(item?.country_name))
       .map((item: any) => ({
         value: item?.id.toString(),
