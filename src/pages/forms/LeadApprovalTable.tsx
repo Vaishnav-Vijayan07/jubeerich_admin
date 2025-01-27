@@ -254,7 +254,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
       console.log('Response', data);
       if (data) {
         showSuccessAlert('Selected Leads Successfully Approved');
-        // toggleModal(false);
+        toggleModal(false);
       }
     } catch (error) {
       console.error(error);
@@ -288,35 +288,16 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
   };
 
   const handleDeleteRow = async(index: number, data: any) => {
-    // const result = await swal.fire({
-    //   title: "Confirm Action",
-    //   text: `Do you want to save the changes?`,
-    //   icon: "question",
-    //   iconColor: "#8B8BF5", // Purple color for the icon
-    //   showCancelButton: true,
-    //   confirmButtonText: `Yes, Save`,
-    //   cancelButtonText: "Cancel",
-    //   confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-    //   cancelButtonColor: "#E97777", // Pink/red color for cancel button
-    //   buttonsStyling: true,
-    //   customClass: {
-    //     popup: "rounded-4 shadow-lg",
-    //     confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-    //     cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-    //     title: "fs-2 fw-normal mb-2",
-    //   },
-    //   width: "26em",
-    //   padding: "2em",
-    // });
-
-    // if (result.isConfirmed) {
-      const currentData = getCurrentTableData();
-      const updatedData = data.filter((_: any, i: any) => i != index);
-      if (updatedData.length) {
-        setRowData(updatedData);
-      }
-    // }
+    const currentData = getCurrentTableData();
+    const updatedData = data.filter((_: any, i: any) => i != index);
+    if (updatedData.length) {
+      setRowData(updatedData);
+    }
   };
+
+  const handleCellDoubleClick = () => {
+    gridApi?.deselectAll()
+  }
 
   return (
     <>
@@ -364,6 +345,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
               }}
               paginationPageSizeSelector={pageSizes}
               onGridReady={onGridReady}
+              onCellDoubleClicked={handleCellDoubleClick}
             />
           </div>
   
@@ -375,6 +357,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           </div>
         </div>
       </Dialog>
+
     </>
   );
   
