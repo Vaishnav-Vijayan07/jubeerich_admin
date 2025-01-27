@@ -17,14 +17,14 @@ const GrandParentDetailsForm = ({
 }: ParentDetailsFormProps) => {
 
   const parentTypeMap: { [key: string]: string } = {
-    paternal_grand_mother_info: "Paternal Grandmother's",
-    paternal_grand_father_info: "Paternal Grandfather's",
-    maternal_grand_mother_info: "Maternal Grandmother's",
-    maternal_grand_father_info: "Maternal Grandfather's",
-    paternal_grand_mother_info_spouse: "Spouse's Paternal Grandmother's",
-    paternal_grand_father_info_spouse: "Spouse's Paternal Grandfather's",
-    maternal_grand_mother_info_spouse: "Spouse's Maternal Grandmother's",
-    maternal_grand_father_info_spouse: "Spouse's Maternal Grandfather's",
+    paternal_grand_mother_info: "Paternal Grandmother",
+    paternal_grand_father_info: "Paternal Grandfather",
+    maternal_grand_mother_info: "Maternal Grandmother",
+    maternal_grand_father_info: "Maternal Grandfather",
+    paternal_grand_mother_info_spouse: "Spouse's Paternal Grandmother",
+    paternal_grand_father_info_spouse: "Spouse's Paternal Grandfather",
+    maternal_grand_mother_info_spouse: "Spouse's Maternal Grandmother",
+    maternal_grand_father_info_spouse: "Spouse's Maternal Grandfather",
     father_in_law_info: 'Father In Law',
     mother_in_law_info: 'Father In Law',
   };
@@ -34,34 +34,34 @@ const GrandParentDetailsForm = ({
   return (
     <Row className="border-bottom p-1 mb-1">
       <Row>
-        <h5 className="mb-4 text-uppercase">{`${parentTypeName} Details`}</h5>
+        <h5 className="mb-4 text-uppercase">{`${parentTypeName}'s Details`}</h5>
       </Row>
       <Row>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group className="mb-3" controlId={`${parentType}_name`}>
             <Form.Label>{`Name of ${parentTypeName}`}</Form.Label>
             <FormInput
               type="text"
               name={`${parentType}.name`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} name`}
+              placeholder={`Enter name`}
               onChange={onChange}
               value={parentDetails?.name}
             />
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group className="mb-3" controlId={`${parentType}_occupation`}>
             <Form.Label>Occupation</Form.Label>
             <FormInput
               type="text"
               name={`${parentType}.occupation`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} occupation`}
+              placeholder={`Enter occupation`}
               onChange={onChange}
               value={parentDetails?.occupation}
             />
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_annual_income`}
@@ -70,25 +70,25 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.annual_income`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} annual income`}
+              placeholder={`Enter annual income`}
               onChange={onChange}
               value={parentDetails?.annual_income}
             />
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group className="mb-3" controlId={`${parentType}_organization`}>
             <Form.Label>Organization</Form.Label>
             <FormInput
               type="text"
               name={`${parentType}.organization`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} organization`}
+              placeholder={`Enter organization name`}
               onChange={onChange}
               value={parentDetails?.organization}
             />
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_age`}
@@ -97,14 +97,14 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.age`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} age`}
+              placeholder={`Enter age`}
               onChange={onChange}
               value={parentDetails?.age}
             />
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_dob`}
@@ -113,7 +113,7 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="date"
               name={`${parentType}.dob`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} dob`}
+              placeholder={`Enter dob`}
               onChange={onChange}
               value={parentDetails?.dob}
               max={moment().format("YYYY-MM-DD")}
@@ -121,7 +121,7 @@ const GrandParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_location`}
@@ -130,14 +130,14 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.location`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} location`}
+              placeholder={`Enter location`}
               onChange={onChange}
               value={parentDetails?.location}
             />
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_designation`}
@@ -146,14 +146,14 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.designation`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} designation`}
+              placeholder={`Enter designation`}
               onChange={onChange}
               value={parentDetails?.designation}
             />
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_duration`}
@@ -162,14 +162,14 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.duration`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} duration`}
+              placeholder={`Enter duration`}
               onChange={onChange}
               value={parentDetails?.duration}
             />
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_current_status`}
@@ -193,7 +193,7 @@ const GrandParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_monthly_salary`}
@@ -202,14 +202,14 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="number"
               name={`${parentType}.monthly_salary`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} monthly salary`}
+              placeholder={`Enter monthly salary`}
               onChange={onChange}
               value={parentDetails?.monthly_salary}
             />
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_mode_of_payment`}
@@ -233,7 +233,7 @@ const GrandParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_current_income_source`}
@@ -242,14 +242,14 @@ const GrandParentDetailsForm = ({
             <FormInput
               type="text"
               name={`${parentType}.current_income_source`}
-              placeholder={`Enter ${parentTypeName?.toLowerCase()} current income source`}
+              placeholder={`Enter current income source`}
               onChange={onChange}
               value={parentDetails?.current_income_source}
             />
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_income_tax_payer`}
@@ -264,7 +264,7 @@ const GrandParentDetailsForm = ({
             />
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_nature_of_occupation`}

@@ -21,7 +21,7 @@ const ParentDetailsForm = ({
         <h5 className="mb-4 text-uppercase">{`${parentType}'s Details`}</h5>
       </Row>
       <Row>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group className="mb-3" controlId={`${parentType}_name`}>
             <Form.Label>{`Name of ${
               parentType.charAt(0).toUpperCase() + parentType.slice(1)
@@ -35,7 +35,7 @@ const ParentDetailsForm = ({
             />
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group className="mb-3" controlId={`${parentType}_occupation`}>
             <Form.Label>Occupation</Form.Label>
             <FormInput
@@ -47,7 +47,7 @@ const ParentDetailsForm = ({
             />
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_annual_income`}
@@ -62,7 +62,7 @@ const ParentDetailsForm = ({
             />
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group className="mb-3" controlId={`${parentType}_organization`}>
             <Form.Label>Organization</Form.Label>
             <FormInput
@@ -74,7 +74,7 @@ const ParentDetailsForm = ({
             />
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_age`}
@@ -90,7 +90,7 @@ const ParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_dob`}
@@ -107,7 +107,7 @@ const ParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_location`}
@@ -123,7 +123,7 @@ const ParentDetailsForm = ({
           </Form.Group>
         </Col>
         
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_designation`}
@@ -139,7 +139,7 @@ const ParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_duration`}
@@ -155,7 +155,7 @@ const ParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_current_status`}
@@ -186,7 +186,7 @@ const ParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_monthly_salary`}
@@ -202,7 +202,7 @@ const ParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_mode_of_payment`}
@@ -226,7 +226,7 @@ const ParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_current_income_source`}
@@ -242,7 +242,7 @@ const ParentDetailsForm = ({
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_income_tax_payer`}
@@ -257,7 +257,7 @@ const ParentDetailsForm = ({
             />
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group
             className="mb-3"
             controlId={`${parentType}_nature_of_occupation`}

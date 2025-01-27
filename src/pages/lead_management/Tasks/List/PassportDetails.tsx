@@ -9,6 +9,7 @@ import moment from "moment";
 import validateFields from "../../../../helpers/validateHelper";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../utils/regrexValidation";
+import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
 
 interface Props {
   studentId: string | number;
@@ -31,6 +32,7 @@ const initialPassportState = {
 };
 
 const PassportDetails = ({ studentId }: Props) => {
+  const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
   const [initialLoading, setInitialLoading] = React.useState(false);
   const [passportDetails, setPassportDetails] = React.useState<any>(initialPassportState);
 
@@ -81,22 +83,23 @@ const PassportDetails = ({ studentId }: Props) => {
   //   }
   // };
 
-
   const handleInputChange = (e: any, index?: number) => {
     const { name, value } = e.target;
-  
+
+    console.log(name, value);
+
     // Convert the passport number to uppercase if the name matches 'passport_number' (or the appropriate field name)
     let updatedValue = value;
-    if (name === 'passport_number') {
+    if (name === "passport_number") {
       updatedValue = value.toUpperCase(); // Convert to uppercase
     }
-  
+
     // Validate the value using the regex function
     if (!regrexValidation(name, updatedValue.toString())) {
       console.error(`Invalid ${name}: ${updatedValue}`);
       return; // Stop updating if validation fails
     }
-  
+
     if (index !== undefined) {
       // Handle change for a specific passport in the passports array
       const updatedPassports = [...passportDetails.passports];
@@ -116,7 +119,7 @@ const PassportDetails = ({ studentId }: Props) => {
       }));
     }
   };
-  
+
   const handleAddMorePassport = () => {
     const { number_of_passports, passports } = passportDetails;
 
@@ -145,23 +148,76 @@ const PassportDetails = ({ studentId }: Props) => {
     }));
   };
 
-  const removePassport = (index: number) => {
-    const { passports } = passportDetails;
-    const updatedPassports = [...passports];
-    updatedPassports.splice(index, 1);
-    setPassportDetails((prev: any) => ({
-      ...prev,
-      passports: updatedPassports,
-      number_of_passports: updatedPassports.length,
-    }));
+  const removePassportFromApi = async (passportItem: any) => {
+    const passportId = passportDetails.id;
+
+    try {
+      const result = await swal.fire({
+        title: "Confirm Action",
+        text: `Do you want to delete?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
+        showCancelButton: true,
+        confirmButtonText: `Yes, Delete`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const res = await axios.patch(`passport_item/${passportId}/${passportItem}`, {
+            headers: {
+              "Content-Type": "application/json", // Assuming no file data is sent
+            },
+          });
+          console.log("Response: =>", res);
+          showSuccessAlert(res.data.message);
+        } catch (err) {
+          console.error(err);
+          showErrorAlert("Error occurred");
+        } finally {
+          fetchPassportDetails();
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const removePassport = (index: number, itemId: any) => {
+    if (itemId === 0) {
+      const { passports } = passportDetails;
+      const updatedPassports = [...passports];
+      updatedPassports.splice(index, 1);
+      setPassportDetails((prev: any) => ({
+        ...prev,
+        passports: updatedPassports,
+        number_of_passports: updatedPassports.length,
+      }));
+    } else {
+      removePassportFromApi(itemId);
+    }
   };
 
   const savePassportDetails = async () => {
-    console.log("passportDetails", passportDetails);
-
     const validationRules = {
-      date_of_expiry: { required: true,message:"Please select a date of expiry" },
-      passport_number: { required: true, message:"Please enter a passport number" },
+      date_of_expiry: { required: true, message: "Please select a date of expiry" },
+      passport_number: {
+        required: true,
+        message: "Please enter a passport number",
+        format: /^[A-Z0-9]{8,10}$/, // Example: Passport number must be alphanumeric and 8-10 characters long
+        formatMessage: "Passport number must be alphanumeric and 8-10 characters long",
+      },
     };
 
     const { errors, isValid } = validateFields(passportDetails.passports, validationRules);
@@ -177,6 +233,11 @@ const PassportDetails = ({ studentId }: Props) => {
           })),
         ],
       }));
+      return;
+    }
+
+    if (passportDetails.passports.length < passportDetails.number_of_passports) {
+      showErrorAlert(`Please add ${passportDetails.number_of_passports} passports`);
       return;
     }
 
@@ -196,6 +257,13 @@ const PassportDetails = ({ studentId }: Props) => {
           const { data } = await axios.put(`passport_details/${studentId}`, passportDetails);
           fetchPassportDetails();
           showSuccessAlert(data.message);
+          setPassportDetails((prev: any) => ({
+            ...prev,
+            passports: prev.passports.map((passport: any) => ({
+              ...passport,
+              errors: {}, // Clear errors for each passport
+            })),
+          }));
         } else {
           const { data } = await axios.post(`passport_details`, {
             original_passports_in_hand: passportDetails.original_passports_in_hand,
@@ -212,18 +280,17 @@ const PassportDetails = ({ studentId }: Props) => {
       } catch (error) {
         console.error("Error saving passport details:", error);
         showErrorAlert("Error occurred while saving passport details");
+      } finally {
+        setPassportDetails((prev: any) => ({
+          ...prev,
+          passports: prev.passports.map((passport: any) => ({
+            ...passport,
+            errors: {}, // Clear errors for each passport
+          })),
+        }));
       }
     }
   };
-
-  // if (initialLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "100%", left: "45%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <>
@@ -268,7 +335,10 @@ const PassportDetails = ({ studentId }: Props) => {
               <>
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId={`passport_number_${index}`}>
-                    <Form.Label><span className="text-danger fs-4">* </span> Passport Number<small className="text-muted ms-1">( Use only capital letters and numbers)</small></Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span> Passport Number
+                      <small className="text-muted ms-1">( Use only capital letters and numbers)</small>
+                    </Form.Label>
                     <FormInput
                       type="text"
                       name="passport_number"
@@ -284,7 +354,9 @@ const PassportDetails = ({ studentId }: Props) => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId={`date_of_expiry_${index}`}>
-                    <Form.Label><span className="text-danger fs-4">* </span> Date of Expiry</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span> Date of Expiry
+                    </Form.Label>
                     <FormInput
                       type="date"
                       name="date_of_expiry"
@@ -301,7 +373,7 @@ const PassportDetails = ({ studentId }: Props) => {
                 <Row>
                   {passportDetails?.passports.length > 1 && (
                     <ActionButton
-                      onClick={() => removePassport(index)}
+                      onClick={() => removePassport(index, passport?.passport_id ?? 0)}
                       colorClass="text-danger"
                       iconClass="mdi mdi-delete"
                       label="Remove"

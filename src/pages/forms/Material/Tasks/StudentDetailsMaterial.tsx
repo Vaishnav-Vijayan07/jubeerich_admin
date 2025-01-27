@@ -283,7 +283,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
     const currentCountries = basicData?.country_names;
 
-    return Countries.filter((item: any) => !basicData?.country_ids?.includes(item?.id))
+    return Countries.filter((item: any) => !basicData?.all_country_ids?.includes(item?.id))
       .filter((item: any) => !currentCountries?.includes(item?.country_name))
       .map((item: any) => ({
         value: item?.id.toString(),
@@ -320,10 +320,9 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           id: taskId,
         });
 
-        console.log("res ==>", res.data);
 
         getTaskDetails();
-        getTaskList();
+        getTaskList(null,true);
 
         // Show success alert
         showSuccessAlert(res.data.message);
@@ -747,7 +746,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       </div>
                     </div>
 
-                    <div className="action-icon d-flex justify-content-end align-items-center">
+                    <div className="action-icon d-flex justify-content-end align-items-center" style={{width:"105px"}}>
                       <Tooltip title="View All Details">
                         <MatButton
                           onClick={() => navigate(`/leads/manage/${studentId}`)}

@@ -20,7 +20,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
       <Row>
         <h5 className="mb-4 text-uppercase">Siblings' Details</h5>
       </Row>
-      <Col md={6}>
+      <Col md={3}>
         <Form.Group className="mb-3" controlId={`number_of_siblings`}>
           <Form.Label>Number of Siblings</Form.Label>
           <FormInput
@@ -40,7 +40,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
               <div key={index}>
                 <h6>Sibling {index + 1}</h6>
                 <Row>
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings?.${index}.name`}>
                       <Form.Label>Name</Form.Label>
                       <FormInput
@@ -52,7 +52,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings?.${index}.occupation`}>
                       <Form.Label>Occupation</Form.Label>
                       <FormInput
@@ -67,7 +67,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                 </Row>
 
                 <Row>
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings?.${index}.organization`}>
                       <Form.Label>Organization</Form.Label>
                       <FormInput
@@ -79,7 +79,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings?.${index}.annual_income`}>
                       <Form.Label>Annual Income</Form.Label>
                       <FormInput
@@ -93,7 +93,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                   </Col>
                 </Row>
                 <Row>
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.age`}>
                       <Form.Label>Age</Form.Label>
                       <FormInput
@@ -106,7 +106,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.dob`}>
                       <Form.Label>Date of Birth</Form.Label>
                       <FormInput
@@ -120,7 +120,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.location`}>
                       <Form.Label>Location</Form.Label>
                       <FormInput
@@ -133,7 +133,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.designation`}>
                       <Form.Label>Designation</Form.Label>
                       <FormInput
@@ -146,7 +146,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.duration`}>
                       <Form.Label>Duration</Form.Label>
                       <FormInput
@@ -159,7 +159,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.current_status`}>
                       <Form.Label>Current Status</Form.Label>
                       <Form.Select
@@ -180,7 +180,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.monthly_salary`}>
                       <Form.Label>Monthly Salary</Form.Label>
                       <FormInput
@@ -193,7 +193,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.mode_of_payment`}>
                       <Form.Label>Mode of Payment</Form.Label>
                       <Form.Select
@@ -214,7 +214,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.current_income_source`}>
                       <Form.Label>Current Income Source</Form.Label>
                       <FormInput
@@ -227,7 +227,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.income_tax_payer`}>
                       <Form.Label>Income Tax Payer</Form.Label>
                       <Form.Check
@@ -239,7 +239,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.nature_of_occupation`}>
                       <Form.Label>Nature of Occupation</Form.Label>
                       <Form.Select
@@ -259,7 +259,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                       </Form.Select>
                     </Form.Group>
                   </Col>
-                  <Col md={6}>
+                  <Col md={3}>
                     <ActionButton
                       colorClass="text-danger"
                       iconClass="mdi mdi-delete"

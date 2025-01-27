@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Row, Col, Spinner } from "react-bootstrap";
-import { debounce } from "lodash";
 
 // components
 import PageTitle from "../../components/PageTitle";
@@ -21,7 +20,9 @@ const Leads = () => {
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
   const { currentPage, setCurrentPage, currentLimit, setCurrentLimit } = usePagination();
 
-  const handlePageChange = useCallback((event: any, value: any) => {
+  const handlePageChange = useCallback((value: any) => {
+    console.log(value);
+
     setCurrentPage(value);
   }, []);
 
@@ -62,8 +63,6 @@ const Leads = () => {
       branchCounsellor: state.Users?.branchCounsellor,
     })
   );
-
-  console.log("ROOOT", state);
 
   useEffect(() => {
     fetchAllCounsellors();

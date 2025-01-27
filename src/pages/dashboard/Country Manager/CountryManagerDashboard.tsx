@@ -5,7 +5,7 @@ import LeadsTable from "../Components/LeadsTable";
 import StackGraph from "../Components/StackGraph";
 import PieData from "../Components/PieData";
 
-function CountryManagerDashboard({ categories, series, latestLeadsCount, pieData }: any) {
+function CountryManagerDashboard({ categories, series, latestLeadsCount, pieData,colors }: any) {
   const labels = pieData?.pieCategories;
   const pieSeries = pieData?.pieSeries;
 
@@ -13,7 +13,7 @@ function CountryManagerDashboard({ categories, series, latestLeadsCount, pieData
     <>
       <Row className="d-flex align-items-stretch mb-2">
         <Col md={5}>
-          <StackGraph categories={categories} series={series} />
+          <StackGraph categories={categories} series={series} colors={colors} />
         </Col>
         <Col md={7}>
           <PieData labels={labels || []} pieSeries={pieSeries || []} />

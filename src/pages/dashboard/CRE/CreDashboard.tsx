@@ -8,10 +8,10 @@ function CreDashboard({ categories, series, latestLeadsCount }: any) {
   return (
     <>
       <Row>
-        <Col md={5}>
+        <Col md={6}>
           <SingleBarGraph categories={categories} series={series} />
         </Col>
-        <Col md={7}>
+        <Col md={6}>
           <LeadsTable leadsData={latestLeadsCount} showOffice={false} />
         </Col>
       </Row>

@@ -25,7 +25,7 @@ function StackGraph({ categories, series, colors }: Props) {
       toolbar: {
         show: true,
         offsetX: 0,
-        offsetY: -20,
+        offsetY: 0,
         tools: {
           reset: `
              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
@@ -47,6 +47,9 @@ function StackGraph({ categories, series, colors }: Props) {
     legend: {
       position: "top",
       offsetY: 20,
+      labels: {
+        useSeriesColors: true,
+      },
     },
     plotOptions: {
       bar: {
@@ -63,6 +66,9 @@ function StackGraph({ categories, series, colors }: Props) {
       ? colors
       : ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
   };
+
+  console.log("Series data:", series);
+  console.log("Colors:", options.colors);
 
   return (
     <Card className="h-100">

@@ -34,7 +34,7 @@ const ChildrenDetails = ({
       <Row>
         <h5 className="mb-4 text-uppercase">Children Details</h5>
       </Row>
-      <Col md={6}>
+      <Col md={3}>
         <Form.Group className="mb-3" controlId={`number_of_children`}>
           <Form.Label>Number of Children</Form.Label>
           <FormInput
@@ -54,7 +54,7 @@ const ChildrenDetails = ({
               <div key={index}>
                 <h6>Child {index + 1}</h6>
                 <Row>
-                  <Col md={4}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`children?.${index}.name`}>
                       <Form.Label>Name</Form.Label>
                       <FormInput
@@ -66,7 +66,7 @@ const ChildrenDetails = ({
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={4}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`children?.${index}.gender`}>
                       <Form.Label>Gender</Form.Label>
                       <Select
@@ -83,7 +83,7 @@ const ChildrenDetails = ({
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={4}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`children?.${index}.age`}>
                       <Form.Label>Age</Form.Label>
                       <FormInput
@@ -96,7 +96,7 @@ const ChildrenDetails = ({
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
+                  <Col md={3}>
                     <Form.Group className="mb-3" controlId={`children.${index}.dob`}>
                       <Form.Label>Date of Birth</Form.Label>
                       <FormInput
@@ -111,7 +111,7 @@ const ChildrenDetails = ({
                   </Col>
                 </Row>
                 <Row>
-                  <Col md={6}>
+                  <Col md={3}>
                     <ActionButton
                       colorClass="text-danger"
                       iconClass="mdi mdi-delete"

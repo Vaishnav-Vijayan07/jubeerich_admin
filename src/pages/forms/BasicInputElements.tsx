@@ -368,7 +368,7 @@ const BasicInputElements = withSwal((props: any) => {
               Cell: ({ row }: any) => {
                 const counselors = row?.original.counselors;
                 return (
-                  <ul style={{ listStyle: "none", padding: 0 }}>
+                  <ul style={{ listStyle: "none", padding: 0, margin:0 }}>
                     {counselors && counselors.length > 0 ? (
                       counselors.map((item: any) => <li key={item?.counselor_name}>{item?.counselor_name}</li>)
                     ) : (
@@ -408,7 +408,7 @@ const BasicInputElements = withSwal((props: any) => {
           console.log(isDeleteEnabled);
 
           return (
-            <div className="d-flex justify-content-center align-items-center gap-2">
+            <div className="d-flex gap-2">
               {/* Edit Icon */}
               <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
                 <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>

@@ -124,6 +124,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
           <Form.Label><span className="text-danger">*</span> Supporting Document</Form.Label>
           <Form.Control
             type="file"
+            accept="image/*,application/pdf"
             name="supporting_document"
             onChange={(e: any) =>
               handleGapChange(index, e.target.name, e.target.files?.[0])
@@ -143,7 +144,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
                 rel="noopener noreferrer"
                 className="text-decoration-none"
               >
-                Download Document
+                View Document
               </a>
             </div>
           )}
@@ -184,7 +185,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
   return (
     <>
       <h5 className="mb-4 text-uppercase">
-        <i className="mdi mdi-account-circle me-1"></i>Expereince Gap
+        <i className="mdi mdi-account-circle me-1"></i>Experience Gap
       </h5>
       {gapDetails?.map((gap: any, index: number) => renderGapRows(gap, index))}
       <ActionButton

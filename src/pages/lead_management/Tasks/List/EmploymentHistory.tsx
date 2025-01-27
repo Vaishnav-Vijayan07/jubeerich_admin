@@ -317,7 +317,7 @@ const EmploymentHistory = (props: any) => {
               <span className="text-danger">* </span>
               Visa Page
             </Form.Label>
-            <FormInput type="file" name="visaPage" onChange={(e) => handleFileChange(e)} />
+            <FormInput type="file" accept="image/*,application/pdf" name="visaPage" onChange={(e) => handleFileChange(e)} />
           </Form.Group>
           <div className="d-flex mb-2">
             {documentsName?.visa_page && (
@@ -338,7 +338,7 @@ const EmploymentHistory = (props: any) => {
               <span className="text-danger">* </span>
               Permit Card
             </Form.Label>
-            <FormInput type="file" name="permitCard" onChange={(e) => handleFileChange(e)} />
+            <FormInput type="file" accept="image/*,application/pdf" name="permitCard" onChange={(e) => handleFileChange(e)} />
           </Form.Group>
           <div className="d-flex mb-2">
             {documentsName?.permit_card && (
@@ -360,7 +360,7 @@ const EmploymentHistory = (props: any) => {
               <span className="text-danger">* </span>
               Salary Account Statement
             </Form.Label>
-            <FormInput type="file" name="salaryAccountStatement" onChange={(e) => handleFileChange(e)} />
+            <FormInput type="file" accept="image/*,application/pdf" name="salaryAccountStatement" onChange={(e) => handleFileChange(e)} />
           </Form.Group>
           <div className="d-flex mb-2">
             {documentsName?.salary_account_statement && (
@@ -382,7 +382,7 @@ const EmploymentHistory = (props: any) => {
               <span className="text-danger">* </span>
               Supporting Documents
             </Form.Label>
-            <FormInput type="file" name="supportingDocuments" onChange={(e) => handleFileChange(e)} />
+            <FormInput type="file" accept="image/*,application/pdf" name="supportingDocuments" onChange={(e) => handleFileChange(e)} />
           </Form.Group>
           <div className="d-flex mb-2">
             {documentsName?.supporting_documents && (

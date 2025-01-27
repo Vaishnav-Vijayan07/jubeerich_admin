@@ -126,6 +126,9 @@ const Table = (props: TableProps) => {
     otherProps["useRowSelect"] = useRowSelect;
   }
 
+
+  console.log(props["data"])
+
   const dataTable = useTable(
     {
       columns: props["columns"],
@@ -246,7 +249,7 @@ const Table = (props: TableProps) => {
                       ...(column.minWidth && { minWidth: column.minWidth }),
                       ...(column.maxWidth && { maxWidth: column.maxWidth }),
                     }}
-                    className={classNames("text-secondary", {
+                    className={classNames("text-secondary cursor-pointer", {
                       sorting_desc: column.isSortedDesc === true,
                       sorting_asc: column.isSortedDesc === false,
                       sortable: column.sort === true,
@@ -299,7 +302,7 @@ const Table = (props: TableProps) => {
                       <td
                         {...cell.getCellProps([
                           {
-                            className: `${cell.column.className} cursor-pointer`,
+                            className: `${cell.column.className}`,
                           },
                         ])}
                         style={{
@@ -327,4 +330,4 @@ const Table = (props: TableProps) => {
   );
 };
 
-export default memo(Table);
+export default Table;

@@ -26,6 +26,7 @@ const Confirm2 = React.lazy(() => import("../pages/auth/Confirm"));
 const ForgetPassword2 = React.lazy(() => import("../pages/auth2/ForgetPassword2"));
 const LockScreen2 = React.lazy(() => import("../pages/auth/LockScreen"));
 const SignInSignUp2 = React.lazy(() => import("../pages/auth/SignInSignUp"));
+const Error404 = React.lazy(() => import("../pages/errors/Error404"));
 
 // dashboard
 const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard3"));
@@ -716,6 +717,12 @@ const otherPublicRoutes = [
     path: "/unauthorized",
     name: "forbidden",
     element: <ForbiddenPage />,
+    route: Route,
+  },
+  {
+    path: "/error-404",
+    name: "Error - 404",
+    element: <Error404 />,
     route: Route,
   },
 ];

@@ -290,7 +290,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center" style={{ width: "100% !important" }}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_admit_card`}>
             <Form.Label>Upload Admit Card</Form.Label>
-            <Form.Control name="admit_card" type="file" onChange={(e) => handleFileChange(e, index)} />
+            <Form.Control name="admit_card" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.admit_card && <Form.Text className="text-danger">{item.errors.admit_card}</Form.Text>}
             {typeof item?.admit_card === "string" && (
               <div className="mt-2">
@@ -305,7 +305,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_certificate`}>
             <Form.Label>Upload Certificate</Form.Label>
-            <Form.Control name="certificate" type="file" onChange={(e) => handleFileChange(e, index)} />
+            <Form.Control name="certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.certificate && <Form.Text className="text-danger">{item.errors.certificate}</Form.Text>}
             {typeof item?.certificate === "string" && (
               <div className="mt-2">
@@ -319,7 +319,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_registration_certificate `}>
             <Form.Label>Upload Registration Certification</Form.Label>
-            <Form.Control name="registration_certificate" type="file" onChange={(e) => handleFileChange(e, index)} />
+            <Form.Control name="registration_certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.registration_certificate && (
               <Form.Text className="text-danger">{item.errors.registration_certificate}</Form.Text>
             )}
@@ -339,7 +339,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_grading_scale_info`}>
             <Form.Label>Upload Gray Scale Info</Form.Label>
-            <Form.Control name="grading_scale_info" type="file" onChange={(e) => handleFileChange(e, index)} />
+            <Form.Control name="grading_scale_info" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.grading_scale_info && <Form.Text className="text-danger">{item.errors.grading_scale_info}</Form.Text>}
             {typeof item?.grading_scale_info === "string" && (
               <div className="mt-2">
@@ -357,7 +357,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_backlog_certificate`}>
             <Form.Label>Upload Backlog Certificate</Form.Label>
-            <Form.Control name="backlog_certificate" type="file" onChange={(e) => handleFileChange(e, index)} />
+            <Form.Control name="backlog_certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.backlog_certificate && (
               <Form.Text className="text-danger">{item.errors.backlog_certificate}</Form.Text>
             )}
@@ -377,7 +377,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_individual_marksheet`}>
             <Form.Label>Upload Individual Marksheet</Form.Label>
-            <Form.Control name="individual_marksheet" type="file" onChange={(e) => handleFileChange(e, index)} />
+            <Form.Control name="individual_marksheet" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.individual_marksheet && (
               <Form.Text className="text-danger">{item.errors.individual_marksheet}</Form.Text>
             )}
@@ -398,7 +398,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_transcript`}>
             <Form.Label>Upload Transcript</Form.Label>
-            <Form.Control name="transcript" type="file" onChange={(e) => handleFileChange(e, index)} />
+            <Form.Control name="transcript" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.transcript && <Form.Text className="text-danger">{item.errors.transcript}</Form.Text>}
             {typeof item?.transcript === "string" && (
               <div className="mt-2">

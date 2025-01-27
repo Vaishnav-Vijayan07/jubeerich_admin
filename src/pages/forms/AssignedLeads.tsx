@@ -168,8 +168,6 @@ const BasicInputElements = withSwal((props: any) => {
     userBranchId = JSON.parse(userInfo)?.branch_id;
   }
 
-  //State for handling update function
-
   const [tableData, setTableData] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);
@@ -260,34 +258,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [selectedOffice]);
 
-  const handleUpdate = (item: any) => {
-    if (item) {
-      setHandleUpdateData({ ...item });
-    }
-  };
-
-  //handle delete function
-  // const handleDelete = (id: string) => {
-  //   swal
-  //     .fire({
-  //       title: "Are you sure?",
-  //       text: "This action cannot be undone.",
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonColor: "#3085d6",
-  //       cancelButtonColor: "#d33",
-  //       confirmButtonText: "Yes, delete it!",
-  //     })
-  //     .then((result: any) => {
-  //       if (result.isConfirmed) {
-  //         dispatch(deleteLeads(id, 1, 20, true));
-  //         if (isUpdate) {
-  //           setFormData(initialState);
-  //         }
-  //       }
-  //     });
-  // };
-
   const UserColumn = ({ row }: any) => {
     return (
       <>
@@ -332,7 +302,7 @@ const BasicInputElements = withSwal((props: any) => {
       {
         Header: "City",
         accessor: "city",
-        sort: false,
+        sort: true,
         minWidth: 100,
       },
       {
@@ -351,7 +321,7 @@ const BasicInputElements = withSwal((props: any) => {
       {
         Header: "Office",
         accessor: "office_type_name",
-        sort: false,
+        sort: true,
         minWidth: 100,
       },
       {
@@ -490,18 +460,7 @@ const BasicInputElements = withSwal((props: any) => {
         ),
       },
     ];
-  }, [currentPage, currentLimit, user]);
-
-  const handleResetValues = () => {
-    setValidationErrors(initialValidationState); // Clear validation errors
-    setFormData(initialState); //clear form data
-    setSelectedCountry([]);
-    setSelectedLeadType(null);
-    setSelectedChannel(null);
-    setSelectedOffice(null);
-    setSelectedSource(null);
-    setSelectedRegion(null);
-  };
+  }, [currentPage, currentLimit, user, cres]);
 
   const handleSelectedValues = useCallback((values: any) => {
     setSelectedValues(values);
@@ -565,93 +524,12 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  const handleDownloadClick = () => {
-    const filePath = "/excel/jubeerich.xlsx";
-    const link = document.createElement("a");
-    link.download = "Student.xlsx";
-    link.href = process.env.REACT_APP_CLIENT_URL + filePath;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const downloadRjectedData = (file: any) => {
-    const filePath = file;
-    const link = document.createElement("a");
-    link.download = "rejected.xlsx";
-    link.href = process.env.REACT_APP_API_URL + filePath;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleOnFileUpload = (files: any) => {
-    setSelectedFile(files);
-  };
-
-  const handleFileUpload = async () => {
-    if (!selectedFile || selectedFile.length < 1 || !selectedFile[0]) {
-      showErrorAlert("Please select a file.");
-      return;
-    }
-
-    // Get the file extension
-    const fileExtension = selectedFile[0].name.split(".").pop()?.toLowerCase();
-
-    // Check if the file extension is '.xlsx'
-    if (fileExtension !== "xlsx") {
-      showErrorAlert("Please select a valid .xlsx file.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", selectedFile[0]);
-    setIsLoading(true);
-
-    try {
-      const { data } = await axios.post(`/excel_import`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-
-      return
-
-      if (data.status) {
-        showSuccessAlert(data.message);
-        dispatch(getLead(currentPage, currentLimit));
-        setIsLoading(false);
-        setSelectedFile([]);
-        toggleUploadModal();
-      } else {
-        showErrorAlert(data.message);
-        console.log("data.invalidFileLink", data.invalidFileLink);
-
-        downloadRjectedData(data.invalidFileLink);
-        setIsLoading(false);
-      }
-    } catch (err) {
-      console.log("error ==>", err);
-
-      showErrorAlert(err);
-      setSelectedFile([]);
-      setIsLoading(false);
-    }
-  };
-
   const toggleUploadModal = () => {
     setUploadModal(!uploadModal);
   };
 
   const toggle = () => {
     setModal(!modal);
-  };
-
-  const openModalWithClass = (className: string) => {
-    setClassName(className);
-    setScroll(false);
-    toggle();
   };
 
   const applyFilter = () => {
@@ -732,24 +610,6 @@ const BasicInputElements = withSwal((props: any) => {
           isAssignedLeads={true}
         />
 
-        {user?.role == it_team_id && (
-          <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
-            <Modal.Header closeButton></Modal.Header>
-            <Modal.Body>
-              <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
-              <FileUploader onFileUpload={handleOnFileUpload} showPreview={true} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
-              <div className="d-flex gap-2 justify-content-end mt-2">
-                <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
-                  <i className="mdi mdi-download-circle"></i> Download Sample
-                </Button>
-                <Button className="btn-sm btn-success waves-effect waves-light" onClick={handleFileUpload} disabled={isLoading}>
-                  <i className="mdi mdi-upload"></i> Upload File
-                </Button>
-              </div>
-            </Modal.Body>
-          </Modal>
-        )}
-
         <Col lg={12} className="p-0 form__card">
           <LeadsFilters
             changeFilteredItemsData={changeFilteredItemsData}
@@ -811,9 +671,7 @@ const BasicInputElements = withSwal((props: any) => {
                 )}
               </div>
               <h4 className="header-title mb-4">Manage Leads</h4>
-              <CustomSearchBox
-                onSearch={handleSearch}
-              />
+              <CustomSearchBox onSearch={handleSearch} />
               <Table
                 columns={columns}
                 data={tableData ? tableData : []}
@@ -854,10 +712,7 @@ const AssignedLeads = () => {
   const [value, setValue] = useState("");
   const [search, setSearch] = useState("");
 
-  console.log("value ==>", value);
-  
-
-  const handlePageChange = useCallback((event: any, value: any) => {
+  const handlePageChange = useCallback((value: any) => {
     setCurrentPage(value);
   }, []);
 
@@ -955,18 +810,9 @@ const AssignedLeads = () => {
     });
   }, [flag]);
 
-  // if (initialLoading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
-  // }
-
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Assigned Leads", path: "/leads/assigned/manage", active: true },
-        ]}
-        title={"Assigned Leads"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Assigned Leads", path: "/leads/assigned/manage", active: true }]} title={"Assigned Leads"} />
       <Row>
         <Col>
           <BasicInputElements

@@ -88,6 +88,7 @@ const WorkExpRow = ({
             </Form.Label>
             <FormInput
               type="file"
+              accept="image/*,application/pdf" 
               name="bank_statement"
               onChange={(e) =>
                 handleWorkExperienceChange(
@@ -125,6 +126,7 @@ const WorkExpRow = ({
             </Form.Label>
             <FormInput
               type="file"
+              accept="image/*,application/pdf" 
               name="experience_certificate"
               onChange={(e) =>
                 handleWorkExperienceChange(
@@ -162,6 +164,7 @@ const WorkExpRow = ({
             </Form.Label>
             <FormInput
               type="file"
+              accept="image/*,application/pdf" 
               name="job_offer_document"
               onChange={(e) =>
                 handleWorkExperienceChange(
@@ -199,6 +202,7 @@ const WorkExpRow = ({
             </Form.Label>
             <FormInput
               type="file"
+              accept="image/*,application/pdf" 
               name="appointment_document"
               onChange={(e) =>
                 handleWorkExperienceChange(
@@ -236,6 +240,7 @@ const WorkExpRow = ({
             </Form.Label>
             <FormInput
               type="file"
+              accept="image/*,application/pdf" 
               name="payslip_document"
               onChange={(e) =>
                 handleWorkExperienceChange(
