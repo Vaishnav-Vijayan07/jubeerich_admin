@@ -376,9 +376,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
         handleCloseModal();
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
-
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
@@ -392,7 +390,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
         onClose={() => toggleModal(false)}
         TransitionComponent={Slide}
       >
-        <AppBar sx={{ position: 'absolute' }}>
+        <AppBar sx={{ position: 'relative' }}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -404,7 +402,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
             </IconButton>
           </Toolbar>
         </AppBar>
-        <div className="d-flex flex-column" style={{ height: '100%' }}>
+        <div className="d-flex flex-column" style={{ height: '100vh' }}>
           <div
             className="ag-theme-alpine flex-grow-1"
             style={{ marginTop: '1rem', height: 'auto', width: '100%' }}
