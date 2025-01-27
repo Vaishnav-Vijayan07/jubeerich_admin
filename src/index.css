@@ -308,10 +308,10 @@ th {
   font-size: calc(var(--ct-menu-item-font-size) * 1);
 }
 
-/* Hide increment and decrement arrows in WebKit browsers
-input[type="number"]::-webkit-inner-spin-button,
+/* Hide increment and decrement arrows in WebKit browsers */
+/* input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
+  -webkit-appearance: unset !important;
   margin: 0;
 } */
 

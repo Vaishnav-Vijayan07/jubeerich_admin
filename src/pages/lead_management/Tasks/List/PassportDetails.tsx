@@ -252,6 +252,13 @@ const PassportDetails = ({ studentId }: Props) => {
           const { data } = await axios.put(`passport_details/${studentId}`, passportDetails);
           fetchPassportDetails();
           showSuccessAlert(data.message);
+          setPassportDetails((prev: any) => ({
+            ...prev,
+            passports: prev.passports.map((passport: any) => ({
+              ...passport,
+              errors: {}, // Clear errors for each passport
+            })),
+          }));
         } else {
           const { data } = await axios.post(`passport_details`, {
             original_passports_in_hand: passportDetails.original_passports_in_hand,
@@ -268,18 +275,17 @@ const PassportDetails = ({ studentId }: Props) => {
       } catch (error) {
         console.error("Error saving passport details:", error);
         showErrorAlert("Error occurred while saving passport details");
+      } finally {
+        setPassportDetails((prev: any) => ({
+          ...prev,
+          passports: prev.passports.map((passport: any) => ({
+            ...passport,
+            errors: {}, // Clear errors for each passport
+          })),
+        }));
       }
     }
   };
-
-  // if (initialLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "100%", left: "45%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <>
@@ -335,7 +341,9 @@ const PassportDetails = ({ studentId }: Props) => {
                       onChange={(e) => handleInputChange(e, index)} // Pass the index to the handler
                       value={passport.passport_number}
                     />
-                    {passport?.errors?.passport_number && <Form.Text className="text-danger">{passport?.errors?.passport_number}</Form.Text>}
+                    {passport?.errors?.passport_number && (
+                      <Form.Text className="text-danger">{passport?.errors?.passport_number}</Form.Text>
+                    )}
                   </Form.Group>
                 </Col>
 
@@ -352,7 +360,9 @@ const PassportDetails = ({ studentId }: Props) => {
                       value={moment(passport.date_of_expiry).format("YYYY-MM-DD")}
                     />
 
-                    {passport?.errors?.date_of_expiry && <Form.Text className="text-danger">{passport?.errors?.date_of_expiry}</Form.Text>}
+                    {passport?.errors?.date_of_expiry && (
+                      <Form.Text className="text-danger">{passport?.errors?.date_of_expiry}</Form.Text>
+                    )}
                   </Form.Group>
                 </Col>
                 <Row>

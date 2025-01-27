@@ -121,6 +121,8 @@ const BasicInfo = withSwal((props: any) => {
   const [selectedState, setSelectedState] = useState<any>(null);
   const [selectedNationality, setSelectedNationality] = useState<any>(null);
 
+  console.log("selectedNation ===>", selectedNation);
+
   const dispatch = useDispatch();
   const { refresh } = useSelector((state: RootState) => ({
     refresh: state.refreshReducer.refreshing,
@@ -146,10 +148,11 @@ const BasicInfo = withSwal((props: any) => {
       });
       setSelectedCountry(countries);
 
-      setSelectedNation({ label: basicInfoFromApi?.country, value: basicInfoFromApi?.country });
+      setSelectedNation(
+        basicInfoFromApi?.country ? { label: basicInfoFromApi?.country || null, value: basicInfoFromApi?.country || null } : null
+      );
 
-      setSelectedState({ label: basicInfoFromApi?.state, value: basicInfoFromApi?.state });
-      setSelectedState({ label: basicInfoFromApi?.state, value: basicInfoFromApi?.state });
+      setSelectedState(basicInfoFromApi?.state ? { label: basicInfoFromApi?.state, value: basicInfoFromApi?.state } : null);
 
       setSelectedNationality(basicInfoFromApi?.nationality);
 
@@ -160,7 +163,9 @@ const BasicInfo = withSwal((props: any) => {
       const updatedGender = genderData?.filter((gender: any) => gender.value == basicInfoFromApi?.gender);
       setSelectedGender(updatedGender[0]);
 
-      const updatedMaritialStatus = maritalStatus?.filter((maritalStatus: any) => maritalStatus.value == basicInfoFromApi?.marital_status);
+      const updatedMaritialStatus = maritalStatus?.filter(
+        (maritalStatus: any) => maritalStatus.value == basicInfoFromApi?.marital_status
+      );
 
       setSelectedMaritialStatus(updatedMaritialStatus[0]);
 
@@ -230,7 +235,6 @@ const BasicInfo = withSwal((props: any) => {
 
     const file = e.target.files ? e.target.files[0] : null;
     const [itemName, itemIndex] = name.split(".");
-
 
     if (file && !allowedFileTypes.includes(file.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
@@ -569,7 +573,9 @@ const BasicInfo = withSwal((props: any) => {
                   value={primaryInfo?.full_name} // Change to primaryInfo
                   onChange={(e) => handleInputChange(e, "full_name", "primary")}
                 />
-                {primaryInfo?.errors?.full_name && <Form.Text className="text-danger">{primaryInfo?.errors?.full_name}</Form.Text>}
+                {primaryInfo?.errors?.full_name && (
+                  <Form.Text className="text-danger">{primaryInfo?.errors?.full_name}</Form.Text>
+                )}
               </Form.Group>
             </Col>
 
@@ -634,6 +640,7 @@ const BasicInfo = withSwal((props: any) => {
                   value={selectedCountry}
                   isMulti={true}
                   isDisabled={true}
+                  placeholder={"Select preferred country"}
                 />
               </Form.Group>
             </Col>
@@ -651,7 +658,9 @@ const BasicInfo = withSwal((props: any) => {
                   onChange={(selected) => handleDropDowns(selected, { name: "office_type" }, "primary")}
                   isDisabled={true}
                 />
-                {primaryInfo?.errors?.office_type && <Form.Text className="text-danger">{primaryInfo?.errors?.office_type}</Form.Text>}
+                {primaryInfo?.errors?.office_type && (
+                  <Form.Text className="text-danger">{primaryInfo?.errors?.office_type}</Form.Text>
+                )}
               </Form.Group>
             </Col>
             {primaryInfo?.office_type == Number(regionId) && (
@@ -669,7 +678,9 @@ const BasicInfo = withSwal((props: any) => {
                     value={selectedRegion}
                     onChange={(selected) => handleDropDowns(selected, { name: "region_id" }, "primary")}
                   />
-                  {primaryInfo?.errors?.region_id && <Form.Text className="text-danger">{primaryInfo?.errors?.region_id}</Form.Text>}
+                  {primaryInfo?.errors?.region_id && (
+                    <Form.Text className="text-danger">{primaryInfo?.errors?.region_id}</Form.Text>
+                  )}
                 </Form.Group>
               </Col>
             )}
@@ -689,7 +700,9 @@ const BasicInfo = withSwal((props: any) => {
                     value={selectedFranchise}
                     onChange={(selected) => handleDropDowns(selected, { name: "franchise_id" }, "primary")}
                   />
-                  {primaryInfo?.errors?.franchise_id && <Form.Text className="text-danger">{primaryInfo?.errors?.franchise_id}</Form.Text>}
+                  {primaryInfo?.errors?.franchise_id && (
+                    <Form.Text className="text-danger">{primaryInfo?.errors?.franchise_id}</Form.Text>
+                  )}
                 </Form.Group>
               </Col>
             )}
@@ -741,7 +754,9 @@ const BasicInfo = withSwal((props: any) => {
                   value={selectedMaritialStatus}
                   onChange={(selected) => handleDropDowns(selected, { name: "marital_status" }, "basic")}
                 />
-                {basicInfo?.errors?.marital_status && <Form.Text className="text-danger">{basicInfo?.errors?.marital_status}</Form.Text>}
+                {basicInfo?.errors?.marital_status && (
+                  <Form.Text className="text-danger">{basicInfo?.errors?.marital_status}</Form.Text>
+                )}
               </Form.Group>
             </Col>
 
@@ -778,37 +793,27 @@ const BasicInfo = withSwal((props: any) => {
                   })}
                   value={selectedNation}
                   onChange={(selected) => handleDropDowns(selected, { name: "country" }, "basic")}
+                  placeholder="Select a country"
                 />
-
-                {/* <FormInput
-                    type="text"
-                    name="country"
-                    placeholder="Enter country"
-                    key="country"
-                    value={basicInfo?.country} // Change to basicInfo
-                    onChange={(e) => handleInputChange(e, "country", "basic")}
-                    // disabled={true}
-                  /> */}
                 {basicInfo?.errors?.country && <Form.Text className="text-danger">{basicInfo?.errors?.country}</Form.Text>}
               </Form.Group>
             </Col>
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="nationality">
-                <Form.Label>
-                  <span className="text-danger">*</span> Nationality
-                </Form.Label>
+                <Form.Label>Nationality</Form.Label>
                 <FormInput
                   type="text"
                   name="nationality"
                   placeholder="Enter nationality"
                   key="nationality"
                   value={selectedNationality} // Change to basicInfo
-                  // value={basicInfo?.nationality} // Change to basicInfo
                   onChange={(e) => handleInputChange(e, "nationality", "basic")}
                   disabled={true}
                 />
-                {basicInfo?.errors?.nationality && <Form.Text className="text-danger">{basicInfo?.errors?.nationality}</Form.Text>}
+                {basicInfo?.errors?.nationality && (
+                  <Form.Text className="text-danger">{basicInfo?.errors?.nationality}</Form.Text>
+                )}
               </Form.Group>
             </Col>
 
@@ -830,16 +835,6 @@ const BasicInfo = withSwal((props: any) => {
                   onChange={(selected) => handleDropDowns(selected, { name: "state" }, "basic")}
                   isDisabled={!selectedNation?.value}
                 />
-
-                {/* <FormInput
-                    type="text"
-                    name="state"
-                    placeholder="Enter state"
-                    key="state"
-                    value={basicInfo?.state} // Change to basicInfo
-                    onChange={(e) => handleInputChange(e, "state", "basic")}
-                    // disabled={true}
-                  /> */}
                 {basicInfo?.errors?.state && <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>}
               </Form.Group>
             </Col>
@@ -856,7 +851,9 @@ const BasicInfo = withSwal((props: any) => {
                   value={basicInfo?.secondary_number} // Change to basicInfo
                   onChange={(e) => handleInputChange(e, "secondary_number", "basic")}
                 />
-                {basicInfo?.errors?.secondary_number && <Form.Text className="text-danger">{basicInfo?.errors?.secondary_number}</Form.Text>}
+                {basicInfo?.errors?.secondary_number && (
+                  <Form.Text className="text-danger">{basicInfo?.errors?.secondary_number}</Form.Text>
+                )}
               </Form.Group>
             </Col>
 
@@ -1010,8 +1007,8 @@ const BasicInfo = withSwal((props: any) => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>
-                    Are there any medical conditions or health concerns that we should be aware of? This information is necessary for regulatory
-                    compliance and will be treated with the utmost confidentiality
+                    Are there any medical conditions or health concerns that we should be aware of? This information is necessary
+                    for regulatory compliance and will be treated with the utmost confidentiality
                   </Form.Label>
                   <div>
                     <Form.Check
@@ -1072,8 +1069,8 @@ const BasicInfo = withSwal((props: any) => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>
-                    Have you ever been convicted of a criminal offense? This information is necessary for regulatory compliance and will be treated
-                    with the utmost confidentiality
+                    Have you ever been convicted of a criminal offense? This information is necessary for regulatory compliance
+                    and will be treated with the utmost confidentiality
                   </Form.Label>
                   <div>
                     <Form.Check
@@ -1129,8 +1126,8 @@ const BasicInfo = withSwal((props: any) => {
           <Row className="mt-2">
             <Row>
               <Form.Label className="mb-2 ">
-                Can you provide Police Clearance Certificate from all those countries (including GCC, Middle East countries) where you lived more than
-                6 months in the past 10 years, if applicable?
+                Can you provide Police Clearance Certificate from all those countries (including GCC, Middle East countries) where
+                you lived more than 6 months in the past 10 years, if applicable?
               </Form.Label>
             </Row>
 
@@ -1148,24 +1145,32 @@ const BasicInfo = withSwal((props: any) => {
                     />
                   </Form.Group>
                 </Col>
+
                 <Col md={6}>
                   <Form.Group className="">
                     <Form.Label>Upload Certificate</Form.Label>
-                    <Form.Control type="file" accept="image/*,application/pdf" name={`certificate.${index}`} onChange={handlePoliceClearenceDocs} />
+                    <Form.Control
+                      type="file"
+                      accept="image/*,application/pdf"
+                      name={`certificate.${index}`}
+                      onChange={handlePoliceClearenceDocs}
+                    />
 
-                    {certificate.certificate && certificate.certificate !== "null" && typeof certificate.certificate === "string" && (
-                      <div className="d-flex align-items-center">
-                        <i className="mdi mdi-eye text-primary me-2"></i>
-                        <a
-                          href={`${baseUrl}uploads/policeClearenceDocuments/${certificate.certificate}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-decoration-none"
-                        >
-                          View Document
-                        </a>
-                      </div>
-                    )}
+                    {certificate.certificate &&
+                      certificate.certificate !== "null" &&
+                      typeof certificate.certificate === "string" && (
+                        <div className="d-flex align-items-center">
+                          <i className="mdi mdi-eye text-primary me-2"></i>
+                          <a
+                            href={`${baseUrl}uploads/policeClearenceDocuments/${certificate.certificate}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-decoration-none"
+                          >
+                            View Document
+                          </a>
+                        </div>
+                      )}
                   </Form.Group>
                 </Col>
                 <ActionButton
