@@ -29,7 +29,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
   const [rowData, setRowData] = useState<any[]>([]);
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
-  const pageSizes = [10, 20, 50, 100];
+  const pageSizes = [2, 10, 20, 50, 100];
   const [columnDefs, setColumnDefs] = useState<any[]>([]);
 
   const formattedData = useMemo(() => {
@@ -204,7 +204,12 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
             <span>
               <i onClick={() => {
                 const index = params.node.rowIndex;
-                const allRowsData = params.api.getRenderedNodes().map((node: any) => node.data);
+                const allRowsData: any[] = [];
+                params.api.forEachNode((node: any) => {
+                  if (node.data) {
+                    allRowsData.push(node.data);
+                  }
+                });
                 handleDeleteRow(index, allRowsData);
               }}
                 className='mdi mdi-delete-outline fs-4'></i>
@@ -329,7 +334,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
               rowData={rowData}
               columnDefs={columnDefs}
               pagination={true}
-              paginationPageSize={10}
+              paginationPageSize={2}
               defaultColDef={{
                 resizable: true,
                 flex: 1,
