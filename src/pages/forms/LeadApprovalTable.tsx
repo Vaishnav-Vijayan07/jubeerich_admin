@@ -24,11 +24,11 @@ interface IRowData {
   error: string | null;
 }
 
-const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options }: any) => {
+const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchLead }: any) => {
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
   const [rowData, setRowData] = useState<any[]>([]);
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
-  const pageSizes = [2, 10, 20, 50, 100];
+  const pageSizes = [10, 20, 50, 100];
   const [columnDefs, setColumnDefs] = useState<any[]>([]);
 
   const formattedData = useMemo(() => {
@@ -282,6 +282,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
         if (data) {
           showSuccessAlert('Selected Leads Successfully Approved');
           toggleModal(false);
+          refetchLead();
         }
       }
 
@@ -370,6 +371,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
 
     if (result.isConfirmed) {
       toggleModal(false);
+      refetchLead();
     }
   }
 
@@ -421,7 +423,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
               rowData={rowData}
               columnDefs={columnDefs}
               pagination={true}
-              paginationPageSize={2}
+              paginationPageSize={10}
               defaultColDef={{
                 resizable: true,
                 flex: 1,

@@ -763,6 +763,10 @@ const BasicInputElements = withSwal((props: any) => {
     setOpenApproveModal((prev: any) => !prev);
   };
 
+  const refetchLead = () => {
+    dispatch(getLead(currentPage, currentLimit));
+  }
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -788,7 +792,7 @@ const BasicInputElements = withSwal((props: any) => {
           initialLoading={initialLoading}
         />
 
-        <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData}/>
+        <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData} refetchLead={refetchLead}/>
 
         {user?.role == it_team_id && (
           <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
