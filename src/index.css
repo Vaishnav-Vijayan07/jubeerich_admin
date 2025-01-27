@@ -1033,3 +1033,7 @@ select::-ms-expand {
 .dropdown-menu.show{
   z-index: 1;
 }
+
+.my-swal-index {
+  z-index: 10000 !important;
+}

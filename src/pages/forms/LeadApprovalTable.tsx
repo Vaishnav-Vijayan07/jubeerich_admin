@@ -1,14 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { defaultTheme } from '../../AgGridSetup';
 import { AgGridReact } from 'ag-grid-react';
-import { AppBar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Slide, Toolbar } from '@mui/material';
+import { AppBar, Button, Dialog, IconButton, Slide, Toolbar } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
-import RefreshConfirmation from '../../components/RefreshConfirmation';
 import axios from 'axios';
 import { GridApi, GridReadyEvent, IRowNode, RowNode } from 'ag-grid-community';
 import { showErrorAlert, showSuccessAlert } from '../../constants';
-import { withSwal } from "react-sweetalert2";
+import { withSwal } from 'react-sweetalert2'
 
 interface IRowData {
   id: number;
@@ -172,11 +171,11 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
         },
       },
       {
-        field: 'lead_received_date', 
-        headerName: 'Date', 
-        sortable: true, 
-        filter: true, 
-        editable: true, 
+        field: 'lead_received_date',
+        headerName: 'Date',
+        sortable: true,
+        filter: true,
+        editable: true,
         cellClassRules: {
           'cell-error': (params: any) => !params.value,
         },
@@ -234,33 +233,58 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
       showErrorAlert('No leads selected. Please select leads to approve.');
       return;
     }
-  
+
     const hasInvalidItem = selectedItems.some((item) => {
       return (
-        !item.source || 
-        !item.channel || 
-        !item.office_type || 
-        !item.email || 
+        !item.source ||
+        !item.channel ||
+        !item.office_type ||
+        !item.email ||
         !item.phone ||
         !item.full_name ||
         item.errors
       );
     });
-  
+
     if (hasInvalidItem) {
       showErrorAlert(
         'Some selected leads are missing required fields: Source, Channels, OfficeType, Email, or Phone.'
       );
       return;
     }
-  
+
     try {
-      const { data } = await axios.post('/approve_leads', { lead_data: selectedItems });
-      console.log('Response', data);
-      if (data) {
-        showSuccessAlert('Selected Leads Successfully Approved');
-        toggleModal(false);
+      const result = await swal.fire({
+        title: "Confirm Action",
+        text: `Non selected lead will be discarded, Do you want to approve the selected leads? `,
+        icon: "question",
+        iconColor: "#8B8BF5",
+        showCancelButton: true,
+        confirmButtonText: `Yes, Approve`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5",
+        cancelButtonColor: "#E97777",
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+          container: 'my-swal-index'
+        },
+        width: "26em",
+        padding: "2em",
+      });
+
+      if (result.isConfirmed) {
+        const { data } = await axios.post('/approve_leads', { lead_data: selectedItems });
+        console.log('Response', data);
+        if (data) {
+          showSuccessAlert('Selected Leads Successfully Approved');
+          toggleModal(false);
+        }
       }
+
     } catch (error) {
       console.error(error);
       showErrorAlert('An error occurred while approving leads.');
@@ -275,28 +299,45 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
   ) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
-  
+
   const onGridReady = useCallback((params: GridReadyEvent) => {
     setGridApi(params.api);
   }, []);
 
-  const getCurrentTableData = () => {
-    if (!gridApi) return [];
+  const handleDeleteRow = async (index: number, data: any) => {
 
-    const currentData: any[] = [];
-    const renderedNodes = gridApi.getRenderedNodes();
-    renderedNodes.forEach((node) => {
-      currentData.push(node.data);
-    });
+    try {
+      const result = await swal.fire({
+        title: "Confirm Action",
+        text: `Do you want to delete this lead?`,
+        icon: "question",
+        iconColor: "#8B8BF5",
+        showCancelButton: true,
+        confirmButtonText: `Yes, delete it!`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5",
+        cancelButtonColor: "#E97777",
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+          container: 'my-swal-index'
+        },
+        width: "26em",
+        padding: "2em",
+      });
 
-    return currentData;
-  };
-
-  const handleDeleteRow = async(index: number, data: any) => {
-    const currentData = getCurrentTableData();
-    const updatedData = data.filter((_: any, i: any) => i != index);
-    if (updatedData.length) {
-      setRowData(updatedData);
+      if (result.isConfirmed) {
+        const updatedData = data.filter((_: any, i: any) => i != index);
+        if (updatedData.length) {
+          setRowData(updatedData);
+        }
+      }
+    } catch (error) {
+      console.log('error', error);
+      showErrorAlert('Error deleting item')
     }
   };
 
@@ -304,20 +345,66 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
     gridApi?.deselectAll()
   }
 
+  const handleCloseModal = async () => {
+    const result = await swal.fire({
+      title: "Confirm Action",
+      text: `You have pending leads to approve. Are you sure you want to leave?`,
+      icon: "question",
+      iconColor: "#8B8BF5",
+      showCancelButton: true,
+      confirmButtonText: `Yes, leave!`,
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#8B8BF5",
+      cancelButtonColor: "#E97777",
+      buttonsStyling: true,
+      customClass: {
+        popup: "rounded-4 shadow-lg",
+        confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+        cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+        title: "fs-2 fw-normal mb-2",
+        container: 'my-swal-index'
+      },
+      width: "26em",
+      padding: "2em",
+    });
+
+    if (result.isConfirmed) {
+      toggleModal(false);
+    }
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        (event.ctrlKey && event.key === "r") ||
+        (event.ctrlKey && event.shiftKey && event.key === "R")
+      ) {
+        event.preventDefault();
+        handleCloseModal();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <>
       <Dialog
         fullScreen
         open={isOpenModal}
         onClose={() => toggleModal(false)}
-        // TransitionComponent={Transition}
+      // TransitionComponent={Transition}
       >
         <AppBar sx={{ position: 'relative' }}>
           <Toolbar>
             <IconButton
               edge="start"
               color="inherit"
-              onClick={() => toggleModal(false)}
+              onClick={handleCloseModal}
               aria-label="close"
             >
               <CloseIcon />
@@ -353,7 +440,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
               onCellDoubleClicked={handleCellDoubleClick}
             />
           </div>
-  
+
           {/* Button Container */}
           <div className="d-flex justify-content-end p-2">
             <button className="btn btn-success" onClick={handleApproved}>
@@ -362,10 +449,9 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           </div>
         </div>
       </Dialog>
-
     </>
   );
-  
+
 })
 
 export default LeadApprovalTable
