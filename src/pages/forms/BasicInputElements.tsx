@@ -792,8 +792,6 @@ const BasicInputElements = withSwal((props: any) => {
           initialLoading={initialLoading}
         />
 
-        <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData} refetchLead={refetchLead}/>
-
         {user?.role == it_team_id && (
           <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
             <Modal.Header closeButton></Modal.Header>
@@ -992,6 +990,9 @@ const BasicInputElements = withSwal((props: any) => {
                   )}
                 </>
               )}
+
+              <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData} refetchLead={refetchLead}/>
+            
             </Card.Body>
           </Card>
         </Col>

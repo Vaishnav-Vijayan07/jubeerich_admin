@@ -453,7 +453,6 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
       </Dialog>
     </>
   );
-
 })
 
 export default LeadApprovalTable
