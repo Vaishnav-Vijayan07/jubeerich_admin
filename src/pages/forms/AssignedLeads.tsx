@@ -168,8 +168,6 @@ const BasicInputElements = withSwal((props: any) => {
     userBranchId = JSON.parse(userInfo)?.branch_id;
   }
 
-  //State for handling update function
-
   const [tableData, setTableData] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);

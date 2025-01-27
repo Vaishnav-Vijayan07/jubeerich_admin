@@ -126,6 +126,9 @@ const Table = (props: TableProps) => {
     otherProps["useRowSelect"] = useRowSelect;
   }
 
+
+  console.log(props["data"])
+
   const dataTable = useTable(
     {
       columns: props["columns"],
@@ -327,4 +330,4 @@ const Table = (props: TableProps) => {
   );
 };
 
-export default memo(Table);
+export default Table;

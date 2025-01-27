@@ -746,7 +746,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       </div>
                     </div>
 
-                    <div className="action-icon d-flex justify-content-end align-items-center">
+                    <div className="action-icon d-flex justify-content-end align-items-center" style={{width:"105px"}}>
                       <Tooltip title="View All Details">
                         <MatButton
                           onClick={() => navigate(`/leads/manage/${studentId}`)}
