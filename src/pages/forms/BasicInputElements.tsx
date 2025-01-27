@@ -767,6 +767,18 @@ const BasicInputElements = withSwal((props: any) => {
     dispatch(getLead(currentPage, currentLimit));
   }
 
+  useEffect(() => {
+    if (openApproveModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto'; // Clean up on component unmount
+    };
+  }, [openApproveModal]);
+  
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -991,7 +1003,7 @@ const BasicInputElements = withSwal((props: any) => {
                 </>
               )}
 
-              <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData} refetchLead={refetchLead}/>
+              {openApproveModal && <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData} refetchLead={refetchLead}/>}
             
             </Card.Body>
           </Card>

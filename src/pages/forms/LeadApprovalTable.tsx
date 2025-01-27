@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { defaultTheme } from '../../AgGridSetup';
 import { AgGridReact } from 'ag-grid-react';
-import { AppBar, Button, Dialog, IconButton, Slide, Toolbar } from '@mui/material';
+import { AppBar, Dialog, IconButton, Slide, Toolbar } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import { GridApi, GridReadyEvent, IRowNode, RowNode } from 'ag-grid-community';
 import { showErrorAlert, showSuccessAlert } from '../../constants';
 import { withSwal } from 'react-sweetalert2'
+import { Button, Modal } from 'react-bootstrap';
 
 interface IRowData {
   id: number;
@@ -292,21 +293,11 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
     }
   };
 
-  const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-      children: React.ReactElement<unknown>;
-    },
-    ref: React.Ref<unknown>,
-  ) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
-
   const onGridReady = useCallback((params: GridReadyEvent) => {
     setGridApi(params.api);
   }, []);
 
   const handleDeleteRow = async (index: number, data: any) => {
-
     try {
       const result = await swal.fire({
         title: "Confirm Action",
@@ -399,9 +390,9 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
         fullScreen
         open={isOpenModal}
         onClose={() => toggleModal(false)}
-      // TransitionComponent={Transition}
+        TransitionComponent={Slide}
       >
-        <AppBar sx={{ position: 'relative' }}>
+        <AppBar sx={{ position: 'absolute' }}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -413,8 +404,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
             </IconButton>
           </Toolbar>
         </AppBar>
-        <div className="d-flex flex-column" style={{ height: '100vh' }}>
-          {/* AG Grid Container */}
+        <div className="d-flex flex-column" style={{ height: '100%' }}>
           <div
             className="ag-theme-alpine flex-grow-1"
             style={{ marginTop: '1rem', height: 'auto', width: '100%' }}
@@ -443,8 +433,10 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
             />
           </div>
 
-          {/* Button Container */}
-          <div className="d-flex justify-content-end p-2">
+          <div className="d-flex justify-content-end p-2 gap-2">
+            <button className="btn btn-danger" onClick={handleCloseModal}>
+              Close
+            </button>
             <button className="btn btn-success" onClick={handleApproved}>
               Approve
             </button>
