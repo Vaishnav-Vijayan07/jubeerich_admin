@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import RefreshConfirmation from '../../components/RefreshConfirmation';
 import axios from 'axios';
 import { GridApi, GridReadyEvent, IRowNode, RowNode } from 'ag-grid-community';
+import { showSuccessAlert } from '../../constants';
 
 interface IRowData {
   id: number;
@@ -193,25 +194,25 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
         },
       },
       { field: 'error', headerName: 'Error', sortable: true, filter: true, editable: true, sortIndex: 0, sort: 'desc'},
-      {
-        field: 'delete',
-        headerName: 'Actions',
-        cellRenderer: (params: any) => {
-          return (
-            <span>
-              <i onClick={() => {
-                const index = params.node.rowIndex;
-                handleDeleteRow(index, rowData);
-              }}
-                className='mdi mdi-delete-outline fs-4'></i>
-            </span>
-          );
-        },
-        width: 100,
-        sortable: false,
-        filter: false,
-        editable: false
-      }
+      // {
+      //   field: 'delete',
+      //   headerName: 'Actions',
+      //   cellRenderer: (params: any) => {
+      //     return (
+      //       <span>
+      //         <i onClick={() => {
+      //           const index = params.node.rowIndex;
+      //           handleDeleteRow(index, rowData);
+      //         }}
+      //           className='mdi mdi-delete-outline fs-4'></i>
+      //       </span>
+      //     );
+      //   },
+      //   width: 100,
+      //   sortable: false,
+      //   filter: false,
+      //   editable: false
+      // }
     ])
   }
 
@@ -228,7 +229,10 @@ const LeadApprovalTable = ({ isOpenModal, toggleModal, responseData, options }: 
 
     try {
       const { data } = await axios.post('/approve_leads', { lead_data: selectedItems });
-      console.log('Response', data?.data);
+      console.log('Response', data);
+      if(data) {
+        showSuccessAlert('Selected Leads Succesfully Approved')
+      }
     } catch (error) {
       console.log(error);
     }
