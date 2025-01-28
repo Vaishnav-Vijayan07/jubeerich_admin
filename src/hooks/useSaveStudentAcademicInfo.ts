@@ -144,12 +144,13 @@ const useSaveStudentAcademicInfo = (
 
   // Function to save exam information
   const saveStudentExamInfo = useCallback(
-    async (examForm: any[]) => {
+    async (examForm: any[], hasExams: boolean) => {
       const newFormData = new FormData();
 
       appendExamInfoToFormData(examForm, newFormData);
 
       newFormData.append("user_id", studentId.toString());
+      newFormData.append("ielts", hasExams.toString());
 
       const result = await swal.fire({
         title: "Confirm Action",

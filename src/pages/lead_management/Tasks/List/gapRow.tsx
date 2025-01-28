@@ -9,7 +9,7 @@ import validateFields from "../../../../helpers/validateHelper";
 import useSaveGapData from "../../../../hooks/useSaveGapData";
 import { allowedFileTypes } from "./data";
 
-const GapRows = ({ gapData, studentId, type }: any) => {
+const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
   const [gapDetails, setGapDetails] = useState(gapData);
 
   const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
@@ -73,7 +73,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
       return;
     }
 
-    saveGapData(gapDetails, type);
+    saveGapData(gapDetails, type, hasGap);
   };
 
   const renderGapRows = (gap: any, index: number) => (
@@ -171,7 +171,7 @@ const GapRows = ({ gapData, studentId, type }: any) => {
         </Form.Group>
       </Col>
       {/* Remove Button */}
-      {gapDetails?.length > 1 && (
+      {gapDetails?.length > 0 && (
         <ActionButton
           onClick={() => removeGap(index, gap?.id ?? 0)}
           label="Remove"

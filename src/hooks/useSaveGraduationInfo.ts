@@ -10,9 +10,10 @@ const useSaveGraduationInfo = (studentId: number | string) => {
   const dispatch = useDispatch();
 
   const saveStudentGraduationDetails = useCallback(
-    async (graduationDetails: any[]) => {
+    async (graduationDetails: any[], is_graduated: any) => {
       const newFormData = new FormData();
       newFormData.append(`student_id`, studentId.toString());
+      newFormData.append(`is_graduated`, is_graduated.toString());
 
       graduationDetails.forEach((detail: any, index: any) => {
         const itemId = detail.id ?? 0;

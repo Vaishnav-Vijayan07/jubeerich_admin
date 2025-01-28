@@ -11,9 +11,10 @@ const useSaveWorkInfo = (studentId: number | string) => {
   const dispatch = useDispatch();
 
   const saveWorkDetails = useCallback(
-    async (workDetails: any[]) => {
+    async (workDetails: any[], has_work_exp: boolean) => {
       const newFormData = new FormData();
       newFormData.append(`user_id`, studentId.toString());
+      newFormData.append(`has_work_exp`, has_work_exp.toString());
 
       workDetails.forEach((work: any, index: any) => {
         const itemId = work.id ?? 0;

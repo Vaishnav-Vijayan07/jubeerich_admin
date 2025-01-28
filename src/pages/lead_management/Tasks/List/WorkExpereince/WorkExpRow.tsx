@@ -321,7 +321,7 @@ const WorkExpRow = ({
           </Form.Group>
         </Col>
 
-        {workExperienceData?.length > 1 && (
+        {workExperienceData?.length > 0 && (
           <ActionButton
             onClick={() => removeWorkExperience(index, workExperience?.id ?? 0)}
             label="Remove"
