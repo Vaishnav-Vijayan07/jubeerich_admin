@@ -52,7 +52,7 @@ const ParentDetailsForm = ({
             className="mb-3"
             controlId={`${parentType}_annual_income`}
           >
-            <Form.Label>Annual Income</Form.Label>
+            <Form.Label>Annual Income (₹)</Form.Label>
             <FormInput
               type="number"
               name={`${parentType}.annual_income`}

@@ -81,7 +81,7 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                   </Col>
                   <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings?.${index}.annual_income`}>
-                      <Form.Label>Annual Income</Form.Label>
+                      <Form.Label>Annual Income (₹)</Form.Label>
                       <FormInput
                         type="number"
                         name={`siblings.${index}.annual_income`}
