@@ -171,7 +171,7 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
         </Form.Group>
       </Col>
       {/* Remove Button */}
-      {gapDetails?.length > 1 && (
+      {gapDetails?.length > 0 && (
         <ActionButton
           onClick={() => removeGap(index, gap?.id ?? 0)}
           label="Remove"

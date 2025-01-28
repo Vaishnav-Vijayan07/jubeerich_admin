@@ -173,7 +173,7 @@ const ExamData: React.FC<ExamDataProps> = ({
           )}
         </Form.Group>
       </Col>
-      {examForm.length > 1 && (
+      {examForm.length > 0 && (
         <Row className="mb-2">
           <ActionButton
             label="Remove"

@@ -411,7 +411,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
           </Form.Group>
         </Col>
       </Row>
-      {graduationDetails?.length > 1 && (
+      {graduationDetails?.length > 0 && (
         <Row className="mb-2">
           <ActionButton label="Remove" iconClass="mdi mdi-delete" onClick={() => removeGraduationForm(index, item?.id ?? 0)} />
         </Row>
