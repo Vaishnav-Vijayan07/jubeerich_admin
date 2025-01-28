@@ -623,8 +623,9 @@ const BasicInfo = withSwal((props: any) => {
                   <span className="text-danger">* </span>Phone Number
                 </Form.Label>
                 <FormInput
-                  type="tel"
-                  maxLength={10}
+                  // type="tel"
+                  type="text"
+                  // maxLength={10}
                   name="phone"
                   placeholder="Enter phone number"
                   key="phone"
@@ -864,8 +865,9 @@ const BasicInfo = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="secondary_number">
                 <Form.Label>Secondary number</Form.Label>
                 <FormInput
-                  type="tel"
-                  maxLength={10}
+                  // type="tel"
+                  type="text"
+                  // maxLength={10}
                   name="secondary_number"
                   placeholder="Enter secondary number"
                   key="secondary_number"

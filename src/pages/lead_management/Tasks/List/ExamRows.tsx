@@ -153,7 +153,9 @@ const ExamData: React.FC<ExamDataProps> = ({
       </Col>
       <Col md={4} lg={4} className="d-flex justify-content-between align-items-center">
         <Form.Group className="mb-3 form-group">
-          <Form.Label><span className="text-danger">*</span> Upload Score Card</Form.Label>
+          <Form.Label><span className="text-danger">*</span> Upload Score Card
+          <small className="text-muted ms-2">( Only images or PDF files are allowed )</small>
+          </Form.Label>
           <Form.Control name="score_card" type="file" accept="image/*,application/pdf" onChange={(e) => handleExamFileChange(index, e)} />
 
           {item.errors?.score_card && <Form.Text className="text-danger">{item.errors.score_card}</Form.Text>}

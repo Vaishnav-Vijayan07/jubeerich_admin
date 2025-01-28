@@ -679,7 +679,7 @@ const LeadsModal = withSwal((props: any) => {
                   <Form.Label>
                     <span className="text-danger fs-4">* </span>Phone
                   </Form.Label>
-                  <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
+                  <Form.Control type="text" name="phone" value={formData.phone} onChange={handleInputChange} />
                   {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                 </Form.Group>
               </Col>
