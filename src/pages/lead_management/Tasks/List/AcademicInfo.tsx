@@ -39,7 +39,7 @@ const initialStateExam = {
 const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
   const [loading, setLoading] = useState(false);
-  const [hasExams, setHasExams] = useState("no");
+  const [hasExams, setHasExams] = useState(false);
 
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
@@ -62,7 +62,8 @@ const AcademicInfo = withSwal((props: any) => {
 
       // Use helper functions to check the data and set state
       setExamForm(examData.length > 0 ? examData : [initialStateExam]);
-      setHasExams(examData.length > 0 ? "yes" : "no");
+      // setHasExams(examData.length > 0 ? "yes" : "no");
+      setHasExams(examData.length > 0 ? true : false);
     } catch (error) {
       console.error("Error fetching academic info:", error);
     } finally {
@@ -194,7 +195,7 @@ const AcademicInfo = withSwal((props: any) => {
       );
       return;
     }
-    saveStudentExamInfo(examForm);
+    saveStudentExamInfo(examForm, hasExams);
   };
 
   // if (loading) {
@@ -264,15 +265,17 @@ const AcademicInfo = withSwal((props: any) => {
                     <Form.Check
                       type="radio"
                       name="hasExams"
-                      checked={hasExams === "yes"}
-                      onChange={() => setHasExams("yes")}
+                      // checked={hasExams === "yes"}
+                      checked={hasExams}
+                      onChange={() => setHasExams(true)}
                       label={<span className="ps-1 fw-bold">Yes</span>}
                     />
                     <Form.Check
                       type="radio"
                       name="hasExams"
-                      checked={hasExams === "no"}
-                      onChange={() => setHasExams("no")}
+                      // checked={hasExams === "no"}
+                      checked={!hasExams}
+                      onChange={() => setHasExams(false)}
                       label={<span className="ps-1 fw-bold">No</span>}
                       className="ms-3"
                     />
@@ -281,7 +284,8 @@ const AcademicInfo = withSwal((props: any) => {
               </Col>
             </Row>
 
-            {hasExams == "yes" && (
+            {/* {hasExams == "yes" && ( */}
+            {hasExams && (
               <>
                 <Row>
                   <ExamData

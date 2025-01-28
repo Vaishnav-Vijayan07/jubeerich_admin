@@ -31,9 +31,10 @@ interface GraduationDetailsProps {
     errors: any;
   };
   student_id: string | number;
+  hasGraduation: any
 }
 
-const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, student_id }) => {
+const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, student_id, hasGraduation }) => {
   const [graduationDetails, setGraduationDetails] = useState<any>(details);
 
   const { saveStudentGraduationDetails, loading } = useSaveGraduationInfo(student_id);
@@ -146,7 +147,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
       );
       return;
     }
-    saveStudentGraduationDetails(graduationDetails);
+    saveStudentGraduationDetails(graduationDetails, hasGraduation);
   };
 
   const renderGraduatonRows = (item: any, index: any) => (
