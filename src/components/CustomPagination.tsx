@@ -70,13 +70,13 @@ function CustomPagination({ handleLimitChange, handlePageChange, totalPages, cur
             /> */}
             <input
               type="number"
-              min="0" // Prevent negative numbers
+              min="1" // Prevent 0 or negative numbers
               value={page}
               onChange={(e: any) => {
                 const value = e.target.value;
 
-                // Allow only non-negative numbers
-                if (!value || /^\d+$/.test(value)) {
+                // Allow only non-negative numbers greater than 0
+                if (value > 0 && /^\d+$/.test(value) ) {
                   handleGoToPage(value);
                 }
               }}

@@ -420,6 +420,14 @@ const BasicInputElements = withSwal((props: any) => {
         Header: "Status",
         accessor: "status",
         sort: false,
+        isTruncate: true,
+        Cell: ({ row }: any) => (
+          <ul style={{ listStyle: "none", margin: "0" }}>
+            {row.original.preferredCountries.map((item: any) => (
+              <li>{item?.status_name}</li>
+            ))}
+          </ul>
+        ),
       },
       {
         Header: "Actions",
