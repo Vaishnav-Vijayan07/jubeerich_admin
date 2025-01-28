@@ -176,14 +176,15 @@ const EducationDetails = withSwal((props: any) => {
     }));
   };
 
+
   const handleSavePrimary = async () => {
     const validationRules = {
       startDate: { required: true, message: "Please select a start date" },
       endDate: { required: true, message: "Please select an end date" },
       percentage: { required: true, message: "Please enter a percentage" },
-      mark_sheet: { required: true, message: "Please upload a mark sheet" },
-      certificate: { required: true, message: "Please upload a certificate" },
-      admit_card: { required: true, message: "Please upload an admit card" },
+      mark_sheet: { required: false, message: "Please upload a mark sheet" },
+      certificate: { required: false, message: "Please upload a certificate" },
+      admit_card: { required: false, message: "Please upload an admit card" },
       board_name: { required: true, message: "Please enter a board name" },
       school_name: { required: true, message: "Please enter a school name" },
     };
@@ -207,9 +208,9 @@ const EducationDetails = withSwal((props: any) => {
       startDate: { required: true, message: "Please select a start date" },
       endDate: { required: true, message: "Please select an end date" },
       percentage: { required: true, message: "Please enter a percentage" },
-      mark_sheet: { required: true, message: "Please upload a mark sheet" },
-      certificate: { required: true, message: "Please upload a certificate" },
-      admit_card: { required: true, message: "Please upload an admit card" },
+      mark_sheet: { required: false, message: "Please upload a mark sheet" },
+      certificate: { required: false, message: "Please upload a certificate" },
+      admit_card: { required: false, message: "Please upload an admit card" },
       board_name: { required: true, message: "Please enter a board name" },
       school_name: { required: true, message: "Please enter a school name" },
     };

@@ -57,8 +57,8 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
     const validationRules = {
       start_date: { required: true, message:"Please select a start date" },
       end_date: { required: true, message:"Please select an end date" },
-      reason: { required: true, message:"Please enter a reason" },
-      supporting_document: { required: true , message:"Please upload a supporting document" },
+      // reason: { required: true, message:"Please enter a reason" },
+      // supporting_document: { required: true , message:"Please upload a supporting document" },
     };
 
     const { isValid, errors } = validateFields(gapDetails, validationRules);
@@ -121,7 +121,7 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
       {/* Supporting Document */}
       <Col md={4} lg={4} xl={4} xxl={4}>
         <Form.Group className="mb-3" controlId={`supporting_document-${index}`}>
-          <Form.Label><span className="text-danger">*</span> Supporting Document</Form.Label>
+          <Form.Label>Supporting Document</Form.Label>
           <Form.Control
             type="file"
             accept="image/*,application/pdf"
@@ -154,7 +154,7 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
       {/* Reason */}
       <Col md={8} lg={8} xl={8} xxl={8}>
         <Form.Group className="mb-3" controlId={`reason-${index}`}>
-          <Form.Label><span className="text-danger">*</span> Reason</Form.Label>
+          <Form.Label>Reason</Form.Label>
           <Form.Control
             as="textarea"
             rows={4}

@@ -87,8 +87,6 @@ const FundPlan = ({ student_id }: Props) => {
     };
     const { isValid, errors } = validateFields(fundPlan, validationRules);
 
-    console.log("ERRRRRR",errors)
-
     if (!isValid) {
       // Ensure validation errors are displayed
       setFundPlan((prevState: any) =>
