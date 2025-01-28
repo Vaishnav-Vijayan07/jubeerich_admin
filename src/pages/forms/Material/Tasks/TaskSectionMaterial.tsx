@@ -37,6 +37,10 @@ const Task = ({
   taskPrefix: any;
   title: string;
 }) => {
+
+
+  console.log(task?.student_name?.preferredCountries)
+
   const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
   const statusName = task?.student_name?.preferredCountries[0]?.country_status[0]?.status_name;
   const currentDate = new Date();

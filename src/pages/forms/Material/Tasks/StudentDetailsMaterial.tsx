@@ -53,7 +53,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const currentDate = new Date();
   const navigate = useNavigate();
 
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const dispatch = useDispatch();
   const { Countries, user, refresh } = useSelector((state: RootState) => ({
@@ -157,9 +156,9 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   };
 
   const handleFollowUpDate = (value: any) => {
-    console.log(value);
+    let country_id = taskDetails?.assigned_country;
 
-    let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
+    // let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
 
     setIsFollowupLoading(true);
     axios
@@ -320,9 +319,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           id: taskId,
         });
 
-
         getTaskDetails();
-        getTaskList(null,true);
+        getTaskList(null, true);
 
         // Show success alert
         showSuccessAlert(res.data.message);
@@ -671,10 +669,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                 </Row>
               </div>
 
-              <div
-                className="p-0"
-                style={{ background: "#E0DEF8", borderBottomRightRadius: "10px", borderBottomLeftRadius: "10px" }}
-              >
+              <div className="p-0" style={{ background: "#E0DEF8", borderBottomRightRadius: "10px", borderBottomLeftRadius: "10px" }}>
                 <div className="" style={{ padding: "15px 30px" }}>
                   <div className="" style={{ paddingRight: "0px" }}>
                     <div>
@@ -746,7 +741,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       </div>
                     </div>
 
-                    <div className="action-icon d-flex justify-content-end align-items-center" style={{width:"105px"}}>
+                    <div className="action-icon d-flex justify-content-end align-items-center" style={{ width: "105px" }}>
                       <Tooltip title="View All Details">
                         <MatButton
                           onClick={() => navigate(`/leads/manage/${studentId}`)}
@@ -847,38 +842,33 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           <div style={{ border: `1px solid ${data?.color}` }} className="rounded-2 me-2 mt-1">
                             <div className="font-11" style={{ padding: "2px 7px" }}>
                               {data?.flag_name}
-                              <i
-                                className="mdi mdi-close"
-                                style={{ paddingLeft: "3px", cursor: "pointer" }}
-                                onClick={() => removeFlag(data?.id)}
-                              ></i>
+                              <i className="mdi mdi-close" style={{ paddingLeft: "3px", cursor: "pointer" }} onClick={() => removeFlag(data?.id)}></i>
                             </div>
                           </div>
                         ))}
                     </div>
                   </div>
-                  {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && 
-                  <div className="mx-2">
-                    <h4 className="m-0 label_heading">Add New Country</h4>
+                  {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                    <div className="mx-2">
+                      <h4 className="m-0 label_heading">Add New Country</h4>
 
-                    <div className="d-flex justify-content-between align-items-center">
-                      <Autocomplete
-                        disablePortal
-                        disableClearable
-                        options={countryData || []}
-                        value={
-                          basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Add Country"
-                        }
-                        sx={{ width: "100%", paddingTop: "1.2rem" }}
-                        renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} placeholder="Add New Country" />}
-                        onChange={(event, newValue) => {
-                          if (newValue) {
-                            addNewCountry(newValue?.value);
-                          }
-                        }}
-                      />
+                      <div className="d-flex justify-content-between align-items-center">
+                        <Autocomplete
+                          disablePortal
+                          disableClearable
+                          options={countryData || []}
+                          value={basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Add Country"}
+                          sx={{ width: "100%", paddingTop: "1.2rem" }}
+                          renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} placeholder="Add New Country" />}
+                          onChange={(event, newValue) => {
+                            if (newValue) {
+                              addNewCountry(newValue?.value);
+                            }
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>}
+                  )}
                 </div>
                 {taskDetails?.is_rejected && (
                   <div className="mx-2">
