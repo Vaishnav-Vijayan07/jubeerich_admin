@@ -20,7 +20,7 @@ const WorkExpRow = ({
           <Form.Group className="mb-3" controlId="qualification">
             <Form.Label><span className="text-danger">*</span> Work Experience</Form.Label>
             <FormInput
-              type="number"
+              type="text"
               name="years"
               placeholder="Enter work experience"
               key="years"
