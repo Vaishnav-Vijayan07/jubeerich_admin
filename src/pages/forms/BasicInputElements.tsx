@@ -208,14 +208,14 @@ const BasicInputElements = withSwal((props: any) => {
       {
         Header: "Email",
         accessor: "email",
-        sort: false,
+        sort: true,
         minWidth: 100,
         isTruncate: true,
       },
       {
         Header: "City",
         accessor: "city",
-        sort: false,
+        sort: true,
         minWidth: 75,
       },
       {
@@ -236,14 +236,14 @@ const BasicInputElements = withSwal((props: any) => {
       {
         Header: "Office",
         accessor: "office_type_name",
-        sort: false,
+        sort: true,
         minWidth: 75,
         isTruncate: true,
       },
       {
         Header: "Source",
         accessor: "source_name",
-        sort: false,
+        sort: true,
         minWidth: 75,
       },
       {
