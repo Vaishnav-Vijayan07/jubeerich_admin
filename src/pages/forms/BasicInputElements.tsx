@@ -25,7 +25,7 @@ import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import { examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
+import { approvalTypes, examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
 import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
 import { AppDispatch } from "../../redux/store";
@@ -93,6 +93,9 @@ const BasicInputElements = withSwal((props: any) => {
   const [openApproveModal, setOpenApproveModal] = useState<boolean>(false);
   const [responseData, setResponseData] = useState<any>(null);
   const [approvalOptionsData, setApprovalOptionsData] = useState<any>(null);
+  const [assignedApprovalData, setAssignedApprovalData] = useState<any>(null);
+  const [approvalType, setApprovalType] = useState<string>('');
+  const [creList, setCreList] = useState<any>(null);
 
   const getSlugOptions = async() => {
     try {
@@ -537,24 +540,6 @@ const BasicInputElements = withSwal((props: any) => {
         },
       });
 
-      console.log("data ==========>", data);
-
-      // if (data.status) {
-      //   showSuccessAlert(data.message);
-      //   dispatch(getLead(currentPage, currentLimit));
-      //   setIsLoading(false);
-      //   setSelectedFile([]);
-      //   setClearFiles(!clearFiles);
-      //   toggleUploadModal();
-      // } else {
-      //   showWarningAlert(data.message);
-      //   downloadRjectedData(data.invalidFileLink);
-      //   setIsLoading(false);
-      //   setSelectedFile([]);
-      //   setClearFiles(!clearFiles);
-      //   dispatch(getLead(currentPage, currentLimit));
-      // }
-
       if (data.status) {
         showSuccessAlert(data.message);
         setIsLoading(false);
@@ -563,6 +548,7 @@ const BasicInputElements = withSwal((props: any) => {
         setClearFiles(!clearFiles);
         toggleUploadModal();
         setOpenApproveModal(true);
+        setApprovalType(approvalTypes.import_lead)
         setResponseData(data);
       } else {
         showWarningAlert(data.message);
@@ -676,6 +662,38 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  // const handleAutoAssign = async () => {
+  //   const result = await swal.fire({
+  //     title: "Confirm Auto Assignment!",
+  //     text: "The selected leads will be automatically assigned to the respective CREs.",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, Assign",
+  //   });
+
+  //   if (result.isConfirmed) {
+  //     if (selectedValues.length > 0) {
+  //       try {
+  //         const { data } = await axios.post("/auto_assign", {
+  //           leads_ids: selectedValues,
+  //         });
+  //         if (data.status) {
+  //           if (userRole == cre_tl_id) {
+  //             dispatch(getLeadsTL(currentPage, currentLimit));
+  //           } else {
+  //             dispatch(getLead(currentPage, currentLimit));
+  //           }
+  //           showSuccessAlert("Assigned Successfully.");
+  //         }
+  //       } catch (error) {
+  //         showErrorAlert(error);
+  //       }
+  //     }
+  //   }
+  // };
+
   const handleAutoAssign = async () => {
     const result = await swal.fire({
       title: "Confirm Auto Assignment!",
@@ -690,16 +708,14 @@ const BasicInputElements = withSwal((props: any) => {
     if (result.isConfirmed) {
       if (selectedValues.length > 0) {
         try {
-          const { data } = await axios.post("/auto_assign", {
+          const { data } = await axios.post("/validate_auto_assign", {
             leads_ids: selectedValues,
           });
           if (data.status) {
-            if (userRole == cre_tl_id) {
-              dispatch(getLeadsTL(currentPage, currentLimit));
-            } else {
-              dispatch(getLead(currentPage, currentLimit));
-            }
-            showSuccessAlert("Assigned Successfully.");
+            setCreList(data?.creList);
+            setApprovalType(approvalTypes.assign_cre);
+            setAssignedApprovalData(data?.assignedData);
+            setOpenApproveModal(true);
           }
         } catch (error) {
           showErrorAlert(error);
@@ -707,7 +723,6 @@ const BasicInputElements = withSwal((props: any) => {
       }
     }
   };
-
   const handleAutoAssignBranchCounsellors = async () => {
     const result = await swal.fire({
       title: "Confirm Auto Assignment!",
@@ -764,7 +779,15 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const refetchLead = () => {
-    dispatch(getLead(currentPage, currentLimit));
+    if(approvalType == approvalTypes.import_lead){
+      dispatch(getLead(currentPage, currentLimit));
+    } else if(approvalType == approvalTypes.assign_cre) {
+      if (userRole == cre_tl_id) {
+        dispatch(getLeadsTL(currentPage, currentLimit));
+      } else {
+        dispatch(getLead(currentPage, currentLimit));
+      }
+    }
   }
 
   useEffect(() => {
@@ -1003,7 +1026,17 @@ const BasicInputElements = withSwal((props: any) => {
                 </>
               )}
 
-              {openApproveModal && <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData} refetchLead={refetchLead}/>}
+              {
+                (approvalType == approvalTypes.import_lead && openApproveModal) && (
+                  <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData} refetchLead={refetchLead} approvalType={approvalTypes.import_lead}/>
+                )
+              }
+
+              {
+                (approvalType == approvalTypes.assign_cre && openApproveModal) && (
+                  <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={assignedApprovalData} options={creList} refetchLead={refetchLead} approvalType={approvalTypes.assign_cre}/>
+                )
+              }
             
             </Card.Body>
           </Card>

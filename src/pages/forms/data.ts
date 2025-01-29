@@ -118,3 +118,8 @@ export interface TableRecords {
   updated_by: string;
   status: string;
 }
+
+export const approvalTypes = {
+  import_lead: 'import_lead',
+  assign_cre: 'assign_cre', 
+}
