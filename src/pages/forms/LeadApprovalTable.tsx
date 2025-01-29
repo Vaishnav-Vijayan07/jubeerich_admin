@@ -9,6 +9,7 @@ import { GridApi, GridReadyEvent, IRowNode, RowNode } from 'ag-grid-community';
 import { showErrorAlert, showSuccessAlert } from '../../constants';
 import { withSwal } from 'react-sweetalert2'
 import { approvalTypes } from './data';
+import moment from 'moment';
 
 const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchLead, approvalType }: any) => {
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
@@ -270,6 +271,20 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
             'cell-error': (params: any) => !params.value,
           },
         },
+        {
+          field: 'lead_received_date',
+          headerName: 'Lead Received Date',
+          sortable: true,
+          filter: true,
+          editable: false,
+          cellRenderer: (params: any) => {
+            if (!params.value) return '';
+            return moment(params.value).format('DD-MM-YYYY');
+          },
+          cellClassRules: {
+            'cell-error': (params: any) => !params.value,
+          },
+        },        
         {
           field: 'assigned_cre',
           headerName: "Assigned CRE's",
