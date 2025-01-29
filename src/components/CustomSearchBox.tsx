@@ -63,21 +63,23 @@ function CustomSearchBox({ onSearch, placeholder = "Search..." }: Props) {
 
   return (
     <>
-      <Row>
-        <Col md={6} className="d-flex align-items-center">
-          <div style={styles.wrapper}>
-            <input type="search" value={value} onChange={handleInputChange} placeholder={placeholder} style={styles.input} />
-            {value !== "" && (
-              <Button type="button" style={styles.iconButton} onClick={() => {
+      <Col md={6} className="d-flex align-items-center">
+        <div style={styles.wrapper}>
+          <input type="search" value={value} onChange={handleInputChange} placeholder={placeholder} style={styles.input} />
+          {value !== "" && (
+            <Button
+              type="button"
+              style={styles.iconButton}
+              onClick={() => {
                 onSearch("");
                 setValue("");
-              }}>
-                <i className="mdi mdi-close"></i>
-              </Button>
-            )}
-          </div>
-        </Col>
-      </Row>
+              }}
+            >
+              <i className="mdi mdi-close"></i>
+            </Button>
+          )}
+        </div>
+      </Col>
     </>
   );
 }

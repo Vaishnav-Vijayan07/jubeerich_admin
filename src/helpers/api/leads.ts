@@ -5,7 +5,13 @@ const api = new APICore();
 const baseUrl = "/leads";
 
 //
-function getLeads(currentPage: number, currentLimit: number, keyword?: string | undefined) {
+function getLeads(
+  currentPage: number,
+  currentLimit: number,
+  keyword?: string | undefined,
+  sort_by?: string | undefined,
+  sort_order?: string | undefined
+) {
   const params: any = {
     page: currentPage,
     limit: currentLimit,
@@ -13,6 +19,14 @@ function getLeads(currentPage: number, currentLimit: number, keyword?: string | 
 
   if (keyword) {
     params.keyword = keyword;
+  }
+
+  if (sort_by) {
+    params.sort_by = sort_by;
+  }
+
+  if (sort_order) {
+    params.sort_level = sort_order;
   }
 
   return api.get(`${baseUrl}`, params);

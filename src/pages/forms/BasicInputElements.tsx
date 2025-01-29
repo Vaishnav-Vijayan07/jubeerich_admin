@@ -33,6 +33,8 @@ import { Pagination } from "@mui/material";
 import CustomPagination from "../../components/CustomPagination";
 import CustomSearchBox from "../../components/CustomSearchBox";
 import LeadApprovalTable from "./LeadApprovalTable";
+import SortBox from "../../components/SortBox";
+import CustomLeadFilters from "../../components/CustomLeadFilters";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -73,6 +75,10 @@ const BasicInputElements = withSwal((props: any) => {
     currentLimit,
     handleLimitChange,
     handleSearch,
+    handleSortChange,
+    applySort,
+    sortBy,
+    sortOrder
   } = props;
 
   const isDataPresent = state && state.length > 0;
@@ -94,7 +100,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [responseData, setResponseData] = useState<any>(null);
   const [approvalOptionsData, setApprovalOptionsData] = useState<any>(null);
 
-  const getSlugOptions = async() => {
+  const getSlugOptions = async () => {
     try {
       const { data } = await axios.get(`/get_slug_options`);
       console.log(data);
@@ -102,12 +108,12 @@ const BasicInputElements = withSwal((props: any) => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getSlugOptions();
-  }, [])
-  
+  }, []);
+
   useEffect(() => {
     setFilteredItems(state);
   }, [state]);
@@ -368,7 +374,7 @@ const BasicInputElements = withSwal((props: any) => {
               Cell: ({ row }: any) => {
                 const counselors = row?.original.counselors;
                 return (
-                  <ul style={{ listStyle: "none", padding: 0, margin:0 }}>
+                  <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                     {counselors && counselors.length > 0 ? (
                       counselors.map((item: any) => <li key={item?.counselor_name}>{item?.counselor_name}</li>)
                     ) : (
@@ -572,7 +578,6 @@ const BasicInputElements = withSwal((props: any) => {
         dispatch(getLead(currentPage, currentLimit));
         toggleApproveModal();
       }
-
     } catch (err) {
       showErrorAlert(err);
       setIsLoading(false);
@@ -788,7 +793,12 @@ const BasicInputElements = withSwal((props: any) => {
           initialLoading={initialLoading}
         />
 
-        <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData}/>
+        <LeadApprovalTable
+          isOpenModal={openApproveModal}
+          toggleModal={setOpenApproveModal}
+          responseData={responseData}
+          options={approvalOptionsData}
+        />
 
         {user?.role == it_team_id && (
           <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
@@ -824,7 +834,7 @@ const BasicInputElements = withSwal((props: any) => {
         )}
 
         <Col lg={12} className="p-0 form__card">
-          {state && (
+          {/* {state && (
             <LeadsFilters
               changeFilteredItemsData={changeFilteredItemsData}
               state={state || []}
@@ -836,7 +846,9 @@ const BasicInputElements = withSwal((props: any) => {
               cres={cres || []}
               branchForManager={branchForManager || []}
             />
-          )}
+          )} */}
+
+          <CustomLeadFilters countries={country || []}/>
 
           <Card className="bg-white py-3">
             <Card.Body>
@@ -964,7 +976,10 @@ const BasicInputElements = withSwal((props: any) => {
                 </>
               ) : (
                 <>
-                  <CustomSearchBox onSearch={handleSearch} />
+                  <Row>
+                    <CustomSearchBox onSearch={handleSearch} />
+                    <SortBox onSortChange={handleSortChange} onApplySort={applySort} selectedField={sortBy} sortOrder={sortOrder}  />
+                  </Row>
 
                   <Table
                     columns={columns}
