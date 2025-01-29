@@ -74,6 +74,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const formattedStatus = useMemo(() => {
     if (!status) return [];
 
+    console.log(status);
+
     // const currentStatus = basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name;
 
     return (
@@ -781,8 +783,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         disableClearable
                         options={formattedStatus || []}
                         value={
-                          basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
-                            ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
+                          taskDetails?.student_name?.preferredCountries[0]?.country_status[0]?.status_name
+                            ? taskDetails?.student_name?.preferredCountries[0]?.country_status[0]?.status_name
                             : "Change status"
                         }
                         sx={{ width: "100%", paddingTop: "1.2rem" }}
@@ -857,7 +859,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           disablePortal
                           disableClearable
                           options={countryData || []}
-                          value={basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Add Country"}
+                          value={taskDetails?.student_name?.preferredCountries[0]?.country_name ? taskDetails?.student_name?.preferredCountries[0]?.country_name : "Add New Country"}
                           sx={{ width: "100%", paddingTop: "1.2rem" }}
                           renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} placeholder="Add New Country" />}
                           onChange={(event, newValue) => {

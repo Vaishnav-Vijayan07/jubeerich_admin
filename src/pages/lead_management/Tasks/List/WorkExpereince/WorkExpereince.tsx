@@ -90,11 +90,11 @@ const WorkExpereince = withSwal((props: any) => {
       company: { required: true, message: "Please enter a company name" },
       from: { required: true, message: "Please select a start date" },
       to: { required: true, message: "Please select an end date" },
-      bank_statement: { required: true, message: "Please upload a bank statement" },
-      job_offer_document: { required: true, message: "Please upload a job offer document" },
-      appointment_document: { required: true, message: "Please upload an appointment document" },
-      payslip_document: { required: true, message: "Please upload a payslip document" },
-      experience_certificate: { required: true, message: "Please upload an experience certificate" },
+      bank_statement: { required: false, message: "Please upload a bank statement" },
+      job_offer_document: { required: false, message: "Please upload a job offer document" },
+      appointment_document: { required: false, message: "Please upload an appointment document" },
+      payslip_document: { required: false, message: "Please upload a payslip document" },
+      experience_certificate: { required: false, message: "Please upload an experience certificate" },
     };
 
     const { isValid, errors } = validateFields(workExperienceFromApi, validationRules);

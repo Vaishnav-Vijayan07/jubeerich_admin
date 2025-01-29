@@ -44,7 +44,6 @@ const EmploymentHistory = (props: any) => {
     const file = e.target.files?.[0];
     const { name } = e.target;
 
-
     if (file && !allowedFileTypes.includes(file.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
       return;
@@ -310,94 +309,94 @@ const EmploymentHistory = (props: any) => {
         </Col>
       </Row>
 
-      <Row>
-        <Col md={6} lg={6} xl={6} xxl={4}>
-          <Form.Group className="mb-2" controlId="visaPage">
-            <Form.Label>
-              <span className="text-danger">* </span>
-              Visa Page
-            </Form.Label>
-            <FormInput type="file" accept="image/*,application/pdf" name="visaPage" onChange={(e) => handleFileChange(e)} />
-          </Form.Group>
-          <div className="d-flex mb-2">
-            {documentsName?.visa_page && (
-              <a
-                href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.visa_page}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-              >
-                <div className=" p-1">{documentsName?.visa_page ? "Visa Page" : ""}</div>
-              </a>
-            )}
-          </div>
-        </Col>
-        <Col md={6} lg={6} xl={6} xxl={4}>
-          <Form.Group className="mb-2" controlId="permitCard">
-            <Form.Label>
-              <span className="text-danger">* </span>
-              Permit Card
-            </Form.Label>
-            <FormInput type="file" accept="image/*,application/pdf" name="permitCard" onChange={(e) => handleFileChange(e)} />
-          </Form.Group>
-          <div className="d-flex mb-2">
-            {documentsName?.permit_card && (
-              <a
-                href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.permit_card}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-              >
-                <div className=" p-1">{documentsName?.permit_card ? "Permit Card" : ""}</div>
-              </a>
-            )}
-          </div>
-        </Col>
+      {formData?.abroadWork && (
+        <Row>
+          <Col md={6} lg={6} xl={6} xxl={4}>
+            <Form.Group className="mb-2" controlId="visaPage">
+              <Form.Label>Visa Page</Form.Label>
+              <FormInput type="file" accept="image/*,application/pdf" name="visaPage" onChange={(e) => handleFileChange(e)} />
+            </Form.Group>
+            <div className="d-flex mb-2">
+              {documentsName?.visa_page && (
+                <a
+                  href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.visa_page}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
+                >
+                  <div className=" p-1">{documentsName?.visa_page ? "Visa Page" : ""}</div>
+                </a>
+              )}
+            </div>
+          </Col>
+          <Col md={6} lg={6} xl={6} xxl={4}>
+            <Form.Group className="mb-2" controlId="permitCard">
+              <Form.Label>Permit Card</Form.Label>
+              <FormInput type="file" accept="image/*,application/pdf" name="permitCard" onChange={(e) => handleFileChange(e)} />
+            </Form.Group>
+            <div className="d-flex mb-2">
+              {documentsName?.permit_card && (
+                <a
+                  href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.permit_card}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
+                >
+                  <div className=" p-1">{documentsName?.permit_card ? "Permit Card" : ""}</div>
+                </a>
+              )}
+            </div>
+          </Col>
 
-        <Col md={6} lg={6} xl={6} xxl={4}>
-          <Form.Group className="mb-2" controlId="salaryAccountStatement">
-            <Form.Label>
-              <span className="text-danger">* </span>
-              Salary Account Statement
-            </Form.Label>
-            <FormInput type="file" accept="image/*,application/pdf" name="salaryAccountStatement" onChange={(e) => handleFileChange(e)} />
-          </Form.Group>
-          <div className="d-flex mb-2">
-            {documentsName?.salary_account_statement && (
-              <a
-                href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.salary_account_statement}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-              >
-                <div className=" p-1">{documentsName?.salary_account_statement ? "Salary Account Statement" : ""}</div>
-              </a>
-            )}
-          </div>
-        </Col>
+          <Col md={6} lg={6} xl={6} xxl={4}>
+            <Form.Group className="mb-2" controlId="salaryAccountStatement">
+              <Form.Label>Salary Account Statement</Form.Label>
+              <FormInput
+                type="file"
+                accept="image/*,application/pdf"
+                name="salaryAccountStatement"
+                onChange={(e) => handleFileChange(e)}
+              />
+            </Form.Group>
+            <div className="d-flex mb-2">
+              {documentsName?.salary_account_statement && (
+                <a
+                  href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.salary_account_statement}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
+                >
+                  <div className=" p-1">{documentsName?.salary_account_statement ? "Salary Account Statement" : ""}</div>
+                </a>
+              )}
+            </div>
+          </Col>
 
-        <Col md={6} lg={6} xl={6} xxl={4}>
-          <Form.Group className="mb-2" controlId="supportingDocuments">
-            <Form.Label>
-              <span className="text-danger">* </span>
-              Supporting Documents
-            </Form.Label>
-            <FormInput type="file" accept="image/*,application/pdf" name="supportingDocuments" onChange={(e) => handleFileChange(e)} />
-          </Form.Group>
-          <div className="d-flex mb-2">
-            {documentsName?.supporting_documents && (
-              <a
-                href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.supporting_documents}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-              >
-                <div className=" p-1">{documentsName?.supporting_documents ? "Supporting Documents" : ""}</div>
-              </a>
-            )}
-          </div>
-        </Col>
-      </Row>
+          <Col md={6} lg={6} xl={6} xxl={4}>
+            <Form.Group className="mb-2" controlId="supportingDocuments">
+              <Form.Label>Supporting Documents</Form.Label>
+              <FormInput
+                type="file"
+                accept="image/*,application/pdf"
+                name="supportingDocuments"
+                onChange={(e) => handleFileChange(e)}
+              />
+            </Form.Group>
+            <div className="d-flex mb-2">
+              {documentsName?.supporting_documents && (
+                <a
+                  href={`${baseUrl}uploads/experienceHistoryDocs/${documentsName?.supporting_documents}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
+                >
+                  <div className=" p-1">{documentsName?.supporting_documents ? "Supporting Documents" : ""}</div>
+                </a>
+              )}
+            </div>
+          </Col>
+        </Row>
+      )}
 
       <Row>
         <Button className="mt-1" onClick={onSubmit}>
