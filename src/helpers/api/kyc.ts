@@ -31,7 +31,8 @@ function autoAssignToApplicationMemberApi(application_ids: any) {
   const dataToSend = {
     application_ids,
   };
-  return api.updatePatch(`/auto_assign_application`, dataToSend);
+  // return api.updatePatch(`/auto_assign_application`, dataToSend);
+  return api.updatePatch(`/validate_auto_assign_application`, dataToSend);
 }
 
 export { getPendingKycsApi, getRejectedKycsApi, getApprovedKycsApi, assignToApplicationMemberApi, autoAssignToApplicationMemberApi ,getApplicationByUserApi};

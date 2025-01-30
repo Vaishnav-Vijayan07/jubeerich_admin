@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { defaultTheme } from '../../AgGridSetup';
 import { AgGridReact } from 'ag-grid-react';
 import { AppBar, Dialog, IconButton, Slide, Toolbar } from '@mui/material';
-import { TransitionProps } from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import { GridApi, GridReadyEvent, IRowNode, RowNode } from 'ag-grid-community';
@@ -28,9 +27,15 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
         franchises: options?.franchises?.map((item: any) => item.slug) || [],
         countries: options?.countries?.map((item: any) => item.country_code) || [],
       };
-    } else {
+    } 
+    else if(approvalType == approvalTypes.assign_cre) {
       return {
         cres: options?.map((item: any) => ({ id: item.id.toString(), name: item.name.toString() })) || [],
+      };
+    } 
+    else {
+      return {
+        teamMembers: options?.map((item: any) => ({ id: item.id.toString(), name: item.username.toString() })) || [],
       };
     }
   }, [options]);
@@ -220,7 +225,8 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           editable: false
         }
       ])
-    } else {
+    }
+    else if(approvalType == approvalTypes.assign_cre) {
       setColumnDefs([
         {
           field: 'studentId',
@@ -321,6 +327,128 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
         }     
       ])
     }
+    else {
+      setColumnDefs([
+        {
+          field: 'application_id',
+          headerName: 'No.',
+          sortable: true,
+          filter: true,
+          editable: false,
+          width: 10,
+          valueGetter: (params: any) => params.node.rowIndex + 1,
+        },
+        {
+          field: 'full_name',
+          headerName: 'Name',
+          sortable: true,
+          filter: true,
+          editable: false,
+          cellClassRules: {
+            'cell-error': (params: any) => !params.value,
+          },
+        },
+        {
+          field: 'campus_name',
+          headerName: 'Campus',
+          sortable: true,
+          filter: true,
+          editable: false,
+          cellClassRules: {
+            'cell-error': (params: any) => !params.value,
+          },
+        },
+        {
+          field: 'university_name',
+          headerName: 'University',
+          sortable: true,
+          filter: true,
+          editable: false,
+          cellClassRules: {
+            'cell-error': (params: any) => !params.value,
+          },
+        },
+        {
+          field: 'course_name',
+          headerName: 'Course',
+          sortable: true,
+          filter: true,
+          editable: false,
+          cellClassRules: {
+            'cell-error': (params: any) => !params.value,
+          },
+        },
+        {
+          field: 'counsellor',
+          headerName: 'Counsellor',
+          sortable: true,
+          filter: true,
+          editable: false,
+          cellClassRules: {
+            'cell-error': (params: any) => !params.value,
+          },
+        },
+        {
+          field: 'country',
+          headerName: 'Country',
+          sortable: true,
+          filter: true,
+          editable: false,
+          cellClassRules: {
+            'cell-error': (params: any) => !params.value,
+          },
+        },
+        {
+          field: 'lead_received_date',
+          headerName: 'Lead Received Date',
+          sortable: true,
+          filter: true,
+          editable: false,
+          cellRenderer: (params: any) => {
+            if (!params.value) return '';
+            return moment(params.value).format('DD-MM-YYYY');
+          },
+          cellClassRules: {
+            'cell-error': (params: any) => !params.value,
+          },
+        },        
+        {
+          field: 'assigned_to',
+          headerName: "Assigned Application Member",
+          sortable: true,
+          filter: true,
+          editable: true,
+          cellEditor: 'agSelectCellEditor',
+          cellEditorParams: {
+            values: formattedData.teamMembers.map((cre: any) => cre.name),
+            formatValue: (value: any) => {
+              const cre = formattedData.teamMembers.find((cre: any) => cre.id == value);
+              return cre ? cre.name : '';
+            }
+          },
+          valueParser: (params: any) => {
+            const selectedCre = formattedData.teamMembers.find((cre: any) => cre.name == params.newValue);
+            return selectedCre ? selectedCre.id : null;
+          },
+          valueSetter: (params: any) => {
+            const selectedCre = formattedData.teamMembers.find((cre: any) => cre.name === params.newValue);
+            if (selectedCre) {
+              params.data[params.colDef.field] = selectedCre.id;
+              return true;
+            }
+            return false;
+          },
+          cellRenderer: (params: any) => {
+            const selectedCre = formattedData.teamMembers.find((cre: any) => cre.id == params.value);
+            return selectedCre ? selectedCre.name : '';
+          },
+          cellClassRules: {
+            'cell-error': (params: any) => !params.value,
+          },
+        }     
+      ])
+    }
+
   }
 
   const onSelectionChanged = (params: any) => {
@@ -378,7 +506,18 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
       });
 
       if (result.isConfirmed) {
-        const url = approvalType == approvalTypes.import_lead ? '/approve_leads' : '/approve_auto_assign';
+        let url;
+
+        if(approvalType == approvalTypes.import_lead){
+          url = `/approve_leads`;
+        }
+        else if(approvalType == approvalTypes.assign_cre){
+          url = `/approve_auto_assign`;
+        }
+        else {
+          url = `/approve_auto_assign_application`
+        }
+
         const { data } = await axios.post(url, { lead_data: selectedItems });
         if (data) {
           showSuccessAlert('Selected Leads Successfully Approved');
