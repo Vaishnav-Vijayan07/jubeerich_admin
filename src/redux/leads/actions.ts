@@ -52,9 +52,18 @@ export const LeadsApiResponseError = (actionType: string, error: string): LeadsA
   payload: { actionType, error },
 });
 
-export const getLead = (currentPage: number, currentLimit: number, keyword?: string | undefined,sort_by?:string | undefined,sort_order?:string | undefined): LeadsActionType => ({
+export const getLead = (
+  currentPage: number,
+  currentLimit: number,
+  keyword?: string | undefined,
+  sort_by?: string | undefined,
+  sort_order?: string | undefined,
+  country?: string | undefined,
+  office?: string | undefined,
+  source?: string | undefined
+): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS,
-  payload: { currentPage, currentLimit, keyword, sort_by, sort_order },
+  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source },
 });
 
 export const getLeadsRegionalManager = (): LeadsActionType => ({
@@ -74,7 +83,7 @@ export const getLeadAssigned = (currentPage: number, currentLimit: number, keywo
 
 export const getLeadAssignedByCounsellorTL = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
-  payload: {currentPage, currentLimit, keyword},
+  payload: { currentPage, currentLimit, keyword },
 });
 
 export const getLeadsByCounsellorTL = (): LeadsActionType => ({

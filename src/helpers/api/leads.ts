@@ -10,7 +10,10 @@ function getLeads(
   currentLimit: number,
   keyword?: string | undefined,
   sort_by?: string | undefined,
-  sort_order?: string | undefined
+  sort_order?: string | undefined,
+  country?: string | undefined,
+  office?: string | undefined,
+  source?: string | undefined
 ) {
   const params: any = {
     page: currentPage,
@@ -21,12 +24,24 @@ function getLeads(
     params.keyword = keyword;
   }
 
+  if (sort_order) {
+    params.sort_level = sort_order;
+  }
+
   if (sort_by) {
     params.sort_by = sort_by;
   }
 
-  if (sort_order) {
-    params.sort_level = sort_order;
+  if (country) {
+    params.country = country;
+  }
+
+  if (office) {
+    params.office = office;
+  }
+
+  if (source) {
+    params.source = source;
   }
 
   return api.get(`${baseUrl}`, params);
