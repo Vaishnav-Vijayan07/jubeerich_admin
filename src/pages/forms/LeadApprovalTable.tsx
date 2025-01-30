@@ -17,6 +17,9 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
   const pageSizes = [10, 20, 50, 100];
   const [columnDefs, setColumnDefs] = useState<any[]>([]);
 
+  console.log('Approval Type', approvalType);
+  console.log('options', options);
+  
   const formattedData = useMemo(() => {
     if(approvalType == approvalTypes.import_lead){      
       return {
@@ -73,7 +76,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           editable: true,
           cellEditor: 'agSelectCellEditor',
           cellEditorParams: {
-            values: formattedData.sources,
+            values: formattedData?.sources,
           },
           cellClassRules: {
             'cell-error': (params: any) => !params.value,
@@ -87,7 +90,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           editable: true,
           cellEditor: 'agSelectCellEditor',
           cellEditorParams: {
-            values: formattedData.channels,
+            values: formattedData?.channels,
           },
           cellClassRules: {
             'cell-error': (params: any) => !params.value,
@@ -141,7 +144,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           editable: true,
           cellEditor: 'agSelectCellEditor',
           cellEditorParams: {
-            values: formattedData.officeTypes,
+            values: formattedData?.officeTypes,
           },
           cellClassRules: {
             'cell-error': (params: any) => !params.value,
@@ -155,7 +158,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           editable: true,
           cellEditor: 'agSelectCellEditor',
           cellEditorParams: {
-            values: [...formattedData.regions, ...formattedData.franchises],
+            values: [...formattedData?.regions, ...formattedData?.franchises],
           },
           cellClassRules: {
             'cell-error': (params: any) => !params.value,
@@ -169,7 +172,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           editable: true,
           cellEditor: 'agSelectCellEditor',
           cellEditorParams: {
-            values: formattedData.countries,
+            values: formattedData?.countries,
           },
           cellClassRules: {
             'cell-error': (params: any) => !params.value,
@@ -299,18 +302,18 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           editable: true,
           cellEditor: 'agSelectCellEditor',
           cellEditorParams: {
-            values: formattedData.cres.map((cre: any) => cre.name),
+            values: formattedData?.cres.map((cre: any) => cre.name),
             formatValue: (value: any) => {
-              const cre = formattedData.cres.find((cre: any) => cre.id == value);
+              const cre = formattedData?.cres.find((cre: any) => cre.id == value);
               return cre ? cre.name : '';
             }
           },
           valueParser: (params: any) => {
-            const selectedCre = formattedData.cres.find((cre: any) => cre.name == params.newValue);
+            const selectedCre = formattedData?.cres.find((cre: any) => cre.name == params.newValue);
             return selectedCre ? selectedCre.id : null;
           },
           valueSetter: (params: any) => {
-            const selectedCre = formattedData.cres.find((cre: any) => cre.name === params.newValue);
+            const selectedCre = formattedData?.cres.find((cre: any) => cre.name === params.newValue);
             if (selectedCre) {
               params.data[params.colDef.field] = selectedCre.id;
               return true;
@@ -318,7 +321,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
             return false;
           },
           cellRenderer: (params: any) => {
-            const selectedCre = formattedData.cres.find((cre: any) => cre.id == params.value);
+            const selectedCre = formattedData?.cres.find((cre: any) => cre.id == params.value);
             return selectedCre ? selectedCre.name : '';
           },
           cellClassRules: {
@@ -420,18 +423,18 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           editable: true,
           cellEditor: 'agSelectCellEditor',
           cellEditorParams: {
-            values: formattedData.teamMembers.map((cre: any) => cre.name),
+            values: formattedData?.teamMembers?.map((cre: any) => cre.name),
             formatValue: (value: any) => {
-              const cre = formattedData.teamMembers.find((cre: any) => cre.id == value);
+              const cre = formattedData?.teamMembers?.find((cre: any) => cre.id == value);
               return cre ? cre.name : '';
             }
           },
           valueParser: (params: any) => {
-            const selectedCre = formattedData.teamMembers.find((cre: any) => cre.name == params.newValue);
+            const selectedCre = formattedData?.teamMembers?.find((cre: any) => cre.name == params.newValue);
             return selectedCre ? selectedCre.id : null;
           },
           valueSetter: (params: any) => {
-            const selectedCre = formattedData.teamMembers.find((cre: any) => cre.name === params.newValue);
+            const selectedCre = formattedData?.teamMembers?.find((cre: any) => cre.name === params.newValue);
             if (selectedCre) {
               params.data[params.colDef.field] = selectedCre.id;
               return true;
@@ -439,7 +442,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
             return false;
           },
           cellRenderer: (params: any) => {
-            const selectedCre = formattedData.teamMembers.find((cre: any) => cre.id == params.value);
+            const selectedCre = formattedData?.teamMembers.find((cre: any) => cre.id == params.value);
             return selectedCre ? selectedCre.name : '';
           },
           cellClassRules: {

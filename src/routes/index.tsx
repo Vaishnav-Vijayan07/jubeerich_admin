@@ -14,7 +14,6 @@ import LeadDetailsMaterial from "../pages/forms/Material/LeadsDetails/LeadDetail
 import TasksMaterial from "../pages/forms/Material/Tasks/TasksMaterial";
 import TaskPrefix from "../pages/forms/taskPrefix";
 import Summary from "../pages/forms/Kyc/Summary/Summary";
-import LeadApprovalTable from "../pages/forms/LeadApprovalTable";
 
 // lazy load all the views
 
@@ -275,12 +274,6 @@ const leadRoutes = {
       name: "Leads",
       // element: <CRMLeadsList />,
       element: <PrivateRoute roles={["Add Lead", "View Task", "Monitor"]} component={Leads} />,
-      route: PrivateRoute,
-    },
-    {
-      path: "leads/table_view",
-      name: "Leads",
-      element: <PrivateRoute roles={["Add Lead", "View Task", "Monitor"]} component={LeadApprovalTable} />,
       route: PrivateRoute,
     },
     {
