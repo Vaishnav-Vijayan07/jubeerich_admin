@@ -1,26 +1,23 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Dropdown, Modal, Spinner } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
-import { addRegion, deleteRegion, getRegion, updateRegion } from "../../redux/regions/actions";
-import { getCountry } from "../../redux/country/actions";
 import { addUniversity, deleteUniversity, getUniversity, updateUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { regrexValidation } from "../../utils/regrexValidation";
+import HistoryTable from "../../components/HistoryTable";
 
 interface OptionType {
   value: string;
@@ -98,6 +95,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -482,6 +480,10 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -542,14 +544,6 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-
-                {/* <Col md={6}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Image URL</Form.Label>
-                    <Form.Control type="text" name="image_url" value={formData.image_url} onChange={handleInputChange} />
-                    {validationErrors.image_url && <Form.Text className="text-danger">{validationErrors.image_url}</Form.Text>}
-                  </Form.Group>
-                </Col> */}
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="portal_link">
@@ -632,11 +626,22 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"university"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
               <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add University
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage University</h4>
               <Table

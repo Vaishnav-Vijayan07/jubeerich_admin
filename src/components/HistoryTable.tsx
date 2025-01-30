@@ -14,7 +14,7 @@ interface HistoryItem {
   new_values: Record<string, string>;
 }
 
-const DemoHistoryViewer = ({ apiUrl }: any) => {
+const HistoryTable = ({ apiUrl }: any) => {
   const [filterTable, setFilterTable] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
@@ -36,7 +36,7 @@ const DemoHistoryViewer = ({ apiUrl }: any) => {
 
   const fetchHistoryData = async () => {
     try {
-      const response = await axios.get(`/history/${apiUrl}`);
+      const response = await axios.get(`get_table_history?tableName=${apiUrl}`);
       const data = await response.data.data;
       console.log("history data ==>", data);
 
@@ -135,4 +135,4 @@ const DemoHistoryViewer = ({ apiUrl }: any) => {
   );
 };
 
-export default DemoHistoryViewer;
+export default HistoryTable;

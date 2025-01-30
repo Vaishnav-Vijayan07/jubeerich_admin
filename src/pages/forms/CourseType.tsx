@@ -1,28 +1,18 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
-
 import { withSwal } from "react-sweetalert2";
-import { yupResolver } from "@hookform/resolvers/yup";
-
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
-import { getUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
-import {
-  addCourseType,
-  deleteCourseType,
-  getCourseType,
-  updateCourseType,
-} from "../../redux/actions";
+import { addCourseType, deleteCourseType, getCourseType, updateCourseType } from "../../redux/actions";
 import { max } from "moment";
 import { regrexValidation } from "../../utils/regrexValidation";
+import HistoryTable from "../../components/HistoryTable";
 
 interface OptionType {
   value: string;
@@ -70,9 +60,6 @@ const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const { swal, state, error, loading, initialLoading } = props;
 
-  //fetch token from session storage
-  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-
   //Table data
   const records: TableRecords[] = state;
 
@@ -82,18 +69,14 @@ const BasicInputElements = withSwal((props: any) => {
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
     type_name: yup.string().required("Course Type is required"),
-    description: yup
-      .string()
-      .required("Description is required")
-      .min(3, "Description must be at least 3 characters long"),
+    description: yup.string().required("Description is required").min(3, "Description must be at least 3 characters long"),
   });
 
   const handleUpdate = (item: any) => {
@@ -192,13 +175,7 @@ const BasicInputElements = withSwal((props: any) => {
           if (result.isConfirmed) {
             if (isUpdate) {
               // Handle update logic
-              dispatch(
-                updateCourseType(
-                  formData?.id,
-                  formData.type_name,
-                  formData.description
-                )
-              );
+              dispatch(updateCourseType(formData?.id, formData.type_name, formData.description));
               setIsUpdate(false);
             } else {
               // Handle add logic
@@ -241,7 +218,6 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Description",
       accessor: "description",
       sort: false,
-
     },
     {
       Header: "Actions",
@@ -265,11 +241,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-          >
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -297,7 +269,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-
   useEffect(() => {
     // Check for errors and clear the form
     if (!loading && !error) {
@@ -307,15 +278,15 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Course Type Management</h4>
@@ -323,17 +294,8 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               <Form.Group className="mb-3" controlId="type_name">
                 <Form.Label>Course Type</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="type_name"
-                  value={formData.type_name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.type_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.type_name}
-                  </Form.Text>
-                )}
+                <Form.Control type="text" name="type_name" value={formData.type_name} onChange={handleInputChange} />
+                {validationErrors.type_name && <Form.Text className="text-danger">{validationErrors.type_name}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="description">
@@ -345,21 +307,12 @@ const BasicInputElements = withSwal((props: any) => {
                   value={formData.description}
                   onChange={handleInputChange}
                 />
-                {validationErrors.description && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.description}
-                  </Form.Text>
-                )}
+                {validationErrors.description && <Form.Text className="text-danger">{validationErrors.description}</Form.Text>}
               </Form.Group>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]}
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
@@ -367,19 +320,12 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1 "
                 onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(), handleResetValues()]
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -387,14 +333,22 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"course_type"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Course Type
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Course Type</h4>
               <Table
@@ -420,14 +374,12 @@ const CourseType = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector(
-    (state: RootState) => ({
-      state: state.CourseType.courseType.data,
-      error: state.CourseType.error,
-      loading: state.CourseType.loading,
-      initialLoading: state.CourseType.initialloading,
-    })
-  );
+  const { state, error, loading, initialLoading } = useSelector((state: RootState) => ({
+    state: state.CourseType.courseType.data,
+    error: state.CourseType.error,
+    loading: state.CourseType.loading,
+    initialLoading: state.CourseType.initialloading,
+  }));
 
   useEffect(() => {
     dispatch(getCourseType());
@@ -445,9 +397,7 @@ const CourseType = () => {
   return (
     <React.Fragment>
       <PageTitle
-        breadCrumbItems={[
-          { label: "Course Type", path: "/settings/master/course_type", active: true },
-        ]}
+        breadCrumbItems={[{ label: "Course Type", path: "/settings/master/course_type", active: true }]}
         title={"Course Type"}
       />
       <Row>

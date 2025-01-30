@@ -1,38 +1,23 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Dropdown,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
-import {
-  addChannel,
-  deleteChannel,
-  getChannel,
-  updateChannel,
-} from "../../redux/actions";
+import { addChannel, deleteChannel, getChannel, updateChannel } from "../../redux/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { Link } from "react-router-dom";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { regrexValidation } from "../../utils/regrexValidation";
+import HistoryTable from "../../components/HistoryTable";
 
 interface OptionType {
   value: string;
@@ -84,6 +69,7 @@ const initialValidationState = {
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const { swal, state, sourceData, error, loading, initialLoading } = props;
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -100,19 +86,13 @@ const BasicInputElements = withSwal((props: any) => {
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    channel_name: yup
-      .string()
-      .required("channel name is required")
-      .min(3, "channel name must be at least 3 characters long"),
-    channel_description: yup
-      .string(),
-      // .required("channel description is required")
-      // .min(3, "channel description must be at least 3 characters long"),
+    channel_name: yup.string().required("channel name is required").min(3, "channel name must be at least 3 characters long"),
+    channel_description: yup.string(),
+    // .required("channel description is required")
+    // .min(3, "channel description must be at least 3 characters long"),
     source_id: yup.string().required("Please choose a source"),
   });
 
@@ -126,9 +106,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedSource: OptionType[] = sourceData?.filter(
-      (source: any) => source.value == item.source_id
-    );
+    const updatedSource: OptionType[] = sourceData?.filter((source: any) => source.value == item.source_id);
     setSelectedSource(updatedSource[0]);
     setFormData((prev) => ({
       ...prev,
@@ -228,56 +206,16 @@ const BasicInputElements = withSwal((props: any) => {
               if (isUpdate) {
                 // Handle update logic
                 dispatch(
-                  updateChannel(
-                    formData.id,
-                    formData.source_id,
-                    formData.channel_name,
-                    formData.channel_description,
-                    user_id
-                  )
+                  updateChannel(formData.id, formData.source_id, formData.channel_name, formData.channel_description, user_id)
                 );
                 setIsUpdate(false);
               } else {
                 // Handle add logic
-                dispatch(
-                  addChannel(
-                    formData.source_id,
-                    formData.channel_name,
-                    formData.channel_description,
-                    user_id
-                  )
-                );
+                dispatch(addChannel(formData.source_id, formData.channel_name, formData.channel_description, user_id));
               }
             }
           }
         });
-
-      // if (userInfo) {
-      //   const { user_id } = JSON.parse(userInfo);
-      //   if (isUpdate) {
-      //     // Handle update logic
-      //     dispatch(
-      //       updateChannel(
-      //         formData.id,
-      //         formData.source_id,
-      //         formData.channel_name,
-      //         formData.channel_description,
-      //         user_id
-      //       )
-      //     );
-      //     setIsUpdate(false);
-      //   } else {
-      //     // Handle add logic
-      //     dispatch(
-      //       addChannel(
-      //         formData.source_id,
-      //         formData.channel_name,
-      //         formData.channel_description,
-      //         user_id
-      //       )
-      //     );
-      //   }
-      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {
@@ -341,11 +279,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-          >
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -394,15 +328,15 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Lead Channel Management</h4>
@@ -410,17 +344,8 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               <Form.Group className="mb-3" controlId="channel_name">
                 <Form.Label>Lead Channel Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="channel_name"
-                  value={formData.channel_name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.channel_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.channel_name}
-                  </Form.Text>
-                )}
+                <Form.Control type="text" name="channel_name" value={formData.channel_name} onChange={handleInputChange} />
+                {validationErrors.channel_name && <Form.Text className="text-danger">{validationErrors.channel_name}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="channel_description">
@@ -433,9 +358,7 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={handleInputChange}
                 />
                 {validationErrors.channel_description && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.channel_description}
-                  </Form.Text>
+                  <Form.Text className="text-danger">{validationErrors.channel_description}</Form.Text>
                 )}
               </Form.Group>
 
@@ -451,21 +374,12 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={handleSourceChange}
                 />
 
-                {validationErrors.source_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.source_id}
-                  </Form.Text>
-                )}
+                {validationErrors.source_id && <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>}
               </Form.Group>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]}
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
@@ -473,19 +387,12 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1"
                 onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(), handleResetValues()]
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -493,14 +400,22 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"lead_channel"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Lead Channel
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+              <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Lead Channels</h4>
               <Table
@@ -524,17 +439,14 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Channel = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { dropdownData: sourceData, loading: dropDownLoading } =
-    useDropdownData("sources");
+  const { dropdownData: sourceData, loading: dropDownLoading } = useDropdownData("sources");
   //Fetch data from redux store
-  const { state, error, loading, initialloading } = useSelector(
-    (state: RootState) => ({
-      state: state.Channels.channels.data,
-      error: state.Channels.error,
-      loading: state.Channels.loading,
-      initialloading: state.Channels.initialloading,
-    })
-  );
+  const { state, error, loading, initialloading } = useSelector((state: RootState) => ({
+    state: state.Channels.channels.data,
+    error: state.Channels.error,
+    loading: state.Channels.loading,
+    initialloading: state.Channels.initialloading,
+  }));
 
   useEffect(() => {
     dispatch(getChannel());
@@ -552,9 +464,7 @@ const Channel = () => {
   return (
     <React.Fragment>
       <PageTitle
-        breadCrumbItems={[
-          { label: "Lead Channels", path: "/settings/master/channel", active: true },
-        ]}
+        breadCrumbItems={[{ label: "Lead Channels", path: "/settings/master/channel", active: true }]}
         title={"Lead Channels"}
       />
       <Row>

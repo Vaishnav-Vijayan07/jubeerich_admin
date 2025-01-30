@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -17,9 +17,8 @@ import { getUniversity } from "../../redux/University/actions";
 import { Link, useNavigate } from "react-router-dom";
 import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
 import { getCourse } from "../../redux/course/actions";
-import useDropdownData from "../../hooks/useDropdownDatas";
-import { access } from "fs";
 import { regrexValidation } from "../../utils/regrexValidation";
+import HistoryTable from "../../components/HistoryTable";
 
 interface OptionType {
   value: string;
@@ -80,6 +79,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -266,10 +266,6 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Course Configuration",
       accessor: "",
       Cell: ({ row }: any) => (
-        // <a href={`/settings/master/configure_courses/${row.original.id}`} className="">
-        //   <i className="mdi mdi-cog"></i> Course Configuration
-        // </a>
-
         <a onClick={() => navigate(`/settings/master/configure_courses/${row.original.id}`)} className="">
           <i className="mdi mdi-cog"></i> Course Configuration
         </a>
@@ -344,7 +340,9 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  console.log("formData ==>", formData);
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
 
   return (
     <>
@@ -421,6 +419,13 @@ const BasicInputElements = withSwal((props: any) => {
           </Form>
         </Modal>
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"campus"} />
+          </Modal.Body>
+        </Modal>
+
         {/* </Col> */}
 
         <Col className="p-0 form__card">
@@ -429,6 +434,11 @@ const BasicInputElements = withSwal((props: any) => {
               <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Campus
               </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
+              </Button>
+
               <h4 className="header-title mb-4">Manage Campus</h4>
               <Table
                 columns={columns}
@@ -451,7 +461,7 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Campus = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [university, setUniversity] = useState([])
+  const [university, setUniversity] = useState([]);
 
   //Fetch data from redux store
   const { state, error, loading, initialLoading, courseData, universityData } = useSelector((state: RootState) => ({
@@ -460,13 +470,13 @@ const Campus = () => {
     loading: state.Campus.loading,
     initialLoading: state.Campus.initialloading,
     courseData: state.Course.course.data,
-    universityData: state.University?.universities?.data
+    universityData: state.University?.universities?.data,
   }));
 
   useEffect(() => {
     dispatch(getCampus());
     dispatch(getCourse());
-    dispatch(getUniversity())
+    dispatch(getUniversity());
   }, []);
 
   useEffect(() => {
@@ -486,12 +496,7 @@ const Campus = () => {
 
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Campus", path: "/settings/master/campus", active: true },
-        ]}
-        title={"Campus"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Campus", path: "/settings/master/campus", active: true }]} title={"Campus"} />
       <Row>
         <Col>
           <BasicInputElements

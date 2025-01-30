@@ -13,8 +13,8 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getRoles } from "../../redux/users/roles/actions";
-import { addAdminUsers, deleteAdminUsers, getAdminUsers, getBranches, updateAdminUsers } from "../../redux/actions";
-import Select, { ActionMeta, OptionsType } from "react-select";
+import { addAdminUsers, getAdminUsers, getBranches, updateAdminUsers } from "../../redux/actions";
+import Select, { OptionsType } from "react-select";
 import {
   AUTH_SESSION_KEY,
   baseUrl,
@@ -34,6 +34,7 @@ import { getRegion } from "../../redux/regions/actions";
 import { getFranchise } from "../../redux/franchise/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
 import makeAnimated from "react-select/animated";
+import HistoryTable from "../../components/HistoryTable";
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -42,6 +43,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const api = new APICore();
   const loggedInUser = api.getLoggedInUser();
@@ -496,6 +498,10 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -508,7 +514,7 @@ const BasicInputElements = withSwal((props: any) => {
               <strong>Hi {loggedInUser?.name}, </strong> Enter user details.
             </div>
             <div className="w-100 d-flex justify-content-end px-4">
-              <div className="float-end" style={{width:"20%"}}>
+              <div className="float-end" style={{ width: "20%" }}>
                 <Row>
                   <ButtonGroup className="mb-2">
                     {radios.map((radio, idx) => (
@@ -826,6 +832,13 @@ const BasicInputElements = withSwal((props: any) => {
           </Modal.Body>
         </Modal>
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"admin_user"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
@@ -834,6 +847,10 @@ const BasicInputElements = withSwal((props: any) => {
                 onClick={() => openModalWithClass("modal-right")}
               >
                 <i className="mdi mdi-plus-circle"></i> Add Users
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+              <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Users</h4>
               <Table

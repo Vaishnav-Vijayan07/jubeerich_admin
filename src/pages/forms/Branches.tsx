@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
+import HistoryTable from "../../components/HistoryTable";
 
 // components
 import PageTitle from "../../components/PageTitle";
@@ -110,6 +111,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedState, setSelectedState] = useState<any>(null);
   const [allCities, setAllCities] = useState<any>(null);
   const [selectedCity, setSelectedCity] = useState<any>(null);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const getAllCountries = async () => {
     try {
@@ -574,6 +576,10 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   }, [allCities]);
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -910,6 +916,10 @@ const BasicInputElements = withSwal((props: any) => {
               >
                 <i className="mdi mdi-plus-circle"></i> Add Branch
               </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
+              </Button>
               <h4 className="header-title mb-4">Manage Branch Details</h4>
               <Table
                 columns={columns}
@@ -925,6 +935,13 @@ const BasicInputElements = withSwal((props: any) => {
             </Card.Body>
           </Card>
         </Col>
+
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"branch"} />
+          </Modal.Body>
+        </Modal>
       </Row>
     </>
   );
