@@ -787,7 +787,7 @@ const LeadsModal = withSwal((props: any) => {
                   <Form.Label>
                     <span className="text-danger fs-4">*</span> Zipcode
                   </Form.Label>
-                  <Form.Control maxLength={10} type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
+                  <Form.Control maxLength={6} type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
                   {validationErrors.zipcode && <Form.Text className="text-danger">{validationErrors.zipcode}</Form.Text>}
                 </Form.Group>
               </Col>

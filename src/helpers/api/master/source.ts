@@ -2,7 +2,7 @@ import { APICore } from "../apiCore";
 
 const api = new APICore();
 
-const baseUrl = "/lead_source/";
+const baseUrl = "/lead_source";
 
 //
 function getSources() {

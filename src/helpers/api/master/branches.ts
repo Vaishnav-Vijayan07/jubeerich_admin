@@ -2,7 +2,7 @@ import { APICore } from "../apiCore";
 
 const api = new APICore();
 
-const baseUrl = "/branches/";
+const baseUrl = "/branches";
 
 //
 function getBranches() {

@@ -114,21 +114,13 @@ const DemoHistoryViewer = ({ apiUrl }: any) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {Object.entries(item?.new_values ?? {}).length === 0
-                            ? Object.entries(item?.old_values ?? {}).map(([key, oldValue]) => (
-                                <tr key={key}>
-                                  <td className="text-capitalize">{key}</td>
-                                  <td>{oldValue}</td>
-                                  <td>-</td> {/* Indicating no new value */}
-                                </tr>
-                              ))
-                            : Object.entries(item?.new_values ?? {}).map(([key, newValue]) => (
-                                <tr key={key}>
-                                  <td className="text-capitalize">{key}</td>
-                                  <td>{item.old_values?.[key] || "-"}</td>
-                                  <td>{newValue}</td>
-                                </tr>
-                              ))}
+                          {Object.entries(item?.new_values ?? {}).map(([key, newValue]) => (
+                            <tr key={key}>
+                              <td className="text-capitalize">{key}</td>
+                              <td>{item.old_values?.[key] || "-"}</td>
+                              <td>{newValue}</td>
+                            </tr>
+                          ))}
                         </tbody>
                       </table>
                     </td>
