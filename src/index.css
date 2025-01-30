@@ -1048,3 +1048,6 @@ select::-ms-expand {
   right: -25px !important;
 }
 
+.my-swal-index {
+  z-index: 10000 !important;
+}

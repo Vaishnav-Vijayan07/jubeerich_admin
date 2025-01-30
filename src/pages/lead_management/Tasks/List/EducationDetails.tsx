@@ -72,8 +72,10 @@ const initialGapState = {
 
 const EducationDetails = withSwal((props: any) => {
   const { swal, studentId } = props;
-  const [hasGraduation, setHasGraduation] = useState("no");
-  const [hasGap, setHasGap] = useState("no");
+  // const [hasGraduation, setHasGraduation] = useState("no");
+  const [hasGraduation, setHasGraduation] = useState(false);
+  // const [hasGap, setHasGap] = useState("no");
+  const [hasGap, setHasGap] = useState<boolean>(false);
   const [initialLoading, setInitialLoading] = useState(false);
   const [gap, setGap] = useState<any>(initialGapState);
 
@@ -102,10 +104,12 @@ const EducationDetails = withSwal((props: any) => {
       setPrimaryDetails(educationData.primary || initialPrimaryState);
       setSecondaryDetails(educationData.secondary || initialSecondaryState);
 
-      educationData.graduation.length > 0 ? setHasGraduation("yes") : setHasGraduation("no");
+      // educationData.graduation.length > 0 ? setHasGraduation("yes") : setHasGraduation("no");
+      educationData.graduation.length > 0 ? setHasGraduation(true) : setHasGraduation(false);
       setGraduationDetails(educationData.graduation.length > 0 ? educationData.graduation : [initialGraduationState]);
       setGap(gapData.length > 0 ? gapData : [initialGapState]);
-      setHasGap(gapData.length > 0 ? "yes" : "no");
+      // setHasGap(gapData.length > 0 ? "yes" : "no");
+      setHasGap(gapData.length > 0 ? true : false);
     } catch (error) {
       console.error("Error fetching student education details:", error);
       showErrorAlert("Failed to fetch education details");
@@ -120,14 +124,22 @@ const EducationDetails = withSwal((props: any) => {
     }
   }, [refresh]);
 
+  // const handleGraduationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setHasGraduation(e.target.value);
+  // };
+
   const handleGraduationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHasGraduation(e.target.value);
+    setHasGraduation(e.target.value === "true");
   };
+
+  // const handleGapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setHasGap(e.target.value);
+  // };
 
   const handleGapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHasGap(e.target.value);
+    setHasGap(e.target.value === "true");
   };
-
+  
   // Handlers for primary education state update
   const handlePrimaryChange = (name: string, value: any) => {
     if (typeof value == "object" && !allowedFileTypes.includes(value.type)) {
@@ -164,14 +176,15 @@ const EducationDetails = withSwal((props: any) => {
     }));
   };
 
+
   const handleSavePrimary = async () => {
     const validationRules = {
       startDate: { required: true, message: "Please select a start date" },
       endDate: { required: true, message: "Please select an end date" },
       percentage: { required: true, message: "Please enter a percentage" },
-      mark_sheet: { required: true, message: "Please upload a mark sheet" },
-      certificate: { required: true, message: "Please upload a certificate" },
-      admit_card: { required: true, message: "Please upload an admit card" },
+      mark_sheet: { required: false, message: "Please upload a mark sheet" },
+      certificate: { required: false, message: "Please upload a certificate" },
+      admit_card: { required: false, message: "Please upload an admit card" },
       board_name: { required: true, message: "Please enter a board name" },
       school_name: { required: true, message: "Please enter a school name" },
     };
@@ -195,9 +208,9 @@ const EducationDetails = withSwal((props: any) => {
       startDate: { required: true, message: "Please select a start date" },
       endDate: { required: true, message: "Please select an end date" },
       percentage: { required: true, message: "Please enter a percentage" },
-      mark_sheet: { required: true, message: "Please upload a mark sheet" },
-      certificate: { required: true, message: "Please upload a certificate" },
-      admit_card: { required: true, message: "Please upload an admit card" },
+      mark_sheet: { required: false, message: "Please upload a mark sheet" },
+      certificate: { required: false, message: "Please upload a certificate" },
+      admit_card: { required: false, message: "Please upload an admit card" },
       board_name: { required: true, message: "Please enter a board name" },
       school_name: { required: true, message: "Please enter a school name" },
     };
@@ -279,8 +292,10 @@ const EducationDetails = withSwal((props: any) => {
                       label="Yes"
                       type="radio"
                       name="hasGraduation"
-                      value="yes"
-                      checked={hasGraduation === "yes"}
+                      // value="yes"
+                      value="true"
+                      // checked={hasGraduation === "yes"}
+                      checked={hasGraduation}
                       onChange={handleGraduationChange}
                     />
                     <Form.Check
@@ -288,8 +303,10 @@ const EducationDetails = withSwal((props: any) => {
                       label="No"
                       type="radio"
                       name="hasGraduation"
-                      value="no"
-                      checked={hasGraduation === "no"}
+                      // value="no"
+                      value="false"
+                      // checked={hasGraduation === "no"}
+                      checked={!hasGraduation}
                       onChange={handleGraduationChange}
                     />
                   </div>
@@ -299,10 +316,11 @@ const EducationDetails = withSwal((props: any) => {
           </>
 
           {/* Graduation Details Section */}
-          {hasGraduation === "yes" && (
+          {/* {hasGraduation === "yes" && ( */}
+          {hasGraduation && (
             <>
               <Row>
-                <GraduationInfo title="Graduation Details" details={graduationDetails} student_id={studentId} />
+                <GraduationInfo title="Graduation Details" details={graduationDetails} student_id={studentId} hasGraduation={hasGraduation} />
               </Row>
             </>
           )}
@@ -313,8 +331,10 @@ const EducationDetails = withSwal((props: any) => {
               <Form.Group className="mb-3">
                 <Form.Label>Education Gap?</Form.Label>
                 <div>
-                  <Form.Check inline label="Yes" type="radio" name="hasGap" value="yes" checked={hasGap === "yes"} onChange={handleGapChange} />
-                  <Form.Check inline label="No" type="radio" name="hasGap" value="no" checked={hasGap === "no"} onChange={handleGapChange} />
+                  {/* <Form.Check inline label="Yes" type="radio" name="hasGap" value="yes" checked={hasGap === "yes"} onChange={handleGapChange} /> */}
+                  <Form.Check inline label="Yes" type="radio" name="hasGap" value="true" checked={hasGap} onChange={handleGapChange} />
+                  {/* <Form.Check inline label="No" type="radio" name="hasGap" value="no" checked={hasGap === "no"} onChange={handleGapChange} /> */}
+                  <Form.Check inline label="No" type="radio" name="hasGap" value="false" checked={!hasGap} onChange={handleGapChange} />
                 </div>
               </Form.Group>
             </Col>
@@ -322,10 +342,11 @@ const EducationDetails = withSwal((props: any) => {
 
           {/* Gap Details Section */}
 
-          {hasGap === "yes" && (
+          {/* {hasGap === "yes" && ( */}
+          {hasGap && (
             <>
               <Row>
-                <GapRows gapData={gap} studentId={studentId} type="education" />
+                <GapRows gapData={gap} studentId={studentId} type="education" hasGap={hasGap} />
               </Row>
             </>
           )}

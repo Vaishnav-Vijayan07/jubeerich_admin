@@ -26,11 +26,15 @@ interface KYCActionType {
     | KYCActionTypes.GET_REJECTED
     | KYCActionTypes.ASSIGN_APPLICATION_MEMBER
     | KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER
-    | KYCActionTypes.GET_APPROVED;
+    | KYCActionTypes.GET_APPROVED
+    | KYCActionTypes.OPEN_APPROVAL_MODAL
+    | KYCActionTypes.CLOSE_APPROVAL_MODAL
+    | KYCActionTypes.TOGGLE_APPROVAL_MODAL;
   payload: {
     actionType?: string;
     data?: any;
     error?: string;
+    openModal?: boolean;
   };
 }
 
@@ -82,9 +86,12 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
 
         case KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER: {
 
-          showSuccessAlert(action.payload.data.data);
+          // showSuccessAlert(action.payload.data.data);
+          // showSuccessAlert(action.payload.data.data.message);
           return {
             ...state,
+            ValidatedData: action.payload.data.data.assignedData,
+            teamMembers: action.payload.data.data.teamMembers,
           };
         }
 
@@ -150,6 +157,8 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
       return { ...state, loading: true, initialloading: true };
     case KYCActionTypes.GET_APPROVED:
       return { ...state, loading: true, initialloading: true };
+    case KYCActionTypes.TOGGLE_APPROVAL_MODAL:
+      return { ...state, openApproveModal: action.payload.openModal };      
     default:
       return { ...state };
   }

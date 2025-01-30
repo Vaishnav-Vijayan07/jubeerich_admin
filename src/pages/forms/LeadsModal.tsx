@@ -97,7 +97,7 @@ const LeadsModal = withSwal((props: any) => {
   const validationSchema = yup.object().shape({
     full_name: yup.string().min(3, 'Min 3 characters').max(100, 'Max 100 characters').required("Name is required"),
     preferred_country: yup.array().min(1, "At least one country must be selected").nullable(),
-    email: yup.string().required("Email is required").email("Invalid email"),
+    email: yup.string().email("Invalid email"),
     phone: yup
       .string()
       .matches(/^[0-9]{10}$/, "Phone number must be a 10-digit number")
@@ -666,9 +666,7 @@ const LeadsModal = withSwal((props: any) => {
 
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="channel_name">
-                  <Form.Label>
-                    <span className="text-danger fs-4">* </span>Email
-                  </Form.Label>
+                  <Form.Label>Email</Form.Label>
                   <Form.Control type="text" name="email" maxLength={100} value={formData.email} onChange={handleInputChange} />
                   {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                 </Form.Group>
@@ -679,7 +677,7 @@ const LeadsModal = withSwal((props: any) => {
                   <Form.Label>
                     <span className="text-danger fs-4">* </span>Phone
                   </Form.Label>
-                  <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
+                  <Form.Control type="text" name="phone" value={formData.phone} onChange={handleInputChange} />
                   {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                 </Form.Group>
               </Col>

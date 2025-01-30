@@ -10,11 +10,13 @@ const useSaveGapData = (studentId: any) => {
   const [saveLoading, setSaveLoading] = useState(false);
 
   const saveGapData = useCallback(
-    async (gapData: any, type: "education" | "work") => {
+    async (gapData: any, type: "education" | "work", hasGap: any) => {
       console.log("gapData", gapData);
       const newformData = new FormData();
 
       newformData.append("student_id", studentId);
+      newformData.append("has_gap", hasGap);
+      newformData.append("type", type);
 
       gapData.forEach((gap: any, index: any) => {
         newformData.append(`gap[${index}][id]`, gap?.id ?? 0);

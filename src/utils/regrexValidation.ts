@@ -10,8 +10,8 @@ export const regexPatterns: Record<string, RegExp> = {
   // full_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   // city: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   // address: /^[a-zA-Z0-9À-ÖØ-öø-ÿ'.,\- ]*$/,
-  phone: /^\+?[0-9]{0,10}$/,
-  secondary_number: /^\+?[0-9]{0,10}$/,
+  phone: /^\+?[0-9]{0,12}$/,
+  secondary_number: /^\+?[0-9]{0,12}$/,
   passport: /^[A-Za-z0-9]*$/, // Allow empty string
   // emergency_contact_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   emergency_contact_phone: /^\+?[0-9]{0,10}$/,
@@ -26,7 +26,7 @@ export const regexPatterns: Record<string, RegExp> = {
   // designation: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   // company: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
 
-  years: /^\d{0,2}$/,
+  years: /^(\d{0,2})(\.\d{0,2})?$/,
 
   // Primary-Secondary- Education
   // board_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
@@ -37,7 +37,7 @@ export const regexPatterns: Record<string, RegExp> = {
   // Graduation Details
   // university_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   // college_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
-  percentage: /^(100(\.0+)?|(\d{0,2}(\.\d+)?))$/,
+  percentage: /^([0-9]{1,2}(\.\d{1,2})?|99(\.0{1,2})?)$/,
 
   // Fund Plan
   // sponsor_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
