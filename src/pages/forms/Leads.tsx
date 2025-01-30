@@ -11,9 +11,15 @@ import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { usePagination } from "../../hooks/usePagination";
+import { useSearchParams } from "react-router-dom";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [sortBy, setSortBy] = useState<string>(searchParams.get("sort_by") || "created_at");
+  const [sortOrder, setSortOrder] = useState<string>(searchParams.get("sort_order") || "asc");
+
   const [counsellors, setCounsellors] = useState([]);
   const [branchForManager, setBranchForManager] = useState([]);
   const [searchValue, setSearchValue] = useState("");
@@ -26,6 +32,27 @@ const Leads = () => {
     setCurrentPage(value);
   }, []);
 
+  const handleSortChange = (type: string, value: string) => {
+    console.log(type);
+    console.log(value);
+
+    if (type == "order") {
+      setSortBy(value);
+    } else {
+      setSortOrder(value);
+    }
+  };
+
+  const applySort = () => {
+    if (userRole == cre_tl_id) {
+      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue,));
+    } else {
+      if (userRole) {
+        dispatch(getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, sortBy, sortOrder));
+      }
+    }
+  };
+
   const handleLimitChange = useCallback((value: number) => {
     setCurrentLimit(value);
     setCurrentPage(1);
@@ -37,7 +64,7 @@ const Leads = () => {
       dispatch(getLeadsTL(1, 20, value));
     } else {
       if (userRole) {
-        dispatch(getLead(1, 20, value));
+        dispatch(getLead(currentPage, currentLimit, value, sortBy, sortOrder));
       }
     }
   };
@@ -49,20 +76,29 @@ const Leads = () => {
     userBranchId = JSON.parse(userInfo)?.branch_id;
   }
   const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages, totalCount, isSearchApplied } = useSelector(
+  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages, totalCount, isSortApplied } = useSelector(
     (state: RootState) => ({
       user: state.Auth.user,
       state: state.Leads.leads,
       totalPages: state.Leads.totalPages,
       limit: state.Leads.limit,
       totalCount: state.Leads.totalCount,
-      isSearchApplied: state.Leads.isSearchApplied,
+      isSortApplied: state.Leads.isSortApplied,
       error: state.Leads.error,
       loading: state.Leads.loading,
       initialLoading: state.Leads.initialloading,
       branchCounsellor: state.Users?.branchCounsellor,
     })
   );
+
+  useEffect(() => {
+    const params: any = {
+      sort_by: sortBy,
+      sort_order: sortOrder,
+    };
+
+    setSearchParams(params);
+  }, [sortBy, sortOrder, setSearchParams]);
 
   useEffect(() => {
     fetchAllCounsellors();
@@ -74,7 +110,7 @@ const Leads = () => {
       dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue));
     } else {
       if (userRole) {
-        dispatch(getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue));
+        dispatch(getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, sortBy, sortOrder));
       }
     }
 
@@ -151,6 +187,10 @@ const Leads = () => {
             currentLimit={currentLimit}
             handleLimitChange={handleLimitChange}
             handleSearch={handleSearch}
+            handleSortChange={handleSortChange}
+            applySort = {applySort}
+            sortOrder={sortOrder}
+            sortBy={sortBy}
           />
         </Col>
       </Row>
