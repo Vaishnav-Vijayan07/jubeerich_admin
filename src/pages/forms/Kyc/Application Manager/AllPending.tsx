@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, Spinner, Modal, Dropdown, Row, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { assignToApplicationMember, autoAssignToApplicationMember, getPendingKYC } from "../../../../redux/KYC/actions";
+import { assignToApplicationMember, autoAssignToApplicationMember, toggleApprovalModal, getPendingKYC } from "../../../../redux/KYC/actions";
 import { RootState } from "../../../../redux/store";
 import PageTitle from "../../../../components/PageTitle";
 import Table from "../../../../components/Table";
 import { getAdminUsers } from "../../../../redux/actions";
+import LeadApprovalTable from "../../LeadApprovalTable";
 
 const sizePerPageList = [
   {
@@ -44,19 +45,20 @@ interface TableRecords {
 const AllPending = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [selected, setSelected] = useState([]);
-
   const location = useLocation();
   const pathname = location.pathname;
 
   const isPendingPage = pathname.includes("pending");
 
-  const { records, user, initialloading, application_members } = useSelector((state: RootState) => ({
+  const { records, user, initialloading, application_members, openApproveModal, validatedData, teamMembers } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     records: state.KYC.KYCSPending.data,
     application_members: state.Users.adminUsers,
     initialloading: state.KYC.initialloading,
+    openApproveModal: state.KYC.openApproveModal,
+    validatedData: state.KYC.ValidatedData,
+    teamMembers: state.KYC.teamMembers,
   }));
 
   const handleAssignApplicationMember = (application_ids: any, user_id: any) => {
@@ -207,22 +209,22 @@ const AllPending = () => {
     },
   ];
 
-  console.log(records);
-
   const handleSelectedValues = (selectedItems: any) => {
-    console.log("Selected Items:", selectedItems);
     setSelected(selectedItems);
   };
 
-  // if (initialloading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "50%", left: "50%" }} />;
-  // }
+  const refetchLead = () => {
+    dispatch(getPendingKYC(isPendingPage ? "application_manager_pending" : "application_manager_assigned"));
+  }
+
+  const toogleApproveModal = () => {
+    dispatch(dispatch(toggleApprovalModal(false)));
+  };
 
   return (
     <>
       <PageTitle
         breadCrumbItems={[
-          // { label: "Master", path: "" },
           { label: `All Applications(${isPendingPage ? "Pending" : "Assigned"})`, path: "", active: true },
         ]}
         title={`All Applications(${isPendingPage ? "Pending" : "Assigned"})`}
@@ -267,6 +269,13 @@ const AllPending = () => {
           />
         </Card.Body>
       </Card>
+      
+      {
+        openApproveModal && (
+          // <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={validatedData} options={teamMembers} refetchLead={refetchLead} />
+          <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={toogleApproveModal} responseData={validatedData} options={teamMembers} refetchLead={refetchLead} />
+        )
+      }
     </>
   );
 };

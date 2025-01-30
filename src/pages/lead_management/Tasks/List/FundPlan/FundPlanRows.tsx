@@ -82,7 +82,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`approx_annual_income-${index}`}>
             <Form.Label>
-              <span className="text-danger">*</span> Approx Annual Income (₹)
+              <span className="text-danger">*</span> Approx Annual Income ( ₹ )
             </Form.Label>
             <FormInput
               type="number"
@@ -128,7 +128,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`sponsorship_amount-${index}`}>
             <Form.Label>
-              <span className="text-danger">*</span> Sponsorship amount (₹)
+              <span className="text-danger">*</span> Sponsorship amount ( ₹ )
             </Form.Label>
             <FormInput
               type="number"

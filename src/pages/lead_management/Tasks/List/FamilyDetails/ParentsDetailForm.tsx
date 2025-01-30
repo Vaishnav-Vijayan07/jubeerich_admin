@@ -52,7 +52,7 @@ const ParentDetailsForm = ({
             className="mb-3"
             controlId={`${parentType}_annual_income`}
           >
-            <Form.Label>Annual Income (₹)</Form.Label>
+            <Form.Label>Annual Income ( ₹ )</Form.Label>
             <FormInput
               type="number"
               name={`${parentType}.annual_income`}
@@ -191,7 +191,7 @@ const ParentDetailsForm = ({
             className="mb-3"
             controlId={`${parentType}_monthly_salary`}
           >
-            <Form.Label>Monthly Salary</Form.Label>
+            <Form.Label>Monthly Salary ( ₹ )</Form.Label>
             <FormInput
               type="number"
               name={`${parentType}.monthly_salary`}

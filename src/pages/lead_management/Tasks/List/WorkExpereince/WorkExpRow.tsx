@@ -17,7 +17,7 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
               <span className="text-danger">*</span> Work Experience
             </Form.Label>
             <FormInput
-              type="number"
+              type="text"
               name="years"
               placeholder="Enter work experience"
               key="years"

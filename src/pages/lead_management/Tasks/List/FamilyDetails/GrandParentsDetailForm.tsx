@@ -198,7 +198,7 @@ const GrandParentDetailsForm = ({
             className="mb-3"
             controlId={`${parentType}_monthly_salary`}
           >
-            <Form.Label>Monthly Salary</Form.Label>
+            <Form.Label>Monthly Salary ( ₹ )</Form.Label>
             <FormInput
               type="number"
               name={`${parentType}.monthly_salary`}
