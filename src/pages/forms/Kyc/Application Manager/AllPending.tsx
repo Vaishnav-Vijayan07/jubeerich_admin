@@ -209,10 +209,7 @@ const AllPending = () => {
     },
   ];
 
-  console.log(records);
-
   const handleSelectedValues = (selectedItems: any) => {
-    console.log("Selected Items:", selectedItems);
     setSelected(selectedItems);
   };
 

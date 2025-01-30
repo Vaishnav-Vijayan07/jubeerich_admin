@@ -58,7 +58,6 @@ function* assignToApplicationMember({ payload: { application_ids, user_id, type 
 function* autoAssignToApplicationMember({ payload: { application_ids, type } }: any): SagaIterator {
   try {
     const response = yield call(autoAssignToApplicationMemberApi, application_ids);
-    console.log(response.data);
 
     // const data = response.data.message;
     const data = response.data;
