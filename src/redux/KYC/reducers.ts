@@ -87,7 +87,7 @@ const KYC = (state: State = INIT_STATE, action: KYCActionType): any => {
         case KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER: {
 
           // showSuccessAlert(action.payload.data.data);
-          showSuccessAlert(action.payload.data.data.message);
+          // showSuccessAlert(action.payload.data.data.message);
           return {
             ...state,
             ValidatedData: action.payload.data.data.assignedData,
