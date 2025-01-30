@@ -71,9 +71,18 @@ export const getLeadsRegionalManager = (): LeadsActionType => ({
   payload: {},
 });
 
-export const getLeadsTL = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
+export const getLeadsTL = (
+  currentPage: number,
+  currentLimit: number,
+  keyword?: string | undefined,
+  sort_by?: string | undefined,
+  sort_order?: string | undefined,
+  country?: string | undefined,
+  office?: string | undefined,
+  source?: string | undefined
+): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_TL,
-  payload: { currentPage, currentLimit, keyword },
+  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source },
 });
 
 export const getLeadAssigned = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({

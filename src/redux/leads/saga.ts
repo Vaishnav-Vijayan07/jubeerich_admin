@@ -83,11 +83,11 @@ if (userInfo) {
   userRole = JSON.parse(userInfo)?.role;
 }
 
-function* getLeads({ payload: { currentPage, currentLimit, keyword, sort_by, sort_order,country,office,source } }: LeadsData): SagaIterator {
+function* getLeads({ payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source } }: LeadsData): SagaIterator {
   try {
     let response;
     let data;
-    response = yield call(getLeadsApi, currentPage, currentLimit, keyword, sort_by, sort_order,country,office,source);
+    response = yield call(getLeadsApi, currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -115,11 +115,11 @@ function* getLeadsAssignedByRegionalManager(): SagaIterator {
   }
 }
 
-function* getLeadsForTL({ payload: { currentPage, currentLimit, keyword } }: LeadsData): SagaIterator {
+function* getLeadsForTL({ payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source } }: LeadsData): SagaIterator {
   try {
     let response;
     let data;
-    response = yield call(getLeadsByCreTl, currentPage, currentLimit, keyword);
+    response = yield call(getLeadsByCreTl, currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api

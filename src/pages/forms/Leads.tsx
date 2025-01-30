@@ -72,7 +72,18 @@ const Leads = () => {
 
   const applySort = () => {
     if (userRole == cre_tl_id) {
-      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue));
+      dispatch(
+        getLeadsTL(
+          currentPage,
+          currentLimit,
+          searchValue == "" ? undefined : searchValue,
+          sortBy,
+          sortOrder,
+          selectedCountry == "all" ? undefined : selectedCountry,
+          selectedOffice == "all" ? undefined : selectedOffice,
+          selectedSource == "all" ? undefined : selectedSource
+        )
+      );
     } else {
       if (userRole) {
         dispatch(
@@ -91,12 +102,27 @@ const Leads = () => {
     }
   };
 
+  const resetSort = () => {
+    if (userRole == cre_tl_id) {
+      dispatch(
+        getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc", undefined, undefined, undefined)
+      );
+    } else {
+      if (userRole) {
+        dispatch(
+          getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc", undefined, undefined, undefined)
+        );
+      }
+    }
+  };
+
   const resetFilters = () => {
     setSelectedOffice("all");
     setSelectedCountry("all");
     setSelectedSource("all");
     setSortBy("created_at");
     setSortOrder("asc");
+    resetSort();
   };
 
   const handleLimitChange = useCallback((value: number) => {
@@ -110,7 +136,18 @@ const Leads = () => {
       dispatch(getLeadsTL(1, 20, value));
     } else {
       if (userRole) {
-        dispatch(getLead(currentPage, currentLimit, value, sortBy, sortOrder));
+        dispatch(
+          getLead(
+            currentPage,
+            currentLimit,
+            value,
+            sortBy,
+            sortOrder,
+            selectedCountry == "all" ? undefined : selectedCountry,
+            selectedOffice == "all" ? undefined : selectedOffice,
+            selectedSource == "all" ? undefined : selectedSource
+          )
+        );
       }
     }
   };
@@ -153,7 +190,18 @@ const Leads = () => {
 
   useEffect(() => {
     if (userRole == cre_tl_id) {
-      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue));
+      dispatch(
+        getLeadsTL(
+          currentPage,
+          currentLimit,
+          searchValue == "" ? undefined : searchValue,
+          sortBy,
+          sortOrder,
+          selectedCountry == "all" ? undefined : selectedCountry,
+          selectedOffice == "all" ? undefined : selectedOffice,
+          selectedSource == "all" ? undefined : selectedSource
+        )
+      );
     } else {
       if (userRole) {
         dispatch(

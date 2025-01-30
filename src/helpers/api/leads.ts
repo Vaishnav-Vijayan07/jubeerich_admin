@@ -47,7 +47,16 @@ function getLeads(
   return api.get(`${baseUrl}`, params);
 }
 
-function getLeadsByCreTl(currentPage: number, currentLimit: number, keyword?: string | undefined) {
+function getLeadsByCreTl(
+  currentPage: number,
+  currentLimit: number,
+  keyword?: string | undefined,
+  sort_by?: string | undefined,
+  sort_order?: string | undefined,
+  country?: string | undefined,
+  office?: string | undefined,
+  source?: string | undefined
+) {
   const params: any = {
     page: currentPage,
     limit: currentLimit,
@@ -55,6 +64,26 @@ function getLeadsByCreTl(currentPage: number, currentLimit: number, keyword?: st
 
   if (keyword) {
     params.keyword = keyword;
+  }
+
+  if (sort_order) {
+    params.sort_level = sort_order;
+  }
+
+  if (sort_by) {
+    params.sort_by = sort_by;
+  }
+
+  if (country) {
+    params.country = country;
+  }
+
+  if (office) {
+    params.office = office;
+  }
+
+  if (source) {
+    params.source = source;
   }
   return api.get("/leads_cre_tl", params);
 }
