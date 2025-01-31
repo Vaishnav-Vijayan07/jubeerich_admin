@@ -7,6 +7,7 @@ import {
   baseUrl,
   customStyles,
   franchise_id_from_office,
+  region_id_from_office,
   region_id as regionId, // Aliasing region_id to regionId
   showErrorAlert,
   showSuccessAlert,
@@ -276,23 +277,23 @@ const BasicInfo = withSwal((props: any) => {
     const basicValidationRules = {
       passport_no: { required: false },
       dob: { required: false },
-      gender: { required: true, message: "Please choose gender" },
+      gender: { required: false, message: "Please choose gender" },
       marital_status: { required: false },
       secondary_number: { required: false },
-      state: { required: true, message: "Please choose state" },
-      country: { required: true, message: "Please choose country" },
+      state: { required: false, message: "Please choose state" },
+      country: { required: false, message: "Please choose country" },
       address: { required: false },
     };
 
     const primaryValidationRules = {
       full_name: { required: true, message: "Please enter full name" },
-      email: { required: true, message: "Please enter email" },
+      email: { required: false, message: "Please enter email" },
       phone: { required: true, message: "Please enter phone" },
       city: { required: false },
       office_type: { required: false },
       remarks: { required: false },
-      franchise_id: { required: primaryInfo?.office_type == 5, message: "Please select franchise" },
-      region_id: { required: primaryInfo?.office_type == 4, message: "Please select region" },
+      franchise_id: { required: primaryInfo?.office_type == franchise_id_from_office, message: "Please select franchise" },
+      region_id: { required: primaryInfo?.office_type == region_id_from_office, message: "Please select region" },
     };
 
     const { isValid: primaryValid, errors: primaryErrors } = validateFields([primaryInfo], primaryValidationRules);
@@ -603,7 +604,7 @@ const BasicInfo = withSwal((props: any) => {
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="email">
                 <Form.Label>
-                  <span className="text-danger">* </span>Email Id
+                  Email Id
                 </Form.Label>
                 <FormInput
                   type="email"
@@ -689,7 +690,7 @@ const BasicInfo = withSwal((props: any) => {
               <Col md={6} xl={3} xxl={2}>
                 <Form.Group className="mb-3" controlId="region_id">
                   <Form.Label>
-                    <span className="text-danger fs-4">* </span>Region
+                    Region
                   </Form.Label>
                   <Select
                     styles={customStyles}
@@ -711,7 +712,7 @@ const BasicInfo = withSwal((props: any) => {
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="franchise_id">
                   <Form.Label>
-                    <span className="text-danger fs-4">* </span>Franchisee
+                    Franchisee
                   </Form.Label>
                   <Select
                     styles={customStyles}
@@ -729,27 +730,10 @@ const BasicInfo = withSwal((props: any) => {
               </Col>
             )}
 
-            {/* <Col md={6} xl={3} xxl={2}>
-              <Form.Group className="mb-3" controlId="passport_no">
-                <Form.Label>Passport No</Form.Label>
-                <FormInput
-                  type="text"
-                  name="passport_no"
-                  placeholder="Enter passport number"
-                  key="passport_no"
-                  value={basicInfo?.passport_no} // Change to basicInfo
-                  onChange={(e) => handleInputChange(e, "passport_no", "basic")}
-                />
-                {basicInfo?.errors?.passport_no && (
-                  <Form.Text className="text-danger">{basicInfo?.errors?.passport_no}</Form.Text>
-                )}
-              </Form.Group>
-            </Col> */}
-
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="gender">
                 <Form.Label>
-                  <span className="text-danger">*</span> Gender
+                  Gender
                 </Form.Label>
                 <Select
                   styles={customStyles}
@@ -801,7 +785,7 @@ const BasicInfo = withSwal((props: any) => {
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="country">
                 <Form.Label>
-                  <span className="text-danger">*</span> Country
+                  Country
                 </Form.Label>
                 <Select
                   className="react-select react-select-container"
@@ -842,7 +826,7 @@ const BasicInfo = withSwal((props: any) => {
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="state">
                 <Form.Label>
-                  <span className="text-danger">*</span> State
+                   State
                 </Form.Label>
                 <Select
                   className="react-select react-select-container"

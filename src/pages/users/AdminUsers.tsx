@@ -22,9 +22,12 @@ import {
   counsellor_id,
   counsellor_tl_id,
   country_manager_id,
+  cre_id,
   franchise_counsellor_id,
   franchise_manager_id,
   regional_manager_id,
+  showErrorAlert,
+  showSuccessAlert,
 } from "../../constants";
 import { MyInitialState, OptionType, TableRecords, initialState, initialValidationState, sizePerPageList } from "./data";
 import { APICore } from "../../helpers/api/apiCore";
@@ -34,6 +37,8 @@ import { getRegion } from "../../redux/regions/actions";
 import { getFranchise } from "../../redux/franchise/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
 import makeAnimated from "react-select/animated";
+import axios from "axios";
+import { AssignLeadModal } from "./AssignLeadModal";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 const BasicInputElements = withSwal((props: any) => {
@@ -63,6 +68,8 @@ const BasicInputElements = withSwal((props: any) => {
     { name: "Active", value: "true" },
     { name: "Disable", value: "false" },
   ];
+  const [openAssignModal, setOpenAssignModal] = useState<boolean>(false);
+  const [assignMessage, setAssignMessage] = useState<any>('');
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -198,6 +205,73 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
+  const dispatchUpdateLead = () => {
+    if (userInfo) {
+      const { user_id } = JSON.parse(userInfo);
+
+      dispatch(
+        updateAdminUsers(
+          formData.id,
+          formData.employee_id,
+          formData.name,
+          formData.email,
+          formData.phone,
+          formData.address,
+          formData.username,
+          formData.password,
+          // formData.updated_by,
+          user_id,
+          formData.role_id,
+          selectedImage,
+          formData.branch_ids,
+          formData?.country_ids,
+          formData.role_id == regional_manager_id ? formData.region_id : null,
+          formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
+            ? formData.branch_id
+            : null,
+          formData?.franchise_id || null,
+          radioValue
+        )
+      );
+    }
+  }
+
+  const assignationApproved = async(approved: boolean) => {
+    if(approved){
+      dispatchUpdateLead();
+      reAssignLeads();
+    }
+  }
+
+  const reAssignLeads = async() => {
+    try {
+      const { data } = await axios.post('/reassign_leads', { id: formData?.id });
+      if(data){
+        showSuccessAlert('Leads Successfully Re-Assigned');
+        setOpenAssignModal(false);
+      }
+    } catch (error) {
+      console.log('error', error);
+      showErrorAlert(error)
+    }
+  }
+
+  const checkUserHasLeads = async(user_id: any) => {
+    try {
+      const { data } = await axios.get(`/check_user_leads/${user_id}`);
+      if(data?.leadCount){
+        setModal(!modal);
+        setAssignMessage(data?.message);
+        setOpenAssignModal(true);
+      } else {
+        dispatchUpdateLead();
+      }
+    } catch (error) {
+      console.log('error', error);
+      showErrorAlert(error)
+    }
+  }
+
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -236,30 +310,35 @@ const BasicInputElements = withSwal((props: any) => {
               if (userInfo) {
                 const { user_id } = JSON.parse(userInfo);
                 try {
-                  dispatch(
-                    updateAdminUsers(
-                      formData.id,
-                      formData.employee_id,
-                      formData.name,
-                      formData.email,
-                      formData.phone,
-                      formData.address,
-                      formData.username,
-                      formData.password,
-                      // formData.updated_by,
-                      user_id,
-                      formData.role_id,
-                      selectedImage,
-                      formData.branch_ids,
-                      formData?.country_ids,
-                      formData.role_id == regional_manager_id ? formData.region_id : null,
-                      formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
-                        ? formData.branch_id
-                        : null,
-                      formData?.franchise_id || null,
-                      radioValue
-                    )
-                  );
+                  if(formData.role_id == cre_id && !radioValue){
+                    checkUserHasLeads(formData?.id);
+                  } else {
+                    dispatchUpdateLead();
+                    // dispatch(
+                    //   updateAdminUsers(
+                    //     formData.id,
+                    //     formData.employee_id,
+                    //     formData.name,
+                    //     formData.email,
+                    //     formData.phone,
+                    //     formData.address,
+                    //     formData.username,
+                    //     formData.password,
+                    //     // formData.updated_by,
+                    //     user_id,
+                    //     formData.role_id,
+                    //     selectedImage,
+                    //     formData.branch_ids,
+                    //     formData?.country_ids,
+                    //     formData.role_id == regional_manager_id ? formData.region_id : null,
+                    //     formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
+                    //       ? formData.branch_id
+                    //       : null,
+                    //     formData?.franchise_id || null,
+                    //     radioValue
+                    //   )
+                    // );
+                  }
                 } catch (err) {
                   console.error("error updating", err);
                 }
@@ -868,6 +947,8 @@ const BasicInputElements = withSwal((props: any) => {
           </Card>
         </Col>
       </Row>
+
+      <AssignLeadModal open={openAssignModal} toggleModal={setOpenAssignModal} message={assignMessage} assignApproved={assignationApproved} />
     </>
   );
 });

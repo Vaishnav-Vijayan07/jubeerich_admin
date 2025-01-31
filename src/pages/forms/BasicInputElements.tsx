@@ -34,7 +34,6 @@ import CustomPagination from "../../components/CustomPagination";
 import CustomSearchBox from "../../components/CustomSearchBox";
 import LeadApprovalTable from "./LeadApprovalTable";
 import SortBox from "../../components/SortBox";
-import CustomLeadFilters from "../../components/CustomLeadFilters";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -75,10 +74,6 @@ const BasicInputElements = withSwal((props: any) => {
     currentLimit,
     handleLimitChange,
     handleSearch,
-    handleSortChange,
-    applySort,
-    sortBy,
-    sortOrder
   } = props;
 
   const isDataPresent = state && state.length > 0;
@@ -831,14 +826,7 @@ const BasicInputElements = withSwal((props: any) => {
           handleUpdateData={handleUpdateData}
           initialLoading={initialLoading}
         />
-
-        <LeadApprovalTable
-          isOpenModal={openApproveModal}
-          toggleModal={setOpenApproveModal}
-          responseData={responseData}
-          options={approvalOptionsData}
-        />
-
+        
         {user?.role == it_team_id && (
           <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
             <Modal.Header closeButton></Modal.Header>
@@ -887,7 +875,7 @@ const BasicInputElements = withSwal((props: any) => {
             />
           )} */}
 
-          <CustomLeadFilters countries={country || []}/>
+          
 
           <Card className="bg-white py-3">
             <Card.Body>
@@ -1017,7 +1005,6 @@ const BasicInputElements = withSwal((props: any) => {
                 <>
                   <Row>
                     <CustomSearchBox onSearch={handleSearch} />
-                    <SortBox onSortChange={handleSortChange} onApplySort={applySort} selectedField={sortBy} sortOrder={sortOrder}  />
                   </Row>
 
                   <Table

@@ -12,6 +12,7 @@ import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { usePagination } from "../../hooks/usePagination";
 import { useSearchParams } from "react-router-dom";
+import CustomLeadFilters from "../../components/CustomLeadFilters";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -19,6 +20,10 @@ const Leads = () => {
 
   const [sortBy, setSortBy] = useState<string>(searchParams.get("sort_by") || "created_at");
   const [sortOrder, setSortOrder] = useState<string>(searchParams.get("sort_order") || "asc");
+
+  const [selectedOffice, setSelectedOffice] = useState<any>("all");
+  const [selectedCountry, setSelectedCountry] = useState<any>("all");
+  const [selectedSource, setSelectedSource] = useState<any>("all");
 
   const [counsellors, setCounsellors] = useState([]);
   const [branchForManager, setBranchForManager] = useState([]);
@@ -31,6 +36,28 @@ const Leads = () => {
 
     setCurrentPage(value);
   }, []);
+
+  const handleFilterChange = (name: string, value: string) => {
+    switch (name) {
+      case "office":
+        setSelectedOffice(value);
+        break;
+      case "country":
+        setSelectedCountry(value);
+        break;
+      case "source":
+        setSelectedSource(value);
+        break;
+      case "sort_by":
+        setSortBy(value);
+        break;
+      case "sort_order":
+        setSortOrder(value);
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleSortChange = (type: string, value: string) => {
     console.log(type);
@@ -45,12 +72,57 @@ const Leads = () => {
 
   const applySort = () => {
     if (userRole == cre_tl_id) {
-      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue,));
+      dispatch(
+        getLeadsTL(
+          currentPage,
+          currentLimit,
+          searchValue == "" ? undefined : searchValue,
+          sortBy,
+          sortOrder,
+          selectedCountry == "all" ? undefined : selectedCountry,
+          selectedOffice == "all" ? undefined : selectedOffice,
+          selectedSource == "all" ? undefined : selectedSource
+        )
+      );
     } else {
       if (userRole) {
-        dispatch(getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, sortBy, sortOrder));
+        dispatch(
+          getLead(
+            currentPage,
+            currentLimit,
+            searchValue == "" ? undefined : searchValue,
+            sortBy,
+            sortOrder,
+            selectedCountry == "all" ? undefined : selectedCountry,
+            selectedOffice == "all" ? undefined : selectedOffice,
+            selectedSource == "all" ? undefined : selectedSource
+          )
+        );
       }
     }
+  };
+
+  const resetSort = () => {
+    if (userRole == cre_tl_id) {
+      dispatch(
+        getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc", undefined, undefined, undefined)
+      );
+    } else {
+      if (userRole) {
+        dispatch(
+          getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc", undefined, undefined, undefined)
+        );
+      }
+    }
+  };
+
+  const resetFilters = () => {
+    setSelectedOffice("all");
+    setSelectedCountry("all");
+    setSelectedSource("all");
+    setSortBy("created_at");
+    setSortOrder("asc");
+    resetSort();
   };
 
   const handleLimitChange = useCallback((value: number) => {
@@ -64,7 +136,18 @@ const Leads = () => {
       dispatch(getLeadsTL(1, 20, value));
     } else {
       if (userRole) {
-        dispatch(getLead(currentPage, currentLimit, value, sortBy, sortOrder));
+        dispatch(
+          getLead(
+            currentPage,
+            currentLimit,
+            value,
+            sortBy,
+            sortOrder,
+            selectedCountry == "all" ? undefined : selectedCountry,
+            selectedOffice == "all" ? undefined : selectedOffice,
+            selectedSource == "all" ? undefined : selectedSource
+          )
+        );
       }
     }
   };
@@ -107,10 +190,32 @@ const Leads = () => {
 
   useEffect(() => {
     if (userRole == cre_tl_id) {
-      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue));
+      dispatch(
+        getLeadsTL(
+          currentPage,
+          currentLimit,
+          searchValue == "" ? undefined : searchValue,
+          sortBy,
+          sortOrder,
+          selectedCountry == "all" ? undefined : selectedCountry,
+          selectedOffice == "all" ? undefined : selectedOffice,
+          selectedSource == "all" ? undefined : selectedSource
+        )
+      );
     } else {
       if (userRole) {
-        dispatch(getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, sortBy, sortOrder));
+        dispatch(
+          getLead(
+            currentPage,
+            currentLimit,
+            searchValue == "" ? undefined : searchValue,
+            sortBy,
+            sortOrder,
+            selectedCountry == "all" ? undefined : selectedCountry,
+            selectedOffice == "all" ? undefined : selectedOffice,
+            selectedSource == "all" ? undefined : selectedSource
+          )
+        );
       }
     }
 
@@ -156,6 +261,24 @@ const Leads = () => {
         ]}
         title={"Leads"}
       />
+
+      <Row>
+        <Col>
+          <CustomLeadFilters
+            countries={dropdownData?.countries}
+            source={dropdownData?.sources}
+            offices={dropdownData?.officeTypes}
+            selectedCountry={selectedCountry}
+            selectedOffice={selectedOffice}
+            selectedSource={selectedSource}
+            onFilterChange={handleFilterChange}
+            selectedSortBy={sortBy}
+            selectedSortOrder={sortOrder}
+            onApplySort={applySort}
+            onClear={resetFilters}
+          />
+        </Col>
+      </Row>
       <Row>
         <Col>
           <BasicInputElements
@@ -188,9 +311,13 @@ const Leads = () => {
             handleLimitChange={handleLimitChange}
             handleSearch={handleSearch}
             handleSortChange={handleSortChange}
-            applySort = {applySort}
+            applySort={applySort}
             sortOrder={sortOrder}
             sortBy={sortBy}
+            handleFilterChange={handleFilterChange}
+            selectedCountry={selectedCountry}
+            selectedSource={selectedSource}
+            selectedOffice={selectedOffice}
           />
         </Col>
       </Row>
