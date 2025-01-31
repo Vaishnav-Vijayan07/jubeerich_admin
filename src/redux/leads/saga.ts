@@ -42,6 +42,7 @@ interface LeadsData {
     currentPage: number;
     currentLimit: number;
     keyword?: string | undefined;
+    assigned_cre?: string | undefined;
     sort_order?: string | undefined;
     sort_by?: string | undefined;
     country?: string | undefined;
@@ -130,9 +131,22 @@ function* getLeadsForTL({ payload: { currentPage, currentLimit, keyword, sort_by
   }
 }
 
-function* getAssignedLeads({ payload: { currentPage, currentLimit, keyword } }: LeadsData): SagaIterator {
+function* getAssignedLeads({
+  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source, assigned_cre },
+}: LeadsData): SagaIterator {
   try {
-    let response = yield call(getAssignedLeadsByCreTl, currentPage, currentLimit, keyword);
+    let response = yield call(
+      getAssignedLeadsByCreTl,
+      currentPage,
+      currentLimit,
+      keyword,
+      sort_by,
+      sort_order,
+      country,
+      office,
+      source,
+      assigned_cre
+    );
     let data = response.data;
 
     // NOTE - You can change this according to response format from your api
