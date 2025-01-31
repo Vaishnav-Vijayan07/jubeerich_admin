@@ -80,7 +80,7 @@ const FundPlan = ({ student_id }: Props) => {
       sponsor_name: { required: true, message: "Please enter sponsor name" },
       approx_annual_income: { required: true, message: "Please enter sponsor annual income" },
       itr_status: { required: true, message: "Please select an option" },
-      supporting_document: { required: true, message: "Please upload supporting document" },
+      supporting_document: { required: false, message: "Please upload supporting document" },
       relation_with_sponsor: { required: true, message: "Please enter relation with sponsor" },
       sponsorship_amount: { required: true, message: "Please enter sponsorship amount" },
       name_of_bank: { required: true, message: "Please enter name of bank" },

@@ -179,9 +179,20 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
               <Form.Check
                 inline
                 label="Yet to file"
-                id={`no-${index}`}
+                id={`yet_to_file-${index}`}
                 type="radio"
                 name={`itr_status-${index}`}
+                checked={plan?.itr_status === "yet_to_file"} // If "no", check this button
+                value="yet_to_file"
+                onChange={(e: any) => handleFundPlanInputChange(index, "itr_status", e.target.value)}
+              />
+
+              <Form.Check
+                inline
+                label="No"
+                id={`no-${index}`}
+                type="radio"
+                name={`no-${index}`}
                 checked={plan?.itr_status === "no"} // If "no", check this button
                 value="no"
                 onChange={(e: any) => handleFundPlanInputChange(index, "itr_status", e.target.value)}
@@ -191,7 +202,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         </Col>
 
         {/* Supporting Document */}
-        <Col md={4} lg={4} xl={4} xxl={4}>
+        {plan?.itr_status != "no" && <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`supporting_document-${index}`}>
             <Form.Label>
               <span className="text-danger">*</span> Supporting Document
@@ -217,7 +228,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
               </div>
             )}
           </Form.Group>
-        </Col>
+        </Col>}
         {(plan?.type === "fd" || plan?.type === "savings") && (
           <>
             <Col md={4} lg={4} xl={4} xxl={4}>
