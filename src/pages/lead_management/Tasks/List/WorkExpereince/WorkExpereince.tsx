@@ -85,11 +85,11 @@ const WorkExpereince = withSwal((props: any) => {
 
   const saveWorkData = useCallback(async () => {
     const validationRules = {
-      years: { required: true, message: "Please enter the number of years" },
-      designation: { required: true, message: "Please enter a designation" },
+      years: { required: false, message: "Please enter the number of years" },
+      designation: { required: false, message: "Please enter a designation" },
       company: { required: true, message: "Please enter a company name" },
-      from: { required: true, message: "Please select a start date" },
-      to: { required: true, message: "Please select an end date" },
+      from: { required: false, message: "Please select a start date" },
+      to: { required: false, message: "Please select an end date" },
       bank_statement: { required: false, message: "Please upload a bank statement" },
       job_offer_document: { required: false, message: "Please upload a job offer document" },
       appointment_document: { required: false, message: "Please upload an appointment document" },

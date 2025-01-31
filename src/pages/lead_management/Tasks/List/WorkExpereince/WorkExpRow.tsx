@@ -14,7 +14,7 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="qualification">
             <Form.Label>
-              <span className="text-danger">*</span> Work Experience
+              Work Experience
             </Form.Label>
             <FormInput
               type="text"
@@ -50,7 +50,7 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="designation">
             <Form.Label>
-              <span className="text-danger">*</span> Designation
+               Designation
             </Form.Label>
             <FormInput
               type="text"

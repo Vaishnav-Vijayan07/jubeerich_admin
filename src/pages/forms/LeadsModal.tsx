@@ -106,11 +106,10 @@ const LeadsModal = withSwal((props: any) => {
     source_id: yup.string().required("Source is required").nullable(),
     channel_id: yup.string().required("Channel is required").nullable(),
     office_type: yup.string().required("Office type is required").nullable(),
-    lead_received_date: yup.date().required("Date is required"),
+    lead_received_date: yup.date().nullable(),
     zipcode: yup
       .string()
-      .matches(/^[0-9]*$/, "Zipcode must be numbers only")
-      .required("Zipcode is required"),
+      .matches(/^[0-9]*$/, "Zipcode must be numbers only").nullable(),
     franchise_id: yup
       .string()
       .nullable()
@@ -783,7 +782,7 @@ const LeadsModal = withSwal((props: any) => {
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="channel_name">
                   <Form.Label>
-                    <span className="text-danger fs-4">*</span> Zipcode
+                    Zipcode
                   </Form.Label>
                   <Form.Control maxLength={10} type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
                   {validationErrors.zipcode && <Form.Text className="text-danger">{validationErrors.zipcode}</Form.Text>}
@@ -869,175 +868,6 @@ const LeadsModal = withSwal((props: any) => {
                 </Col>
               )}
 
-              {/* <Col md={4} lg={4} className="mt-2">
-                <Form.Group className="mb-3" controlId="source_id">
-                  <Form.Label>Have you ever participated in any language exams ?</Form.Label>
-                  <div className="d-flex justify-content-start align-items-center mt-1">
-                    <div className="d-flex justify-content-start align-items-start me-2">
-                      <Form.Check
-                        type="radio"
-                        id="active-switch"
-                        name="ielts"
-                        onClick={() => setSelectExam(true)}
-                        checked={selectExam}
-                      />
-                      <span className="ps-1 fw-bold">Yes</span>
-                    </div>
-                    <div className="d-flex justify-content-start align-items-start">
-                      <Form.Check
-                        type="radio"
-                        id="active-switch"
-                        name="ielts"
-                        onClick={() => setSelectExam(false)}
-                        checked={!selectExam}
-                      />
-                      <span className="ps-1 fw-bold">No</span>
-                    </div>
-                  </div>
-                </Form.Group>
-              </Col> */}
-            </Row>
-
-            <Row>
-              {/* {selectExam &&
-                languageForm.map((data, index) => (
-                  <Row key={index}>
-                    <Row>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="exam_type">
-                          <Form.Label>Exam Type</Form.Label>
-                          <Form.Select
-                            aria-label="Default select example"
-                            name="exam_type"
-                            value={data.exam_type}
-                            onChange={(e) => handleLanguageInputChange(index, e)}
-                          >
-                            <option value="">Choose..</option>
-                            {examtypes?.map((item: any) => (
-                              <option
-                                value={item?.name}
-                                key={item?.name}
-                                onClick={(e) => handleLanguageInputChange(index, e)}
-                                defaultValue={item.name === formData.exam ? item.name : undefined}
-                              >
-                                {item.name}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="listening_score">
-                          <Form.Label>Listening Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="listening_score"
-                            value={data.listening_score}
-                            onChange={(e) => {
-                              handleLanguageMarkInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="speaking_score">
-                          <Form.Label>Speaking Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="speaking_score"
-                            value={data.speaking_score}
-                            onChange={(e) => {
-                              handleLanguageMarkInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="reading_score">
-                          <Form.Label>Reading Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="reading_score"
-                            value={data.reading_score}
-                            onChange={(e) => {
-                              handleLanguageMarkInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="writing_score">
-                          <Form.Label>Writing Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="writing_score"
-                            value={data.writing_score}
-                            onChange={(e) => {
-                              handleLanguageMarkInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="marks">
-                          <Form.Label>Overall Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="overall_score"
-                            value={data.overall_score}
-                            onChange={(e) => {
-                              handleLanguageMarkInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col className="d-flex justify-content-between">
-                        <Form name="exam_documents" encType="multipart/form-data">
-                          <Form.Group className="mb-3" controlId="profileImage">
-                            <Form.Label>Upload Score Card</Form.Label>
-                            <Form.Control
-                              name="exam_documents"
-                              type="file"
-                              onChange={(event) => {
-                                handleFileChange(index, event);
-                              }}
-                              ref={fileInputRef}
-                            />
-                            {selectedFileName[index]?.exam_documents && (
-                              <a href={`${baseUrl}uploads/${selectedFileName[index].exam_documents}`}>
-                                {selectedFileName[index].exam_documents}
-                              </a>
-                            )}
-                          </Form.Group>
-                        </Form>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="exam_date">
-                          <Form.Label>Exam Date</Form.Label>
-                          <Form.Control
-                            type="date"
-                            name="exam_date"
-                            value={data?.exam_date ? moment(data?.exam_date).format("YYYY-MM-DD") : ""}
-                            onChange={(e) => {
-                              handleLanguageInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4} className="mt-3">
-                        <i
-                          className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1"
-                          onClick={(e) => handleRemoveLanguageForm(index, e, data.exam_type)}
-                        ></i>
-                        {selectExam && (
-                          <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>
-                        )}
-                      </Col>
-                    </Row>
-                  </Row>
-                ))} */}
             </Row>
           </Modal.Body>
 
