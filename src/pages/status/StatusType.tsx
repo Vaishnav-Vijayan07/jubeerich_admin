@@ -1,25 +1,22 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { addCategory, addStatus, deleteCategory, getCategory, updateCategory } from "../../redux/actions";
 import { AUTH_SESSION_KEY } from "../../constants";
-import { error } from "console";
 import { Link } from "react-router-dom";
-import classNames from "classnames";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { Slider } from "@mui/material";
 import { addStatusType, deleteStatusType, getStatusType, updateStatusType } from "../../redux/status/statusType/actions";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface TableRecords {
   id: number;
@@ -73,6 +70,8 @@ const BasicInputElements = withSwal((props: any) => {
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
+
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const records: TableRecords[] = state;
 
@@ -277,6 +276,10 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -319,7 +322,9 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-3 "
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
+                onClick={() =>
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
+                }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -331,11 +336,24 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <React.Suspense fallback={<Spinner animation="border" variant="primary" />}>
+              <HistoryTable apiUrl={"status_type"} />
+            </React.Suspense>
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
               <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Status Type
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Status Type</h4>
               <Table
@@ -369,21 +387,9 @@ const StatusType = () => {
     initialloading: state.StatusTypes.initialloading,
   }));
 
-
-  console.log("STATE", state);
-
   useEffect(() => {
     dispatch(getStatusType());
   }, []);
-
-  // if (initialloading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <React.Fragment>
@@ -396,7 +402,13 @@ const StatusType = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements state={state || []} loading={loading} success={success} error={error} initialLoading={initialloading} />
+          <BasicInputElements
+            state={state || []}
+            loading={loading}
+            success={success}
+            error={error}
+            initialLoading={initialloading}
+          />
         </Col>
       </Row>
     </React.Fragment>

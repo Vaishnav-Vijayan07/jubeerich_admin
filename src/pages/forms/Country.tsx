@@ -1,48 +1,21 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Dropdown,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
-import {
-  addChannel,
-  deleteChannel,
-  getChannel,
-  updateChannel,
-} from "../../redux/actions";
-import Select from "react-select";
 import { AUTH_SESSION_KEY } from "../../constants";
-import {
-  addCountry,
-  deleteCountry,
-  getCountry,
-  updateCountry,
-} from "../../redux/country/actions";
+import { addCountry, deleteCountry, getCountry, updateCountry } from "../../redux/country/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
-
-interface OptionType {
-  value: string;
-  label: string;
-}
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: string;
@@ -95,17 +68,13 @@ const BasicInputElements = withSwal((props: any) => {
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    country_name: yup
-      .string()
-      .required("Country name is required")
-      .min(3, "Country name must be at least 3 characters long"),
+    country_name: yup.string().required("Country name is required").min(3, "Country name must be at least 3 characters long"),
     country_code: yup.string().required("Country code is required"),
     isd: yup.string().required("ISD code is required"),
   });
@@ -189,81 +158,41 @@ const BasicInputElements = withSwal((props: any) => {
       // Validation passed, handle form submission
 
       swal
-      .fire({
-        title: "Confirm Action",
-        text: `Do you want to ${isUpdate ? "update" : "create"} this country?`,
-        icon: "question",
-        iconColor: "#8B8BF5", // Purple color for the icon
-        showCancelButton: true,
-        confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
-        cancelButtonText: "Cancel",
-        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-        cancelButtonColor: "#E97777", // Pink/red color for cancel button
-        buttonsStyling: true,
-        customClass: {
-          popup: "rounded-4 shadow-lg",
-          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-          title: "fs-2 fw-normal mb-2",
-        },
-        width: "26em",
-        padding: "2em",
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          if (userInfo) {
-            const { user_id } = JSON.parse(userInfo);
-            if (isUpdate) {
-              // Handle update logic
-              dispatch(
-                updateCountry(
-                  formData.id,
-                  formData.country_name,
-                  formData.country_code,
-                  formData.isd
-                )
-              );
-              setIsUpdate(false);
-            } else {
-              // Handle add logic
-              dispatch(
-                addCountry(
-                  formData.country_name,
-                  formData.country_code,
-                  formData.isd
-                )
-              );
+        .fire({
+          title: "Confirm Action",
+          text: `Do you want to ${isUpdate ? "update" : "create"} this country?`,
+          icon: "question",
+          iconColor: "#8B8BF5", // Purple color for the icon
+          showCancelButton: true,
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+          cancelButtonColor: "#E97777", // Pink/red color for cancel button
+          buttonsStyling: true,
+          customClass: {
+            popup: "rounded-4 shadow-lg",
+            confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+            cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+            title: "fs-2 fw-normal mb-2",
+          },
+          width: "26em",
+          padding: "2em",
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            if (userInfo) {
+              const { user_id } = JSON.parse(userInfo);
+              if (isUpdate) {
+                // Handle update logic
+                dispatch(updateCountry(formData.id, formData.country_name, formData.country_code, formData.isd));
+                setIsUpdate(false);
+              } else {
+                // Handle add logic
+                dispatch(addCountry(formData.country_name, formData.country_code, formData.isd));
+              }
             }
           }
-        }
-      });
-
-      // if (userInfo) {
-      //   const { user_id } = JSON.parse(userInfo);
-      //   if (isUpdate) {
-      //     // Handle update logic
-      //     dispatch(
-      //       updateCountry(
-      //         formData.id,
-      //         formData.country_name,
-      //         formData.country_code,
-      //         formData.isd
-      //       )
-      //     );
-      //     setIsUpdate(false);
-      //   } else {
-      //     // Handle add logic
-      //     dispatch(
-      //       addCountry(
-      //         formData.country_name,
-      //         formData.country_code,
-      //         formData.isd
-      //       )
-      //     );
-      //   }
-      // }
-
-      // ... Rest of the form submission logic ...
+        });
     } catch (validationError) {
       // Handle validation errors
       if (validationError instanceof yup.ValidationError) {
@@ -307,17 +236,19 @@ const BasicInputElements = withSwal((props: any) => {
       Cell: ({ row }: any) => (
         <div className="d-flex justify-content-center align-items-center gap-2">
           {/* Edit Icon */}
-          <Link to="#" className="action-icon" onClick={() => {
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => {
+              handleUpdate(row.original);
+              toggleResponsiveModal();
+            }}
+          >
             <i className="mdi mdi-square-edit-outline"></i>
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -345,6 +276,10 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   const handleKeyPress = (event: any) => {
     const charCode = event.charCode;
     if (charCode < 48 || charCode > 57) {
@@ -366,11 +301,7 @@ const BasicInputElements = withSwal((props: any) => {
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Country Management</h4>
@@ -379,30 +310,16 @@ const BasicInputElements = withSwal((props: any) => {
               <>
                 <Form.Group className="mb-3" controlId="country_name">
                   <Form.Label>Country Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="country_name"
-                    value={formData.country_name}
-                    onChange={handleInputChange}
-                  />
+                  <Form.Control type="text" name="country_name" value={formData.country_name} onChange={handleInputChange} />
                   {validationErrors.country_name && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.country_name}
-                    </Form.Text>
+                    <Form.Text className="text-danger">{validationErrors.country_name}</Form.Text>
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="country_code">
                   <Form.Label>Country Code</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="country_code"
-                    value={formData.country_code}
-                    onChange={handleInputChange}
-                  />
+                  <Form.Control type="text" name="country_code" value={formData.country_code} onChange={handleInputChange} />
                   {validationErrors.country_code && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.country_code}
-                    </Form.Text>
+                    <Form.Text className="text-danger">{validationErrors.country_code}</Form.Text>
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="isd">
@@ -414,23 +331,13 @@ const BasicInputElements = withSwal((props: any) => {
                     onKeyPress={handleKeyPress}
                     onChange={handleInputChange}
                   />
-                  {validationErrors.isd && (
-                    <Form.Text className="text-danger">
-                      {validationErrors.isd}
-                    </Form.Text>
-                  )}
+                  {validationErrors.isd && <Form.Text className="text-danger">{validationErrors.isd}</Form.Text>}
                 </Form.Group>
               </>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]
-                }
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
@@ -438,35 +345,35 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1 "
                 onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(),handleResetValues()]
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                disabled={loading}
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" disabled={loading} variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : loading ? "Loading" : "Submit"}
               </Button>
             </Modal.Footer>
           </Form>
+        </Modal>
+
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"country"} />
+          </Modal.Body>
         </Modal>
         {/* </Col> */}
 
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Country
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+              <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Countries</h4>
               <Table
@@ -492,40 +399,22 @@ const Country = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector(
-    (state: RootState) => ({
-      state: state.Country.countries,
-      error: state.Country.error,
-      loading: state.Country.loading,
-      initialLoading: state.Country.initialLoading,
-    })
-  );
+  const { state, error, loading, initialLoading } = useSelector((state: RootState) => ({
+    state: state.Country.countries,
+    error: state.Country.error,
+    loading: state.Country.loading,
+    initialLoading: state.Country.initialLoading,
+  }));
 
-  const Source = useSelector(
-    (state: RootState) => state?.Source?.sources?.data
-  );
+  const Source = useSelector((state: RootState) => state?.Source?.sources?.data);
 
   useEffect(() => {
     dispatch(getCountry());
   }, []);
 
-  // if (initialLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
-
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Countries", path: "/settings/master/country", active: true },
-        ]}
-        title={"Countries"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Countries", path: "/settings/master/country", active: true }]} title={"Countries"} />
       <Row>
         <Col>
           <BasicInputElements state={state} error={error} loading={loading} initialLoading={initialLoading} />

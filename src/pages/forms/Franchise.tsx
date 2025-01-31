@@ -1,15 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Modal,
-  Alert,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Alert } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -18,13 +10,9 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { Link } from "react-router-dom";
-import {
-  addFranchise,
-  deleteFranchise,
-  getFranchise,
-  updateFranchise,
-} from "../../redux/franchise/actions";
+import { addFranchise, deleteFranchise, getFranchise, updateFranchise } from "../../redux/franchise/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: string;
@@ -79,9 +67,9 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
+
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -184,30 +172,14 @@ const BasicInputElements = withSwal((props: any) => {
           if (result.isConfirmed) {
             if (isUpdate) {
               dispatch(
-                updateFranchise(
-                  formData.id,
-                  formData.name,
-                  formData.email,
-                  formData.address,
-                  formData.phone,
-                  formData.pocName
-                )
+                updateFranchise(formData.id, formData.name, formData.email, formData.address, formData.phone, formData.pocName)
               );
               setIsUpdate(false);
             } else {
-              dispatch(
-                addFranchise(
-                  formData.name,
-                  formData.email,
-                  formData.address,
-                  formData.phone,
-                  formData.pocName
-                )
-              );
+              dispatch(addFranchise(formData.name, formData.email, formData.address, formData.phone, formData.pocName));
             }
           }
         });
-
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
@@ -282,11 +254,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-          >
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             <i className="mdi mdi-delete-outline"></i>
           </Link>
         </div>
@@ -301,7 +269,7 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const handleResetValues = () => {
-    setValidationErrors(initialValidationState)
+    setValidationErrors(initialValidationState);
     setFormData(initialState);
   };
 
@@ -322,14 +290,14 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={(e) => onSubmit(e)}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Franchise Management</h4>
@@ -343,32 +311,14 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               <Form.Group className="mb-3" controlId="name">
                 <Form.Label>Franchise Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.name}
-                  </Form.Text>
-                )}
+                <Form.Control type="text" name="name" value={formData.name} onChange={handleInputChange} />
+                {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="email">
                 <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.email && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.email}
-                  </Form.Text>
-                )}
+                <Form.Control type="email" name="email" value={formData.email} onChange={handleInputChange} />
+                {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="address">
@@ -380,51 +330,24 @@ const BasicInputElements = withSwal((props: any) => {
                   value={formData.address}
                   onChange={handleInputChange}
                 />
-                {validationErrors.address && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.address}
-                  </Form.Text>
-                )}
+                {validationErrors.address && <Form.Text className="text-danger">{validationErrors.address}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="phone">
                 <Form.Label>Phone</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.phone && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.phone}
-                  </Form.Text>
-                )}
+                <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
+                {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="pocName">
                 <Form.Label>Point of Contact Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="pocName"
-                  value={formData.pocName}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.pocName && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.pocName}
-                  </Form.Text>
-                )}
+                <Form.Control type="text" name="pocName" value={formData.pocName} onChange={handleInputChange} />
+                {validationErrors.pocName && <Form.Text className="text-danger">{validationErrors.pocName}</Form.Text>}
               </Form.Group>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]}
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
@@ -442,26 +365,29 @@ const BasicInputElements = withSwal((props: any) => {
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
           </Form>
         </Modal>
-        
+
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"franchise"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Franchise
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Franchise</h4>
               <Table
@@ -487,14 +413,12 @@ const Franchise = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading } = useSelector(
-    (state: RootState) => ({
-      state: state.Franchise.franchiseUsers,
-      error: state.Franchise.error,
-      loading: state.Franchise.loading,
-      initialLoading: state.Franchise.initialLoading,
-    })
-  );
+  const { state, error, loading, initialLoading } = useSelector((state: RootState) => ({
+    state: state.Franchise.franchiseUsers,
+    error: state.Franchise.error,
+    loading: state.Franchise.loading,
+    initialLoading: state.Franchise.initialLoading,
+  }));
 
   useEffect(() => {
     dispatch(getFranchise());
@@ -503,9 +427,7 @@ const Franchise = () => {
   return (
     <React.Fragment>
       <PageTitle
-        breadCrumbItems={[
-          { label: "Franchise Users", path: "/settings/master/franchise", active: true },
-        ]}
+        breadCrumbItems={[{ label: "Franchise Users", path: "/settings/master/franchise", active: true }]}
         title={"Franchise Users"}
       />
       <Row>

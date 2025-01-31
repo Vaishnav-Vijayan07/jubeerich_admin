@@ -20,6 +20,7 @@ import { AUTH_SESSION_KEY, customStyles, rgbaToHex } from "../../constants";
 import { max } from "moment";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { getStatusType } from "../../redux/status/statusType/actions";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: number;
@@ -78,6 +79,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedOptions, setSelectedOptions] = useState<OptionType | null>(null);
   const [statusType, setStatusType] = useState<OptionType | null>(null);
   const [updateColor, setupdateColor] = useState<string | null>(null);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -237,19 +239,6 @@ const BasicInputElements = withSwal((props: any) => {
           console.log(err);
         });
 
-      // if (userInfo) {
-      //   const { user_id } = JSON.parse(userInfo);
-      //   if (isUpdate) {
-      //     // Handle update logic
-
-      //     dispatch(updateStatus(formData.id, formData.status_name, formData.status_description, formData.color, user_id));
-      //     setIsUpdate(false);
-      //   } else {
-      //     // Handle add logic
-      //     dispatch(addStatus(formData.status_name, formData.status_description, formData.color, user_id));
-      //   }
-      // }
-
       // Clear validation errors
       setValidationErrors(initialValidationState);
 
@@ -270,8 +259,6 @@ const BasicInputElements = withSwal((props: any) => {
   useEffect(() => {
     // Check for errors and clear the form
     if (!loading && !error) {
-      console.log("here ======>");
-
       setResponsiveModal(false);
       // Clear validation errors
       setValidationErrors(initialValidationState);
@@ -384,6 +371,10 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -474,12 +465,24 @@ const BasicInputElements = withSwal((props: any) => {
           </Form>
         </Modal>
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"status"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="form__card p-0">
           <Card className="bg-white">
             <Card.Body>
               <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Status
               </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
+              </Button>
+
               <h4 className="header-title mb-4">Manage Status</h4>
               <Table
                 columns={columns}
@@ -527,15 +530,6 @@ const Status = () => {
       setStatusTypeData(StatusTypeArray);
     }
   }, [StatusType]);
-
-  // if (initialloading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <React.Fragment>

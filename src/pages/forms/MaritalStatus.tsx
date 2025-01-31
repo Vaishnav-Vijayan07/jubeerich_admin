@@ -29,6 +29,7 @@ import {
 } from "../../redux/marital_status/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
   value: string;
@@ -79,6 +80,7 @@ const initialValidationState = {
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const { swal, state, sourceData, error, loading, initialLoading } = props;
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -372,6 +374,10 @@ const BasicInputElements = withSwal((props: any) => {
       // Clear validation errors
     }
   }, [loading, error]);
+
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
   
 
   return (
@@ -455,6 +461,13 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"marital_status"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
@@ -463,6 +476,9 @@ const BasicInputElements = withSwal((props: any) => {
                 onClick={toggleResponsiveModal}
               >
                 <i className="mdi mdi-plus-circle"></i> Add Status
+              </Button>
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+              <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Marital Status</h4>
               <Table

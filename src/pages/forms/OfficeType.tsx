@@ -37,6 +37,7 @@ import {
 } from "../../redux/OfficeType/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
   value: string;
@@ -98,6 +99,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedSource, setSelectedSource] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -255,33 +257,6 @@ const BasicInputElements = withSwal((props: any) => {
         }
       });
 
-      // if (userInfo) {
-      //   const { user_id } = JSON.parse(userInfo);
-      //   if (isUpdate) {
-      //     // Handle update logic
-
-      //     dispatch(
-      //       updateOfficeTypeData(
-      //         formData.id,
-      //         formData.office_type_name,
-      //         formData.office_type_description,
-      //         user_id
-      //       )
-      //     );
-      //     setIsUpdate(false);
-      //   } else {
-      //     // Handle add logic
-
-      //     dispatch(
-      //       addOfficeTypeData(
-      //         formData.office_type_name,
-      //         formData.office_type_description,
-      //         user_id
-      //       )
-      //     );
-      //   }
-      // }
-
       // ... Rest of the form submission logic ...
     } catch (validationError) {
       // Handle validation errors
@@ -385,6 +360,10 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -484,6 +463,13 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"office_type"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
@@ -492,6 +478,10 @@ const BasicInputElements = withSwal((props: any) => {
                 onClick={toggleResponsiveModal}
               >
                 <i className="mdi mdi-plus-circle"></i> Add Office Type
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+              <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Office Types</h4>
               <Table
@@ -527,32 +517,9 @@ const OfficeType = () => {
     })
   );
 
-  // const Source = useSelector(
-  //   (state: RootState) => state?.Source?.sources?.data
-  // );
-
   useEffect(() => {
     dispatch(getOfficeTypeData());
   }, []);
-
-  // useEffect(() => {
-  //   if (Source) {
-  //     const SourceArray = Source?.map((source: any) => ({
-  //       value: source.id.toString(),
-  //       label: source.source_name, // Replace with the appropriate field from the lead data
-  //     }));
-  //     setSourceData(SourceArray);
-  //   }
-  // }, [Source]);
-
-  // if (initialLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <React.Fragment>

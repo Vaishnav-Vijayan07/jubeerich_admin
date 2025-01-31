@@ -1,20 +1,10 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Dropdown,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
@@ -23,15 +13,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
-import {
-  addRegion,
-  deleteRegion,
-  getRegion,
-  getRegionManagers,
-  updateRegion,
-} from "../../redux/regions/actions";
+import { addRegion, deleteRegion, getRegion, getRegionManagers, updateRegion } from "../../redux/regions/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
   value: string;
@@ -95,27 +80,20 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedManager, setSelectedManager] = useState<any>(null);
   const [formData, setFormData] = useState(initialState);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    region_name: yup
-      .string()
-      .required("channel name is required")
-      .min(3, "channel name must be at least 3 characters long"),
-    region_description: yup
-      .string(),
-      // .required("channel description is required")
-      // .min(3, "channel description must be at least 3 characters long"),
-    regional_manager_id: yup
-      .string()
-      .required("Please choose a regional manger"),
+    region_name: yup.string().required("channel name is required").min(3, "channel name must be at least 3 characters long"),
+    region_description: yup.string(),
+    // .required("channel description is required")
+    // .min(3, "channel description must be at least 3 characters long"),
+    regional_manager_id: yup.string().required("Please choose a regional manger"),
   });
 
   /*
@@ -127,9 +105,7 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
-    const updatedManager: OptionType[] = mangersData?.filter(
-      (manager: any) => manager.value == item.regional_manager_id
-    );
+    const updatedManager: OptionType[] = mangersData?.filter((manager: any) => manager.value == item.regional_manager_id);
     setSelectedManager(updatedManager[0]);
     setFormData((prev) => ({
       ...prev,
@@ -242,14 +218,7 @@ const BasicInputElements = withSwal((props: any) => {
                 setIsUpdate(false);
               } else {
                 // Handle add logic
-                dispatch(
-                  addRegion(
-                    formData.region_name,
-                    formData.region_description,
-                    formData.regional_manager_id,
-                    user_id
-                  )
-                );
+                dispatch(addRegion(formData.region_name, formData.region_description, formData.regional_manager_id, user_id));
               }
             }
           }
@@ -322,11 +291,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-          >
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             <i className="mdi mdi-delete-outline"></i>
             {/* <i className="mdi mdi-delete"></i> */}
           </Link>
@@ -375,15 +340,15 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Region Management</h4>
@@ -391,17 +356,8 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               <Form.Group className="mb-3" controlId="channel_name">
                 <Form.Label>Region Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="region_name"
-                  value={formData.region_name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.region_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.region_name}
-                  </Form.Text>
-                )}
+                <Form.Control type="text" name="region_name" value={formData.region_name} onChange={handleInputChange} />
+                {validationErrors.region_name && <Form.Text className="text-danger">{validationErrors.region_name}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="channel_description">
@@ -414,9 +370,7 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={handleInputChange}
                 />
                 {validationErrors.region_description && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.region_description}
-                  </Form.Text>
+                  <Form.Text className="text-danger">{validationErrors.region_description}</Form.Text>
                 )}
               </Form.Group>
 
@@ -433,21 +387,13 @@ const BasicInputElements = withSwal((props: any) => {
                 />
 
                 {validationErrors.regional_manager_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.regional_manager_id}
-                  </Form.Text>
+                  <Form.Text className="text-danger">{validationErrors.regional_manager_id}</Form.Text>
                 )}
               </Form.Group>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 "
-                onClick={() => [handleResetValues()]
-                }
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 " onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
@@ -455,19 +401,12 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1"
                 onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(), handleResetValues()]
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -475,14 +414,22 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"region"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Region
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Regions</h4>
               <Table
@@ -509,18 +456,13 @@ const Region = () => {
   const [mangersData, setMangersData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading, regional_managers } =
-    useSelector((state: RootState) => ({
-      state: state.Region.regions,
-      regional_managers: state.Region.regional_managers,
-      error: state.Region.error,
-      loading: state.Region.loading,
-      initialLoading: state.Region.initialLoading,
-    }));
-
-  // const Source = useSelector(
-  //   (state: RootState) => state?.Source?.sources?.data
-  // );
+  const { state, error, loading, initialLoading, regional_managers } = useSelector((state: RootState) => ({
+    state: state.Region.regions,
+    regional_managers: state.Region.regional_managers,
+    error: state.Region.error,
+    loading: state.Region.loading,
+    initialLoading: state.Region.initialLoading,
+  }));
 
   useEffect(() => {
     dispatch(getRegion());
@@ -536,15 +478,6 @@ const Region = () => {
       setMangersData(managersArray);
     }
   }, [regional_managers]);
-
-  // if (initialLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <React.Fragment>

@@ -4,6 +4,7 @@ import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 
+
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,10 +20,13 @@ import { regrexValidation } from "../../utils/regrexValidation";
 import axios from "axios";
 import { FormInput } from "../../components";
 
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
+
 interface TableRecords {
   id: string;
   branch_name: string;
   address: string;
+  
   city: string;
   country: string;
   currency: string;
@@ -108,8 +112,9 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedCountry, setSelectedCountry] = useState<any>(null);
   const [allStates, setAllStates] = useState<any>([]);
   const [selectedState, setSelectedState] = useState<any>(null);
-  const [allCities, setAllCities] = useState<any>(null)
+  const [allCities, setAllCities] = useState<any>(null);
   const [selectedCity, setSelectedCity] = useState<any>(null);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const getAllCountries = async () => {
     try {
@@ -117,7 +122,6 @@ const BasicInputElements = withSwal((props: any) => {
         timeout: 10000,
       });
       setAllCountries(res?.data?.data);
-
     } catch (error) {
       console.log(error);
     }
@@ -127,7 +131,6 @@ const BasicInputElements = withSwal((props: any) => {
     try {
       const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/states/q?country=${country}`);
       if (res) return res?.data?.data?.states || [];
-    
     } catch (error) {
       console.log(error);
     }
@@ -135,9 +138,10 @@ const BasicInputElements = withSwal((props: any) => {
 
   const getCityByState = async (country: any, state: any) => {
     try {
-      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/state/cities/q?country=${country}&state=${state}`);
+      const res = await axios.get(
+        `https://countriesnow.space/api/v0.1/countries/state/cities/q?country=${country}&state=${state}`
+      );
       if (res) return res?.data?.data || [];
-
     } catch (error) {
       console.log(error);
     }
@@ -155,19 +159,23 @@ const BasicInputElements = withSwal((props: any) => {
     city: yup.string().required("City is required"),
     state: yup.string().required("State is required"),
     country: yup.string().required("Country is required"),
-    pincode: yup.string()
+    pincode: yup
+      .string()
       .required("Pincode is required")
       .matches(/^[0-9]+$/, "Pincode must be digits only")
       .min(5, "Pincode must be at least 5 digits long"),
     contact_person_email: yup.string().email("Must be a valid email").required("Email is required"),
-    contact_person_name: yup.string()
+    contact_person_name: yup
+      .string()
       .required("Contact person name is required")
       .min(3, "Name must be at least 3 characters long"),
-    contact_person_mobile: yup.string()
+    contact_person_mobile: yup
+      .string()
       .required("Phone number is required")
       .matches(/^[0-9]+$/, "Phone number must be digits only")
       .min(10, "Phone number must be at least 10 digits long"),
-    contact_person_designation: yup.string()
+    contact_person_designation: yup
+      .string()
       .required("Designation is required")
       .min(3, "Designation must be at least 3 characters long"),
     website: yup.string(),
@@ -271,14 +279,14 @@ const BasicInputElements = withSwal((props: any) => {
     setSelectedCountry(updatedCountry ? { label: updatedCountry?.name, value: updatedCountry?.name } : null);
 
     if (updatedCountry) {
-      const resStates = await getStateByCountry(updatedCountry?.name)
+      const resStates = await getStateByCountry(updatedCountry?.name);
       setAllStates(resStates);
 
       const updatedState = resStates?.find((state: any) => state?.name === item?.state);
       setSelectedState(updatedState ? { label: updatedState?.name, value: updatedState?.name } : null);
 
       if (updatedState) {
-        const resCities = await getCityByState(updatedCountry?.name, updatedState?.name)
+        const resCities = await getCityByState(updatedCountry?.name, updatedState?.name);
         setAllCities(resCities);
 
         const updatedCity = resCities?.find((city: string) => city === item?.city);
@@ -465,7 +473,6 @@ const BasicInputElements = withSwal((props: any) => {
       });
 
       setFormData(initialState);
-
     } catch (validationError) {
       // Handle validation errors
       if (validationError instanceof yup.ValidationError) {
@@ -540,7 +547,6 @@ const BasicInputElements = withSwal((props: any) => {
     setFormData(initialState);
     setSelectedOffice("");
     setValidationErrors(initialValidationState);
-
   };
 
   const toggleResponsiveModal = () => {
@@ -562,7 +568,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   useEffect(() => {
     getAllCountries();
-  }, [])
+  }, []);
 
   const Cities = useMemo(() => {
     if (!allCities || allCities.length === 0) return [];
@@ -572,6 +578,10 @@ const BasicInputElements = withSwal((props: any) => {
       value: city,
     }));
   }, [allCities]);
+
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
 
   return (
     <>
@@ -583,41 +593,61 @@ const BasicInputElements = withSwal((props: any) => {
             </Modal.Header>
             <Modal.Body>
               <Row>
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
-                    <Form.Label className=""><span className="text-danger fs-4">* </span> Branch Name</Form.Label>
+                    <Form.Label className="">
+                      <span className="text-danger fs-4">* </span> Branch Name
+                    </Form.Label>
                     <Form.Control type="text" name="branch_name" value={formData.branch_name} onChange={handleInputChange} />
                     {validationErrors.branch_name && (
                       <Form.Text className="text-danger">{validationErrors.branch_name}</Form.Text>
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
-                    <Form.Label className=""><span className="text-danger fs-4">* </span> Email</Form.Label>
+                    <Form.Label className="">
+                      <span className="text-danger fs-4">* </span> Email
+                    </Form.Label>
                     <Form.Control type="text" name="email" value={formData.email} onChange={handleInputChange} />
                     {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                   </Form.Group>
                 </Col>
 
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
-                    <Form.Label className=""><span className="text-danger fs-4">* </span> Phone</Form.Label>
+                    <Form.Label className="">
+                      <span className="text-danger fs-4">* </span> Phone
+                    </Form.Label>
                     <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
                     {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="branch_name">
-                    <Form.Label className=""><span className="text-danger fs-4">* </span> Pincode</Form.Label>
-                    <Form.Control type="number" name="pincode" value={formData.pincode} onChange={handleInputChange} />
+                    <Form.Label className="">
+                      <span className="text-danger fs-4">* </span> Pincode
+                    </Form.Label>
+                    {/* <Form.Control type="number" maxLength={6} name="pincode" value={formData.pincode} onChange={handleInputChange} />
+                     */}
+                    <Form.Control
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={6}
+                      name="pincode"
+                      value={formData.pincode}
+                      onChange={handleInputChange}
+                    />
                     {validationErrors.pincode && <Form.Text className="text-danger">{validationErrors.pincode}</Form.Text>}
                   </Form.Group>
                 </Col>
 
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="country">
-                    <Form.Label><span className="text-danger fs-4">* </span> Branch Country</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span> Branch Country
+                    </Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -648,9 +678,11 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="state">
-                    <Form.Label><span className="text-danger fs-4">* </span> Branch State</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span> Branch State
+                    </Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -682,9 +714,11 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="city">
-                    <Form.Label><span className="text-danger fs-4">* </span> Branch City</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span> Branch City
+                    </Form.Label>
                     {/* <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -695,7 +729,7 @@ const BasicInputElements = withSwal((props: any) => {
                       onChange={handleDropDowns}
                       isDisabled={!selectedState}
                     /> */}
-                    
+
                     <FormInput
                       type="text"
                       name="city"
@@ -703,16 +737,18 @@ const BasicInputElements = withSwal((props: any) => {
                       key="city"
                       value={formData?.city} // Change to basicInfo
                       onChange={handleInputChange}
-                    // disabled={true}
+                      // disabled={true}
                     />
 
                     {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
                   </Form.Group>
                 </Col>
 
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="source_id">
-                    <Form.Label><span className="text-danger fs-4">* </span> Region</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span> Region
+                    </Form.Label>
                     <Select
                       styles={customStyles}
                       className="react-select react-select-container"
@@ -739,17 +775,21 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="address">
-                    <Form.Label><span className="text-danger fs-4">* </span> Branch Address</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span> Branch Address
+                    </Form.Label>
                     <Form.Control as="textarea" rows={5} name="address" value={formData.address} onChange={handleInputChange} />
                     {validationErrors.address && <Form.Text className="text-danger">{validationErrors.address}</Form.Text>}
                   </Form.Group>
                 </Col>
 
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="contact_person_email">
-                    <Form.Label><span className="text-danger fs-4">* </span> Contact Person Email</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span> Contact Person Email
+                    </Form.Label>
                     <Form.Control
                       type="email"
                       name="contact_person_email"
@@ -761,9 +801,11 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="contact_person_name">
-                    <Form.Label><span className="text-danger fs-4">* </span> Contact Person Name</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span> Contact Person Name
+                    </Form.Label>
                     <Form.Control
                       type="text"
                       name="contact_person_name"
@@ -776,9 +818,11 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="contact_person_mobile">
-                    <Form.Label><span className="text-danger fs-4">* </span> Contact Person Mobile</Form.Label>
+                    <Form.Label>
+                      <span className="text-danger fs-4">* </span> Contact Person Mobile
+                    </Form.Label>
                     <Form.Control
                       type="text"
                       name="contact_person_mobile"
@@ -790,7 +834,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="contact_person_designation">
                     <Form.Label>Contact Person Designation</Form.Label>
                     <Form.Control
@@ -805,14 +849,14 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="website">
                     <Form.Label>Website</Form.Label>
                     <Form.Control type="url" name="website" value={formData.website} onChange={handleInputChange} />
                     {validationErrors.website && <Form.Text className="text-danger">{validationErrors.website}</Form.Text>}
                   </Form.Group>
                 </Col>
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="social_media">
                     <Form.Label>Social Media</Form.Label>
                     <Form.Control type="url" name="social_media" value={formData.social_media} onChange={handleInputChange} />
@@ -822,7 +866,7 @@ const BasicInputElements = withSwal((props: any) => {
                   </Form.Group>
                 </Col>
 
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="account_mail">
                     <Form.Label>Account Mail</Form.Label>
                     <Form.Control type="email" name="account_mail" value={formData.account_mail} onChange={handleInputChange} />
@@ -831,7 +875,7 @@ const BasicInputElements = withSwal((props: any) => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={12} lg={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3" controlId="support_mail">
                     <Form.Label>Support Mail</Form.Label>
                     <Form.Control type="email" name="support_mail" value={formData.support_mail} onChange={handleInputChange} />
@@ -869,8 +913,15 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={() => [toggleResponsiveModal(), handleResetValues()]}>
+              <Button
+                className="btn-sm btn-blue waves-effect waves-light float-end"
+                onClick={() => [toggleResponsiveModal(), handleResetValues()]}
+              >
                 <i className="mdi mdi-plus-circle"></i> Add Branch
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Branch Details</h4>
               <Table
@@ -887,6 +938,13 @@ const BasicInputElements = withSwal((props: any) => {
             </Card.Body>
           </Card>
         </Col>
+
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"branch"} />
+          </Modal.Body>
+        </Modal>
       </Row>
     </>
   );
@@ -934,12 +992,7 @@ const Branches = () => {
 
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Branches", path: "/settings/master/branches", active: true },
-        ]}
-        title={"Branches"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Branches", path: "/settings/master/branches", active: true }]} title={"Branches"} />
       <Row>
         <Col>
           <BasicInputElements

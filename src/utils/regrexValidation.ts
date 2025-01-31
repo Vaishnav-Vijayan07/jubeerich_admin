@@ -57,6 +57,7 @@ export const regexPatterns: Record<string, RegExp> = {
   // organization: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   // current_income_source: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   zipcode: /^\+?[0-9]{0,15}$/,
+  pincode: /^\+?[0-9]{0,15}$/,
 
   // Lead Type
   // category_name: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,

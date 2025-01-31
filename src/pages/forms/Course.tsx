@@ -12,18 +12,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { Link } from "react-router-dom";
 
-import {
-  getStream,
-} from "../../redux/stream/actions";
+import { getStream } from "../../redux/stream/actions";
 import { customStyles } from "../../constants";
 import { getCourseType } from "../../redux/actions";
-import {
-  addCourse,
-  deleteCourse,
-  getCourse,
-  updateCourse,
-} from "../../redux/course/actions";
+import { addCourse, deleteCourse, getCourse, updateCourse } from "../../redux/course/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: string;
@@ -69,16 +63,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    swal,
-    state,
-    error,
-    loading,
-    userId,
-    streamOptions,
-    courseTypeOptions,
-    initialLoading
-  } = props;
+  const { swal, state, error, loading, userId, streamOptions, courseTypeOptions, initialLoading } = props;
 
   //fetch token from session storage
 
@@ -90,20 +75,16 @@ const BasicInputElements = withSwal((props: any) => {
   const [formData, setFormData] = useState(initialState);
   const [selectedCourseType, setSelectedCourseType] = useState<any>(null);
   const [selectedStream, setSelectedStream] = useState<any>(null);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    course_name: yup
-      .string()
-      .required("Course name is required")
-      .min(3, "Course name must be at least 3 characters long"),
+    course_name: yup.string().required("Course name is required").min(3, "Course name must be at least 3 characters long"),
 
     course_description: yup
       .string()
@@ -116,12 +97,8 @@ const BasicInputElements = withSwal((props: any) => {
   });
 
   const handleUpdate = (item: any) => {
-    const courseType = courseTypeOptions.find(
-      (record: any) => record?.value == item?.course_type?.id
-    );
-    const stream = streamOptions.find(
-      (record: any) => record?.value == item?.stream?.id
-    );
+    const courseType = courseTypeOptions.find((record: any) => record?.value == item?.course_type?.id);
+    const stream = streamOptions.find((record: any) => record?.value == item?.stream?.id);
 
     if (courseType && stream) {
       setSelectedCourseType(courseType);
@@ -184,7 +161,7 @@ const BasicInputElements = withSwal((props: any) => {
       console.error(`Invalid ${name}: ${value}`);
       return; // Stop updating if validation fails
     }
-    
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -248,7 +225,7 @@ const BasicInputElements = withSwal((props: any) => {
                   formData.course_name,
                   formData.course_description,
                   formData.course_type_id,
-                  formData.stream_id,
+                  formData.stream_id
                 )
               );
               setIsUpdate(false);
@@ -258,14 +235,7 @@ const BasicInputElements = withSwal((props: any) => {
               // Handle add logic
               console.log("Here");
 
-              dispatch(
-                addCourse(
-                  formData.course_name,
-                  formData.course_description,
-                  formData.course_type_id,
-                  formData.stream_id
-                )
-              );
+              dispatch(addCourse(formData.course_name, formData.course_description, formData.course_type_id, formData.stream_id));
               setSelectedCourseType(null);
               setSelectedStream(null);
             }
@@ -335,11 +305,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-          >
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -378,15 +344,15 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Course Management</h4>
@@ -394,17 +360,8 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               <Form.Group className="mb-3" controlId="course_name">
                 <Form.Label>Course Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="course_name"
-                  value={formData.course_name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.course_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.course_name}
-                  </Form.Text>
-                )}
+                <Form.Control type="text" name="course_name" value={formData.course_name} onChange={handleInputChange} />
+                {validationErrors.course_name && <Form.Text className="text-danger">{validationErrors.course_name}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="course_description">
@@ -417,9 +374,7 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={handleInputChange}
                 />
                 {validationErrors.course_description && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.course_description}
-                  </Form.Text>
+                  <Form.Text className="text-danger">{validationErrors.course_description}</Form.Text>
                 )}
               </Form.Group>
 
@@ -436,17 +391,13 @@ const BasicInputElements = withSwal((props: any) => {
                 />
 
                 {validationErrors.course_type_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.course_type_id}
-                  </Form.Text>
+                  <Form.Text className="text-danger">{validationErrors.course_type_id}</Form.Text>
                 )}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="stream_id">
                 <Form.Label>Streams</Form.Label>
                 <Select
-                
-                
                   styles={customStyles}
                   className="react-select react-select-container"
                   classNamePrefix="react-select"
@@ -456,21 +407,12 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={handleStreamChange}
                 />
 
-                {validationErrors.stream_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.stream_id}
-                  </Form.Text>
-                )}
+                {validationErrors.stream_id && <Form.Text className="text-danger">{validationErrors.stream_id}</Form.Text>}
               </Form.Group>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]}
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
@@ -478,19 +420,12 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1 "
                 onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(), handleResetValues()]
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -498,15 +433,24 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"course"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Course
               </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
+              </Button>
+
               <h4 className="header-title mb-4">Manage Course</h4>
               <Table
                 columns={columns}
@@ -531,15 +475,7 @@ const Course = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   //Fetch data from redux store
-  const {
-    state,
-    error,
-    loading,
-    initialLoading,
-    userId,
-    streamOptions,
-    courseTypeOptions,
-  } = useSelector((state: RootState) => ({
+  const { state, error, loading, initialLoading, userId, streamOptions, courseTypeOptions } = useSelector((state: RootState) => ({
     state: state.Course.course.data,
     streamOptions: state.Stream.stream.formattedStreams,
     courseTypeOptions: state.CourseType.courseType.formattedCourseTypes,
@@ -555,23 +491,9 @@ const Course = () => {
     dispatch(getCourseType());
   }, []);
 
-  // if (initialLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
-
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Courses", path: "/settings/master/course", active: true },
-        ]}
-        title={"Courses"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Courses", path: "/settings/master/course", active: true }]} title={"Courses"} />
       <Row>
         <Col>
           <BasicInputElements
