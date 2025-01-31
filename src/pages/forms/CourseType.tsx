@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import { addCourseType, deleteCourseType, getCourseType, updateCourseType } from "../../redux/actions";
 import { max } from "moment";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
   value: string;

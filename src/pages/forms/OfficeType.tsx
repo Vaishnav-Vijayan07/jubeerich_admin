@@ -37,7 +37,7 @@ import {
 } from "../../redux/OfficeType/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
   value: string;

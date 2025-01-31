@@ -15,7 +15,7 @@ import { AUTH_SESSION_KEY } from "../../constants";
 import { addCountry, deleteCountry, getCountry, updateCountry } from "../../redux/country/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: string;

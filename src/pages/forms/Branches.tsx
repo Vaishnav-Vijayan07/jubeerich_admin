@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
-import HistoryTable from "../../components/HistoryTable";
+
 
 // components
 import PageTitle from "../../components/PageTitle";
@@ -20,10 +20,13 @@ import { regrexValidation } from "../../utils/regrexValidation";
 import axios from "axios";
 import { FormInput } from "../../components";
 
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
+
 interface TableRecords {
   id: string;
   branch_name: string;
   address: string;
+  
   city: string;
   country: string;
   currency: string;

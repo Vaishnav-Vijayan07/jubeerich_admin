@@ -12,7 +12,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { Link } from "react-router-dom";
 import { addFranchise, deleteFranchise, getFranchise, updateFranchise } from "../../redux/franchise/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: string;

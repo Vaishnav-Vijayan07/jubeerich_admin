@@ -18,7 +18,7 @@ import { error } from "console";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: number;

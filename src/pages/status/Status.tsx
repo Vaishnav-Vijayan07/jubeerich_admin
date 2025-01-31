@@ -20,7 +20,7 @@ import { AUTH_SESSION_KEY, customStyles, rgbaToHex } from "../../constants";
 import { max } from "moment";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { getStatusType } from "../../redux/status/statusType/actions";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: number;

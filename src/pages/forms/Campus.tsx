@@ -18,7 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
 import { getCourse } from "../../redux/course/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
   value: string;

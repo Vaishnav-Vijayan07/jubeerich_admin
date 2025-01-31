@@ -17,7 +17,7 @@ import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { Link } from "react-router-dom";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
   value: string;

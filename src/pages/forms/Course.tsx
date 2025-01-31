@@ -17,7 +17,7 @@ import { customStyles } from "../../constants";
 import { getCourseType } from "../../redux/actions";
 import { addCourse, deleteCourse, getCourse, updateCourse } from "../../redux/course/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: string;

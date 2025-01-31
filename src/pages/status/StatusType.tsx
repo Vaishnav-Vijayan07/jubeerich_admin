@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { Slider } from "@mui/material";
 import { addStatusType, deleteStatusType, getStatusType, updateStatusType } from "../../redux/status/statusType/actions";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: number;

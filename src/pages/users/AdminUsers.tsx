@@ -34,7 +34,7 @@ import { getRegion } from "../../redux/regions/actions";
 import { getFranchise } from "../../redux/franchise/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
 import makeAnimated from "react-select/animated";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();

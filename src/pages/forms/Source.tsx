@@ -18,7 +18,7 @@ import { AUTH_SESSION_KEY } from "../../constants";
 import { Link } from "react-router-dom";
 import { getCategory } from "../../redux/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: number;

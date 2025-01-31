@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 
 import { deleteStream, getStream, updateStream, addStream } from "../../redux/stream/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: string;

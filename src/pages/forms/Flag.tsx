@@ -17,7 +17,7 @@ import { addFlag, deleteFlag, getFlag, updateFlag } from "../../redux/flag/actio
 import { Link } from "react-router-dom";
 import InputColor from "react-input-color";
 import { regrexValidation } from "../../utils/regrexValidation";
-import HistoryTable from "../../components/HistoryTable";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
   value: string;
