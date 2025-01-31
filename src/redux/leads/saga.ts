@@ -48,6 +48,7 @@ interface LeadsData {
     country?: string | undefined;
     office?: string | undefined;
     source?: string | undefined;
+    counselor?: string | undefined;
     id: string;
     full_name: string;
     email: string;
@@ -84,11 +85,11 @@ if (userInfo) {
   userRole = JSON.parse(userInfo)?.role;
 }
 
-function* getLeads({ payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source } }: LeadsData): SagaIterator {
+function* getLeads({ payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source,counselor } }: LeadsData): SagaIterator {
   try {
     let response;
     let data;
-    response = yield call(getLeadsApi, currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source);
+    response = yield call(getLeadsApi, currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source,counselor);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api

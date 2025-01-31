@@ -25,7 +25,7 @@ const Leads = () => {
   const [selectedCountry, setSelectedCountry] = useState<any>("all");
   const [selectedSource, setSelectedSource] = useState<any>("all");
 
-  const [counsellors, setCounsellors] = useState([]);
+  const [selectedCounsellors, setSelectedCounsellors] = useState("all");
   const [branchForManager, setBranchForManager] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
@@ -54,6 +54,9 @@ const Leads = () => {
       case "sort_order":
         setSortOrder(value);
         break;
+      case "counsellor":
+        setSelectedCounsellors(value);
+        break;
       default:
         break;
     }
@@ -81,7 +84,8 @@ const Leads = () => {
           sortOrder,
           selectedCountry == "all" ? undefined : selectedCountry,
           selectedOffice == "all" ? undefined : selectedOffice,
-          selectedSource == "all" ? undefined : selectedSource
+          selectedSource == "all" ? undefined : selectedSource,
+          
         )
       );
     } else {
@@ -95,7 +99,8 @@ const Leads = () => {
             sortOrder,
             selectedCountry == "all" ? undefined : selectedCountry,
             selectedOffice == "all" ? undefined : selectedOffice,
-            selectedSource == "all" ? undefined : selectedSource
+            selectedSource == "all" ? undefined : selectedSource,
+            selectedCounsellors == "all" ? undefined : selectedCounsellors
           )
         );
       }
@@ -105,12 +110,12 @@ const Leads = () => {
   const resetSort = () => {
     if (userRole == cre_tl_id) {
       dispatch(
-        getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc", undefined, undefined, undefined)
+        getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc")
       );
     } else {
       if (userRole) {
         dispatch(
-          getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc", undefined, undefined, undefined)
+          getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc")
         );
       }
     }
@@ -120,6 +125,7 @@ const Leads = () => {
     setSelectedOffice("all");
     setSelectedCountry("all");
     setSelectedSource("all");
+    setSelectedCounsellors("all");
     setSortBy("created_at");
     setSortOrder("asc");
     resetSort();
@@ -144,7 +150,7 @@ const Leads = () => {
           sortOrder,
           selectedCountry == "all" ? undefined : selectedCountry,
           selectedOffice == "all" ? undefined : selectedOffice,
-          selectedSource == "all" ? undefined : selectedSource
+          selectedSource == "all" ? undefined : selectedSource,
         )
       );
     } else {
@@ -158,7 +164,8 @@ const Leads = () => {
             sortOrder,
             selectedCountry == "all" ? undefined : selectedCountry,
             selectedOffice == "all" ? undefined : selectedOffice,
-            selectedSource == "all" ? undefined : selectedSource
+            selectedSource == "all" ? undefined : selectedSource,
+            selectedCounsellors == "all" ? undefined : selectedCounsellors
           )
         );
       }
@@ -196,10 +203,10 @@ const Leads = () => {
     setSearchParams(params);
   }, [sortBy, sortOrder, setSearchParams]);
 
-  useEffect(() => {
-    fetchAllCounsellors();
-    if (userBranchId) dispatch(getBranchCounsellors(userBranchId));
-  }, [userBranchId]);
+  // useEffect(() => {
+  //   fetchAllCounsellors();
+  //   if (userBranchId) dispatch(getBranchCounsellors(userBranchId));
+  // }, [userBranchId]);
 
   useEffect(() => {
     if (userRole == cre_tl_id) {
@@ -216,6 +223,8 @@ const Leads = () => {
         )
       );
     } else {
+      console.log(userRole);
+      
       if (userRole) {
         dispatch(
           getLead(
@@ -239,22 +248,22 @@ const Leads = () => {
     console.count("loading count");
   }, [userRole, currentPage, currentLimit]);
 
-  const fetchAllCounsellors = useCallback(() => {
-    axios
-      .get("/get_all_counsellors")
-      .then((res) => {
-        const counsellorData = res?.data?.data?.map((item: any) => {
-          return {
-            label: item?.name,
-            value: item?.id,
-          };
-        });
-        setCounsellors(counsellorData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  // const fetchAllCounsellors = useCallback(() => {
+  //   axios
+  //     .get("/get_all_counsellors")
+  //     .then((res) => {
+  //       const counsellorData = res?.data?.data?.map((item: any) => {
+  //         return {
+  //           label: item?.name,
+  //           value: item?.id,
+  //         };
+  //       });
+  //       setCounsellors(counsellorData);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   const fetchBranches = useCallback(async () => {
     try {
@@ -281,14 +290,17 @@ const Leads = () => {
             countries={dropdownData?.countries}
             source={dropdownData?.sources}
             offices={dropdownData?.officeTypes}
+            consellors={dropdownData?.counsellors}
             selectedCountry={selectedCountry}
             selectedOffice={selectedOffice}
             selectedSource={selectedSource}
+            selectedCounsellors={selectedCounsellors}
             onFilterChange={handleFilterChange}
             selectedSortBy={sortBy}
             selectedSortOrder={sortOrder}
             onApplySort={applySort}
             onClear={resetFilters}
+            userRole={userRole}
           />
         </Col>
       </Row>
@@ -306,7 +318,7 @@ const Leads = () => {
             error={error}
             loading={loading}
             status={dropdownData.statuses || []}
-            counsellors={counsellors || []}
+            counsellors={dropdownData?.counsellors || []}
             userData={dropdownData.adminUsers || []}
             region={dropdownData.regions}
             regionData={dropdownData.regions || []}
