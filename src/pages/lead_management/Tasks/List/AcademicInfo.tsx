@@ -175,13 +175,13 @@ const AcademicInfo = withSwal((props: any) => {
   const handleSaveExamInfo = () => {
     const validationRules = {
       exam_type: { required: true, message: "Please choose an exam type" },
-      listening_score: { required: true, message: "Please enter a listening score" },
-      speaking_score: { required: true, message: "Please enter a speaking score" },
-      reading_score: { required: true, message: "Please enter a reading score" },
-      writing_score: { required: true, message: "Please enter a writing score" },
-      overall_score: { required: true, message: "Please enter an overall score" },
+      listening_score: { required: false, message: "Please enter a listening score" },
+      speaking_score: { required: false, message: "Please enter a speaking score" },
+      reading_score: { required: false, message: "Please enter a reading score" },
+      writing_score: { required: false, message: "Please enter a writing score" },
+      overall_score: { required: false, message: "Please enter an overall score" },
       exam_date: { required: true, message: "Please select an exam date" },
-      score_card: { required: true, message: "Please upload a score card" },
+      score_card: { required: false, message: "Please upload a score card" },
       exam_remarks: { required: false, message: "Please choose a exam remarks" },
     };
 
