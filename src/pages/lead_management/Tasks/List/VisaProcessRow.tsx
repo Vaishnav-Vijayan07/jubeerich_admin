@@ -57,7 +57,7 @@ const VisaProcessRow = ({
             <Row key={index}>
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="visa_type">
-                  <Form.Label><span className="text-danger">*</span> Visa Type</Form.Label>
+                  <Form.Label> Visa Type</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -149,7 +149,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="rejection_reason">
-                  <Form.Label><span className="text-danger">*</span> Rejection Reason</Form.Label>
+                  <Form.Label>Rejection Reason</Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={1}
@@ -217,7 +217,7 @@ const VisaProcessRow = ({
             <Row key={index}>
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="visa_type">
-                  <Form.Label><span className="text-danger">*</span> Visa Type</Form.Label>
+                  <Form.Label>Visa Type</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -383,7 +383,7 @@ const VisaProcessRow = ({
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="start_date">
                   <Form.Label>
-                    <span className="text-danger">*</span> Start Date
+                    Start Date
                   </Form.Label>
                   <FormInput
                     type="date"
@@ -400,7 +400,7 @@ const VisaProcessRow = ({
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="end_date">
                   <Form.Label>
-                    <span className="text-danger">*</span> End Date
+                    End Date
                   </Form.Label>
                   <FormInput
                     type="date"
@@ -416,7 +416,7 @@ const VisaProcessRow = ({
 
               <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="purpose_of_travel">
-                  <Form.Label><span className="text-danger">*</span> Purpose of Travel</Form.Label>
+                  <Form.Label>Purpose of Travel</Form.Label>
                   <FormInput
                     type="text"
                     name="purpose_of_travel"

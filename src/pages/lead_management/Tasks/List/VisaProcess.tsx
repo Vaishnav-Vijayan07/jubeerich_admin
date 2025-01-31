@@ -297,9 +297,9 @@ const VisaProcess = withSwal((props: any) => {
     const validationRules = {
       course_applied: { required: true,message:"Please enter a course applied" },
       country_id: { required: true,message:"Please select a country" },
-      rejection_reason: { required: true, message: "Please enter a rejection reason" }, 
+      rejection_reason: { required: false, message: "Please enter a rejection reason" }, 
       university_applied: { required: true,message:"Please enter a university applied" },
-      visa_type: { required: true, message: "Please enter a visa type" },
+      visa_type: { required: false, message: "Please enter a visa type" },
     };
 
     const { isValid, errors } = validateFields(visaDeclineFormData, validationRules);
@@ -386,7 +386,7 @@ const VisaProcess = withSwal((props: any) => {
       course_applied: { required: true, message: "Please enter a course applied" },
       country_id: { required: true, message: "Please select a country" },
       university_applied: { required: true, message: "Please enter a university applied" },
-      visa_type: { required: true, message: "Please enter a visa type" },
+      visa_type: { required: false, message: "Please enter a visa type" },
     };
 
     const { isValid, errors } = validateFields(visaApproveFormData, validationRules);
@@ -472,9 +472,9 @@ const VisaProcess = withSwal((props: any) => {
   const submitTravelHistory = async () => {
     const validationRules = {
       country_id: { required: true, message: "Please select a country" },
-      start_date: { required: true, message: "Please select a start date" },
-      end_date: { required: true, message: "Please select an end date" },
-      purpose_of_travel: { required: true, message: "Please enter a purpose of travel" },
+      start_date: { required: false, message: "Please select a start date" },
+      end_date: { required: false, message: "Please select an end date" },
+      purpose_of_travel: { required: false, message: "Please enter a purpose of travel" },
     };
 
     const { isValid, errors } = validateFields(travelHistoryFormData, validationRules);

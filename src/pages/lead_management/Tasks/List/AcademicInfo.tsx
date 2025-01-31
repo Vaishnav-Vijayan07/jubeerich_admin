@@ -180,7 +180,7 @@ const AcademicInfo = withSwal((props: any) => {
       reading_score: { required: false, message: "Please enter a reading score" },
       writing_score: { required: false, message: "Please enter a writing score" },
       overall_score: { required: false, message: "Please enter an overall score" },
-      exam_date: { required: true, message: "Please select an exam date" },
+      exam_date: { required: false, message: "Please select an exam date" },
       score_card: { required: false, message: "Please upload a score card" },
       exam_remarks: { required: false, message: "Please choose a exam remarks" },
     };

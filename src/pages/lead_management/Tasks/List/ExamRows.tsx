@@ -138,7 +138,7 @@ const ExamData: React.FC<ExamDataProps> = ({
       </Col>
       <Col md={4} lg={4}>
         <Form.Group className="mb-3" controlId="exam_date">
-          <Form.Label><span className="text-danger">*</span> Exam Date</Form.Label>
+          <Form.Label>Exam Date</Form.Label>
           <Form.Control
             type="date"
             name="exam_date"

@@ -48,7 +48,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`fund_origin-${index}`}>
             <Form.Label>
-              <span className="text-danger">*</span> Fund Origin
+               Fund Origin
             </Form.Label>
             <Select
               name="fund_origin"
@@ -65,7 +65,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`sponsor_name-${index}`}>
             <Form.Label>
-              <span className="text-danger">*</span> Sponsor Name
+               Sponsor Name
             </Form.Label>
             <FormInput
               type="text"
@@ -82,7 +82,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`approx_annual_income-${index}`}>
             <Form.Label>
-              <span className="text-danger">*</span> Approx Annual Income ( ₹ )
+               Approx Annual Income ( ₹ )
             </Form.Label>
             <FormInput
               type="number"
@@ -103,7 +103,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`relation_with_sponsor-${index}`}>
             <Form.Label>
-              <span className="text-danger">*</span> Relation with Sponsor
+               Relation with Sponsor
             </Form.Label>
             <Form.Select
               name="relation_with_sponsor"
@@ -128,7 +128,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`sponsorship_amount-${index}`}>
             <Form.Label>
-              <span className="text-danger">*</span> Sponsorship amount ( ₹ )
+               Sponsorship amount ( ₹ )
             </Form.Label>
             <FormInput
               type="number"
@@ -147,7 +147,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`name_of_bank-${index}`}>
             <Form.Label>
-              <span className="text-danger">*</span> Name of bank
+               Name of bank
             </Form.Label>
             <FormInput
               type="text"
