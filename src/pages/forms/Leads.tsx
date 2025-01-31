@@ -132,14 +132,27 @@ const Leads = () => {
 
   const handleSearch = (value: any) => {
     setSearchValue(value);
+    setCurrentPage(1);
+    setCurrentLimit(20);
     if (userRole == cre_tl_id) {
-      dispatch(getLeadsTL(1, 20, value));
+      dispatch(
+        getLeadsTL(
+          1,
+          20,
+          value,
+          sortBy,
+          sortOrder,
+          selectedCountry == "all" ? undefined : selectedCountry,
+          selectedOffice == "all" ? undefined : selectedOffice,
+          selectedSource == "all" ? undefined : selectedSource
+        )
+      );
     } else {
       if (userRole) {
         dispatch(
           getLead(
-            currentPage,
-            currentLimit,
+            1,
+            20,
             value,
             sortBy,
             sortOrder,

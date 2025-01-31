@@ -20,17 +20,14 @@ import {
   baseUrl,
   counsellor_tl_id,
   cre_id,
-  cre_reception_id,
   cre_tl_id,
-  customStyles,
-  franchise_id_from_office,
   it_team_id,
   region_id,
   showErrorAlert,
   showSuccessAlert,
 } from "../../constants";
 import FileUploader from "../../components/FileUploader";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { city, examtypes } from "./data";
 import moment from "moment";
@@ -44,6 +41,7 @@ import Swal from "sweetalert2";
 import { usePagination } from "../../hooks/usePagination";
 import CustomPagination from "../../components/CustomPagination";
 import CustomSearchBox from "../../components/CustomSearchBox";
+import CustomLeadFilters from "../../components/CustomLeadFilters";
 
 interface OptionType {
   value: string;
@@ -265,7 +263,7 @@ const BasicInputElements = withSwal((props: any) => {
           <Dropdown.Toggle variant="light" className="table-action-btn btn-sm">
             {row.original.cre_name}
           </Dropdown.Toggle>
-          <Dropdown.Menu style={{ maxHeight: "150px", overflow: "visible" }}>
+          <Dropdown.Menu style={{ maxHeight: "150px", overflow: "scroll" }}>
             {cres.map((item: any) => (
               <Dropdown.Item key={item?.value} onClick={() => handleAssignBulk([row.original.id], item.value)}>
                 {item.label}
@@ -491,7 +489,7 @@ const BasicInputElements = withSwal((props: any) => {
           const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
 
           if (data.status) {
-            dispatch(getLeadAssigned(currentPage, currentLimit));
+            dispatch(getLeadAssigned(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
             showSuccessAlert("Bulk assignment successful.");
           }
         } catch (error) {
@@ -619,18 +617,6 @@ const BasicInputElements = withSwal((props: any) => {
         />
 
         <Col lg={12} className="p-0 form__card">
-          <LeadsFilters
-            changeFilteredItemsData={changeFilteredItemsData}
-            state={state}
-            status={status}
-            source={source}
-            country={country}
-            userData={userData}
-            counsellors={counsellors}
-            cres={cres}
-            isAssignedLeads={true}
-          />
-
           <Card className="bg-white">
             <Card.Body>
               <div className="d-flex flex-wrap gap-2 justify-content-end">
@@ -713,8 +699,17 @@ const AssignedLeads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   const { loading: dropDownLoading, dropdownData } = useDropdownData("");
   const { currentLimit, currentPage, setCurrentPage, setCurrentLimit } = usePagination();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [counsellors, setCounsellors] = useState([]);
+
+  const [sortBy, setSortBy] = useState<string>(searchParams.get("sort_by") || "created_at");
+  const [sortOrder, setSortOrder] = useState<string>(searchParams.get("sort_order") || "asc");
+
+  const [selectedOffice, setSelectedOffice] = useState<any>("all");
+  const [selectedCountry, setSelectedCountry] = useState<any>("all");
+  const [selectedSource, setSelectedSource] = useState<any>("all");
+  const [selectedCre, setSelectedCre] = useState<any>("all");
 
   const [close, setClose] = useState(false);
   const [value, setValue] = useState("");
@@ -729,11 +724,30 @@ const AssignedLeads = () => {
     setCurrentPage(1);
   }, []);
 
-  const handleSearch = useCallback(() => {
-    setSearch(value);
-    setCurrentPage(1);
-    setCurrentLimit(20);
-  }, [value]);
+  const handleSearch = useCallback(
+    (value: any) => {
+      setSearch(value);
+      setCurrentPage(1);
+      setCurrentLimit(20);
+      if (userRole == cre_tl_id) {
+        dispatch(
+          getLeadAssigned(
+            1,
+            20,
+            value,
+            sortBy,
+            sortOrder,
+            selectedCountry == "all" ? undefined : selectedCountry,
+            selectedOffice == "all" ? undefined : selectedOffice,
+            selectedSource == "all" ? undefined : selectedSource
+          )
+        );
+      } else {
+        dispatch(getLeadAssignedByCounsellorTL(currentPage, currentLimit, search == "" ? undefined : search));
+      }
+    },
+    [value]
+  );
 
   const handleValue = useCallback((searchItem: string) => {
     setValue(searchItem);
@@ -744,6 +758,71 @@ const AssignedLeads = () => {
     setValue("");
     setSearch("");
   }, []);
+
+  const resetSort = () => {
+    if (userRole == cre_tl_id) {
+      dispatch(
+        getLeadAssigned(currentPage, currentLimit, search == "" ? undefined : search, sortBy, sortOrder, undefined, undefined, undefined, undefined)
+      );
+    } else {
+      dispatch(getLeadAssignedByCounsellorTL(currentPage, currentLimit, search == "" ? undefined : search));
+    }
+  };
+
+  const handleFilterChange = (name: string, value: string) => {
+    switch (name) {
+      case "office":
+        setSelectedOffice(value);
+        break;
+      case "country":
+        setSelectedCountry(value);
+        break;
+      case "source":
+        setSelectedSource(value);
+        break;
+      case "sort_by":
+        setSortBy(value);
+        break;
+      case "sort_order":
+        setSortOrder(value);
+        break;
+      case "cre":
+        setSelectedCre(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const resetFilters = () => {
+    setSelectedOffice("all");
+    setSelectedCountry("all");
+    setSelectedSource("all");
+    setSelectedCre("all");
+    setSortBy("created_at");
+    setSortOrder("asc");
+    resetSort();
+  };
+
+  const applySort = () => {
+    if (userRole == cre_tl_id) {
+      dispatch(
+        getLeadAssigned(
+          currentPage,
+          currentLimit,
+          search == "" ? undefined : search,
+          sortBy,
+          sortOrder,
+          selectedCountry == "all" ? undefined : selectedCountry,
+          selectedOffice == "all" ? undefined : selectedOffice,
+          selectedSource == "all" ? undefined : selectedSource,
+          selectedCre == "all" ? undefined : selectedCre
+        )
+      );
+    } else {
+      dispatch(getLeadAssignedByCounsellorTL(currentPage, currentLimit, search == "" ? undefined : search));
+    }
+  };
 
   const dispatch = useDispatch<AppDispatch>();
   const { user, state, error, loading, initialLoading, users, franchisees, branchCounsellor, flag, limit, totalPages, totalCount, isSearchApplied } =
@@ -771,9 +850,32 @@ const AssignedLeads = () => {
   }
 
   useEffect(() => {
+    const params: any = {
+      sort_by: sortBy,
+      sort_order: sortOrder,
+    };
+
+    setSearchParams(params);
+  }, [sortBy, sortOrder, setSearchParams]);
+
+  useEffect(() => {
+    console.log("HERE");
+
     dispatch(getFlag());
     if (userRole == cre_tl_id) {
-      dispatch(getLeadAssigned(currentPage, currentLimit, search == "" ? undefined : search));
+      dispatch(
+        getLeadAssigned(
+          currentPage,
+          currentLimit,
+          search == "" ? undefined : search,
+          sortBy,
+          sortOrder,
+          selectedCountry == "all" ? undefined : selectedCountry,
+          selectedOffice == "all" ? undefined : selectedOffice,
+          selectedSource == "all" ? undefined : selectedSource,
+          selectedCre == "all" ? undefined : selectedCre
+        )
+      );
     } else {
       dispatch(getLeadAssignedByCounsellorTL(currentPage, currentLimit, search == "" ? undefined : search));
     }
@@ -821,6 +923,25 @@ const AssignedLeads = () => {
   return (
     <React.Fragment>
       <PageTitle breadCrumbItems={[{ label: "Assigned Leads", path: "/leads/assigned/manage", active: true }]} title={"Assigned Leads"} />
+
+      <Row>
+        <Col>
+          <CustomLeadFilters
+            countries={dropdownData?.countries}
+            source={dropdownData?.sources}
+            cres={dropdownData?.cres}
+            selectedCountry={selectedCountry}
+            selectedSource={selectedSource}
+            selectedCre={selectedCre}
+            onFilterChange={handleFilterChange}
+            selectedSortBy={sortBy}
+            selectedSortOrder={sortOrder}
+            onApplySort={applySort}
+            onClear={resetFilters}
+          />
+        </Col>
+      </Row>
+
       <Row>
         <Col>
           <BasicInputElements

@@ -95,13 +95,12 @@ const BasicInputElements = withSwal((props: any) => {
   const [responseData, setResponseData] = useState<any>(null);
   const [approvalOptionsData, setApprovalOptionsData] = useState<any>(null);
   const [assignedApprovalData, setAssignedApprovalData] = useState<any>(null);
-  const [approvalType, setApprovalType] = useState<string>('');
+  const [approvalType, setApprovalType] = useState<string>("");
   const [creList, setCreList] = useState<any>(null);
 
   const getSlugOptions = async () => {
     try {
       const { data } = await axios.get(`/get_slug_options`);
-      console.log(data);
       setApprovalOptionsData(data?.data);
     } catch (error) {
       console.log(error);
@@ -549,7 +548,7 @@ const BasicInputElements = withSwal((props: any) => {
         setClearFiles(!clearFiles);
         toggleUploadModal();
         setOpenApproveModal(true);
-        setApprovalType(approvalTypes.import_lead)
+        setApprovalType(approvalTypes.import_lead);
         setResponseData(data);
       } else {
         showWarningAlert(data.message);
@@ -585,9 +584,9 @@ const BasicInputElements = withSwal((props: any) => {
 
           if (data.status) {
             if (userRole == cre_tl_id) {
-              dispatch(getLeadsTL(currentPage, currentLimit));
+              dispatch(getLeadsTL(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
             } else {
-              dispatch(getLead(currentPage, currentLimit));
+              dispatch(getLead(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
             }
             showSuccessAlert("Assigned Successfully.");
           }
@@ -779,28 +778,27 @@ const BasicInputElements = withSwal((props: any) => {
   };
 
   const refetchLead = () => {
-    if(approvalType == approvalTypes.import_lead){
-      dispatch(getLead(currentPage, currentLimit));
-    } else if(approvalType == approvalTypes.assign_cre) {
+    if (approvalType == approvalTypes.import_lead) {
+      dispatch(getLead(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
+    } else if (approvalType == approvalTypes.assign_cre) {
       if (userRole == cre_tl_id) {
-        dispatch(getLeadsTL(currentPage, currentLimit));
+        dispatch(getLeadsTL(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
       } else {
-        dispatch(getLead(currentPage, currentLimit));
+        dispatch(getLead(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (openApproveModal) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     }
     return () => {
-      document.body.style.overflow = 'auto'; // Clean up on component unmount
+      document.body.style.overflow = "auto"; // Clean up on component unmount
     };
   }, [openApproveModal]);
-  
 
   return (
     <>
@@ -826,7 +824,7 @@ const BasicInputElements = withSwal((props: any) => {
           handleUpdateData={handleUpdateData}
           initialLoading={initialLoading}
         />
-        
+
         {user?.role == it_team_id && (
           <Modal show={uploadModal} onHide={toggleUploadModal} dialogClassName="modal-dialog-centered">
             <Modal.Header closeButton></Modal.Header>
@@ -874,8 +872,6 @@ const BasicInputElements = withSwal((props: any) => {
               branchForManager={branchForManager || []}
             />
           )} */}
-
-          
 
           <Card className="bg-white py-3">
             <Card.Body>
@@ -1030,18 +1026,27 @@ const BasicInputElements = withSwal((props: any) => {
                 </>
               )}
 
-              {
-                (approvalType == approvalTypes.import_lead && openApproveModal) && (
-                  <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={responseData} options={approvalOptionsData} refetchLead={refetchLead} approvalType={approvalTypes.import_lead}/>
-                )
-              }
+              {approvalType == approvalTypes.import_lead && openApproveModal && (
+                <LeadApprovalTable
+                  isOpenModal={openApproveModal}
+                  toggleModal={setOpenApproveModal}
+                  responseData={responseData}
+                  options={approvalOptionsData}
+                  refetchLead={refetchLead}
+                  approvalType={approvalTypes.import_lead}
+                />
+              )}
 
-              {
-                (approvalType == approvalTypes.assign_cre && openApproveModal) && (
-                  <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={setOpenApproveModal} responseData={assignedApprovalData} options={creList} refetchLead={refetchLead} approvalType={approvalTypes.assign_cre}/>
-                )
-              }
-            
+              {approvalType == approvalTypes.assign_cre && openApproveModal && (
+                <LeadApprovalTable
+                  isOpenModal={openApproveModal}
+                  toggleModal={setOpenApproveModal}
+                  responseData={assignedApprovalData}
+                  options={creList}
+                  refetchLead={refetchLead}
+                  approvalType={approvalTypes.assign_cre}
+                />
+              )}
             </Card.Body>
           </Card>
         </Col>

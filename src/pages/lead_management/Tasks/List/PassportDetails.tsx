@@ -211,7 +211,7 @@ const PassportDetails = ({ studentId }: Props) => {
 
   const savePassportDetails = async () => {
     const validationRules = {
-      date_of_expiry: { required: true, message: "Please select a date of expiry" },
+      date_of_expiry: { required: false, message: "Please select a date of expiry" },
       passport_number: {
         required: true,
         message: "Please enter a passport number",

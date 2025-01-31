@@ -9,12 +9,14 @@ type SortOption = {
 type Props = {
   countries: SelectItems[];
   source: SelectItems[];
-  offices: SelectItems[];
+  offices?: SelectItems[];
+  cres?: SelectItems[];
   selectedCountry: string;
-  selectedOffice: string;
+  selectedOffice?: string;
   selectedSource: string;
   selectedSortBy: string;
   selectedSortOrder: string;
+  selectedCre?: string;
   onFilterChange?: (name: string, value: string) => void;
   onApplySort?: () => void;
   onClear?: VoidFunction;
@@ -41,9 +43,11 @@ function CustomLeadFilters({
   countries,
   offices,
   source,
+  cres,
   selectedCountry,
   selectedOffice,
   selectedSource,
+  selectedCre,
   selectedSortBy,
   selectedSortOrder,
   onApplySort,
@@ -65,8 +69,8 @@ function CustomLeadFilters({
   };
 
   return (
-    <Card>
-      <Row>
+    <Card >
+      <Row onClick={() => setOpen(!open)}>
         <Col className="d-flex justify-content-start align-items-center">
           <span className="mt-3 ms-3 w-full">
             <h4 className="header-title mb-3" style={{ fontSize: "18px" }}>
@@ -75,7 +79,7 @@ function CustomLeadFilters({
           </span>
         </Col>
         <Col className="d-flex justify-content-end align-items-center">
-          <span className="ms-3 me-3" onClick={() => setOpen(!open)} aria-controls="example-collapse-text" aria-expanded={open}>
+          <span className="ms-3 me-3" aria-controls="example-collapse-text" aria-expanded={open}>
             {open && <i className="mdi mdi-arrow-up-drop-circle-outline fs-2"></i>}
             {!open && <i className="mdi mdi-arrow-down-drop-circle-outline fs-2"></i>}
           </span>
@@ -111,29 +115,57 @@ function CustomLeadFilters({
                   </Form.Group>
                 </Col>
 
-                <Col>
-                  <Form.Group className="mb-0">
-                    <Form.Label className="text-muted fw-semibold small">Office</Form.Label>
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="outline-secondary"
-                        id="sort-field-dropdown"
-                        className="medium text-truncate"
-                        style={{ minWidth: "120px", display: "flex", alignItems: "center", justifyContent: "space-between" }}
-                      >
-                        {offices?.find((office) => office.value === selectedOffice)?.label || "All"}
-                      </Dropdown.Toggle>
+                {offices && offices?.length > 0 && (
+                  <Col>
+                    <Form.Group className="mb-0">
+                      <Form.Label className="text-muted fw-semibold small">Office</Form.Label>
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="outline-secondary"
+                          id="sort-field-dropdown"
+                          className="medium text-truncate"
+                          style={{ minWidth: "120px", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+                        >
+                          {offices?.find((office) => office.value === selectedOffice)?.label || "All"}
+                        </Dropdown.Toggle>
 
-                      <Dropdown.Menu>
-                        {[{ value: "all", label: "All" }, ...offices]?.map((option) => (
-                          <Dropdown.Item key={option.value} onClick={() => handleFieldChange("office", option.value)}>
-                            {option.label}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </Form.Group>
-                </Col>
+                        <Dropdown.Menu>
+                          {[{ value: "all", label: "All" }, ...offices]?.map((option) => (
+                            <Dropdown.Item key={option.value} onClick={() => handleFieldChange("office", option.value)}>
+                              {option.label}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </Form.Group>
+                  </Col>
+                )}
+
+                {cres && cres?.length > 0 && (
+                  <Col>
+                    <Form.Group className="mb-0">
+                      <Form.Label className="text-muted fw-semibold small">Cre's</Form.Label>
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="outline-secondary"
+                          id="sort-field-dropdown"
+                          className="medium text-truncate"
+                          style={{ minWidth: "120px", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+                        >
+                          {cres?.find((cre) => cre.value === selectedCre)?.label || "All"}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                          {[{ value: "all", label: "All" }, ...cres]?.map((option) => (
+                            <Dropdown.Item key={option.value} onClick={() => handleFieldChange("cre", option.value)}>
+                              {option.label}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </Form.Group>
+                  </Col>
+                )}
 
                 <Col>
                   <Form.Group className="mb-0">
@@ -222,148 +254,6 @@ function CustomLeadFilters({
           </div>
         </Collapse>
       </Card.Body>
-
-      {/* 
-        {isExpanded && (
-          <Row>
-            <Card.Body className="p-3">
-              <Row>
-                <Col md={10} className="d-flex justify-content-evenly">
-                  <Col>
-                    <Form.Group className="mb-0">
-                      <Form.Label className="text-muted fw-semibold small">Country</Form.Label>
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          variant="outline-secondary"
-                          id="sort-field-dropdown"
-                          className="small text-truncate"
-                          style={{ minWidth: "120px",display:"flex",alignItems:"center",justifyContent:"space-between" }}
-                        >
-                          {countries?.find((country) => country.value === selectedCountry)?.label || "All"}
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu>
-                          {[{ value: "all", label: "All" }, ...countries]?.map((option) => (
-                            <Dropdown.Item key={option.value} onClick={() => handleFieldChange("country", option.value)}>
-                              {option.label}
-                            </Dropdown.Item>
-                          ))}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Form.Group>
-                  </Col>
-
-                  <Col>
-                    <Form.Group className="mb-0">
-                      <Form.Label className="text-muted fw-semibold small">Office</Form.Label>
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          variant="outline-secondary"
-                          id="sort-field-dropdown"
-                          className="small text-truncate"
-                          style={{ minWidth: "120px",display:"flex",alignItems:"center",justifyContent:"space-between" }}
-                        >
-                          {offices?.find((office) => office.value === selectedOffice)?.label || "All"}
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu>
-                          {[{ value: "all", label: "All" }, ...offices]?.map((option) => (
-                            <Dropdown.Item key={option.value} onClick={() => handleFieldChange("office", option.value)}>
-                              {option.label}
-                            </Dropdown.Item>
-                          ))}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Form.Group>
-                  </Col>
-
-                  <Col>
-                    <Form.Group className="mb-0">
-                      <Form.Label className="text-muted fw-semibold small">Source</Form.Label>
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          variant="outline-secondary"
-                          id="sort-field-dropdown"
-                          className="small text-truncate"
-                          style={{ minWidth: "120px",display:"flex",alignItems:"center",justifyContent:"space-between" }}
-                        >
-                          {source?.find((source) => source.value === selectedSource)?.label || "All"}
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu>
-                          {[{ value: "all", label: "All" }, ...source].map((option) => (
-                            <Dropdown.Item key={option.value} onClick={() => handleFieldChange("source", option.value)}>
-                              {option.label}
-                            </Dropdown.Item>
-                          ))}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Form.Group>
-                  </Col>
-
-                  <Col>
-                    <Form.Group className="mb-0">
-                      <Form.Label className="text-muted fw-semibold small">Sort by</Form.Label>
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          variant="outline-secondary"
-                          id="sort-field-dropdown"
-                          className="small text-truncate"
-                          style={{ minWidth: "120px",display:"flex",alignItems:"center",justifyContent:"space-between" }}
-                        >
-                          {selectedSortBy ? sortOptions.find((opt) => opt.value === selectedSortBy)?.label : "Choose"}
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu>
-                          {sortOptions.map((option) =>
-                            option.value !== "id" ? (
-                              <Dropdown.Item key={option.value} onClick={() => handleFieldChange("sort_by", option.value)}>
-                                {option.label}
-                              </Dropdown.Item>
-                            ) : null
-                          )}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Form.Group>
-                  </Col>
-
-                  <Col>
-                    <Form.Group className="mb-0">
-                      <Form.Label className="text-muted fw-semibold small">Order</Form.Label>
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          variant="outline-secondary"
-                          id="sort-field-dropdown"
-                          className="small text-truncate"
-                          style={{ minWidth: "120px",display:"flex",alignItems:"center",justifyContent:"space-between" }}
-                        >
-                          {selectedSortOrder ? sortOrderOptions.find((opt) => opt.value === selectedSortOrder)?.label : "Choose"}
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu>
-                          {sortOrderOptions.map((option) => (
-                            <Dropdown.Item key={option.value} onClick={() => handleFieldChange("sort_order", option.value)}>
-                              {option.label}
-                            </Dropdown.Item>
-                          ))}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Form.Group>
-                  </Col>
-                </Col>
-
-                <Col className="align-self-end d-flex">
-                  <Button variant="success" size="sm" onClick={handleApplySort} className="fw-semibold ms-2">
-                    Apply
-                  </Button>
-                  <Button variant="outline-danger" size="sm" onClick={handleClear} className="fw-semibold ms-2">
-                    Clear
-                  </Button>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Row>
-        )} */}
     </Card>
   );
 }

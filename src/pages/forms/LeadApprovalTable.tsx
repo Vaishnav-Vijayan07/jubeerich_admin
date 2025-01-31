@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { defaultTheme } from '../../AgGridSetup';
-import { AgGridReact } from 'ag-grid-react';
-import { AppBar, Dialog, IconButton, Slide, Toolbar } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import axios from 'axios';
-import { GridApi, GridReadyEvent, IRowNode, RowNode } from 'ag-grid-community';
-import { showErrorAlert, showSuccessAlert } from '../../constants';
-import { withSwal } from 'react-sweetalert2'
-import { approvalTypes } from './data';
-import moment from 'moment';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { defaultTheme } from "../../AgGridSetup";
+import { AgGridReact } from "ag-grid-react";
+import { AppBar, Dialog, IconButton, Slide, Toolbar } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import axios from "axios";
+import { GridApi, GridReadyEvent, IRowNode, RowNode } from "ag-grid-community";
+import { showErrorAlert, showSuccessAlert } from "../../constants";
+import { withSwal } from "react-sweetalert2";
+import { approvalTypes } from "./data";
+import moment from "moment";
 
 const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchLead, approvalType }: any) => {
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
@@ -17,11 +17,8 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
   const pageSizes = [10, 20, 50, 100];
   const [columnDefs, setColumnDefs] = useState<any[]>([]);
 
-  console.log('Approval Type', approvalType);
-  console.log('options', options);
-  
   const formattedData = useMemo(() => {
-    if(approvalType == approvalTypes.import_lead){      
+    if (approvalType == approvalTypes.import_lead) {
       return {
         sources: options?.sources?.map((item: any) => item.slug) || [],
         officeTypes: options?.officeTypes?.map((item: any) => item.slug) || [],
@@ -30,13 +27,11 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
         franchises: options?.franchises?.map((item: any) => item.slug) || [],
         countries: options?.countries?.map((item: any) => item.country_code) || [],
       };
-    } 
-    else if(approvalType == approvalTypes.assign_cre) {
+    } else if (approvalType == approvalTypes.assign_cre) {
       return {
         cres: options?.map((item: any) => ({ id: item.id.toString(), name: item.name.toString() })) || [],
       };
-    } 
-    else {
+    } else {
       return {
         teamMembers: options?.map((item: any) => ({ id: item.id.toString(), name: item.username.toString() })) || [],
       };
@@ -45,23 +40,22 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
 
   useEffect(() => {
     if (responseData && approvalType == approvalTypes.import_lead) {
-      setRowData(responseData?.data)
+      setRowData(responseData?.data);
     } else {
-      setRowData(responseData)
-    };
+      setRowData(responseData);
+    }
   }, [responseData]);
 
   useEffect(() => {
     handleColumnDef();
-  }, [options, formattedData])
+  }, [options, formattedData]);
 
   const handleColumnDef = () => {
-    
-    if(approvalType == approvalTypes.import_lead){      
+    if (approvalType == approvalTypes.import_lead) {
       setColumnDefs([
         {
-          field: 'id',
-          headerName: 'No.',
+          field: "id",
+          headerName: "No.",
           sortable: true,
           filter: true,
           editable: false,
@@ -69,171 +63,172 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           valueGetter: (params: any) => params.node.rowIndex + 1,
         },
         {
-          field: 'source',
-          headerName: 'Source',
+          field: "source",
+          headerName: "Source",
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: 'agSelectCellEditor',
+          cellEditor: "agSelectCellEditor",
           cellEditorParams: {
             values: formattedData?.sources,
           },
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'channel',
-          headerName: 'Channel',
+          field: "channel",
+          headerName: "Channel",
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: 'agSelectCellEditor',
+          cellEditor: "agSelectCellEditor",
           cellEditorParams: {
             values: formattedData?.channels,
           },
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'full_name',
-          headerName: 'Name',
-          sortable: true,
-          filter: true, 
-          editable: true,
-          cellClassRules: {
-            'cell-error': (params: any) => !params.value,
-          },
-        },
-        {
-          field: 'email',
-          headerName: 'Email',
+          field: "full_name",
+          headerName: "Name",
           sortable: true,
           filter: true,
           editable: true,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'phone',
-          headerName: 'Phone',
+          field: "email",
+          headerName: "Email",
           sortable: true,
           filter: true,
           editable: true,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'city',
-          headerName: 'City',
+          field: "phone",
+          headerName: "Phone",
           sortable: true,
           filter: true,
           editable: true,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'office_type',
-          headerName: 'Office Type',
+          field: "city",
+          headerName: "City",
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: 'agSelectCellEditor',
+          cellClassRules: {
+            "cell-error": (params: any) => !params.value,
+          },
+        },
+        {
+          field: "office_type",
+          headerName: "Office Type",
+          sortable: true,
+          filter: true,
+          editable: true,
+          cellEditor: "agSelectCellEditor",
           cellEditorParams: {
             values: formattedData?.officeTypes,
           },
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'region_or_franchise',
-          headerName: 'Region/Franchise',
+          field: "region_or_franchise",
+          headerName: "Region/Franchise",
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: 'agSelectCellEditor',
+          cellEditor: "agSelectCellEditor",
           cellEditorParams: {
             values: [...formattedData?.regions, ...formattedData?.franchises],
           },
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'preferred_country_code',
-          headerName: 'Country',
+          field: "preferred_country_code",
+          headerName: "Country",
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: 'agSelectCellEditor',
+          cellEditor: "agSelectCellEditor",
           cellEditorParams: {
             values: formattedData?.countries,
           },
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'lead_received_date',
-          headerName: 'Date',
+          field: "lead_received_date",
+          headerName: "Date",
           sortable: true,
           filter: true,
           editable: true,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'ielts',
-          headerName: 'IELTS',
+          field: "ielts",
+          headerName: "IELTS",
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: 'agSelectCellEditor',
+          cellEditor: "agSelectCellEditor",
           cellEditorParams: {
-            values: ['Yes', 'No']
+            values: ["Yes", "No"],
           },
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
-        { field: 'error', headerName: 'Error', sortable: true, filter: true, editable: true },
+        { field: "error", headerName: "Error", sortable: true, filter: true, editable: true },
         {
-          field: 'delete',
-          headerName: 'Actions',
+          field: "delete",
+          headerName: "Actions",
           cellRenderer: (params: any) => {
             return (
               <span>
-                <i onClick={() => {
-                  const index = params.node.rowIndex;
-                  const allRowsData: any[] = [];
-                  params.api.forEachNode((node: any) => {
-                    if (node.data) {
-                      allRowsData.push(node.data);
-                    }
-                  });
-                  handleDeleteRow(index, allRowsData);
-                }}
-                  className='mdi mdi-delete-outline fs-4'></i>
+                <i
+                  onClick={() => {
+                    const index = params.node.rowIndex;
+                    const allRowsData: any[] = [];
+                    params.api.forEachNode((node: any) => {
+                      if (node.data) {
+                        allRowsData.push(node.data);
+                      }
+                    });
+                    handleDeleteRow(index, allRowsData);
+                  }}
+                  className="mdi mdi-delete-outline fs-4"
+                ></i>
               </span>
             );
           },
           sortable: false,
           filter: false,
-          editable: false
-        }
-      ])
-    }
-    else if(approvalType == approvalTypes.assign_cre) {
+          editable: false,
+        },
+      ]);
+    } else if (approvalType == approvalTypes.assign_cre) {
       setColumnDefs([
         {
-          field: 'studentId',
-          headerName: 'No.',
+          field: "studentId",
+          headerName: "No.",
           sortable: true,
           filter: true,
           editable: false,
@@ -241,72 +236,72 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           valueGetter: (params: any) => params.node.rowIndex + 1,
         },
         {
-          field: 'full_name',
-          headerName: 'Name',
+          field: "full_name",
+          headerName: "Name",
           sortable: true,
           filter: true,
           editable: false,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'email',
-          headerName: 'Email',
+          field: "email",
+          headerName: "Email",
           sortable: true,
           filter: true,
           editable: false,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'phone',
-          headerName: 'Phone',
+          field: "phone",
+          headerName: "Phone",
           sortable: true,
           filter: true,
           editable: false,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'city',
-          headerName: 'City',
+          field: "city",
+          headerName: "City",
           sortable: true,
           filter: true,
           editable: false,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'lead_received_date',
-          headerName: 'Lead Received Date',
+          field: "lead_received_date",
+          headerName: "Lead Received Date",
           sortable: true,
           filter: true,
           editable: false,
           cellRenderer: (params: any) => {
-            if (!params.value) return '';
-            return moment(params.value).format('DD-MM-YYYY');
+            if (!params.value) return "";
+            return moment(params.value).format("DD-MM-YYYY");
           },
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
-        },        
+        },
         {
-          field: 'assigned_cre',
+          field: "assigned_cre",
           headerName: "Assigned CRE's",
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: 'agSelectCellEditor',
+          cellEditor: "agSelectCellEditor",
           cellEditorParams: {
             values: formattedData?.cres.map((cre: any) => cre.name),
             formatValue: (value: any) => {
               const cre = formattedData?.cres.find((cre: any) => cre.id == value);
-              return cre ? cre.name : '';
-            }
+              return cre ? cre.name : "";
+            },
           },
           valueParser: (params: any) => {
             const selectedCre = formattedData?.cres.find((cre: any) => cre.name == params.newValue);
@@ -322,19 +317,18 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           },
           cellRenderer: (params: any) => {
             const selectedCre = formattedData?.cres.find((cre: any) => cre.id == params.value);
-            return selectedCre ? selectedCre.name : '';
+            return selectedCre ? selectedCre.name : "";
           },
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
-        }     
-      ])
-    }
-    else {
+        },
+      ]);
+    } else {
       setColumnDefs([
         {
-          field: 'application_id',
-          headerName: 'No.',
+          field: "application_id",
+          headerName: "No.",
           sortable: true,
           filter: true,
           editable: false,
@@ -342,92 +336,92 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           valueGetter: (params: any) => params.node.rowIndex + 1,
         },
         {
-          field: 'full_name',
-          headerName: 'Name',
+          field: "full_name",
+          headerName: "Name",
           sortable: true,
           filter: true,
           editable: false,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'campus_name',
-          headerName: 'Campus',
+          field: "campus_name",
+          headerName: "Campus",
           sortable: true,
           filter: true,
           editable: false,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'university_name',
-          headerName: 'University',
+          field: "university_name",
+          headerName: "University",
           sortable: true,
           filter: true,
           editable: false,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'course_name',
-          headerName: 'Course',
+          field: "course_name",
+          headerName: "Course",
           sortable: true,
           filter: true,
           editable: false,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'counsellor',
-          headerName: 'Counsellor',
+          field: "counsellor",
+          headerName: "Counsellor",
           sortable: true,
           filter: true,
           editable: false,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'country',
-          headerName: 'Country',
+          field: "country",
+          headerName: "Country",
           sortable: true,
           filter: true,
           editable: false,
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
         },
         {
-          field: 'lead_received_date',
-          headerName: 'Lead Received Date',
+          field: "lead_received_date",
+          headerName: "Lead Received Date",
           sortable: true,
           filter: true,
           editable: false,
           cellRenderer: (params: any) => {
-            if (!params.value) return '';
-            return moment(params.value).format('DD-MM-YYYY');
+            if (!params.value) return "";
+            return moment(params.value).format("DD-MM-YYYY");
           },
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
-        },        
+        },
         {
-          field: 'assigned_to',
+          field: "assigned_to",
           headerName: "Assigned Application Member",
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: 'agSelectCellEditor',
+          cellEditor: "agSelectCellEditor",
           cellEditorParams: {
             values: formattedData?.teamMembers?.map((cre: any) => cre.name),
             formatValue: (value: any) => {
               const cre = formattedData?.teamMembers?.find((cre: any) => cre.id == value);
-              return cre ? cre.name : '';
-            }
+              return cre ? cre.name : "";
+            },
           },
           valueParser: (params: any) => {
             const selectedCre = formattedData?.teamMembers?.find((cre: any) => cre.name == params.newValue);
@@ -443,16 +437,15 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           },
           cellRenderer: (params: any) => {
             const selectedCre = formattedData?.teamMembers.find((cre: any) => cre.id == params.value);
-            return selectedCre ? selectedCre.name : '';
+            return selectedCre ? selectedCre.name : "";
           },
           cellClassRules: {
-            'cell-error': (params: any) => !params.value,
+            "cell-error": (params: any) => !params.value,
           },
-        }     
-      ])
+        },
+      ]);
     }
-
-  }
+  };
 
   const onSelectionChanged = (params: any) => {
     const selectedNodes = params.api.getSelectedNodes();
@@ -462,26 +455,16 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
 
   const handleApproved = async () => {
     if (!selectedItems || selectedItems.length == 0) {
-      showErrorAlert('No leads selected. Please select leads to approve.');
+      showErrorAlert("No leads selected. Please select leads to approve.");
       return;
     }
 
     const hasInvalidItem = selectedItems.some((item) => {
-      return (
-        !item.source ||
-        !item.channel ||
-        !item.office_type ||
-        !item.email ||
-        !item.phone ||
-        !item.full_name ||
-        item.errors
-      );
+      return !item.source || !item.channel || !item.office_type || !item.email || !item.phone || !item.full_name || item.errors;
     });
 
     if (hasInvalidItem && approvalType == approvalTypes.import_lead) {
-      showErrorAlert(
-        'Some selected leads are missing required fields: Source, Channels, OfficeType, Email, or Phone.'
-      );
+      showErrorAlert("Some selected leads are missing required fields: Source, Channels, OfficeType, Email, or Phone.");
       return;
     }
 
@@ -502,7 +485,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
           cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
           title: "fs-2 fw-normal mb-2",
-          container: 'my-swal-index'
+          container: "my-swal-index",
         },
         width: "26em",
         padding: "2em",
@@ -511,26 +494,24 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
       if (result.isConfirmed) {
         let url;
 
-        if(approvalType == approvalTypes.import_lead){
+        if (approvalType == approvalTypes.import_lead) {
           url = `/approve_leads`;
-        }
-        else if(approvalType == approvalTypes.assign_cre){
+        } else if (approvalType == approvalTypes.assign_cre) {
           url = `/approve_auto_assign`;
-        }
-        else {
-          url = `/approve_auto_assign_application`
+        } else {
+          url = `/approve_auto_assign_application`;
         }
 
         const { data } = await axios.post(url, { lead_data: selectedItems });
         if (data) {
-          showSuccessAlert('Selected Leads Successfully Approved');
+          showSuccessAlert("Selected Leads Successfully Approved");
           toggleModal(false);
           refetchLead();
         }
       }
     } catch (error) {
       console.error(error);
-      showErrorAlert('An error occurred while approving leads.');
+      showErrorAlert("An error occurred while approving leads.");
     }
   };
 
@@ -556,7 +537,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
           cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
           title: "fs-2 fw-normal mb-2",
-          container: 'my-swal-index'
+          container: "my-swal-index",
         },
         width: "26em",
         padding: "2em",
@@ -569,14 +550,14 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
         }
       }
     } catch (error) {
-      console.log('error', error);
-      showErrorAlert('Error deleting item')
+      console.log("error", error);
+      showErrorAlert("Error deleting item");
     }
   };
 
   const handleCellDoubleClick = () => {
-    gridApi?.deselectAll()
-  }
+    gridApi?.deselectAll();
+  };
 
   const handleCloseModal = async () => {
     const result = await swal.fire({
@@ -595,7 +576,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
         confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
         cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
         title: "fs-2 fw-normal mb-2",
-        container: 'my-swal-index'
+        container: "my-swal-index",
       },
       width: "26em",
       padding: "2em",
@@ -605,14 +586,11 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
       toggleModal(false);
       refetchLead();
     }
-  }
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        (event.ctrlKey && event.key === "r") ||
-        (event.ctrlKey && event.shiftKey && event.key === "R")
-      ) {
+      if ((event.ctrlKey && event.key === "r") || (event.ctrlKey && event.shiftKey && event.key === "R")) {
         event.preventDefault();
         handleCloseModal();
       }
@@ -625,29 +603,16 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
 
   return (
     <>
-      <Dialog
-        fullScreen
-        open={isOpenModal}
-        onClose={() => toggleModal(false)}
-        TransitionComponent={Slide}
-      >
-        <AppBar sx={{ position: 'relative' }}>
+      <Dialog fullScreen open={isOpenModal} onClose={() => toggleModal(false)} TransitionComponent={Slide}>
+        <AppBar sx={{ position: "relative" }}>
           <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleCloseModal}
-              aria-label="close"
-            >
+            <IconButton edge="start" color="inherit" onClick={handleCloseModal} aria-label="close">
               <CloseIcon />
             </IconButton>
           </Toolbar>
         </AppBar>
-        <div className="d-flex flex-column" style={{ height: '100vh' }}>
-          <div
-            className="ag-theme-alpine flex-grow-1"
-            style={{ marginTop: '1rem', height: 'auto', width: '100%' }}
-          >
+        <div className="d-flex flex-column" style={{ height: "100vh" }}>
+          <div className="ag-theme-alpine flex-grow-1" style={{ marginTop: "1rem", height: "auto", width: "100%" }}>
             <AgGridReact
               rowData={rowData}
               columnDefs={columnDefs}
@@ -664,7 +629,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
               suppressAutoSize={true}
               rowSelection={{
                 enableClickSelection: false,
-                mode: 'multiRow',
+                mode: "multiRow",
               }}
               paginationPageSizeSelector={pageSizes}
               onGridReady={onGridReady}
@@ -684,6 +649,6 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
       </Dialog>
     </>
   );
-})
+});
 
-export default LeadApprovalTable
+export default LeadApprovalTable;

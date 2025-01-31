@@ -85,9 +85,19 @@ export const getLeadsTL = (
   payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source },
 });
 
-export const getLeadAssigned = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
+export const getLeadAssigned = (
+  currentPage: number,
+  currentLimit: number,
+  keyword?: string | undefined,
+  sort_by?: string | undefined,
+  sort_order?: string | undefined,
+  country?: string | undefined,
+  office?: string | undefined,
+  source?: string | undefined,
+  assigned_cre?: string | undefined
+): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_ASSIGNED,
-  payload: { currentPage, currentLimit, keyword },
+  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source,assigned_cre },
 });
 
 export const getLeadAssignedByCounsellorTL = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({

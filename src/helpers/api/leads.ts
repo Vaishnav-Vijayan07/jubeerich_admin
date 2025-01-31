@@ -88,7 +88,17 @@ function getLeadsByCreTl(
   return api.get("/leads_cre_tl", params);
 }
 
-function getAssignedLeadsByCreTl(currentPage: number, currentLimit: number, keyword?: string | undefined) {
+function getAssignedLeadsByCreTl(
+  currentPage: number,
+  currentLimit: number,
+  keyword?: string | undefined,
+  sort_by?: string | undefined,
+  sort_order?: string | undefined,
+  country?: string | undefined,
+  office?: string | undefined,
+  source?: string | undefined,
+  assigned_cre?: string | undefined,
+) {
   const params: any = {
     page: currentPage,
     limit: currentLimit,
@@ -96,6 +106,30 @@ function getAssignedLeadsByCreTl(currentPage: number, currentLimit: number, keyw
 
   if (keyword) {
     params.keyword = keyword;
+  }
+
+  if (assigned_cre) {
+    params.assigned_cre = assigned_cre;
+  }
+
+  if (sort_order) {
+    params.sort_level = sort_order;
+  }
+
+  if (sort_by) {
+    params.sort_by = sort_by;
+  }
+
+  if (country) {
+    params.country = country;
+  }
+
+  if (office) {
+    params.office = office;
+  }
+
+  if (source) {
+    params.source = source;
   }
 
   return api.get("/assigned_leads_cre_tl", params);
