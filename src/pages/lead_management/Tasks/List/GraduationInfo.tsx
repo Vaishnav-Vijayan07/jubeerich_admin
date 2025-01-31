@@ -116,11 +116,11 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
   const handleSave = () => {
     const validatioRules = {
       qualification: { required: true, message: "Please choose course type" },
-      university_name: { required: true, message: "Please enter university name" },
+      university_name: { required: false, message: "Please enter university name" },
       college_name: { required: true, message: "Please enter college name" },
-      start_date: { required: true, message: "Please select start date" },
-      end_date: { required: true, message: "Please select end date" },
-      percentage: { required: true, message: "Please enter percentage" },
+      start_date: { required: false, message: "Please select start date" },
+      end_date: { required: false, message: "Please select end date" },
+      percentage: { required: false, message: "Please enter percentage" },
       // certificate: { required: true },
       // admit_card: { required: true },
       // registration_certificate: { required: false },
