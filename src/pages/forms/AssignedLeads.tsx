@@ -489,7 +489,7 @@ const BasicInputElements = withSwal((props: any) => {
           const { data } = await axios.post("/assign_cres", { user_ids, cre_id });
 
           if (data.status) {
-            dispatch(getLeadAssigned(currentPage, currentLimit));
+            dispatch(getLeadAssigned(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
             showSuccessAlert("Bulk assignment successful.");
           }
         } catch (error) {
