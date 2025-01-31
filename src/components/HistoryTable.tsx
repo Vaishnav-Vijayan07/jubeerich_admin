@@ -15,6 +15,7 @@ interface HistoryItem {
 }
 
 const HistoryTable = ({ apiUrl }: any) => {
+  // ... existing state declarations remain the same ...
   const [filterTable, setFilterTable] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
@@ -22,10 +23,10 @@ const HistoryTable = ({ apiUrl }: any) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // ... existing filter and format functions remain the same ...
   const filteredData = historyData.filter(
     (item) =>
-      (filterTable === "all" || item.table_name === filterTable) && 
-      (filterType === "all" || item.change_type === filterType)
+      (filterTable === "all" || item.table_name === filterTable) && (filterType === "all" || item.change_type === filterType)
   );
 
   const formatDate = (date: string): string => new Date(date).toLocaleString();
@@ -45,11 +46,7 @@ const HistoryTable = ({ apiUrl }: any) => {
       const data = await response.data.data;
       setHistoryData(data);
     } catch (error) {
-      setError(
-        error instanceof Error 
-          ? error.message 
-          : "An error occurred while fetching the history data"
-      );
+      setError(error instanceof Error ? error.message : "An error occurred while fetching the history data");
     } finally {
       setIsLoading(false);
     }
@@ -59,33 +56,108 @@ const HistoryTable = ({ apiUrl }: any) => {
     if (apiUrl) fetchHistoryData();
   }, [apiUrl]);
 
+  // const renderExpandedContent = (item: HistoryItem) => {
+  //   const baseStyle = {
+  //     maxHeight: expandedRows[item.id] ? "500px" : "0",
+  //     overflow: "hidden",
+  //     transition: "max-height 0.3s ease-in-out",
+  //   };
+
+  //   if (item.change_type === "DELETE") {
+  //     return (
+  //       <tr className="bg-light">
+  //         <td colSpan={6}>
+  //           <div style={baseStyle}>
+  //             <div className="alert alert-danger mt-2 mb-2">The following record was deleted:</div>
+  //             <table
+  //               className="table border table-sm mt-2 bg-white"
+  //               style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
+  //             >
+  //               <thead>
+  //                 <tr>
+  //                   <th>Field</th>
+  //                   <th>Deleted Value</th>
+  //                 </tr>
+  //               </thead>
+  //               <tbody>
+  //                 {Object.entries(item.old_values ?? {}).map(([key, value]) => (
+  //                   <tr key={key}>
+  //                     <td className="text-capitalize">{key}</td>
+  //                     <td>{value || "-"}</td>
+  //                   </tr>
+  //                 ))}
+  //               </tbody>
+  //             </table>
+  //           </div>
+  //         </td>
+  //       </tr>
+  //     );
+  //   }
+
+  //   return (
+  //     <tr className="bg-light">
+  //       <td colSpan={6}>
+  //         <div style={baseStyle}>
+  //           <table
+  //             className="table border table-sm mt-2 bg-white"
+  //             style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
+  //           >
+  //             <thead>
+  //               <tr>
+  //                 <th>Field</th>
+  //                 <th>Old Value</th>
+  //                 <th>New Value</th>
+  //               </tr>
+  //             </thead>
+  //             <tbody>
+  //               {Object.entries(item.new_values ?? {}).map(([key, newValue]) => (
+  //                 <tr key={key}>
+  //                   <td className="text-capitalize">{key}</td>
+  //                   <td>{item.old_values?.[key] || "-"}</td>
+  //                   <td>{newValue}</td>
+  //                 </tr>
+  //               ))}
+  //             </tbody>
+  //           </table>
+  //         </div>
+  //       </td>
+  //     </tr>
+  //   );
+  // };
+
   const renderExpandedContent = (item: HistoryItem) => {
+    const baseStyle = {
+      maxHeight: expandedRows[item.id] ? "500px" : "0",
+      overflow: "hidden",
+      transition: "max-height 0.3s ease-in-out",
+    };
+
     if (item.change_type === "DELETE") {
       return (
         <tr className="bg-light">
           <td colSpan={6}>
-            <div className="alert alert-danger mt-2 mb-2">
-              The following record was deleted:
-            </div>
-            <table
-              className="table border table-sm mt-2 bg-white"
-              style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
-            >
-              <thead>
-                <tr>
-                  <th>Field</th>
-                  <th>Deleted Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(item.old_values ?? {}).map(([key, value]) => (
-                  <tr key={key}>
-                    <td className="text-capitalize">{key}</td>
-                    <td>{value || "-"}</td>
+            <div style={baseStyle}>
+              <div className="alert alert-danger mt-2 mb-2">The following record was deleted:</div>
+              <table
+                className="table border table-sm mt-2 bg-white"
+                style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
+              >
+                <thead>
+                  <tr className="table-danger">
+                    <th>Field</th>
+                    <th>Deleted Value</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {Object.entries(item.old_values ?? {}).map(([key, value]) => (
+                    <tr key={key}>
+                      <td className="fw-bold text-danger">{key}</td>
+                      <td>{value || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </td>
         </tr>
       );
@@ -94,32 +166,40 @@ const HistoryTable = ({ apiUrl }: any) => {
     return (
       <tr className="bg-light">
         <td colSpan={6}>
-          <table
-            className="table border table-sm mt-2 bg-white"
-            style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
-          >
-            <thead>
-              <tr>
-                <th>Field</th>
-                <th>Old Value</th>
-                <th>New Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(item.new_values ?? {}).map(([key, newValue]) => (
-                <tr key={key}>
-                  <td className="text-capitalize">{key}</td>
-                  <td>{item.old_values?.[key] || "-"}</td>
-                  <td>{newValue}</td>
+          <div style={baseStyle}>
+            <table
+              className="table border table-sm mt-2 bg-white"
+              style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
+            >
+              <thead>
+                <tr className="table-info">
+                  <th>Field</th>
+                  <th>Old Value</th>
+                  <th>New Value</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {Object.entries(item.new_values ?? {}).map(([key, newValue]) => {
+                  const oldValue = item.old_values?.[key] || "-";
+                  const isChanged = oldValue !== newValue;
+
+                  return (
+                    <tr key={key} className={isChanged ? "table-warning" : ""}>
+                      <td className="fw-bold">{key}</td>
+                      <td className={isChanged ? "text-danger fw-semibold" : ""}>{oldValue}</td>
+                      <td className={isChanged ? "text-success fw-semibold" : ""}>{newValue}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </td>
       </tr>
     );
   };
 
+  // ... loading, error, and empty states remain the same ...
   if (isLoading) {
     return (
       <div className="card shadow-sm">
@@ -164,11 +244,7 @@ const HistoryTable = ({ apiUrl }: any) => {
       <div className="card-header d-flex justify-content-between align-items-center">
         <h2 className="h5">Change History</h2>
         <div className="d-flex gap-2">
-          <select 
-            className="form-select" 
-            value={filterType} 
-            onChange={(e) => setFilterType(e.target.value)}
-          >
+          <select className="form-select" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
             <option value="all">All Changes</option>
             <option value="CREATE">Created</option>
             <option value="UPDATE">Updated</option>
@@ -191,7 +267,17 @@ const HistoryTable = ({ apiUrl }: any) => {
             {filteredData.map((item) => (
               <React.Fragment key={item.id}>
                 <tr onClick={() => toggleExpandRow(item.id)} style={{ cursor: "pointer" }}>
-                  <td>{expandedRows[item.id] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}</td>
+                  <td>
+                    <div
+                      style={{
+                        transform: expandedRows[item.id] ? "rotate(90deg)" : "rotate(0)",
+                        transition: "transform 0.3s ease",
+                        display: "inline-block",
+                      }}
+                    >
+                      <ChevronRight size={16} />
+                    </div>
+                  </td>
                   <td>
                     <Calendar size={16} /> {formatDate(item.changed_at)}
                   </td>
@@ -211,7 +297,7 @@ const HistoryTable = ({ apiUrl }: any) => {
                   </td>
                   <td>{item.changedBy}</td>
                 </tr>
-                {expandedRows[item.id] && renderExpandedContent(item)}
+                {renderExpandedContent(item)}
               </React.Fragment>
             ))}
           </tbody>
@@ -222,142 +308,3 @@ const HistoryTable = ({ apiUrl }: any) => {
 };
 
 export default HistoryTable;
-
-// import React, { useEffect, useState } from "react";
-// import { Calendar, ChevronDown, ChevronRight } from "lucide-react";
-// import axios from "axios";
-
-// interface HistoryItem {
-//   id: number;
-//   table_name: string;
-//   record_id: number;
-//   changed_by: number;
-//   change_type: "CREATE" | "UPDATE" | "DELETE";
-//   changed_at: string;
-//   changedBy: string;
-//   old_values: Record<string, string> | null;
-//   new_values: Record<string, string>;
-// }
-
-// const HistoryTable = ({ apiUrl }: any) => {
-//   const [filterTable, setFilterTable] = useState<string>("all");
-//   const [filterType, setFilterType] = useState<string>("all");
-//   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
-//   const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
-
-//   const filteredData = historyData.filter(
-//     (item) =>
-//       (filterTable === "all" || item.table_name === filterTable) && (filterType === "all" || item.change_type === filterType)
-//   );
-
-//   const formatDate = (date: string): string => new Date(date).toLocaleString();
-
-//   const toggleExpandRow = (id: number) => {
-//     setExpandedRows((prev) => ({
-//       ...prev,
-//       [id]: !prev[id],
-//     }));
-//   };
-
-//   const fetchHistoryData = async () => {
-//     try {
-//       const response = await axios.get(`get_table_history?tableName=${apiUrl}`);
-//       const data = await response.data.data;
-//       console.log("history data ==>", data);
-
-//       setHistoryData(data);
-//     } catch (error) {
-//       console.log("Error fetching history data:", error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (apiUrl) fetchHistoryData();
-//   }, [apiUrl]);
-
-//   return (
-//     <div className="card shadow-sm">
-//       <div className="card-header d-flex justify-content-between align-items-center">
-//         <h2 className="h5">Change History</h2>
-//         <div className="d-flex gap-2">
-//           <select className="form-select" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-//             <option value="all">All Changes</option>
-//             <option value="CREATE">Created</option>
-//             <option value="UPDATE">Updated</option>
-//             <option value="DELETE">Deleted</option>
-//           </select>
-//         </div>
-//       </div>
-//       <div className="card-body">
-//         <table className="table border-1">
-//           <thead className="table-light">
-//             <tr>
-//               <th></th>
-//               <th>Date</th>
-//               {/* <th>Table</th> */}
-//               <th>Record ID</th>
-//               <th>Change Type</th>
-//               <th>Changed By</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {filteredData?.map((item) => (
-//               <React.Fragment key={item.id}>
-//                 <tr onClick={() => toggleExpandRow(item.id)} style={{ cursor: "pointer" }}>
-//                   <td>{expandedRows[item.id] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}</td>
-//                   <td>
-//                     <Calendar size={16} /> {formatDate(item.changed_at)}
-//                   </td>
-//                   <td>{item.record_id}</td>
-//                   <td>
-//                     <span
-//                       className={`badge badge-pill px-2 py-1 ${
-//                         item.change_type === "CREATE"
-//                           ? "bg-success bg-opacity-75"
-//                           : item.change_type === "UPDATE"
-//                           ? "bg-primary bg-opacity-75"
-//                           : "bg-danger bg-opacity-75"
-//                       }`}
-//                     >
-//                       {item.change_type}
-//                     </span>
-//                   </td>
-//                   <td>{item.changedBy}</td>
-//                 </tr>
-//                 {expandedRows[item?.id] && (
-//                   <tr className="bg-light">
-//                     <td colSpan={6}>
-//                       <table
-//                         className="table border table-sm mt-2 bg-white"
-//                         style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
-//                       >
-//                         <thead>
-//                           <tr>
-//                             <th>Field</th>
-//                             <th>Old Value</th>
-//                             <th>New Value</th>
-//                           </tr>
-//                         </thead>
-//                         <tbody>
-//                           {Object.entries(item?.new_values ?? {}).map(([key, newValue]) => (
-//                             <tr key={key}>
-//                               <td className="text-capitalize">{key}</td>
-//                               <td>{item.old_values?.[key] || "-"}</td>
-//                               <td>{newValue}</td>
-//                             </tr>
-//                           ))}
-//                         </tbody>
-//                       </table>
-//                     </td>
-//                   </tr>
-//                 )}
-//               </React.Fragment>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default HistoryTable;

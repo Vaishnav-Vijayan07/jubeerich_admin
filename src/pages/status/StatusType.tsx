@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { Slider } from "@mui/material";
 import { addStatusType, deleteStatusType, getStatusType, updateStatusType } from "../../redux/status/statusType/actions";
-const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface TableRecords {
   id: number;
@@ -339,7 +339,9 @@ const BasicInputElements = withSwal((props: any) => {
         <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
-            <HistoryTable apiUrl={"status_type"} />
+            <React.Suspense fallback={<Spinner animation="border" variant="primary" />}>
+              <HistoryTable apiUrl={"status_type"} />
+            </React.Suspense>
           </Modal.Body>
         </Modal>
 
