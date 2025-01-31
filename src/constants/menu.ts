@@ -246,7 +246,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     label: "Academic Setup",
     isTitle: false,
     icon: "award", // Academic or learning icon
-    roles: ["Monitor"],
+    roles: ["Monitor", "Add Lead"],
     children: [
       {
         key: "course_type",

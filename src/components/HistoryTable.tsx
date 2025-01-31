@@ -44,9 +44,6 @@ const HistoryTable = ({ apiUrl }: any) => {
       setNoDataMessage(null);
 
       const response = await axios.get(`get_table_history?tableName=${apiUrl}`);
-      console.log("response ==>", response);
-      
-
       // Check if response has a message indicating no data
       if (response.data.message) {
         setNoDataMessage(response.data.message);
