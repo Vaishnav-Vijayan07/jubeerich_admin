@@ -15,15 +15,14 @@ interface HistoryItem {
 }
 
 const HistoryTable = ({ apiUrl }: any) => {
-  // ... existing state declarations remain the same ...
   const [filterTable, setFilterTable] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
   const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
 
-  // ... existing filter and format functions remain the same ...
   const filteredData = historyData.filter(
     (item) =>
       (filterTable === "all" || item.table_name === filterTable) && (filterType === "all" || item.change_type === filterType)
@@ -42,11 +41,26 @@ const HistoryTable = ({ apiUrl }: any) => {
     try {
       setIsLoading(true);
       setError(null);
+      setNoDataMessage(null);
+
       const response = await axios.get(`get_table_history?tableName=${apiUrl}`);
-      const data = await response.data.data;
-      setHistoryData(data);
+      // Check if response has a message indicating no data
+      if (response.data.message) {
+        setNoDataMessage(response.data.message);
+        setHistoryData([]);
+        return;
+      }
+
+      // If we have data, set it directly
+      if (Array.isArray(response.data.data)) {
+        setHistoryData(response.data.data);
+      } else {
+        setNoDataMessage("No history records available");
+        setHistoryData([]);
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : "An error occurred while fetching the history data");
+      setHistoryData([]);
     } finally {
       setIsLoading(false);
     }
@@ -56,108 +70,35 @@ const HistoryTable = ({ apiUrl }: any) => {
     if (apiUrl) fetchHistoryData();
   }, [apiUrl]);
 
-  // const renderExpandedContent = (item: HistoryItem) => {
-  //   const baseStyle = {
-  //     maxHeight: expandedRows[item.id] ? "500px" : "0",
-  //     overflow: "hidden",
-  //     transition: "max-height 0.3s ease-in-out",
-  //   };
-
-  //   if (item.change_type === "DELETE") {
-  //     return (
-  //       <tr className="bg-light">
-  //         <td colSpan={6}>
-  //           <div style={baseStyle}>
-  //             <div className="alert alert-danger mt-2 mb-2">The following record was deleted:</div>
-  //             <table
-  //               className="table border table-sm mt-2 bg-white"
-  //               style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
-  //             >
-  //               <thead>
-  //                 <tr>
-  //                   <th>Field</th>
-  //                   <th>Deleted Value</th>
-  //                 </tr>
-  //               </thead>
-  //               <tbody>
-  //                 {Object.entries(item.old_values ?? {}).map(([key, value]) => (
-  //                   <tr key={key}>
-  //                     <td className="text-capitalize">{key}</td>
-  //                     <td>{value || "-"}</td>
-  //                   </tr>
-  //                 ))}
-  //               </tbody>
-  //             </table>
-  //           </div>
-  //         </td>
-  //       </tr>
-  //     );
-  //   }
-
-  //   return (
-  //     <tr className="bg-light">
-  //       <td colSpan={6}>
-  //         <div style={baseStyle}>
-  //           <table
-  //             className="table border table-sm mt-2 bg-white"
-  //             style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
-  //           >
-  //             <thead>
-  //               <tr>
-  //                 <th>Field</th>
-  //                 <th>Old Value</th>
-  //                 <th>New Value</th>
-  //               </tr>
-  //             </thead>
-  //             <tbody>
-  //               {Object.entries(item.new_values ?? {}).map(([key, newValue]) => (
-  //                 <tr key={key}>
-  //                   <td className="text-capitalize">{key}</td>
-  //                   <td>{item.old_values?.[key] || "-"}</td>
-  //                   <td>{newValue}</td>
-  //                 </tr>
-  //               ))}
-  //             </tbody>
-  //           </table>
-  //         </div>
-  //       </td>
-  //     </tr>
-  //   );
-  // };
-
   const renderExpandedContent = (item: HistoryItem) => {
-    const baseStyle = {
-      maxHeight: expandedRows[item.id] ? "500px" : "0",
-      overflow: "hidden",
-      transition: "max-height 0.3s ease-in-out",
-    };
+    if (!expandedRows[item.id]) {
+      return null;
+    }
 
     if (item.change_type === "DELETE") {
       return (
         <tr className="bg-light">
           <td colSpan={6}>
-            <div style={baseStyle}>
-              <div className="alert alert-danger mt-2 mb-2">The following record was deleted:</div>
-              <table
-                className="table border table-sm mt-2 bg-white"
-                style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
-              >
-                <thead>
-                  <tr className="table-danger">
-                    <th>Field</th>
-                    <th>Deleted Value</th>
+            <div className="alert alert-danger mt-2 mb-2">The following record was deleted:</div>
+            <table
+              className="table border table-sm mt-2 bg-white"
+              style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
+            >
+              <thead>
+                <tr className="table-danger">
+                  <th>Field</th>
+                  <th>Deleted Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(item.old_values ?? {}).map(([key, value]) => (
+                  <tr key={key}>
+                    <td className="fw-bold text-danger">{key}</td>
+                    <td>{value || "-"}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(item.old_values ?? {}).map(([key, value]) => (
-                    <tr key={key}>
-                      <td className="fw-bold text-danger">{key}</td>
-                      <td>{value || "-"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </td>
         </tr>
       );
@@ -166,40 +107,37 @@ const HistoryTable = ({ apiUrl }: any) => {
     return (
       <tr className="bg-light">
         <td colSpan={6}>
-          <div style={baseStyle}>
-            <table
-              className="table border table-sm mt-2 bg-white"
-              style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
-            >
-              <thead>
-                <tr className="table-info">
-                  <th>Field</th>
-                  <th>Old Value</th>
-                  <th>New Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(item.new_values ?? {}).map(([key, newValue]) => {
-                  const oldValue = item.old_values?.[key] || "-";
-                  const isChanged = oldValue !== newValue;
+          <table
+            className="table border table-sm mt-2 bg-white"
+            style={{ borderRadius: "8px", borderCollapse: "separate", borderSpacing: "0" }}
+          >
+            <thead>
+              <tr className="table-info">
+                <th>Field</th>
+                <th>Old Value</th>
+                <th>New Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(item.new_values ?? {}).map(([key, newValue]) => {
+                const oldValue = item.old_values?.[key] || "-";
+                const isChanged = oldValue !== newValue;
 
-                  return (
-                    <tr key={key} className={isChanged ? "table-warning" : ""}>
-                      <td className="fw-bold">{key}</td>
-                      <td className={isChanged ? "text-danger fw-semibold" : ""}>{oldValue}</td>
-                      <td className={isChanged ? "text-success fw-semibold" : ""}>{newValue}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                return (
+                  <tr key={key} className={isChanged ? "table-warning" : ""}>
+                    <td className="fw-bold">{key}</td>
+                    <td className={isChanged ? "text-danger fw-semibold" : ""}>{oldValue}</td>
+                    <td className={isChanged ? "text-success fw-semibold" : ""}>{newValue}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </td>
       </tr>
     );
   };
 
-  // ... loading, error, and empty states remain the same ...
   if (isLoading) {
     return (
       <div className="card shadow-sm">
@@ -220,6 +158,19 @@ const HistoryTable = ({ apiUrl }: any) => {
           <div className="alert alert-danger d-flex align-items-center" role="alert">
             <AlertCircle className="h-4 w-4 me-2" />
             <span>{error}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (noDataMessage) {
+    return (
+      <div className="card shadow-sm">
+        <div className="card-body d-flex align-items-center justify-content-center p-4">
+          <div className="text-center text-muted">
+            <Calendar className="h-4 w-4 mb-2" />
+            <p className="mb-0">{noDataMessage}</p>
           </div>
         </div>
       </div>
