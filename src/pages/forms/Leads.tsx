@@ -6,7 +6,7 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getBranchCounsellors, getLead, getLeadsByCounsellorTL, getLeadsTL } from "../../redux/actions";
-import { AUTH_SESSION_KEY, counsellor_tl_id, cre_tl_id, regional_manager_id } from "../../constants";
+import { AUTH_SESSION_KEY, counsellor_id, counsellor_tl_id, country_manager_id, cre_tl_id, regional_manager_id } from "../../constants";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
@@ -16,7 +16,18 @@ import CustomLeadFilters from "../../components/CustomLeadFilters";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  let userRole: any;
+  let userBranchId: any;
+  let loggedUserCountries: any;
+  if (userInfo) {
+    userRole = JSON.parse(userInfo)?.role;
+    userBranchId = JSON.parse(userInfo)?.branch_id;
+    loggedUserCountries = JSON.parse(userInfo)?.countries;
+  }
+  const dispatch = useDispatch<AppDispatch>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
+  const { currentPage, setCurrentPage, currentLimit, setCurrentLimit } = usePagination();
 
   const [sortBy, setSortBy] = useState<string>(searchParams.get("sort_by") || "created_at");
   const [sortOrder, setSortOrder] = useState<string>(searchParams.get("sort_order") || "asc");
@@ -28,8 +39,21 @@ const Leads = () => {
   const [selectedCounsellors, setSelectedCounsellors] = useState("all");
   const [branchForManager, setBranchForManager] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
-  const { currentPage, setCurrentPage, currentLimit, setCurrentLimit } = usePagination();
+
+  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages, totalCount, isSortApplied } = useSelector(
+    (state: RootState) => ({
+      user: state.Auth.user,
+      state: state.Leads.leads,
+      totalPages: state.Leads.totalPages,
+      limit: state.Leads.limit,
+      totalCount: state.Leads.totalCount,
+      isSortApplied: state.Leads.isSortApplied,
+      error: state.Leads.error,
+      loading: state.Leads.loading,
+      initialLoading: state.Leads.initialloading,
+      branchCounsellor: state.Users?.branchCounsellor,
+    })
+  );
 
   const handlePageChange = useCallback((value: any) => {
     console.log(value);
@@ -84,8 +108,7 @@ const Leads = () => {
           sortOrder,
           selectedCountry == "all" ? undefined : selectedCountry,
           selectedOffice == "all" ? undefined : selectedOffice,
-          selectedSource == "all" ? undefined : selectedSource,
-          
+          selectedSource == "all" ? undefined : selectedSource
         )
       );
     } else {
@@ -109,14 +132,10 @@ const Leads = () => {
 
   const resetSort = () => {
     if (userRole == cre_tl_id) {
-      dispatch(
-        getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc")
-      );
+      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc"));
     } else {
       if (userRole) {
-        dispatch(
-          getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc")
-        );
+        dispatch(getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc"));
       }
     }
   };
@@ -150,7 +169,7 @@ const Leads = () => {
           sortOrder,
           selectedCountry == "all" ? undefined : selectedCountry,
           selectedOffice == "all" ? undefined : selectedOffice,
-          selectedSource == "all" ? undefined : selectedSource,
+          selectedSource == "all" ? undefined : selectedSource
         )
       );
     } else {
@@ -172,27 +191,12 @@ const Leads = () => {
     }
   };
 
-  let userRole: any;
-  let userBranchId: any;
-  if (userInfo) {
-    userRole = JSON.parse(userInfo)?.role;
-    userBranchId = JSON.parse(userInfo)?.branch_id;
-  }
-  const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages, totalCount, isSortApplied } = useSelector(
-    (state: RootState) => ({
-      user: state.Auth.user,
-      state: state.Leads.leads,
-      totalPages: state.Leads.totalPages,
-      limit: state.Leads.limit,
-      totalCount: state.Leads.totalCount,
-      isSortApplied: state.Leads.isSortApplied,
-      error: state.Leads.error,
-      loading: state.Leads.loading,
-      initialLoading: state.Leads.initialloading,
-      branchCounsellor: state.Users?.branchCounsellor,
-    })
-  );
+  const formattedCountries = useMemo(() => {
+    if ([counsellor_id, country_manager_id].includes(userRole?.toString())) {
+      return dropdownData?.countries?.filter((data: any) => loggedUserCountries.includes(data?.value?.toString())) || [];
+    }
+    return dropdownData?.countries || [];
+  }, [dropdownData?.countries]);
 
   useEffect(() => {
     const params: any = {
@@ -203,10 +207,10 @@ const Leads = () => {
     setSearchParams(params);
   }, [sortBy, sortOrder, setSearchParams]);
 
-  // useEffect(() => {
-  //   fetchAllCounsellors();
-  //   if (userBranchId) dispatch(getBranchCounsellors(userBranchId));
-  // }, [userBranchId]);
+  useEffect(() => {
+    // fetchAllCounsellors();
+    if (userBranchId) dispatch(getBranchCounsellors(userBranchId));
+  }, [userBranchId]);
 
   useEffect(() => {
     if (userRole == cre_tl_id) {
@@ -223,8 +227,6 @@ const Leads = () => {
         )
       );
     } else {
-      console.log(userRole);
-      
       if (userRole) {
         dispatch(
           getLead(
@@ -287,7 +289,7 @@ const Leads = () => {
       <Row>
         <Col>
           <CustomLeadFilters
-            countries={dropdownData?.countries}
+            countries={formattedCountries}
             source={dropdownData?.sources}
             offices={dropdownData?.officeTypes}
             consellors={dropdownData?.counsellors}
