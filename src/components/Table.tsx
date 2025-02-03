@@ -106,6 +106,13 @@ const Table = (props: TableProps) => {
   const isCustomPaginationNeeded = props["isCustomPaginationNeeded"] || false;
   const dashBoardClass = "table table-centered table-nowrap table-striped mb-0";
 
+  const [pageSize, setPageSize] = useState(20)
+
+  useEffect(() => {
+    setPageSize(props["pageSize"])
+  }, [props["pageSize"]])
+  
+
   const { initialLoading } = props;
 
   let otherProps: any = {};
@@ -127,13 +134,13 @@ const Table = (props: TableProps) => {
   }
 
 
-  console.log(props["data"])
+  console.log("all data",props["data"])
 
   const dataTable = useTable(
     {
       columns: props["columns"],
       data: props["data"],
-      initialState: { pageSize: props["pageSize"] || 500 },
+      initialState: { pageSize: pageSize },
       globalFilter: (rows, columnIds, filterValue) => {
         return rows.filter((row) => {
           return columnIds?.some((id) => {
