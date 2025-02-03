@@ -49,7 +49,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
         <Col md={4}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_start_date`}>
             <Form.Label>
-              <span className="text-danger">*</span> Start Date
+              Start Date
             </Form.Label>
             <FormInput
               type="date"
@@ -66,7 +66,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
         <Col md={4}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_end_date`}>
             <Form.Label>
-              <span className="text-danger">*</span> End Date
+              End Date
             </Form.Label>
             <FormInput
               type="date"
@@ -101,7 +101,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3 form-group">
             <Form.Label>
-              <span className="text-danger">* </span>Board Name
+              Board Name
             </Form.Label>
             <FormInput
               type="text"
@@ -119,7 +119,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3 form-group">
             <Form.Label>
-              <span className="text-danger">* </span>Percentage
+              Percentage
             </Form.Label>
             <FormInput
               type="number"

@@ -13,7 +13,8 @@ function getLeads(
   sort_order?: string | undefined,
   country?: string | undefined,
   office?: string | undefined,
-  source?: string | undefined
+  source?: string | undefined,
+  counselor?: string | undefined
 ) {
   const params: any = {
     page: currentPage,
@@ -42,6 +43,10 @@ function getLeads(
 
   if (source) {
     params.source = source;
+  }
+
+  if (counselor) {
+    params.counselor = counselor;
   }
 
   return api.get(`${baseUrl}`, params);

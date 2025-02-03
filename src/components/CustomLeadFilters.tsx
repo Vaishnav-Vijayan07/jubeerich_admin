@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button, Col, Form, Dropdown, Card, Row, Collapse } from "react-bootstrap";
+import { cre_id, cre_tl_id, it_team_id } from "../constants";
 
 type SortOption = {
   value: string;
@@ -11,12 +12,15 @@ type Props = {
   source: SelectItems[];
   offices?: SelectItems[];
   cres?: SelectItems[];
+  consellors?: SelectItems[];
   selectedCountry: string;
   selectedOffice?: string;
   selectedSource: string;
   selectedSortBy: string;
   selectedSortOrder: string;
   selectedCre?: string;
+  selectedCounsellors?: string;
+  userRole?: any;
   onFilterChange?: (name: string, value: string) => void;
   onApplySort?: () => void;
   onClear?: VoidFunction;
@@ -44,17 +48,23 @@ function CustomLeadFilters({
   offices,
   source,
   cres,
+  consellors,
   selectedCountry,
   selectedOffice,
   selectedSource,
   selectedCre,
   selectedSortBy,
   selectedSortOrder,
+  selectedCounsellors,
+  userRole,
   onApplySort,
   onClear,
   onFilterChange,
 }: Props) {
   const [open, setOpen] = useState<boolean>(false);
+
+  const showOffices = userRole == it_team_id;
+  const showCounsellors = userRole == cre_id;
 
   const handleFieldChange = (name: string, value: string) => {
     onFilterChange?.(name, value);
@@ -69,7 +79,7 @@ function CustomLeadFilters({
   };
 
   return (
-    <Card >
+    <Card>
       <Row onClick={() => setOpen(!open)}>
         <Col className="d-flex justify-content-start align-items-center">
           <span className="mt-3 ms-3 w-full">
@@ -115,7 +125,7 @@ function CustomLeadFilters({
                   </Form.Group>
                 </Col>
 
-                {offices && offices?.length > 0 && (
+                {offices && offices?.length > 0 && showOffices && (
                   <Col>
                     <Form.Group className="mb-0">
                       <Form.Label className="text-muted fw-semibold small">Office</Form.Label>
@@ -158,6 +168,32 @@ function CustomLeadFilters({
                         <Dropdown.Menu>
                           {[{ value: "all", label: "All" }, ...cres]?.map((option) => (
                             <Dropdown.Item key={option.value} onClick={() => handleFieldChange("cre", option.value)}>
+                              {option.label}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </Form.Group>
+                  </Col>
+                )}
+
+                {consellors && consellors?.length > 0 && showCounsellors && (
+                  <Col>
+                    <Form.Group className="mb-0">
+                      <Form.Label className="text-muted fw-semibold small">Counsellors</Form.Label>
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="outline-secondary"
+                          id="sort-field-dropdown"
+                          className="medium text-truncate"
+                          style={{ minWidth: "120px", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+                        >
+                          {consellors?.find((cre) => cre.value === selectedCounsellors)?.label || "All"}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                          {[{ value: "all", label: "All" }, ...consellors]?.map((option) => (
+                            <Dropdown.Item key={option.value} onClick={() => handleFieldChange("counsellor", option.value)}>
                               {option.label}
                             </Dropdown.Item>
                           ))}

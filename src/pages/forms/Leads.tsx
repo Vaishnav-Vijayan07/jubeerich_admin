@@ -6,7 +6,7 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getBranchCounsellors, getLead, getLeadsByCounsellorTL, getLeadsTL } from "../../redux/actions";
-import { AUTH_SESSION_KEY, counsellor_tl_id, cre_tl_id, regional_manager_id } from "../../constants";
+import { AUTH_SESSION_KEY, counsellor_id, counsellor_tl_id, country_manager_id, cre_tl_id, regional_manager_id } from "../../constants";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
@@ -16,7 +16,18 @@ import CustomLeadFilters from "../../components/CustomLeadFilters";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  let userRole: any;
+  let userBranchId: any;
+  let loggedUserCountries: any;
+  if (userInfo) {
+    userRole = JSON.parse(userInfo)?.role;
+    userBranchId = JSON.parse(userInfo)?.branch_id;
+    loggedUserCountries = JSON.parse(userInfo)?.countries;
+  }
+  const dispatch = useDispatch<AppDispatch>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
+  const { currentPage, setCurrentPage, currentLimit, setCurrentLimit } = usePagination();
 
   const [sortBy, setSortBy] = useState<string>(searchParams.get("sort_by") || "created_at");
   const [sortOrder, setSortOrder] = useState<string>(searchParams.get("sort_order") || "asc");
@@ -25,11 +36,24 @@ const Leads = () => {
   const [selectedCountry, setSelectedCountry] = useState<any>("all");
   const [selectedSource, setSelectedSource] = useState<any>("all");
 
-  const [counsellors, setCounsellors] = useState([]);
+  const [selectedCounsellors, setSelectedCounsellors] = useState("all");
   const [branchForManager, setBranchForManager] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
-  const { currentPage, setCurrentPage, currentLimit, setCurrentLimit } = usePagination();
+
+  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages, totalCount, isSortApplied } = useSelector(
+    (state: RootState) => ({
+      user: state.Auth.user,
+      state: state.Leads.leads,
+      totalPages: state.Leads.totalPages,
+      limit: state.Leads.limit,
+      totalCount: state.Leads.totalCount,
+      isSortApplied: state.Leads.isSortApplied,
+      error: state.Leads.error,
+      loading: state.Leads.loading,
+      initialLoading: state.Leads.initialloading,
+      branchCounsellor: state.Users?.branchCounsellor,
+    })
+  );
 
   const handlePageChange = useCallback((value: any) => {
     console.log(value);
@@ -53,6 +77,9 @@ const Leads = () => {
         break;
       case "sort_order":
         setSortOrder(value);
+        break;
+      case "counsellor":
+        setSelectedCounsellors(value);
         break;
       default:
         break;
@@ -95,7 +122,8 @@ const Leads = () => {
             sortOrder,
             selectedCountry == "all" ? undefined : selectedCountry,
             selectedOffice == "all" ? undefined : selectedOffice,
-            selectedSource == "all" ? undefined : selectedSource
+            selectedSource == "all" ? undefined : selectedSource,
+            selectedCounsellors == "all" ? undefined : selectedCounsellors
           )
         );
       }
@@ -104,14 +132,10 @@ const Leads = () => {
 
   const resetSort = () => {
     if (userRole == cre_tl_id) {
-      dispatch(
-        getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc", undefined, undefined, undefined)
-      );
+      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc"));
     } else {
       if (userRole) {
-        dispatch(
-          getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc", undefined, undefined, undefined)
-        );
+        dispatch(getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc"));
       }
     }
   };
@@ -120,6 +144,7 @@ const Leads = () => {
     setSelectedOffice("all");
     setSelectedCountry("all");
     setSelectedSource("all");
+    setSelectedCounsellors("all");
     setSortBy("created_at");
     setSortOrder("asc");
     resetSort();
@@ -158,34 +183,20 @@ const Leads = () => {
             sortOrder,
             selectedCountry == "all" ? undefined : selectedCountry,
             selectedOffice == "all" ? undefined : selectedOffice,
-            selectedSource == "all" ? undefined : selectedSource
+            selectedSource == "all" ? undefined : selectedSource,
+            selectedCounsellors == "all" ? undefined : selectedCounsellors
           )
         );
       }
     }
   };
 
-  let userRole: any;
-  let userBranchId: any;
-  if (userInfo) {
-    userRole = JSON.parse(userInfo)?.role;
-    userBranchId = JSON.parse(userInfo)?.branch_id;
-  }
-  const dispatch = useDispatch<AppDispatch>();
-  const { user, state, error, loading, initialLoading, branchCounsellor, limit, totalPages, totalCount, isSortApplied } = useSelector(
-    (state: RootState) => ({
-      user: state.Auth.user,
-      state: state.Leads.leads,
-      totalPages: state.Leads.totalPages,
-      limit: state.Leads.limit,
-      totalCount: state.Leads.totalCount,
-      isSortApplied: state.Leads.isSortApplied,
-      error: state.Leads.error,
-      loading: state.Leads.loading,
-      initialLoading: state.Leads.initialloading,
-      branchCounsellor: state.Users?.branchCounsellor,
-    })
-  );
+  const formattedCountries = useMemo(() => {
+    if ([counsellor_id, country_manager_id].includes(userRole?.toString())) {
+      return dropdownData?.countries?.filter((data: any) => loggedUserCountries.includes(data?.value?.toString())) || [];
+    }
+    return dropdownData?.countries || [];
+  }, [dropdownData?.countries]);
 
   useEffect(() => {
     const params: any = {
@@ -197,7 +208,7 @@ const Leads = () => {
   }, [sortBy, sortOrder, setSearchParams]);
 
   useEffect(() => {
-    fetchAllCounsellors();
+    // fetchAllCounsellors();
     if (userBranchId) dispatch(getBranchCounsellors(userBranchId));
   }, [userBranchId]);
 
@@ -239,22 +250,22 @@ const Leads = () => {
     console.count("loading count");
   }, [userRole, currentPage, currentLimit]);
 
-  const fetchAllCounsellors = useCallback(() => {
-    axios
-      .get("/get_all_counsellors")
-      .then((res) => {
-        const counsellorData = res?.data?.data?.map((item: any) => {
-          return {
-            label: item?.name,
-            value: item?.id,
-          };
-        });
-        setCounsellors(counsellorData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  // const fetchAllCounsellors = useCallback(() => {
+  //   axios
+  //     .get("/get_all_counsellors")
+  //     .then((res) => {
+  //       const counsellorData = res?.data?.data?.map((item: any) => {
+  //         return {
+  //           label: item?.name,
+  //           value: item?.id,
+  //         };
+  //       });
+  //       setCounsellors(counsellorData);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   const fetchBranches = useCallback(async () => {
     try {
@@ -278,17 +289,20 @@ const Leads = () => {
       <Row>
         <Col>
           <CustomLeadFilters
-            countries={dropdownData?.countries}
+            countries={formattedCountries}
             source={dropdownData?.sources}
             offices={dropdownData?.officeTypes}
+            consellors={dropdownData?.counsellors}
             selectedCountry={selectedCountry}
             selectedOffice={selectedOffice}
             selectedSource={selectedSource}
+            selectedCounsellors={selectedCounsellors}
             onFilterChange={handleFilterChange}
             selectedSortBy={sortBy}
             selectedSortOrder={sortOrder}
             onApplySort={applySort}
             onClear={resetFilters}
+            userRole={userRole}
           />
         </Col>
       </Row>
@@ -306,7 +320,7 @@ const Leads = () => {
             error={error}
             loading={loading}
             status={dropdownData.statuses || []}
-            counsellors={counsellors || []}
+            counsellors={dropdownData?.counsellors || []}
             userData={dropdownData.adminUsers || []}
             region={dropdownData.regions}
             regionData={dropdownData.regions || []}

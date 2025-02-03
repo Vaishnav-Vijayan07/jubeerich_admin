@@ -60,10 +60,11 @@ export const getLead = (
   sort_order?: string | undefined,
   country?: string | undefined,
   office?: string | undefined,
-  source?: string | undefined
+  source?: string | undefined,
+  counselor?: string | undefined
 ): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS,
-  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source },
+  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source,counselor },
 });
 
 export const getLeadsRegionalManager = (): LeadsActionType => ({
