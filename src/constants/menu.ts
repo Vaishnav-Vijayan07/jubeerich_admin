@@ -53,7 +53,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     key: "assigned_regional_manager_leads",
     label: "Assigned Leads",
     isTitle: false,
-    icon: "user-tag", // Lead assigned to a manager
+    icon: "user-check", // Lead assigned to a manager
     url: "/leads/assigned_regional_manager",
     roles: ["Manage Branch"],
   },
