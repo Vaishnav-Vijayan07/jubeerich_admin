@@ -102,7 +102,7 @@ function getAssignedLeadsByCreTl(
   country?: string | undefined,
   office?: string | undefined,
   source?: string | undefined,
-  assigned_cre?: string | undefined,
+  assigned_cre?: string | undefined
 ) {
   const params: any = {
     page: currentPage,
@@ -144,8 +144,46 @@ function getLeadsByCounsellorTL() {
   return api.get("/leads_counsellor_tl", {});
 }
 
-function getAssignedLeadsRegionalMangersApi() {
-  return api.get("/assigned_leads_regional_managers", {});
+function getAssignedLeadsRegionalMangersApi(
+  currentPage: number,
+  currentLimit: number,
+  keyword?: string | undefined,
+  sort_by?: string | undefined,
+  sort_order?: string | undefined,
+  country?: string | undefined,
+  source?: string | undefined,
+  branch?: string | undefined
+) {
+  const params: any = {
+    page: currentPage,
+    limit: currentLimit,
+  };
+
+  if (keyword) {
+    params.keyword = keyword;
+  }
+
+  if (sort_order) {
+    params.sort_level = sort_order;
+  }
+
+  if (sort_by) {
+    params.sort_by = sort_by;
+  }
+
+  if (country) {
+    params.country = country;
+  }
+
+  if (branch) {
+    params.branch = branch;
+  }
+
+  if (source) {
+    params.source = source;
+  }
+
+  return api.get("/assigned_leads_regional_managers", params);
 }
 
 function getAssignedLeadsByCounsellorTL(currentPage: number, currentLimit: number, keyword?: string | undefined) {
