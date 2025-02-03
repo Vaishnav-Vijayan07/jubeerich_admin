@@ -842,17 +842,17 @@ const BasicInputElements = withSwal((props: any) => {
                 <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
                   <i className="mdi mdi-download-circle"></i> Download Sample
                 </Button>
-                <Button className="btn-sm btn-success waves-effect waves-light" onClick={handleFileUpload} disabled={isLoading}>
+                {selectedFile?.length == 1 && <Button className="btn-sm btn-success waves-effect waves-light" onClick={handleFileUpload} disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Spinner animation="border" size="sm" /> Uploading...
                     </>
                   ) : (
                     <>
-                      <i className="mdi mdi-upload" /> Upload File
+                      <i className="mdi mdi-upload" /> Approve Lead
                     </>
                   )}
-                </Button>
+                </Button>}
               </div>
             </Modal.Body>
           </Modal>
@@ -1034,6 +1034,7 @@ const BasicInputElements = withSwal((props: any) => {
                   options={approvalOptionsData}
                   refetchLead={refetchLead}
                   approvalType={approvalTypes.import_lead}
+                  heading={'Lead Import Management'}
                 />
               )}
 
@@ -1045,6 +1046,7 @@ const BasicInputElements = withSwal((props: any) => {
                   options={creList}
                   refetchLead={refetchLead}
                   approvalType={approvalTypes.assign_cre}
+                  heading={'Auto Assign Management'}
                 />
               )}
             </Card.Body>
