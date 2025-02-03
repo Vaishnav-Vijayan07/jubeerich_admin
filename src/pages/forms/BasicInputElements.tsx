@@ -859,7 +859,7 @@ const BasicInputElements = withSwal((props: any) => {
         )}
 
         <Col lg={12} className="p-0 form__card">
-          {state && (
+          {/* {state && (
             <LeadsFilters
               changeFilteredItemsData={changeFilteredItemsData}
               state={state || []}
@@ -871,7 +871,7 @@ const BasicInputElements = withSwal((props: any) => {
               cres={cres || []}
               branchForManager={branchForManager || []}
             />
-          )}
+          )} */}
 
           <Card className="bg-white py-3">
             <Card.Body>
