@@ -116,11 +116,11 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
   const handleSave = () => {
     const validatioRules = {
       qualification: { required: true, message: "Please choose course type" },
-      university_name: { required: true, message: "Please enter university name" },
+      university_name: { required: false, message: "Please enter university name" },
       college_name: { required: true, message: "Please enter college name" },
-      start_date: { required: true, message: "Please select start date" },
-      end_date: { required: true, message: "Please select end date" },
-      percentage: { required: true, message: "Please enter percentage" },
+      start_date: { required: false, message: "Please select start date" },
+      end_date: { required: false, message: "Please select end date" },
+      percentage: { required: false, message: "Please enter percentage" },
       // certificate: { required: true },
       // admit_card: { required: true },
       // registration_certificate: { required: false },
@@ -193,7 +193,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_university_name`}>
             <Form.Label>
-              <span className="text-danger">*</span> University Name
+              University Name
             </Form.Label>
             <FormInput
               type="text"
@@ -225,7 +225,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_start_date`}>
             <Form.Label>
-              <span className="text-danger">*</span> Start Date
+              Start Date
             </Form.Label>
             <FormInput
               type="date"
@@ -241,7 +241,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_end_date`}>
             <Form.Label>
-              <span className="text-danger">*</span> End Date
+              End Date
             </Form.Label>
             <FormInput
               type="date"
@@ -257,7 +257,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4}>
           <Form.Group className="mb-3 form-group">
             <Form.Label>
-              <span className="text-danger">* </span>Percentage
+              Percentage
             </Form.Label>
             <FormInput
               type="number"
