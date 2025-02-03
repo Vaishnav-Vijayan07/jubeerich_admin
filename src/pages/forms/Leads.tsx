@@ -37,6 +37,7 @@ const Leads = () => {
   const [selectedSource, setSelectedSource] = useState<any>("all");
 
   const [selectedCounsellors, setSelectedCounsellors] = useState("all");
+  const [counselorsTL, setCounsellorsTl] = useState([]);
   const [branchForManager, setBranchForManager] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
@@ -260,6 +261,16 @@ const Leads = () => {
     return dropdownData?.countries || [];
   }, [dropdownData?.countries]);
 
+  const filteredCounsellors = useMemo(() => {
+    const modifiedBranchCounsellor = branchCounsellor?.map((data: any) => {
+      return {
+        label: data?.name,
+        value: data?.id,
+      };
+    });
+    return userRole == counsellor_tl_id ? modifiedBranchCounsellor : dropdownData?.counsellors;
+  }, [dropdownData?.counsellors, branchCounsellor, userRole]);
+
   useEffect(() => {
     const params: any = {
       sort_by: sortBy,
@@ -270,7 +281,7 @@ const Leads = () => {
   }, [sortBy, sortOrder, setSearchParams]);
 
   useEffect(() => {
-    // fetchAllCounsellors();
+    userRole && userRole == counsellor_tl_id && fetchAllCounsellors();
     if (userBranchId) dispatch(getBranchCounsellors(userBranchId));
   }, [userBranchId]);
 
@@ -312,22 +323,22 @@ const Leads = () => {
     console.count("loading count");
   }, [userRole]);
 
-  // const fetchAllCounsellors = useCallback(() => {
-  //   axios
-  //     .get("/get_all_counsellors")
-  //     .then((res) => {
-  //       const counsellorData = res?.data?.data?.map((item: any) => {
-  //         return {
-  //           label: item?.name,
-  //           value: item?.id,
-  //         };
-  //       });
-  //       setCounsellors(counsellorData);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, []);
+  const fetchAllCounsellors = useCallback(() => {
+    axios
+      .get("/get_all_counsellors")
+      .then((res) => {
+        const counsellorData = res?.data?.data?.map((item: any) => {
+          return {
+            label: item?.name,
+            value: item?.id,
+          };
+        });
+        setCounsellorsTl(counsellorData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const fetchBranches = useCallback(async () => {
     try {
@@ -354,7 +365,7 @@ const Leads = () => {
             countries={formattedCountries}
             source={dropdownData?.sources}
             offices={dropdownData?.officeTypes}
-            consellors={dropdownData?.counsellors}
+            consellors={filteredCounsellors || []}
             selectedCountry={selectedCountry}
             selectedOffice={selectedOffice}
             selectedSource={selectedSource}
