@@ -60,6 +60,7 @@ const Leads = () => {
     console.log(value);
     console.log(currentLimit);
 
+
     setCurrentPage(value);
     if (userRole == cre_tl_id) {
       dispatch(
@@ -90,7 +91,7 @@ const Leads = () => {
         );
       }
     }
-  }, []);
+  }, [ userRole, currentLimit, searchValue, sortBy, sortOrder, selectedCountry, selectedOffice, selectedSource ]);
 
   const handleFilterChange = (name: string, value: string) => {
     switch (name) {
@@ -181,8 +182,11 @@ const Leads = () => {
     resetSort();
   };
 
+  console.log(currentPage, currentLimit);
+
   const handleLimitChange = useCallback(
     (value: number) => {
+      console.log(value);
       setCurrentLimit(value);
       setCurrentPage(1);
       if (userRole == cre_tl_id) {
