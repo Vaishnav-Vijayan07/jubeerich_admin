@@ -57,8 +57,38 @@ const Leads = () => {
 
   const handlePageChange = useCallback((value: any) => {
     console.log(value);
+    console.log(currentLimit);
 
     setCurrentPage(value);
+    if (userRole == cre_tl_id) {
+      dispatch(
+        getLeadsTL(
+          value,
+          currentLimit,
+          searchValue == "" ? undefined : searchValue,
+          sortBy,
+          sortOrder,
+          selectedCountry == "all" ? undefined : selectedCountry,
+          selectedOffice == "all" ? undefined : selectedOffice,
+          selectedSource == "all" ? undefined : selectedSource
+        )
+      );
+    } else {
+      if (userRole) {
+        dispatch(
+          getLead(
+            value,
+            currentLimit,
+            searchValue == "" ? undefined : searchValue,
+            sortBy,
+            sortOrder,
+            selectedCountry == "all" ? undefined : selectedCountry,
+            selectedOffice == "all" ? undefined : selectedOffice,
+            selectedSource == "all" ? undefined : selectedSource
+          )
+        );
+      }
+    }
   }, []);
 
   const handleFilterChange = (name: string, value: string) => {
@@ -150,10 +180,42 @@ const Leads = () => {
     resetSort();
   };
 
-  const handleLimitChange = useCallback((value: number) => {
-    setCurrentLimit(value);
-    setCurrentPage(1);
-  }, []);
+  const handleLimitChange = useCallback(
+    (value: number) => {
+      setCurrentLimit(value);
+      setCurrentPage(1);
+      if (userRole == cre_tl_id) {
+        dispatch(
+          getLeadsTL(
+            1,
+            value,
+            searchValue == "" ? undefined : searchValue,
+            sortBy,
+            sortOrder,
+            selectedCountry == "all" ? undefined : selectedCountry,
+            selectedOffice == "all" ? undefined : selectedOffice,
+            selectedSource == "all" ? undefined : selectedSource
+          )
+        );
+      } else {
+        if (userRole) {
+          dispatch(
+            getLead(
+              1,
+              value,
+              searchValue == "" ? undefined : searchValue,
+              sortBy,
+              sortOrder,
+              selectedCountry == "all" ? undefined : selectedCountry,
+              selectedOffice == "all" ? undefined : selectedOffice,
+              selectedSource == "all" ? undefined : selectedSource
+            )
+          );
+        }
+      }
+    },
+    [userRole, searchValue, sortBy, sortOrder, selectedCountry, selectedOffice, selectedSource, dispatch]
+  );
 
   const handleSearch = (value: any) => {
     setSearchValue(value);
@@ -248,7 +310,7 @@ const Leads = () => {
     }
 
     console.count("loading count");
-  }, [userRole, currentPage, currentLimit]);
+  }, [userRole]);
 
   // const fetchAllCounsellors = useCallback(() => {
   //   axios
