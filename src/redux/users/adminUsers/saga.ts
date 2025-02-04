@@ -49,6 +49,7 @@ interface UsersData {
     region_id: string,
     franchise_id: any
     status: boolean 
+    active_status: string 
   };
   type: string;
 }
@@ -59,9 +60,9 @@ const api = new APICore();
  * Login the user
  * @param {*} payload - username and password
  */
-function* getAllAdminUsers(): SagaIterator {
+function* getAllAdminUsers({payload:{active_status}}:UsersData): SagaIterator {
   try {
-    const response = yield call(getAdminUsersApi);
+    const response = yield call(getAdminUsersApi,active_status);
     const data = response.data.data;
 
     // NOTE - You can change this according to response format from your api
@@ -197,7 +198,7 @@ function* addAdminUser({
       )
     );
 
-    yield put(getAdminUsers());
+    yield put(getAdminUsers("all"));
     
     let branchId = branch_id;
     let franchiseId = franchise_id;
@@ -266,7 +267,7 @@ function* updateAdminUser({
         data
       )
     );
-    yield put(getAdminUsers());
+    yield put(getAdminUsers("all"));
 
     let branchId = branch_id;
     let franchiseId = franchise_id;
@@ -302,7 +303,7 @@ function* deleteAdminUser({ payload: { id, branch_id, franchise_id } }: UsersDat
         data
       )
     );
-    yield put(getAdminUsers());
+    yield put(getAdminUsers("all"));
 
     let branchId = branch_id;
     let franchiseId = franchise_id;

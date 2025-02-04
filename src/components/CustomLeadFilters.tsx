@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Button, Col, Form, Dropdown, Card, Row, Collapse } from "react-bootstrap";
-import { cre_id, cre_tl_id, it_team_id } from "../constants";
+import { counsellor_tl_id, cre_id, cre_tl_id, it_team_id, regional_manager_id } from "../constants";
 
 type SortOption = {
   value: string;
@@ -13,13 +13,17 @@ type Props = {
   offices?: SelectItems[];
   cres?: SelectItems[];
   consellors?: SelectItems[];
+  branches?: SelectItems[];
+  counselors_tl?: SelectItems[];
   selectedCountry: string;
   selectedOffice?: string;
   selectedSource: string;
   selectedSortBy: string;
+  selectedBranch?: string;
   selectedSortOrder: string;
   selectedCre?: string;
   selectedCounsellors?: string;
+  selectedCounselorsTL?: string;
   userRole?: any;
   onFilterChange?: (name: string, value: string) => void;
   onApplySort?: () => void;
@@ -49,13 +53,17 @@ function CustomLeadFilters({
   source,
   cres,
   consellors,
+  branches,
+  counselors_tl,
   selectedCountry,
   selectedOffice,
   selectedSource,
   selectedCre,
+  selectedBranch,
   selectedSortBy,
   selectedSortOrder,
   selectedCounsellors,
+  selectedCounselorsTL,
   userRole,
   onApplySort,
   onClear,
@@ -64,7 +72,8 @@ function CustomLeadFilters({
   const [open, setOpen] = useState<boolean>(false);
 
   const showOffices = userRole == it_team_id;
-  const showCounsellors = userRole == cre_id;
+  const showCounsellors = userRole == cre_id || userRole == counsellor_tl_id;
+  const showBranches = userRole == regional_manager_id;
 
   const handleFieldChange = (name: string, value: string) => {
     onFilterChange?.(name, value);
@@ -194,6 +203,32 @@ function CustomLeadFilters({
                         <Dropdown.Menu>
                           {[{ value: "all", label: "All" }, ...consellors]?.map((option) => (
                             <Dropdown.Item key={option.value} onClick={() => handleFieldChange("counsellor", option.value)}>
+                              {option.label}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </Form.Group>
+                  </Col>
+                )}
+
+                {branches && branches?.length > 0 && showBranches && (
+                  <Col>
+                    <Form.Group className="mb-0">
+                      <Form.Label className="text-muted fw-semibold small">Branches</Form.Label>
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="outline-secondary"
+                          id="sort-field-dropdown"
+                          className="medium text-truncate"
+                          style={{ minWidth: "120px", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+                        >
+                          {branches?.find((cre) => cre.value === selectedBranch)?.label || "All"}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                          {[{ value: "all", label: "All" }, ...branches]?.map((option) => (
+                            <Dropdown.Item key={option.value} onClick={() => handleFieldChange("branches", option.value)}>
                               {option.label}
                             </Dropdown.Item>
                           ))}

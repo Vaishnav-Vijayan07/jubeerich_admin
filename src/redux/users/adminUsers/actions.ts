@@ -29,29 +29,23 @@ interface UsersData {
   role_id: string;
   profileImage: File | null;
   branch_ids: string;
-  franchise_id: any
+  franchise_id: any;
 }
 
 // common success
-export const adminUsersApiResponseSuccess = (
-  actionType: string,
-  data: UsersData | {}
-): AdminUsersActionType => ({
+export const adminUsersApiResponseSuccess = (actionType: string, data: UsersData | {}): AdminUsersActionType => ({
   type: AdminUserActionTypes.API_RESPONSE_SUCCESS,
   payload: { actionType, data },
 });
 // common error
-export const adminUsersApiResponseError = (
-  actionType: string,
-  error: string
-): AdminUsersActionType => ({
+export const adminUsersApiResponseError = (actionType: string, error: string): AdminUsersActionType => ({
   type: AdminUserActionTypes.API_RESPONSE_ERROR,
   payload: { actionType, error },
 });
 
-export const getAdminUsers = (): AdminUsersActionType => ({
+export const getAdminUsers = (active_status: string): AdminUsersActionType => ({
   type: AdminUserActionTypes.GET_ADMIN_USERS,
-  payload: {},
+  payload: {active_status},
 });
 
 // Update the action creator to accept a branchId parameter
@@ -59,7 +53,6 @@ export const getBranchCounsellors = (branchId: any): AdminUsersActionType => ({
   type: AdminUserActionTypes.GET_BRANCH_COUNSELLOR,
   payload: { branchId }, // Pass the branchId in the payload
 });
-
 
 export const getBranchCounsellorsTL = (branchId: any): AdminUsersActionType => ({
   type: AdminUserActionTypes.GET_BRANCH_COUNSELLOR_TL,
@@ -111,7 +104,7 @@ export const addAdminUsers = (
     region_id,
     branch_id,
     franchise_id,
-    status
+    status,
   },
 });
 
@@ -152,7 +145,7 @@ export const updateAdminUsers = (
     region_id,
     branch_id,
     franchise_id,
-    status
+    status,
   },
 });
 
@@ -165,7 +158,7 @@ export const deleteAdminUsers = (id: string, branch_id?: any, franchise_id?: any
   console.log(branch_id);
   console.log(franchise_id);
   return {
-  type: AdminUserActionTypes.DELETE_ADMIN_USERS,
-  payload: { id, branch_id, franchise_id }}
+    type: AdminUserActionTypes.DELETE_ADMIN_USERS,
+    payload: { id, branch_id, franchise_id },
+  };
 };
-
