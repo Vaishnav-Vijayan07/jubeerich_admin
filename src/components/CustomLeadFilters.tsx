@@ -346,10 +346,10 @@ function CustomLeadFilters({
               </Col>
             </Row>
             <Row className="pt-3 pb-2">
-              <Col md={3}>
+              <Col md={2}>
                 <FormInput name="start_date" label="From" type="date" value={dateRange.start_date} onChange={handleDateRangeChange} />
               </Col>
-              <Col md={3}>
+              <Col md={2}>
                 <FormInput name="end_date" label="To" type="date" value={dateRange.end_date} onChange={handleDateRangeChange} />
               </Col>
               <Col md={3} className="mt-3">
