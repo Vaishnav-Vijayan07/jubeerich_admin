@@ -10,7 +10,7 @@ import { withSwal } from "react-sweetalert2";
 import { approvalTypes } from "./data";
 import moment from "moment";
 
-const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchLead, approvalType }: any) => {
+const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchLead, approvalType, heading }: any) => {  
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
   const [rowData, setRowData] = useState<any[]>([]);
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
@@ -57,9 +57,10 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           field: "id",
           headerName: "No.",
           sortable: true,
-          filter: true,
+          filter: false,
           editable: false,
-          width: 10,
+          maxWidth: 55,
+          minWidth: 55,
           valueGetter: (params: any) => params.node.rowIndex + 1,
         },
         {
@@ -96,6 +97,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: true,
+          minWidth: 150,
           cellClassRules: {
             "cell-error": (params: any) => !params.value,
           },
@@ -106,6 +108,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: true,
+          minWidth: 230,
           cellClassRules: {
             "cell-error": (params: any) => !params.value,
           },
@@ -116,6 +119,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: true,
+          minWidth: 150,
           cellClassRules: {
             "cell-error": (params: any) => !params.value,
           },
@@ -196,7 +200,17 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
             "cell-error": (params: any) => !params.value,
           },
         },
-        { field: "error", headerName: "Error", sortable: true, filter: true, editable: true },
+        {
+          field: "error",
+          headerName: "Error",
+          sortable: true,
+          filter: true,
+          editable: true,
+          minWidth: 150,
+          cellStyle: {
+            color: 'red'
+          }
+        },
         {
           field: "delete",
           headerName: "Actions",
@@ -232,7 +246,8 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: false,
-          width: 10,
+          maxWidth: 90,
+          minWidth: 90,
           valueGetter: (params: any) => params.node.rowIndex + 1,
         },
         {
@@ -241,6 +256,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: false,
+          minWidth: 150,
           cellClassRules: {
             "cell-error": (params: any) => !params.value,
           },
@@ -251,6 +267,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: false,
+          minWidth: 230,
           cellClassRules: {
             "cell-error": (params: any) => !params.value,
           },
@@ -261,6 +278,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: false,
+          minWidth: 150,
           cellClassRules: {
             "cell-error": (params: any) => !params.value,
           },
@@ -332,7 +350,8 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: false,
-          width: 10,
+          maxWidth: 90,
+          minWidth: 90,
           valueGetter: (params: any) => params.node.rowIndex + 1,
         },
         {
@@ -341,6 +360,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: false,
+          minWidth: 150,
           cellClassRules: {
             "cell-error": (params: any) => !params.value,
           },
@@ -604,11 +624,14 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
   return (
     <>
       <Dialog fullScreen open={isOpenModal} onClose={() => toggleModal(false)} TransitionComponent={Slide}>
-        <AppBar sx={{ position: "relative" }}>
+        <AppBar sx={{ position: "relative", backgroundColor: "#38414A" }}>
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleCloseModal} aria-label="close">
               <CloseIcon />
             </IconButton>
+            <div className="ms-2">
+              <h3 className="text-white">{heading}</h3>
+            </div>
           </Toolbar>
         </AppBar>
         <div className="d-flex flex-column" style={{ height: "100vh" }}>

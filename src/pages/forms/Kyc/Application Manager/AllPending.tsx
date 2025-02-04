@@ -272,7 +272,7 @@ const AllPending = () => {
       
       {
         openApproveModal && (
-          <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={toogleApproveModal} responseData={validatedData} options={teamMembers} refetchLead={refetchLead} />
+          <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={toogleApproveModal} responseData={validatedData} options={teamMembers} refetchLead={refetchLead} heading={"Auto Assign Management"} />
         )
       }
     </>

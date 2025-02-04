@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { Button, Col, Form, Dropdown, Card, Row, Collapse } from "react-bootstrap";
 import { counsellor_tl_id, cre_id, cre_tl_id, it_team_id, regional_manager_id } from "../constants";
+import FormInput from "./FormInput";
+import { set } from "react-hook-form";
 
 type SortOption = {
   value: string;
@@ -28,6 +30,7 @@ type Props = {
   onFilterChange?: (name: string, value: string) => void;
   onApplySort?: () => void;
   onClear?: VoidFunction;
+  exportLeads?: (value: any) => void
 };
 
 type SelectItems = {
@@ -46,6 +49,11 @@ const sortOrderOptions: SortOption[] = [
   { value: "asc", label: "Ascending" },
   { value: "desc", label: "Descending" },
 ];
+
+const initialDateState = {
+  start_date: '',
+  end_date: ''
+}
 
 function CustomLeadFilters({
   countries,
@@ -68,8 +76,10 @@ function CustomLeadFilters({
   onApplySort,
   onClear,
   onFilterChange,
+  exportLeads
 }: Props) {
   const [open, setOpen] = useState<boolean>(false);
+  const [dateRange, setDateRange] = useState<any>(initialDateState);
 
   const showOffices = userRole == it_team_id;
   const showCounsellors = userRole == cre_id || userRole == counsellor_tl_id;
@@ -86,6 +96,19 @@ function CustomLeadFilters({
   const handleClear = () => {
     onClear?.();
   };
+
+  const handleExportLead = () => {
+    exportLeads?.(dateRange);
+  }
+
+  const handleDateRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    
+    setDateRange({
+      ...dateRange,
+      [name]: value
+    });
+  }
 
   return (
     <Card>
@@ -320,6 +343,18 @@ function CustomLeadFilters({
                 <Button variant="outline-danger" size="sm" onClick={handleClear} className="fw-semibold ms-2">
                   Clear
                 </Button>
+              </Col>
+            </Row>
+            <Row className="pt-3 pb-2">
+              <Col md={2}>
+                <FormInput name="start_date" label="From" type="date" value={dateRange.start_date} onChange={handleDateRangeChange} />
+              </Col>
+              <Col md={2}>
+                <FormInput name="end_date" label="To" type="date" value={dateRange.end_date} onChange={handleDateRangeChange} />
+              </Col>
+              <Col md={3} className="mt-3">
+                  <Button className="btn-sm btn-blue waves-effect waves-light" style={{ height: "42px"}} onClick={handleExportLead}>Export Lead</Button>
+                  <Button className="btn-sm btn-danger waves-effect waves-light ms-2" style={{ height: "42px"}} onClick={() => setDateRange(initialDateState)}>Clear</Button>
               </Col>
             </Row>
           </div>
