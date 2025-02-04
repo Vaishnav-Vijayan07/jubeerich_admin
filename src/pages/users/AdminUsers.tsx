@@ -38,7 +38,9 @@ import { getFranchise } from "../../redux/franchise/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
-import { AssignLeadModal } from "./AssignLeadModal";
+import { approvalTypes, assignTypes } from "../forms/data";
+import LeadApprovalTable from "../forms/LeadApprovalTable";
+import LeadAssignTable from "./LeadAssignTable";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 const BasicInputElements = withSwal((props: any) => {
@@ -68,8 +70,10 @@ const BasicInputElements = withSwal((props: any) => {
     { name: "Active", value: "true" },
     { name: "Disable", value: "false" },
   ];
-  const [openAssignModal, setOpenAssignModal] = useState<boolean>(false);
-  const [assignMessage, setAssignMessage] = useState<any>('');
+  const [openAssignTable, setOpenAssignTable] = useState<boolean>(false);
+  const [approvalType, setApprovalType] = useState<any>('');
+  const [leadsData, setLeadsData] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -236,19 +240,12 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }
 
-  const assignationApproved = async(approved: boolean) => {
-    if(approved){
-      dispatchUpdateLead();
-      reAssignLeads();
-    }
-  }
-
-  const reAssignLeads = async() => {
+  const reAssignLeads = async(selectedItems: any) => {
     try {
-      const { data } = await axios.post('/reassign_leads', { id: formData?.id });
+      const { data } = await axios.post('/reassign_leads', { id: formData?.id, type: assignTypes.CRE, assigned_data: selectedItems });
       if(data){
         showSuccessAlert('Leads Successfully Re-Assigned');
-        setOpenAssignModal(false);
+        setOpenAssignTable(false);
       }
     } catch (error) {
       console.log('error', error);
@@ -261,8 +258,10 @@ const BasicInputElements = withSwal((props: any) => {
       const { data } = await axios.get(`/check_user_leads/${user_id}`);
       if(data?.leadCount){
         setModal(!modal);
-        setAssignMessage(data?.message);
-        setOpenAssignModal(true);
+        setOpenAssignTable(true);
+        setApprovalType(approvalTypes.delete_cre);
+        setLeadsData(data?.leadsData);
+        setUserData(data?.userData);
       } else {
         dispatchUpdateLead();
       }
@@ -272,11 +271,18 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }
 
+  const refetchLead = () => {
+
+  }
+
+  const updateSelectedUser = (selectedItems: any) => {
+    dispatchUpdateLead();
+    reAssignLeads(selectedItems);
+  }
+
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(radioValue);
-
     // Validate the form using yup
     try {
       await validationSchema.validate(formData, { abortEarly: false });
@@ -948,7 +954,18 @@ const BasicInputElements = withSwal((props: any) => {
         </Col>
       </Row>
 
-      <AssignLeadModal open={openAssignModal} toggleModal={setOpenAssignModal} message={assignMessage} assignApproved={assignationApproved} />
+      {approvalType == approvalTypes.delete_cre && openAssignTable && (
+        <LeadAssignTable
+          isOpenModal={openAssignTable}
+          toggleModal={setOpenAssignTable}
+          responseData={leadsData}
+          options={userData}
+          refetchLead={refetchLead}
+          updateSelectedUser={updateSelectedUser}
+          approvalType={approvalTypes.delete_cre}
+          heading={'Assign Leads Management'}
+        />
+      )}
     </>
   );
 });
