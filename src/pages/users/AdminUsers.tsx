@@ -240,9 +240,9 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }
 
-  const reAssignLeads = async(selectedItems: any) => {
+  const reAssignLeads = async(selectedItems: any, assignType: any) => {
     try {
-      const { data } = await axios.post('/reassign_leads', { id: formData?.id, type: assignTypes.CRE, assigned_data: selectedItems });
+      const { data } = await axios.post('/reassign_leads', { id: formData?.id, type: assignType, assigned_data: selectedItems });
       if(data){
         showSuccessAlert('Leads Successfully Re-Assigned');
         setOpenAssignTable(false);
@@ -253,13 +253,23 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }
 
-  const checkUserHasLeads = async(user_id: any) => {
+  const checkUserHasLeads = async(user_id: any, checkType: any) => {
     try {
-      const { data } = await axios.get(`/check_user_leads/${user_id}`);
+      let params = '';
+
+      if(checkType == approvalTypes.delete_cre){
+        params = `?check_type=${assignTypes.CRE}`
+      } 
+      else {
+        params = `?check_type=${assignTypes.Counsellor}`
+      }
+
+      const { data } = await axios.get(`/check_user_leads/${user_id}${params}`);
+
       if(data?.leadCount){
         setModal(!modal);
         setOpenAssignTable(true);
-        setApprovalType(approvalTypes.delete_cre);
+        setApprovalType(checkType);
         setLeadsData(data?.leadsData);
         setUserData(data?.userData);
       } else {
@@ -275,9 +285,9 @@ const BasicInputElements = withSwal((props: any) => {
 
   }
 
-  const updateSelectedUser = (selectedItems: any) => {
+  const updateSelectedUser = (selectedItems: any, assignType: any) => {
     dispatchUpdateLead();
-    reAssignLeads(selectedItems);
+    reAssignLeads(selectedItems, assignType);
   }
 
   //handle form submission
@@ -316,9 +326,14 @@ const BasicInputElements = withSwal((props: any) => {
               if (userInfo) {
                 const { user_id } = JSON.parse(userInfo);
                 try {
+
                   if(formData.role_id == cre_id && !radioValue){
-                    checkUserHasLeads(formData?.id);
-                  } else {
+                    checkUserHasLeads(formData?.id, approvalTypes.delete_cre);
+                  } 
+                  else if(formData?.role_id == counsellor_id && !radioValue){
+                    checkUserHasLeads(formData?.id, approvalTypes.delete_counselor);
+                  } 
+                  else {
                     dispatchUpdateLead();
                     // dispatch(
                     //   updateAdminUsers(
@@ -963,6 +978,19 @@ const BasicInputElements = withSwal((props: any) => {
           refetchLead={refetchLead}
           updateSelectedUser={updateSelectedUser}
           approvalType={approvalTypes.delete_cre}
+          heading={'Assign Leads Management'}
+        />
+      )}
+
+      {approvalType == approvalTypes.delete_counselor && openAssignTable && (
+        <LeadAssignTable
+          isOpenModal={openAssignTable}
+          toggleModal={setOpenAssignTable}
+          responseData={leadsData}
+          options={userData}
+          refetchLead={refetchLead}
+          updateSelectedUser={updateSelectedUser}
+          approvalType={approvalTypes.delete_counselor}
           heading={'Assign Leads Management'}
         />
       )}

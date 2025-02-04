@@ -7,7 +7,7 @@ import { GridApi, GridReadyEvent } from "ag-grid-community";
 import { showErrorAlert, showSuccessAlert } from "../../constants";
 import { withSwal } from "react-sweetalert2";
 import moment from "moment";
-import { approvalTypes } from "../forms/data";
+import { approvalTypes, assignTypes } from "../forms/data";
 
 const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchLead, approvalType, heading, updateSelectedUser }: any) => {
     const [gridApi, setGridApi] = useState<GridApi | null>(null);
@@ -24,7 +24,7 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
             };
         } else {
             return {
-                userDataCres: options?.map((item: any) => ({ id: item.id.toString(), name: item.name.toString() })) || [],
+                userDataCres: options?.map((item: any) => ({ id: item.id.toString(), name: item.name.toString(), role_id: item.role_id.toString() })) || [],
             }
         }
     }, [options]);
@@ -273,8 +273,6 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
             return;
         }
 
-        console.log('selectedItems', selectedItems)
-
         let formattedItems = selectedItems.map((item: any) => ({
             id: Number(item?.id),
             assigned_user: Number(item?.assigned_cre?.id),
@@ -307,9 +305,9 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
             if (result.isConfirmed) {
 
                 if (approvalType == approvalTypes.delete_cre) {
-                    updateSelectedUser(formattedItems);
+                    updateSelectedUser(formattedItems, assignTypes.CRE);
                 } else {
-
+                    updateSelectedUser(formattedItems, assignTypes.Counsellor);
                 }
             }
         } catch (error) {
