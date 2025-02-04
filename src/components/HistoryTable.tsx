@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Calendar, ChevronDown, ChevronRight, AlertCircle, Loader2 } from "lucide-react";
 import axios from "axios";
+import { formatString } from "../utils/formatData";
 
 interface HistoryItem {
   id: number;
@@ -125,7 +126,7 @@ const HistoryTable = ({ apiUrl }: any) => {
 
                 return (
                   <tr key={key} className={isChanged ? "table-warning" : ""}>
-                    <td className="fw-bold">{key}</td>
+                    <td className="fw-bold">{formatString(key)}</td>
                     <td className={isChanged ? "text-danger fw-semibold" : ""}>{oldValue}</td>
                     <td className={isChanged ? "text-success fw-semibold" : ""}>{newValue}</td>
                   </tr>

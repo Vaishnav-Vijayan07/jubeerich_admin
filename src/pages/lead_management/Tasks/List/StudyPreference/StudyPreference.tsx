@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Spinner } from "react-bootstrap";
+import { Button, Modal, Row, Spinner } from "react-bootstrap";
 import { withSwal } from "react-sweetalert2";
 import useDropdownData from "../../../../../hooks/useDropdownDatas";
 import axios from "axios";
@@ -7,6 +7,7 @@ import StudyPreferenceRow from "./StudyPrefRow";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import SkeletonComponent from "./LoadingSkeleton";
+import FieldHistoryTable from "../../../../../components/FieldHistory";
 
 const StudyPreference = withSwal((props: any) => {
   const { swal, studentId } = props;
@@ -15,6 +16,7 @@ const StudyPreference = withSwal((props: any) => {
   const [item, setItem] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [initialFetch, setInitialFetch] = useState<boolean>(true);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
@@ -22,7 +24,7 @@ const StudyPreference = withSwal((props: any) => {
 
   const getStudyPrefData = async () => {
     setLoading(true);
-    setInitialFetch(true)
+    setInitialFetch(true);
 
     try {
       const { data } = await axios.get(`/study_preferences_details/${studentId}`);
@@ -42,13 +44,33 @@ const StudyPreference = withSwal((props: any) => {
       getStudyPrefData();
     }
   }, [dropdownData.universities.length, dropdownData.campuses.length, refresh, studentId]);
-  
+
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       {loading ? (
         <SkeletonComponent />
       ) : (
         <Row className="pe-0">
+          <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+            <Modal.Header closeButton></Modal.Header>
+            <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+              <FieldHistoryTable apiUrl={"study_preference_details"} studentId={studentId} />
+            </Modal.Body>
+          </Modal>
+          <div className="d-slex w-100 justify-content-end">
+            <Button
+              className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
+              onClick={toggleHistoryModal}
+              style={{ height: "fit-content", width: "fit-content" }}
+            >
+              <i className="mdi mdi-history"></i> View History
+            </Button>
+          </div>
+
           {item.length > 0 &&
             item?.map((values: any, index: any) => (
               <StudyPreferenceRow

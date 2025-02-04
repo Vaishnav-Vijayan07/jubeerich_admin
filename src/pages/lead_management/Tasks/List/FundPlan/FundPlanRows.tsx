@@ -1,9 +1,10 @@
-import { Row, Col, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button, Modal } from "react-bootstrap";
 import { FormInput } from "../../../../../components";
 import Select from "react-select";
 import { baseUrl } from "../../../../../constants";
 import ActionButton from ".././ActionButton";
-import React from "react";
+import React, { useState } from "react";
+import FieldHistoryTable from "../../../../../components/FieldHistory";
 
 export const fundTypeOptions = [
   { value: "loan", label: "Loan" },
@@ -21,8 +22,9 @@ const fundOriginTypes = [
   { value: "sponsored funds", label: "Sponsored funds" },
 ];
 
-const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, handleAddMoreFundPlan }: any) => {
+const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, handleAddMoreFundPlan, studentId }: any) => {
   console.log(fundPlan);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const renderFundRows = (plan: any, index: number) => (
     <>
@@ -47,9 +49,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         {/* Fund Origin */}
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`fund_origin-${index}`}>
-            <Form.Label>
-               Fund Origin
-            </Form.Label>
+            <Form.Label>Fund Origin</Form.Label>
             <Select
               name="fund_origin"
               placeholder="Select fund origin"
@@ -64,9 +64,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         {/* Sponsor Name */}
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`sponsor_name-${index}`}>
-            <Form.Label>
-               Sponsor Name
-            </Form.Label>
+            <Form.Label>Sponsor Name</Form.Label>
             <FormInput
               type="text"
               name="sponsor_name"
@@ -81,9 +79,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         {/* Approx Annual Income */}
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`approx_annual_income-${index}`}>
-            <Form.Label>
-               Approx Annual Income ( ₹ )
-            </Form.Label>
+            <Form.Label>Approx Annual Income ( ₹ )</Form.Label>
             <FormInput
               type="number"
               name="approx_annual_income"
@@ -102,9 +98,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
 
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`relation_with_sponsor-${index}`}>
-            <Form.Label>
-               Relation with Sponsor
-            </Form.Label>
+            <Form.Label>Relation with Sponsor</Form.Label>
             <Form.Select
               name="relation_with_sponsor"
               value={plan.relation_with_sponsor || ""}
@@ -127,9 +121,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
 
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`sponsorship_amount-${index}`}>
-            <Form.Label>
-               Sponsorship amount ( ₹ )
-            </Form.Label>
+            <Form.Label>Sponsorship amount ( ₹ )</Form.Label>
             <FormInput
               type="number"
               name="sponsorship_amount"
@@ -146,9 +138,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
 
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId={`name_of_bank-${index}`}>
-            <Form.Label>
-               Name of bank
-            </Form.Label>
+            <Form.Label>Name of bank</Form.Label>
             <FormInput
               type="text"
               name="name_of_bank"
@@ -202,33 +192,37 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
         </Col>
 
         {/* Supporting Document */}
-        {plan?.itr_status != "no" && <Col md={4} lg={4} xl={4} xxl={4}>
-          <Form.Group className="mb-3" controlId={`supporting_document-${index}`}>
-            <Form.Label>
-              <span className="text-danger">*</span> Supporting Document
-            </Form.Label>
-            <Form.Control
-              type="file"
-              accept="image/*,application/pdf" 
-              name="supporting_document"
-              onChange={(e: any) => handleFundPlanInputChange(index, e.target.name, e.target.files?.[0])}
-            />
-            {plan.errors?.supporting_document && <Form.Text className="text-danger">{plan.errors.supporting_document}</Form.Text>}
-            {typeof plan.supporting_document === "string" && (
-              <div className="d-flex align-items-center">
-                <i className="mdi mdi-eye text-primary me-2"></i>
-                <a
-                  href={`${baseUrl}uploads/fundDocuments/${plan?.supporting_document}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-decoration-none"
-                >
-                  supporting_document
-                </a>
-              </div>
-            )}
-          </Form.Group>
-        </Col>}
+        {plan?.itr_status != "no" && (
+          <Col md={4} lg={4} xl={4} xxl={4}>
+            <Form.Group className="mb-3" controlId={`supporting_document-${index}`}>
+              <Form.Label>
+                <span className="text-danger">*</span> Supporting Document
+              </Form.Label>
+              <Form.Control
+                type="file"
+                accept="image/*,application/pdf"
+                name="supporting_document"
+                onChange={(e: any) => handleFundPlanInputChange(index, e.target.name, e.target.files?.[0])}
+              />
+              {plan.errors?.supporting_document && (
+                <Form.Text className="text-danger">{plan.errors.supporting_document}</Form.Text>
+              )}
+              {typeof plan.supporting_document === "string" && (
+                <div className="d-flex align-items-center">
+                  <i className="mdi mdi-eye text-primary me-2"></i>
+                  <a
+                    href={`${baseUrl}uploads/fundDocuments/${plan?.supporting_document}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-decoration-none"
+                  >
+                    supporting_document
+                  </a>
+                </div>
+              )}
+            </Form.Group>
+          </Col>
+        )}
         {(plan?.type === "fd" || plan?.type === "savings") && (
           <>
             <Col md={4} lg={4} xl={4} xxl={4}>
@@ -291,12 +285,32 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
     </>
   );
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
+      <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+        <Modal.Header closeButton></Modal.Header>
+        <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+          <FieldHistoryTable apiUrl={"fund_plan"} studentId={studentId} />
+        </Modal.Body>
+      </Modal>
       <Row>
-        <h5 className="mb-4 text-uppercase">
-          <i className="mdi mdi-account-circle me-1"></i>Fund Plan
-        </h5>
+        <div className="d-flex justify-content-between">
+          <h5 className="mb-4 text-uppercase">
+            <i className="mdi mdi-account-circle me-1"></i>Fund Plan
+          </h5>
+
+          <Button
+            className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
+            onClick={toggleHistoryModal}
+            style={{ height: "fit-content" }}
+          >
+            <i className="mdi mdi-history"></i> View History
+          </Button>
+        </div>
       </Row>
 
       {fundPlan?.map((plan: any, index: number) => renderFundRows(plan, index))}

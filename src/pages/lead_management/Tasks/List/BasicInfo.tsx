@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import axios from "axios";
 import moment from "moment";
@@ -24,6 +24,7 @@ import { refreshData } from "../../../../redux/countryReducer";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../utils/regrexValidation";
 import { allowedFileTypes } from "./data";
+import FieldHistoryTable from "../../../../components/FieldHistory";
 
 const validationErrorsInitialState = {
   full_name: "",
@@ -122,6 +123,7 @@ const BasicInfo = withSwal((props: any) => {
   const [selectedState, setSelectedState] = useState<any>(null);
   const [selectedNationality, setSelectedNationality] = useState<any>(null);
   const [policeCountry, setPoliceCountry] = useState<any>([]);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const dispatch = useDispatch();
   const { refresh } = useSelector((state: RootState) => ({
@@ -192,23 +194,6 @@ const BasicInfo = withSwal((props: any) => {
       getBasicInfo();
     }
   }, [studentId, refresh]);
-
-  // handling input data
-  // const handleInputChange = (e: any, field: any, type: any) => {
-  //   const { value } = e.target;
-
-  //   if (type === "basic") {
-  //     setBasicInfo((prev: any) => ({
-  //       ...prev,
-  //       [field]: value,
-  //     }));
-  //   } else if (type === "primary") {
-  //     setPrimaryInfo((prev: any) => ({
-  //       ...prev,
-  //       [field]: value,
-  //     }));
-  //   }
-  // };
 
   const handleInputChange = (e: any, field: string, type: string) => {
     const { value } = e.target;
@@ -321,7 +306,6 @@ const BasicInfo = withSwal((props: any) => {
 
     const { errors: errorsBasicInfo, ...withOutErrorsBasicInfo } = basicInfo;
     const { errors: errorsPrimaryInfo, ...withOutErrorsPrimaryInfo } = primaryInfo;
-
 
     policeClearenceDocs.forEach((doc: { certificate: any; country_name: any; id?: any }, index: number) => {
       // Start the index at 1
@@ -572,15 +556,35 @@ const BasicInfo = withSwal((props: any) => {
     }
   }, [selectedNation]);
 
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
+
   return (
     <>
       {loading ? (
         <SkeletonComponent />
       ) : (
         <>
-          <h5 className="mb-4 text-uppercase">
-            <i className="mdi mdi-account-circle me-1"></i> Primary Info
-          </h5>
+          <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+            <Modal.Header closeButton></Modal.Header>
+            <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+              <FieldHistoryTable apiUrl={"user_basic_info"} studentId={studentId} />
+            </Modal.Body>
+          </Modal>
+          <div className="d-flex justify-content-between">
+            <h5 className="mb-4 text-uppercase">
+              <i className="mdi mdi-account-circle me-1"></i> Primary Info
+            </h5>
+
+            <Button
+              className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
+              onClick={toggleHistoryModal}
+              style={{ height: "fit-content" }}
+            >
+              <i className="mdi mdi-history"></i> View History
+            </Button>
+          </div>
           <Row className="pe-1">
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="full_name">
@@ -603,9 +607,7 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="email">
-                <Form.Label>
-                  Email Id
-                </Form.Label>
+                <Form.Label>Email Id</Form.Label>
                 <FormInput
                   type="email"
                   name="email"
@@ -689,9 +691,7 @@ const BasicInfo = withSwal((props: any) => {
             {primaryInfo?.office_type == Number(regionId) && (
               <Col md={6} xl={3} xxl={2}>
                 <Form.Group className="mb-3" controlId="region_id">
-                  <Form.Label>
-                    Region
-                  </Form.Label>
+                  <Form.Label>Region</Form.Label>
                   <Select
                     styles={customStyles}
                     className="react-select react-select-container"
@@ -711,9 +711,7 @@ const BasicInfo = withSwal((props: any) => {
             {primaryInfo?.office_type == franchise_id_from_office && (
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="franchise_id">
-                  <Form.Label>
-                    Franchisee
-                  </Form.Label>
+                  <Form.Label>Franchisee</Form.Label>
                   <Select
                     styles={customStyles}
                     className="react-select react-select-container"
@@ -732,9 +730,7 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="gender">
-                <Form.Label>
-                  Gender
-                </Form.Label>
+                <Form.Label>Gender</Form.Label>
                 <Select
                   styles={customStyles}
                   className="react-select react-select-container"
@@ -784,9 +780,7 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="country">
-                <Form.Label>
-                  Country
-                </Form.Label>
+                <Form.Label>Country</Form.Label>
                 <Select
                   className="react-select react-select-container"
                   name="country"
@@ -825,9 +819,7 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="state">
-                <Form.Label>
-                   State
-                </Form.Label>
+                <Form.Label>State</Form.Label>
                 <Select
                   className="react-select react-select-container"
                   name="state"
