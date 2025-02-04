@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Button, Col, Form, Dropdown, Card, Row, Collapse } from "react-bootstrap";
-import { cre_id, cre_tl_id, it_team_id, regional_manager_id } from "../constants";
+import { counsellor_tl_id, cre_id, cre_tl_id, it_team_id, regional_manager_id } from "../constants";
 
 type SortOption = {
   value: string;
@@ -13,7 +13,8 @@ type Props = {
   offices?: SelectItems[];
   cres?: SelectItems[];
   consellors?: SelectItems[];
-  branches?:SelectItems[];
+  branches?: SelectItems[];
+  counselors_tl?: SelectItems[];
   selectedCountry: string;
   selectedOffice?: string;
   selectedSource: string;
@@ -22,6 +23,7 @@ type Props = {
   selectedSortOrder: string;
   selectedCre?: string;
   selectedCounsellors?: string;
+  selectedCounselorsTL?: string;
   userRole?: any;
   onFilterChange?: (name: string, value: string) => void;
   onApplySort?: () => void;
@@ -52,6 +54,7 @@ function CustomLeadFilters({
   cres,
   consellors,
   branches,
+  counselors_tl,
   selectedCountry,
   selectedOffice,
   selectedSource,
@@ -60,6 +63,7 @@ function CustomLeadFilters({
   selectedSortBy,
   selectedSortOrder,
   selectedCounsellors,
+  selectedCounselorsTL,
   userRole,
   onApplySort,
   onClear,
@@ -68,7 +72,7 @@ function CustomLeadFilters({
   const [open, setOpen] = useState<boolean>(false);
 
   const showOffices = userRole == it_team_id;
-  const showCounsellors = userRole == cre_id;
+  const showCounsellors = userRole == cre_id || userRole == counsellor_tl_id;
   const showBranches = userRole == regional_manager_id;
 
   const handleFieldChange = (name: string, value: string) => {
@@ -208,7 +212,6 @@ function CustomLeadFilters({
                   </Col>
                 )}
 
-
                 {branches && branches?.length > 0 && showBranches && (
                   <Col>
                     <Form.Group className="mb-0">
@@ -234,8 +237,6 @@ function CustomLeadFilters({
                     </Form.Group>
                   </Col>
                 )}
-
-
 
                 <Col>
                   <Form.Group className="mb-0">
