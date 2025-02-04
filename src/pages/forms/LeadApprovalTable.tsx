@@ -246,8 +246,8 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: false,
-          maxWidth: 55,
-          minWidth: 55,
+          maxWidth: 90,
+          minWidth: 90,
           valueGetter: (params: any) => params.node.rowIndex + 1,
         },
         {
@@ -350,8 +350,8 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: false,
-          maxWidth: 55,
-          minWidth: 55,
+          maxWidth: 90,
+          minWidth: 90,
           valueGetter: (params: any) => params.node.rowIndex + 1,
         },
         {
