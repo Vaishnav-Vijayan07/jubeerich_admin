@@ -6,13 +6,14 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getBranchCounsellors, getLead, getLeadsByCounsellorTL, getLeadsTL } from "../../redux/actions";
-import { AUTH_SESSION_KEY, counsellor_id, counsellor_tl_id, country_manager_id, cre_tl_id, regional_manager_id } from "../../constants";
+import { AUTH_SESSION_KEY, counsellor_id, counsellor_tl_id, country_manager_id, cre_tl_id, regional_manager_id, showSuccessAlert } from "../../constants";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { usePagination } from "../../hooks/usePagination";
 import { useSearchParams } from "react-router-dom";
 import CustomLeadFilters from "../../components/CustomLeadFilters";
+import moment from "moment";
 
 const Leads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -353,11 +354,38 @@ const Leads = () => {
     }
   }, []);
 
+  const handleExportLead = async(date_range: any) => {
+    let payload = {
+      start_date: date_range?.start_date ? moment.utc(date_range?.start_date).startOf('day').format("YYYY-MM-DD HH:mm:ssZ") : null, 
+      end_date: date_range?.end_date ? moment.utc(date_range?.end_date).startOf('day').format("YYYY-MM-DD HH:mm:ssZ") : null,
+      country: selectedCountry == "all" ? undefined : selectedCountry,
+      office: selectedOffice == "all" ? undefined : selectedOffice,
+      source: selectedSource == "all" ? undefined : selectedSource,
+    }
+    
+    const { data } = await axios.post(`/export_leads`, payload);
+    if(data?.status && data?.exported_lead) {
+      downloadExportedLeads(data?.exported_lead);
+      showSuccessAlert("Lead Exported Succesfully")
+    }
+  }
+
+  const downloadExportedLeads = (file: any) => {
+    const filePath = file;
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const url = `${apiUrl}${filePath}`;
+    const link = document.createElement("a");
+    link.download = "Leads.xlsx";
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          // { label: "Master", path: "/leads/manage" },
           { label: "Leads", path: "/leads/manage", active: true },
         ]}
         title={"Leads"}
@@ -380,6 +408,7 @@ const Leads = () => {
             onApplySort={applySort}
             onClear={resetFilters}
             userRole={userRole}
+            exportLeads={handleExportLead}
           />
         </Col>
       </Row>
