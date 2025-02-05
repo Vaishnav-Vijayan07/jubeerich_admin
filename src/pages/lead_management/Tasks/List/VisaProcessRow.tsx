@@ -421,9 +421,19 @@ const VisaProcessRow = ({
 
       {/* Travel History */}
       <Row>
-        <h5 className="mb-4 text-uppercase">
-          <i className="mdi mdi-account-circle me-1"></i>Travel History
-        </h5>
+        <div className="d-flex justify-content-between m-0">
+          <h5 className="mb-4 text-uppercase">
+            <i className="mdi mdi-account-circle me-1"></i>Travel History
+          </h5>
+
+          <Button
+            className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
+            onClick={() => toggleHistoryModal("travel_history")}
+            style={{ height: "fit-content" }}
+          >
+            <i className="mdi mdi-history"></i> View History
+          </Button>
+        </div>
 
         {travelHistoryData.length > 0 &&
           travelHistoryData.map((data: any, index: any) => (
