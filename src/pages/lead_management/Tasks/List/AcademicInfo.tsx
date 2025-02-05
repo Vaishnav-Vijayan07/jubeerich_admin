@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 import { withSwal } from "react-sweetalert2";
@@ -13,6 +13,7 @@ import validateFields from "../../../../helpers/validateHelper";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../utils/regrexValidation";
 import { allowedFileTypes } from "./data";
+import FieldHistoryTable from "../../../../components/FieldHistory";
 
 const initialStateAcademic = {
   qualification: "",
@@ -45,7 +46,7 @@ const AcademicInfo = withSwal((props: any) => {
 
   const [academicInfoFromApi, setAcademicInfoFromApi] = useState<any[]>([initialStateAcademic]);
   const [examForm, setExamForm] = useState<any[]>([initialStateExam]);
-  const [selectExam, setSelectExam] = useState<boolean>(true);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const fetchAcademicInfo = useCallback(async () => {
     setLoading(true);
@@ -100,7 +101,7 @@ const AcademicInfo = withSwal((props: any) => {
       console.error(`Invalid ${name}: ${value}`);
       return; // Stop updating if validation fails
     }
-    
+
     setter((prevData) => {
       const newData = [...prevData];
       newData[index][name] = value;
@@ -111,12 +112,11 @@ const AcademicInfo = withSwal((props: any) => {
   const handleFileChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-
       if (file && !allowedFileTypes.includes(file.type)) {
         showErrorAlert("Only PDF and image files are allowed.");
         return;
       }
-  
+
       setExamForm((prevData) => {
         const newData = [...prevData];
         newData[index].score_card = file;
@@ -145,33 +145,6 @@ const AcademicInfo = withSwal((props: any) => {
     }
   };
 
-  // const handleSaveAcademicInfo = () => {
-  //   console.log(academicInfoFromApi);
-
-  //   const validationRules = {
-  //     qualification: { required: true, message: "Please choose a qualification" },
-  //     place: { required: true, message: "Please choose a place" },
-  //     percentage: { required: true, message: "Please choose a percentage" },
-  //     year_of_passing: { required: true, message: "Please choose a year of passing" },
-  //     backlogs: { required: true, message: "Please choose the number of backlogs" },
-  //   };
-
-  //   const { isValid, errors } = validateFields(academicInfoFromApi, validationRules);
-
-  //   console.log(errors);
-
-  //   if (!isValid) {
-  //     setAcademicInfoFromApi((prevState: any) =>
-  //       prevState.map((exp: any, index: any) => ({
-  //         ...exp,
-  //         errors: errors[index] || {},
-  //       }))
-  //     );
-  //     return;
-  //   }
-  //   saveStudentAcademicInfo(academicInfoFromApi);
-  // };
-
   const handleSaveExamInfo = () => {
     const validationRules = {
       exam_type: { required: true, message: "Please choose an exam type" },
@@ -198,9 +171,9 @@ const AcademicInfo = withSwal((props: any) => {
     saveStudentExamInfo(examForm, hasExams);
   };
 
-  // if (loading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "45%" }} />;
-  // }
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
 
   return (
     <>
@@ -209,53 +182,25 @@ const AcademicInfo = withSwal((props: any) => {
       ) : (
         <Row className={deleteLoading || saveLoading ? "opacity-25 pe-0" : ""}>
           <>
-            {/* <AcademicInfoRow
-            academicInfo={academicInfoFromApi}
-            handleAcademicInfoChange={(index, event) =>
-              handleInputChange(setAcademicInfoFromApi, index, event)
-            }
-            addMoreAcademicInfo={() =>
-              addFormField(setAcademicInfoFromApi, {
-                qualification: "",
-                place: "",
-                percentage: "",
-                year_of_passing: "",
-                backlogs: 0,
-                errors: {},
-              })
-            }
-            removeAcademicInfo={(index, item) =>
-              removeFormField(setAcademicInfoFromApi, index, item, "academic")
-            }
-          /> */}
+            <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+              <Modal.Header closeButton></Modal.Header>
+              <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+                <FieldHistoryTable apiUrl={"user_exams"} studentId={studentId} />
+              </Modal.Body>
+            </Modal>
+            <div className="d-flex justify-content-between">
+              <h5 className="mb-2 text-uppercase">
+                <i className="mdi mdi-file-document-outline me-1"></i> Exam Details
+              </h5>
 
-            {/*     <Row>
-            <Button
-              variant="primary"
-              className="mt-4"
-              type="submit"
-              onClick={handleSaveAcademicInfo}
-              disabled={saveLoading || deleteLoading}
-            >
-              {saveLoading || deleteLoading ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                  {" Loading..."} 
-                </>
-              ) : (
-                "Save Academic Info" // Normal button text when not loading
-              )}
-            </Button>
-          </Row> */}
-            <h5 className="mb-2 text-uppercase">
-              <i className="mdi mdi-file-document-outline me-1"></i> Exam Details
-            </h5>
+              <Button
+                className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
+                onClick={toggleHistoryModal}
+                style={{ height: "fit-content" }}
+              >
+                <i className="mdi mdi-history"></i> View History
+              </Button>
+            </div>
 
             <Row className="mt-3">
               <Col>

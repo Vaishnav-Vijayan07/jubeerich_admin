@@ -123,4 +123,11 @@ export const approvalTypes = {
   import_lead: 'import_lead',
   assign_cre: 'assign_cre',
   assign_applications: 'assign_applications',
+  delete_cre: 'delete_cre',
+  delete_counselor: 'delete_counselor'
+}
+
+export const assignTypes = {
+  CRE: 'CRE',
+  Counsellor: 'Counsellor'
 }
