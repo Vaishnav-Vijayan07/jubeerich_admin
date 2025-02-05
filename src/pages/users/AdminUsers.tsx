@@ -39,13 +39,12 @@ import { regrexValidation } from "../../utils/regrexValidation";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { approvalTypes, assignTypes } from "../forms/data";
-import LeadApprovalTable from "../forms/LeadApprovalTable";
 import LeadAssignTable from "./LeadAssignTable";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, BranchesData, franchiseData, CountriesData, RolesData, regionData, error, loading, initialLoading } =
+  const { swal, state, BranchesData, franchiseData, CountriesData, RolesData, regionData, error, loading, initialLoading, refetchUsers } =
     props;
 
   const [modal, setModal] = useState<boolean>(false);
@@ -279,10 +278,6 @@ const BasicInputElements = withSwal((props: any) => {
       console.log('error', error);
       showErrorAlert(error)
     }
-  }
-
-  const refetchLead = () => {
-
   }
 
   const updateSelectedUser = (selectedItems: any, assignType: any) => {
@@ -601,6 +596,17 @@ const BasicInputElements = withSwal((props: any) => {
   const toggleHistoryModal = () => {
     setHistoryModal(!historyModal);
   };
+
+  useEffect(() => {
+    if (openAssignTable) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto"; // Clean up on component unmount
+    };
+  }, [openAssignTable]);
 
   return (
     <>
@@ -975,7 +981,7 @@ const BasicInputElements = withSwal((props: any) => {
           toggleModal={setOpenAssignTable}
           responseData={leadsData}
           options={userData}
-          refetchLead={refetchLead}
+          refetchUsers={refetchUsers}
           updateSelectedUser={updateSelectedUser}
           approvalType={approvalTypes.delete_cre}
           heading={'Assign Leads Management'}
@@ -988,7 +994,7 @@ const BasicInputElements = withSwal((props: any) => {
           toggleModal={setOpenAssignTable}
           responseData={leadsData}
           options={userData}
-          refetchLead={refetchLead}
+          refetchUsers={refetchUsers}
           updateSelectedUser={updateSelectedUser}
           approvalType={approvalTypes.delete_counselor}
           heading={'Assign Leads Management'}
@@ -1083,6 +1089,7 @@ const AdminUsers = () => {
             regionData={regionData}
             franchiseData={franchiseData}
             initialLoading={initialLoading}
+            refetchUsers={() => dispatch(getAdminUsers())}
           />
         </Col>
       </Row>

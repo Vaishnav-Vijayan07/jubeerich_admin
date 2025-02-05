@@ -664,7 +664,7 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Group className="mb-3 mt-1" controlId="channel_name">
                   <Form.Label>Email</Form.Label>
                   <Form.Control type="text" name="email" maxLength={100} value={formData.email} onChange={handleInputChange} />
                   {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
@@ -780,7 +780,7 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Group className="mb-3 mt-1" controlId="channel_name">
                   <Form.Label>
                     Zipcode
                   </Form.Label>

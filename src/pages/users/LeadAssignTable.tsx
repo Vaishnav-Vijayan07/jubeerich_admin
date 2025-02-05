@@ -4,12 +4,12 @@ import { AgGridReact } from "ag-grid-react";
 import { AppBar, Dialog, IconButton, Slide, Toolbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { GridApi, GridReadyEvent } from "ag-grid-community";
-import { showErrorAlert, showSuccessAlert } from "../../constants";
+import { showErrorAlert } from "../../constants";
 import { withSwal } from "react-sweetalert2";
 import moment from "moment";
 import { approvalTypes, assignTypes } from "../forms/data";
 
-const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchLead, approvalType, heading, updateSelectedUser }: any) => {
+const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchUsers, approvalType, heading, updateSelectedUser }: any) => {
     const [gridApi, setGridApi] = useState<GridApi | null>(null);
     const [rowData, setRowData] = useState<any[]>([]);
     const [selectedItems, setSelectedItems] = useState<any[]>([]);
@@ -20,11 +20,11 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
     const formattedData = useMemo(() => {
         if (approvalType == approvalTypes.delete_cre) {
             return {
-                userDataCres: options?.map((item: any) => ({ id: item.id.toString(), name: item.name.toString(), role_id: item.role_id.toString() })) || [],
+                userDataCres: [ { id: null, name: "None", role_id: null },...options]?.map((item: any) => ({ id: item?.id?.toString(), name: item?.name?.toString(), role_id: item?.role_id?.toString() })) || [],
             };
         } else {
             return {
-                userDataCres: options?.map((item: any) => ({ id: item.id.toString(), name: item.name.toString(), role_id: item.role_id.toString() })) || [],
+                userDataCres: [ { id: null, name: "None", role_id: null },...options]?.map((item: any) => ({ id: item?.id?.toString(), name: item?.name?.toString(), role_id: item?.role_id?.toString() })) || [],
             }
         }
     }, [options]);
@@ -240,7 +240,7 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
                         if (selectedUser) {
                             params.data[params.colDef.field] = {
                                 id: selectedUser.id,
-                                role_id: selectedUser.role_id, // Store role_id along with id
+                                role_id: selectedUser.role_id, 
                             };
                             return true;
                         }
@@ -270,6 +270,15 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
     const handleAssign = async () => {
         if (!selectedItems || selectedItems.length == 0) {
             showErrorAlert("No leads selected. Please select leads to approve.");
+            return;
+        }
+
+        const hasInvalidItem = selectedItems.some((item) => {
+            return !item.assigned_cre;
+        });
+
+        if (hasInvalidItem) {
+            showErrorAlert("Some selected leads are missing required fields: Assign To.");
             return;
         }
 
@@ -303,7 +312,6 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
             });
 
             if (result.isConfirmed) {
-
                 if (approvalType == approvalTypes.delete_cre) {
                     updateSelectedUser(formattedItems, assignTypes.CRE);
                 } else {
@@ -349,7 +357,7 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
 
         if (result.isConfirmed) {
             toggleModal(false);
-            refetchLead();
+            refetchUsers();
         }
     };
 
