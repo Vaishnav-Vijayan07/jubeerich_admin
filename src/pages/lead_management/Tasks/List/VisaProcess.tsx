@@ -25,7 +25,7 @@ const VisaProcess = withSwal((props: any) => {
   const initialVisaDeclineForm = {
     id: "0",
     student_id: studentId,
-    country_id: "",
+    country_name: "",
     visa_type: "",
     course_applied: "",
     university_applied: "",
@@ -37,7 +37,7 @@ const VisaProcess = withSwal((props: any) => {
   const initialVisaApproveForm = {
     id: "0",
     student_id: studentId,
-    country_id: "",
+    country_name: "",
     visa_type: "",
     course_applied: "",
     university_applied: "",
@@ -48,7 +48,7 @@ const VisaProcess = withSwal((props: any) => {
   const initialTravelHistoryForm = {
     id: "0",
     student_id: studentId,
-    country_id: "",
+    country_name: "",
     start_date: "",
     end_date: "",
     purpose_of_travel: "",
@@ -296,7 +296,7 @@ const VisaProcess = withSwal((props: any) => {
   const submitDeclinedVisa = async () => {
     const validationRules = {
       course_applied: { required: true,message:"Please enter a course applied" },
-      country_id: { required: true,message:"Please select a country" },
+      country_name: { required: true,message:"Please select a country" },
       rejection_reason: { required: false, message: "Please enter a rejection reason" }, 
       university_applied: { required: true,message:"Please enter a university applied" },
       visa_type: { required: false, message: "Please enter a visa type" },
@@ -384,7 +384,7 @@ const VisaProcess = withSwal((props: any) => {
   const submitApprovedVisa = async () => {
     const validationRules = {
       course_applied: { required: true, message: "Please enter a course applied" },
-      country_id: { required: true, message: "Please select a country" },
+      country_name: { required: true, message: "Please select a country" },
       university_applied: { required: true, message: "Please enter a university applied" },
       visa_type: { required: false, message: "Please enter a visa type" },
     };
@@ -450,7 +450,6 @@ const VisaProcess = withSwal((props: any) => {
               "content-type": "multipart/form-data",
             },
           });
-          // const response = await axios.post(`${baseUrl}api/visa_approve_process/`, body);
           console.log("response", response);
           showSuccessAlert(response.data.message);
           setVisaApproveDocs([]);
@@ -471,7 +470,7 @@ const VisaProcess = withSwal((props: any) => {
 
   const submitTravelHistory = async () => {
     const validationRules = {
-      country_id: { required: true, message: "Please select a country" },
+      country_name: { required: true, message: "Please select a country" },
       start_date: { required: false, message: "Please select a start date" },
       end_date: { required: false, message: "Please select an end date" },
       purpose_of_travel: { required: false, message: "Please enter a purpose of travel" },
