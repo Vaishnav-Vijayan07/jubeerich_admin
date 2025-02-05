@@ -221,6 +221,17 @@ const AllPending = () => {
     dispatch(dispatch(toggleApprovalModal(false)));
   };
 
+    useEffect(() => {
+      if (openApproveModal) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
+      return () => {
+        document.body.style.overflow = "auto"; // Clean up on component unmount
+      };
+    }, [openApproveModal]);
+
   return (
     <>
       <PageTitle

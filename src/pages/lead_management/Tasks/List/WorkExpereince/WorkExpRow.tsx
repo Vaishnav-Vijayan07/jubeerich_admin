@@ -1,12 +1,18 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { FormInput } from "../../../../../components";
 import moment from "moment";
 import { baseUrl } from "../../../../../constants";
 import ActionButton from "../ActionButton";
-import React from "react";
+import React, { useState } from "react";
+import FieldHistoryTable from "../../../../../components/FieldHistory";
 
-const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWorkExperience, removeWorkExperience }: any) => {
+const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWorkExperience, removeWorkExperience, studentId }: any) => {
   console.log(workExperienceData);
+  const [historyModal, setHistoryModal] = useState<boolean>(false);
+
+  const toggleHistoryModal = () => {
+    setHistoryModal(!historyModal);
+  };
 
   const renderWorkRows = (workExperience: any, index: any) => (
     <>
@@ -14,7 +20,7 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="qualification">
             <Form.Label>
-            <span className="text-danger">*</span> Work Experience
+              <span className="text-danger">*</span> Work Experience
             </Form.Label>
             <FormInput
               type="text"
@@ -49,9 +55,7 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
 
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="designation">
-            <Form.Label>
-               Designation
-            </Form.Label>
+            <Form.Label>Designation</Form.Label>
             <FormInput
               type="text"
               name="designation"
@@ -68,9 +72,7 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
 
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="dob">
-            <Form.Label>
-              From
-            </Form.Label>
+            <Form.Label>From</Form.Label>
             <FormInput
               type="date"
               name="from"
@@ -87,9 +89,7 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
 
         <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="dob">
-            <Form.Label>
-              To
-            </Form.Label>
+            <Form.Label>To</Form.Label>
             <FormInput
               type="date"
               name="to"
@@ -258,9 +258,19 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
 
   return (
     <Row>
-      <h5 className="mb-4 text-uppercase">
-        <i className="mdi mdi-account-circle me-1"></i>Work Experience
-      </h5>
+      <div className="d-flex justify-content-between">
+        <h5 className="mb-4 text-uppercase">
+          <i className="mdi mdi-account-circle me-1"></i>Work Experience
+        </h5>
+
+        <Button
+          className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
+          onClick={toggleHistoryModal}
+          style={{ height: "fit-content" }}
+        >
+          <i className="mdi mdi-history"></i> View History
+        </Button>
+      </div>
 
       {workExperienceData?.map((workExperience: any, index: any) => renderWorkRows(workExperience, index))}
 
@@ -269,6 +279,13 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
           <ActionButton onClick={addMoreWorkExperience} label="Add More" iconClass="mdi mdi-plus" />
         </Row>
       </Row>
+
+      <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+        <Modal.Header closeButton></Modal.Header>
+        <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+          <FieldHistoryTable apiUrl={"work_infos"} studentId={studentId}  />
+        </Modal.Body>
+      </Modal>
     </Row>
   );
 };

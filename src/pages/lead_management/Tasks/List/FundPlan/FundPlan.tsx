@@ -101,8 +101,7 @@ const FundPlan = ({ student_id }: Props) => {
   };
 
   const handleFundPlanInputChange = (index: number, name: string, value: string | number | File) => {
-
-    if (typeof value == 'object' && !allowedFileTypes.includes(value.type)) {
+    if (typeof value == "object" && !allowedFileTypes.includes(value.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
       return;
     }
@@ -163,6 +162,7 @@ const FundPlan = ({ student_id }: Props) => {
               handleFundPlanInputChange={handleFundPlanInputChange}
               removeFundPlan={removeFundPlan}
               handleAddMoreFundPlan={handleAddMoreFundPlan}
+              studentId={student_id}
             />
           </Row>
           <Row>

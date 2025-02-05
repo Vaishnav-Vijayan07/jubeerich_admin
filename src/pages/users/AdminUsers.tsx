@@ -38,7 +38,8 @@ import { getFranchise } from "../../redux/franchise/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
-import { AssignLeadModal } from "./AssignLeadModal";
+import { approvalTypes, assignTypes } from "../forms/data";
+import LeadAssignTable from "./LeadAssignTable";
 const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 const filterOptions = [
@@ -58,7 +59,7 @@ const BasicInputElements = withSwal((props: any) => {
     regionData,
     error,
     loading,
-    initialLoading,
+    initialLoading, refetchUsers,
     handleFilterChange,
     selectedStatus,
   } = props;
@@ -85,8 +86,10 @@ const BasicInputElements = withSwal((props: any) => {
     { name: "Active", value: "true" },
     { name: "Disable", value: "false" },
   ];
-  const [openAssignModal, setOpenAssignModal] = useState<boolean>(false);
-  const [assignMessage, setAssignMessage] = useState<any>("");
+  const [openAssignTable, setOpenAssignTable] = useState<boolean>(false);
+  const [approvalType, setApprovalType] = useState<any>('');
+  const [leadsData, setLeadsData] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -251,19 +254,12 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  const assignationApproved = async (approved: boolean) => {
-    if (approved) {
-      dispatchUpdateLead();
-      reAssignLeads();
-    }
-  };
-
-  const reAssignLeads = async () => {
+  const reAssignLeads = async(selectedItems: any, assignType: any) => {
     try {
-      const { data } = await axios.post("/reassign_leads", { id: formData?.id });
-      if (data) {
-        showSuccessAlert("Leads Successfully Re-Assigned");
-        setOpenAssignModal(false);
+      const { data } = await axios.post('/reassign_leads', { id: formData?.id, type: assignType, assigned_data: selectedItems });
+      if(data){
+        showSuccessAlert('Leads Successfully Re-Assigned');
+        setOpenAssignTable(false);
       }
     } catch (error) {
       console.log("error", error);
@@ -271,13 +267,25 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  const checkUserHasLeads = async (user_id: any) => {
+  const checkUserHasLeads = async(user_id: any, checkType: any) => {
     try {
-      const { data } = await axios.get(`/check_user_leads/${user_id}`);
-      if (data?.leadCount) {
+      let params = '';
+
+      if(checkType == approvalTypes.delete_cre){
+        params = `?check_type=${assignTypes.CRE}`
+      } 
+      else {
+        params = `?check_type=${assignTypes.Counsellor}`
+      }
+
+      const { data } = await axios.get(`/check_user_leads/${user_id}${params}`);
+
+      if(data?.leadCount){
         setModal(!modal);
-        setAssignMessage(data?.message);
-        setOpenAssignModal(true);
+        setOpenAssignTable(true);
+        setApprovalType(checkType);
+        setLeadsData(data?.leadsData);
+        setUserData(data?.userData);
       } else {
         dispatchUpdateLead();
       }
@@ -285,13 +293,16 @@ const BasicInputElements = withSwal((props: any) => {
       console.log("error", error);
       showErrorAlert(error);
     }
-  };
+  }
+
+  const updateSelectedUser = (selectedItems: any, assignType: any) => {
+    dispatchUpdateLead();
+    reAssignLeads(selectedItems, assignType);
+  }
 
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(radioValue);
-
     // Validate the form using yup
     try {
       await validationSchema.validate(formData, { abortEarly: false });
@@ -325,9 +336,14 @@ const BasicInputElements = withSwal((props: any) => {
               if (userInfo) {
                 const { user_id } = JSON.parse(userInfo);
                 try {
-                  if (formData.role_id == cre_id && !radioValue) {
-                    checkUserHasLeads(formData?.id);
-                  } else {
+
+                  if(formData.role_id == cre_id && !radioValue){
+                    checkUserHasLeads(formData?.id, approvalTypes.delete_cre);
+                  } 
+                  else if(formData?.role_id == counsellor_id && !radioValue){
+                    checkUserHasLeads(formData?.id, approvalTypes.delete_counselor);
+                  } 
+                  else {
                     dispatchUpdateLead();
                     // dispatch(
                     //   updateAdminUsers(
@@ -589,6 +605,17 @@ const BasicInputElements = withSwal((props: any) => {
   const toggleHistoryModal = () => {
     setHistoryModal(!historyModal);
   };
+
+  useEffect(() => {
+    if (openAssignTable) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto"; // Clean up on component unmount
+    };
+  }, [openAssignTable]);
 
   return (
     <>
@@ -941,7 +968,31 @@ const BasicInputElements = withSwal((props: any) => {
         </Col>
       </Row>
 
-      <AssignLeadModal open={openAssignModal} toggleModal={setOpenAssignModal} message={assignMessage} assignApproved={assignationApproved} />
+      {approvalType == approvalTypes.delete_cre && openAssignTable && (
+        <LeadAssignTable
+          isOpenModal={openAssignTable}
+          toggleModal={setOpenAssignTable}
+          responseData={leadsData}
+          options={userData}
+          refetchUsers={refetchUsers}
+          updateSelectedUser={updateSelectedUser}
+          approvalType={approvalTypes.delete_cre}
+          heading={'Assign Leads Management'}
+        />
+      )}
+
+      {approvalType == approvalTypes.delete_counselor && openAssignTable && (
+        <LeadAssignTable
+          isOpenModal={openAssignTable}
+          toggleModal={setOpenAssignTable}
+          responseData={leadsData}
+          options={userData}
+          refetchUsers={refetchUsers}
+          updateSelectedUser={updateSelectedUser}
+          approvalType={approvalTypes.delete_counselor}
+          heading={'Assign Leads Management'}
+        />
+      )}
     </>
   );
 });
@@ -1036,6 +1087,7 @@ const AdminUsers = () => {
             regionData={regionData}
             franchiseData={franchiseData}
             initialLoading={initialLoading}
+            refetchUsers={() => dispatch(getAdminUsers('all'))}
             handleFilterChange={handleFilterChange}
             selectedStatus={selectedStatus}
           />

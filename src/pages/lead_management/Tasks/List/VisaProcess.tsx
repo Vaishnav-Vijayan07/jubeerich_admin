@@ -559,15 +559,6 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  // if (loading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "100%", left: "45%" }}
-  //     />
-  //   );
-  // }
-
   return (
     <>
       {loading ? (
@@ -586,6 +577,7 @@ const VisaProcess = withSwal((props: any) => {
           addMoreVisaForm={addMoreVisaForm}
           removeVisaForm={removeVisaForm}
           handleFileChange={handleFileChange}
+          studentId={studentId}
         />
       )}
     </>
