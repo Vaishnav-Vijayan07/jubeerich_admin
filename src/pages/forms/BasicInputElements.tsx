@@ -34,6 +34,7 @@ import CustomPagination from "../../components/CustomPagination";
 import CustomSearchBox from "../../components/CustomSearchBox";
 import LeadApprovalTable from "./LeadApprovalTable";
 import SortBox from "../../components/SortBox";
+import { formatString } from "../../utils/formatData";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -383,25 +384,26 @@ const BasicInputElements = withSwal((props: any) => {
             },
           ]
         : []),
+      {
+        Header: "Status",
+        accessor: "lead_status",
+        sort: false,
+        isTruncate: true,
+        Cell: ({ row }: any) => <><span>{formatString(row?.original?.lead_status)}</span></>,
+      },
       // {
       //   Header: "Status",
       //   accessor: "status",
       //   sort: false,
       //   isTruncate: true,
+      //   Cell: ({ row }: any) => (
+      //     <ul style={{ listStyle: "none", margin: "0" }}>
+      //       {row.original.preferredCountries.map((item: any) => (
+      //         <li>{item?.status_name}</li>
+      //       ))}
+      //     </ul>
+      //   ),
       // },
-      {
-        Header: "Status",
-        accessor: "status",
-        sort: false,
-        isTruncate: true,
-        Cell: ({ row }: any) => (
-          <ul style={{ listStyle: "none", margin: "0" }}>
-            {row.original.preferredCountries.map((item: any) => (
-              <li>{item?.status_name}</li>
-            ))}
-          </ul>
-        ),
-      },
       {
         Header: "Actions",
         accessor: "",
