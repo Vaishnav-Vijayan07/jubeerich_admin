@@ -42,6 +42,7 @@ import { usePagination } from "../../hooks/usePagination";
 import CustomPagination from "../../components/CustomPagination";
 import CustomSearchBox from "../../components/CustomSearchBox";
 import CustomLeadFilters from "../../components/CustomLeadFilters";
+import { formatString } from "../../utils/formatData";
 
 interface OptionType {
   value: string;
@@ -416,17 +417,28 @@ const BasicInputElements = withSwal((props: any) => {
         : []),
       {
         Header: "Status",
-        accessor: "status",
+        accessor: "lead_status",
         sort: false,
         isTruncate: true,
         Cell: ({ row }: any) => (
-          <ul style={{ listStyle: "none", margin: "0" }}>
-            {row.original.preferredCountries.map((item: any) => (
-              <li>{item?.status_name}</li>
-            ))}
-          </ul>
+          <>
+            <span>{formatString(row?.original?.lead_status)}</span>
+          </>
         ),
       },
+      // {
+      //   Header: "Status",
+      //   accessor: "status",
+      //   sort: false,
+      //   isTruncate: true,
+      //   Cell: ({ row }: any) => (
+      //     <ul style={{ listStyle: "none", margin: "0" }}>
+      //       {row.original.preferredCountries.map((item: any) => (
+      //         <li>{item?.status_name}</li>
+      //       ))}
+      //     </ul>
+      //   ),
+      // },
       {
         Header: "Actions",
         accessor: "",
