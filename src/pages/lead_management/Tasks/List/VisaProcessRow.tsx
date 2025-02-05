@@ -7,6 +7,7 @@ import { travel_history, visa_approve, visa_decline, Visa_Types } from "./data";
 import ActionButton from "./ActionButton";
 import { baseUrl } from "../../../../constants";
 import FieldHistoryTable from "../../../../components/FieldHistory";
+import axios from "axios";
 
 const VisaProcessRow = ({
   visaDecline,
@@ -28,6 +29,7 @@ const VisaProcessRow = ({
   const [travelHistoryData, setTravelHistoryData] = useState<any[]>([]);
   const [historyModal, setHistoryModal] = useState<boolean>(false);
   const [urlString, setUrlString] = useState<string>("");
+  const [allCountries, setAllCountries] = useState<any>([]);
 
   useEffect(() => {
     if (visaDecline.length) {
@@ -53,6 +55,21 @@ const VisaProcessRow = ({
     if (url) setUrlString(url);
     setHistoryModal(!historyModal);
   };
+
+  const getAllCountries = async () => {
+    try {
+      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/iso`, {
+        timeout: 10000,
+      });
+      setAllCountries(res?.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllCountries();
+  }, []);
 
   return (
     <Row>
@@ -100,7 +117,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              {/* <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="country_id">
                   <Form.Label>
                     <span className="text-danger">*</span> Country
@@ -124,6 +141,36 @@ const VisaProcessRow = ({
                     }
                   />
                   {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
+                </Form.Group>
+              </Col> */}
+
+              <Col md={6} xl={3} xxl={2}>
+                <Form.Group className="mb-3" controlId="country">
+                  <Form.Label>Country</Form.Label>
+                  <Select
+                    className="react-select react-select-container"
+                    name="country_name"
+                    options={allCountries?.map((item: any) => {
+                      return {
+                        label: item.name,
+                        value: item?.name,
+                        iso: item?.Iso3,
+                      };
+                    })}
+                    value={
+                      data?.country_name
+                        ? {
+                          label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
+                          value: data?.country_name,
+                        }
+                        : null
+                    }
+                    onChange={(selectedOption: any) =>
+                      handleVisaSelectChange(index, "country_name", selectedOption.value, visa_decline)
+                    }
+                    placeholder="Select a country"
+                  />
+                  {data?.errors?.country_name && <Form.Text className="text-danger">{data?.errors?.country_name}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -295,7 +342,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              {/* <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="country_id">
                   <Form.Label>
                     <span className="text-danger">*</span> Country
@@ -319,6 +366,36 @@ const VisaProcessRow = ({
                     }
                   />
                   {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
+                </Form.Group>
+              </Col> */}
+
+              <Col md={6} xl={3} xxl={2}>
+                <Form.Group className="mb-3" controlId="country">
+                  <Form.Label>Country</Form.Label>
+                  <Select
+                    className="react-select react-select-container"
+                    name="country_name"
+                    options={allCountries?.map((item: any) => {
+                      return {
+                        label: item.name,
+                        value: item?.name,
+                        iso: item?.Iso3,
+                      };
+                    })}
+                    value={
+                      data?.country_name
+                        ? {
+                            label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
+                            value: data?.country_name,
+                          }
+                        : null
+                    }
+                    onChange={(selectedOption: any) =>
+                      handleVisaSelectChange(index, "country_name", selectedOption.value, visa_approve)
+                    }
+                    placeholder="Select a country"
+                  />
+                  {data?.errors?.country_name && <Form.Text className="text-danger">{data?.errors?.country_name}</Form.Text>}
                 </Form.Group>
               </Col>
 
@@ -438,7 +515,8 @@ const VisaProcessRow = ({
         {travelHistoryData.length > 0 &&
           travelHistoryData.map((data: any, index: any) => (
             <Row key={index}>
-              <Col md={6} lg={4} xl={4} xxl={4}>
+
+              {/* <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="country_id">
                   <Form.Label>
                     <span className="text-danger">*</span> Country
@@ -462,6 +540,36 @@ const VisaProcessRow = ({
                     }
                   />
                   {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
+                </Form.Group>
+              </Col> */}
+
+              <Col md={6} xl={3} xxl={2}>
+                <Form.Group className="mb-3" controlId="country">
+                  <Form.Label>Country</Form.Label>
+                  <Select
+                    className="react-select react-select-container"
+                    name="country_name"
+                    options={allCountries?.map((item: any) => {
+                      return {
+                        label: item.name,
+                        value: item?.name,
+                        iso: item?.Iso3,
+                      };
+                    })}
+                    value={
+                      data?.country_name
+                        ? {
+                          label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
+                          value: data?.country_name,
+                        }
+                        : null
+                    }
+                    onChange={(selectedOption: any) =>
+                      handleVisaSelectChange(index, "country_name", selectedOption.value, travel_history)
+                    }
+                    placeholder="Select a country"
+                  />
+                  {data?.errors?.country_name && <Form.Text className="text-danger">{data?.errors?.country_name}</Form.Text>}
                 </Form.Group>
               </Col>
 

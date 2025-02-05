@@ -726,7 +726,7 @@ const KycDetails = withSwal((props: any) => {
                       <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Country Name:</strong>
-                          <span className="ms-2">{visa?.declined_country?.country_name}</span>
+                          <span className="ms-2">{visa?.country_name}</span>
                         </p>
                         <p className="mb-1 font-15">
                           <strong>Course and Institute Applied For:</strong>
@@ -763,7 +763,7 @@ const KycDetails = withSwal((props: any) => {
                       <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Country Name:</strong>
-                          <span className="ms-2">{visa.approved_country?.country_name}</span>
+                          <span className="ms-2">{visa?.country_name}</span>
                         </p>
                         <p className="mb-1 font-15">
                           <strong>Course and Institute Applied For:</strong>
@@ -800,7 +800,7 @@ const KycDetails = withSwal((props: any) => {
                       <div key={index} className={`mb-3 ${index % 2 === 0 ? "bg-light" : ""}`} style={{ padding: "10px", borderRadius: "4px" }}>
                         <p className="mb-1 font-15">
                           <strong>Country Name:</strong>
-                          <span className="ms-2">{travel?.travelHistoryCountry?.country_name}</span>
+                          <span className="ms-2">{travel?.country_name}</span>
                         </p>
                         <p className="mb-1 font-15">
                           <strong>Period of Stay:</strong>
