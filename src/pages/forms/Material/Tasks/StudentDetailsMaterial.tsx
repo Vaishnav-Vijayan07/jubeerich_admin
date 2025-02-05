@@ -371,42 +371,48 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   };
 
   const addNewCountry = async (newCountryId: number) => {
+    const result = await swal.fire({
+      title: "Confirm Action",
+      text: `Do you want to assign new country?`,
+      icon: "question",
+      iconColor: "#8B8BF5", // Purple color for the icon
+      showCancelButton: true,
+      confirmButtonText: `Yes, Assign`,
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+      cancelButtonColor: "#E97777", // Pink/red color for cancel button
+      buttonsStyling: true,
+      customClass: {
+        popup: "rounded-4 shadow-lg",
+        confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+        cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+        title: "fs-2 fw-normal mb-2",
+      },
+      width: "26em",
+      padding: "2em",
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
     try {
-      const result = await swal.fire({
-        title: "Confirm Action",
-        text: `Do you want to assign new country?`,
-        icon: "question",
-        iconColor: "#8B8BF5", // Purple color for the icon
-        showCancelButton: true,
-        confirmButtonText: `Yes, Assign`,
-        cancelButtonText: "Cancel",
-        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-        cancelButtonColor: "#E97777", // Pink/red color for cancel button
-        buttonsStyling: true,
-        customClass: {
-          popup: "rounded-4 shadow-lg",
-          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-          title: "fs-2 fw-normal mb-2",
-        },
-        width: "26em",
-        padding: "2em",
+      setLoading(true);
+      const response = await axios.put("assign_new_country", {
+        id: taskId,
+        newCountryId: newCountryId,
       });
 
-      if (result.isConfirmed) {
-        setLoading(true);
-        const response = await axios.put("assign_new_country", {
-          id: taskId,
-          newCountryId: newCountryId,
-        });
+      showSuccessAlert(response?.data?.message); // Display success message
 
-        showSuccessAlert(response?.data?.message); // Display success message
-        getTaskDetails(); // Refresh task details
-        getTaskList();
-        dispatch(refreshData());
-      }
+
+      getTaskDetails(); // Refresh task details
+      getTaskList();
+      dispatch(refreshData());
     } catch (error: any) {
       console.error("Error:", error);
+
+      const message = typeof error === "string" ? error : "Network error or server is unreachable.";
 
       // Display the error message from the backend
       if (error.response) {
@@ -420,7 +426,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       } else {
         await swal.fire({
           title: "Error",
-          text: "Network error or server is unreachable.",
+          text: message,
           icon: "error",
           confirmButtonText: "OK",
         });
@@ -859,7 +865,11 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           disablePortal
                           disableClearable
                           options={countryData || []}
-                          value={taskDetails?.student_name?.preferredCountries[0]?.country_name ? taskDetails?.student_name?.preferredCountries[0]?.country_name : "Add New Country"}
+                          value={
+                            taskDetails?.student_name?.preferredCountries[0]?.country_name
+                              ? taskDetails?.student_name?.preferredCountries[0]?.country_name
+                              : "Add New Country"
+                          }
                           sx={{ width: "100%", paddingTop: "1.2rem" }}
                           renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} placeholder="Add New Country" />}
                           onChange={(event, newValue) => {
