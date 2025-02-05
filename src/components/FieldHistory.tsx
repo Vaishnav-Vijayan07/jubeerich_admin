@@ -16,7 +16,7 @@ interface HistoryItem {
 
 const FieldHistoryTable = ({ apiUrl, studentId }: any) => {
   console.log("apiUrl, studentId", apiUrl, studentId);
-  
+
   const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
   const [isLoading, setIsLoading] = useState(true);
