@@ -1087,7 +1087,7 @@ const AdminUsers = () => {
             regionData={regionData}
             franchiseData={franchiseData}
             initialLoading={initialLoading}
-            refetchUsers={() => dispatch(getAdminUsers())}
+            refetchUsers={() => dispatch(getAdminUsers('all'))}
             handleFilterChange={handleFilterChange}
             selectedStatus={selectedStatus}
           />
