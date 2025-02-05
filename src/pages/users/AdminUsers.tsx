@@ -1,7 +1,7 @@
 import * as yup from "yup";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal, Spinner, ButtonGroup, ToggleButton } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Spinner, ButtonGroup, ToggleButton, Dropdown } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
@@ -40,12 +40,29 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { approvalTypes, assignTypes } from "../forms/data";
 import LeadAssignTable from "./LeadAssignTable";
-const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
+
+const filterOptions = [
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Disabled" },
+];
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, BranchesData, franchiseData, CountriesData, RolesData, regionData, error, loading, initialLoading, refetchUsers } =
-    props;
+  const {
+    swal,
+    state,
+    BranchesData,
+    franchiseData,
+    CountriesData,
+    RolesData,
+    regionData,
+    error,
+    loading,
+    initialLoading, refetchUsers,
+    handleFilterChange,
+    selectedStatus,
+  } = props;
 
   const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
@@ -229,15 +246,13 @@ const BasicInputElements = withSwal((props: any) => {
           formData.branch_ids,
           formData?.country_ids,
           formData.role_id == regional_manager_id ? formData.region_id : null,
-          formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
-            ? formData.branch_id
-            : null,
+          formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id ? formData.branch_id : null,
           formData?.franchise_id || null,
           radioValue
         )
       );
     }
-  }
+  };
 
   const reAssignLeads = async(selectedItems: any, assignType: any) => {
     try {
@@ -247,10 +262,10 @@ const BasicInputElements = withSwal((props: any) => {
         setOpenAssignTable(false);
       }
     } catch (error) {
-      console.log('error', error);
-      showErrorAlert(error)
+      console.log("error", error);
+      showErrorAlert(error);
     }
-  }
+  };
 
   const checkUserHasLeads = async(user_id: any, checkType: any) => {
     try {
@@ -275,8 +290,8 @@ const BasicInputElements = withSwal((props: any) => {
         dispatchUpdateLead();
       }
     } catch (error) {
-      console.log('error', error);
-      showErrorAlert(error)
+      console.log("error", error);
+      showErrorAlert(error);
     }
   }
 
@@ -381,9 +396,7 @@ const BasicInputElements = withSwal((props: any) => {
                       formData.branch_ids,
                       formData?.country_ids,
                       formData.role_id == regional_manager_id ? formData.region_id : null,
-                      formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
-                        ? formData.branch_id
-                        : null,
+                      formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id ? formData.branch_id : null,
                       formData?.franchise_id || null,
                       radioValue
                     )
@@ -429,11 +442,7 @@ const BasicInputElements = withSwal((props: any) => {
         return (
           <>
             <div className="table-user">
-              <img
-                src={isImage ? `${baseUrl}${row.original.profile_image_path}` : profilePic}
-                alt=""
-                className="me-2 rounded-circle"
-              />
+              <img src={isImage ? `${baseUrl}${row.original.profile_image_path}` : profilePic} alt="" className="me-2 rounded-circle" />
               <Link to="#" className="text-body fw-semibold">
                 {row.original.employee_id}
               </Link>
@@ -657,9 +666,7 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.employee_id}
                           onChange={handleInputChange}
                         />
-                        {validationErrors.employee_id && (
-                          <Form.Text className="text-danger">{validationErrors.employee_id}</Form.Text>
-                        )}
+                        {validationErrors.employee_id && <Form.Text className="text-danger">{validationErrors.employee_id}</Form.Text>}
                       </Form.Group>
                     </Col>
                     <Col md={6}>
@@ -667,13 +674,7 @@ const BasicInputElements = withSwal((props: any) => {
                         <Form.Label>
                           <span className="text-danger fs-4">* </span> Name
                         </Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="Enter name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="Enter name" name="name" value={formData.name} onChange={handleInputChange} />
                         {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>}
                       </Form.Group>
                     </Col>
@@ -685,13 +686,7 @@ const BasicInputElements = withSwal((props: any) => {
                         <Form.Label>
                           <span className="text-danger fs-4">* </span> Email
                         </Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="email"
-                          placeholder="Enter email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" name="email" placeholder="Enter email" value={formData.email} onChange={handleInputChange} />
                         {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                       </Form.Group>
                     </Col>
@@ -700,13 +695,7 @@ const BasicInputElements = withSwal((props: any) => {
                         <Form.Label>
                           <span className="text-danger fs-4">* </span> Phone
                         </Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="phone"
-                          placeholder="Enter phone number"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" name="phone" placeholder="Enter phone number" value={formData.phone} onChange={handleInputChange} />
                         {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                       </Form.Group>
                     </Col>
@@ -726,9 +715,7 @@ const BasicInputElements = withSwal((props: any) => {
                             value={formData.username}
                             onChange={handleInputChange}
                           />
-                          {validationErrors.username && (
-                            <Form.Text className="text-danger">{validationErrors.username}</Form.Text>
-                          )}
+                          {validationErrors.username && <Form.Text className="text-danger">{validationErrors.username}</Form.Text>}
                         </Form.Group>
                       </Row>
 
@@ -744,9 +731,7 @@ const BasicInputElements = withSwal((props: any) => {
                             value={formData?.password ?? ""}
                             onChange={handleInputChange}
                           />
-                          {validationErrors.password && (
-                            <Form.Text className="text-danger">{validationErrors.password}</Form.Text>
-                          )}
+                          {validationErrors.password && <Form.Text className="text-danger">{validationErrors.password}</Form.Text>}
                         </Form.Group>
                       </Row>
                     </Col>
@@ -804,9 +789,7 @@ const BasicInputElements = withSwal((props: any) => {
                             isMulti={true}
                             onChange={handleStatusChange as any}
                           />
-                          {validationErrors.country_ids && (
-                            <Form.Text className="text-danger">{validationErrors.country_ids}</Form.Text>
-                          )}
+                          {validationErrors.country_ids && <Form.Text className="text-danger">{validationErrors.country_ids}</Form.Text>}
                         </Form.Group>
                       </Col>
                     )}
@@ -817,12 +800,7 @@ const BasicInputElements = withSwal((props: any) => {
                           <Form.Label>
                             <span className="text-danger fs-4">* </span> Region
                           </Form.Label>
-                          <Form.Select
-                            aria-label="Default select example"
-                            name="region_id"
-                            value={formData.region_id}
-                            onChange={handleInputChange}
-                          >
+                          <Form.Select aria-label="Default select example" name="region_id" value={formData.region_id} onChange={handleInputChange}>
                             <option value="" disabled selected>
                               Choose..
                             </option>
@@ -833,9 +811,7 @@ const BasicInputElements = withSwal((props: any) => {
                             ))}
                           </Form.Select>
 
-                          {validationErrors.region_id && (
-                            <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>
-                          )}
+                          {validationErrors.region_id && <Form.Text className="text-danger">{validationErrors.region_id}</Form.Text>}
                         </Form.Group>
                       </Col>
                     )}
@@ -862,9 +838,7 @@ const BasicInputElements = withSwal((props: any) => {
                             ))}
                           </Form.Select>
 
-                          {validationErrors.franchise_id && (
-                            <Form.Text className="text-danger">{validationErrors.franchise_id}</Form.Text>
-                          )}
+                          {validationErrors.franchise_id && <Form.Text className="text-danger">{validationErrors.franchise_id}</Form.Text>}
                         </Form.Group>
                       </Col>
                     )}
@@ -875,12 +849,7 @@ const BasicInputElements = withSwal((props: any) => {
                           <Form.Label>
                             <span className="text-danger fs-4">* </span> Branch
                           </Form.Label>
-                          <Form.Select
-                            aria-label="Default select example"
-                            name="branch_id"
-                            value={formData.branch_id}
-                            onChange={handleInputChange}
-                          >
+                          <Form.Select aria-label="Default select example" name="branch_id" value={formData.branch_id} onChange={handleInputChange}>
                             <option value="" disabled selected>
                               Choose..
                             </option>
@@ -891,9 +860,7 @@ const BasicInputElements = withSwal((props: any) => {
                             ))}
                           </Form.Select>
 
-                          {validationErrors.branch_id && (
-                            <Form.Text className="text-danger">{validationErrors.branch_id}</Form.Text>
-                          )}
+                          {validationErrors.branch_id && <Form.Text className="text-danger">{validationErrors.branch_id}</Form.Text>}
                         </Form.Group>
                       </Col>
                     )}
@@ -921,13 +888,7 @@ const BasicInputElements = withSwal((props: any) => {
                       {!isUpdate ? "Close" : "Cancel"}
                     </Button>
 
-                    <Button
-                      type="submit"
-                      variant="success"
-                      id="button-addon2"
-                      className="waves-effect waves-light mt-1"
-                      disabled={loading}
-                    >
+                    <Button type="submit" variant="success" id="button-addon2" className="waves-effect waves-light mt-1" disabled={loading}>
                       {isUpdate ? "Update" : "Submit"}
                     </Button>
                   </div>
@@ -948,20 +909,52 @@ const BasicInputElements = withSwal((props: any) => {
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={() => openModalWithClass("modal-right")}
-              >
-                <i className="mdi mdi-plus-circle"></i> Add Users
-              </Button>
+              <div className="d-flex justify-content-between">
+                <h4 className="header-title">Manage Users</h4>
+                <div className="d-flex align-items-end justify-content-end mb-3">
+                  {/* Dropdown Styled Like Buttons */}
+                  <Form.Group className="me-2">
+                    <Form.Label className="text-muted fw-semibold small mb-0">Status</Form.Label>
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        variant="outline-secondary"
+                        id="country-dropdown"
+                        className="btn-sm btn-outline-secondary text-truncate"
+                        style={{
+                          minWidth: "150px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        {filterOptions.find((option) => option.value === selectedStatus)?.label || "All"}
+                      </Dropdown.Toggle>
 
-              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
-              <i className="mdi mdi-history"></i> View History
-              </Button>
-              <h4 className="header-title mb-4">Manage Users</h4>
+                      <Dropdown.Menu>
+                        {[{ value: "all", label: "All" }, ...filterOptions].map((option) => (
+                          <Dropdown.Item key={option.value} onClick={() => handleFilterChange(option.value)}>
+                            {option.label}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </Form.Group>
+
+                  {/* Buttons */}
+                  <Button className="btn-sm btn-secondary waves-effect waves-light me-2" onClick={toggleHistoryModal}>
+                    <i className="mdi mdi-history"></i> View History
+                  </Button>
+
+                  <Button className="btn-sm btn-blue waves-effect waves-light" onClick={() => openModalWithClass("modal-right")}>
+                    <i className="mdi mdi-plus-circle"></i> Add Users
+                  </Button>
+                </div>
+              </div>
+
+              {/* Table Component */}
               <Table
                 columns={columns}
-                data={records ? records : []}
+                data={records || []}
                 pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
@@ -1011,23 +1004,34 @@ const AdminUsers = () => {
   const [countryData, setCountryData] = useState([]);
   const [regionData, setRegionData] = useState([]);
   const [roleData, setRoleData] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
-  const { state, error, loading, initialLoading, Branch, Franchises, Countries, Regions, RolesData } = useSelector(
-    (state: RootState) => ({
-      state: state.Users.adminUsers,
-      error: state.Users.error,
-      loading: state.Users.loading,
-      initialLoading: state.Users.initialLoading,
-      Branch: state?.Branches?.branches?.data,
-      Franchises: state?.Franchise?.franchiseUsers,
-      Countries: state?.Country.countries,
-      Regions: state.Region.regions,
-      RolesData: state.Roles.roles,
-    })
-  );
+  const { state, error, loading, initialLoading, Branch, Franchises, Countries, Regions, RolesData } = useSelector((state: RootState) => ({
+    state: state.Users.adminUsers,
+    error: state.Users.error,
+    loading: state.Users.loading,
+    initialLoading: state.Users.initialLoading,
+    Branch: state?.Branches?.branches?.data,
+    Franchises: state?.Franchise?.franchiseUsers,
+    Countries: state?.Country.countries,
+    Regions: state.Region.regions,
+    RolesData: state.Roles.roles,
+  }));
+
+  const formatData = (data: any, valueKey: string, labelKey: string) => {
+    return data?.map((item: any) => ({
+      value: item[valueKey]?.toString(),
+      label: item[labelKey],
+    }));
+  };
+
+  const handleFilterChange = useCallback((value: string) => {
+    setSelectedStatus(value);
+    dispatch(getAdminUsers(value));
+  }, [dispatch, getAdminUsers]);
 
   useEffect(() => {
-    dispatch(getAdminUsers());
+    dispatch(getAdminUsers(selectedStatus));
     dispatch(getBranches());
     dispatch(getCountry());
     dispatch(getRoles());
@@ -1036,12 +1040,6 @@ const AdminUsers = () => {
   }, []);
 
   // Helper function to format data
-  const formatData = (data: any, valueKey: string, labelKey: string) => {
-    return data?.map((item: any) => ({
-      value: item[valueKey]?.toString(),
-      label: item[labelKey],
-    }));
-  };
 
   // Set state based on formatted data
   useEffect(() => {
@@ -1090,6 +1088,8 @@ const AdminUsers = () => {
             franchiseData={franchiseData}
             initialLoading={initialLoading}
             refetchUsers={() => dispatch(getAdminUsers())}
+            handleFilterChange={handleFilterChange}
+            selectedStatus={selectedStatus}
           />
         </Col>
       </Row>

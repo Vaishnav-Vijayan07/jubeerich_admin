@@ -70,7 +70,7 @@ const AllPending = () => {
   };
 
   useEffect(() => {
-    dispatch(getAdminUsers());
+    dispatch(getAdminUsers("active"));
     dispatch(getPendingKYC(isPendingPage ? "application_manager_pending" : "application_manager_assigned"));
   }, [pathname]);
 

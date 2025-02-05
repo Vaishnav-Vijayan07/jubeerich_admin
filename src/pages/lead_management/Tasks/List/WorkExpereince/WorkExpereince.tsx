@@ -47,7 +47,7 @@ const WorkExpereince = withSwal((props: any) => {
   const [workExperienceFromApi, setWorkExperienceFromApi] = useState<any>(null);
   const [gap, setGap] = useState<any>(initialGapState);
   const { saveLoading: workSaveLoading, saveWorkDetails } = useSaveWorkInfo(studentId);
-  const [hasWorkExp, setHasWorkExp] = useState<boolean>(false)
+  const [hasWorkExp, setHasWorkExp] = useState<boolean>(false);
 
   const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
 
@@ -68,7 +68,7 @@ const WorkExpereince = withSwal((props: any) => {
       setGap(gapData.length > 0 ? gapData : [initialGapState]);
       // setHasGap(gapData.length > 0 ? "yes" : "no");
       setHasGap(gapData.length > 0 ? true : false);
-      setHasWorkExp(workData.length > 0 ? true : false)
+      setHasWorkExp(workData.length > 0 ? true : false);
     } catch (error) {
       console.error("Error fetching academic info:", error);
     } finally {
@@ -113,8 +113,7 @@ const WorkExpereince = withSwal((props: any) => {
   }, [workExperienceFromApi]);
 
   const handleWorkExperienceChange = (name: string, value: any, index: number) => {
-
-    if (typeof value == 'object' && !allowedFileTypes.includes(value.type)) {
+    if (typeof value == "object" && !allowedFileTypes.includes(value.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
       return;
     }
@@ -147,32 +146,32 @@ const WorkExpereince = withSwal((props: any) => {
         <SkeletonComponent />
       ) : (
         <>
-            <Row className="mt-3">
-              <Col>
-                <Form.Group className="mb-3" controlId="source_id">
-                  <Form.Label>Do you have any work experience?</Form.Label>
-                  <div className="d-flex justify-content-start align-items-center mt-1">
-                    <Form.Check
-                      type="radio"
-                      name="hasExams"
-                      checked={hasWorkExp}
-                      onChange={() => setHasWorkExp(true)}
-                      label={<span className="ps-1 fw-bold">Yes</span>}
-                    />
-                    <Form.Check
-                      type="radio"
-                      name="hasExams"
-                      checked={!hasWorkExp}
-                      onChange={() => setHasWorkExp(false)}
-                      label={<span className="ps-1 fw-bold">No</span>}
-                      className="ms-3"
-                    />
-                  </div>
-                </Form.Group>
-              </Col>
-            </Row>
+          <Row className="mt-3">
+            <Col>
+              <Form.Group className="mb-3" controlId="source_id">
+                <Form.Label>Do you have any work experience?</Form.Label>
+                <div className="d-flex justify-content-start align-items-center mt-1">
+                  <Form.Check
+                    type="radio"
+                    name="hasExams"
+                    checked={hasWorkExp}
+                    onChange={() => setHasWorkExp(true)}
+                    label={<span className="ps-1 fw-bold">Yes</span>}
+                  />
+                  <Form.Check
+                    type="radio"
+                    name="hasExams"
+                    checked={!hasWorkExp}
+                    onChange={() => setHasWorkExp(false)}
+                    label={<span className="ps-1 fw-bold">No</span>}
+                    className="ms-3"
+                  />
+                </div>
+              </Form.Group>
+            </Col>
+          </Row>
 
-          {hasWorkExp &&
+          {hasWorkExp && (
             <>
               <Row className={deleteLoading || workSaveLoading ? "opacity-25 pe-0" : ""}>
                 <WorkExpRow
@@ -180,6 +179,7 @@ const WorkExpereince = withSwal((props: any) => {
                   handleWorkExperienceChange={handleWorkExperienceChange}
                   addMoreWorkExperience={addMoreWorkExperience}
                   removeWorkExperience={removeWorkExperience}
+                  studentId={studentId}
                 />
               </Row>
               <Row>
@@ -224,7 +224,7 @@ const WorkExpereince = withSwal((props: any) => {
                 </Col>
               </Row>
             </>
-          }
+          )}
           {/* {hasGap === "yes" && ( */}
           {hasGap && (
             <>

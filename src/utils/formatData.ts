@@ -38,12 +38,22 @@ export function formatChangedFields(apiResponse: any[]) {
   });
 }
 
+// export const formatString = (str: string) => {
+//   // Remove underscores, capitalize first character, and lowercase the rest
+//   return str
+//     ?.replace(/_/g, " ") // Replace underscores with spaces
+//     ?.toLowerCase() // Convert entire string to lowercase
+//     ?.replace(/^\w/, (c: string) => c.toUpperCase()); // Capitalize the first character
+// };
+
 export const formatString = (str: string) => {
-  // Remove underscores, capitalize first character, and lowercase the rest
+  if (!str) return "";
+
   return str
-    ?.replace(/_/g, " ") // Replace underscores with spaces
-    ?.toLowerCase() // Convert entire string to lowercase
-    ?.replace(/^\w/, (c: string) => c.toUpperCase()); // Capitalize the first character
+    .replace(/([a-z])([A-Z])/g, "$1 $2") // Insert space before uppercase letters (camelCase)
+    .replace(/_/g, " ") // Replace underscores with spaces
+    .toLowerCase() // Convert entire string to lowercase
+    .replace(/^\w|\s\w/g, (c: string) => c.toUpperCase()); // Capitalize first letter of each word
 };
 
 export const capitalizeFirstChar = (str: string) => {
