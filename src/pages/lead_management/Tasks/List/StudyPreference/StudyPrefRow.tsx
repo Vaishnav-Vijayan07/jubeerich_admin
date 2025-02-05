@@ -481,7 +481,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
         <Row>
           <Button
             variant="primary"
-            className="mt-4"
+            className=""
             type="submit"
             onClick={handleSave}
             // disabled={saveLoading || !isEditable} // Disable button while loading

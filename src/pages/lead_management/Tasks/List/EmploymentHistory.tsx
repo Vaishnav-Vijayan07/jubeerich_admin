@@ -22,12 +22,6 @@ const initialDocumentNameState = {
 
 const EmploymentHistory = (props: any) => {
   const { studentId } = props;
-  const [noticePeriod, setNoticePeriod] = useState<boolean>(false);
-  const [terminated, setTerminated] = useState<boolean>(false);
-  const [relation, setRelation] = useState<boolean>(false);
-  const [forgotDocuments, setForgotDocuments] = useState<boolean>(false);
-  const [abroadWork, setAbroadWork] = useState<boolean>(false);
-
   const [formData, setFormData] = useState({
     noticePeriod: false,
     terminated: false,
@@ -152,18 +146,9 @@ const EmploymentHistory = (props: any) => {
     getEmploymentHistories();
   }, [studentId]);
 
-  // if (isLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
-
   return (
     <>
-      <h5 className="mb-1 mt-4 text-uppercase">
+      <h5 className="mb-1 text-uppercase">
         <i className="mdi mdi-account-circle me-1"></i>Employment History
       </h5>
       <Row className="mt-3">
@@ -399,7 +384,7 @@ const EmploymentHistory = (props: any) => {
       )}
 
       <Row>
-        <Button className="mt-1" onClick={onSubmit}>
+        <Button className="mt-1 w-auto" onClick={onSubmit}>
           Save Experience History
         </Button>
       </Row>

@@ -6,7 +6,13 @@ import ActionButton from "../ActionButton";
 import React, { useState } from "react";
 import FieldHistoryTable from "../../../../../components/FieldHistory";
 
-const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWorkExperience, removeWorkExperience, studentId }: any) => {
+const WorkExpRow = ({
+  workExperienceData,
+  handleWorkExperienceChange,
+  addMoreWorkExperience,
+  removeWorkExperience,
+  studentId,
+}: any) => {
   console.log(workExperienceData);
   const [historyModal, setHistoryModal] = useState<boolean>(false);
 
@@ -18,9 +24,26 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
     <>
       <Row key={index} className="mb-3 p-2 border-bottom rounded pe-0">
         <Col md={4} lg={4} xl={4} xxl={4}>
+          <Form.Group className="mb-3" controlId="company">
+            <Form.Label>
+              <span className="text-danger">*</span> Company Name
+            </Form.Label>
+            <FormInput
+              type="text"
+              name="company"
+              placeholder="Enter company"
+              key="company"
+              value={workExperience?.company || ""}
+              onChange={(e) => handleWorkExperienceChange(e.target.name, e.target.value, index)}
+            />
+            {workExperience?.errors?.company && <Form.Text className="text-danger">{workExperience?.errors?.company}</Form.Text>}
+          </Form.Group>
+        </Col>
+
+        <Col md={4} lg={4} xl={4} xxl={4}>
           <Form.Group className="mb-3" controlId="qualification">
             <Form.Label>
-              <span className="text-danger">*</span> Work Experience
+              <span className="text-danger">*</span> Work Experience (Years)
             </Form.Label>
             <FormInput
               type="text"
@@ -33,23 +56,6 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
               max={99}
             />
             {workExperience?.errors?.years && <Form.Text className="text-danger">{workExperience?.errors?.years}</Form.Text>}
-          </Form.Group>
-        </Col>
-
-        <Col md={4} lg={4} xl={4} xxl={4}>
-          <Form.Group className="mb-3" controlId="company">
-            <Form.Label>
-              <span className="text-danger">*</span> Company
-            </Form.Label>
-            <FormInput
-              type="text"
-              name="company"
-              placeholder="Enter company"
-              key="company"
-              value={workExperience?.company || ""}
-              onChange={(e) => handleWorkExperienceChange(e.target.name, e.target.value, index)}
-            />
-            {workExperience?.errors?.company && <Form.Text className="text-danger">{workExperience?.errors?.company}</Form.Text>}
           </Form.Group>
         </Col>
 
@@ -283,7 +289,7 @@ const WorkExpRow = ({ workExperienceData, handleWorkExperienceChange, addMoreWor
       <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
-          <FieldHistoryTable apiUrl={"work_infos"} studentId={studentId}  />
+          <FieldHistoryTable apiUrl={"work_infos"} studentId={studentId} />
         </Modal.Body>
       </Modal>
     </Row>

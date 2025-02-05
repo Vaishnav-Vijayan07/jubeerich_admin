@@ -87,7 +87,7 @@ const WorkExpereince = withSwal((props: any) => {
     const validationRules = {
       years: { required: true, message: "Please enter the number of years" },
       designation: { required: false, message: "Please enter a designation" },
-      company: { required: false, message: "Please enter a company name" },
+      company: { required: true, message: "Please enter a company name" },
       from: { required: false, message: "Please select a start date" },
       to: { required: false, message: "Please select an end date" },
       bank_statement: { required: false, message: "Please upload a bank statement" },
@@ -173,7 +173,7 @@ const WorkExpereince = withSwal((props: any) => {
 
           {hasWorkExp && (
             <>
-              <Row className={deleteLoading || workSaveLoading ? "opacity-25 pe-0" : ""}>
+              <Row className={deleteLoading || workSaveLoading ? "opacity-25 pe-0" : "bg-light py-4 mb-3 ps-3"}>
                 <WorkExpRow
                   workExperienceData={workExperienceFromApi}
                   handleWorkExperienceChange={handleWorkExperienceChange}
@@ -181,9 +181,8 @@ const WorkExpereince = withSwal((props: any) => {
                   removeWorkExperience={removeWorkExperience}
                   studentId={studentId}
                 />
-              </Row>
-              <Row>
-                <Button variant="primary" className="mt-4" type="submit" onClick={saveWorkData} disabled={workSaveLoading}>
+
+                <Button variant="primary" className="w-auto ms-2" type="submit" onClick={saveWorkData} disabled={workSaveLoading}>
                   {workSaveLoading ? (
                     <>
                       <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
@@ -194,6 +193,18 @@ const WorkExpereince = withSwal((props: any) => {
                   )}
                 </Button>
               </Row>
+              {/* <Row>
+                <Button variant="primary" className="mt-4" type="submit" onClick={saveWorkData} disabled={workSaveLoading}>
+                  {workSaveLoading ? (
+                    <>
+                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                      {" Saving..."}
+                    </>
+                  ) : (
+                    "Save Work Experience Details"
+                  )}
+                </Button>
+              </Row> */}
               <Row>
                 <Col md={12}>
                   <Form.Label className="mt-3">Has Gap in Work?</Form.Label>
@@ -228,12 +239,12 @@ const WorkExpereince = withSwal((props: any) => {
           {/* {hasGap === "yes" && ( */}
           {hasGap && (
             <>
-              <Row className="mt-4">
+              <Row className="mt-4 bg-light py-4 mb-3 ps-3">
                 <GapRows gapData={gap} studentId={studentId} type="work" hasGap={hasGap} />
               </Row>
             </>
           )}
-          <Row>
+          <Row className="bg-light py-4 mb-3 ps-3">
             <EmploymentHistory studentId={studentId} />
           </Row>
         </>

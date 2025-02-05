@@ -64,9 +64,6 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                       />
                     </Form.Group>
                   </Col>
-                </Row>
-
-                <Row>
                   <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings?.${index}.organization`}>
                       <Form.Label>Organization</Form.Label>
@@ -91,8 +88,6 @@ const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, hand
                       />
                     </Form.Group>
                   </Col>
-                </Row>
-                <Row>
                   <Col md={3}>
                     <Form.Group className="mb-3" controlId={`siblings.${index}.age`}>
                       <Form.Label>Age</Form.Label>

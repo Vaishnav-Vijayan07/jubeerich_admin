@@ -57,7 +57,7 @@ const VisaProcessRow = ({
   return (
     <Row>
       {/*  Previous Visa Decline */}
-      <Row>
+      <Row className="bg-light py-3 ps-3">
         <div className="d-flex justify-content-between">
           <h5 className="mb-4 text-uppercase">
             <i className="mdi mdi-account-circle me-1"></i>Previous Visa Decline
@@ -75,7 +75,7 @@ const VisaProcessRow = ({
         {visaDeclineData.length > 0 &&
           visaDeclineData.map((data: any, index: any) => (
             <Row key={index}>
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="visa_type">
                   <Form.Label> Visa Type</Form.Label>
                   <Select
@@ -100,7 +100,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="country_id">
                   <Form.Label>
                     <span className="text-danger">*</span> Country
@@ -127,7 +127,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="course_applied">
                   <Form.Label>
                     <span className="text-danger">*</span> Course Applied
@@ -154,7 +154,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="university_applied">
                   <Form.Label>
                     <span className="text-danger">*</span> University Applied
@@ -183,7 +183,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="rejection_reason">
                   <Form.Label>Rejection Reason</Form.Label>
                   <Form.Control
@@ -202,7 +202,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-2" controlId="decline_letter">
                   <Form.Label>Rejection Letter</Form.Label>
                   <FormInput type="file" name="decline_letter" onChange={(e) => handleFileChange(e, visa_decline, index)} />
@@ -239,13 +239,13 @@ const VisaProcessRow = ({
         <Row className="mb-2">
           <ActionButton onClick={() => addMoreVisaForm(visa_decline)} label="Add More" iconClass="mdi mdi-plus" />
         </Row>
-        <Button className="mb-3" onClick={() => saveVisaForm(visa_decline)}>
+        <Button className="w-auto px-3 ms-2" onClick={() => saveVisaForm(visa_decline)}>
           Save Declined Visa Details
         </Button>
       </Row>
 
       {/*  Previous Visa Approve */}
-      <Row>
+      <Row className="bg-light py-3 ps-3 mt-4">
         <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
@@ -270,7 +270,7 @@ const VisaProcessRow = ({
         {visaApproveData.length > 0 &&
           visaApproveData.map((data: any, index: any) => (
             <Row key={index}>
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="visa_type">
                   <Form.Label>Visa Type</Form.Label>
                   <Select
@@ -295,7 +295,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="country_id">
                   <Form.Label>
                     <span className="text-danger">*</span> Country
@@ -322,7 +322,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="course_applied">
                   <Form.Label>
                     <span className="text-danger">*</span> Course
@@ -349,7 +349,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="university_applied">
                   <Form.Label>
                     <span className="text-danger">*</span> University Applied
@@ -378,7 +378,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-2" controlId="approve_letter">
                   <Form.Label>Approved Letter</Form.Label>
                   <FormInput type="file" name="approve_letter" onChange={(e) => handleFileChange(e, visa_approve, index)} />
@@ -414,13 +414,13 @@ const VisaProcessRow = ({
         <Row className="mb-2">
           <ActionButton label="Add More" onClick={() => addMoreVisaForm(visa_approve)} iconClass="mdi mdi-plus" />
         </Row>
-        <Button className="mb-3" onClick={() => saveVisaForm(visa_approve)}>
+        <Button className="w-auto ms-2 px-3" onClick={() => saveVisaForm(visa_approve)}>
           Save Approved Visa Details
         </Button>
       </Row>
 
       {/* Travel History */}
-      <Row>
+      <Row className="bg-light py-3 ps-3 mt-4">
         <div className="d-flex justify-content-between m-0">
           <h5 className="mb-4 text-uppercase">
             <i className="mdi mdi-account-circle me-1"></i>Travel History
@@ -438,7 +438,7 @@ const VisaProcessRow = ({
         {travelHistoryData.length > 0 &&
           travelHistoryData.map((data: any, index: any) => (
             <Row key={index}>
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="country_id">
                   <Form.Label>
                     <span className="text-danger">*</span> Country
@@ -465,7 +465,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="start_date">
                   <Form.Label>Start Date</Form.Label>
                   <FormInput
@@ -480,7 +480,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="end_date">
                   <Form.Label>End Date</Form.Label>
                   <FormInput
@@ -495,7 +495,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={6} xl={6} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="purpose_of_travel">
                   <Form.Label>Purpose of Travel</Form.Label>
                   <FormInput
@@ -528,7 +528,7 @@ const VisaProcessRow = ({
         <Row className="mb-2">
           <ActionButton onClick={() => addMoreVisaForm(travel_history)} label="Add More" iconClass="mdi mdi-plus" />
         </Row>
-        <Button className="mb-2" onClick={() => saveVisaForm(travel_history)}>
+        <Button className="w-auto ms-2 px-3" onClick={() => saveVisaForm(travel_history)}>
           Save Travel History
         </Button>
       </Row>

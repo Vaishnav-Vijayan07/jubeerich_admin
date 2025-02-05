@@ -15,12 +15,10 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   colorClass = "text-primary", // Default color is primary
 }) => (
   <Row className="mb-2">
-    <Col>
-      <div className="d-flex align-items-center gap-1 cursor-pointer" onClick={onClick}  >
-        <i className={`${colorClass} ${iconClass} fs-3 ps-1`}></i>
-        <span className={colorClass}>{label}</span>
-      </div>
-    </Col>
+    <div className="d-flex align-items-center gap-1 cursor-pointer w-auto" onClick={onClick}>
+      <i className={`${colorClass} ${iconClass} fs-3 ps-1`}></i>
+      <span className={colorClass}>{label}</span>
+    </div>
   </Row>
 );
 
