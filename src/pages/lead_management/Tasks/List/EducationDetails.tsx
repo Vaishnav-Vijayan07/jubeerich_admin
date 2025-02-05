@@ -139,7 +139,7 @@ const EducationDetails = withSwal((props: any) => {
   const handleGapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHasGap(e.target.value === "true");
   };
-  
+
   // Handlers for primary education state update
   const handlePrimaryChange = (name: string, value: any) => {
     if (typeof value == "object" && !allowedFileTypes.includes(value.type)) {
@@ -175,7 +175,6 @@ const EducationDetails = withSwal((props: any) => {
       [name]: value,
     }));
   };
-
 
   const handleSavePrimary = async () => {
     const validationRules = {
@@ -228,17 +227,6 @@ const EducationDetails = withSwal((props: any) => {
     await saveSecondaryEducationDetails(secondaryDetails, "secondary", studentId);
   };
 
-  // if (primaryLoading || secondaryLoading || initialLoading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "100%", left: "45%" }}
-  //     />
-  //   );
-  // }
-
-  console.log(primaryDetails);
-
   return (
     <>
       {initialLoading ? (
@@ -246,11 +234,15 @@ const EducationDetails = withSwal((props: any) => {
       ) : (
         <>
           {/* Primary Education Section */}
-          <Row>
+          <Row className="bg-light py-4 mb-3 ps-3">
             <PrimaryEducationDetails title="Primary Education Details" details={primaryDetails} onChange={handlePrimaryChange} />
-          </Row>
-          <Row className="mb-2">
-            <Button variant="primary" className="mt-4" onClick={handleSavePrimary} disabled={primaryLoading}>
+            <Button
+              variant="primary"
+              className="mt-0 mx-2"
+              style={{ width: "fit-content" }}
+              onClick={handleSavePrimary}
+              disabled={primaryLoading}
+            >
               {primaryLoading ? (
                 <>
                   <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
@@ -263,23 +255,38 @@ const EducationDetails = withSwal((props: any) => {
           </Row>
 
           <>
-            <Row>
-              <PrimaryEducationDetails title="Secondary Education Details" details={secondaryDetails} onChange={handleSecondaryChange} />
+            <Row className="bg-light py-4 mb-3 ps-3">
+              <PrimaryEducationDetails
+                title="Secondary Education Details"
+                details={secondaryDetails}
+                onChange={handleSecondaryChange}
+              />
+
+              <Button variant="primary" className="ms-2 w-auto" onClick={handleSaveSecondary} disabled={secondaryLoading}>
+                {secondaryLoading ? (
+                  <>
+                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                    {" Saving..."}
+                  </>
+                ) : (
+                  "Save Secondary Info"
+                )}
+              </Button>
             </Row>
 
             {/* Move Save Button below Secondary Education Section */}
-            <Row className="mb-2">
+            {/* <Row className="mb-2">
               <Button variant="primary" className="mt-4" onClick={handleSaveSecondary} disabled={secondaryLoading}>
                 {secondaryLoading ? (
                   <>
                     <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                    {" Saving..."} {/* Show spinner and text */}
+                    {" Saving..."} 
                   </>
                 ) : (
-                  "Save Secondary Info" // Normal button text when not loading
+                  "Save Secondary Info"
                 )}
               </Button>
-            </Row>
+            </Row> */}
 
             {/* Radio button for Graduation */}
             <Row className="mt-4">
@@ -319,8 +326,13 @@ const EducationDetails = withSwal((props: any) => {
           {/* {hasGraduation === "yes" && ( */}
           {hasGraduation && (
             <>
-              <Row>
-                <GraduationInfo title="Graduation Details" details={graduationDetails} student_id={studentId} hasGraduation={hasGraduation} />
+              <Row className="bg-light py-4 mb-3 ps-3">
+                <GraduationInfo
+                  title="Graduation Details"
+                  details={graduationDetails}
+                  student_id={studentId}
+                  hasGraduation={hasGraduation}
+                />
               </Row>
             </>
           )}
@@ -332,9 +344,25 @@ const EducationDetails = withSwal((props: any) => {
                 <Form.Label>Education Gap?</Form.Label>
                 <div>
                   {/* <Form.Check inline label="Yes" type="radio" name="hasGap" value="yes" checked={hasGap === "yes"} onChange={handleGapChange} /> */}
-                  <Form.Check inline label="Yes" type="radio" name="hasGap" value="true" checked={hasGap} onChange={handleGapChange} />
+                  <Form.Check
+                    inline
+                    label="Yes"
+                    type="radio"
+                    name="hasGap"
+                    value="true"
+                    checked={hasGap}
+                    onChange={handleGapChange}
+                  />
                   {/* <Form.Check inline label="No" type="radio" name="hasGap" value="no" checked={hasGap === "no"} onChange={handleGapChange} /> */}
-                  <Form.Check inline label="No" type="radio" name="hasGap" value="false" checked={!hasGap} onChange={handleGapChange} />
+                  <Form.Check
+                    inline
+                    label="No"
+                    type="radio"
+                    name="hasGap"
+                    value="false"
+                    checked={!hasGap}
+                    onChange={handleGapChange}
+                  />
                 </div>
               </Form.Group>
             </Col>
@@ -345,7 +373,7 @@ const EducationDetails = withSwal((props: any) => {
           {/* {hasGap === "yes" && ( */}
           {hasGap && (
             <>
-              <Row>
+              <Row className="bg-light py-4 mb-3 ps-3">
                 <GapRows gapData={gap} studentId={studentId} type="education" hasGap={hasGap} />
               </Row>
             </>

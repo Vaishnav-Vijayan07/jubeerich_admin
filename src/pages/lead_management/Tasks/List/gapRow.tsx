@@ -77,7 +77,7 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
   };
 
   const renderGapRows = (gap: any, index: number) => (
-    <Row key={index} className="mb-4 p-2 border-bottom rounded">
+    <Row key={index} className="mb-3 p-2 border-bottom rounded">
       {/* Start Date */}
       <Col md={4} lg={4} xl={4} xxl={4}>
         <Form.Group className="mb-3" controlId={`start_date-${index}`}>
@@ -196,7 +196,7 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
       <Row>
         <Button
           variant="primary"
-          className="mt-4"
+          className="mt-0 ms-2 w-auto"
           type="submit"
           onClick={saveGap}
           disabled={deleteLoading || gapSaveLoading}

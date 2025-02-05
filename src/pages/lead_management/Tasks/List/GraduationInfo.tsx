@@ -192,9 +192,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
 
         <Col md={4}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_university_name`}>
-            <Form.Label>
-              University Name
-            </Form.Label>
+            <Form.Label>University Name</Form.Label>
             <FormInput
               type="text"
               placeholder="Enter University name"
@@ -224,9 +222,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
 
         <Col md={4}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_start_date`}>
-            <Form.Label>
-              Start Date
-            </Form.Label>
+            <Form.Label>Start Date</Form.Label>
             <FormInput
               type="date"
               name="start_date"
@@ -240,9 +236,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
 
         <Col md={4}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_end_date`}>
-            <Form.Label>
-              End Date
-            </Form.Label>
+            <Form.Label>End Date</Form.Label>
             <FormInput
               type="date"
               name="end_date"
@@ -256,9 +250,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
 
         <Col md={4}>
           <Form.Group className="mb-3 form-group">
-            <Form.Label>
-              Percentage
-            </Form.Label>
+            <Form.Label>Percentage</Form.Label>
             <FormInput
               type="number"
               name="percentage"
@@ -461,16 +453,19 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
       </Row>
 
       <>
-        <Row className="mb-2">
+        <Row className="mb-0">
           <ActionButton label="Add More" iconClass="mdi mdi-plus" onClick={addMoreGraduationForm} />
+          <Button variant="primary" className="mt-0 w-auto" onClick={handleSave}>
+            {loading ? "Saving.." : "Save Graduation Info"}
+          </Button>
         </Row>
       </>
 
-      <Row className="mb-2">
+      {/* <Row className="mb-2">
         <Button variant="primary" className="mt-4" onClick={handleSave}>
           {loading ? "Saving.." : "Save Graduation Info"}
         </Button>
-      </Row>
+      </Row> */}
     </>
   );
 };
