@@ -144,7 +144,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col> */}
 
-              <Col md={6} xl={3} xxl={2}>
+              <Col md={6} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="country">
                   <Form.Label>Country</Form.Label>
                   <Select
@@ -160,9 +160,9 @@ const VisaProcessRow = ({
                     value={
                       data?.country_name
                         ? {
-                          label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
-                          value: data?.country_name,
-                        }
+                            label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
+                            value: data?.country_name,
+                          }
                         : null
                     }
                     onChange={(selectedOption: any) =>
@@ -369,7 +369,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col> */}
 
-              <Col md={6} xl={3} xxl={2}>
+              <Col md={6} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="country">
                   <Form.Label>Country</Form.Label>
                   <Select
@@ -515,7 +515,6 @@ const VisaProcessRow = ({
         {travelHistoryData.length > 0 &&
           travelHistoryData.map((data: any, index: any) => (
             <Row key={index}>
-
               {/* <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="country_id">
                   <Form.Label>
@@ -543,7 +542,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col> */}
 
-              <Col md={6} xl={3} xxl={2}>
+              <Col md={6} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="country">
                   <Form.Label>Country</Form.Label>
                   <Select
@@ -559,9 +558,9 @@ const VisaProcessRow = ({
                     value={
                       data?.country_name
                         ? {
-                          label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
-                          value: data?.country_name,
-                        }
+                            label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
+                            value: data?.country_name,
+                          }
                         : null
                     }
                     onChange={(selectedOption: any) =>
