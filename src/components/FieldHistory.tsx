@@ -117,11 +117,38 @@ const FieldHistoryTable = ({ apiUrl, studentId }: any) => {
                         <td className="text-danger fw-semibold">{oldValue}</td>
                       ) : (
                         <>
-                          <td className="text-danger fw-semibold">{oldValue}</td>
+                          <td className="text-danger fw-semibold">
+                            {Array.isArray(oldValue) ? (
+                              oldValue.map((doc, index) => (
+                                <div key={index} className="border p-2 rounded bg-light">
+                                  {Object.entries(doc).map(([key, value]:any) => (
+                                    <div key={key} className="d-flex">
+                                      <span className="fw-semibold text-dark me-1">{key.replace(/_/g, " ")}:</span>
+                                      <span className="text-muted">{value}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              ))
+                            ) : (
+                              <span className="text-muted">{oldValue}</span>
+                            )}
+                          </td>
+
                           <td className="text-success fw-semibold">
-                            {Array.isArray(newValue)
-                              ? newValue.map((doc, index) => <div key={index}>{JSON.stringify(doc)}</div>)
-                              : newValue}
+                            {Array.isArray(newValue) ? (
+                              newValue.map((doc, index) => (
+                                <div key={index} className="border p-2 rounded bg-light">
+                                  {Object.entries(doc).map(([key, value]:any) => (
+                                    <div key={key} className="d-flex">
+                                      <span className="fw-semibold text-dark me-1">{key.replace(/_/g, " ")}:</span>
+                                      <span className="text-muted">{value}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              ))
+                            ) : (
+                              <span className="text-muted">{newValue}</span>
+                            )}
                           </td>
                         </>
                       )}
