@@ -14,6 +14,7 @@ import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../utils/regrexValidation";
 import { allowedFileTypes } from "./data";
 import FieldHistoryTable from "../../../../components/FieldHistory";
+import { useHistoryModal } from "../../../../hooks/useHistoryModal";
 
 const initialStateAcademic = {
   qualification: "",
@@ -39,6 +40,9 @@ const initialStateExam = {
 
 const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
+
+  const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const [loading, setLoading] = useState(false);
   const [hasExams, setHasExams] = useState(false);
 
@@ -46,16 +50,12 @@ const AcademicInfo = withSwal((props: any) => {
 
   const [academicInfoFromApi, setAcademicInfoFromApi] = useState<any[]>([initialStateAcademic]);
   const [examForm, setExamForm] = useState<any[]>([initialStateExam]);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const fetchAcademicInfo = useCallback(async () => {
     setLoading(true);
     try {
       // Fetch both API calls concurrently
-      const [_, examResponse] = await Promise.all([
-        axios.get(`studentAcademicInfo/${studentId}`),
-        axios.get(`studentExamInfo/${studentId}`),
-      ]);
+      const [_, examResponse] = await Promise.all([axios.get(`studentAcademicInfo/${studentId}`), axios.get(`studentExamInfo/${studentId}`)]);
 
       const examData = examResponse.data?.data;
 
@@ -72,17 +72,9 @@ const AcademicInfo = withSwal((props: any) => {
     }
   }, [studentId]);
 
-  const {
-    saveStudentAcademicInfo,
-    saveStudentExamInfo,
-    loading: saveLoading,
-  } = useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
-  const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
+  const { saveStudentAcademicInfo, saveStudentExamInfo, loading: saveLoading } = useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
 
   // Fetch academic info using useCallback to memoize the function
-
-  console.log(academicInfoFromApi);
-  console.log(examForm);
 
   useEffect(() => {
     if (studentId) {
@@ -90,11 +82,7 @@ const AcademicInfo = withSwal((props: any) => {
     }
   }, [studentId, refresh]);
 
-  const handleInputChange = (
-    setter: React.Dispatch<React.SetStateAction<any[]>>,
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     if (!regrexValidation(name, value)) {
@@ -132,16 +120,11 @@ const AcademicInfo = withSwal((props: any) => {
     });
   };
 
-  const removeFormField = (
-    setter: React.Dispatch<React.SetStateAction<any[]>>,
-    index: number,
-    itemId: number | string,
-    type: string
-  ) => {
+  const removeFormField = (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number, itemId: number | string, type: string) => {
     if (itemId === 0) {
       setter((prevData) => prevData.filter((_, i) => i !== index));
     } else {
-      removeFromApi(itemId, type,studentId);
+      removeFromApi(itemId, type, studentId);
     }
   };
 
@@ -169,10 +152,6 @@ const AcademicInfo = withSwal((props: any) => {
       return;
     }
     saveStudentExamInfo(examForm, hasExams);
-  };
-
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
   };
 
   return (
@@ -254,13 +233,7 @@ const AcademicInfo = withSwal((props: any) => {
                   />
                 </Row>
                 <Row>
-                  <Button
-                    variant="primary"
-                    className="mt-4"
-                    type="submit"
-                    onClick={handleSaveExamInfo}
-                    disabled={saveLoading || deleteLoading}
-                  >
+                  <Button variant="primary" className="mt-4" type="submit" onClick={handleSaveExamInfo} disabled={saveLoading || deleteLoading}>
                     {saveLoading || deleteLoading ? (
                       <>
                         <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />

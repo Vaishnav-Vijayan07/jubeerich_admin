@@ -18,6 +18,7 @@ import { error } from "console";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
@@ -60,10 +61,10 @@ const initialValidationState = {
 const BasicInputElements = withSwal((props: any) => {
   const { swal, state, loading, error, initialLoading } = props;
   const dispatch = useDispatch();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
@@ -294,9 +295,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+ 
 
   return (
     <>

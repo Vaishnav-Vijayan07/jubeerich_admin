@@ -19,6 +19,7 @@ import classNames from "classnames";
 import { regrexValidation } from "../../utils/regrexValidation";
 import axios from "axios";
 import { FormInput } from "../../components";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
 
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
@@ -98,6 +99,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, regions, office, initialLoading, error, loading } = props;
 
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -114,7 +116,6 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedState, setSelectedState] = useState<any>(null);
   const [allCities, setAllCities] = useState<any>(null);
   const [selectedCity, setSelectedCity] = useState<any>(null);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const getAllCountries = async () => {
     try {
@@ -579,9 +580,7 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   }, [allCities]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+ 
 
   return (
     <>

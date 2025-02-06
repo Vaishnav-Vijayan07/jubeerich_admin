@@ -12,7 +12,8 @@ import { Link } from "react-router-dom";
 import { addCourseType, deleteCourseType, getCourseType, updateCourseType } from "../../redux/actions";
 import { max } from "moment";
 import { regrexValidation } from "../../utils/regrexValidation";
-const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface OptionType {
   value: string;
@@ -58,6 +59,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const { swal, state, error, loading, initialLoading } = props;
 
   //Table data
@@ -69,7 +71,6 @@ const BasicInputElements = withSwal((props: any) => {
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   //validation errors
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
@@ -278,10 +279,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
-
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -300,13 +297,7 @@ const BasicInputElements = withSwal((props: any) => {
 
               <Form.Group className="mb-3" controlId="description">
                 <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                />
+                <Form.Control as="textarea" rows={5} name="description" value={formData.description} onChange={handleInputChange} />
                 {validationErrors.description && <Form.Text className="text-danger">{validationErrors.description}</Form.Text>}
               </Form.Group>
             </Modal.Body>
@@ -319,9 +310,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 "
-                onClick={() =>
-                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
-                }
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -396,10 +385,7 @@ const CourseType = () => {
 
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[{ label: "Course Type", path: "/settings/master/course_type", active: true }]}
-        title={"Course Type"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Course Type", path: "/settings/master/course_type", active: true }]} title={"Course Type"} />
       <Row>
         <Col>
           <BasicInputElements state={state} error={error} loading={loading} initialLoading={initialLoading} />

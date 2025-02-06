@@ -17,6 +17,7 @@ import { customStyles } from "../../constants";
 import { getCourseType } from "../../redux/actions";
 import { addCourse, deleteCourse, getCourse, updateCourse } from "../../redux/course/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
@@ -63,6 +64,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, error, loading, userId, streamOptions, courseTypeOptions, initialLoading } = props;
 
   //fetch token from session storage
@@ -75,7 +77,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [formData, setFormData] = useState(initialState);
   const [selectedCourseType, setSelectedCourseType] = useState<any>(null);
   const [selectedStream, setSelectedStream] = useState<any>(null);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
+
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -344,10 +346,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
-
+  
   return (
     <>
       <Row className="justify-content-between px-2">

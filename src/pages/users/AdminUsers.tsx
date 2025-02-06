@@ -40,6 +40,7 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { approvalTypes, assignTypes } from "../forms/data";
 import LeadAssignTable from "./LeadAssignTable";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
 const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 const filterOptions = [
@@ -66,8 +67,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
-
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const api = new APICore();
   const loggedInUser = api.getLoggedInUser();
 
@@ -578,9 +578,7 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+  
 
   useEffect(() => {
     if (openAssignTable) {

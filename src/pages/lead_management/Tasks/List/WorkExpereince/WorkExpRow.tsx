@@ -5,6 +5,7 @@ import { baseUrl } from "../../../../../constants";
 import ActionButton from "../ActionButton";
 import React, { useState } from "react";
 import FieldHistoryTable from "../../../../../components/FieldHistory";
+import { useHistoryModal } from "../../../../../hooks/useHistoryModal";
 
 const WorkExpRow = ({
   workExperienceData,
@@ -14,11 +15,9 @@ const WorkExpRow = ({
   studentId,
 }: any) => {
   console.log(workExperienceData);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
+  
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
 
   const renderWorkRows = (workExperience: any, index: any) => (
     <>

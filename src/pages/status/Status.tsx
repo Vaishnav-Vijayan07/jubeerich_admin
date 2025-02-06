@@ -20,6 +20,7 @@ import { AUTH_SESSION_KEY, customStyles, rgbaToHex } from "../../constants";
 import { max } from "moment";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { getStatusType } from "../../redux/status/statusType/actions";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
@@ -71,6 +72,7 @@ const initialValidationState = {
 const BasicInputElements = withSwal((props: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, loading, success, error, initialLoading, statusTypeData } = props;
 
   console.log("loading ===>", loading);
@@ -79,7 +81,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [selectedOptions, setSelectedOptions] = useState<OptionType | null>(null);
   const [statusType, setStatusType] = useState<OptionType | null>(null);
   const [updateColor, setupdateColor] = useState<string | null>(null);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
+  
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -371,9 +373,7 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+  
 
   return (
     <>

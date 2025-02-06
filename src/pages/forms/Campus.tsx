@@ -18,7 +18,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
 import { getCourse } from "../../redux/course/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
-const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface OptionType {
   value: string;
@@ -67,6 +68,7 @@ const initialValidationState = {
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const { swal, state, university, error, loading, courseData, initialLoading } = props;
 
   //fetch token from session storage
@@ -79,7 +81,6 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -88,10 +89,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    campus_name: yup
-      .string()
-      .min(3, "Campus name name must be at least 3 characters long")
-      .required("Campus name name is required"),
+    campus_name: yup.string().min(3, "Campus name name must be at least 3 characters long").required("Campus name name is required"),
     location: yup.string().required("Location is required"),
     university_id: yup.string().required("University is required"),
   });
@@ -340,10 +338,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
-
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -360,9 +354,7 @@ const BasicInputElements = withSwal((props: any) => {
                   <Form.Group className="mb-3" controlId="campus_name">
                     <Form.Label>Campus Name</Form.Label>
                     <Form.Control type="text" name="campus_name" value={formData.campus_name} onChange={handleInputChange} />
-                    {validationErrors.campus_name && (
-                      <Form.Text className="text-danger">{validationErrors.campus_name}</Form.Text>
-                    )}
+                    {validationErrors.campus_name && <Form.Text className="text-danger">{validationErrors.campus_name}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -379,9 +371,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={selectedUniversity}
                       onChange={handleUniversityChange}
                     />
-                    {validationErrors.university_id && (
-                      <Form.Text className="text-danger">{validationErrors.university_id}</Form.Text>
-                    )}
+                    {validationErrors.university_id && <Form.Text className="text-danger">{validationErrors.university_id}</Form.Text>}
                   </Form.Group>
                 </Col>
               </Row>
@@ -406,9 +396,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1"
-                onClick={() =>
-                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
-                }
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
