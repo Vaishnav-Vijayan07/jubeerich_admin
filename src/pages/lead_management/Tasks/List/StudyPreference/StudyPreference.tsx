@@ -84,6 +84,7 @@ const StudyPreference = withSwal((props: any) => {
                 isEditable={values?.isEditable}
                 initialFetch={initialFetch}
                 setInitialFetch={setInitialFetch}
+                studentId={studentId}
               />
             ))}
         </Row>

@@ -11,7 +11,7 @@ import StatusBadge from "./StatusBadge";
 import { formatString } from "../../../../../utils/formatData";
 import axios from "axios";
 
-const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownData, studyPreferenceId, isEditable, initialFetch, setInitialFetch }: any) => {
+const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownData, studyPreferenceId, isEditable, initialFetch, setInitialFetch,studentId }: any) => {
   const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
   const { saveLoading, saveStudyPreferenceData } = useSaveStudyPreferenceData();
   const [universities, setUniversities] = useState<any>([]);
@@ -369,7 +369,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
       const updatedPrefs = studyPreferenceData.filter((_: any, i: any) => i !== index);
       setStudyPreferenceData(updatedPrefs);
     } else {
-      removeFromApi(itemId, "studyPreference");
+      removeFromApi(itemId, "studyPreference",studentId);
     }
   };
 

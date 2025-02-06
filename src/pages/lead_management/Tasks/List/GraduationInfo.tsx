@@ -84,7 +84,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
       updatedGraduationDetails.splice(index, 1);
       setGraduationDetails(updatedGraduationDetails);
     } else {
-      removeFromApi(id, "graduation");
+      removeFromApi(id, "graduation",student_id);
     }
   };
 

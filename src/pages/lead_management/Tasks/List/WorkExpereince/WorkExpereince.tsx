@@ -136,7 +136,7 @@ const WorkExpereince = withSwal((props: any) => {
     if (itemId === 0) {
       setWorkExperienceFromApi((prevState: any) => prevState.filter((_: any, i: number) => i !== index));
     } else {
-      removeFromApi(itemId, "work");
+      removeFromApi(itemId, "work", studentId);
     }
   };
 

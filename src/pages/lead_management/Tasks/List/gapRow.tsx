@@ -49,7 +49,7 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
         prevState.filter((_: any, i: number) => i !== index)
       );
     } else {
-      removeFromApi(itemId, "gap");
+      removeFromApi(itemId, "gap",studentId);
     }
   };
 
