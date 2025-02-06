@@ -417,7 +417,7 @@ const VisaProcessRow = ({
                       <div className="p-1">{data?.approve_letter ? "Approved Letter" : ""}</div>
                     </a>
                   )}
-                </div>
+                </div>     
               </Col>
 
               {visaApproveData.length > 1 && (
