@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import ActionButton from "./ActionButton";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
@@ -10,6 +10,8 @@ import validateFields from "../../../../helpers/validateHelper";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../utils/regrexValidation";
 import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
+import { useHistoryModal } from "../../../../hooks/useHistoryModal";
+import FieldHistoryTable from "../../../../components/FieldHistory";
 
 interface Props {
   studentId: string | number;
@@ -33,6 +35,7 @@ const initialPassportState = {
 
 const PassportDetails = ({ studentId }: Props) => {
   const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const [initialLoading, setInitialLoading] = React.useState(false);
   const [passportDetails, setPassportDetails] = React.useState<any>(initialPassportState);
 
@@ -54,34 +57,6 @@ const PassportDetails = ({ studentId }: Props) => {
       fetchPassportDetails();
     }
   }, []);
-
-  // const handleInputChange = (e: any, index?: number) => {
-  //   const { name, value } = e.target;
-
-  //   if (!regrexValidation(name, value.toString())) {
-  //     console.error(`Invalid ${name}: ${value}`);
-  //     return; // Stop updating if validation fails
-  //   }
-
-  //   if (index !== undefined) {
-  //     // Handle change for a specific passport in the passports array
-  //     const updatedPassports = [...passportDetails.passports];
-  //     updatedPassports[index] = {
-  //       ...updatedPassports[index],
-  //       [name]: value,
-  //     };
-  //     setPassportDetails((prev: any) => ({
-  //       ...prev,
-  //       passports: updatedPassports,
-  //     }));
-  //   } else {
-  //     // Handle change for number_of_passports or other top-level fields
-  //     setPassportDetails((prev: any) => ({
-  //       ...prev,
-  //       [name]: value,
-  //     }));
-  //   }
-  // };
 
   const handleInputChange = (e: any, index?: number) => {
     const { name, value } = e.target;
@@ -222,7 +197,6 @@ const PassportDetails = ({ studentId }: Props) => {
 
     const { errors, isValid } = validateFields(passportDetails.passports, validationRules);
 
-    console.log(errors);
     if (!isValid) {
       setPassportDetails((prev: any) => ({
         ...prev,
@@ -292,16 +266,34 @@ const PassportDetails = ({ studentId }: Props) => {
     }
   };
 
+
   return (
     <>
       {initialLoading ? (
         <SkeletonComponent />
       ) : (
         <>
-          <Row>
-            <h5 className="mb-4 text-uppercase">
-              <i className="mdi mdi-account-circle me-1"></i>Passport Details
-            </h5>
+          <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+            <Modal.Header closeButton></Modal.Header>
+            <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+              <FieldHistoryTable apiUrl={"passport_details"} studentId={studentId} />
+            </Modal.Body>
+          </Modal>
+
+          <Row className="mb-2">
+            <div className="d-flex justify-content-between">
+              <h5 className="mb-4 text-uppercase">
+                <i className="mdi mdi-account-circle me-1"></i>Passport Details
+              </h5>
+
+              <Button
+                className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
+                onClick={toggleHistoryModal}
+                style={{ height: "fit-content" }}
+              >
+                <i className="mdi mdi-history"></i> View History
+              </Button>
+            </div>
           </Row>
           <Row>
             <Col md={6}>
@@ -346,9 +338,7 @@ const PassportDetails = ({ studentId }: Props) => {
                       onChange={(e) => handleInputChange(e, index)} // Pass the index to the handler
                       value={passport.passport_number}
                     />
-                    {passport?.errors?.passport_number && (
-                      <Form.Text className="text-danger">{passport?.errors?.passport_number}</Form.Text>
-                    )}
+                    {passport?.errors?.passport_number && <Form.Text className="text-danger">{passport?.errors?.passport_number}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -365,9 +355,7 @@ const PassportDetails = ({ studentId }: Props) => {
                       value={moment(passport.date_of_expiry).format("YYYY-MM-DD")}
                     />
 
-                    {passport?.errors?.date_of_expiry && (
-                      <Form.Text className="text-danger">{passport?.errors?.date_of_expiry}</Form.Text>
-                    )}
+                    {passport?.errors?.date_of_expiry && <Form.Text className="text-danger">{passport?.errors?.date_of_expiry}</Form.Text>}
                   </Form.Group>
                 </Col>
                 <Row>

@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { Slider } from "@mui/material";
 import { addStatusType, deleteStatusType, getStatusType, updateStatusType } from "../../redux/status/statusType/actions";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
 const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface TableRecords {
@@ -70,8 +71,8 @@ const BasicInputElements = withSwal((props: any) => {
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
-
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
+  
 
   const records: TableRecords[] = state;
 
@@ -276,9 +277,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+  
 
   return (
     <>

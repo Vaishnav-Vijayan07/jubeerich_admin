@@ -18,7 +18,8 @@ import { AUTH_SESSION_KEY } from "../../constants";
 import { Link } from "react-router-dom";
 import { getCategory } from "../../redux/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
-const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface TableRecords {
   id: number;
@@ -63,6 +64,7 @@ const initialValidationState = {
 const BasicInputElements = withSwal((props: any) => {
   const [selectedLeadType, setSelectedLeadType] = useState<any>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal } = props;
   const { state, loading, error, leadType, initialLoading } = props;
 
@@ -84,7 +86,6 @@ const BasicInputElements = withSwal((props: any) => {
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const validationSchema = yup.object().shape({
     source_name: yup.string().required("source name is required").min(3, "source name must be at least 3 characters long"),
@@ -223,9 +224,7 @@ const BasicInputElements = withSwal((props: any) => {
 
               if (isUpdate) {
                 // Handle update logic
-                dispatch(
-                  updateSource(formData.id, formData.source_name, formData.source_description, user_id, formData.lead_type_id)
-                );
+                dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id, formData.lead_type_id));
                 setIsUpdate(false);
                 handleCancelUpdate();
                 toggleResponsiveModal();
@@ -342,10 +341,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
-
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -377,16 +372,8 @@ const BasicInputElements = withSwal((props: any) => {
 
               <Form.Group className="mb-3" controlId="source_description">
                 <Form.Label>Lead Source Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  name="source_description"
-                  value={formData.source_description}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.source_description && (
-                  <Form.Text className="text-danger">{validationErrors.source_description}</Form.Text>
-                )}
+                <Form.Control as="textarea" rows={5} name="source_description" value={formData.source_description} onChange={handleInputChange} />
+                {validationErrors.source_description && <Form.Text className="text-danger">{validationErrors.source_description}</Form.Text>}
               </Form.Group>
             </Modal.Body>
 
@@ -399,9 +386,7 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-1 "
                 onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal(), handleResetValues()]
-                    : [toggleResponsiveModal(), handleResetValues()]
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal(), handleResetValues()] : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
@@ -488,13 +473,7 @@ const Sources = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            leadType={leadTypeData}
-            error={error}
-            loading={loading}
-            initialLoading={initialloading}
-          />
+          <BasicInputElements state={state} leadType={leadTypeData} error={error} loading={loading} initialLoading={initialloading} />
         </Col>
       </Row>
     </React.Fragment>

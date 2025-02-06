@@ -15,6 +15,7 @@ import { AUTH_SESSION_KEY } from "../../constants";
 import { addCountry, deleteCountry, getCountry, updateCountry } from "../../redux/country/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
@@ -54,6 +55,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, error, loading, initialLoading } = props;
 
   //fetch token from session storage
@@ -68,7 +70,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
+  
 
   //validation errors
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
@@ -276,9 +278,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+ 
 
   const handleKeyPress = (event: any) => {
     const charCode = event.charCode;

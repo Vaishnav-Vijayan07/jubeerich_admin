@@ -8,19 +8,21 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import SkeletonComponent from "./LoadingSkeleton";
 import FieldHistoryTable from "../../../../../components/FieldHistory";
+import { useHistoryModal } from "../../../../../hooks/useHistoryModal";
 
 const StudyPreference = withSwal((props: any) => {
   const { swal, studentId } = props;
 
   //create state for item
+  const { dropdownData } = useDropdownData("universities,courses,streams,campuses,courseTypes");
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const [item, setItem] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [initialFetch, setInitialFetch] = useState<boolean>(true);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
+  
 
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
-  const { dropdownData } = useDropdownData("universities,courses,streams,campuses,courseTypes");
 
   const getStudyPrefData = async () => {
     setLoading(true);
@@ -45,9 +47,7 @@ const StudyPreference = withSwal((props: any) => {
     }
   }, [dropdownData.universities.length, dropdownData.campuses.length, refresh, studentId]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+  
 
   return (
     <>

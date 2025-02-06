@@ -5,6 +5,7 @@ import { baseUrl } from "../../../../../constants";
 import ActionButton from ".././ActionButton";
 import React, { useState } from "react";
 import FieldHistoryTable from "../../../../../components/FieldHistory";
+import { useHistoryModal } from "../../../../../hooks/useHistoryModal";
 
 export const fundTypeOptions = [
   { value: "loan", label: "Loan" },
@@ -23,8 +24,7 @@ const fundOriginTypes = [
 ];
 
 const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, handleAddMoreFundPlan, studentId }: any) => {
-  console.log(fundPlan);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
 
   const renderFundRows = (plan: any, index: number) => (
     <>
@@ -285,9 +285,7 @@ const FundPlanRows = ({ fundPlan, handleFundPlanInputChange, removeFundPlan, han
     </>
   );
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+  
 
   return (
     <>

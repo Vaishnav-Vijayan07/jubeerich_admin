@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 
 import { deleteStream, getStream, updateStream, addStream } from "../../redux/stream/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
@@ -53,6 +54,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, error, loading, userId, initialLoading } = props;
 
   //fetch token from session storage
@@ -63,7 +65,6 @@ const BasicInputElements = withSwal((props: any) => {
   //State for handling update function
   const [isUpdate, setIsUpdate] = useState(false);
   const [formData, setFormData] = useState(initialState);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -276,9 +277,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+  
 
   return (
     <>
