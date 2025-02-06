@@ -15,6 +15,8 @@ import axios from "axios";
 import GrandParentDetailsForm from "./GrandParentsDetailForm";
 import SkeletonComponent from "../StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../../utils/regrexValidation";
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 interface Props {
   studentId: string | number;
@@ -626,6 +628,25 @@ const FamilyDetails = ({ studentId }: Props) => {
     });
   };
 
+  const typographyStyle = {
+    fontWeight: 600,
+    textTransform: "uppercase",
+  }; 
+
+  const SaveButton = () => {
+    return (
+      <>
+        <Row style={{ padding: '2px' }}>
+          <Col md={4} style={{ padding: '2px' }}>
+            <Button variant="primary" className="mt-4" type="submit" onClick={saveFamilyDetails}>
+              Save
+            </Button>
+          </Col>
+        </Row>
+      </>
+    )
+  }
+
   return (
     <>
       {initialLoading ? (
@@ -638,125 +659,343 @@ const FamilyDetails = ({ studentId }: Props) => {
             </h5>
           </Row>
 
-          {/* Father's Information */}
-          <ParentDetailsForm parentType="father" parentDetails={familyDetails.father} onChange={handleInputChange} />
+            <Row className="ps-4 pe-4">
 
-          {/* Mother's Information */}
-          <ParentDetailsForm parentType="mother" parentDetails={familyDetails.mother} onChange={handleInputChange} />
+              {/* Father's Information */}
+              <Accordion defaultExpanded sx={{ backgroundColor: `${familyDetails.father.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Father's Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <ParentDetailsForm parentType="father" parentDetails={familyDetails.father} onChange={handleInputChange} />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Spouse Information */}
-          <ParentDetailsForm parentType="spouse" parentDetails={familyDetails.spouse} onChange={handleInputChange} />
+              {/* Mother's Information */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.mother.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Mother's Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <ParentDetailsForm parentType="mother" parentDetails={familyDetails.mother} onChange={handleInputChange} />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Siblings Information */}
-          <SiblingsDetails
-            handleInputChange={handleInputChange}
-            handleRemoveItem={handleRemoveItem}
-            handleAddSibling={handleAddSibling}
-            siblings={familyDetails?.siblings_info}
-            number_of_siblings={familyDetails?.number_of_siblings}
-          />
+              {/* Spouse Information */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.spouse.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Spouse Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <ParentDetailsForm parentType="spouse" parentDetails={familyDetails.spouse} onChange={handleInputChange} />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Children Information */}
-          <ChildrenDetails
-            handleInputChange={handleInputChange}
-            handleRemoveItem={handleRemoveItem}
-            handleAddChildren={handleAddChildren}
-            children={familyDetails?.children_info}
-            number_of_children={familyDetails?.number_of_children}
-            handleDropDowns={handleDropDowns}
-          />
+              {/* Siblings Information */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.siblings_info?.[0]?.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Siblings Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <SiblingsDetails
+                      handleInputChange={handleInputChange}
+                      handleRemoveItem={handleRemoveItem}
+                      handleAddSibling={handleAddSibling}
+                      siblings={familyDetails?.siblings_info}
+                      number_of_siblings={familyDetails?.number_of_siblings}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Paternal Grand Mother's Information */}
-          <GrandParentDetailsForm
-            parentType="paternal_grand_mother_info"
-            parentDetails={familyDetails.paternal_grand_mother_info}
-            onChange={handleInputChange}
-          />
+              {/* Children Information */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.children_info?.[0]?.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Children Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <ChildrenDetails
+                      handleInputChange={handleInputChange}
+                      handleRemoveItem={handleRemoveItem}
+                      handleAddChildren={handleAddChildren}
+                      children={familyDetails?.children_info}
+                      number_of_children={familyDetails?.number_of_children}
+                      handleDropDowns={handleDropDowns}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Paternal Grand Fathers's Information */}
-          <GrandParentDetailsForm
-            parentType="paternal_grand_father_info"
-            parentDetails={familyDetails.paternal_grand_father_info}
-            onChange={handleInputChange}
-          />
+              {/* Paternal Grand Mother's Information */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.paternal_grand_mother_info.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Paternal Grand Mother's Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <GrandParentDetailsForm
+                      parentType="paternal_grand_mother_info"
+                      parentDetails={familyDetails.paternal_grand_mother_info}
+                      onChange={handleInputChange}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Maternal Grand Mother's Information */}
-          <GrandParentDetailsForm
-            parentType="maternal_grand_mother_info"
-            parentDetails={familyDetails.maternal_grand_mother_info}
-            onChange={handleInputChange}
-          />
+              {/* Paternal Grand Fathers's Information */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.paternal_grand_father_info.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Paternal Grand Fathers's Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <GrandParentDetailsForm
+                      parentType="paternal_grand_father_info"
+                      parentDetails={familyDetails.paternal_grand_father_info}
+                      onChange={handleInputChange}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Maternal Grand Fathers's Information */}
-          <GrandParentDetailsForm
-            parentType="maternal_grand_father_info"
-            parentDetails={familyDetails.maternal_grand_father_info}
-            onChange={handleInputChange}
-          />
+              {/* Maternal Grand Mother's Information */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.maternal_grand_mother_info.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} > Maternal Grand Mother's Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <GrandParentDetailsForm
+                      parentType="maternal_grand_mother_info"
+                      parentDetails={familyDetails.maternal_grand_mother_info}
+                      onChange={handleInputChange}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Paternal Grand Mother's Information Spouse */}
-          <GrandParentDetailsForm
-            parentType="paternal_grand_mother_info_spouse"
-            parentDetails={familyDetails.paternal_grand_mother_info_spouse}
-            onChange={handleInputChange}
-          />
+              {/* Maternal Grand Fathers's Information */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.maternal_grand_father_info.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Maternal Grand Fathers's Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <GrandParentDetailsForm
+                      parentType="maternal_grand_father_info"
+                      parentDetails={familyDetails.maternal_grand_father_info}
+                      onChange={handleInputChange}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Paternal Grand Fathers's Information Spouse */}
-          <GrandParentDetailsForm
-            parentType="paternal_grand_father_info_spouse"
-            parentDetails={familyDetails.paternal_grand_father_info_spouse}
-            onChange={handleInputChange}
-          />
+              {/* Paternal Grand Mother's Information Spouse */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.paternal_grand_mother_info_spouse.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Paternal Grand Mother's Information Spouse</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <GrandParentDetailsForm
+                      parentType="paternal_grand_mother_info_spouse"
+                      parentDetails={familyDetails.paternal_grand_mother_info_spouse}
+                      onChange={handleInputChange}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Maternal Grand Mother's Information Spouse */}
-          <GrandParentDetailsForm
-            parentType="maternal_grand_mother_info_spouse"
-            parentDetails={familyDetails.maternal_grand_mother_info_spouse}
-            onChange={handleInputChange}
-          />
+              {/* Paternal Grand Fathers's Information Spouse */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.paternal_grand_father_info_spouse.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Paternal Grand Fathers's Information Spouse</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <GrandParentDetailsForm
+                      parentType="paternal_grand_father_info_spouse"
+                      parentDetails={familyDetails.paternal_grand_father_info_spouse}
+                      onChange={handleInputChange}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Maternal Grand Fathers's Information Spouse */}
-          <GrandParentDetailsForm
-            parentType="maternal_grand_father_info_spouse"
-            parentDetails={familyDetails.maternal_grand_father_info_spouse}
-            onChange={handleInputChange}
-          />
+              {/* Maternal Grand Mother's Information Spouse */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.maternal_grand_mother_info_spouse.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Maternal Grand Mother's Information Spouse</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <GrandParentDetailsForm
+                      parentType="maternal_grand_mother_info_spouse"
+                      parentDetails={familyDetails.maternal_grand_mother_info_spouse}
+                      onChange={handleInputChange}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Father In Law Information */}
-          <GrandParentDetailsForm
-            parentType="father_in_law_info"
-            parentDetails={familyDetails.father_in_law_info}
-            onChange={handleInputChange}
-          />
+              {/* Maternal Grand Fathers's Information Spouse */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.maternal_grand_father_info_spouse.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Maternal Grand Fathers's Information Spouse</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <GrandParentDetailsForm
+                      parentType="maternal_grand_father_info_spouse"
+                      parentDetails={familyDetails.maternal_grand_father_info_spouse}
+                      onChange={handleInputChange}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Mother In Law Information */}
-          <GrandParentDetailsForm
-            parentType="mother_in_law_info"
-            parentDetails={familyDetails.mother_in_law_info}
-            onChange={handleInputChange}
-          />
+              {/* Father In Law Information */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.father_in_law_info.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Father In Law Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <GrandParentDetailsForm
+                      parentType="father_in_law_info"
+                      parentDetails={familyDetails.father_in_law_info}
+                      onChange={handleInputChange}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
 
-          {/* Accompanying Details */}
-          <Row className="mt-3">
-            <Row>
-              <h5 className="mb-4 text-uppercase">Accompanying Details</h5>
+              {/* Mother In Law Information */}
+              <Accordion sx={{ backgroundColor: `${familyDetails.mother_in_law_info.name ? "#F1F2F4" : ""}`, marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Mother In Law Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    <GrandParentDetailsForm
+                      parentType="mother_in_law_info"
+                      parentDetails={familyDetails.mother_in_law_info}
+                      onChange={handleInputChange}
+                    />
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
+
+              {/* Accompanying Details */}
+              <Accordion sx={{ marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDownIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                >
+                  <Typography component="span" sx={typographyStyle} >Accompanying Details</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row className="p-2">
+                    {/* Accompanying Child */}
+                    <AccompanyingDetails type="child" data={familyDetails.accompanying_child} handleInputChange={handleInputChange} />
+
+                    {/* Accompanying Spouse */}
+                    <AccompanyingDetails type="spouse" data={familyDetails.accompanying_spouse} handleInputChange={handleInputChange} />
+
+                    {/* Relatives Details */}
+                    <RelativesDetails handleInputChange={handleInputChange} data={familyDetails.relatives_info} />
+
+                  </Row>
+                  <SaveButton/>
+                </AccordionDetails>
+              </Accordion>
+
             </Row>
-          </Row>
-          {/* Accompanying Child */}
-          <AccompanyingDetails type="child" data={familyDetails.accompanying_child} handleInputChange={handleInputChange} />
-
-          {/* Accompanying Spouse */}
-          <AccompanyingDetails type="spouse" data={familyDetails.accompanying_spouse} handleInputChange={handleInputChange} />
-
-          {/* Relatives Details */}
-          <RelativesDetails handleInputChange={handleInputChange} data={familyDetails.relatives_info} />
-
-          <Row>
-            <Button variant="primary" className="mt-4" type="submit" onClick={saveFamilyDetails}>
-              Save
-            </Button>
-          </Row>
-        </>
+          </>
       )}
     </>
   );
