@@ -117,36 +117,9 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              {/* <Col md={6} lg={6} xl={6} xxl={4}>
-                <Form.Group className="mb-3" controlId="country_id">
-                  <Form.Label>
-                    <span className="text-danger">*</span> Country
-                  </Form.Label>
-                  <Select
-                    className="react-select react-select-container"
-                    classNamePrefix="react-select"
-                    options={countries}
-                    value={
-                      data?.country_id
-                        ? {
-                            label: countries.find((u: any) => u.value == data?.country_id)?.label,
-                            value: data?.country_id,
-                          }
-                        : null
-                    }
-                    placeholder="Select Country"
-                    name="country_id"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "country_id", selectedOption.value, visa_decline)
-                    }
-                  />
-                  {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
-                </Form.Group>
-              </Col> */}
-
               <Col md={6} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="country">
-                  <Form.Label>Country</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Country</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     name="country_name"
@@ -342,36 +315,9 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              {/* <Col md={6} lg={6} xl={6} xxl={4}>
-                <Form.Group className="mb-3" controlId="country_id">
-                  <Form.Label>
-                    <span className="text-danger">*</span> Country
-                  </Form.Label>
-                  <Select
-                    className="react-select react-select-container"
-                    classNamePrefix="react-select"
-                    options={countries}
-                    value={
-                      data?.country_id
-                        ? {
-                            label: countries.find((u: any) => u.value == data?.country_id)?.label,
-                            value: data?.country_id,
-                          }
-                        : null
-                    }
-                    placeholder="Select Country"
-                    name="country_id"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "country_id", selectedOption.value, visa_approve)
-                    }
-                  />
-                  {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
-                </Form.Group>
-              </Col> */}
-
               <Col md={6} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="country">
-                  <Form.Label>Country</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Country</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     name="country_name"
@@ -515,36 +461,10 @@ const VisaProcessRow = ({
         {travelHistoryData.length > 0 &&
           travelHistoryData.map((data: any, index: any) => (
             <Row key={index}>
-              {/* <Col md={6} lg={6} xl={6} xxl={4}>
-                <Form.Group className="mb-3" controlId="country_id">
-                  <Form.Label>
-                    <span className="text-danger">*</span> Country
-                  </Form.Label>
-                  <Select
-                    className="react-select react-select-container"
-                    classNamePrefix="react-select"
-                    options={countries}
-                    value={
-                      data?.country_id
-                        ? {
-                            label: countries.find((u: any) => u.value == data?.country_id)?.label,
-                            value: data?.country_id,
-                          }
-                        : null
-                    }
-                    placeholder="Select Country"
-                    name="country_id"
-                    onChange={(selectedOption: any) =>
-                      handleVisaSelectChange(index, "country_id", selectedOption.value, travel_history)
-                    }
-                  />
-                  {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
-                </Form.Group>
-              </Col> */}
 
               <Col md={6} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="country">
-                  <Form.Label>Country</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Country</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     name="country_name"
