@@ -520,7 +520,7 @@ const VisaProcessRow = ({
                   />
                   {data?.errors?.end_date && <Form.Text className="text-danger">{data?.errors?.end_date}</Form.Text>}
                 </Form.Group>
-              </Col>
+              </Col>      
 
               <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="purpose_of_travel">
