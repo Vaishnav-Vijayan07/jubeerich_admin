@@ -12,20 +12,14 @@ type VisaDeclineItem = {
   id: string;
   visa_type: string;
   declined_letter: string;
-  declined_country: {
-    id: string;
-    country_name: string;
-  };
+  declined_country: string;
 };
 
 type VisaApproveItem = {
   id: string;
   visa_type: string;
   approved_letter: string;
-  approved_country: {
-    id: string;
-    country_name: string;
-  };
+  approved_country: string;
 };
 
 type Visa = VisaDeclineItem[] | VisaApproveItem[];
@@ -45,8 +39,8 @@ function ImmigrationDetails({ VisaData }: Props) {
             <CardData
               type={
                 isVisaDeclineItem(doc)
-                  ? `${doc.declined_country.country_name} - ${formatString(doc.visa_type)}`
-                  : `${doc.approved_country.country_name} - ${formatString(doc.visa_type)}`
+                  ? `${doc.declined_country} - ${formatString(doc.visa_type)}`
+                  : `${doc.approved_country} - ${formatString(doc.visa_type)}`
               }
               folder=""
               filename={isVisaDeclineItem(doc) ? doc.declined_letter : doc.approved_letter}
