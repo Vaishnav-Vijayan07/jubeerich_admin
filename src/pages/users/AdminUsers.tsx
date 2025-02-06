@@ -260,10 +260,13 @@ const BasicInputElements = withSwal((props: any) => {
       if(data){
         showSuccessAlert('Leads Successfully Re-Assigned');
         setOpenAssignTable(false);
+        dispatchUpdateLead();
       }
     } catch (error) {
       console.log("error", error);
       showErrorAlert(error);
+      refetchUsers();
+      setOpenAssignTable(false);
     }
   };
 
@@ -296,7 +299,6 @@ const BasicInputElements = withSwal((props: any) => {
   }
 
   const updateSelectedUser = (selectedItems: any, assignType: any) => {
-    dispatchUpdateLead();
     reAssignLeads(selectedItems, assignType);
   }
 
