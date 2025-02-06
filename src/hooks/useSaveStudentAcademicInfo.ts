@@ -80,7 +80,7 @@ const useSaveStudentAcademicInfo = (
       );
       formData.append(
         `examRecords[${index}][exam_remarks]`,
-        item.exam_remarks
+        item.exam_remarks ? item.exam_remarks : ""
       );
       formData.append(`examRecords[${index}][exam_date]`, item.exam_date);
       formData.append(`examRecords[${index}][updated_by]`, userId);
