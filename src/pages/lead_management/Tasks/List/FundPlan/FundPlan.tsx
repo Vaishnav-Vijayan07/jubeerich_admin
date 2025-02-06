@@ -66,7 +66,7 @@ const FundPlan = ({ student_id }: Props) => {
       newFundPlan.splice(index, 1);
       setFundPlan(newFundPlan);
     } else {
-      removeFromApi(id, "fund");
+      removeFromApi(id, "fund",student_id);
     }
   };
 

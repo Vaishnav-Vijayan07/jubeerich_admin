@@ -141,7 +141,7 @@ const AcademicInfo = withSwal((props: any) => {
     if (itemId === 0) {
       setter((prevData) => prevData.filter((_, i) => i !== index));
     } else {
-      removeFromApi(itemId, type);
+      removeFromApi(itemId, type,studentId);
     }
   };
 

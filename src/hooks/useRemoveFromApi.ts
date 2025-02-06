@@ -9,7 +9,7 @@ const useRemoveFromApi = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const removeFromApi = async (id: any, type: string) => {
+  const removeFromApi = async (id: any, type: string,user_id: any) => {
     try {
       const result = await swal.fire({
         title: "Confirm Action",
@@ -36,7 +36,7 @@ const useRemoveFromApi = () => {
         setLoading(true);
 
         try {
-          const res = await axios.delete(`basic_info/${type}/${id}`, {
+          const res = await axios.delete(`basic_info/${type}/${id}/${user_id}`, {
             headers: {
               "Content-Type": "application/json", // Assuming no file data is sent
             },
