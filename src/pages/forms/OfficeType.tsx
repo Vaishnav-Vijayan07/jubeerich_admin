@@ -37,6 +37,7 @@ import {
 } from "../../redux/OfficeType/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
@@ -87,6 +88,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, sourceData, error, loading, initialLoading } = props;
 
   //fetch token from session storage
@@ -99,7 +101,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedSource, setSelectedSource] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
+
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -360,9 +362,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+  
 
   return (
     <>

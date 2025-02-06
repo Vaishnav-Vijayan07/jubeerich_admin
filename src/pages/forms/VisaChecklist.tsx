@@ -12,6 +12,7 @@ import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 // Interfaces
@@ -98,8 +99,9 @@ const validationSchema = yup.object().shape({
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, error, loading, initialLoading } = props;
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
+  
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -388,9 +390,7 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+  
 
   return (
     <>

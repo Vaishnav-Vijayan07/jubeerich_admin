@@ -25,6 +25,7 @@ import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../utils/regrexValidation";
 import { allowedFileTypes } from "./data";
 import FieldHistoryTable from "../../../../components/FieldHistory";
+import { useHistoryModal } from "../../../../hooks/useHistoryModal";
 
 const validationErrorsInitialState = {
   full_name: "",
@@ -57,7 +58,7 @@ const genderData: any = [
 
 const BasicInfo = withSwal((props: any) => {
   const { swal, studentId, role, officeTypes, regions, franchises, maritalStatus } = props;
-
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const [basicInfo, setBasicInfo] = useState<any>({
     passport_no: null,
     dob: null, // You might want to use a date type or string based on your needs
@@ -123,7 +124,7 @@ const BasicInfo = withSwal((props: any) => {
   const [selectedState, setSelectedState] = useState<any>(null);
   const [selectedNationality, setSelectedNationality] = useState<any>(null);
   const [policeCountry, setPoliceCountry] = useState<any>([]);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
+  
 
   const dispatch = useDispatch();
   const { refresh } = useSelector((state: RootState) => ({
@@ -556,9 +557,7 @@ const BasicInfo = withSwal((props: any) => {
     }
   }, [selectedNation]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
+  
 
   return (
     <>

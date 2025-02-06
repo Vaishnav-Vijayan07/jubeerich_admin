@@ -16,7 +16,8 @@ import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { addRegion, deleteRegion, getRegion, getRegionManagers, updateRegion } from "../../redux/regions/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
-const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface OptionType {
   value: string;
@@ -68,6 +69,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const { swal, state, mangersData, error, loading, initialLoading } = props;
 
   //fetch token from session storage
@@ -80,7 +82,6 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedManager, setSelectedManager] = useState<any>(null);
   const [formData, setFormData] = useState(initialState);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -206,15 +207,7 @@ const BasicInputElements = withSwal((props: any) => {
               const { user_id } = JSON.parse(userInfo);
               if (isUpdate) {
                 // Handle update logic
-                dispatch(
-                  updateRegion(
-                    formData.id,
-                    formData.region_name,
-                    formData.region_description,
-                    formData.regional_manager_id,
-                    user_id
-                  )
-                );
+                dispatch(updateRegion(formData.id, formData.region_name, formData.region_description, formData.regional_manager_id, user_id));
                 setIsUpdate(false);
               } else {
                 // Handle add logic
@@ -340,10 +333,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
-
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -362,16 +351,8 @@ const BasicInputElements = withSwal((props: any) => {
 
               <Form.Group className="mb-3" controlId="channel_description">
                 <Form.Label>Region Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  name="region_description"
-                  value={formData.region_description}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.region_description && (
-                  <Form.Text className="text-danger">{validationErrors.region_description}</Form.Text>
-                )}
+                <Form.Control as="textarea" rows={5} name="region_description" value={formData.region_description} onChange={handleInputChange} />
+                {validationErrors.region_description && <Form.Text className="text-danger">{validationErrors.region_description}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="source_id">
@@ -386,9 +367,7 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={handleManagerChange}
                 />
 
-                {validationErrors.regional_manager_id && (
-                  <Form.Text className="text-danger">{validationErrors.regional_manager_id}</Form.Text>
-                )}
+                {validationErrors.regional_manager_id && <Form.Text className="text-danger">{validationErrors.regional_manager_id}</Form.Text>}
               </Form.Group>
             </Modal.Body>
 
@@ -400,9 +379,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1"
-                onClick={() =>
-                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
-                }
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -490,13 +467,7 @@ const Region = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            mangersData={mangersData}
-            error={error}
-            loading={loading}
-            initialLoading={initialLoading}
-          />
+          <BasicInputElements state={state} mangersData={mangersData} error={error} loading={loading} initialLoading={initialLoading} />
         </Col>
       </Row>
     </React.Fragment>

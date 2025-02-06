@@ -12,7 +12,8 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { Link } from "react-router-dom";
 import { addFranchise, deleteFranchise, getFranchise, updateFranchise } from "../../redux/franchise/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
-const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface TableRecords {
   id: string;
@@ -61,6 +62,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const { swal, state, error, loading, initialLoading } = props;
 
   const records: TableRecords[] = state;
@@ -68,8 +70,6 @@ const BasicInputElements = withSwal((props: any) => {
   const [formData, setFormData] = useState(initialState);
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
-
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -171,9 +171,7 @@ const BasicInputElements = withSwal((props: any) => {
         .then((result: any) => {
           if (result.isConfirmed) {
             if (isUpdate) {
-              dispatch(
-                updateFranchise(formData.id, formData.name, formData.email, formData.address, formData.phone, formData.pocName)
-              );
+              dispatch(updateFranchise(formData.id, formData.name, formData.email, formData.address, formData.phone, formData.pocName));
               setIsUpdate(false);
             } else {
               dispatch(addFranchise(formData.name, formData.email, formData.address, formData.phone, formData.pocName));
@@ -289,10 +287,6 @@ const BasicInputElements = withSwal((props: any) => {
       setFormData(initialState); //clear form data
     }
   }, [loading, error]);
-
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
 
   return (
     <>
@@ -426,10 +420,7 @@ const Franchise = () => {
 
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[{ label: "Franchise Users", path: "/settings/master/franchise", active: true }]}
-        title={"Franchise Users"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Franchise Users", path: "/settings/master/franchise", active: true }]} title={"Franchise Users"} />
       <Row>
         <Col>
           <BasicInputElements state={state} error={error} loading={loading} initialLoading={initialLoading} />

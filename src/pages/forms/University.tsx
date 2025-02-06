@@ -17,7 +17,8 @@ import { addUniversity, deleteUniversity, getUniversity, updateUniversity } from
 import { Link } from "react-router-dom";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { regrexValidation } from "../../utils/regrexValidation";
-const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface OptionType {
   value: string;
@@ -83,6 +84,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, country, error, loading, initialLoading } = props;
 
   //fetch token from session storage
@@ -95,7 +97,6 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -104,10 +105,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    university_name: yup
-      .string()
-      .required("University name is required")
-      .min(3, "University name must be at least 3 characters long"),
+    university_name: yup.string().required("University name is required").min(3, "University name must be at least 3 characters long"),
     location: yup.string().required("Location is required").min(3, "Location must be at least 3 characters long"),
     country_id: yup.string().required("Country ID is required"),
     // website_url: yup
@@ -403,10 +401,7 @@ const BasicInputElements = withSwal((props: any) => {
       sort: true,
       Cell: ({ row }: any) => (
         <>
-          <span
-            style={{ fontSize: "10px" }}
-            className={`badge rounded-pill ${row.original.is_active ? "bg-success" : "bg-danger"}`}
-          >
+          <span style={{ fontSize: "10px" }} className={`badge rounded-pill ${row.original.is_active ? "bg-success" : "bg-danger"}`}>
             {row.original.is_active ? "Active" : "Disabled"}
           </span>
         </>
@@ -480,10 +475,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  const toggleHistoryModal = () => {
-    setHistoryModal(!historyModal);
-  };
-
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -498,15 +489,8 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>University Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="university_name"
-                      value={formData.university_name}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.university_name && (
-                      <Form.Text className="text-danger">{validationErrors.university_name}</Form.Text>
-                    )}
+                    <Form.Control type="text" name="university_name" value={formData.university_name} onChange={handleInputChange} />
+                    {validationErrors.university_name && <Form.Text className="text-danger">{validationErrors.university_name}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -539,9 +523,7 @@ const BasicInputElements = withSwal((props: any) => {
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Website URL</Form.Label>
                     <Form.Control type="text" name="website_url" value={formData.website_url} onChange={handleInputChange} />
-                    {validationErrors.website_url && (
-                      <Form.Text className="text-danger">{validationErrors.website_url}</Form.Text>
-                    )}
+                    {validationErrors.website_url && <Form.Text className="text-danger">{validationErrors.website_url}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -549,9 +531,7 @@ const BasicInputElements = withSwal((props: any) => {
                   <Form.Group className="mb-3" controlId="portal_link">
                     <Form.Label>Portal Link</Form.Label>
                     <Form.Control type="text" name="portal_link" value={formData.portal_link} onChange={handleInputChange} />
-                    {validationErrors.portal_link && (
-                      <Form.Text className="text-danger">{validationErrors.portal_link}</Form.Text>
-                    )}
+                    {validationErrors.portal_link && <Form.Text className="text-danger">{validationErrors.portal_link}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -576,9 +556,7 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Label>Description</Form.Label>
                     <Form.Control as="textarea" name="description" value={formData.description} onChange={handleInputChange} />
 
-                    {validationErrors.description && (
-                      <Form.Text className="text-danger">{validationErrors.description}</Form.Text>
-                    )}
+                    {validationErrors.description && <Form.Text className="text-danger">{validationErrors.description}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -612,9 +590,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 "
-                onClick={() =>
-                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
-                }
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -695,13 +671,7 @@ const University = () => {
       />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            country={country?.countries || []}
-            error={error}
-            loading={loading}
-            initialLoading={initialLoading}
-          />
+          <BasicInputElements state={state} country={country?.countries || []} error={error} loading={loading} initialLoading={initialLoading} />
         </Col>
       </Row>
     </React.Fragment>
