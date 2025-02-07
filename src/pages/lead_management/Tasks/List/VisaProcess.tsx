@@ -292,29 +292,26 @@ const VisaProcess = withSwal((props: any) => {
   const saveVisaFormData = (submitName: string, decision: boolean) => {
     switch (submitName) {
       case visa_decline:
-
-        if(decision){
+        if (decision) {
           submitDeclinedVisa(decision);
         } else {
-          changeVisaDecision(decision, visaTypes.visa_decline,"decline");
+          changeVisaDecision(decision, visaTypes.visa_decline, "decline");
         }
 
         break;
       case visa_approve:
-        
-        if(decision){
+        if (decision) {
           submitApprovedVisa(decision);
         } else {
-          changeVisaDecision(decision, visaTypes.visa_approve,"approve");
+          changeVisaDecision(decision, visaTypes.visa_approve, "approve");
         }
 
         break;
       case travel_history:
-
-        if(decision){
+        if (decision) {
           submitTravelHistory(decision);
         } else {
-          changeVisaDecision(decision, visaTypes.travel_history,"histroy");
+          changeVisaDecision(decision, visaTypes.travel_history, "histroy");
         }
 
         break;
@@ -343,10 +340,7 @@ const VisaProcess = withSwal((props: any) => {
           break;
       }
 
-      const { data } = await axios.patch(`update_info_checks/${studentId}`, payload);
-      if (data.status) {
-        showErrorAlert("Status Changed");
-      }
+      await axios.patch(`update_info_checks/${studentId}`, payload);
     } catch (error) {
       console.log(error);
       showErrorAlert("Something went wrong");
@@ -424,7 +418,7 @@ const VisaProcess = withSwal((props: any) => {
           });
           console.log("response", response);
           showSuccessAlert(response.data.message);
-          changeVisaDecision(decision, visaTypes.visa_decline,"decline");
+          changeVisaDecision(decision, visaTypes.visa_decline, "decline");
           setVisaDeclinedDocs([]);
           getVisaProcess();
         } catch (error) {
@@ -512,7 +506,7 @@ const VisaProcess = withSwal((props: any) => {
           });
           console.log("response", response);
           showSuccessAlert(response.data.message);
-          changeVisaDecision(decision, visaTypes.visa_approve,"approve");
+          changeVisaDecision(decision, visaTypes.visa_approve, "approve");
           setVisaApproveDocs([]);
           getVisaProcess();
         } catch (error) {
@@ -582,7 +576,7 @@ const VisaProcess = withSwal((props: any) => {
         try {
           const response = await axios.post(`${baseUrl}api/travel_history/`, body);
           console.log("response", response);
-          changeVisaDecision(decision, visaTypes.travel_history,"history");
+          changeVisaDecision(decision, visaTypes.travel_history, "history");
           showSuccessAlert(response.data.message);
           getVisaProcess();
         } catch (error) {
