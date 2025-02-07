@@ -296,7 +296,7 @@ const VisaProcess = withSwal((props: any) => {
         if(decision){
           submitDeclinedVisa(decision);
         } else {
-          changeVisaDecision(decision, visaTypes.visa_decline);
+          changeVisaDecision(decision, visaTypes.visa_decline,"decline");
         }
 
         break;
@@ -305,7 +305,7 @@ const VisaProcess = withSwal((props: any) => {
         if(decision){
           submitApprovedVisa(decision);
         } else {
-          changeVisaDecision(decision, visaTypes.visa_approve);
+          changeVisaDecision(decision, visaTypes.visa_approve,"approve");
         }
 
         break;
@@ -314,7 +314,7 @@ const VisaProcess = withSwal((props: any) => {
         if(decision){
           submitTravelHistory(decision);
         } else {
-          changeVisaDecision(decision, visaTypes.travel_history);
+          changeVisaDecision(decision, visaTypes.travel_history,"histroy");
         }
 
         break;
@@ -424,7 +424,7 @@ const VisaProcess = withSwal((props: any) => {
           });
           console.log("response", response);
           showSuccessAlert(response.data.message);
-          changeVisaDecision(decision, visaTypes.visa_decline);
+          changeVisaDecision(decision, visaTypes.visa_decline,"decline");
           setVisaDeclinedDocs([]);
           getVisaProcess();
         } catch (error) {
@@ -512,7 +512,7 @@ const VisaProcess = withSwal((props: any) => {
           });
           console.log("response", response);
           showSuccessAlert(response.data.message);
-          changeVisaDecision(decision, visaTypes.visa_approve);
+          changeVisaDecision(decision, visaTypes.visa_approve,"approve");
           setVisaApproveDocs([]);
           getVisaProcess();
         } catch (error) {
@@ -582,7 +582,7 @@ const VisaProcess = withSwal((props: any) => {
         try {
           const response = await axios.post(`${baseUrl}api/travel_history/`, body);
           console.log("response", response);
-          changeVisaDecision(decision, visaTypes.travel_history);
+          changeVisaDecision(decision, visaTypes.travel_history,"history");
           showSuccessAlert(response.data.message);
           getVisaProcess();
         } catch (error) {
