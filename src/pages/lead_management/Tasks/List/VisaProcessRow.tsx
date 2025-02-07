@@ -30,6 +30,9 @@ const VisaProcessRow = ({
   const [historyModal, setHistoryModal] = useState<boolean>(false);
   const [urlString, setUrlString] = useState<string>("");
   const [allCountries, setAllCountries] = useState<any>([]);
+  const [isVisaDeclined, setIsVisaDeclined] = useState<boolean>(false);
+  const [isVisaApproved, setIsVisaApproved] = useState<boolean>(false);
+  const [hasTravelHistoy, setHasTravelHistoy] = useState<boolean>(false)
 
   useEffect(() => {
     if (visaDecline.length) {
@@ -89,7 +92,33 @@ const VisaProcessRow = ({
           </Button>
         </div>
 
-        {visaDeclineData.length > 0 &&
+        <Row>
+          <Col>
+            <Form.Group className="mb-3" controlId="source_id">
+              <Form.Label>Have ever your visa declined?</Form.Label>
+              <div className="d-flex justify-content-start align-items-center mt-1">
+                <Form.Check
+                  type="radio"
+                  name="isVisaDeclined"
+                  checked={isVisaDeclined}
+                  onChange={() => setIsVisaDeclined(true)}
+                  label={<span className="ps-1 fw-bold">Yes</span>}
+                />
+                <Form.Check
+                  type="radio"
+                  name="isVisaDeclined"
+                  checked={!isVisaDeclined}
+                  onChange={() => setIsVisaDeclined(false)}
+                  label={<span className="ps-1 fw-bold">No</span>}
+                  className="ms-3"
+                />
+              </div>
+            </Form.Group>
+          </Col>
+        </Row>
+
+        {/* {visaDeclineData.length > 0 && */}
+        {isVisaDeclined &&
           visaDeclineData.map((data: any, index: any) => (
             <Row key={index}>
               <Col md={6} lg={4} xl={4} xxl={4}>
@@ -102,9 +131,9 @@ const VisaProcessRow = ({
                     value={
                       data?.visa_type
                         ? {
-                            label: Visa_Types.find((u: any) => u.value === data?.visa_type)?.label,
-                            value: data?.visa_type,
-                          }
+                          label: Visa_Types.find((u: any) => u.value === data?.visa_type)?.label,
+                          value: data?.visa_type,
+                        }
                         : null
                     }
                     placeholder="Select Visa Type"
@@ -133,9 +162,9 @@ const VisaProcessRow = ({
                     value={
                       data?.country_name
                         ? {
-                            label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
-                            value: data?.country_name,
-                          }
+                          label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
+                          value: data?.country_name,
+                        }
                         : null
                     }
                     onChange={(selectedOption: any) =>
@@ -159,9 +188,9 @@ const VisaProcessRow = ({
                     value={
                       data?.course_applied
                         ? {
-                            label: courses.find((u: any) => u.value == data?.course_applied)?.label,
-                            value: data?.course_applied,
-                          }
+                          label: courses.find((u: any) => u.value == data?.course_applied)?.label,
+                          value: data?.course_applied,
+                        }
                         : null
                     }
                     placeholder="Select Course"
@@ -186,9 +215,9 @@ const VisaProcessRow = ({
                     value={
                       data?.university_applied
                         ? {
-                            label: universities.find((u: any) => u.value == data?.university_applied)?.label,
-                            value: data?.university_applied,
-                          }
+                          label: universities.find((u: any) => u.value == data?.university_applied)?.label,
+                          value: data?.university_applied,
+                        }
                         : null
                     }
                     placeholder="Select University Applied"
@@ -256,10 +285,14 @@ const VisaProcessRow = ({
             </Row>
           ))}
 
-        <Row className="mb-2">
-          <ActionButton onClick={() => addMoreVisaForm(visa_decline)} label="Add More" iconClass="mdi mdi-plus" />
-        </Row>
-        <Button className="w-auto px-3 ms-2" onClick={() => saveVisaForm(visa_decline)}>
+        {isVisaDeclined && (
+          <>
+            <Row className="mb-2">
+              <ActionButton onClick={() => addMoreVisaForm(visa_decline)} label="Add More" iconClass="mdi mdi-plus" />
+            </Row>
+          </>
+        )}
+        <Button className="w-auto px-3 ms-2" onClick={() => saveVisaForm(visa_decline, isVisaDeclined)}>
           Save Declined Visa Details
         </Button>
       </Row>
@@ -287,7 +320,33 @@ const VisaProcessRow = ({
           </Button>
         </div>
 
-        {visaApproveData.length > 0 &&
+        <Row>
+          <Col>
+            <Form.Group className="mb-3" controlId="source_id">
+              <Form.Label>Have ever your visa approved?</Form.Label>
+              <div className="d-flex justify-content-start align-items-center mt-1">
+                <Form.Check
+                  type="radio"
+                  name="isVisaApproved"
+                  checked={isVisaApproved}
+                  onChange={() => setIsVisaApproved(true)}
+                  label={<span className="ps-1 fw-bold">Yes</span>}
+                />
+                <Form.Check
+                  type="radio"
+                  name="isVisaApproved"
+                  checked={!isVisaApproved}
+                  onChange={() => setIsVisaApproved(false)}
+                  label={<span className="ps-1 fw-bold">No</span>}
+                  className="ms-3"
+                />
+              </div>
+            </Form.Group>
+          </Col>
+        </Row>
+
+        {/* {visaApproveData.length > 0 && */}
+        {isVisaApproved &&
           visaApproveData.map((data: any, index: any) => (
             <Row key={index}>
               <Col md={6} lg={4} xl={4} xxl={4}>
@@ -434,10 +493,14 @@ const VisaProcessRow = ({
             </Row>
           ))}
 
-        <Row className="mb-2">
-          <ActionButton label="Add More" onClick={() => addMoreVisaForm(visa_approve)} iconClass="mdi mdi-plus" />
-        </Row>
-        <Button className="w-auto ms-2 px-3" onClick={() => saveVisaForm(visa_approve)}>
+        {isVisaApproved && (
+          <>
+            <Row className="mb-2">
+              <ActionButton label="Add More" onClick={() => addMoreVisaForm(visa_approve)} iconClass="mdi mdi-plus" />
+            </Row>
+          </>
+        )}
+        <Button className="w-auto ms-2 px-3" onClick={() => saveVisaForm(visa_approve, isVisaApproved)}>
           Save Approved Visa Details
         </Button>
       </Row>
@@ -458,7 +521,33 @@ const VisaProcessRow = ({
           </Button>
         </div>
 
-        {travelHistoryData.length > 0 &&
+        <Row>
+          <Col>
+            <Form.Group className="mb-3" controlId="source_id">
+              <Form.Label>Did you have any travel history?</Form.Label>
+              <div className="d-flex justify-content-start align-items-center mt-1">
+                <Form.Check
+                  type="radio"
+                  name="hasTravelHistoy"
+                  checked={hasTravelHistoy}
+                  onChange={() => setHasTravelHistoy(true)}
+                  label={<span className="ps-1 fw-bold">Yes</span>}
+                />
+                <Form.Check
+                  type="radio"
+                  name="hasTravelHistoy"
+                  checked={!hasTravelHistoy}
+                  onChange={() => setHasTravelHistoy(false)}
+                  label={<span className="ps-1 fw-bold">No</span>}
+                  className="ms-3"
+                />
+              </div>
+            </Form.Group>
+          </Col>
+        </Row>
+
+        {/* {travelHistoryData.length > 0 && */}
+        {hasTravelHistoy &&
           travelHistoryData.map((data: any, index: any) => (
             <Row key={index}>
 
@@ -520,7 +609,7 @@ const VisaProcessRow = ({
                   />
                   {data?.errors?.end_date && <Form.Text className="text-danger">{data?.errors?.end_date}</Form.Text>}
                 </Form.Group>
-              </Col>      
+              </Col>
 
               <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="purpose_of_travel">
@@ -552,10 +641,14 @@ const VisaProcessRow = ({
             </Row>
           ))}
 
-        <Row className="mb-2">
-          <ActionButton onClick={() => addMoreVisaForm(travel_history)} label="Add More" iconClass="mdi mdi-plus" />
-        </Row>
-        <Button className="w-auto ms-2 px-3" onClick={() => saveVisaForm(travel_history)}>
+        {hasTravelHistoy && (
+          <>
+            <Row className="mb-2">
+              <ActionButton onClick={() => addMoreVisaForm(travel_history)} label="Add More" iconClass="mdi mdi-plus" />
+            </Row>
+          </>
+        )}
+        <Button className="w-auto ms-2 px-3" onClick={() => saveVisaForm(travel_history, hasTravelHistoy)}>
           Save Travel History
         </Button>
       </Row>
