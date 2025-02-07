@@ -122,6 +122,9 @@ const AcademicInfo = withSwal((props: any) => {
 
   const removeFormField = async (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number, itemId: number | string, type: string) => {
     if (itemId === 0) {
+      if(examForm.length == 1) {
+        return
+      }
       setter((prevData) => prevData.filter((_, i) => i !== index));
     } else {
       const result = await showConfirmation("Are you sure you want to remove this item?");
@@ -129,7 +132,7 @@ const AcademicInfo = withSwal((props: any) => {
         return;
       }
 
-      if(examForm.length > 1) {
+      if(examForm.length == 1) {
         setExamForm([initialStateExam])
       }
 
