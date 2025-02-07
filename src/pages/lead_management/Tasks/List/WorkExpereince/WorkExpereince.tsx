@@ -16,6 +16,7 @@ import { regrexValidation } from "../../../../../utils/regrexValidation";
 import { showErrorAlert } from "../../../../../constants";
 import { allowedFileTypes } from "../data";
 import { refreshData } from "../../../../../redux/countryReducer";
+import { showConfirmation } from "../../../../../utils/showConfirmation";
 
 const initialStateWork = {
   years: 0,
@@ -81,21 +82,25 @@ const WorkExpereince = withSwal((props: any) => {
     if (studentId) {
       getAcademicInfo();
     }
-  }, [studentId, refresh, getAcademicInfo]);
+  }, [studentId, refresh]);
 
   const decisionWiseSave = async () => {
+
+    console.log(hasWorkExp)
+
     if (hasWorkExp) {
       await saveWorkData();
-      await saveCheck();
     } else {
-      await saveCheck();
+      const result = await showConfirmation("Do you want to proceed?");
+      if (!result.isConfirmed) return;
+      saveCheck();
     }
-    dispatch(refreshData());
   };
 
   const saveCheck = async () => {
     try {
       await axios.patch(`update_info_checks/${studentId}`, { has_work_exp: hasWorkExp });
+      dispatch(refreshData());
     } catch (error) {
       console.log(error);
       showErrorAlert("Something went wrong");
@@ -127,8 +132,9 @@ const WorkExpereince = withSwal((props: any) => {
       );
       return;
     }
-
-    saveWorkDetails(workExperienceFromApi, hasWorkExp);
+    const data = await saveWorkDetails(workExperienceFromApi, hasWorkExp);
+    console.log(data)
+    saveCheck();
   };
 
   const handleWorkExperienceChange = (name: string, value: any, index: number) => {
