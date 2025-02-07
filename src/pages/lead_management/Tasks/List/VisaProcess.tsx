@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
-import { Spinner } from "react-bootstrap";
 import { withSwal } from "react-sweetalert2";
 import { baseUrl, showErrorAlert, showSuccessAlert } from "../../../../constants";
 import VisaProcessRow from "./VisaProcessRow";
@@ -12,7 +11,6 @@ import { allowedFileTypes, travel_history, visa_approve, visa_decline } from "./
 import { getCountry } from "../../../../redux/country/actions";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import validateFields from "../../../../helpers/validateHelper";
-import { count } from "console";
 
 const visaTypes = {
   visa_decline: "visa_decline",
@@ -311,7 +309,7 @@ const VisaProcess = withSwal((props: any) => {
         if (decision) {
           submitTravelHistory(decision);
         } else {
-          changeVisaDecision(decision, visaTypes.travel_history, "histroy");
+          changeVisaDecision(decision, visaTypes.travel_history, "history");
         }
 
         break;
@@ -334,13 +332,14 @@ const VisaProcess = withSwal((props: any) => {
           break;
 
         case "history":
-          payload.is_travel_history = decision;
+          payload.has_travel_history = decision;
           break;
         default:
           break;
       }
 
       await axios.patch(`update_info_checks/${studentId}`, payload);
+      getVisaProcess();
     } catch (error) {
       console.log(error);
       showErrorAlert("Something went wrong");
@@ -420,7 +419,6 @@ const VisaProcess = withSwal((props: any) => {
           showSuccessAlert(response.data.message);
           changeVisaDecision(decision, visaTypes.visa_decline, "decline");
           setVisaDeclinedDocs([]);
-          getVisaProcess();
         } catch (error) {
           console.error("Error during API call:", error);
           showErrorAlert("Error occurred");
@@ -508,7 +506,6 @@ const VisaProcess = withSwal((props: any) => {
           showSuccessAlert(response.data.message);
           changeVisaDecision(decision, visaTypes.visa_approve, "approve");
           setVisaApproveDocs([]);
-          getVisaProcess();
         } catch (error) {
           console.error("Error during API call:", error);
           showErrorAlert("Error occurred");
@@ -578,7 +575,6 @@ const VisaProcess = withSwal((props: any) => {
           console.log("response", response);
           changeVisaDecision(decision, visaTypes.travel_history, "history");
           showSuccessAlert(response.data.message);
-          getVisaProcess();
         } catch (error) {
           console.error("Error during API call:", error);
           showErrorAlert("Error occurred");

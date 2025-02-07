@@ -105,7 +105,7 @@ const VisaProcessRow = ({
         <Row>
           <Col>
             <Form.Group className="mb-3" controlId="source_id">
-              <Form.Label>Have ever your visa declined?</Form.Label>
+              <Form.Label>Has your visa ever been declined or rejected?</Form.Label>
               <div className="d-flex justify-content-start align-items-center mt-1">
                 <Form.Check
                   type="radio"
@@ -333,7 +333,7 @@ const VisaProcessRow = ({
         <Row>
           <Col>
             <Form.Group className="mb-3" controlId="source_id">
-              <Form.Label>Have ever your visa approved?</Form.Label>
+              <Form.Label>Has your visa ever been approved?</Form.Label>
               <div className="d-flex justify-content-start align-items-center mt-1">
                 <Form.Check
                   type="radio"
@@ -534,7 +534,7 @@ const VisaProcessRow = ({
         <Row>
           <Col>
             <Form.Group className="mb-3" controlId="source_id">
-              <Form.Label>Did you have any travel history?</Form.Label>
+              <Form.Label>Do you have any previous travel history?</Form.Label>
               <div className="d-flex justify-content-start align-items-center mt-1">
                 <Form.Check
                   type="radio"
