@@ -80,7 +80,28 @@ const WorkExpereince = withSwal((props: any) => {
     }
   }, [studentId, refresh, getAcademicInfo]);
 
-  const saveWorkData = useCallback(async () => {
+  const decisionWiseSave = () => {
+    switch (hasWorkExp) {
+      case true:
+        saveWorkData();
+        break;
+      case false:
+        saveCheck();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const saveCheck = ()=>{
+    try {
+      console.log("NO SAVE gapData")
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const saveWorkData = async () => {
     const validationRules = {
       years: { required: true, message: "Please enter the number of years" },
       designation: { required: false, message: "Please enter a designation" },
@@ -107,7 +128,7 @@ const WorkExpereince = withSwal((props: any) => {
     }
 
     saveWorkDetails(workExperienceFromApi, hasWorkExp);
-  }, [workExperienceFromApi]);
+  }
 
   const handleWorkExperienceChange = (name: string, value: any, index: number) => {
     if (typeof value == "object" && !allowedFileTypes.includes(value.type)) {
@@ -178,7 +199,7 @@ const WorkExpereince = withSwal((props: any) => {
               </>
             )}
 
-            <Button variant="primary" className="w-auto ms-2" type="submit" onClick={saveWorkData} disabled={workSaveLoading}>
+            <Button variant="primary" className="w-auto ms-2" type="submit" onClick={decisionWiseSave} disabled={workSaveLoading}>
               {workSaveLoading ? (
                 <>
                   <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
@@ -216,3 +237,5 @@ const WorkExpereince = withSwal((props: any) => {
 });
 
 export default WorkExpereince;
+
+

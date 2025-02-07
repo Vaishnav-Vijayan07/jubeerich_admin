@@ -134,14 +134,13 @@ const BasicInfo = withSwal((props: any) => {
     setLoading(true);
     try {
       const { data } = await axios.get(`/basicStudentInfo/${studentId}`);
-      const { primaryInfo, basicInfo: basicInfoFromApi, policeCountries } = data.data;
+      const { primaryInfo, basicInfo: basicInfoFromApi, policeCountries,policeClearanceDocs } = data.data;
 
       const { preferredCountries, ...rest } = primaryInfo;
-      // const policeDocs = policeClearanceDocs.length > 0 ? policeClearanceDocs : policeClearenceDocs ;
-      // const policeDocs = policeClearanceDocs;
+      const policeDocs = policeClearanceDocs.length > 0 ? policeClearanceDocs : policeClearenceDocs ;
 
       setBasicInfo(basicInfoFromApi ? basicInfoFromApi : basicInfo);
-      setPoliceClearenceDocs(policeClearenceDocs);
+      setPoliceClearenceDocs(policeDocs);
 
       setPrimaryInfo(rest);
 
