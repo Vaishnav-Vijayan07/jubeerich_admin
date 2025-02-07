@@ -14,6 +14,12 @@ import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import validateFields from "../../../../helpers/validateHelper";
 import { count } from "console";
 
+const visaTypes = {
+  "visa_decline": "visa_decline",
+  "visa_approve": "visa_approve",
+  "travel_history": "travel_history"
+}
+
 const VisaProcess = withSwal((props: any) => {
   const { swal, studentId } = props;
   let userInfo = sessionStorage.getItem("jb_user");
@@ -277,21 +283,49 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  const saveVisaFormData = (submitName: string) => {
+  const saveVisaFormData = (submitName: string, decision: boolean) => {
     switch (submitName) {
       case visa_decline:
-        submitDeclinedVisa();
+        changeVisaDecision(decision, visaTypes.visa_decline);
+        if(decision){
+          submitDeclinedVisa();
+        }
         break;
       case visa_approve:
-        submitApprovedVisa();
+        changeVisaDecision(decision, visaTypes.visa_approve);
+        if(decision){
+          submitApprovedVisa();
+        }
         break;
       case travel_history:
-        submitTravelHistory();
+        changeVisaDecision(decision, visaTypes.travel_history);
+        if(decision){
+          submitTravelHistory();
+        }
         break;
       default:
         break;
     }
   };
+
+  const changeVisaDecision = async(decision: boolean, type: string) => {
+    try {
+      let payload = {
+        type: type,
+        decision: decision,
+        userId: loggedUser.user_id,
+        student_id: studentId
+      }
+
+      const { data } = await axios.post('change_visa_decision',payload);
+      if(data.status) {
+        showErrorAlert("Status Changed")
+      }
+    } catch (error) {
+      console.log(error);
+      showErrorAlert("Something went wrong");
+    }
+  }
 
   const submitDeclinedVisa = async () => {
     const validationRules = {
