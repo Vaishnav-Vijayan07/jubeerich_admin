@@ -15,13 +15,14 @@ import validateFields from "../../../../helpers/validateHelper";
 import { count } from "console";
 
 const visaTypes = {
-  "visa_decline": "visa_decline",
-  "visa_approve": "visa_approve",
-  "travel_history": "travel_history"
-}
+  visa_decline: "visa_decline",
+  visa_approve: "visa_approve",
+  travel_history: "travel_history",
+};
 
 const VisaProcess = withSwal((props: any) => {
   const { swal, studentId } = props;
+
   let userInfo = sessionStorage.getItem("jb_user");
   let loggedUser: any;
   if (userInfo) {
@@ -286,20 +287,20 @@ const VisaProcess = withSwal((props: any) => {
   const saveVisaFormData = (submitName: string, decision: boolean) => {
     switch (submitName) {
       case visa_decline:
-        changeVisaDecision(decision, visaTypes.visa_decline);
-        if(decision){
+        changeVisaDecision(decision, visaTypes.visa_decline, "decline");
+        if (decision) {
           submitDeclinedVisa();
         }
         break;
       case visa_approve:
-        changeVisaDecision(decision, visaTypes.visa_approve);
-        if(decision){
+        changeVisaDecision(decision, visaTypes.visa_approve, "approve");
+        if (decision) {
           submitApprovedVisa();
         }
         break;
       case travel_history:
-        changeVisaDecision(decision, visaTypes.travel_history);
-        if(decision){
+        changeVisaDecision(decision, visaTypes.travel_history, "history");
+        if (decision) {
           submitTravelHistory();
         }
         break;
@@ -308,31 +309,42 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  const changeVisaDecision = async(decision: boolean, type: string) => {
+  const changeVisaDecision = async (decision: boolean, type: string, type_of_data: string) => {
     try {
-      let payload = {
-        type: type,
-        decision: decision,
-        userId: loggedUser.user_id,
-        student_id: studentId
+      let payload: any = {};
+
+      switch (type_of_data) {
+        case "decline":
+          payload.is_visa_declined = decision;
+          break;
+
+        case "approve":
+          payload.is_visa_approved = decision;
+          break;
+
+        case "history":
+          payload.is_travel_history = decision;
+          break;
+        default:
+          break;
       }
 
-      const { data } = await axios.post('change_visa_decision',payload);
-      if(data.status) {
-        showErrorAlert("Status Changed")
+      const { data } = await axios.patch(`update_info_checks/${studentId}`, payload);
+      if (data.status) {
+        showErrorAlert("Status Changed");
       }
     } catch (error) {
       console.log(error);
       showErrorAlert("Something went wrong");
     }
-  }
+  };
 
   const submitDeclinedVisa = async () => {
     const validationRules = {
-      course_applied: { required: true,message:"Please enter a course applied" },
-      country_name: { required: true,message:"Please select a country" },
-      rejection_reason: { required: false, message: "Please enter a rejection reason" }, 
-      university_applied: { required: true,message:"Please enter a university applied" },
+      course_applied: { required: true, message: "Please enter a course applied" },
+      country_name: { required: true, message: "Please select a country" },
+      rejection_reason: { required: false, message: "Please enter a rejection reason" },
+      university_applied: { required: true, message: "Please enter a university applied" },
       visa_type: { required: false, message: "Please enter a visa type" },
     };
 
@@ -573,7 +585,7 @@ const VisaProcess = withSwal((props: any) => {
     const file = e.target.files?.[0];
     const { name } = e.target;
 
-    if (file&& !allowedFileTypes.includes(file.type)) {
+    if (file && !allowedFileTypes.includes(file.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
       return;
     }
