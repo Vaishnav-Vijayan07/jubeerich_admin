@@ -9,9 +9,9 @@ interface Props {
 const RelativesDetails = ({ data, handleInputChange }: Props) => {
   return (
     <Row className="mt-2">
-      <Row>
+      {/* <Row>
         <h5 className="mb-4 text-uppercase">Relatives Details</h5>
-      </Row>
+      </Row> */}
       <Col md={6}>
         <Form.Group controlId="exampleForm.ControlTextarea1">
           <Form.Label>Relatives Details</Form.Label>

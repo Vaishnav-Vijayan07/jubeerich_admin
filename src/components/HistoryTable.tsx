@@ -26,7 +26,8 @@ const HistoryTable = ({ apiUrl }: any) => {
 
   const filteredData = historyData.filter(
     (item) =>
-      (filterTable === "all" || item.table_name === filterTable) && (filterType === "all" || item.change_type === filterType)
+      (filterTable === "all" || item.table_name === filterTable) && 
+      (filterType === "all" || item.change_type === filterType)
   );
 
   const formatDate = (date: string): string => new Date(date).toLocaleString();
@@ -45,14 +46,12 @@ const HistoryTable = ({ apiUrl }: any) => {
       setNoDataMessage(null);
 
       const response = await axios.get(`get_table_history?tableName=${apiUrl}`);
-      // Check if response has a message indicating no data
       if (response.data.message) {
         setNoDataMessage(response.data.message);
         setHistoryData([]);
         return;
       }
 
-      // If we have data, set it directly
       if (Array.isArray(response.data.data)) {
         setHistoryData(response.data.data);
       } else {
@@ -94,12 +93,28 @@ const HistoryTable = ({ apiUrl }: any) => {
               <tbody>
                 {Object.entries(item.old_values ?? {}).map(([key, value]) => (
                   <tr key={key}>
-                    <td className="fw-bold text-danger">{key}</td>
+                    <td className="fw-bold text-danger">{formatString(key)}</td>
                     <td>{value || "-"}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </td>
+        </tr>
+      );
+    }
+
+    // For CREATE and UPDATE, only show changed values
+    const changedValues = Object.entries(item.new_values ?? {}).filter(([key, newValue]) => {
+      const oldValue = item.old_values?.[key] || "-";
+      return oldValue !== newValue || item.change_type === "CREATE";
+    });
+
+    if (changedValues.length === 0) {
+      return (
+        <tr className="bg-light">
+          <td colSpan={6}>
+            <div className="alert alert-info mt-2 mb-2">No values were changed in this update.</div>
           </td>
         </tr>
       );
@@ -120,15 +135,13 @@ const HistoryTable = ({ apiUrl }: any) => {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(item.new_values ?? {}).map(([key, newValue]) => {
+              {changedValues.map(([key, newValue]) => {
                 const oldValue = item.old_values?.[key] || "-";
-                const isChanged = oldValue !== newValue;
-
                 return (
-                  <tr key={key} className={isChanged ? "table-warning" : ""}>
+                  <tr key={key} className="table-warning">
                     <td className="fw-bold">{formatString(key)}</td>
-                    <td className={isChanged ? "text-danger fw-semibold" : ""}>{oldValue}</td>
-                    <td className={isChanged ? "text-success fw-semibold" : ""}>{newValue}</td>
+                    <td className="text-danger fw-semibold">{oldValue}</td>
+                    <td className="text-success fw-semibold">{newValue}</td>
                   </tr>
                 );
               })}

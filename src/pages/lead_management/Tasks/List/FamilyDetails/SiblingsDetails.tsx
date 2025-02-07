@@ -17,9 +17,9 @@ interface Props {
 const SiblingsDetails = ({ handleInputChange, siblings, number_of_siblings, handleRemoveItem, handleAddSibling }: Props) => {
   return (
     <Row className="p-2" style={{ borderBottom: "1px solid #6658dd" }}>
-      <Row>
+      {/* <Row>
         <h5 className="mb-4 text-uppercase">Siblings' Details</h5>
-      </Row>
+      </Row> */}
       <Col md={3}>
         <Form.Group className="mb-3" controlId={`number_of_siblings`}>
           <Form.Label>Number of Siblings</Form.Label>

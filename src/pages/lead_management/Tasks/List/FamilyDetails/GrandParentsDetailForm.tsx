@@ -33,9 +33,9 @@ const GrandParentDetailsForm = ({
 
   return (
     <Row className="border-bottom p-1 mb-1">
-      <Row>
+      {/* <Row>
         <h5 className="mb-4 text-uppercase">{`${parentTypeName}'s Details`}</h5>
-      </Row>
+      </Row> */}
       <Row>
         <Col md={3}>
           <Form.Group className="mb-3" controlId={`${parentType}_name`}>

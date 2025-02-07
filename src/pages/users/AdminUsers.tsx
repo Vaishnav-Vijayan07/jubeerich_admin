@@ -72,7 +72,7 @@ const BasicInputElements = withSwal((props: any) => {
   const loggedInUser = api.getLoggedInUser();
 
   //Table data
-  const records: TableRecords[] = state;
+  const records: TableRecords[] = state.filter((item: any) => item.role_id !== 1);
   const [isUpdate, setIsUpdate] = useState(false);
   //Input data
   const [formData, setFormData] = useState<MyInitialState>(initialState);
@@ -260,10 +260,13 @@ const BasicInputElements = withSwal((props: any) => {
       if(data){
         showSuccessAlert('Leads Successfully Re-Assigned');
         setOpenAssignTable(false);
+        dispatchUpdateLead();
       }
     } catch (error) {
       console.log("error", error);
       showErrorAlert(error);
+      refetchUsers();
+      setOpenAssignTable(false);
     }
   };
 
@@ -296,7 +299,6 @@ const BasicInputElements = withSwal((props: any) => {
   }
 
   const updateSelectedUser = (selectedItems: any, assignType: any) => {
-    dispatchUpdateLead();
     reAssignLeads(selectedItems, assignType);
   }
 
@@ -345,30 +347,6 @@ const BasicInputElements = withSwal((props: any) => {
                   } 
                   else {
                     dispatchUpdateLead();
-                    // dispatch(
-                    //   updateAdminUsers(
-                    //     formData.id,
-                    //     formData.employee_id,
-                    //     formData.name,
-                    //     formData.email,
-                    //     formData.phone,
-                    //     formData.address,
-                    //     formData.username,
-                    //     formData.password,
-                    //     // formData.updated_by,
-                    //     user_id,
-                    //     formData.role_id,
-                    //     selectedImage,
-                    //     formData.branch_ids,
-                    //     formData?.country_ids,
-                    //     formData.role_id == regional_manager_id ? formData.region_id : null,
-                    //     formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
-                    //       ? formData.branch_id
-                    //       : null,
-                    //     formData?.franchise_id || null,
-                    //     radioValue
-                    //   )
-                    // );
                   }
                 } catch (err) {
                   console.error("error updating", err);

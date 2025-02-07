@@ -107,8 +107,8 @@ const FieldHistoryTable = ({ apiUrl, studentId }: any) => {
 
               {item.changes &&
                 Object.entries(item.changes).map(([key, change]) => {
-                  const oldValue = change?.old_value ?? "-"; // Default to "-"
-                  const newValue = change?.new_value ?? "-";
+                  const oldValue = change?.old_value ?? ""; // Default to "-"
+                  const newValue = change?.new_value ?? "";
 
                   return (
                     <tr key={`${item.id}-${key}`} className="table-warning">

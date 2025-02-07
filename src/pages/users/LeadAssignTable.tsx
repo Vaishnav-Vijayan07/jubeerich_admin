@@ -20,11 +20,11 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
     const formattedData = useMemo(() => {
         if (approvalType == approvalTypes.delete_cre) {
             return {
-                userDataCres: [ { id: null, name: "None", role_id: null },...options]?.map((item: any) => ({ id: item?.id?.toString(), name: item?.name?.toString(), role_id: item?.role_id?.toString() })) || [],
+                userDataCres: [ { id: null, name: "Select", role_id: null },...options]?.map((item: any) => ({ id: item?.id?.toString(), name: item?.name?.toString(), role_id: item?.role_id?.toString() })) || [],
             };
         } else {
             return {
-                userDataCres: [ { id: null, name: "None", role_id: null },...options]?.map((item: any) => ({ id: item?.id?.toString(), name: item?.name?.toString(), role_id: item?.role_id?.toString() })) || [],
+                userDataCres: [ { id: null, name: "Select", role_id: null },...options]?.map((item: any) => ({ id: item?.id?.toString(), name: item?.name?.toString(), role_id: item?.role_id?.toString() })) || [],
             }
         }
     }, [options]);
@@ -269,12 +269,12 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
 
     const handleAssign = async () => {
         if (!selectedItems || selectedItems.length == 0) {
-            showErrorAlert("No leads selected. Please select leads to approve.");
+            showErrorAlert("No leads selected. Please select leads to Assign.");
             return;
         }
 
         const hasInvalidItem = selectedItems.some((item) => {
-            return !item.assigned_cre;
+            return !item.assigned_cre?.id;
         });
 
         if (hasInvalidItem) {
