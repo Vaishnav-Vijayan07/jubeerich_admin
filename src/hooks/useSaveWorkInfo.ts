@@ -96,7 +96,7 @@ const useSaveWorkInfo = (studentId: number | string) => {
             },
           });
           console.log("res: =>", res);
-          dispatch(refreshData());
+         
           showSuccessAlert(res.data.message);
         } catch (err) {
           console.log(err);

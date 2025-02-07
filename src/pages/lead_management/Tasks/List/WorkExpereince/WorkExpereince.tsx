@@ -10,11 +10,12 @@ import validateFields from "../../../../../helpers/validateHelper";
 import useSaveWorkInfo from "../../../../../hooks/useSaveWorkInfo";
 import GapRows from ".././gapRow";
 import EmploymentHistory from ".././EmploymentHistory";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SkeletonComponent from "../StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../../utils/regrexValidation";
 import { showErrorAlert } from "../../../../../constants";
 import { allowedFileTypes } from "../data";
+import { refreshData } from "../../../../../redux/countryReducer";
 
 const initialStateWork = {
   years: 0,
@@ -40,8 +41,8 @@ const initialGapState = {
 
 const WorkExpereince = withSwal((props: any) => {
   const { swal, studentId } = props;
+  const dispatch = useDispatch();
   const [initialLoading, setInitialLoading] = useState(false);
-  // const [hasGap, setHasGap] = useState("no");
   const [hasGap, setHasGap] = useState<boolean>(false);
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
   const [workExperienceFromApi, setWorkExperienceFromApi] = useState<any>(null);
@@ -57,15 +58,17 @@ const WorkExpereince = withSwal((props: any) => {
       // Fetch both API calls concurrently
       const [workResponse, gapResponse] = await Promise.all([axios.get(`studentWorkInfo/${studentId}`), axios.get(`gapReason/${studentId}/work`)]);
 
-      const workData = workResponse.data?.data;
+      const workData = workResponse.data?.workDataFormatted;
       const gapData = gapResponse.data?.data;
+
+      const has_work_gap = workResponse.data?.has_work_gap;
+      const has_work_exp = workResponse.data?.has_work_exp;
 
       // Use helper functions to check the data and set state
       setWorkExperienceFromApi(workData.length > 0 ? workData : [initialStateWork]);
       setGap(gapData.length > 0 ? gapData : [initialGapState]);
-      // setHasGap(gapData.length > 0 ? "yes" : "no");
-      setHasGap(gapData.length > 0 ? true : false);
-      setHasWorkExp(workData.length > 0 ? true : false);
+      setHasGap(has_work_gap);
+      setHasWorkExp(has_work_exp);
     } catch (error) {
       console.error("Error fetching academic info:", error);
     } finally {
@@ -80,26 +83,24 @@ const WorkExpereince = withSwal((props: any) => {
     }
   }, [studentId, refresh, getAcademicInfo]);
 
-  const decisionWiseSave = () => {
-    switch (hasWorkExp) {
-      case true:
-        saveWorkData();
-        break;
-      case false:
-        saveCheck();
-        break;
-      default:
-        break;
+  const decisionWiseSave = async () => {
+    if (hasWorkExp) {
+      await saveWorkData();
+      await saveCheck();
+    } else {
+      await saveCheck();
     }
+    dispatch(refreshData());
   };
 
-  const saveCheck = ()=>{
+  const saveCheck = async () => {
     try {
-      console.log("NO SAVE gapData")
+      await axios.patch(`update_info_checks/${studentId}`, { has_work_exp: hasWorkExp });
     } catch (error) {
       console.log(error);
+      showErrorAlert("Something went wrong");
     }
-  }
+  };
 
   const saveWorkData = async () => {
     const validationRules = {
@@ -128,7 +129,7 @@ const WorkExpereince = withSwal((props: any) => {
     }
 
     saveWorkDetails(workExperienceFromApi, hasWorkExp);
-  }
+  };
 
   const handleWorkExperienceChange = (name: string, value: any, index: number) => {
     if (typeof value == "object" && !allowedFileTypes.includes(value.type)) {
@@ -237,5 +238,3 @@ const WorkExpereince = withSwal((props: any) => {
 });
 
 export default WorkExpereince;
-
-

@@ -144,7 +144,7 @@ const EmploymentHistory = (props: any) => {
 
   useEffect(() => {
     getEmploymentHistories();
-  }, [studentId]);
+  }, []);
 
   return (
     <>
