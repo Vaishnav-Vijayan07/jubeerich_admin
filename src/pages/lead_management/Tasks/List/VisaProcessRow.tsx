@@ -33,15 +33,9 @@ const VisaProcessRow = ({
   const [allCountries, setAllCountries] = useState<any>([]);
   const [isVisaDeclined, setIsVisaDeclined] = useState<boolean>(false);
   const [isVisaApproved, setIsVisaApproved] = useState<boolean>(false);
-  const [hasTravelHistoy, setHasTravelHistoy] = useState<boolean>(false)
+  const [hasTravelHistoy, setHasTravelHistoy] = useState<boolean>(false);
 
   useEffect(() => {
-    if(decisions){
-      setIsVisaDeclined(decisions?.is_visa_declined);
-      setIsVisaApproved(decisions?.is_visa_approved);
-      setHasTravelHistoy(decisions?.has_travel_history);
-    }
-
     if (visaDecline.length) {
       setVisaDeclineData(visaDecline);
     } else {
@@ -59,7 +53,16 @@ const VisaProcessRow = ({
     } else {
       addMoreVisaForm(travel_history);
     }
-  }, [visaDecline, visaApprove, travelHistory, decisions]);
+  }, [visaDecline, visaApprove, travelHistory]);
+
+  useEffect(() => {
+    if(decisions){
+      setIsVisaDeclined(decisions?.is_visa_declined);
+      setIsVisaApproved(decisions?.is_visa_approved);
+      setHasTravelHistoy(decisions?.has_travel_history);
+    }
+  }, [decisions]);
+  
 
   const toggleHistoryModal = (url?: string) => {
     if (url) setUrlString(url);
