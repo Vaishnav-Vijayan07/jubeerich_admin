@@ -55,10 +55,7 @@ const WorkExpereince = withSwal((props: any) => {
     setInitialLoading(true);
     try {
       // Fetch both API calls concurrently
-      const [workResponse, gapResponse] = await Promise.all([
-        axios.get(`studentWorkInfo/${studentId}`),
-        axios.get(`gapReason/${studentId}/work`),
-      ]);
+      const [workResponse, gapResponse] = await Promise.all([axios.get(`studentWorkInfo/${studentId}`), axios.get(`gapReason/${studentId}/work`)]);
 
       const workData = workResponse.data?.data;
       const gapData = gapResponse.data?.data;
@@ -123,9 +120,7 @@ const WorkExpereince = withSwal((props: any) => {
       return; // Stop updating if validation fails
     }
 
-    setWorkExperienceFromApi((prevState: any) =>
-      prevState.map((item: any, i: number) => (i === index ? { ...item, [name]: value } : item))
-    );
+    setWorkExperienceFromApi((prevState: any) => prevState.map((item: any, i: number) => (i === index ? { ...item, [name]: value } : item)));
   };
 
   const addMoreWorkExperience = () => {
@@ -146,34 +141,33 @@ const WorkExpereince = withSwal((props: any) => {
         <SkeletonComponent />
       ) : (
         <>
-          <Row className="mt-3">
-            <Col>
-              <Form.Group className="mb-3" controlId="source_id">
-                <Form.Label>Do you have any work experience?</Form.Label>
-                <div className="d-flex justify-content-start align-items-center mt-1">
-                  <Form.Check
-                    type="radio"
-                    name="hasExams"
-                    checked={hasWorkExp}
-                    onChange={() => setHasWorkExp(true)}
-                    label={<span className="ps-1 fw-bold">Yes</span>}
-                  />
-                  <Form.Check
-                    type="radio"
-                    name="hasExams"
-                    checked={!hasWorkExp}
-                    onChange={() => setHasWorkExp(false)}
-                    label={<span className="ps-1 fw-bold">No</span>}
-                    className="ms-3"
-                  />
-                </div>
-              </Form.Group>
-            </Col>
-          </Row>
-
-          {hasWorkExp && (
-            <>
-              <Row className={deleteLoading || workSaveLoading ? "opacity-25 pe-0" : "bg-light py-4 mb-3 ps-3"}>
+          <Row className={deleteLoading || workSaveLoading ? "opacity-25 pe-0" : "bg-light py-4 mb-3 ps-3"}>
+            <Row className="mt-3">
+              <Col>
+                <Form.Group className="mb-3" controlId="source_id">
+                  <Form.Label>Do you have any work experience?</Form.Label>
+                  <div className="d-flex justify-content-start align-items-center mt-1">
+                    <Form.Check
+                      type="radio"
+                      name="hasExams"
+                      checked={hasWorkExp}
+                      onChange={() => setHasWorkExp(true)}
+                      label={<span className="ps-1 fw-bold">Yes</span>}
+                    />
+                    <Form.Check
+                      type="radio"
+                      name="hasExams"
+                      checked={!hasWorkExp}
+                      onChange={() => setHasWorkExp(false)}
+                      label={<span className="ps-1 fw-bold">No</span>}
+                      className="ms-3"
+                    />
+                  </div>
+                </Form.Group>
+              </Col>
+            </Row>
+            {hasWorkExp && (
+              <>
                 <WorkExpRow
                   workExperienceData={workExperienceFromApi}
                   handleWorkExperienceChange={handleWorkExperienceChange}
@@ -181,69 +175,37 @@ const WorkExpereince = withSwal((props: any) => {
                   removeWorkExperience={removeWorkExperience}
                   studentId={studentId}
                 />
+              </>
+            )}
 
-                <Button variant="primary" className="w-auto ms-2" type="submit" onClick={saveWorkData} disabled={workSaveLoading}>
-                  {workSaveLoading ? (
-                    <>
-                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                      {" Saving..."}
-                    </>
-                  ) : (
-                    "Save Work Experience Details"
-                  )}
-                </Button>
-              </Row>
-              {/* <Row>
-                <Button variant="primary" className="mt-4" type="submit" onClick={saveWorkData} disabled={workSaveLoading}>
-                  {workSaveLoading ? (
-                    <>
-                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                      {" Saving..."}
-                    </>
-                  ) : (
-                    "Save Work Experience Details"
-                  )}
-                </Button>
-              </Row> */}
-              <Row>
+            <Button variant="primary" className="w-auto ms-2" type="submit" onClick={saveWorkData} disabled={workSaveLoading}>
+              {workSaveLoading ? (
+                <>
+                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                  {" Saving..."}
+                </>
+              ) : (
+                "Save Work Experience Details"
+              )}
+            </Button>
+          </Row>
+          {hasWorkExp && (
+            <Row className="mt-4 bg-light py-4 mb-3 ps-3">
+              <Row className="mb-3">
                 <Col md={12}>
                   <Form.Label className="mt-3">Has Gap in Work?</Form.Label>
                 </Col>
 
                 <Col className="d-flex gap-2">
-                  <Form.Check
-                    type="radio"
-                    id="hasGapYes"
-                    label="Yes"
-                    // checked={hasGap === "yes"}
-                    checked={hasGap}
-                    // onChange={() => setHasGap("yes")}
-                    onChange={() => setHasGap(true)}
-                    name="hasGap"
-                  />
+                  <Form.Check type="radio" id="hasGapYes" label="Yes" checked={hasGap} onChange={() => setHasGap(true)} name="hasGap" />
 
-                  <Form.Check
-                    type="radio"
-                    id="hasGapNo"
-                    label="No"
-                    // checked={hasGap === "no"}
-                    checked={!hasGap}
-                    // onChange={() => setHasGap("no")}
-                    onChange={() => setHasGap(false)}
-                    name="hasGap"
-                  />
+                  <Form.Check type="radio" id="hasGapNo" label="No" checked={!hasGap} onChange={() => setHasGap(false)} name="hasGap" />
                 </Col>
               </Row>
-            </>
+              {hasGap && <GapRows gapData={gap} studentId={studentId} type="work" hasGap={hasGap} />}
+            </Row>
           )}
-          {/* {hasGap === "yes" && ( */}
-          {hasGap && (
-            <>
-              <Row className="mt-4 bg-light py-4 mb-3 ps-3">
-                <GapRows gapData={gap} studentId={studentId} type="work" hasGap={hasGap} />
-              </Row>
-            </>
-          )}
+
           <Row className="bg-light py-4 mb-3 ps-3">
             <EmploymentHistory studentId={studentId} />
           </Row>
