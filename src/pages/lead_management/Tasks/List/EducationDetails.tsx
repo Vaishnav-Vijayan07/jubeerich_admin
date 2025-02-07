@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Form, Button, Spinner } from "react-bootstrap";
+import { Row, Col, Form, Button, Spinner, Modal } from "react-bootstrap";
 import { withSwal } from "react-sweetalert2";
 import PrimaryEducationDetails from "./PrimaryEducationDetails";
 import GraduationInfo from "./GraduationInfo";
@@ -15,6 +15,8 @@ import GapRows from "./gapRow";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../utils/regrexValidation";
 import { allowedFileTypes } from "./data";
+import { useHistoryModal } from "../../../../hooks/useHistoryModal";
+import FieldHistoryTable from "../../../../components/FieldHistory";
 
 const initialPrimaryState = {
   id: null,
@@ -73,6 +75,7 @@ const initialGapState = {
 const EducationDetails = withSwal((props: any) => {
   const { swal, studentId } = props;
   // const [hasGraduation, setHasGraduation] = useState("no");
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const [hasGraduation, setHasGraduation] = useState(false);
   // const [hasGap, setHasGap] = useState("no");
   const [hasGap, setHasGap] = useState<boolean>(false);
@@ -117,6 +120,7 @@ const EducationDetails = withSwal((props: any) => {
       setInitialLoading(false);
     }
   };
+  
 
   useEffect(() => {
     if (studentId) {
@@ -233,16 +237,31 @@ const EducationDetails = withSwal((props: any) => {
         <SkeletonComponent />
       ) : (
         <>
+          <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+            <Modal.Header closeButton></Modal.Header>
+            <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+              <FieldHistoryTable apiUrl={"educationDetails"} studentId={studentId} />
+            </Modal.Body>
+          </Modal>
           {/* Primary Education Section */}
+          <Row className="mb-2">
+            <div className="d-flex justify-content-between">
+              <h5 className="mb-4 text-uppercase">
+                <i className="mdi mdi-school me-1"></i>Education Details
+              </h5>
+
+              <Button
+                className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
+                onClick={toggleHistoryModal}
+                style={{ height: "fit-content" }}
+              >
+                <i className="mdi mdi-history"></i> View History
+              </Button>
+            </div>
+          </Row>
           <Row className="bg-light py-4 mb-3 ps-3">
             <PrimaryEducationDetails title="Primary Education Details" details={primaryDetails} onChange={handlePrimaryChange} />
-            <Button
-              variant="primary"
-              className="mt-0 mx-2"
-              style={{ width: "fit-content" }}
-              onClick={handleSavePrimary}
-              disabled={primaryLoading}
-            >
+            <Button variant="primary" className="mt-0 mx-2" style={{ width: "fit-content" }} onClick={handleSavePrimary} disabled={primaryLoading}>
               {primaryLoading ? (
                 <>
                   <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
@@ -256,11 +275,7 @@ const EducationDetails = withSwal((props: any) => {
 
           <>
             <Row className="bg-light py-4 mb-3 ps-3">
-              <PrimaryEducationDetails
-                title="Secondary Education Details"
-                details={secondaryDetails}
-                onChange={handleSecondaryChange}
-              />
+              <PrimaryEducationDetails title="Secondary Education Details" details={secondaryDetails} onChange={handleSecondaryChange} />
 
               <Button variant="primary" className="ms-2 w-auto" onClick={handleSaveSecondary} disabled={secondaryLoading}>
                 {secondaryLoading ? (
@@ -327,12 +342,7 @@ const EducationDetails = withSwal((props: any) => {
           {hasGraduation && (
             <>
               <Row className="bg-light py-4 mb-3 ps-3">
-                <GraduationInfo
-                  title="Graduation Details"
-                  details={graduationDetails}
-                  student_id={studentId}
-                  hasGraduation={hasGraduation}
-                />
+                <GraduationInfo title="Graduation Details" details={graduationDetails} student_id={studentId} hasGraduation={hasGraduation} />
               </Row>
             </>
           )}
@@ -344,25 +354,9 @@ const EducationDetails = withSwal((props: any) => {
                 <Form.Label>Education Gap?</Form.Label>
                 <div>
                   {/* <Form.Check inline label="Yes" type="radio" name="hasGap" value="yes" checked={hasGap === "yes"} onChange={handleGapChange} /> */}
-                  <Form.Check
-                    inline
-                    label="Yes"
-                    type="radio"
-                    name="hasGap"
-                    value="true"
-                    checked={hasGap}
-                    onChange={handleGapChange}
-                  />
+                  <Form.Check inline label="Yes" type="radio" name="hasGap" value="true" checked={hasGap} onChange={handleGapChange} />
                   {/* <Form.Check inline label="No" type="radio" name="hasGap" value="no" checked={hasGap === "no"} onChange={handleGapChange} /> */}
-                  <Form.Check
-                    inline
-                    label="No"
-                    type="radio"
-                    name="hasGap"
-                    value="false"
-                    checked={!hasGap}
-                    onChange={handleGapChange}
-                  />
+                  <Form.Check inline label="No" type="radio" name="hasGap" value="false" checked={!hasGap} onChange={handleGapChange} />
                 </div>
               </Form.Group>
             </Col>

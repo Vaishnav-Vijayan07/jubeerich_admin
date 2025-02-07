@@ -84,6 +84,23 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
       updatedGraduationDetails.splice(index, 1);
       setGraduationDetails(updatedGraduationDetails);
     } else {
+      setGraduationDetails([{
+        qualification: "",
+        university_name: "",
+        college_name: "",
+        start_date: "",
+        end_date: "",
+        percentage: "",
+        conversion_formula: "",
+        certificate: null,
+        admit_card: null,
+        registration_certificate: null,
+        backlog_certificate: null,
+        grading_scale_info: null,
+        transcript: null,
+        individual_marksheet: null,
+        errors: {},
+      },]);
       removeFromApi(id, "graduation",student_id);
     }
   };

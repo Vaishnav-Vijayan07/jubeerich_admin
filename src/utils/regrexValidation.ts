@@ -37,7 +37,7 @@ export const regexPatterns: Record<string, RegExp> = {
   // Graduation Details
   // university_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   // college_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
-  percentage: /^([0-9]{1,2}(\.\d{1,2})?|99(\.0{1,2})?)$/,
+  percentage: /^([0-9]{1,2}(\.\d{1,2})?|100(\.0{1,2})?)$/,
 
   // Fund Plan
   // sponsor_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,

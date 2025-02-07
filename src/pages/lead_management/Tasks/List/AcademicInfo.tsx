@@ -15,6 +15,7 @@ import { regrexValidation } from "../../../../utils/regrexValidation";
 import { allowedFileTypes } from "./data";
 import FieldHistoryTable from "../../../../components/FieldHistory";
 import { useHistoryModal } from "../../../../hooks/useHistoryModal";
+import { showConfirmation } from "../../../../utils/showConfirmation";
 
 const initialStateAcademic = {
   qualification: "",
@@ -42,7 +43,7 @@ const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
 
   const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
-  const {historyModal,toggleHistoryModal} = useHistoryModal();
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const [loading, setLoading] = useState(false);
   const [hasExams, setHasExams] = useState(false);
 
@@ -59,7 +60,6 @@ const AcademicInfo = withSwal((props: any) => {
 
       const examData = examResponse.data?.data;
 
-      console.log(examData);
 
       // Use helper functions to check the data and set state
       setExamForm(examData.length > 0 ? examData : [initialStateExam]);
@@ -120,10 +120,19 @@ const AcademicInfo = withSwal((props: any) => {
     });
   };
 
-  const removeFormField = (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number, itemId: number | string, type: string) => {
+  const removeFormField = async (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number, itemId: number | string, type: string) => {
     if (itemId === 0) {
       setter((prevData) => prevData.filter((_, i) => i !== index));
     } else {
+      const result = await showConfirmation("Are you sure you want to remove this item?");
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      if(examForm.length > 1) {
+        setExamForm([initialStateExam])
+      }
+
       removeFromApi(itemId, type, studentId);
     }
   };
