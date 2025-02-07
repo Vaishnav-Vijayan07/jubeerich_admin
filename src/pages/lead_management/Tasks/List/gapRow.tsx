@@ -8,10 +8,14 @@ import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
 import validateFields from "../../../../helpers/validateHelper";
 import useSaveGapData from "../../../../hooks/useSaveGapData";
 import { allowedFileTypes } from "./data";
+import { showConfirmation } from "../../../../utils/showConfirmation";
+import { useDispatch } from "react-redux";
+import { refreshData } from "../../../../redux/countryReducer";
+import axios from "axios";
 
 const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
   const [gapDetails, setGapDetails] = useState(gapData);
-
+  const dispatch = useDispatch();
   const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
   const { saveLoading: gapSaveLoading, saveGapData } = useSaveGapData(studentId);
 
@@ -65,7 +69,30 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
       return;
     }
 
-    saveGapData(gapDetails, type, hasGap);
+    await saveGapData(gapDetails, type, hasGap);
+    saveCheck();
+  };
+
+  const decisionWiseSave = async () => {
+    console.log(hasGap);
+
+    if (hasGap) {
+      await saveGap();
+    } else {
+      const result = await showConfirmation("Do you want to proceed?");
+      if (!result.isConfirmed) return;
+      saveCheck();
+    }
+  };
+
+  const saveCheck = async () => {
+    try {
+      await axios.patch(`update_info_checks/${studentId}`, { has_work_gap: hasGap });
+      dispatch(refreshData());
+    } catch (error) {
+      console.log(error);
+      showErrorAlert("Something went wrong");
+    }
   };
 
   const renderGapRows = (gap: any, index: number) => (
@@ -155,26 +182,26 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
 
   return (
     <>
-      <Row>
-        <h5 className="mb-4 text-uppercase">
-          <i className="mdi mdi-account-circle me-1"></i>Experience Gap
-        </h5>
-        {gapDetails?.map((gap: any, index: number) => renderGapRows(gap, index))}
-        <Row>
+      {hasGap && (
+        <>
+          <h5 className="mb-4 text-uppercase">
+            <i className="mdi mdi-account-circle me-1"></i>Experience Gap
+          </h5>
+          {gapDetails?.map((gap: any, index: number) => renderGapRows(gap, index))}
           <ActionButton onClick={addMoreGap} label="Add More" iconClass="mdi mdi-plus" />
-        </Row>
-        <Row>
-          <Button variant="primary" className="mt-0 ms-2 w-auto" type="submit" onClick={saveGap} disabled={deleteLoading || gapSaveLoading}>
-            {deleteLoading || gapSaveLoading ? ( // Corrected this line
-              <>
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                {" Saving..."}
-              </>
-            ) : (
-              "Save Gap Details"
-            )}
-          </Button>
-        </Row>
+        </>
+      )}
+      <Row>
+        <Button variant="primary" className="mt-0 ms-2 w-auto" type="submit" onClick={decisionWiseSave} disabled={deleteLoading || gapSaveLoading}>
+          {deleteLoading || gapSaveLoading ? ( // Corrected this line
+            <>
+              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              {" Saving..."}
+            </>
+          ) : (
+            "Save Gap Details"
+          )}
+        </Button>
       </Row>
     </>
   );

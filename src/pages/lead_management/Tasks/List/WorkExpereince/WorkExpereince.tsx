@@ -133,7 +133,6 @@ const WorkExpereince = withSwal((props: any) => {
       return;
     }
     const data = await saveWorkDetails(workExperienceFromApi, hasWorkExp);
-    console.log(data)
     saveCheck();
   };
 
@@ -230,7 +229,7 @@ const WorkExpereince = withSwal((props: any) => {
                   <Form.Check type="radio" id="hasGapNo" label="No" checked={!hasGap} onChange={() => setHasGap(false)} name="hasGap" />
                 </Col>
               </Row>
-              {hasGap && <GapRows gapData={gap} studentId={studentId} type="work" hasGap={hasGap} />}
+              <GapRows gapData={gap} studentId={studentId} type="work" hasGap={hasGap} hasWorkExp={hasWorkExp} />
             </Row>
           )}
 
