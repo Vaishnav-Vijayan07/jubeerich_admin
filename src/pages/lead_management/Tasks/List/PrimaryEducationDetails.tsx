@@ -109,6 +109,7 @@ const PrimaryEducationDetails: React.FC<PrimaryEducationDetailsProps> = ({
               placeholder="Enter board name"
               value={details?.board_name}
               onChange={handleDateChange}
+              maxLength={2}
             />
             {details?.errors?.board_name && (
               <div className="text-danger">{details?.errors?.board_name}</div>

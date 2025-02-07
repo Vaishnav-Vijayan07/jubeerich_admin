@@ -37,7 +37,8 @@ export const regexPatterns: Record<string, RegExp> = {
   // Graduation Details
   // university_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
   // college_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
-  percentage: /^([0-9]{1,2}(\.\d{1,2})?|100(\.0{1,2})?)$/,
+  // percentage: /^([0-9]{1,2}(\.\d{1,2})?|99(\.0{1,2})?)$/,
+  percentage: /^(?:([0-9]{1,2}(\.\d{1,2})?|99(\.0{1,2})?)|null|)$/,
 
   // Fund Plan
   // sponsor_name: /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]*$/,
@@ -103,7 +104,7 @@ export const regexPatterns: Record<string, RegExp> = {
   // Course Type
   // type_name: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
   // description: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
-  
+
   // Streams
   // stream_name: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,
   // stream_description: /^(?!.* {3})[a-zA-ZÀ-ÖØ-öø-ÿ0-9' -]*$/,

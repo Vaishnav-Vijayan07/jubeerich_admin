@@ -465,23 +465,6 @@ const BasicInputElements = withSwal((props: any) => {
     document.body.removeChild(link);
   };
 
-  // const downloadRjectedData = (file: any) => {
-  //   const filePath = file;
-
-  //   console.log("filePath ===>", filePath);
-
-  //   const link = document.createElement("a");
-  //   link.download = "rejected.xlsx";
-  //   // link.href = process.env.REACT_APP_API_URL + filePath;
-  //   link.href = `${process.env.REACT_APP_API_URL}${filePath}`;
-
-  //   console.log("process.env.REACT_APP_API_URL ==>", process.env.REACT_APP_API_URL);
-
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // };
-
   const downloadRjectedData = (file: any) => {
     const filePath = file;
     console.log("filePath ===>", filePath);
@@ -662,38 +645,6 @@ const BasicInputElements = withSwal((props: any) => {
       }
     }
   };
-
-  // const handleAutoAssign = async () => {
-  //   const result = await swal.fire({
-  //     title: "Confirm Auto Assignment!",
-  //     text: "The selected leads will be automatically assigned to the respective CREs.",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes, Assign",
-  //   });
-
-  //   if (result.isConfirmed) {
-  //     if (selectedValues.length > 0) {
-  //       try {
-  //         const { data } = await axios.post("/auto_assign", {
-  //           leads_ids: selectedValues,
-  //         });
-  //         if (data.status) {
-  //           if (userRole == cre_tl_id) {
-  //             dispatch(getLeadsTL(currentPage, currentLimit));
-  //           } else {
-  //             dispatch(getLead(currentPage, currentLimit));
-  //           }
-  //           showSuccessAlert("Assigned Successfully.");
-  //         }
-  //       } catch (error) {
-  //         showErrorAlert(error);
-  //       }
-  //     }
-  //   }
-  // };
 
   const handleAutoAssign = async () => {
     const result = await swal.fire({

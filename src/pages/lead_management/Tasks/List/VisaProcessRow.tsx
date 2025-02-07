@@ -23,6 +23,7 @@ const VisaProcessRow = ({
   removeVisaForm,
   handleFileChange,
   studentId,
+  decisions
 }: any) => {
   const [visaDeclineData, setVisaDeclineData] = useState<any[]>([]);
   const [visaApproveData, setVisaApproveData] = useState<any[]>([]);
@@ -35,6 +36,12 @@ const VisaProcessRow = ({
   const [hasTravelHistoy, setHasTravelHistoy] = useState<boolean>(false)
 
   useEffect(() => {
+    if(decisions){
+      setIsVisaDeclined(decisions?.is_visa_declined);
+      setIsVisaApproved(decisions?.is_visa_approved);
+      setHasTravelHistoy(decisions?.has_travel_history);
+    }
+
     if (visaDecline.length) {
       setVisaDeclineData(visaDecline);
     } else {
@@ -52,7 +59,7 @@ const VisaProcessRow = ({
     } else {
       addMoreVisaForm(travel_history);
     }
-  }, [visaDecline, visaApprove, travelHistory]);
+  }, [visaDecline, visaApprove, travelHistory, decisions]);
 
   const toggleHistoryModal = (url?: string) => {
     if (url) setUrlString(url);
