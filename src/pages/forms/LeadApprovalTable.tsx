@@ -9,6 +9,7 @@ import { showErrorAlert, showSuccessAlert } from "../../constants";
 import { withSwal } from "react-sweetalert2";
 import { approvalTypes } from "./data";
 import moment from "moment";
+import SearchableSelectEditor from "./SearchableSelectEditor";
 
 const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchLead, approvalType, heading }: any) => {  
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
@@ -69,7 +70,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: "agSelectCellEditor",
+          cellEditor: SearchableSelectEditor,
           cellEditorParams: {
             values: formattedData?.sources,
           },
@@ -83,7 +84,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: "agSelectCellEditor",
+          cellEditor: SearchableSelectEditor,
           cellEditorParams: {
             values: formattedData?.channels,
           },
@@ -140,7 +141,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: "agSelectCellEditor",
+          cellEditor: SearchableSelectEditor,
           cellEditorParams: {
             values: formattedData?.officeTypes,
           },
@@ -154,7 +155,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: "agSelectCellEditor",
+          cellEditor: SearchableSelectEditor,
           cellEditorParams: {
             values: [...formattedData?.regions, ...formattedData?.franchises],
           },
@@ -168,7 +169,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: "agSelectCellEditor",
+          cellEditor: SearchableSelectEditor,
           cellEditorParams: {
             values: formattedData?.countries,
           },
