@@ -217,6 +217,13 @@ const BasicInputElements = withSwal((props: any) => {
         isTruncate: true,
       },
       {
+        Header: "Phone",
+        accessor: "phone",
+        sort: true,
+        minWidth: 110,
+        isTruncate: true,
+      },
+      {
         Header: "City",
         accessor: "city",
         sort: true,
@@ -236,6 +243,13 @@ const BasicInputElements = withSwal((props: any) => {
             ))}
           </ul>
         ),
+      },
+      {
+        Header: "Status",
+        accessor: "lead_status",
+        sort: false,
+        isTruncate: true,
+        Cell: ({ row }: any) => <><span>{formatString(row?.original?.lead_status)}</span></>,
       },
       {
         Header: "Office",
@@ -268,7 +282,7 @@ const BasicInputElements = withSwal((props: any) => {
         Header: "Department",
         accessor: "stage",
         sort: false,
-        minWidth: 50,
+        minWidth: 30,
         isTruncate: true,
       },
       ...(user?.role == cre_tl_id
@@ -384,13 +398,6 @@ const BasicInputElements = withSwal((props: any) => {
             },
           ]
         : []),
-      {
-        Header: "Status",
-        accessor: "lead_status",
-        sort: false,
-        isTruncate: true,
-        Cell: ({ row }: any) => <><span>{formatString(row?.original?.lead_status)}</span></>,
-      },
       // {
       //   Header: "Status",
       //   accessor: "status",
