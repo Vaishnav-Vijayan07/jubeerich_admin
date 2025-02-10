@@ -8,7 +8,6 @@ import { refreshData } from "../redux/countryReducer";
 
 const useSaveWorkInfo = (studentId: number | string) => {
   const [saveLoading, setSaveLoading] = useState(false);
-  const dispatch = useDispatch();
 
   const saveWorkDetails = useCallback(
     async (workDetails: any[], has_work_exp: boolean) => {
@@ -96,8 +95,8 @@ const useSaveWorkInfo = (studentId: number | string) => {
             },
           });
           console.log("res: =>", res);
-          dispatch(refreshData());
           showSuccessAlert(res.data.message);
+          return true
         } catch (err) {
           console.log(err);
           showErrorAlert(err);

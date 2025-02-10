@@ -6,7 +6,6 @@ import { refreshData } from "../redux/countryReducer";
 import swal from "sweetalert2";
 
 const useSaveGapData = (studentId: any) => {
-  const dispatch = useDispatch();
   const [saveLoading, setSaveLoading] = useState(false);
 
   const saveGapData = useCallback(
@@ -65,7 +64,6 @@ const useSaveGapData = (studentId: any) => {
           });
           if (response.data.status) {
             showSuccessAlert("Gap data saved successfully");
-            dispatch(refreshData());
           }
         } catch (error) {
           console.error("Error saving gap data:", error);
