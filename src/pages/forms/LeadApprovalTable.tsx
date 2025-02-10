@@ -33,7 +33,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
       };
     } else {
       return {
-        teamMembers: options?.map((item: any) => ({ id: item.id.toString(), name: item.username.toString() })) || [],
+        teamMembers: options?.map((item: any) => ({ id: item.id.toString(), name: item.name.toString() })) || [],
       };
     }
   }, [options]);

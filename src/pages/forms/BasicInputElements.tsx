@@ -35,6 +35,7 @@ import CustomSearchBox from "../../components/CustomSearchBox";
 import LeadApprovalTable from "./LeadApprovalTable";
 import SortBox from "../../components/SortBox";
 import { formatString } from "../../utils/formatData";
+import UserSelectionModal from "./UserSelectionModal";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -98,6 +99,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [assignedApprovalData, setAssignedApprovalData] = useState<any>(null);
   const [approvalType, setApprovalType] = useState<string>("");
   const [creList, setCreList] = useState<any>(null);
+  const [openUserSelectionModal, setOpenUserSelectionModal] = useState<boolean>(false);
 
   const getSlugOptions = async () => {
     try {
@@ -646,7 +648,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  const handleAutoAssign = async () => {
+  const handleAutoAssign = async (cresList: any) => {
     const result = await swal.fire({
       title: "Confirm Auto Assignment!",
       text: "The selected leads will be automatically assigned to the respective CREs.",
@@ -662,6 +664,7 @@ const BasicInputElements = withSwal((props: any) => {
         try {
           const { data } = await axios.post("/validate_auto_assign", {
             leads_ids: selectedValues,
+            users_list: cresList,
           });
           if (data.status) {
             setCreList(data?.creList);
@@ -675,6 +678,7 @@ const BasicInputElements = withSwal((props: any) => {
       }
     }
   };
+
   const handleAutoAssignBranchCounsellors = async () => {
     const result = await swal.fire({
       title: "Confirm Auto Assignment!",
@@ -742,8 +746,12 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
+  const selectedUsersList = (users: any) => {
+    handleAutoAssign(users);
+  }
+
   useEffect(() => {
-    if (openApproveModal) {
+    if (openApproveModal || openUserSelectionModal) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -751,7 +759,7 @@ const BasicInputElements = withSwal((props: any) => {
     return () => {
       document.body.style.overflow = "auto"; // Clean up on component unmount
     };
-  }, [openApproveModal]);
+  }, [openApproveModal, openUserSelectionModal]);
 
   return (
     <>
@@ -859,7 +867,8 @@ const BasicInputElements = withSwal((props: any) => {
                       <Button
                         className="btn-sm btn-blue waves-effect waves-light float-end"
                         disabled={selectedValues?.length > 0 ? false : true}
-                        onClick={handleAutoAssign}
+                        // onClick={handleAutoAssign}
+                        onClick={() => setOpenUserSelectionModal(true)}
                       >
                         <i className="mdi mdi-plus-circle"></i> Auto Assign
                       </Button>
@@ -1000,6 +1009,16 @@ const BasicInputElements = withSwal((props: any) => {
                   refetchLead={refetchLead}
                   approvalType={approvalTypes.assign_cre}
                   heading={'Auto Assign Management'}
+                />
+              )}
+
+              {openUserSelectionModal && (
+                <UserSelectionModal
+                  onClose={() => setOpenUserSelectionModal(false)}
+                  open={openUserSelectionModal}
+                  heading={"Select CRE's to Auto Assign"}
+                  usersList={cres}
+                  selectedUsersList={selectedUsersList}
                 />
               )}
             </Card.Body>

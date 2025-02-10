@@ -62,11 +62,12 @@ export const assignToApplicationMember = (application_ids: any, user_id: any, ty
   },
 });
 
-export const autoAssignToApplicationMember = (application_ids: any, type: string): KYCActionType => ({
+export const autoAssignToApplicationMember = (application_ids: any, type: string, users_list?: any): KYCActionType => ({
   type: KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER,
   payload: {
     application_ids,
     type,
+    users_list
   },
 });
 
