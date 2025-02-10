@@ -1,5 +1,5 @@
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, Slide } from '@mui/material';
-import React, { useState } from 'react'
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, Slide } from '@mui/material';
+import React, { useEffect, useState } from 'react'
 
 const UserSelectionModal = (props: any) => {
     const { onClose, open, heading, usersList, selectedUsersList } = props;
@@ -23,6 +23,11 @@ const UserSelectionModal = (props: any) => {
         );
     };
 
+    useEffect(() => {
+        if (open) {
+            setSelectedOptions(usersList);
+        }
+    }, [open, usersList]);
 
     return (
         <Dialog
@@ -33,20 +38,21 @@ const UserSelectionModal = (props: any) => {
         >
             <DialogTitle>{heading}</DialogTitle>
             <DialogContent dividers>
-                <FormGroup>
+                <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                     {usersList?.map((option: any) => (
                         <FormControlLabel
                             key={option.value}
                             control={
                                 <Checkbox
-                                    checked={selectedOptions.includes(option)}
+                                    checked={selectedOptions.some((selected: any) => selected.value == option.value)}
                                     onChange={() => handleCheckboxChange(option)}
                                 />
                             }
                             label={option.label}
+                            sx={{ m: 1 }}
                         />
                     ))}
-                </FormGroup>
+                </Box>
             </DialogContent>
             <DialogActions>
                 <Button autoFocus onClick={handleCancel}>
@@ -55,7 +61,6 @@ const UserSelectionModal = (props: any) => {
                 <Button onClick={handleOk}>Submit</Button>
             </DialogActions>
         </Dialog>
-
     );
 }
 

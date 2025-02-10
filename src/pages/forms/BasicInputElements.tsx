@@ -419,8 +419,6 @@ const BasicInputElements = withSwal((props: any) => {
         sort: false,
         Cell: ({ row }: any) => {
           const { isDeleteEnabled } = row.original;
-          console.log(isDeleteEnabled);
-
           return (
             <div className="d-flex gap-2">
               {/* Edit Icon */}
@@ -476,8 +474,6 @@ const BasicInputElements = withSwal((props: any) => {
 
   const downloadRjectedData = (file: any) => {
     const filePath = file;
-    console.log("filePath ===>", filePath);
-
     const apiUrl = process.env.REACT_APP_API_URL;
 
     // Ensure exactly one '/' between base URL and file path
@@ -487,8 +483,6 @@ const BasicInputElements = withSwal((props: any) => {
         : apiUrl?.endsWith("/") || filePath.startsWith("/")
         ? `${apiUrl}${filePath}`
         : `${apiUrl}/${filePath}`;
-
-    console.log("Generated URL:", url);
 
     const link = document.createElement("a");
     link.download = "rejected.xlsx";
@@ -501,8 +495,6 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleOnFileUpload = (files: any) => {
     setSelectedFile(files);
-    console.log(".files =>", files);
-
     // setProgress(0)
   };
 
@@ -526,8 +518,6 @@ const BasicInputElements = withSwal((props: any) => {
     setIsLoading(true);
 
     try {
-      console.log("started");
-
       const { data } = await axios.post(`/validate_excel_import`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
