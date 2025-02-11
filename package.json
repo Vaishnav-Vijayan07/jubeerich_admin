@@ -56,6 +56,8 @@
     "react-countdown": "^2.3.2",
     "react-countup": "^5.2.0",
     "react-datepicker": "^4.1.1",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-draft-wysiwyg": "^1.14.7",
     "react-dropzone": "^11.3.4",

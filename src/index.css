@@ -1055,3 +1055,41 @@ select::-ms-expand {
 .color-bg {
   background-color: #e0def8;
 }
+
+.resizable-table {
+  overflow: auto;
+}
+
+.th-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.th-content {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resizer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 5px;
+  background: rgba(0, 0, 0, 0.1);
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+}
+
+.resizer.isResizing {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.sort-indicator {
+  margin-left: 4px;
+  font-size: 8px;
+}
