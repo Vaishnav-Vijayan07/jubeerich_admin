@@ -408,7 +408,7 @@ const settingsRoutes = {
           path: "/settings/master/channel",
           name: "Channel",
           // element: <Channel />,
-          element: <PrivateRoute roles={["Monitor"]} component={Channel} />,
+          element: <PrivateRoute roles={["Monitor", "Add Lead"]} component={Channel} />,
           route: PrivateRoute,
         },
         {

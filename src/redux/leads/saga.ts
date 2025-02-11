@@ -285,7 +285,6 @@ function* addLeads({
     navigate(`/leads/manage/${response?.data?.data?.userPrimaryInfo?.id}`);
   } catch (error: any) {
     console.log("err", error);
-
     yield put(LeadsApiResponseError(LeadsActionTypes.ADD_LEADS, error));
   }
 }

@@ -242,6 +242,7 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
           };
         }
         case LeadsActionTypes.ADD_LEADS: {
+          console.log(action.payload.error);
           showErrorAlert(action.payload.error);
           return {
             ...state,
