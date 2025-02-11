@@ -74,12 +74,9 @@ const ExistLeadsTable = withSwal((props: any) => {
 
     const isDataPresent = state && state.length > 0;
 
-    //State for handling update function
     const [isUpdate, setIsUpdate] = useState(false);
     const [selectedValues, setSelectedValues] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState(initialState);
-    const [uploadModal, setUploadModal] = useState<boolean>(false);
     const [modal, setModal] = useState<boolean>(false);
     const [filteredItems, setFilteredItems] = useState<any[]>([]); // Filtered data
     const [handleUpdateData, setHandleUpdateData] = useState<any>({});
@@ -371,7 +368,7 @@ const ExistLeadsTable = withSwal((props: any) => {
             const { data } = await axios.delete(`delete_existing_lead/${id}`);
 
             if(data?.status){
-                showSuccessAlert("Existing Lead Seleted Successfully");
+                showSuccessAlert("Existing Lead Deleted Successfully");
                 refetchExistLeads()
                 if (isUpdate) {
                     setFormData(initialState);

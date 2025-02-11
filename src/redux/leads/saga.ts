@@ -263,26 +263,15 @@ function* addLeads({
       exam_documents
     );
     const data = response.data.message;
-
-    yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));
-
-    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-
-    if (userInfo) {
-      const { role } = JSON.parse(userInfo);
-
-      // if (role == cre_tl_id) {
-      //   console.log("getLeadsTL called");
-
-      //   yield put(getLeadsTL());
-      // } else if (role == counsellor_tl_id && isAssignedLeads) {
-      //   yield put(getLeadAssignedByCounsellorTL());
-      // }
-      // else {
-      //   yield put(getLead(1,10));
-      // }
+    
+    if(response?.data?.status) {
+      yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));
+      navigate(`/leads/manage/${response?.data?.data?.userPrimaryInfo?.id}`);
+    } else {
+      let existleadId = response?.data?.existingLeadId;
+      let error = response?.data?.message
+      yield put(LeadsApiResponseError(LeadsActionTypes.ADD_LEADS, error, existleadId));
     }
-    navigate(`/leads/manage/${response?.data?.data?.userPrimaryInfo?.id}`);
   } catch (error: any) {
     console.log("err", error);
     yield put(LeadsApiResponseError(LeadsActionTypes.ADD_LEADS, error));
