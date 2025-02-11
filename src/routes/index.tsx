@@ -136,7 +136,7 @@ const dashboardRoutes: RoutesProps = {
       // element: <Dashboard4 />,
       element: (
         <PrivateRoute
-          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications", "Allocate Applications"]}
+          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications", "Allocate Applications", "Data Entry"]}
           component={Dashboard4}
         />
       ),
@@ -149,13 +149,19 @@ const crmAppRoutes = {
   path: "/apps/crm",
   name: "CRM",
   route: PrivateRoute,
-  roles: ["Add Lead", "View Task", "KYC Approval"],
+  roles: ["Add Lead", "View Task", "KYC Approval","Data Entry"],
   icon: "users",
   children: [
     {
       path: "/apps/crm/leads",
       name: "Leads",
       element: <CRMLeads />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/leads/exist_leads",
+      name: "Leads",
+      element: <ExistLeads />,
       route: PrivateRoute,
     },
     {
@@ -247,22 +253,6 @@ const crmAppRoutes = {
   ],
 };
 
-const existLeadsRoutes = {
-  path: "/",
-  name: "exist_leads",
-  route: PrivateRoute,
-  roles: ["Add Lead", "View Task"],
-  icon: "file-minus",
-  children: [
-    {
-      path: "/exist_leads",
-      name: "Leads",
-      element: <ExistLeads />,
-      route: PrivateRoute,
-    },
-  ],
-};
-
 const reportsRoutes = {
   path: "/",
   name: "CRM",
@@ -283,7 +273,7 @@ const leadRoutes = {
   path: "/apps/lead_management",
   name: "Lead",
   route: PrivateRoute,
-  roles: ["Add Lead", "View Task", "Monitor"],
+  roles: ["Add Lead", "View Task", "Monitor", "Data Entry"],
   icon: "users",
   children: [
     {
@@ -304,7 +294,7 @@ const leadRoutes = {
       path: "leads/manage/:id",
       name: "Leads",
       // element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetails} />,
-      element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetailsMaterial} />,
+      element: <PrivateRoute roles={["Add Lead", "Manage Applications", "Data Entry"]} component={LeadDetailsMaterial} />,
       route: PrivateRoute,
     },
     {
@@ -753,7 +743,7 @@ const flattenRoutes = (routes: RoutesProps[]) => {
 };
 
 // All routes
-const authProtectedRoutes = [dashboardRoutes, ...appRoutes, settingsRoutes, UserRoutes, leadRoutes, reportsRoutes, existLeadsRoutes];
+const authProtectedRoutes = [dashboardRoutes, ...appRoutes, settingsRoutes, UserRoutes, leadRoutes, reportsRoutes];
 const publicRoutes = [...authRoutes, ...otherPublicRoutes];
 
 const authProtectedFlattenRoutes = flattenRoutes([...authProtectedRoutes]);
