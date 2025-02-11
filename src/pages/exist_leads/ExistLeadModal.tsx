@@ -7,25 +7,13 @@ import { withSwal } from "react-sweetalert2";
 import { AppDispatch } from "../../redux/store";
 import {
     AUTH_SESSION_KEY,
-    branch_counsellor_id,
-    corporate_id_from_office,
     counsellor_id,
-    counsellor_tl_id,
     country_manager_id,
-    cre_id,
-    cre_tl_id,
     customStyles,
-    franchise_counsellor_id,
-    franchise_id_from_office,
-    franchise_manager_id,
-    it_team_id,
-    regional_manager_id,
     showErrorAlert,
     showSuccessAlert,
 } from "../../constants";
 import moment from "moment";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { APICore } from "../../helpers/api/apiCore";
@@ -37,45 +25,25 @@ const ExistLeadModal = withSwal((props: any) => {
         swal,
         country,
         source,
-        leadTypes,
         user,
-        office,
-        channels,
-        error,
         loading,
-        regionData,
-        franchisees,
-        region,
-        flags,
         toggle,
         modal,
         handleUpdateData,
         clearLeadModal,
-        setModal,
-        isAssignedLeads = false,
-        initialLoading,
         clearError,
         counsellors,
         refetchLeads
     } = props;
+
     const api = new APICore();
-    const loggedInUser = api.getLoggedInUser();
-
-    console.log('counsellors', counsellors);
-
-
     const [selectedCountry, setSelectedCountry] = useState<OptionType[]>();
     const [selectedSource, setSelectedSource] = useState<any>(null);
-    const [selectedCategory, setSelectedCategory] = useState<any>(null);
-    const [selectedOffice, setSelectedOffice] = useState<any>(null);
-    const [selectedFlag, setSelectedFlag] = useState<any>(null);
     const [selectedCounsellor, setSelectedCounsellor] = useState<any>(null);
     const [isUpdate, setIsUpdate] = useState(false);
     const [validationErrors, setValidationErrors] = useState(initialValidationState);
     const [scroll, setScroll] = useState<boolean>(false);
     const [formData, setFormData] = useState(initialState);
-    const navigate = useNavigate();
-    const dispatch = useDispatch<AppDispatch>();
     const [counsellorsData, setCounsellorsData] = useState<any>([]);
 
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -98,6 +66,7 @@ const ExistLeadModal = withSwal((props: any) => {
             .required("Phone is required"),
         source_id: yup.string().required("Source is required").nullable(),
         lead_received_date: yup.date().nullable(),
+        counsellor_id: yup.string().required("Counsellor is required")
     });
 
     useEffect(() => {
@@ -157,10 +126,10 @@ const ExistLeadModal = withSwal((props: any) => {
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+    
         try {
             await validationSchema.validate(formData, { abortEarly: false });
-
+    
             const confirmation = await swal.fire({
                 title: "Confirm Action",
                 text: `Do you want to ${isUpdate ? "update" : "create"} this lead?`,
@@ -180,57 +149,45 @@ const ExistLeadModal = withSwal((props: any) => {
                 },
                 width: "26em",
                 padding: "2em",
-            })
-
-            if (confirmation.isConfirmed) {
-                if (user) {
-                    const { user_id } = user;
-
-                    let payload = {
-                        full_name: formData.full_name,
-                        email: formData.email,
-                        phone: formData.phone,
-                        source_id: formData.source_id,
-                        city: formData.city,
-                        preferred_country: formData.preferred_country,
-                        counsiler_id: formData.counsellor_id,
-                        updated_by: user_id,
-                        remarks: formData.remarks,
-                        lead_received_date: formData.lead_received_date,
-                        ielts: formData.ielts,
-                    }
-
-                    if (isUpdate) {
-                        const { data } = await axios.put(`/update_existing_lead/${formData.id}`, payload);
-                        if(data?.status) {
-                            showSuccessAlert("Lead successfully created");
-                            refetchLeads();
-                            toggle()
-                            clearLeadModal()
-                        }
-                    } else {
-                        const { data } = await axios.post(`/create_existing_lead`, payload);
-                        if(data?.status) {
-                            showSuccessAlert("Lead successfully updated");
-                            refetchLeads();
-                            toggle()
-                            clearLeadModal()
-                        }
-                    }
-                }
+            });
+    
+            if (!confirmation.isConfirmed || !user) return;
+    
+            const payload = {
+                full_name: formData.full_name,
+                email: formData.email,
+                phone: formData.phone,
+                source_id: formData.source_id,
+                city: formData.city,
+                preferred_country: formData.preferred_country,
+                counsiler_id: formData.counsellor_id,
+                updated_by: user.user_id,
+                remarks: formData.remarks,
+                lead_received_date: formData.lead_received_date,
+                ielts: formData.ielts,
+            };
+    
+            const endpoint = isUpdate ? `/update_existing_lead/${formData.id}` : `/create_existing_lead`;
+            const method = isUpdate ? axios.put : axios.post;
+            const { data } = await method(endpoint, payload);
+    
+            if (data?.status) {
+                showSuccessAlert(`Lead successfully ${isUpdate ? "updated" : "created"}`);
+                refetchLeads();
+                toggle();
+                setFormData(initialState)
             }
-        } catch (validationError) {
-            if (validationError instanceof yup.ValidationError) {
-                const errors: any = {};
-                validationError.inner.forEach((error) => {
-                    if (error.path) {
-                        errors[error.path] = error.message;
-                    }
-                });
+        } catch (error) {
+            if (error instanceof yup.ValidationError) {
+                const errors = Object.fromEntries(error.inner.map(({ path, message }) => [path, message]));
                 setValidationErrors(errors);
+            } else {
+                console.log('ERRR',error);
+                showErrorAlert(error);
             }
         }
     };
+    
 
     const handleInputChange = (e: any) => {
         const { name, value, checked } = e.target;
@@ -269,9 +226,6 @@ const ExistLeadModal = withSwal((props: any) => {
                 setSelectedCounsellor(null);
                 fetchCounselorsByCountry(selected?.value)
                 break;
-            case "flag":
-                setSelectedFlag(selected);
-                break;
             case "counsellor_id":
                 setSelectedCounsellor(selected);
                 break;
@@ -281,6 +235,11 @@ const ExistLeadModal = withSwal((props: any) => {
     };
 
     const handleCancelUpdate = () => {
+        setSelectedCountry([]);
+        setSelectedSource(null);
+        setSelectedCounsellor(null);
+        setValidationErrors(initialValidationState);
+        setFormData(initialState);
         if (isUpdate) {
             setIsUpdate(false);
             handleResetValues();
@@ -291,8 +250,6 @@ const ExistLeadModal = withSwal((props: any) => {
         setValidationErrors(initialValidationState);
         setFormData(initialState);
         setSelectedCountry([]);
-        setSelectedCategory(null);
-        setSelectedFlag(null);
         setSelectedSource(null);
         setSelectedCounsellor(null);
     };
