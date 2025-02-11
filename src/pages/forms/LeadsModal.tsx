@@ -28,7 +28,7 @@ import { initialState, initialValidationState, OptionType } from "./data";
 import moment from "moment";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { APICore } from "../../helpers/api/apiCore";
 
@@ -875,19 +875,19 @@ const LeadsModal = withSwal((props: any) => {
               )}
 
             </Row>
+            {existLeadId && error &&
+              <Row >
+                <Col md={12}>
+                  <h5>
+                    Lead with same email or phone already exist, check
+                    <Link to={`/leads/manage/${existLeadId}`}> <span className="fs-4">Here</span></Link>
+                  </h5>
+                </Col>
+              </Row>
+            }
           </Modal.Body>
 
           <Modal.Footer>
-            {existLeadId && <Button
-              type="button"
-              variant="info"
-              id="button-addon2"
-              className="mt-1"
-              onClick={() => navigate(`/leads/manage/${existLeadId}`)}
-            >
-              Navigate to Exist Lead
-            </Button>}
-
             <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
               Clear
             </Button>
