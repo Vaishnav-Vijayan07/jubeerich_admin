@@ -875,12 +875,14 @@ const LeadsModal = withSwal((props: any) => {
               )}
 
             </Row>
-            {existLeadId &&
-              <Row className="mt-2">
-                <h5>
-                  Lead with same email or phone already exist, check
-                  <Link to={`/leads/manage/${existLeadId}`}> here</Link>
-                </h5>
+            {existLeadId && error &&
+              <Row >
+                <Col md={12}>
+                  <h5>
+                    Lead with same email or phone already exist, check
+                    <Link to={`/leads/manage/${existLeadId}`}> <span className="fs-4">Here</span></Link>
+                  </h5>
+                </Col>
               </Row>
             }
           </Modal.Body>
