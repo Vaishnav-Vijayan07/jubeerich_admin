@@ -175,7 +175,8 @@ const ExistLeadModal = withSwal((props: any) => {
                 showSuccessAlert(`Lead successfully ${isUpdate ? "updated" : "created"}`);
                 refetchLeads();
                 toggle();
-                setFormData(initialState)
+                setFormData(initialState);
+                setValidationErrors(initialValidationState);
             }
         } catch (error) {
             if (error instanceof yup.ValidationError) {
