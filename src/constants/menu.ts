@@ -242,6 +242,22 @@ const MENU_ITEMS: MenuItemTypes[] = [
   },
 
   {
+    key: "master",
+    label: "Master",
+    isTitle: false,
+    icon: "settings", // Master settings
+    roles: ["Add Lead"],
+    children: [
+      {
+        key: "channel",
+        label: "Lead Channel",
+        url: "/settings/master/channel",
+        parentKey: "master",
+      },
+    ],
+  },
+
+  {
     key: "academic_management",
     label: "Academic Setup",
     isTitle: false,

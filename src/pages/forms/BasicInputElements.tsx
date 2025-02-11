@@ -15,11 +15,9 @@ import {
   cre_tl_id,
   it_team_id,
   regional_manager_id,
-  baseUrl,
   cre_id,
   cre_reception_id,
   showWarningAlert,
-  MIN_DATA_ON_TABLE,
 } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
@@ -157,13 +155,7 @@ const BasicInputElements = withSwal((props: any) => {
     resolver: yupResolver(validationSchema), // Integrate yup with react-hook-form
     defaultValues: initialState,
   });
-
-  const handleUpdate = (item: any) => {
-    if (item) {
-      setHandleUpdateData({ ...item });
-    }
-  };
-
+  
   //handle delete function
   const handleDelete = (id: string) => {
     swal
