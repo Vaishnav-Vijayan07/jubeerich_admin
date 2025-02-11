@@ -243,23 +243,6 @@ const ExistLeads = () => {
     }
   };
 
-  const formattedCountries = useMemo(() => {
-    if ([counsellor_id, country_manager_id].includes(userRole?.toString())) {
-      return dropdownData?.countries?.filter((data: any) => loggedUserCountries.includes(data?.value?.toString())) || [];
-    }
-    return dropdownData?.countries || [];
-  }, [dropdownData?.countries]);
-
-  const filteredCounsellors = useMemo(() => {
-    const modifiedBranchCounsellor = branchCounsellor?.map((data: any) => {
-      return {
-        label: data?.name,
-        value: data?.id,
-      };
-    });
-    return userRole == counsellor_tl_id ? modifiedBranchCounsellor : dropdownData?.counsellors;
-  }, [dropdownData?.counsellors, branchCounsellor, userRole]);
-
   useEffect(() => {
     const params: any = {
       sort_by: sortBy,

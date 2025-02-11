@@ -1,10 +1,10 @@
 import * as yup from "yup";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { withSwal } from "react-sweetalert2";
-import { AppDispatch } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { addLeads, updateLeads } from "../../redux/actions";
 import {
   AUTH_SESSION_KEY,
@@ -83,6 +83,12 @@ const LeadsModal = withSwal((props: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [isOfficeDisable, setIsOfficeDisable] = useState<any>(false);
+  
+  const { existLeadId } = useSelector(
+    (state: RootState) => ({
+      existLeadId: state.Leads.existLeadId,
+    })
+  );
 
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   
@@ -872,6 +878,16 @@ const LeadsModal = withSwal((props: any) => {
           </Modal.Body>
 
           <Modal.Footer>
+            {existLeadId && <Button
+              type="button"
+              variant="info"
+              id="button-addon2"
+              className="mt-1"
+              onClick={() => navigate(`/leads/manage/${existLeadId}`)}
+            >
+              Navigate to Exist Lead
+            </Button>}
+
             <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
               Clear
             </Button>
