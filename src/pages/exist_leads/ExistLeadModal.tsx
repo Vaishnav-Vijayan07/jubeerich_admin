@@ -14,7 +14,7 @@ import {
     showSuccessAlert,
 } from "../../constants";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { APICore } from "../../helpers/api/apiCore";
 import { initialState, initialValidationState, OptionType } from "./data";
@@ -45,6 +45,7 @@ const ExistLeadModal = withSwal((props: any) => {
     const [scroll, setScroll] = useState<boolean>(false);
     const [formData, setFormData] = useState(initialState);
     const [counsellorsData, setCounsellorsData] = useState<any>([]);
+    const [existingLeadId, setExistingLeadId] = useState<any>(null)
 
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
@@ -177,6 +178,9 @@ const ExistLeadModal = withSwal((props: any) => {
                 toggle();
                 setFormData(initialState);
                 setValidationErrors(initialValidationState);
+            } else {
+                setExistingLeadId(data?.existingLeadId)
+                showErrorAlert(data?.message);
             }
         } catch (error) {
             if (error instanceof yup.ValidationError) {
@@ -380,6 +384,16 @@ const ExistLeadModal = withSwal((props: any) => {
                             </Col>
 
                         </Row>
+                        {existingLeadId &&
+                            <Row >
+                                <Col md={12}>
+                                    <h5>
+                                        Lead with same email or phone already exist, check
+                                        <Link to={`/leads/manage/${existingLeadId}`}> here</Link>
+                                    </h5>
+                                </Col>
+                            </Row>
+                        }
                     </Modal.Body>
 
                     <Modal.Footer>
@@ -392,10 +406,12 @@ const ExistLeadModal = withSwal((props: any) => {
                             className="mt-1"
                             onClick={() => {
                                 if (isUpdate) {
+                                    setExistingLeadId(null);
                                     handleCancelUpdate();
                                     toggle();
                                     handleResetValues();
                                 } else {
+                                    setExistingLeadId(null);
                                     toggle();
                                     handleResetValues();
                                 }
