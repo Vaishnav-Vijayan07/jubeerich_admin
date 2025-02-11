@@ -314,7 +314,8 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: "agSelectCellEditor",
+          // cellEditor: "agSelectCellEditor",
+          cellEditor: SearchableSelectEditor,
           cellEditorParams: {
             values: formattedData?.cres.map((cre: any) => cre.name),
             formatValue: (value: any) => {
@@ -436,7 +437,8 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           sortable: true,
           filter: true,
           editable: true,
-          cellEditor: "agSelectCellEditor",
+          // cellEditor: "agSelectCellEditor",
+          cellEditor: SearchableSelectEditor,
           cellEditorParams: {
             values: formattedData?.teamMembers?.map((cre: any) => cre.name),
             formatValue: (value: any) => {

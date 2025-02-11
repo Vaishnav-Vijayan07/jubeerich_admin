@@ -8,6 +8,7 @@ import { showErrorAlert } from "../../constants";
 import { withSwal } from "react-sweetalert2";
 import moment from "moment";
 import { approvalTypes, assignTypes } from "../forms/data";
+import SearchableSelectEditor from "../forms/SearchableSelectEditor";
 
 const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchUsers, approvalType, heading, updateSelectedUser }: any) => {
     const [gridApi, setGridApi] = useState<GridApi | null>(null);
@@ -115,7 +116,8 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
                     sortable: true,
                     filter: true,
                     editable: true,
-                    cellEditor: "agSelectCellEditor",
+                    // cellEditor: "agSelectCellEditor",
+                    cellEditor: SearchableSelectEditor,
                     cellEditorParams: {
                         values: formattedData?.userDataCres?.map((user: any) => user.name), // Only showing names in dropdown
                         formatValue: (value: any) => {
@@ -223,7 +225,8 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
                     sortable: true,
                     filter: true,
                     editable: true,
-                    cellEditor: "agSelectCellEditor",
+                    // cellEditor: "agSelectCellEditor",
+                    cellEditor: SearchableSelectEditor,
                     cellEditorParams: {
                         values: formattedData?.userDataCres?.map((user: any) => user.name), // Only showing names in dropdown
                         formatValue: (value: any) => {
