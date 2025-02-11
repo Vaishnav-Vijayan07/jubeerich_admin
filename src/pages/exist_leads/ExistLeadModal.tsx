@@ -20,6 +20,7 @@ import {
     franchise_manager_id,
     it_team_id,
     regional_manager_id,
+    showErrorAlert,
     showSuccessAlert,
 } from "../../constants";
 import moment from "moment";
@@ -75,6 +76,7 @@ const ExistLeadModal = withSwal((props: any) => {
     const [formData, setFormData] = useState(initialState);
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
+    const [counsellorsData, setCounsellorsData] = useState<any>([]);
 
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
@@ -122,7 +124,6 @@ const ExistLeadModal = withSwal((props: any) => {
     }, [country]);
 
     const handleUpdate = (item: any) => {
-        //update source dropdown
         const updatedSource = source?.filter((source: any) => source.value == item?.source_id);
         const updatedCounsellor = counsellors?.filter((counselor: any) => counselor.value == item?.counsiler_id);
 
@@ -254,7 +255,6 @@ const ExistLeadModal = withSwal((props: any) => {
     };
 
     const handleDropDowns = (selected: any, { name }: any) => {
-
         setFormData((prev) => ({
             ...prev,
             [name]: selected.value,
@@ -266,6 +266,8 @@ const ExistLeadModal = withSwal((props: any) => {
                 break;
             case "preferred_country":
                 setSelectedCountry(selected);
+                setSelectedCounsellor(null);
+                fetchCounselorsByCountry(selected?.value)
                 break;
             case "flag":
                 setSelectedFlag(selected);
@@ -294,6 +296,15 @@ const ExistLeadModal = withSwal((props: any) => {
         setSelectedSource(null);
         setSelectedCounsellor(null);
     };
+
+    const fetchCounselorsByCountry = async(id: any) => {
+        try {
+            const { data } = await axios.get(`/counselors_by_country/${id}`);
+            setCounsellorsData(data?.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <>
@@ -401,9 +412,10 @@ const ExistLeadModal = withSwal((props: any) => {
                                         className="react-select react-select-container"
                                         classNamePrefix="react-select"
                                         name="counsellor_id"
-                                        options={[{ value: null, label: "None" }, ...counsellors]}
+                                        options={[{ value: null, label: "None" }, ...counsellorsData]}
                                         value={selectedCounsellor}
                                         onChange={handleDropDowns}
+                                        isDisabled={!counsellorsData.length}
                                     />
                                     {validationErrors.counsellor_id && <Form.Text className="text-danger">{validationErrors.counsellor_id}</Form.Text>}
                                 </Form.Group>
