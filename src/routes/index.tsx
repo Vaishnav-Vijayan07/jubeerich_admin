@@ -14,6 +14,7 @@ import LeadDetailsMaterial from "../pages/forms/Material/LeadsDetails/LeadDetail
 import TasksMaterial from "../pages/forms/Material/Tasks/TasksMaterial";
 import TaskPrefix from "../pages/forms/taskPrefix";
 import Summary from "../pages/forms/Kyc/Summary/Summary";
+import ExistLeads from "../pages/exist_leads/ExistLeads";
 
 // lazy load all the views
 
@@ -241,6 +242,22 @@ const crmAppRoutes = {
       path: "/kyc_details/view_summary/:id",
       name: "View Summary",
       element: <Summary />,
+      route: PrivateRoute,
+    },
+  ],
+};
+
+const existLeadsRoutes = {
+  path: "/",
+  name: "exist_leads",
+  route: PrivateRoute,
+  roles: ["Add Lead", "View Task"],
+  icon: "file-minus",
+  children: [
+    {
+      path: "/exist_leads",
+      name: "Leads",
+      element: <ExistLeads />,
       route: PrivateRoute,
     },
   ],
@@ -736,7 +753,7 @@ const flattenRoutes = (routes: RoutesProps[]) => {
 };
 
 // All routes
-const authProtectedRoutes = [dashboardRoutes, ...appRoutes, settingsRoutes, UserRoutes, leadRoutes, reportsRoutes];
+const authProtectedRoutes = [dashboardRoutes, ...appRoutes, settingsRoutes, UserRoutes, leadRoutes, reportsRoutes, existLeadsRoutes];
 const publicRoutes = [...authRoutes, ...otherPublicRoutes];
 
 const authProtectedFlattenRoutes = flattenRoutes([...authProtectedRoutes]);
