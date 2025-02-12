@@ -21,9 +21,9 @@ const useSaveGraduationInfo = (studentId: number | string) => {
 
         newFormData.append(
           `graduation[${index}][start_date]`,
-          detail.start_date
+          detail.start_date ? detail.start_date : null
         );
-        newFormData.append(`graduation[${index}][end_date]`, detail.end_date);
+        newFormData.append(`graduation[${index}][end_date]`, detail.end_date ? detail.end_date : null);
         newFormData.append(
           `graduation[${index}][percentage]`,
           detail.percentage
