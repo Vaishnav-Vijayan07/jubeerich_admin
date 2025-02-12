@@ -471,9 +471,16 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
   };
 
   const onSelectionChanged = (params: any) => {
+    const allRows: any = [];
+    params.api.forEachNode((node: any) => allRows.push(node.data));
+
     const selectedNodes = params.api.getSelectedNodes();
     const selectedData = selectedNodes.map((node: any) => node.data);
     setSelectedItems(selectedData);
+
+    if(selectedData.length == allRows.length) {
+      params.api.stopEditing();
+    }
   };
 
   const handleApproved = async () => {
