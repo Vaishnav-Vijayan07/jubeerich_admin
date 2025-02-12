@@ -28,10 +28,10 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "grid", // Dashboard grid view
     url: "/dashboard-4",
-    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications", "Allocate Applications"],
+    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications", "Allocate Applications", "Data Entry"],
   },
 
-  { key: "leads", label: "Leads", isTitle: true, roles: ["Add Lead", "View Task"] },
+  { key: "leads", label: "Leads", isTitle: true, roles: ["Add Lead", "View Task", "Data Entry"] },
 
   {
     key: "leads",
@@ -40,6 +40,14 @@ const MENU_ITEMS: MenuItemTypes[] = [
     icon: "users", // Represents group of leads
     url: "/leads/manage",
     roles: ["Add Lead"],
+  },
+  {
+    key: "data_entry_leads",
+    label: "Data Entry",
+    isTitle: false,
+    icon: "users", // Represents group of leads
+    url: "/leads/exist_leads",
+    roles: ["Data Entry"],
   },
   {
     key: "assinged_leads",
@@ -242,6 +250,22 @@ const MENU_ITEMS: MenuItemTypes[] = [
   },
 
   {
+    key: "master",
+    label: "Master",
+    isTitle: false,
+    icon: "settings", // Master settings
+    roles: ["Add Lead"],
+    children: [
+      {
+        key: "channel",
+        label: "Lead Channel",
+        url: "/settings/master/channel",
+        parentKey: "master",
+      },
+    ],
+  },
+
+  {
     key: "academic_management",
     label: "Academic Setup",
     isTitle: false,
@@ -319,14 +343,14 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Monitor", "Manage Franchise"],
   },
 
-  // {
-  //   key: "roles",
-  //   label: "Access Roles",
-  //   isTitle: false,
-  //   icon: "key", // Key for roles and access
-  //   url: "/user_management/access_roles",
-  //   roles: ["Monitor"],
-  // },
+  {
+    key: "roles",
+    label: "Access Roles",
+    isTitle: false,
+    icon: "key", // Key for roles and access
+    url: "/user_management/access_roles",
+    roles: ["Monitor"],
+  },
   {
     key: "user_creation",
     label: "User Creation",

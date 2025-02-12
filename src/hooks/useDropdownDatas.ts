@@ -24,6 +24,7 @@ const useDropdownData = (type: string) => {
     maritalStatus: [],
     flags:[],
     counsellors:[],
+    application_teams:[],
   });
 
   useEffect(() => {

@@ -9,6 +9,8 @@ import PageTitle from "../../../../components/PageTitle";
 import Table from "../../../../components/Table";
 import { getAdminUsers } from "../../../../redux/actions";
 import LeadApprovalTable from "../../LeadApprovalTable";
+import useDropdownData from "../../../../hooks/useDropdownDatas";
+import UserSelectionModal from "../../UserSelectionModal";
 
 const sizePerPageList = [
   {
@@ -48,8 +50,11 @@ const AllPending = () => {
   const [selected, setSelected] = useState([]);
   const location = useLocation();
   const pathname = location.pathname;
+  const [openSelectUserModal, setOpenSelectUserModal] = useState<boolean>(false);
+  const [selectedApplicationIds, setSelectedApplicationIds] = useState<any>([]);
 
   const isPendingPage = pathname.includes("pending");
+  const { loading: dropDownLoading, dropdownData } = useDropdownData("application_teams");
 
   const { records, user, initialloading, application_members, openApproveModal, validatedData, teamMembers } = useSelector((state: RootState) => ({
     user: state.Auth.user,
@@ -66,7 +71,9 @@ const AllPending = () => {
   };
 
   const handleAutoAssignApplicationMembers = (application_ids: any) => {
-    dispatch(autoAssignToApplicationMember(application_ids, isPendingPage ? "application_manager_pending" : "application_manager_assigned"));
+    setOpenSelectUserModal(true);
+    setSelectedApplicationIds(application_ids);
+    // dispatch(autoAssignToApplicationMember(application_ids, isPendingPage ? "application_manager_pending" : "application_manager_assigned"));
   };
 
   useEffect(() => {
@@ -221,16 +228,20 @@ const AllPending = () => {
     dispatch(dispatch(toggleApprovalModal(false)));
   };
 
-    useEffect(() => {
-      if (openApproveModal) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "auto";
-      }
-      return () => {
-        document.body.style.overflow = "auto"; // Clean up on component unmount
-      };
-    }, [openApproveModal]);
+  const selectedUsersList = (usersList: any) => {
+    dispatch(autoAssignToApplicationMember(selectedApplicationIds, isPendingPage ? "application_manager_pending" : "application_manager_assigned", usersList));
+  }
+
+  useEffect(() => {
+    if (openApproveModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto"; // Clean up on component unmount
+    };
+  }, [openApproveModal]);
 
   return (
     <>
@@ -284,6 +295,18 @@ const AllPending = () => {
       {
         openApproveModal && (
           <LeadApprovalTable isOpenModal={openApproveModal} toggleModal={toogleApproveModal} responseData={validatedData} options={teamMembers} refetchLead={refetchLead} heading={"Auto Assign Management"} />
+        )
+      }
+
+      {
+        openSelectUserModal && (
+          <UserSelectionModal
+            onClose={() => setOpenSelectUserModal(false)}
+            open={openSelectUserModal}
+            heading={"Select Application Members to Auto Assign"}
+            usersList={dropdownData?.application_teams}
+            selectedUsersList={selectedUsersList}
+          />
         )
       }
     </>

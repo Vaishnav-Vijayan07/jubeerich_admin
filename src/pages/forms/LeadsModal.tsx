@@ -1,10 +1,10 @@
 import * as yup from "yup";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { withSwal } from "react-sweetalert2";
-import { AppDispatch } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { addLeads, updateLeads } from "../../redux/actions";
 import {
   AUTH_SESSION_KEY,
@@ -28,7 +28,7 @@ import { initialState, initialValidationState, OptionType } from "./data";
 import moment from "moment";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { APICore } from "../../helpers/api/apiCore";
 
@@ -83,6 +83,12 @@ const LeadsModal = withSwal((props: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [isOfficeDisable, setIsOfficeDisable] = useState<any>(false);
+  
+  const { existLeadId } = useSelector(
+    (state: RootState) => ({
+      existLeadId: state.Leads.existLeadId,
+    })
+  );
 
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   
@@ -869,6 +875,16 @@ const LeadsModal = withSwal((props: any) => {
               )}
 
             </Row>
+            {existLeadId && error &&
+              <Row >
+                <Col md={12}>
+                  <h5>
+                    Lead with same email or phone already exist, check
+                    <Link to={`/leads/manage/${existLeadId}`}> <span className="fs-4">Here</span></Link>
+                  </h5>
+                </Col>
+              </Row>
+            }
           </Modal.Body>
 
           <Modal.Footer>

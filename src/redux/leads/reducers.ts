@@ -59,6 +59,7 @@ export interface LeadsActionType {
     actionType?: string;
     data?: any;
     error?: string;
+    exist_lead_id?: any
   };
 }
 
@@ -248,6 +249,7 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             error: action.payload.error,
             loading: false,
             initialloading: false,
+            existLeadId: action.payload.exist_lead_id
           };
         }
         case LeadsActionTypes.UPDATE_LEADS: {

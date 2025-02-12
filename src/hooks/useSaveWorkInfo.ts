@@ -25,8 +25,8 @@ const useSaveWorkInfo = (studentId: number | string) => {
           work.designation
         );
         newFormData.append(`workExperience[${index}][company]`, work.company);
-        newFormData.append(`workExperience[${index}][from]`, work.from);
-        newFormData.append(`workExperience[${index}][to]`, work.to);
+        newFormData.append(`workExperience[${index}][from]`, work.from ? work.from : null);
+        newFormData.append(`workExperience[${index}][to]`, work.to ? work.to : null);
 
         // Append files with indexed field names for compatibility with multer
         if (typeof work?.bank_statement === "object") {

@@ -5,17 +5,15 @@ import { Row, Col, Spinner } from "react-bootstrap";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getBranchCounsellors, getLead, getLeadsByCounsellorTL, getLeadsTL } from "../../redux/actions";
+import { getBranchCounsellors, getLead, getLeadsTL } from "../../redux/actions";
 import { AUTH_SESSION_KEY, counsellor_id, counsellor_tl_id, country_manager_id, cre_tl_id, regional_manager_id, showSuccessAlert } from "../../constants";
-import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { usePagination } from "../../hooks/usePagination";
 import { useSearchParams } from "react-router-dom";
-import CustomLeadFilters from "../../components/CustomLeadFilters";
-import moment from "moment";
+import ExistLeadsTable from "./ExistLeadsTable";
 
-const Leads = () => {
+const ExistLeads = () => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   let userRole: any;
   let userBranchId: any;
@@ -57,11 +55,22 @@ const Leads = () => {
     })
   );
 
+    const refetchLeads = () => {
+        dispatch(
+            getLead(
+                currentPage,
+                currentLimit,
+                searchValue == "" ? undefined : searchValue,
+                sortBy,
+                sortOrder,
+                selectedCountry == "all" ? undefined : selectedCountry,
+                selectedOffice == "all" ? undefined : selectedOffice,
+                selectedSource == "all" ? undefined : selectedSource
+            )
+        );
+    }
+
   const handlePageChange = useCallback((value: any) => {
-    console.log(value);
-    console.log(currentLimit);
-
-
     setCurrentPage(value);
     if (userRole == cre_tl_id) {
       dispatch(
@@ -120,9 +129,6 @@ const Leads = () => {
   };
 
   const handleSortChange = (type: string, value: string) => {
-    console.log(type);
-    console.log(value);
-
     if (type == "order") {
       setSortBy(value);
     } else {
@@ -162,28 +168,6 @@ const Leads = () => {
       }
     }
   };
-
-  const resetSort = () => {
-    if (userRole == cre_tl_id) {
-      dispatch(getLeadsTL(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc"));
-    } else {
-      if (userRole) {
-        dispatch(getLead(currentPage, currentLimit, searchValue == "" ? undefined : searchValue, "created_at", "asc"));
-      }
-    }
-  };
-
-  const resetFilters = () => {
-    setSelectedOffice("all");
-    setSelectedCountry("all");
-    setSelectedSource("all");
-    setSelectedCounsellors("all");
-    setSortBy("created_at");
-    setSortOrder("asc");
-    resetSort();
-  };
-
-  console.log(currentPage, currentLimit);
 
   const handleLimitChange = useCallback(
     (value: number) => {
@@ -258,23 +242,6 @@ const Leads = () => {
       }
     }
   };
-
-  const formattedCountries = useMemo(() => {
-    if ([counsellor_id, country_manager_id].includes(userRole?.toString())) {
-      return dropdownData?.countries?.filter((data: any) => loggedUserCountries.includes(data?.value?.toString())) || [];
-    }
-    return dropdownData?.countries || [];
-  }, [dropdownData?.countries]);
-
-  const filteredCounsellors = useMemo(() => {
-    const modifiedBranchCounsellor = branchCounsellor?.map((data: any) => {
-      return {
-        label: data?.name,
-        value: data?.id,
-      };
-    });
-    return userRole == counsellor_tl_id ? modifiedBranchCounsellor : dropdownData?.counsellors;
-  }, [dropdownData?.counsellors, branchCounsellor, userRole]);
 
   useEffect(() => {
     const params: any = {
@@ -354,67 +321,18 @@ const Leads = () => {
     }
   }, []);
 
-  const handleExportLead = async(date_range: any) => {
-    let payload = {
-      start_date: date_range?.start_date ? moment.utc(date_range?.start_date).startOf('day').format("YYYY-MM-DD HH:mm:ssZ") : null, 
-      end_date: date_range?.end_date ? moment.utc(date_range?.end_date).startOf('day').format("YYYY-MM-DD HH:mm:ssZ") : null,
-      country: selectedCountry == "all" ? undefined : selectedCountry,
-      office: selectedOffice == "all" ? undefined : selectedOffice,
-      source: selectedSource == "all" ? undefined : selectedSource,
-    }
-    
-    const { data } = await axios.post(`/export_leads`, payload);
-    if(data?.status && data?.exported_lead) {
-      downloadExportedLeads(data?.exported_lead);
-      showSuccessAlert("Lead Exported Succesfully")
-    }
-  }
-
-  const downloadExportedLeads = (file: any) => {
-    const filePath = file;
-    const apiUrl = process.env.REACT_APP_API_URL;
-    const url = `${apiUrl}${filePath}`;
-    const link = document.createElement("a");
-    link.download = "Leads.xlsx";
-    link.href = url;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Leads", path: "/leads/manage", active: true },
+          { label: "Exist Leads", path: "/exist_leads", active: true },
         ]}
-        title={"Leads"}
+        title={"Exist Leads"}
       />
 
       <Row>
         <Col>
-          <CustomLeadFilters
-            countries={formattedCountries}
-            source={dropdownData?.sources}
-            offices={dropdownData?.officeTypes}
-            consellors={filteredCounsellors || []}
-            selectedCountry={selectedCountry}
-            selectedOffice={selectedOffice}
-            selectedSource={selectedSource}
-            selectedCounsellors={selectedCounsellors}
-            onFilterChange={handleFilterChange}
-            selectedSortBy={sortBy}
-            selectedSortOrder={sortOrder}
-            onApplySort={applySort}
-            onClear={resetFilters}
-            userRole={userRole}
-            exportLeads={handleExportLead}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <BasicInputElements
+          <ExistLeadsTable
             state={state}
             country={dropdownData.countries || []}
             source={dropdownData.sources || []}
@@ -451,10 +369,11 @@ const Leads = () => {
             selectedCountry={selectedCountry}
             selectedSource={selectedSource}
             selectedOffice={selectedOffice}
+            refetchLeads={refetchLeads}
           />
         </Col>
       </Row>
     </React.Fragment>
   );
 };
-export default Leads;
+export default ExistLeads;

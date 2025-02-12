@@ -47,9 +47,9 @@ export const LeadsApiResponseSuccess = (actionType: string, data: LeadsData | {}
   payload: { actionType, data },
 });
 // common error
-export const LeadsApiResponseError = (actionType: string, error: string): LeadsActionType => ({
+export const LeadsApiResponseError = (actionType: string, error: string, exist_lead_id?: any): LeadsActionType => ({
   type: LeadsActionTypes.API_RESPONSE_ERROR,
-  payload: { actionType, error },
+  payload: { actionType, error, exist_lead_id },
 });
 
 export const getLead = (

@@ -14,6 +14,7 @@ import LeadDetailsMaterial from "../pages/forms/Material/LeadsDetails/LeadDetail
 import TasksMaterial from "../pages/forms/Material/Tasks/TasksMaterial";
 import TaskPrefix from "../pages/forms/taskPrefix";
 import Summary from "../pages/forms/Kyc/Summary/Summary";
+import ExistLeads from "../pages/exist_leads/ExistLeads";
 
 // lazy load all the views
 
@@ -135,7 +136,7 @@ const dashboardRoutes: RoutesProps = {
       // element: <Dashboard4 />,
       element: (
         <PrivateRoute
-          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications", "Allocate Applications"]}
+          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications", "Allocate Applications", "Data Entry"]}
           component={Dashboard4}
         />
       ),
@@ -148,13 +149,19 @@ const crmAppRoutes = {
   path: "/apps/crm",
   name: "CRM",
   route: PrivateRoute,
-  roles: ["Add Lead", "View Task", "KYC Approval"],
+  roles: ["Add Lead", "View Task", "KYC Approval","Data Entry"],
   icon: "users",
   children: [
     {
       path: "/apps/crm/leads",
       name: "Leads",
       element: <CRMLeads />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/leads/exist_leads",
+      name: "Leads",
+      element: <ExistLeads />,
       route: PrivateRoute,
     },
     {
@@ -266,7 +273,7 @@ const leadRoutes = {
   path: "/apps/lead_management",
   name: "Lead",
   route: PrivateRoute,
-  roles: ["Add Lead", "View Task", "Monitor"],
+  roles: ["Add Lead", "View Task", "Monitor", "Data Entry"],
   icon: "users",
   children: [
     {
@@ -287,7 +294,7 @@ const leadRoutes = {
       path: "leads/manage/:id",
       name: "Leads",
       // element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetails} />,
-      element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetailsMaterial} />,
+      element: <PrivateRoute roles={["Add Lead", "Manage Applications", "Data Entry"]} component={LeadDetailsMaterial} />,
       route: PrivateRoute,
     },
     {
@@ -391,7 +398,7 @@ const settingsRoutes = {
           path: "/settings/master/channel",
           name: "Channel",
           // element: <Channel />,
-          element: <PrivateRoute roles={["Monitor"]} component={Channel} />,
+          element: <PrivateRoute roles={["Monitor", "Add Lead"]} component={Channel} />,
           route: PrivateRoute,
         },
         {
