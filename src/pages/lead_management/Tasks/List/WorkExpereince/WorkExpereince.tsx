@@ -85,9 +85,6 @@ const WorkExpereince = withSwal((props: any) => {
   }, [studentId, refresh]);
 
   const decisionWiseSave = async () => {
-
-    console.log(hasWorkExp)
-
     if (hasWorkExp) {
       await saveWorkData();
     } else {
@@ -132,7 +129,7 @@ const WorkExpereince = withSwal((props: any) => {
       );
       return;
     }
-    const data = await saveWorkDetails(workExperienceFromApi, hasWorkExp);
+    await saveWorkDetails(workExperienceFromApi, hasWorkExp);
     saveCheck();
   };
 
@@ -154,10 +151,15 @@ const WorkExpereince = withSwal((props: any) => {
     setWorkExperienceFromApi((prevState: any) => [...prevState, { ...initialStateWork }]);
   };
 
-  const removeWorkExperience = (index: number, itemId: number) => {
+  const removeWorkExperience = async (index: number, itemId: number) => {
     if (itemId === 0) {
       setWorkExperienceFromApi((prevState: any) => prevState.filter((_: any, i: number) => i !== index));
     } else {
+      const result = await showConfirmation("Are you sure you want to remove this item?");
+      if (!result.isConfirmed) return;
+       if(workExperienceFromApi.length == 1){
+        setWorkExperienceFromApi([initialStateWork]);
+       }
       removeFromApi(itemId, "work", studentId);
     }
   };
