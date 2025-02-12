@@ -30,6 +30,7 @@ import {
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { useHistoryModal } from "../../hooks/useHistoryModal";
+import { max, min } from "moment";
 const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
@@ -315,8 +316,9 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Actions",
       accessor: "",
       sort: false,
+      maxWidth: 5,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="">
           {/* Edit Icon */}
           <Link to="#" className="action-icon" onClick={() => {
             handleUpdate(row.original);
