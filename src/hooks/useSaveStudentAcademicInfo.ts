@@ -144,13 +144,12 @@ const useSaveStudentAcademicInfo = (
 
   // Function to save exam information
   const saveStudentExamInfo = useCallback(
-    async (examForm: any[], hasExams: boolean) => {
+    async (examForm: any[]) => {
       const newFormData = new FormData();
 
       appendExamInfoToFormData(examForm, newFormData);
 
       newFormData.append("user_id", studentId.toString());
-      newFormData.append("ielts", hasExams.toString());
 
       const result = await swal.fire({
         title: "Confirm Action",
@@ -183,7 +182,6 @@ const useSaveStudentAcademicInfo = (
           });
           console.log("res: =>", res);
           showSuccessAlert(res.data.message);
-          getAcademicInfo();
         } catch (err) {
           console.log(err);
           showErrorAlert(err);
@@ -192,7 +190,7 @@ const useSaveStudentAcademicInfo = (
         }
       }
     },
-    [studentId, getAcademicInfo]
+    [studentId]
   );
 
   return { saveStudentAcademicInfo, saveStudentExamInfo, loading };

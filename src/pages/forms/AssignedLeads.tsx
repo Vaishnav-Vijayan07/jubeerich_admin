@@ -714,7 +714,7 @@ const AssignedLeads = () => {
   const [counsellors, setCounsellors] = useState([]);
 
   const [sortBy, setSortBy] = useState<string>(searchParams.get("sort_by") || "created_at");
-  const [sortOrder, setSortOrder] = useState<string>(searchParams.get("sort_order") || "asc");
+  const [sortOrder, setSortOrder] = useState<string>(searchParams.get("sort_order") || "desc");
 
   const [selectedOffice, setSelectedOffice] = useState<any>("all");
   const [selectedCountry, setSelectedCountry] = useState<any>("all");

@@ -3,11 +3,10 @@ import { Button, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 import { withSwal } from "react-sweetalert2";
-import AcademicInfoRow from "./AcademicInfoRow";
 import ExamData from "./ExamRows";
 import useSaveStudentAcademicInfo from "../../../../hooks/useSaveStudentAcademicInfo";
 import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import validateFields from "../../../../helpers/validateHelper";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
@@ -16,15 +15,7 @@ import { allowedFileTypes } from "./data";
 import FieldHistoryTable from "../../../../components/FieldHistory";
 import { useHistoryModal } from "../../../../hooks/useHistoryModal";
 import { showConfirmation } from "../../../../utils/showConfirmation";
-
-const initialStateAcademic = {
-  qualification: "",
-  place: "",
-  percentage: "",
-  year_of_passing: "",
-  backlogs: 0,
-  errors: {},
-};
+import { refreshData } from "../../../../redux/countryReducer";
 
 const initialStateExam = {
   exam_type: "",
@@ -36,53 +27,65 @@ const initialStateExam = {
   exam_date: "",
   exam_reamrks: "",
   score_card: null,
-  errors: {},
 };
 
 const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
 
-  const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
+  const dispatch = useDispatch();
+  const { removeFromApi } = useRemoveFromApi();
   const { historyModal, toggleHistoryModal } = useHistoryModal();
   const [loading, setLoading] = useState(false);
   const [hasExams, setHasExams] = useState(false);
 
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
-  const [academicInfoFromApi, setAcademicInfoFromApi] = useState<any[]>([initialStateAcademic]);
   const [examForm, setExamForm] = useState<any[]>([initialStateExam]);
 
-  const fetchAcademicInfo = useCallback(async () => {
+  const fetchAcademicInfo = async () => {
     setLoading(true);
     try {
       // Fetch both API calls concurrently
-      const [_, examResponse] = await Promise.all([axios.get(`studentAcademicInfo/${studentId}`), axios.get(`studentExamInfo/${studentId}`)]);
+      const examResponse = await axios.get(`studentExamInfo/${studentId}`);
 
       const examData = examResponse.data?.data;
-
+      const ielts = examResponse.data?.ielts;
 
       // Use helper functions to check the data and set state
-      setExamForm(examData.length > 0 ? examData : [initialStateExam]);
-      // setHasExams(examData.length > 0 ? "yes" : "no");
-      setHasExams(examData.length > 0 ? true : false);
+      setExamForm(
+        examData.length > 0
+          ? examData
+          : [
+              {
+                exam_type: "",
+                listening_score: "",
+                speaking_score: "",
+                reading_score: "",
+                writing_score: "",
+                overall_score: "",
+                exam_date: "",
+                exam_reamrks: "",
+                score_card: null,
+              },
+            ]
+      );
+      setHasExams(ielts);
     } catch (error) {
       console.error("Error fetching academic info:", error);
     } finally {
       setLoading(false);
     }
-  }, [studentId]);
+  };
 
-  const { saveStudentAcademicInfo, saveStudentExamInfo, loading: saveLoading } = useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
+  const { saveStudentExamInfo, loading: saveLoading } = useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
 
   // Fetch academic info using useCallback to memoize the function
 
   useEffect(() => {
-    if (studentId) {
-      fetchAcademicInfo();
-    }
-  }, [studentId, refresh]);
+    fetchAcademicInfo();
+  }, [refresh]);
 
-  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     if (!regrexValidation(name, value)) {
@@ -90,7 +93,7 @@ const AcademicInfo = withSwal((props: any) => {
       return; // Stop updating if validation fails
     }
 
-    setter((prevData) => {
+    setExamForm((prevData) => {
       const newData = [...prevData];
       newData[index][name] = value;
       return newData;
@@ -113,34 +116,7 @@ const AcademicInfo = withSwal((props: any) => {
     }
   };
 
-  const addFormField = (setter: React.Dispatch<React.SetStateAction<any[]>>, initialState: any) => {
-    setter((prevData) => {
-      const updatedData = [...prevData, initialState];
-      return updatedData;
-    });
-  };
-
-  const removeFormField = async (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number, itemId: number | string, type: string) => {
-    if (itemId === 0) {
-      if(examForm.length == 1) {
-        return
-      }
-      setter((prevData) => prevData.filter((_, i) => i !== index));
-    } else {
-      const result = await showConfirmation("Are you sure you want to remove this item?");
-      if (!result.isConfirmed) {
-        return;
-      }
-
-      if(examForm.length == 1) {
-        setExamForm([initialStateExam])
-      }
-
-      removeFromApi(itemId, type, studentId);
-    }
-  };
-
-  const handleSaveExamInfo = () => {
+  const saveWorkData = async () => {
     const validationRules = {
       exam_type: { required: true, message: "Please choose an exam type" },
       listening_score: { required: false, message: "Please enter a listening score" },
@@ -163,7 +139,54 @@ const AcademicInfo = withSwal((props: any) => {
       );
       return;
     }
-    saveStudentExamInfo(examForm, hasExams);
+    await saveStudentExamInfo(examForm);
+    saveCheck();
+  };
+
+  const addMoreExam = () => {
+    setExamForm((prevState: any) => [...prevState, { ...initialStateExam }]);
+  };
+
+  const removeExamData = async (index: number, itemId: number | string, type: string) => {
+    if (itemId === 0) {
+      if (examForm.length == 1) {
+        return;
+      }
+      setExamForm((prevState: any) => prevState.filter((_: any, i: number) => i !== index));
+    } else {
+      const result = await showConfirmation("Are you sure you want to remove this item?");
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      if (examForm.length == 1) {
+        setExamForm([initialStateExam]);
+      }
+
+      removeFromApi(itemId, "exam", studentId, examForm.length == 1);
+    }
+  };
+
+  const decisionWiseSave = async () => {
+    if (hasExams) {
+      await saveWorkData();
+    } else {
+      const result = await showConfirmation("Do you want to proceed?");
+      if (!result.isConfirmed) return;
+      saveCheck();
+    }
+  };
+
+  console.log(examForm);
+
+  const saveCheck = async () => {
+    try {
+      await axios.patch(`update_info_checks/${studentId}`, { ielts: hasExams });
+      dispatch(refreshData());
+    } catch (error) {
+      console.log(error);
+      showErrorAlert("Something went wrong");
+    }
   };
 
   return (
@@ -171,7 +194,7 @@ const AcademicInfo = withSwal((props: any) => {
       {loading ? (
         <SkeletonComponent />
       ) : (
-        <Row className={deleteLoading || saveLoading ? "opacity-25 pe-0" : ""}>
+        <Row className={saveLoading ? "opacity-25 pe-0" : "bg-light py-4 mb-3 ps-3"}>
           <>
             <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
               <Modal.Header closeButton></Modal.Header>
@@ -222,42 +245,28 @@ const AcademicInfo = withSwal((props: any) => {
 
             {/* {hasExams == "yes" && ( */}
             {hasExams && (
-              <>
-                <Row>
-                  <ExamData
-                    examForm={examForm}
-                    addMoreExamForm={() =>
-                      addFormField(setExamForm, {
-                        exam_type: "",
-                        listening_score: "",
-                        speaking_score: "",
-                        reading_score: "",
-                        writing_score: "",
-                        overall_score: "",
-                        exam_date: "",
-                        exam_remarks: "",
-                        score_card: null,
-                      })
-                    }
-                    removeExamForm={(index, itemId) => removeFormField(setExamForm, index, itemId, "exam")}
-                    handleExamInputChange={(index, event: any) => handleInputChange(setExamForm, index, event)}
-                    handleExamFileChange={handleFileChange}
-                  />
-                </Row>
-                <Row>
-                  <Button variant="primary" className="mt-4" type="submit" onClick={handleSaveExamInfo} disabled={saveLoading || deleteLoading}>
-                    {saveLoading || deleteLoading ? (
-                      <>
-                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                        {" Loading..."} {/* Show spinner and text */}
-                      </>
-                    ) : (
-                      "Save Exam Info" // Normal button text when not loading
-                    )}
-                  </Button>
-                </Row>
-              </>
+              <Row>
+                <ExamData
+                  examForm={examForm}
+                  addMoreExamForm={addMoreExam}
+                  removeExamForm={removeExamData}
+                  handleExamInputChange={handleInputChange}
+                  handleExamFileChange={handleFileChange}
+                />
+              </Row>
             )}
+            <Row>
+              <Button variant="primary" className="w-auto ms-2" type="submit" onClick={decisionWiseSave} disabled={saveLoading}>
+                {saveLoading ? (
+                  <>
+                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                    {" Loading..."} {/* Show spinner and text */}
+                  </>
+                ) : (
+                  "Save Exam Info" // Normal button text when not loading
+                )}
+              </Button>
+            </Row>
           </>
         </Row>
       )}

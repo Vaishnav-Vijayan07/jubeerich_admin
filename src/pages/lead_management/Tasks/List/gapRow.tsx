@@ -41,11 +41,15 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
     ]);
   };
 
-  const removeGap = (index: number, itemId: number) => {
+  const removeGap = async (index: number, itemId: number) => {
     if (itemId === 0) {
+      if(gapDetails.length == 1) return
       setGapDetails((prevState: any) => prevState.filter((_: any, i: number) => i !== index));
     } else {
-      removeFromApi(itemId, "gap", studentId);
+      const result = await showConfirmation("Are you sure you want to remove this item?");
+      if (!result.isConfirmed) return;
+
+      removeFromApi(itemId, "gap", studentId, gapDetails.length == 1);
     }
   };
 

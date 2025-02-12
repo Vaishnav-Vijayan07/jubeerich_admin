@@ -34,7 +34,6 @@ const initialPassportState = {
 };
 
 const PassportDetails = ({ studentId }: Props) => {
-  const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
   const { historyModal, toggleHistoryModal } = useHistoryModal();
   const [initialLoading, setInitialLoading] = React.useState(false);
   const [passportDetails, setPassportDetails] = React.useState<any>(initialPassportState);
