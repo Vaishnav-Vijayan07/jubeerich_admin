@@ -95,7 +95,7 @@ const ExistLeadModal = withSwal((props: any) => {
 
     const handleUpdate = (item: any) => {
         const updatedSource = source?.filter((source: any) => source.value == item?.source_id);
-        const updatedCounsellor = counsellors?.filter((counselor: any) => counselor.value == item?.counsiler_id);
+        const updatedCounsellor = counsellors?.find((counselor: any) => counselor.value == item?.counselors?.[0]?.id);
 
         const updatedCountry = item?.preferredCountries?.map((country: any) => ({
             value: country?.id,
@@ -104,7 +104,7 @@ const ExistLeadModal = withSwal((props: any) => {
 
         setSelectedSource(updatedSource[0]);
         setSelectedCountry(updatedCountry);
-        setSelectedCounsellor(updatedCounsellor[0]);
+        setSelectedCounsellor(updatedCounsellor);
 
         setFormData((prev) => ({
             ...prev,
