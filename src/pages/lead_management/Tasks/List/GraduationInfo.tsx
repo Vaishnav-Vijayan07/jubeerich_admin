@@ -10,6 +10,10 @@ import validateFields from "../../../../helpers/validateHelper";
 import { baseUrl, showErrorAlert } from "../../../../constants";
 import { regrexValidation } from "../../../../utils/regrexValidation";
 import { allowedFileTypes } from "./data";
+import { refreshData } from "../../../../redux/countryReducer";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { showConfirmation } from "../../../../utils/showConfirmation";
 
 interface GraduationDetailsProps {
   title: string; // Title for the section (Primary/Secondary)
@@ -35,10 +39,12 @@ interface GraduationDetailsProps {
 }
 
 const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, student_id, hasGraduation }) => {
+  console.log(details);
   const [graduationDetails, setGraduationDetails] = useState<any>(details);
 
   const { saveStudentGraduationDetails, loading } = useSaveGraduationInfo(student_id);
   const { removeFromApi } = useRemoveFromApi();
+  const dispatch = useDispatch();
 
   const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement>, index: any) => {
     handleGraduationDetailsChange(e.target.name, e.target.value, index);
@@ -78,30 +84,16 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
     ]);
   };
 
-  const removeGraduationForm = (index: any, id: any) => {
+  const removeGraduationForm = async(index: any, id: any) => {
     if (id == 0) {
+      if (graduationDetails.length == 1) return;
       const updatedGraduationDetails = [...graduationDetails];
       updatedGraduationDetails.splice(index, 1);
       setGraduationDetails(updatedGraduationDetails);
     } else {
-      setGraduationDetails([{
-        qualification: "",
-        university_name: "",
-        college_name: "",
-        start_date: "",
-        end_date: "",
-        percentage: "",
-        conversion_formula: "",
-        certificate: null,
-        admit_card: null,
-        registration_certificate: null,
-        backlog_certificate: null,
-        grading_scale_info: null,
-        transcript: null,
-        individual_marksheet: null,
-        errors: {},
-      },]);
-      removeFromApi(id, "graduation",student_id);
+      const result = await showConfirmation("Are you sure you want to remove?", "Remove");
+      if(!result.isConfirmed) return
+      removeFromApi(id, "graduation", student_id, graduationDetails.length == 1);
     }
   };
 
@@ -130,7 +122,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
     setGraduationDetails(newDetails);
   };
 
-  const handleSave = () => {
+  const saveGraduationData = async () => {
     const validatioRules = {
       qualification: { required: true, message: "Please choose course type" },
       university_name: { required: false, message: "Please enter university name" },
@@ -138,14 +130,6 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
       start_date: { required: false, message: "Please select start date" },
       end_date: { required: false, message: "Please select end date" },
       percentage: { required: false, message: "Please enter percentage" },
-      // certificate: { required: true },
-      // admit_card: { required: true },
-      // registration_certificate: { required: false },
-      // backlog_certificate: { required: false },
-      // grading_scale_info: { required: false },
-      // conversion_formula: { required: false },
-      // transcript: { required: true },
-      // individual_marksheet: { required: false },
     };
 
     const { isValid, errors } = validateFields(graduationDetails, validatioRules);
@@ -162,7 +146,32 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
       );
       return;
     }
-    saveStudentGraduationDetails(graduationDetails, hasGraduation);
+    const result = await showConfirmation("Are you sure you want to save?", "Save");
+    if (!result.isConfirmed) return;
+    await saveStudentGraduationDetails(graduationDetails);
+    saveCheck();
+  };
+
+  const decisionWiseSave = async () => {
+    if (hasGraduation) {
+      await saveGraduationData();
+    } else {
+      const message = hasGraduation ? "Are you sure you want to remove?" : "Are you sure?";
+      const title = hasGraduation ? "Remove" : "Save";
+      const result = await showConfirmation(message, title);
+      if (!result.isConfirmed) return;
+      saveCheck();
+    }
+  };
+
+  const saveCheck = async () => {
+    try {
+      await axios.patch(`update_info_checks/${student_id}`, { is_graduated: hasGraduation });
+      dispatch(refreshData());
+    } catch (error) {
+      console.log(error);
+      showErrorAlert("Something went wrong");
+    }
   };
 
   const renderGraduatonRows = (item: any, index: any) => (
@@ -193,11 +202,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             <Form.Label>
               <span className="text-danger">*</span> Course Type
             </Form.Label>
-            <Form.Select
-              name="qualification"
-              value={item?.qualification || ""}
-              onChange={(e: any) => handleFieldChange(e, index)}
-            >
+            <Form.Select name="qualification" value={item?.qualification || ""} onChange={(e: any) => handleFieldChange(e, index)}>
               <option value="">Select Course Type</option>
               <option value="UG">UG</option>
               <option value="PG">PG</option>
@@ -283,12 +288,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_conversion_formula`}>
             <Form.Label>Conversion Formula</Form.Label>
-            <FormInput
-              type="text"
-              name="conversion_formula"
-              value={item?.conversion_formula}
-              onChange={(e) => handleFieldChange(e, index)}
-            />
+            <FormInput type="text" name="conversion_formula" value={item?.conversion_formula} onChange={(e) => handleFieldChange(e, index)} />
             {item?.errors?.conversion_formula && <Form.Text className="text-danger">{item.errors.conversion_formula}</Form.Text>}
           </Form.Group>
         </Col>
@@ -296,12 +296,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center" style={{ width: "100% !important" }}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_admit_card`}>
             <Form.Label>Upload Admit Card</Form.Label>
-            <Form.Control
-              name="admit_card"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="admit_card" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.admit_card && <Form.Text className="text-danger">{item.errors.admit_card}</Form.Text>}
             {typeof item?.admit_card === "string" && (
               <div className="mt-2">
@@ -316,12 +311,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_certificate`}>
             <Form.Label>Upload Certificate</Form.Label>
-            <Form.Control
-              name="certificate"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.certificate && <Form.Text className="text-danger">{item.errors.certificate}</Form.Text>}
             {typeof item?.certificate === "string" && (
               <div className="mt-2">
@@ -335,22 +325,11 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_registration_certificate `}>
             <Form.Label>Upload Registration Certification</Form.Label>
-            <Form.Control
-              name="registration_certificate"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
-            {item?.errors?.registration_certificate && (
-              <Form.Text className="text-danger">{item.errors.registration_certificate}</Form.Text>
-            )}
+            <Form.Control name="registration_certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
+            {item?.errors?.registration_certificate && <Form.Text className="text-danger">{item.errors.registration_certificate}</Form.Text>}
             {typeof item?.registration_certificate === "string" && (
               <div className="mt-2">
-                <a
-                  href={`${baseUrl}uploads/graduationDocuments/${item?.registration_certificate}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={`${baseUrl}uploads/graduationDocuments/${item?.registration_certificate}`} target="_blank" rel="noopener noreferrer">
                   <i className="mdi mdi-download me-1"></i> registration_certificate
                 </a>
               </div>
@@ -360,20 +339,11 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_grading_scale_info`}>
             <Form.Label>Upload Gray Scale Info</Form.Label>
-            <Form.Control
-              name="grading_scale_info"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="grading_scale_info" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.grading_scale_info && <Form.Text className="text-danger">{item.errors.grading_scale_info}</Form.Text>}
             {typeof item?.grading_scale_info === "string" && (
               <div className="mt-2">
-                <a
-                  href={`${baseUrl}uploads/graduationDocuments/${item?.grading_scale_info}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={`${baseUrl}uploads/graduationDocuments/${item?.grading_scale_info}`} target="_blank" rel="noopener noreferrer">
                   <i className="mdi mdi-download me-1"></i> grading_scale_info
                 </a>
               </div>
@@ -383,22 +353,11 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_backlog_certificate`}>
             <Form.Label>Upload Backlog Certificate</Form.Label>
-            <Form.Control
-              name="backlog_certificate"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
-            {item?.errors?.backlog_certificate && (
-              <Form.Text className="text-danger">{item.errors.backlog_certificate}</Form.Text>
-            )}
+            <Form.Control name="backlog_certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
+            {item?.errors?.backlog_certificate && <Form.Text className="text-danger">{item.errors.backlog_certificate}</Form.Text>}
             {typeof item?.backlog_certificate === "string" && (
               <div className="mt-2">
-                <a
-                  href={`${baseUrl}uploads/graduationDocuments/${item?.backlog_certificate}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={`${baseUrl}uploads/graduationDocuments/${item?.backlog_certificate}`} target="_blank" rel="noopener noreferrer">
                   <i className="mdi mdi-download me-1"></i> backlog_certificate
                 </a>
               </div>
@@ -408,22 +367,11 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_individual_marksheet`}>
             <Form.Label>Upload Individual Marksheet</Form.Label>
-            <Form.Control
-              name="individual_marksheet"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
-            {item?.errors?.individual_marksheet && (
-              <Form.Text className="text-danger">{item.errors.individual_marksheet}</Form.Text>
-            )}
+            <Form.Control name="individual_marksheet" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
+            {item?.errors?.individual_marksheet && <Form.Text className="text-danger">{item.errors.individual_marksheet}</Form.Text>}
             {typeof item?.individual_marksheet === "string" && (
               <div className="mt-2">
-                <a
-                  href={`${baseUrl}uploads/graduationDocuments/${item?.individual_marksheet}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={`${baseUrl}uploads/graduationDocuments/${item?.individual_marksheet}`} target="_blank" rel="noopener noreferrer">
                   <i className="mdi mdi-download me-1"></i> individual_marksheet
                 </a>
               </div>
@@ -434,12 +382,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_transcript`}>
             <Form.Label>Upload Transcript</Form.Label>
-            <Form.Control
-              name="transcript"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="transcript" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.transcript && <Form.Text className="text-danger">{item.errors.transcript}</Form.Text>}
             {typeof item?.transcript === "string" && (
               <div className="mt-2">
@@ -461,28 +404,24 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
 
   return (
     <>
-      <Row className="mb-3 p-2 border-bottom rounded">
-        <h5 className="mb-4 text-uppercase">
-          <i className="mdi mdi-office-building me-1"></i> {title}
-        </h5>
+      {hasGraduation && (
+        <>
+          <Row className="mb-3 p-2 border-bottom rounded">
+            <h5 className="mb-4 text-uppercase">
+              <i className="mdi mdi-office-building me-1"></i> {title}
+            </h5>
 
-        {graduationDetails?.map((item: any, index: any) => renderGraduatonRows(item, index))}
-      </Row>
-
-      <>
-        <Row className="mb-0">
+            {graduationDetails?.map((item: any, index: any) => renderGraduatonRows(item, index))}
+          </Row>
           <ActionButton label="Add More" iconClass="mdi mdi-plus" onClick={addMoreGraduationForm} />
-          <Button variant="primary" className="mt-0 w-auto" onClick={handleSave}>
-            {loading ? "Saving.." : "Save Graduation Info"}
-          </Button>
-        </Row>
-      </>
+        </>
+      )}
 
-      {/* <Row className="mb-2">
-        <Button variant="primary" className="mt-4" onClick={handleSave}>
+      <Row className="mb-0">
+        <Button variant="primary" className="mt-0 w-auto" onClick={decisionWiseSave}>
           {loading ? "Saving.." : "Save Graduation Info"}
         </Button>
-      </Row> */}
+      </Row>
     </>
   );
 };
