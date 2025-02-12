@@ -3,11 +3,10 @@ import { Button, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 import { withSwal } from "react-sweetalert2";
-import AcademicInfoRow from "./AcademicInfoRow";
 import ExamData from "./ExamRows";
 import useSaveStudentAcademicInfo from "../../../../hooks/useSaveStudentAcademicInfo";
 import useRemoveFromApi from "../../../../hooks/useRemoveFromApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import validateFields from "../../../../helpers/validateHelper";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
@@ -16,15 +15,7 @@ import { allowedFileTypes } from "./data";
 import FieldHistoryTable from "../../../../components/FieldHistory";
 import { useHistoryModal } from "../../../../hooks/useHistoryModal";
 import { showConfirmation } from "../../../../utils/showConfirmation";
-
-const initialStateAcademic = {
-  qualification: "",
-  place: "",
-  percentage: "",
-  year_of_passing: "",
-  backlogs: 0,
-  errors: {},
-};
+import { refreshData } from "../../../../redux/countryReducer";
 
 const initialStateExam = {
   exam_type: "",
@@ -42,6 +33,7 @@ const initialStateExam = {
 const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
 
+  const dispatch = useDispatch();
   const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
   const { historyModal, toggleHistoryModal } = useHistoryModal();
   const [loading, setLoading] = useState(false);
@@ -49,30 +41,28 @@ const AcademicInfo = withSwal((props: any) => {
 
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
-  const [academicInfoFromApi, setAcademicInfoFromApi] = useState<any[]>([initialStateAcademic]);
   const [examForm, setExamForm] = useState<any[]>([initialStateExam]);
 
-  const fetchAcademicInfo = useCallback(async () => {
+  const fetchAcademicInfo = async () => {
     setLoading(true);
     try {
       // Fetch both API calls concurrently
-      const [_, examResponse] = await Promise.all([axios.get(`studentAcademicInfo/${studentId}`), axios.get(`studentExamInfo/${studentId}`)]);
+      const examResponse = await axios.get(`studentExamInfo/${studentId}`);
 
       const examData = examResponse.data?.data;
-
+      const ielts = examResponse.data?.ielts;
 
       // Use helper functions to check the data and set state
       setExamForm(examData.length > 0 ? examData : [initialStateExam]);
-      // setHasExams(examData.length > 0 ? "yes" : "no");
-      setHasExams(examData.length > 0 ? true : false);
+      setHasExams(ielts);
     } catch (error) {
       console.error("Error fetching academic info:", error);
     } finally {
       setLoading(false);
     }
-  }, [studentId]);
+  }
 
-  const { saveStudentAcademicInfo, saveStudentExamInfo, loading: saveLoading } = useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
+  const { saveStudentExamInfo, loading: saveLoading } = useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
 
   // Fetch academic info using useCallback to memoize the function
 
@@ -122,8 +112,8 @@ const AcademicInfo = withSwal((props: any) => {
 
   const removeFormField = async (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number, itemId: number | string, type: string) => {
     if (itemId === 0) {
-      if(examForm.length == 1) {
-        return
+      if (examForm.length == 1) {
+        return;
       }
       setter((prevData) => prevData.filter((_, i) => i !== index));
     } else {
@@ -132,15 +122,15 @@ const AcademicInfo = withSwal((props: any) => {
         return;
       }
 
-      if(examForm.length == 1) {
-        setExamForm([initialStateExam])
+      if (examForm.length == 1) {
+        setExamForm([initialStateExam]);
       }
 
       removeFromApi(itemId, type, studentId);
     }
   };
 
-  const handleSaveExamInfo = () => {
+  const saveWorkData = async () => {
     const validationRules = {
       exam_type: { required: true, message: "Please choose an exam type" },
       listening_score: { required: false, message: "Please enter a listening score" },
@@ -163,7 +153,28 @@ const AcademicInfo = withSwal((props: any) => {
       );
       return;
     }
-    saveStudentExamInfo(examForm, hasExams);
+    await saveStudentExamInfo(examForm);
+    saveCheck()
+  };
+
+  const decisionWiseSave = async () => {
+    if (hasExams) {
+      await saveWorkData();
+    } else {
+      const result = await showConfirmation("Do you want to proceed?");
+      if (!result.isConfirmed) return;
+      saveCheck();
+    }
+  };
+
+  const saveCheck = async () => {
+    try {
+      await axios.patch(`update_info_checks/${studentId}`, { ielts: hasExams });
+      dispatch(refreshData());
+    } catch (error) {
+      console.log(error);
+      showErrorAlert("Something went wrong");
+    }
   };
 
   return (
@@ -245,7 +256,7 @@ const AcademicInfo = withSwal((props: any) => {
                   />
                 </Row>
                 <Row>
-                  <Button variant="primary" className="mt-4" type="submit" onClick={handleSaveExamInfo} disabled={saveLoading || deleteLoading}>
+                  <Button variant="primary" className="mt-4" type="submit" onClick={decisionWiseSave} disabled={saveLoading || deleteLoading}>
                     {saveLoading || deleteLoading ? (
                       <>
                         <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
