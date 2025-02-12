@@ -19,6 +19,7 @@ import { regrexValidation } from "../../utils/regrexValidation";
 import { APICore } from "../../helpers/api/apiCore";
 import { initialState, initialValidationState, OptionType } from "./data";
 import axios from "axios";
+import { FormInput } from "../../components";
 
 const ExistLeadModal = withSwal((props: any) => {
     const {
@@ -45,7 +46,10 @@ const ExistLeadModal = withSwal((props: any) => {
     const [scroll, setScroll] = useState<boolean>(false);
     const [formData, setFormData] = useState(initialState);
     const [counsellorsData, setCounsellorsData] = useState<any>([]);
-    const [existingLeadId, setExistingLeadId] = useState<any>(null)
+    const [existingLeadId, setExistingLeadId] = useState<any>(null);
+    const [isProficiencyTestReq, setIsProficiencyTestReq] = useState<boolean>(false);
+    const [isLanguageProficiencyReq, setIsLanguageProficiencyReq] = useState<boolean>(false);
+    const [hasAssociationOtherAcademy, setHasAssociationOtherAcademy] = useState<boolean>(false);
 
     let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
@@ -67,7 +71,8 @@ const ExistLeadModal = withSwal((props: any) => {
             .required("Phone is required"),
         source_id: yup.string().required("Source is required").nullable(),
         lead_received_date: yup.date().nullable(),
-        counsellor_id: yup.string().required("Counsellor is required")
+        counsellor_id: yup.string().required("Counsellor is required"),
+        folllwup_date: yup.date().nullable(),
     });
 
     useEffect(() => {
@@ -94,6 +99,8 @@ const ExistLeadModal = withSwal((props: any) => {
     }, [country]);
 
     const handleUpdate = (item: any) => {
+        console.log('item', item.preferredCountries?.[0]?.followup_date);
+
         const updatedSource = source?.filter((source: any) => source.value == item?.source_id);
         const updatedCounsellor = counsellors?.find((counselor: any) => counselor.value == item?.counselors?.[0]?.id);
 
@@ -119,18 +126,29 @@ const ExistLeadModal = withSwal((props: any) => {
             remarks: item?.remarks || "",
             lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
             ielts: item?.ielts || false,
-            counsellor_id: item?.counsiler_id || "",
+            counsellor_id: updatedCounsellor?.value || "",
+            followup_date: moment(item.preferredCountries?.[0]?.followup_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0] || ""
         }));
+
+        console.log('is_proficiency_test_required',item?.is_proficiency_test_required);
+        console.log('is_language_proficiency_required',item?.is_language_proficiency_required);
+        console.log('has_association_other_academy',item?.has_association_other_academy);
+
+        setIsProficiencyTestReq(item?.is_proficiency_test_required);
+        setIsLanguageProficiencyReq(item?.is_language_proficiency_required);
+        setHasAssociationOtherAcademy(item?.has_association_other_academy);
 
         setIsUpdate(true);
     };
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-    
+
+        console.log('formData ==>', formData);
+
         try {
             await validationSchema.validate(formData, { abortEarly: false });
-    
+
             const confirmation = await swal.fire({
                 title: "Confirm Action",
                 text: `Do you want to ${isUpdate ? "update" : "create"} this lead?`,
@@ -151,9 +169,9 @@ const ExistLeadModal = withSwal((props: any) => {
                 width: "26em",
                 padding: "2em",
             });
-    
+
             if (!confirmation.isConfirmed || !user) return;
-    
+
             const payload = {
                 full_name: formData.full_name,
                 email: formData.email,
@@ -166,12 +184,16 @@ const ExistLeadModal = withSwal((props: any) => {
                 remarks: formData.remarks,
                 lead_received_date: formData.lead_received_date,
                 ielts: formData.ielts,
+                followup_date: formData.followup_date,
+                is_proficiency_test_required: isProficiencyTestReq,
+                is_language_proficiency_required: isLanguageProficiencyReq,
+                has_association_other_academy: hasAssociationOtherAcademy
             };
-    
+
             const endpoint = isUpdate ? `/update_existing_lead/${formData.id}` : `/create_existing_lead`;
             const method = isUpdate ? axios.put : axios.post;
             const { data } = await method(endpoint, payload);
-    
+
             if (data?.status) {
                 showSuccessAlert(`Lead successfully ${isUpdate ? "updated" : "created"}`);
                 refetchLeads();
@@ -187,12 +209,12 @@ const ExistLeadModal = withSwal((props: any) => {
                 const errors = Object.fromEntries(error.inner.map(({ path, message }) => [path, message]));
                 setValidationErrors(errors);
             } else {
-                console.log('ERRR',error);
+                console.log('ERRR', error);
                 showErrorAlert(error);
             }
         }
     };
-    
+
 
     const handleInputChange = (e: any) => {
         const { name, value, checked } = e.target;
@@ -259,7 +281,7 @@ const ExistLeadModal = withSwal((props: any) => {
         setSelectedCounsellor(null);
     };
 
-    const fetchCounselorsByCountry = async(id: any) => {
+    const fetchCounselorsByCountry = async (id: any) => {
         try {
             const { data } = await axios.get(`/counselors_by_country/${id}`);
             setCounsellorsData(data?.data)
@@ -341,10 +363,10 @@ const ExistLeadModal = withSwal((props: any) => {
                             </Col>
 
                             <Col md={4} lg={4}>
-                                <Form.Group className="mb-3 mt-1" controlId="channel_name">
-                                    <Form.Label>Remarks</Form.Label>
-                                    <Form.Control type="text" name="remarks" value={formData.remarks} onChange={handleInputChange} />
-                                    {validationErrors.remarks && <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>}
+                                <Form.Group className="mb-3 mt-1" controlId="followup_date">
+                                    <Form.Label>Followup Date</Form.Label>
+                                    <Form.Control type="date" name="followup_date" value={formData?.followup_date} onChange={handleInputChange} />
+                                    {validationErrors.followup_date && <Form.Text className="text-danger">{validationErrors.followup_date}</Form.Text>}
                                 </Form.Group>
                             </Col>
 
@@ -383,6 +405,84 @@ const ExistLeadModal = withSwal((props: any) => {
                                 </Form.Group>
                             </Col>
 
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Form.Group className="mb-3" controlId="isProficiencyTestReq">
+                                    <Form.Label>Is proficiency test required?</Form.Label>
+                                    <div className="d-flex justify-content-start align-items-center mt-1">
+                                        <Form.Check
+                                            type="radio"
+                                            name="isProficiencyTestReq"
+                                            checked={isProficiencyTestReq}
+                                            onChange={() => setIsProficiencyTestReq(true)}
+                                            label={<span className="ps-1 fw-bold">Yes</span>}
+                                        />
+                                        <Form.Check
+                                            type="radio"
+                                            name="isProficiencyTestReq"
+                                            checked={!isProficiencyTestReq}
+                                            onChange={() => setIsProficiencyTestReq(false)}
+                                            label={<span className="ps-1 fw-bold">No</span>}
+                                            className="ms-3"
+                                        />
+                                    </div>
+                                </Form.Group>
+                            </Col>
+
+                            <Col>
+                                <Form.Group className="mb-3" controlId="isLanguageProficiencyReq">
+                                    <Form.Label>Is language proficiency required?</Form.Label>
+                                    <div className="d-flex justify-content-start align-items-center mt-1">
+                                        <Form.Check
+                                            type="radio"
+                                            name="isLanguageProficiencyReq"
+                                            checked={isLanguageProficiencyReq}
+                                            onChange={() => setIsLanguageProficiencyReq(true)}
+                                            label={<span className="ps-1 fw-bold">Yes</span>}
+                                        />
+                                        <Form.Check
+                                            type="radio"
+                                            name="isLanguageProficiencyReq"
+                                            checked={!isLanguageProficiencyReq}
+                                            onChange={() => setIsLanguageProficiencyReq(false)}
+                                            label={<span className="ps-1 fw-bold">No</span>}
+                                            className="ms-3"
+                                        />
+                                    </div>
+                                </Form.Group>
+                            </Col>
+
+                            <Col>
+                                <Form.Group className="mb-3" controlId="hasAssociationOtherAcademy">
+                                    <Form.Label>Has association with other academy?</Form.Label>
+                                    <div className="d-flex justify-content-start align-items-center mt-1">
+                                        <Form.Check
+                                            type="radio"
+                                            name="hasAssociationOtherAcademy"
+                                            checked={hasAssociationOtherAcademy}
+                                            onChange={() => setHasAssociationOtherAcademy(true)}
+                                            label={<span className="ps-1 fw-bold">Yes</span>}
+                                        />
+                                        <Form.Check
+                                            type="radio"
+                                            name="hasAssociationOtherAcademy"
+                                            checked={!hasAssociationOtherAcademy}
+                                            onChange={() => setHasAssociationOtherAcademy(false)}
+                                            label={<span className="ps-1 fw-bold">No</span>}
+                                            className="ms-3"
+                                        />
+                                    </div>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={8} lg={8}>
+                                <Form.Group className="mb-3 mt-1" controlId="channel_name">
+                                    <FormInput label="Remarks" type="textarea" name="remarks" value={formData.remarks} onChange={handleInputChange} />
+                                    {validationErrors.remarks && <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>}
+                                </Form.Group>
+                            </Col>
                         </Row>
                         {existingLeadId &&
                             <Row >

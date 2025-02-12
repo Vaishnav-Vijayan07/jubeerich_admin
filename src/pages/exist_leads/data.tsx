@@ -66,7 +66,8 @@ export interface OptionType {
     remarks: "",
     lead_received_date: new Date().toISOString().split("T")[0],
     ielts: false,
-    counsellor_id: ""
+    counsellor_id: "",
+    followup_date: ""
   };
   
   export const initialValidationState = {
@@ -81,4 +82,5 @@ export interface OptionType {
     lead_received_date: "",
     ielts: true,
     counsellor_id: "",
+    followup_date: ""
   };
