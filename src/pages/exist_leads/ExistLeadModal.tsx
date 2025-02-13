@@ -72,7 +72,7 @@ const ExistLeadModal = withSwal((props: any) => {
         source_id: yup.string().required("Source is required").nullable(),
         lead_received_date: yup.date().nullable(),
         counsellor_id: yup.string().required("Counsellor is required"),
-        folllwup_date: yup.date().nullable(),
+        followup_date: yup.string().required("Follow up date is required"),
     });
 
     useEffect(() => {
@@ -127,12 +127,8 @@ const ExistLeadModal = withSwal((props: any) => {
             lead_received_date: moment(item?.lead_received_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0],
             ielts: item?.ielts || false,
             counsellor_id: updatedCounsellor?.value || "",
-            followup_date: moment(item.preferredCountries?.[0]?.followup_date).format("YYYY-MM-DD") || new Date()?.toISOString().split("T")[0] || ""
+            followup_date: moment(item.preferredCountries?.[0]?.followup_date).format("YYYY-MM-DD") || ""
         }));
-
-        console.log('is_proficiency_test_required',item?.is_proficiency_test_required);
-        console.log('is_language_proficiency_required',item?.is_language_proficiency_required);
-        console.log('has_association_other_academy',item?.has_association_other_academy);
 
         setIsProficiencyTestReq(item?.is_proficiency_test_required);
         setIsLanguageProficiencyReq(item?.is_language_proficiency_required);
@@ -214,7 +210,6 @@ const ExistLeadModal = withSwal((props: any) => {
             }
         }
     };
-
 
     const handleInputChange = (e: any) => {
         const { name, value, checked } = e.target;
@@ -364,7 +359,7 @@ const ExistLeadModal = withSwal((props: any) => {
 
                             <Col md={4} lg={4}>
                                 <Form.Group className="mb-3 mt-1" controlId="followup_date">
-                                    <Form.Label>Followup Date</Form.Label>
+                                    <Form.Label><span className="text-danger fs-4">* </span>Followup Date</Form.Label>
                                     <Form.Control type="date" name="followup_date" value={formData?.followup_date} onChange={handleInputChange} />
                                     {validationErrors.followup_date && <Form.Text className="text-danger">{validationErrors.followup_date}</Form.Text>}
                                 </Form.Group>
