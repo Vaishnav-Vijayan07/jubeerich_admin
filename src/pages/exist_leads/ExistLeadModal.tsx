@@ -99,8 +99,6 @@ const ExistLeadModal = withSwal((props: any) => {
     }, [country]);
 
     const handleUpdate = (item: any) => {
-        console.log('item', item.preferredCountries?.[0]?.followup_date);
-
         const updatedSource = source?.filter((source: any) => source.value == item?.source_id);
         const updatedCounsellor = counsellors?.find((counselor: any) => counselor.value == item?.counselors?.[0]?.id);
 
