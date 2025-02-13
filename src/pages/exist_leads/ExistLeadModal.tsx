@@ -195,8 +195,9 @@ const ExistLeadModal = withSwal((props: any) => {
                 setFormData(initialState);
                 setValidationErrors(initialValidationState);
             } else {
-                setExistingLeadId(data?.existingLeadId)
-                showErrorAlert(data?.message);
+                let errorArray = data?.errors.map((error: any) => error.msg).join(", ");
+                showErrorAlert(errorArray);
+                setValidationErrors(initialValidationState);
             }
         } catch (error) {
             if (error instanceof yup.ValidationError) {
