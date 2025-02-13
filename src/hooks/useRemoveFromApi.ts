@@ -8,10 +8,13 @@ const useRemoveFromApi = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const removeFromApi = async (id: any, type: any, user_id: any) => {
+  const removeFromApi = async (id: any, type: any, user_id: any, check_update: boolean = false) => {
     setLoading(true);
     try {
       const res = await axios.delete(`basic_info/${type}/${id}/${user_id}`, {
+        params: {
+          check_update: check_update,
+        },
         headers: {
           "Content-Type": "application/json",
         },

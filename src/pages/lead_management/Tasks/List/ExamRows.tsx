@@ -15,10 +15,10 @@ interface ExamForm {
 
 interface ExamDataProps {
   examForm: ExamForm[];
-  addMoreExamForm: () => void;
-  removeExamForm: (index: number, itemId: number) => void;
-  handleExamInputChange: (index: number, event: any) => void;
-  handleExamFileChange: (index: number, event: any) => void;
+  addMoreExamForm: any;
+  removeExamForm: any;
+  handleExamInputChange: any;
+  handleExamFileChange: any;
 }
 
 const ExamData: React.FC<ExamDataProps> = ({

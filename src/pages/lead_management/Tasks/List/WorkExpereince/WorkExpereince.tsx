@@ -157,10 +157,10 @@ const WorkExpereince = withSwal((props: any) => {
     } else {
       const result = await showConfirmation("Are you sure you want to remove this item?");
       if (!result.isConfirmed) return;
-       if(workExperienceFromApi.length == 1){
+      if (workExperienceFromApi.length == 1) {
         setWorkExperienceFromApi([initialStateWork]);
-       }
-      removeFromApi(itemId, "work", studentId);
+      }
+      removeFromApi(itemId, "work", studentId, workExperienceFromApi.length == 1);
     }
   };
 
