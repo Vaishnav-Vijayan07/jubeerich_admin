@@ -1178,7 +1178,6 @@ const BasicInfo = withSwal((props: any) => {
                           >
                             View Document
                           </a>
-                          <img src={certificate.certificate} alt="testing" />
                         </div>
                       )}
                   </Form.Group>

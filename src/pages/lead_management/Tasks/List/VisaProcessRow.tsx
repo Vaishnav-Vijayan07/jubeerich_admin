@@ -153,7 +153,7 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} xl={4} xxl={4}>
+              <Col md={6} lg={4} xl={4} xxl={4}>
                 <Form.Group className="mb-3" controlId="country">
                   <Form.Label>
                     <span className="text-danger">*</span> Country
