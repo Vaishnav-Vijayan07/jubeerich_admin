@@ -1,13 +1,13 @@
 import Swal from "sweetalert2";
 
-export const showConfirmation = async (message = "Do you want to delete?") => {
+export const showConfirmation = async (message = "Do you want to delete?",button_text = "Yes Delete") => {
   return await Swal.fire({
     title: "Confirm Action",
     text: message,
     icon: "question",
     iconColor: "#8B8BF5",
     showCancelButton: true,
-    confirmButtonText: "Yes, Delete",
+    confirmButtonText: `${button_text}`,
     cancelButtonText: "Cancel",
     confirmButtonColor: "#8B8BF5",
     cancelButtonColor: "#E97777",

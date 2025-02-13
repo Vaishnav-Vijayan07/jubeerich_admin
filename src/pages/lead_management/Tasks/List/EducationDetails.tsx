@@ -104,15 +104,40 @@ const EducationDetails = withSwal((props: any) => {
       const educationData = educationResponse.data;
       const gapData = gapResponse.data.data;
 
+      
+      const has_education_gap = educationData?.has_education_gap;
+      const is_graduated = educationData?.is_graduated;
+
       setPrimaryDetails(educationData.primary || initialPrimaryState);
       setSecondaryDetails(educationData.secondary || initialSecondaryState);
 
-      // educationData.graduation.length > 0 ? setHasGraduation("yes") : setHasGraduation("no");
-      educationData.graduation.length > 0 ? setHasGraduation(true) : setHasGraduation(false);
-      setGraduationDetails(educationData.graduation.length > 0 ? educationData.graduation : [initialGraduationState]);
-      setGap(gapData.length > 0 ? gapData : [initialGapState]);
-      // setHasGap(gapData.length > 0 ? "yes" : "no");
-      setHasGap(gapData.length > 0 ? true : false);
+      setGraduationDetails(educationData.graduation.length > 0 ? educationData.graduation : [{
+        qualification: "",
+        university_name: "",
+        college_name: "",
+        startDate: "",
+        endDate: "",
+        percentage: "",
+        conversion_formula: "",
+        certificate: null,
+        admit_card: null,
+        registration_certificate: null,
+        backlog_certificate: null,
+        grading_scale_info: null,
+        transcript: null,
+        individual_marksheet: null,
+        errors: {},
+      }]);
+      setGap(gapData.length > 0 ? gapData : [{
+        start_date: "",
+        end_date: "",
+        reason: "",
+        supporting_document: null,
+        errors: {},
+      }]);
+
+      setHasGraduation(is_graduated);
+      setHasGap(has_education_gap);
     } catch (error) {
       console.error("Error fetching student education details:", error);
       showErrorAlert("Failed to fetch education details");
@@ -120,7 +145,6 @@ const EducationDetails = withSwal((props: any) => {
       setInitialLoading(false);
     }
   };
-  
 
   useEffect(() => {
     if (studentId) {
@@ -128,17 +152,9 @@ const EducationDetails = withSwal((props: any) => {
     }
   }, [refresh]);
 
-  // const handleGraduationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setHasGraduation(e.target.value);
-  // };
-
   const handleGraduationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHasGraduation(e.target.value === "true");
   };
-
-  // const handleGapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setHasGap(e.target.value);
-  // };
 
   const handleGapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHasGap(e.target.value === "true");
@@ -288,90 +304,65 @@ const EducationDetails = withSwal((props: any) => {
                 )}
               </Button>
             </Row>
+          </>
 
-            {/* Move Save Button below Secondary Education Section */}
-            {/* <Row className="mb-2">
-              <Button variant="primary" className="mt-4" onClick={handleSaveSecondary} disabled={secondaryLoading}>
-                {secondaryLoading ? (
-                  <>
-                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                    {" Saving..."} 
-                  </>
-                ) : (
-                  "Save Secondary Info"
-                )}
-              </Button>
-            </Row> */}
+          <>
+            <Row className="mt-4 bg-light py-4 mb-3 ps-3">
+              <Row>
+                <Col md={12}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Are you a Graduate?</Form.Label>
+                    <div>
+                      <Form.Check
+                        inline
+                        label="Yes"
+                        type="radio"
+                        name="hasGraduation"
+                        // value="yes"
+                        value="true"
+                        // checked={hasGraduation === "yes"}
+                        checked={hasGraduation}
+                        onChange={handleGraduationChange}
+                      />
+                      <Form.Check
+                        inline
+                        label="No"
+                        type="radio"
+                        name="hasGraduation"
+                        // value="no"
+                        value="false"
+                        // checked={hasGraduation === "no"}
+                        checked={!hasGraduation}
+                        onChange={handleGraduationChange}
+                      />
+                    </div>
+                  </Form.Group>
+                </Col>
+              </Row>
 
-            {/* Radio button for Graduation */}
-            <Row className="mt-4">
+              <Row className="">
+                <GraduationInfo title="Graduation Details" details={graduationDetails} student_id={studentId} hasGraduation={hasGraduation} />
+              </Row>
+            </Row>
+          </>
+
+          {/* Radio button for Graduation */}
+          <Row className="bg-light py-4 mb-3 ps-3">
+            <Row>
               <Col md={12}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Are you a Graduate?</Form.Label>
+                  <Form.Label>Education Gap?</Form.Label>
                   <div>
-                    <Form.Check
-                      inline
-                      label="Yes"
-                      type="radio"
-                      name="hasGraduation"
-                      // value="yes"
-                      value="true"
-                      // checked={hasGraduation === "yes"}
-                      checked={hasGraduation}
-                      onChange={handleGraduationChange}
-                    />
-                    <Form.Check
-                      inline
-                      label="No"
-                      type="radio"
-                      name="hasGraduation"
-                      // value="no"
-                      value="false"
-                      // checked={hasGraduation === "no"}
-                      checked={!hasGraduation}
-                      onChange={handleGraduationChange}
-                    />
+                    <Form.Check inline label="Yes" type="radio" name="hasGap" value="true" checked={hasGap} onChange={handleGapChange} />
+                    <Form.Check inline label="No" type="radio" name="hasGap" value="false" checked={!hasGap} onChange={handleGapChange} />
                   </div>
                 </Form.Group>
               </Col>
             </Row>
-          </>
-
-          {/* Graduation Details Section */}
-          {/* {hasGraduation === "yes" && ( */}
-          {hasGraduation && (
-            <>
-              <Row className="bg-light py-4 mb-3 ps-3">
-                <GraduationInfo title="Graduation Details" details={graduationDetails} student_id={studentId} hasGraduation={hasGraduation} />
-              </Row>
-            </>
-          )}
-
-          {/* Radio button for Graduation */}
-          <Row className="mt-4">
-            <Col md={12}>
-              <Form.Group className="mb-3">
-                <Form.Label>Education Gap?</Form.Label>
-                <div>
-                  {/* <Form.Check inline label="Yes" type="radio" name="hasGap" value="yes" checked={hasGap === "yes"} onChange={handleGapChange} /> */}
-                  <Form.Check inline label="Yes" type="radio" name="hasGap" value="true" checked={hasGap} onChange={handleGapChange} />
-                  {/* <Form.Check inline label="No" type="radio" name="hasGap" value="no" checked={hasGap === "no"} onChange={handleGapChange} /> */}
-                  <Form.Check inline label="No" type="radio" name="hasGap" value="false" checked={!hasGap} onChange={handleGapChange} />
-                </div>
-              </Form.Group>
-            </Col>
+            <Row>
+              <GapRows gapData={gap} studentId={studentId} type="education" hasGap={hasGap} />
+            </Row>
           </Row>
-
-          {/* Gap Details Section */}
-
-          {/* {hasGap === "yes" && ( */}
-          {hasGap && (
-            <>
-              <Row className="bg-light py-4 mb-3 ps-3">
-                <GapRows gapData={gap} studentId={studentId} type="education" hasGap={hasGap} />
-              </Row>
-            </>
-          )}
         </>
       )}
     </>
