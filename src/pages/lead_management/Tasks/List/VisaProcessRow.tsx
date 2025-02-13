@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Modal, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import moment from "moment";
 import Select from "react-select";
 import { travel_history, visa_approve, visa_decline, Visa_Types } from "./data";
 import ActionButton from "./ActionButton";
 import { baseUrl } from "../../../../constants";
-import FieldHistoryTable from "../../../../components/FieldHistory";
-import axios from "axios";
 
 const VisaProcessRow = ({
   visaDecline,
@@ -22,18 +20,10 @@ const VisaProcessRow = ({
   addMoreVisaForm,
   removeVisaForm,
   handleFileChange,
-  studentId,
-  decisions,
 }: any) => {
   const [visaDeclineData, setVisaDeclineData] = useState<any[]>([]);
   const [visaApproveData, setVisaApproveData] = useState<any[]>([]);
   const [travelHistoryData, setTravelHistoryData] = useState<any[]>([]);
-  const [historyModal, setHistoryModal] = useState<boolean>(false);
-  const [urlString, setUrlString] = useState<string>("");
-  const [allCountries, setAllCountries] = useState<any>([]);
-  const [isVisaDeclined, setIsVisaDeclined] = useState<boolean>(false);
-  const [isVisaApproved, setIsVisaApproved] = useState<boolean>(false);
-  const [hasTravelHistoy, setHasTravelHistoy] = useState<boolean>(false);
 
   useEffect(() => {
     if (visaDecline.length) {
@@ -55,84 +45,19 @@ const VisaProcessRow = ({
     }
   }, [visaDecline, visaApprove, travelHistory]);
 
-  useEffect(() => {
-    if (decisions) {
-      setIsVisaDeclined(decisions?.is_visa_declined);
-      setIsVisaApproved(decisions?.is_visa_approved);
-      setHasTravelHistoy(decisions?.has_travel_history);
-    }
-  }, [decisions]);
-
-  const toggleHistoryModal = (url?: string) => {
-    if (url) setUrlString(url);
-    setHistoryModal(!historyModal);
-  };
-
-  const getAllCountries = async () => {
-    try {
-      const res = await axios.get(`https://countriesnow.space/api/v0.1/countries/iso`, {
-        timeout: 10000,
-      });
-      setAllCountries(res?.data?.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getAllCountries();
-  }, []);
-
   return (
     <Row>
       {/*  Previous Visa Decline */}
-      <Row className="bg-light py-3 ps-3">
-        <div className="d-flex justify-content-between">
-          <h5 className="mb-4 text-uppercase">
-            <i className="mdi mdi-account-circle me-1"></i>Previous Visa Decline
-          </h5>
-
-          <Button
-            className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
-            onClick={() => toggleHistoryModal("previous_visa_decline")}
-            style={{ height: "fit-content" }}
-          >
-            <i className="mdi mdi-history"></i> View History
-          </Button>
-        </div>
-
-        <Row>
-          <Col>
-            <Form.Group className="mb-3" controlId="source_id">
-              <Form.Label>Has your visa ever been declined or rejected?</Form.Label>
-              <div className="d-flex justify-content-start align-items-center mt-1">
-                <Form.Check
-                  type="radio"
-                  name="isVisaDeclined"
-                  checked={isVisaDeclined}
-                  onChange={() => setIsVisaDeclined(true)}
-                  label={<span className="ps-1 fw-bold">Yes</span>}
-                />
-                <Form.Check
-                  type="radio"
-                  name="isVisaDeclined"
-                  checked={!isVisaDeclined}
-                  onChange={() => setIsVisaDeclined(false)}
-                  label={<span className="ps-1 fw-bold">No</span>}
-                  className="ms-3"
-                />
-              </div>
-            </Form.Group>
-          </Col>
-        </Row>
-
-        {/* {visaDeclineData.length > 0 && */}
-        {isVisaDeclined &&
+      <Row>
+        <h5 className="mb-4 text-uppercase">
+          <i className="mdi mdi-account-circle me-1"></i>Previous Visa Decline
+        </h5>
+        {visaDeclineData.length > 0 &&
           visaDeclineData.map((data: any, index: any) => (
             <Row key={index}>
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="visa_type">
-                  <Form.Label> Visa Type</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Visa Type</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -153,41 +78,32 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
-                <Form.Group className="mb-3" controlId="country">
-                  <Form.Label>
-                    <span className="text-danger">*</span> Country
-                  </Form.Label>
+              <Col md={6} lg={6} xl={6} xxl={4}>
+                <Form.Group className="mb-3" controlId="country_id">
+                  <Form.Label><span className="text-danger">*</span> Country</Form.Label>
                   <Select
                     className="react-select react-select-container"
-                    name="country_name"
-                    options={allCountries?.map((item: any) => {
-                      return {
-                        label: item.name,
-                        value: item?.name,
-                        iso: item?.Iso3,
-                      };
-                    })}
+                    classNamePrefix="react-select"
+                    options={countries}
                     value={
-                      data?.country_name
+                      data?.country_id
                         ? {
-                            label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
-                            value: data?.country_name,
+                            label: countries.find((u: any) => u.value == data?.country_id)?.label,
+                            value: data?.country_id,
                           }
                         : null
                     }
-                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "country_name", selectedOption.value, visa_decline)}
-                    placeholder="Select a country"
+                    placeholder="Select Country"
+                    name="country_id"
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "country_id", selectedOption.value, visa_decline)}
                   />
-                  {data?.errors?.country_name && <Form.Text className="text-danger">{data?.errors?.country_name}</Form.Text>}
+                  {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="course_applied">
-                  <Form.Label>
-                    <span className="text-danger">*</span> Course Applied
-                  </Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Course Applied</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -208,11 +124,9 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="university_applied">
-                  <Form.Label>
-                    <span className="text-danger">*</span> University Applied
-                  </Form.Label>
+                  <Form.Label><span className="text-danger">*</span> University Applied</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -233,9 +147,9 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="rejection_reason">
-                  <Form.Label>Rejection Reason</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Rejection Reason</Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={1}
@@ -250,21 +164,24 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-2" controlId="decline_letter">
                   <Form.Label>Rejection Letter</Form.Label>
                   <FormInput type="file" name="decline_letter" onChange={(e) => handleFileChange(e, visa_decline, index)} />
                   {data?.errors?.decline_letter && <Form.Text className="text-danger">{data?.errors?.decline_letter}</Form.Text>}
                 </Form.Group>
-
-                {data?.decline_letter && (
-                  <div className="d-flex align-items-center mb-2">
-                    <i className="mdi mdi-eye text-primary me-2"></i>
-                    <a href={`${data?.decline_letter}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
-                      Rejection letter
+                <div className="d-flex mb-2">
+                  {data?.decline_letter && (
+                    <a
+                      href={`${baseUrl}/uploads/${data?.decline_letter}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
+                    >
+                      <div className="p-1">{data?.decline_letter ? "Rejection Letter" : ""}</div>
                     </a>
-                  </div>
-                )}
+                  )}
+                </div>
               </Col>
 
               {visaDeclineData.length > 1 && (
@@ -281,73 +198,26 @@ const VisaProcessRow = ({
             </Row>
           ))}
 
-        {isVisaDeclined && (
-          <>
-            <Row className="mb-2">
-              <ActionButton onClick={() => addMoreVisaForm(visa_decline)} label="Add More" iconClass="mdi mdi-plus" />
-            </Row>
-          </>
-        )}
-        <Button className="w-auto px-3 ms-2" onClick={() => saveVisaForm(visa_decline, isVisaDeclined)}>
+        <Row className="mb-2">
+          <ActionButton onClick={() => addMoreVisaForm(visa_decline)} label="Add More" iconClass="mdi mdi-plus" />
+        </Row>
+        <Button className="mb-3" onClick={() => saveVisaForm(visa_decline)}>
           Save Declined Visa Details
         </Button>
       </Row>
 
       {/*  Previous Visa Approve */}
-      <Row className="bg-light py-3 ps-3 mt-4">
-        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
-          <Modal.Header closeButton></Modal.Header>
-          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
-            <FieldHistoryTable apiUrl={urlString} studentId={studentId} />
-          </Modal.Body>
-        </Modal>
+      <Row>
+        <h5 className="mb-4 text-uppercase">
+          <i className="mdi mdi-account-circle me-1"></i>Previous Visa Approvals
+        </h5>
 
-        <div className="d-flex justify-content-between m-0">
-          <h5 className="mb-4 text-uppercase">
-            <i className="mdi mdi-account-circle me-1"></i>Previous Visa Approvals
-          </h5>
-
-          <Button
-            className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
-            onClick={() => toggleHistoryModal("previous_visa_approval")}
-            style={{ height: "fit-content" }}
-          >
-            <i className="mdi mdi-history"></i> View History
-          </Button>
-        </div>
-
-        <Row>
-          <Col>
-            <Form.Group className="mb-3" controlId="source_id">
-              <Form.Label>Has your visa ever been approved?</Form.Label>
-              <div className="d-flex justify-content-start align-items-center mt-1">
-                <Form.Check
-                  type="radio"
-                  name="isVisaApproved"
-                  checked={isVisaApproved}
-                  onChange={() => setIsVisaApproved(true)}
-                  label={<span className="ps-1 fw-bold">Yes</span>}
-                />
-                <Form.Check
-                  type="radio"
-                  name="isVisaApproved"
-                  checked={!isVisaApproved}
-                  onChange={() => setIsVisaApproved(false)}
-                  label={<span className="ps-1 fw-bold">No</span>}
-                  className="ms-3"
-                />
-              </div>
-            </Form.Group>
-          </Col>
-        </Row>
-
-        {/* {visaApproveData.length > 0 && */}
-        {isVisaApproved &&
+        {visaApproveData.length > 0 &&
           visaApproveData.map((data: any, index: any) => (
             <Row key={index}>
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="visa_type">
-                  <Form.Label>Visa Type</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Visa Type</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -368,41 +238,32 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} xl={4} xxl={4}>
-                <Form.Group className="mb-3" controlId="country">
-                  <Form.Label>
-                    <span className="text-danger">*</span> Country
-                  </Form.Label>
+              <Col md={6} lg={6} xl={6} xxl={4}>
+                <Form.Group className="mb-3" controlId="country_id">
+                  <Form.Label><span className="text-danger">*</span> Country</Form.Label>
                   <Select
                     className="react-select react-select-container"
-                    name="country_name"
-                    options={allCountries?.map((item: any) => {
-                      return {
-                        label: item.name,
-                        value: item?.name,
-                        iso: item?.Iso3,
-                      };
-                    })}
+                    classNamePrefix="react-select"
+                    options={countries}
                     value={
-                      data?.country_name
+                      data?.country_id
                         ? {
-                            label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
-                            value: data?.country_name,
+                            label: countries.find((u: any) => u.value == data?.country_id)?.label,
+                            value: data?.country_id,
                           }
                         : null
                     }
-                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "country_name", selectedOption.value, visa_approve)}
-                    placeholder="Select a country"
+                    placeholder="Select Country"
+                    name="country_id"
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "country_id", selectedOption.value, visa_approve)}
                   />
-                  {data?.errors?.country_name && <Form.Text className="text-danger">{data?.errors?.country_name}</Form.Text>}
+                  {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="course_applied">
-                  <Form.Label>
-                    <span className="text-danger">*</span> Course
-                  </Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Course</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -423,11 +284,9 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="university_applied">
-                  <Form.Label>
-                    <span className="text-danger">*</span> University Applied
-                  </Form.Label>
+                  <Form.Label><span className="text-danger">*</span> University Applied</Form.Label>
                   <Select
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
@@ -448,19 +307,23 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-2" controlId="approve_letter">
                   <Form.Label>Approved Letter</Form.Label>
                   <FormInput type="file" name="approve_letter" onChange={(e) => handleFileChange(e, visa_approve, index)} />
                 </Form.Group>
-                {data?.approve_letter && (
-                  <div className="d-flex align-items-center mb-2">
-                    <i className="mdi mdi-eye text-primary me-2"></i>
-                    <a href={`${data?.approve_letter}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
-                      Approve letter
+                <div className="d-flex mb-2">
+                  {data?.approve_letter && (
+                    <a
+                      href={`${baseUrl}/uploads/${data?.approve_letter}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
+                    >
+                      <div className="p-1">{data?.approve_letter ? "Approved Letter" : ""}</div>
                     </a>
-                  </div>
-                )}
+                  )}
+                </div>
               </Col>
 
               {visaApproveData.length > 1 && (
@@ -477,96 +340,51 @@ const VisaProcessRow = ({
             </Row>
           ))}
 
-        {isVisaApproved && (
-          <>
-            <Row className="mb-2">
-              <ActionButton label="Add More" onClick={() => addMoreVisaForm(visa_approve)} iconClass="mdi mdi-plus" />
-            </Row>
-          </>
-        )}
-        <Button className="w-auto ms-2 px-3" onClick={() => saveVisaForm(visa_approve, isVisaApproved)}>
+        <Row className="mb-2">
+          <ActionButton label="Add More" onClick={() => addMoreVisaForm(visa_approve)} iconClass="mdi mdi-plus" />
+        </Row>
+        <Button className="mb-3" onClick={() => saveVisaForm(visa_approve)}>
           Save Approved Visa Details
         </Button>
       </Row>
 
       {/* Travel History */}
-      <Row className="bg-light py-3 ps-3 mt-4">
-        <div className="d-flex justify-content-between m-0">
-          <h5 className="mb-4 text-uppercase">
-            <i className="mdi mdi-account-circle me-1"></i>Travel History
-          </h5>
+      <Row>
+        <h5 className="mb-4 text-uppercase">
+          <i className="mdi mdi-account-circle me-1"></i>Travel History
+        </h5>
 
-          <Button
-            className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
-            onClick={() => toggleHistoryModal("travel_history")}
-            style={{ height: "fit-content" }}
-          >
-            <i className="mdi mdi-history"></i> View History
-          </Button>
-        </div>
-
-        <Row>
-          <Col>
-            <Form.Group className="mb-3" controlId="source_id">
-              <Form.Label>Do you have any previous travel history?</Form.Label>
-              <div className="d-flex justify-content-start align-items-center mt-1">
-                <Form.Check
-                  type="radio"
-                  name="hasTravelHistoy"
-                  checked={hasTravelHistoy}
-                  onChange={() => setHasTravelHistoy(true)}
-                  label={<span className="ps-1 fw-bold">Yes</span>}
-                />
-                <Form.Check
-                  type="radio"
-                  name="hasTravelHistoy"
-                  checked={!hasTravelHistoy}
-                  onChange={() => setHasTravelHistoy(false)}
-                  label={<span className="ps-1 fw-bold">No</span>}
-                  className="ms-3"
-                />
-              </div>
-            </Form.Group>
-          </Col>
-        </Row>
-
-        {/* {travelHistoryData.length > 0 && */}
-        {hasTravelHistoy &&
+        {travelHistoryData.length > 0 &&
           travelHistoryData.map((data: any, index: any) => (
             <Row key={index}>
-              <Col md={6} xl={4} xxl={4}>
-                <Form.Group className="mb-3" controlId="country">
-                  <Form.Label>
-                    <span className="text-danger">*</span> Country
-                  </Form.Label>
+              <Col md={6} lg={6} xl={6} xxl={4}>
+                <Form.Group className="mb-3" controlId="country_id">
+                  <Form.Label><span className="text-danger">*</span> Country</Form.Label>
                   <Select
                     className="react-select react-select-container"
-                    name="country_name"
-                    options={allCountries?.map((item: any) => {
-                      return {
-                        label: item.name,
-                        value: item?.name,
-                        iso: item?.Iso3,
-                      };
-                    })}
+                    classNamePrefix="react-select"
+                    options={countries}
                     value={
-                      data?.country_name
+                      data?.country_id
                         ? {
-                            label: allCountries.find((u: any) => u.name == data?.country_name)?.name,
-                            value: data?.country_name,
+                            label: countries.find((u: any) => u.value == data?.country_id)?.label,
+                            value: data?.country_id,
                           }
                         : null
                     }
-                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "country_name", selectedOption.value, travel_history)}
-                    placeholder="Select a country"
+                    placeholder="Select Country"
+                    name="country_id"
+                    onChange={(selectedOption: any) => handleVisaSelectChange(index, "country_id", selectedOption.value, travel_history)}
                   />
-                  {data?.errors?.country_name && <Form.Text className="text-danger">{data?.errors?.country_name}</Form.Text>}
+                  {data?.errors?.country_id && <Form.Text className="text-danger">{data?.errors?.country_id}</Form.Text>}
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="start_date">
-                  <Form.Label>Start Date</Form.Label>
+                  <Form.Label>
+                    <span className="text-danger">*</span> Start Date
+                  </Form.Label>
                   <FormInput
                     type="date"
                     name="start_date"
@@ -579,9 +397,11 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="end_date">
-                  <Form.Label>End Date</Form.Label>
+                  <Form.Label>
+                    <span className="text-danger">*</span> End Date
+                  </Form.Label>
                   <FormInput
                     type="date"
                     name="end_date"
@@ -594,9 +414,9 @@ const VisaProcessRow = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6} lg={4} xl={4} xxl={4}>
+              <Col md={6} lg={6} xl={6} xxl={4}>
                 <Form.Group className="mb-3" controlId="purpose_of_travel">
-                  <Form.Label>Purpose of Travel</Form.Label>
+                  <Form.Label><span className="text-danger">*</span> Purpose of Travel</Form.Label>
                   <FormInput
                     type="text"
                     name="purpose_of_travel"
@@ -622,14 +442,10 @@ const VisaProcessRow = ({
             </Row>
           ))}
 
-        {hasTravelHistoy && (
-          <>
-            <Row className="mb-2">
-              <ActionButton onClick={() => addMoreVisaForm(travel_history)} label="Add More" iconClass="mdi mdi-plus" />
-            </Row>
-          </>
-        )}
-        <Button className="w-auto ms-2 px-3" onClick={() => saveVisaForm(travel_history, hasTravelHistoy)}>
+        <Row className="mb-2">
+          <ActionButton onClick={() => addMoreVisaForm(travel_history)} label="Add More" iconClass="mdi mdi-plus" />
+        </Row>
+        <Button className="mb-2" onClick={() => saveVisaForm(travel_history)}>
           Save Travel History
         </Button>
       </Row>

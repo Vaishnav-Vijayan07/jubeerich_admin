@@ -13,8 +13,6 @@ import OfferSubmitted from "../pages/forms/Kyc/MyApplications/OfferSubmitted";
 import LeadDetailsMaterial from "../pages/forms/Material/LeadsDetails/LeadDetailsMaterial";
 import TasksMaterial from "../pages/forms/Material/Tasks/TasksMaterial";
 import TaskPrefix from "../pages/forms/taskPrefix";
-import Summary from "../pages/forms/Kyc/Summary/Summary";
-import ExistLeads from "../pages/exist_leads/ExistLeads";
 
 // lazy load all the views
 
@@ -26,7 +24,6 @@ const Confirm2 = React.lazy(() => import("../pages/auth/Confirm"));
 const ForgetPassword2 = React.lazy(() => import("../pages/auth2/ForgetPassword2"));
 const LockScreen2 = React.lazy(() => import("../pages/auth/LockScreen"));
 const SignInSignUp2 = React.lazy(() => import("../pages/auth/SignInSignUp"));
-const Error404 = React.lazy(() => import("../pages/errors/Error404"));
 
 // dashboard
 const Dashboard4 = React.lazy(() => import("../pages/dashboard/Dashboard3"));
@@ -52,8 +49,7 @@ const KycDetails = React.lazy(() => import("../pages/forms/KycDetails"));
 const PendingDetails = React.lazy(() => import("../pages/forms/Kyc/PendingDetails"));
 const PendingDetailsByID = React.lazy(() => import("../pages/forms/Kyc/PendingDetailsById"));
 const PortalDetails = React.lazy(() => import("../pages/forms/Kyc/PortDetails"));
-const VisaCheckLists = React.lazy(() => import("../pages/forms/VisaChecklist"));
-const VisaConfiguration = React.lazy(() => import("../pages/forms/VisaConfiguration"));
+
 const SubmittedDetails = React.lazy(() => import("../pages/forms/Kyc/SubmittedApplication"));
 
 // uikit
@@ -136,7 +132,7 @@ const dashboardRoutes: RoutesProps = {
       // element: <Dashboard4 />,
       element: (
         <PrivateRoute
-          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications", "Allocate Applications", "Data Entry"]}
+          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications", "Allocate Applications"]}
           component={Dashboard4}
         />
       ),
@@ -149,19 +145,13 @@ const crmAppRoutes = {
   path: "/apps/crm",
   name: "CRM",
   route: PrivateRoute,
-  roles: ["Add Lead", "View Task", "KYC Approval","Data Entry"],
+  roles: ["Add Lead", "View Task", "KYC Approval"],
   icon: "users",
   children: [
     {
       path: "/apps/crm/leads",
       name: "Leads",
       element: <CRMLeads />,
-      route: PrivateRoute,
-    },
-    {
-      path: "/leads/exist_leads",
-      name: "Leads",
-      element: <ExistLeads />,
       route: PrivateRoute,
     },
     {
@@ -244,12 +234,6 @@ const crmAppRoutes = {
     //   element: <KycDetails />,
     //   route: PrivateRoute,
     // },
-    {
-      path: "/kyc_details/view_summary/:id",
-      name: "View Summary",
-      element: <Summary />,
-      route: PrivateRoute,
-    },
   ],
 };
 
@@ -273,7 +257,7 @@ const leadRoutes = {
   path: "/apps/lead_management",
   name: "Lead",
   route: PrivateRoute,
-  roles: ["Add Lead", "View Task", "Monitor", "Data Entry"],
+  roles: ["Add Lead", "View Task", "Monitor"],
   icon: "users",
   children: [
     {
@@ -294,7 +278,7 @@ const leadRoutes = {
       path: "leads/manage/:id",
       name: "Leads",
       // element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetails} />,
-      element: <PrivateRoute roles={["Add Lead", "Manage Applications", "Data Entry"]} component={LeadDetailsMaterial} />,
+      element: <PrivateRoute roles={["Add Lead", "Manage Applications"]} component={LeadDetailsMaterial} />,
       route: PrivateRoute,
     },
     {
@@ -398,12 +382,12 @@ const settingsRoutes = {
           path: "/settings/master/channel",
           name: "Channel",
           // element: <Channel />,
-          element: <PrivateRoute roles={["Monitor", "Add Lead"]} component={Channel} />,
+          element: <PrivateRoute roles={["Monitor"]} component={Channel} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/office_type",
-          name: "oficetype",
+          name: "ooficetype",
           // element: <Channel />,
           element: <PrivateRoute roles={["Monitor"]} component={OfficeType} />,
           route: PrivateRoute,
@@ -461,7 +445,7 @@ const settingsRoutes = {
           path: "/settings/master/university",
           name: "university",
           // element: <Branches />,
-          element: <PrivateRoute roles={["Monitor", "Add Lead"]} component={University} />,
+          element: <PrivateRoute roles={["Monitor"]} component={University} />,
           route: PrivateRoute,
         },
         {
@@ -495,18 +479,7 @@ const settingsRoutes = {
           name: "Checklists",
           // element: <CheckLists />,
           element: <PrivateRoute roles={["Monitor"]} component={CheckLists} />,
-          route: PrivateRoute,
-        },
-        {
-          path: "/settings/master/visa_checklists",
-          name: "Visa Checklists",
-          element: <PrivateRoute roles={["Monitor"]} component={VisaCheckLists} />,
-          route: PrivateRoute,
-        }, 
-        {
-          path: "/settings/master/visa_configuration",
-          name: "Visa Configuration",
-          element: <PrivateRoute roles={["Monitor"]} component={VisaConfiguration} />,
+
           route: PrivateRoute,
         },
         {
@@ -533,31 +506,31 @@ const settingsRoutes = {
         {
           path: "/settings/master/campus",
           name: "Campus",
-          element: <PrivateRoute roles={["Monitor", "Add Lead"]} component={Campus} />,
+          element: <PrivateRoute roles={["Monitor"]} component={Campus} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/configure_courses/:id",
           name: "Configure Courses",
-          element: <PrivateRoute roles={["Monitor", "Add Lead"]} component={ConfigureCourses} />,
+          element: <PrivateRoute roles={["Monitor"]} component={ConfigureCourses} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/course_type",
           name: "Course Type",
-          element: <PrivateRoute roles={["Monitor", "Add Lead"]} component={CourseType} />,
+          element: <PrivateRoute roles={["Monitor"]} component={CourseType} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/course",
           name: "Course",
-          element: <PrivateRoute roles={["Monitor", "Add Lead"]} component={Course} />,
+          element: <PrivateRoute roles={["Monitor"]} component={Course} />,
           route: PrivateRoute,
         },
         {
           path: "/settings/master/stream",
           name: "Stream",
-          element: <PrivateRoute roles={["Monitor", "Add Lead"]} component={Stream} />,
+          element: <PrivateRoute roles={["Monitor"]} component={Stream} />,
           route: PrivateRoute,
         },
       ],
@@ -717,12 +690,6 @@ const otherPublicRoutes = [
     path: "/unauthorized",
     name: "forbidden",
     element: <ForbiddenPage />,
-    route: Route,
-  },
-  {
-    path: "/error-404",
-    name: "Error - 404",
-    element: <Error404 />,
     route: Route,
   },
 ];

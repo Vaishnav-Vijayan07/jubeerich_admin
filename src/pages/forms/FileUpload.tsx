@@ -10,6 +10,7 @@ const FileUpload = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
+          { label: "Forms", path: "/forms/upload" },
           { label: "Form Upload", path: "/forms/upload", active: true },
         ]}
         title={"Form Upload"}
@@ -26,10 +27,10 @@ const FileUpload = () => {
                 file uploads with image previews.
               </p>
 
-              {/* <FileUploader
+              <FileUploader
                 onFileUpload={(files:any) => {
                 }}
-              /> */}
+              />
             </Card.Body>
           </Card>
         </Col>

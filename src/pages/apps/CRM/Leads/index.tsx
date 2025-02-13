@@ -15,6 +15,7 @@ const Leads = () => {
     <>
       <PageTitle
         breadCrumbItems={[
+          { label: "CRM", path: "/apps/crm/leads" },
           { label: "Leads", path: "/apps/crm/leads", active: true },
         ]}
         title={"Leads"}

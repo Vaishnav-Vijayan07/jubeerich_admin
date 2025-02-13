@@ -77,7 +77,7 @@ const TasksMaterial = () => {
   //     });
   // };
 
-  const getTaskList = (date: any, resetSelectedId: boolean = false) => {
+  const getTaskList = (date: any) => {
     // Resolve the date to fetch tasks for
     const resolvedDate = moment(date || selectedDate || new Date())
       .startOf("day")
@@ -99,7 +99,7 @@ const TasksMaterial = () => {
         setCollapseState(pendingTasks.length === 0);
 
         // Resolve the selected task
-        const selectedTask = (selectedTaskId && !resetSelectedId)
+        const selectedTask = selectedTaskId
           ? [...pendingTasks, ...pastTasks].find((task: any) => task.id === selectedTaskId)
           : pendingTasks[0] || pastTasks[0];
 
@@ -142,7 +142,7 @@ const TasksMaterial = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          // { label: "Tasks", path: "/leads/tasks" },
+          { label: "Tasks", path: "/leads/tasks" },
           { label: "Inbox", path: "/leads/tasks", active: true },
         ]}
         title={"Inbox"}

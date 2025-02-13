@@ -1,6 +1,5 @@
 import { Pagination } from "@mui/material";
-import React, { memo, useCallback, useEffect, useState } from "react";
-import { debounce } from "lodash";
+import React, { memo } from "react";
 
 type Props = {
   handleLimitChange: any;
@@ -11,31 +10,8 @@ type Props = {
 };
 
 function CustomPagination({ handleLimitChange, handlePageChange, totalPages, currentLimit, currentPage }: Props) {
-  const [page, setPage] = useState<string>("");
 
-  const handleGoToPage = (value: string) => {
-    setPage(value);
-    const numberRegex = /^(0|[1-9][0-9]*)$/; // Prevents leading zeros
-    const isValidNumber = numberRegex.test(value);
-
-    if (isValidNumber) {
-      const parsedValue = Math.min(parseInt(value), totalPages);
-      debouncedChange(parsedValue);
-    }
-  };
-
-  const debouncedChange = useCallback(
-    debounce((value: number) => {
-      handlePageChange(value);
-    }, 500),
-    [handlePageChange] // Correct dependency
-  );
-
-  useEffect(() => {
-    return () => {
-      debouncedChange.cancel(); // Cleanup on unmount
-    };
-  }, [debouncedChange]);
+  console.log("Inside Custom Pagination");
 
   return (
     <>
@@ -43,11 +19,7 @@ function CustomPagination({ handleLimitChange, handlePageChange, totalPages, cur
         <div className="flex-1">
           <div className="d-inline-block me-3">
             <label className="me-1">Display :</label>
-            <select
-              value={currentLimit}
-              className="form-select d-inline-block w-auto"
-              onChange={(e) => handleLimitChange(Number(e.target.value))}
-            >
+            <select value={currentLimit} className="form-select d-inline-block w-auto" onChange={(e) => handleLimitChange(Number(e.target.value))}>
               {[10, 20, 50, 100].map((limit) => (
                 <option key={limit} value={limit}>
                   {limit}
@@ -57,42 +29,8 @@ function CustomPagination({ handleLimitChange, handlePageChange, totalPages, cur
           </div>
         </div>
 
-        <div>
-          <span className="d-inline-block align-items-center text-sm-start text-center my-sm-0 my-2">
-            <label className="form-label">Go to page : </label>
-            {/* <input
-              type="number"
-              value={page}
-              onChange={(e: any) => {
-                handleGoToPage(e.target.value);
-              }}
-              className="form-control w-25 ms-1 d-inline-block"
-            /> */}
-            <input
-              type="number"
-              min="1" // Prevent 0 or negative numbers
-              value={page}
-              onChange={(e: any) => {
-                const value = e.target.value;
-
-                // Allow only non-negative numbers greater than 0
-                if (value > 0 && /^\d+$/.test(value) ) {
-                  handleGoToPage(value);
-                }
-              }}
-              className="form-control w-25 ms-1 d-inline-block"
-            />
-          </span>
-        </div>
-
         <div className="float-end">
-          <Pagination
-            count={Math.ceil(totalPages)}
-            page={currentPage}
-            variant="outlined"
-            color="primary"
-            onChange={(_, value) => handlePageChange(value)}
-          />
+          <Pagination count={Math.ceil(totalPages)} page={currentPage} variant="outlined" color="primary" onChange={handlePageChange} />
         </div>
       </div>
     </>

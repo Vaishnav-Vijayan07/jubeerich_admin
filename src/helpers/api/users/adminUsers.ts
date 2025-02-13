@@ -5,14 +5,12 @@ const api = new APICore();
 
 const baseUrl = "/admin_users";
 const baseUrlBranchCounsellor = "/get_all_counsellors";
-const baseUrlBranchCounsellorTL = "/get_all_counsellors_tl";
-const baseUrlFranchiseCounsellor = "/get_all_franchise_counsellors";
-const baseUrlFranchiseCounsellorTL = "/get_all_franchise_counsellors_tl";
+const baseUrlBranchCounsellorTL = '/get_all_counsellors_tl'
+const baseUrlFranchiseCounsellor = '/get_all_franchise_counsellors'
+const baseUrlFranchiseCounsellorTL = '/get_all_franchise_counsellors_tl'
 
-function getAdminUsers(active_status: string) {
-
-
-  return api.get(`${baseUrl}`, { active_status } );
+function getAdminUsers() {
+  return api.get(`${baseUrl}`, {});
 }
 
 function getBranchCounsellors(branchId: any) {
@@ -31,6 +29,7 @@ function getFranchiseCounsellorsTLByFranchise(franchiseId: any) {
   return api.get(`${baseUrlFranchiseCounsellorTL}/${franchiseId}`, {});
 }
 
+
 function getFranchiseCounsellors() {
   return api.get(`get_franchise_counsellors`, {});
 }
@@ -48,9 +47,9 @@ function addAdminUsers(params: {
   profileImage: File;
   branch_ids: string;
   country_ids: any;
-  franchise_id?: string;
-  region_id?: string;
-  branch_id?: string;
+  franchise_id?: string
+  region_id?: string
+  branch_id?: string,
   status?: boolean;
 }) {
   // if (params.country_id == undefined) {
@@ -110,5 +109,5 @@ export {
   getBranchCounsellors,
   getBranchCounsellorsTL,
   getFranchiseCounsellorsByFranchise,
-  getFranchiseCounsellorsTLByFranchise,
+  getFranchiseCounsellorsTLByFranchise
 };

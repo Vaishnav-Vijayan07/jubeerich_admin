@@ -318,24 +318,13 @@ const BranchDetails = withSwal((props: any) => {
   const handleDelete = (id: string) => {
     swal
       .fire({
-        title: "Confirm Action",
-        text: `Do you want to delete this user?`,
-        icon: "question",
-        iconColor: "#8B8BF5", // Purple color for the icon
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: `Yes, delete it!`,
-        cancelButtonText: "Cancel",
-        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-        cancelButtonColor: "#E97777", // Pink/red color for cancel button
-        buttonsStyling: true,
-        customClass: {
-          popup: "rounded-4 shadow-lg",
-          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-          title: "fs-2 fw-normal mb-2",
-        },
-        width: "26em",
-        padding: "2em",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -384,7 +373,7 @@ const BranchDetails = withSwal((props: any) => {
 
   const getBranchDetails = async () => {
     try {
-      let { data } = await axios.get(`${baseUrl}api/branches/${branchId}`);
+      let { data } = await axios.get(`${baseUrl}/api/branches/${branchId}`);
       setBranchDetails(data?.data);
     } catch (error) {
       console.log(error);
@@ -400,24 +389,13 @@ const BranchDetails = withSwal((props: any) => {
 
       swal
         .fire({
-          title: "Confirm Action",
-          text: `Do you want to ${isUpdate ? "update" : "create"} this user?`,
-          icon: "question",
-          iconColor: "#8B8BF5", // Purple color for the icon
+          title: "Are you sure?",
+          text: "This action cannot be undone.",
+          icon: "warning",
           showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
           confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
-          cancelButtonText: "Cancel",
-          confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-          cancelButtonColor: "#E97777", // Pink/red color for cancel button
-          buttonsStyling: true,
-          customClass: {
-            popup: "rounded-4 shadow-lg",
-            confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-            cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-            title: "fs-2 fw-normal mb-2",
-          },
-          width: "26em",
-          padding: "2em",
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -540,6 +518,7 @@ const BranchDetails = withSwal((props: any) => {
     <>
       <PageTitle
         breadCrumbItems={[
+          { label: "Master", path: "/settings/master/branches" },
           { label: "Branches", path: "/settings/master/branches" },
           { label: "Branch Details", path: "/settings/master/branch_detials", active: true },
         ]}

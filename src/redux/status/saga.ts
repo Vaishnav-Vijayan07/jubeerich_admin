@@ -5,13 +5,7 @@ import { SagaIterator } from "@redux-saga/core";
 import { APICore } from "../../helpers/api/apiCore";
 
 // helpers
-import {
-  getStatus as getAllStatusApi,
-  addStatus as addStatusApi,
-  updateStatus as updateStatusApi,
-  deleteStatus as deleteStatusApi,
-  getStatusConfig as getStatusConfigApi,
-} from "../../helpers/";
+import { getStatus as getAllStatusApi, addStatus as addStatusApi, updateStatus as updateStatusApi, deleteStatus as deleteStatusApi, getStatusConfig as getStatusConfigApi } from "../../helpers/";
 
 // actions
 import { StatusApiResponseSuccess, StatusApiResponseError, getStatus } from "./actions";
@@ -33,7 +27,6 @@ interface StatusData {
     status_description: string;
     color: string;
     updated_by: string;
-    type_id: string;
   };
   type: string;
 }
@@ -70,16 +63,16 @@ function* getStatusConfig(): SagaIterator {
   }
 }
 
-function* addStatus({ payload: { status_name, status_description, color, updated_by, type_id } }: StatusData): SagaIterator {
+function* addStatus({ payload: { status_name, status_description, color, updated_by } }: StatusData): SagaIterator {
   try {
     const response = yield call(addStatusApi, {
       status_name,
       status_description,
       color,
       updated_by,
-      type_id,
     });
     const data = response.data;
+
 
     yield put(StatusApiResponseSuccess(StatusActionTypes.ADD_STATUS, data.message));
 
@@ -91,16 +84,16 @@ function* addStatus({ payload: { status_name, status_description, color, updated
   }
 }
 
-function* updateStatus({ payload: { id, status_name, status_description, color, updated_by, type_id } }: StatusData): SagaIterator {
+function* updateStatus({ payload: { id, status_name, status_description, color, updated_by } }: StatusData): SagaIterator {
   try {
     const response = yield call(updateStatusApi, id, {
       status_name,
       status_description,
       color,
       updated_by,
-      type_id
     });
     const data = response.data.message;
+
 
     yield put(StatusApiResponseSuccess(StatusActionTypes.UPDATE_STATUS, data));
     yield put(getStatus());
@@ -142,13 +135,7 @@ export function* watchDeleteLeads(): any {
 }
 
 function* LeadsSaga() {
-  yield all([
-    fork(watchGetStatus),
-    fork(watchaddLeads),
-    fork(watchUpdateLeads),
-    fork(watchDeleteLeads),
-    fork(watchGetStatusConfig),
-  ]);
+  yield all([fork(watchGetStatus), fork(watchaddLeads), fork(watchUpdateLeads), fork(watchDeleteLeads), fork(watchGetStatusConfig)]);
 }
 
 export default LeadsSaga;

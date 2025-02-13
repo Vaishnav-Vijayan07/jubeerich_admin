@@ -1,6 +1,5 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Button, Row, Col } from "react-bootstrap";
-import { debounce } from "lodash";
 
 const styles: any = {
   wrapper: {
@@ -39,47 +38,41 @@ const styles: any = {
 };
 
 type Props = {
-  onSearch: (searchValue: any) => void; // Callback function for search
+  onSearch: () => void; // Callback function for search
+  onValueChange: (value: string) => void; // Callback function for search
+  onClose: () => void; // Callback function for search
   placeholder?: string;
+  isSearchApplied: boolean;
+  value?: string;
 };
 
-function CustomSearchBox({ onSearch, placeholder = "Search..." }: Props) {
+function CustomSearchBox({ onSearch, onClose, onValueChange, value, placeholder = "Search...", isSearchApplied }: Props) {
   console.log("Inside custom box");
 
-  const [value, setValue] = useState("");
-
-  const debouncedSearch = useCallback(
-    debounce((value) => {
-      onSearch(value);
-    }, 500), // Adjust debounce delay as needed
-    [onSearch]
-  );
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchValue = e.target.value || "";
-    setValue(searchValue);
-    debouncedSearch(searchValue);
+    onValueChange(e.target.value);
+  };
+
+  const handleSearch = () => {
+    onSearch(); // Call the provided callback with the search value
+  };
+
+  const handleSearchClose = () => {
+    onClose();
   };
 
   return (
     <>
-      <Col md={6} className="d-flex align-items-center">
-        <div style={styles.wrapper}>
-          <input type="search" value={value} onChange={handleInputChange} placeholder={placeholder} style={styles.input} />
-          {value !== "" && (
-            <Button
-              type="button"
-              style={styles.iconButton}
-              onClick={() => {
-                onSearch("");
-                setValue("");
-              }}
-            >
-              <i className="mdi mdi-close"></i>
+      <Row>
+        <Col md={6} className="d-flex align-items-center">
+          <div style={styles.wrapper}>
+            <input type="search" value={value} onChange={handleInputChange} placeholder={placeholder} style={styles.input} />
+            <Button type="button" style={styles.iconButton} onClick={isSearchApplied ? handleSearchClose : handleSearch}>
+              {isSearchApplied ? <i className="mdi mdi-close"></i> : <i className="mdi mdi-magnify"></i>}
             </Button>
-          )}
-        </div>
-      </Col>
+          </div>
+        </Col>
+      </Row>
     </>
   );
 }

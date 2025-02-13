@@ -47,81 +47,34 @@ export const LeadsApiResponseSuccess = (actionType: string, data: LeadsData | {}
   payload: { actionType, data },
 });
 // common error
-export const LeadsApiResponseError = (actionType: string, error: string, exist_lead_id?: any): LeadsActionType => ({
+export const LeadsApiResponseError = (actionType: string, error: string): LeadsActionType => ({
   type: LeadsActionTypes.API_RESPONSE_ERROR,
-  payload: { actionType, error, exist_lead_id },
+  payload: { actionType, error },
 });
 
-export const getLead = (
-  currentPage: number,
-  currentLimit: number,
-  keyword?: string | undefined,
-  sort_by?: string | undefined,
-  sort_order?: string | undefined,
-  country?: string | undefined,
-  office?: string | undefined,
-  source?: string | undefined,
-  counselor?: string | undefined
-): LeadsActionType => ({
+export const getLead = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS,
-  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source, counselor },
+  payload: { currentPage, currentLimit, keyword },
 });
 
-export const getLeadsRegionalManager = (
-  currentPage: number,
-  currentLimit: number,
-  keyword?: string | undefined,
-  sort_by?: string | undefined,
-  sort_order?: string | undefined,
-  country?: string | undefined,
-  source?: string | undefined,
-  branch?: string | undefined
-): LeadsActionType => ({
+export const getLeadsRegionalManager = (): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER,
-  payload: {
-    currentPage,
-    currentLimit,
-    keyword,
-    sort_by,
-    sort_order,
-    country,
-    source,
-    branch,
-  },
+  payload: {},
 });
 
-export const getLeadsTL = (
-  currentPage: number,
-  currentLimit: number,
-  keyword?: string | undefined,
-  sort_by?: string | undefined,
-  sort_order?: string | undefined,
-  country?: string | undefined,
-  office?: string | undefined,
-  source?: string | undefined
-): LeadsActionType => ({
+export const getLeadsTL = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_TL,
-  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source },
+  payload: { currentPage, currentLimit, keyword },
 });
 
-export const getLeadAssigned = (
-  currentPage: number,
-  currentLimit: number,
-  keyword?: string | undefined,
-  sort_by?: string | undefined,
-  sort_order?: string | undefined,
-  country?: string | undefined,
-  office?: string | undefined,
-  source?: string | undefined,
-  assigned_cre?: string | undefined
-): LeadsActionType => ({
+export const getLeadAssigned = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_ASSIGNED,
-  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source, assigned_cre },
+  payload: { currentPage, currentLimit, keyword },
 });
 
 export const getLeadAssignedByCounsellorTL = (currentPage: number, currentLimit: number, keyword?: string | undefined): LeadsActionType => ({
   type: LeadsActionTypes.GET_LEADS_ASSIGNED_BY_COUNSELLOR_TL,
-  payload: { currentPage, currentLimit, keyword },
+  payload: {currentPage, currentLimit, keyword},
 });
 
 export const getLeadsByCounsellorTL = (): LeadsActionType => ({

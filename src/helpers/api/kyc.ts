@@ -27,13 +27,11 @@ function assignToApplicationMemberApi(application_ids: any, user_id: any) {
   return api.updatePatch(`/assign_application`, dataToSend);
 }
 
-function autoAssignToApplicationMemberApi(application_ids: any, team_members_list: any) {
+function autoAssignToApplicationMemberApi(application_ids: any) {
   const dataToSend = {
     application_ids,
-    team_members_list
   };
-  // return api.updatePatch(`/auto_assign_application`, dataToSend);
-  return api.create(`/validate_auto_assign_application`, dataToSend);
+  return api.updatePatch(`/auto_assign_application`, dataToSend);
 }
 
 export { getPendingKycsApi, getRejectedKycsApi, getApprovedKycsApi, assignToApplicationMemberApi, autoAssignToApplicationMemberApi ,getApplicationByUserApi};

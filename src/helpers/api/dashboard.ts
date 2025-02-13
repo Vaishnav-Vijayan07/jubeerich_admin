@@ -8,25 +8,17 @@ function getDashboard(
   year?: string,
   month?: string,
   fromDate?: string,
-  toDate?: string,
-  country_id?: string | number
+  toDate?: string
 ) {
-  const params: { [key: string]: string | undefined | number } = {
+  const params: { [key: string]: string | undefined } = {
     filterType,
   };
-
-  console.log("params", country_id);
-
-  if (country_id) {
-    params["country_id"] = country_id;
-  }
 
   // Based on the filter type, we populate the params accordingly
   switch (filterType) {
     case "monthly":
       params["year"] = year;
       params["month"] = month;
-
       break;
 
     case "weekly":
@@ -49,12 +41,7 @@ function getDashboard(
   console.log("params", params);
 
   const baseUrl = "/dashboard";
-  return api.get(baseUrl, params);
+  return api.get(baseUrl, params );
 }
 
-function getCountriesApi() {
-  const baseUrl = "/countries_by_admin";
-  return api.get(baseUrl, {});
-}
-
-export { getDashboard, getCountriesApi };
+export { getDashboard };

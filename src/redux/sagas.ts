@@ -31,7 +31,6 @@ import dropDownSaga from "./dropDown/saga";
 import KYCSaga from "./KYC/saga";
 import AdminUserSaga from "./users/adminUsers/saga";
 import StatusTypeSaga from "./status/statusType/saga";
-import VisaChecklistSaga from "./visa_checklists/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -65,7 +64,6 @@ export default function* rootSaga() {
     dropDownSaga(),
     KYCSaga(),
     AdminUserSaga(),
-    StatusTypeSaga(),
-    VisaChecklistSaga(),
+    StatusTypeSaga()
   ]);
 }

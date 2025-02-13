@@ -28,10 +28,10 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "grid", // Dashboard grid view
     url: "/dashboard-4",
-    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications", "Allocate Applications", "Data Entry"],
+    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications", "Allocate Applications"],
   },
 
-  { key: "leads", label: "Leads", isTitle: true, roles: ["Add Lead", "View Task", "Data Entry"] },
+  { key: "leads", label: "Leads", isTitle: true, roles: ["Add Lead", "View Task"] },
 
   {
     key: "leads",
@@ -42,14 +42,6 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Add Lead"],
   },
   {
-    key: "data_entry_leads",
-    label: "Data Entry",
-    isTitle: false,
-    icon: "users", // Represents group of leads
-    url: "/leads/exist_leads",
-    roles: ["Data Entry"],
-  },
-  {
     key: "assinged_leads",
     label: "Assigned Leads",
     isTitle: false,
@@ -58,10 +50,10 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Assigned Leads"],
   },
   {
-    key: "assigned_regional_manager_leads",
+    key: "leads",
     label: "Assigned Leads",
     isTitle: false,
-    icon: "user-check", // Lead assigned to a manager
+    icon: "user-tag", // Lead assigned to a manager
     url: "/leads/assigned_regional_manager",
     roles: ["Manage Branch"],
   },
@@ -85,7 +77,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
   { key: "kyc_details", label: "KYC Approval", isTitle: true, roles: ["KYC Approval"] },
 
   {
-    key: "kycPending",
+    key: "kycApproval",
     label: "KYC Pending",
     isTitle: false,
     icon: "clock", // Icon representing pending action
@@ -169,7 +161,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Monitor"],
     children: [
       {
-        key: "lead_type",
+        key: "category",
         label: "Lead Type",
         url: "/settings/master/type",
         parentKey: "master",
@@ -234,34 +226,6 @@ const MENU_ITEMS: MenuItemTypes[] = [
         url: "/settings/master/franchise",
         parentKey: "master",
       },
-      {
-        key: "visa_checklists",
-        label: "Visa Checklists",
-        url: "/settings/master/visa_checklists",
-        parentKey: "master",
-      },
-      {
-        key: "visa_configuration",
-        label: "Visa Configuration",
-        url: "/settings/master/visa_configuration",
-        parentKey: "master",
-      },
-    ],
-  },
-
-  {
-    key: "master",
-    label: "Master",
-    isTitle: false,
-    icon: "settings", // Master settings
-    roles: ["Add Lead"],
-    children: [
-      {
-        key: "channel",
-        label: "Lead Channel",
-        url: "/settings/master/channel",
-        parentKey: "master",
-      },
     ],
   },
 
@@ -270,68 +234,76 @@ const MENU_ITEMS: MenuItemTypes[] = [
     label: "Academic Setup",
     isTitle: false,
     icon: "award", // Academic or learning icon
-    roles: ["Monitor", "Add Lead"],
+    roles: ["Monitor"],
     children: [
       {
         key: "course_type",
         label: "Course Type",
         url: "/settings/master/course_type",
-        parentKey: "academic_management",
+        parentKey: "master",
       },
       {
         key: "stream",
         label: "Stream",
         url: "/settings/master/stream",
-        parentKey: "academic_management",
+        parentKey: "master",
       },
       {
         key: "course",
         label: "Course",
         url: "/settings/master/course",
-        parentKey: "academic_management",
+        parentKey: "master",
       },
       {
         key: "university",
         label: "University",
         url: "/settings/master/university",
-        parentKey: "academic_management",
+        parentKey: "master",
       },
       {
         key: "campus",
         label: "Campus",
         url: "/settings/master/campus",
-        parentKey: "academic_management",
+        parentKey: "master",
       },
     ],
   },
 
   { key: "status_management", label: "Status Management", isTitle: true, roles: ["Monitor"] },
 
+  // {
+  //   key: "status",
+  //   label: "Status",
+  //   isTitle: false,
+  //   icon: "activity",
+  //   url: "/settings/master/status",
+  //   roles: ["Monitor"],
+  // },
   {
-    key: "status_configuration",
-    label: "Status Config",
+    key: "status",
+    label: "Status",
     isTitle: false,
     icon: "tool", // Configuration tool
     url: "/settings/master/status_config",
     roles: ["Monitor"],
     children: [
       {
-        key: "status_type",
-        label: "Status Type",
-        url: "/settings/status/status_type",
-        parentKey: "status_configuration",
-      },
-      {
         key: "status",
         label: "Status",
         url: "/settings/master/status",
-        parentKey: "status_configuration",
+        parentKey: "master",
       },
       {
         key: "status_config",
         label: "Config",
         url: "/settings/status/status_config",
-        parentKey: "status_configuration",
+        parentKey: "master",
+      },
+      {
+        key: "status_type",
+        label: "Type",
+        url: "/settings/status/status_type",
+        parentKey: "master",
       },
     ],
   },

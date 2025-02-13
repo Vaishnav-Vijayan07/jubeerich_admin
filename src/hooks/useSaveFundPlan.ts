@@ -68,24 +68,13 @@ const useSaveFundPlan = (studentId: string | number) => {
       });
 
       const result = await swal.fire({
-        title: "Confirm Action",
-        text: `Do you want to save the changes?`,
-        icon: "question",
-        iconColor: "#8B8BF5", // Purple color for the icon
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: `Yes, Save`,
-        cancelButtonText: "Cancel",
-        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-        cancelButtonColor: "#E97777", // Pink/red color for cancel button
-        buttonsStyling: true,
-        customClass: {
-          popup: "rounded-4 shadow-lg",
-          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-          title: "fs-2 fw-normal mb-2",
-        },
-        width: "26em",
-        padding: "2em",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
       });
 
       if (result.isConfirmed) {

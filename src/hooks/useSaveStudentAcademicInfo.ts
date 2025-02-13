@@ -78,11 +78,7 @@ const useSaveStudentAcademicInfo = (
         `examRecords[${index}][overall_score]`,
         item.overall_score
       );
-      formData.append(
-        `examRecords[${index}][exam_remarks]`,
-        item.exam_remarks ? item.exam_remarks : ""
-      );
-      formData.append(`examRecords[${index}][exam_date]`, item.exam_date ? item.exam_date : null);
+      formData.append(`examRecords[${index}][exam_date]`, item.exam_date);
       formData.append(`examRecords[${index}][updated_by]`, userId);
       if (typeof item?.score_card === "object") {
         formData.append(`examRecords[${index}][score_card]`, item.score_card);
@@ -100,24 +96,13 @@ const useSaveStudentAcademicInfo = (
       newFormData.append("user_id", studentId.toString());
 
       const result = await swal.fire({
-        title: "Confirm Action",
-        text: `Do you want to save the changes?`,
-        icon: "question",
-        iconColor: "#8B8BF5", // Purple color for the icon
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: `Yes, Save`,
-        cancelButtonText: "Cancel",
-        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-        cancelButtonColor: "#E97777", // Pink/red color for cancel button
-        buttonsStyling: true,
-        customClass: {
-          popup: "rounded-4 shadow-lg",
-          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-          title: "fs-2 fw-normal mb-2",
-        },
-        width: "26em",
-        padding: "2em",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
       });
 
       if (result.isConfirmed) {
@@ -144,33 +129,21 @@ const useSaveStudentAcademicInfo = (
 
   // Function to save exam information
   const saveStudentExamInfo = useCallback(
-    async (examForm: any[], hasExams: boolean) => {
+    async (examForm: any[]) => {
       const newFormData = new FormData();
 
       appendExamInfoToFormData(examForm, newFormData);
 
       newFormData.append("user_id", studentId.toString());
-      newFormData.append("ielts", hasExams.toString());
 
       const result = await swal.fire({
-        title: "Confirm Action",
-        text: `Do you want to save exam info?`,
-        icon: "question",
-        iconColor: "#8B8BF5", // Purple color for the icon
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: `Yes, Save`,
-        cancelButtonText: "Cancel",
-        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-        cancelButtonColor: "#E97777", // Pink/red color for cancel button
-        buttonsStyling: true,
-        customClass: {
-          popup: "rounded-4 shadow-lg",
-          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-          title: "fs-2 fw-normal mb-2",
-        },
-        width: "26em",
-        padding: "2em",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Save",
       });
 
       if (result.isConfirmed) {

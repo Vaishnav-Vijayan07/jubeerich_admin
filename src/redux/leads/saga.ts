@@ -42,14 +42,6 @@ interface LeadsData {
     currentPage: number;
     currentLimit: number;
     keyword?: string | undefined;
-    assigned_cre?: string | undefined;
-    sort_order?: string | undefined;
-    sort_by?: string | undefined;
-    country?: string | undefined;
-    office?: string | undefined;
-    source?: string | undefined;
-    counselor?: string | undefined;
-    branch?: string | undefined;
     id: string;
     full_name: string;
     email: string;
@@ -68,6 +60,8 @@ interface LeadsData {
     remarks: string;
     lead_received_date: string;
     ielts: boolean;
+    // exam_details?: any[],
+    // exam_documents?: any[]
     zipcode: any;
     exam_details?: any;
     exam_documents?: any;
@@ -86,13 +80,11 @@ if (userInfo) {
   userRole = JSON.parse(userInfo)?.role;
 }
 
-function* getLeads({
-  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source, counselor },
-}: LeadsData): SagaIterator {
+function* getLeads({ payload: { currentPage, currentLimit, keyword } }: LeadsData): SagaIterator {
   try {
     let response;
     let data;
-    response = yield call(getLeadsApi, currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source, counselor);
+    response = yield call(getLeadsApi, currentPage, currentLimit, keyword);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -103,11 +95,9 @@ function* getLeads({
   }
 }
 
-function* getLeadsAssignedByRegionalManager({
-  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, source, branch },
-}: LeadsData): SagaIterator {
+function* getLeadsAssignedByRegionalManager(): SagaIterator {
   try {
-    let response = yield call(getAssignedLeadsRegionalMangersApi, currentPage, currentLimit, keyword, sort_by, sort_order, country, source, branch);
+    let response = yield call(getAssignedLeadsRegionalMangersApi);
     let data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -122,11 +112,11 @@ function* getLeadsAssignedByRegionalManager({
   }
 }
 
-function* getLeadsForTL({ payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source } }: LeadsData): SagaIterator {
+function* getLeadsForTL({ payload: { currentPage, currentLimit, keyword } }: LeadsData): SagaIterator {
   try {
     let response;
     let data;
-    response = yield call(getLeadsByCreTl, currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source);
+    response = yield call(getLeadsByCreTl, currentPage, currentLimit, keyword);
     data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -137,22 +127,9 @@ function* getLeadsForTL({ payload: { currentPage, currentLimit, keyword, sort_by
   }
 }
 
-function* getAssignedLeads({
-  payload: { currentPage, currentLimit, keyword, sort_by, sort_order, country, office, source, assigned_cre },
-}: LeadsData): SagaIterator {
+function* getAssignedLeads({ payload: { currentPage, currentLimit, keyword } }: LeadsData): SagaIterator {
   try {
-    let response = yield call(
-      getAssignedLeadsByCreTl,
-      currentPage,
-      currentLimit,
-      keyword,
-      sort_by,
-      sort_order,
-      country,
-      office,
-      source,
-      assigned_cre
-    );
+    let response = yield call(getAssignedLeadsByCreTl, currentPage, currentLimit,keyword);
     let data = response.data;
 
     // NOTE - You can change this according to response format from your api
@@ -263,17 +240,29 @@ function* addLeads({
       exam_documents
     );
     const data = response.data.message;
-    
-    if(response?.data?.status) {
-      yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));
-      navigate(`/leads/manage/${response?.data?.data?.userPrimaryInfo?.id}`);
-    } else {
-      let existleadId = response?.data?.existingLeadId;
-      let error = response?.data?.message
-      yield put(LeadsApiResponseError(LeadsActionTypes.ADD_LEADS, error, existleadId));
+
+    yield put(LeadsApiResponseSuccess(LeadsActionTypes.ADD_LEADS, data));
+
+    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+
+    if (userInfo) {
+      const { role } = JSON.parse(userInfo);
+
+      // if (role == cre_tl_id) {
+      //   console.log("getLeadsTL called");
+
+      //   yield put(getLeadsTL());
+      // } else if (role == counsellor_tl_id && isAssignedLeads) {
+      //   yield put(getLeadAssignedByCounsellorTL());
+      // }
+      // else {
+      //   yield put(getLead(1,10));
+      // }
     }
+    navigate(`/leads/manage/${response?.data?.data?.userPrimaryInfo?.id}`);
   } catch (error: any) {
     console.log("err", error);
+
     yield put(LeadsApiResponseError(LeadsActionTypes.ADD_LEADS, error));
   }
 }

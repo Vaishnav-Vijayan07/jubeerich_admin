@@ -1,8 +1,7 @@
 import React, { memo, useState } from "react";
 import { Card, Form, Row, Col, Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { getDashboard } from "../../redux/actions";
-import { getWeeklyDateRange } from "../../utils/date_helpers";
+import { getDashboard } from "../redux/actions";
 
 const styles: any = {
   filterItem: (isSelected: any) => ({
@@ -22,7 +21,6 @@ const styles: any = {
 
 const CustomFilter = ({
   filterType,
-  setValue,
   setFilterType,
   selectedYear,
   setSelectedYear,
@@ -36,10 +34,6 @@ const CustomFilter = ({
   setCustomEndDate,
   filters,
   handleFilter,
-  currentCountry,
-  setCurrentCountry,
-  selectedWeek,
-  setSelectedWeek,
 }: any) => {
   const dispatch = useDispatch();
 
@@ -47,8 +41,10 @@ const CustomFilter = ({
     setFilterType(type);
   };
 
+  // Get the week number for a given date
+
   const handleFilterApply = (filterType: any) => {
-    handleFilter(filterType, currentCountry);
+    handleFilter(filterType);
   };
 
   const handleClearFilter = () => {
@@ -57,15 +53,12 @@ const CustomFilter = ({
     setSelectedMonth((new Date().getMonth() + 1).toString());
     setSelectedDate("");
     setCustomStartDate("");
-    setCurrentCountry(currentCountry);
     setCustomEndDate("");
-    dispatch(currentCountry ? getDashboard({ country_id: currentCountry }) : getDashboard());
+    dispatch(getDashboard());
   };
 
   // Handle date selection and automatically set week
   const handleDateSelection = (date: string) => {
-    const { startDate, endDate } = getWeeklyDateRange(selectedYear, selectedMonth, date);
-    setSelectedWeek(`${startDate} - ${endDate}`);
     setSelectedDate(date);
   };
 
@@ -77,6 +70,27 @@ const CustomFilter = ({
     value: (i + 1).toString(),
     label: new Date(2024, i, 1).toLocaleString("default", { month: "long" }),
   }));
+
+  const divComponent = () => {
+    if (filterType === "custom") {
+      return (
+        <Row className="mb-3">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>From Date</Form.Label>
+              <Form.Control type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>To Date</Form.Label>
+              <Form.Control type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} />
+            </Form.Group>
+          </Col>
+        </Row>
+      );
+    }
+  };
 
   return (
     <Card className="bg-white">
@@ -152,7 +166,7 @@ const CustomFilter = ({
               </Col>
               <Col md={2}>
                 <Form.Group>
-                  <Form.Label>Week Start Date</Form.Label>
+                  <Form.Label>Date</Form.Label>
                   <Form.Control type="date" value={selectedDate} onChange={(e) => handleDateSelection(e.target.value)} />
                 </Form.Group>
               </Col>
@@ -161,11 +175,6 @@ const CustomFilter = ({
                   Apply
                 </Button>
               </Col>
-              {selectedWeek && (
-                <Col md={12} className="mt-2">
-                  <p className="mb-0">Selected Week: {selectedWeek}</p>
-                </Col>
-              )}
             </Row>
           )}
 

@@ -1,39 +1,36 @@
-const validateFields = (
-  formDataArray: Record<string, any>[],
-  rules: Record<string, { required?: boolean; message?: string; format?: RegExp; formatMessage?: string; custom?: (value: any) => string | null }>
-): { errors: Record<number, Record<string, string>>; isValid: boolean } => {
-  const newErrors: Record<number, Record<string, string>> = {};
+const validateFields = (formDataArray: any[], rules: any) => {
+  const newErrors: any = {}; // Object to hold new errors indexed by formData item index
 
+  // Iterate over each item in formDataArray (which is an array of work experience items)
   formDataArray.forEach((formData, index) => {
-    const itemErrors: Record<string, string> = {};
+    // Create an empty object for the current item's errors
+    newErrors[index] = {};
 
-    Object.entries(rules).forEach(([field, rule]) => {
-      const value = formData[field];
+    // Loop through all the rules and validate the form data for each item
+    Object.keys(rules).forEach((field) => {
+      const value = formData[field]; // Get the value for the field from formData
+      const rule = rules[field]; // Get the validation rule for the field
 
-      // Check if the field is required
+      // Check if the field is required and if the value is missing or empty
       if (rule.required && !value) {
-        itemErrors[field] = rule.message || `${field} is required`;
-      }
-
-      // Check the format using a regular expression (if provided)
-      if (rule.format && value && !rule.format.test(value)) {
-        itemErrors[field] = rule.formatMessage || `${field} is not in the correct format`;
-      }
-
-      // Apply custom validation (if provided)
-      if (rule.custom && typeof rule.custom === "function") {
-        const customError = rule.custom(value);
+        newErrors[index][field] = `${field
+          .replace(/_/g, " ")
+          .replace(/\b\w/g, (char) => char.toUpperCase())} is required`;
+      } else if (rule.custom && typeof rule.custom === "function") {
+        const customError = rule.custom(value); // Custom validation rule (if provided)
         if (customError) {
-          itemErrors[field] = customError;
+          newErrors[index][field] = customError;
         }
       }
     });
 
-    if (Object.keys(itemErrors).length > 0) {
-      newErrors[index] = itemErrors;
+    // Remove index from newErrors if there are no errors for that item
+    if (Object.keys(newErrors[index]).length === 0) {
+      delete newErrors[index];
     }
   });
 
+  // Return the validation result: errors and whether the form is valid
   return { errors: newErrors, isValid: Object.keys(newErrors).length === 0 };
 };
 

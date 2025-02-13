@@ -462,6 +462,7 @@ const ConfigureCourses = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
+          { label: "Master", path: "/settings/master/campus" },
           { label: "Configure Courses", path: "/settings/master/configure_courses", active: true },
         ]}
         title={"Course Configuration"}

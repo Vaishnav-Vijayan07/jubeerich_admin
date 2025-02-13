@@ -4,14 +4,14 @@ import { Row, Col } from "react-bootstrap";
 import LeadsTable from "../Components/LeadsTable";
 import StackGraph from "../Components/StackGraph";
 
-function ItTeamDashboard({ categories, series, latestLeadsCount,colors }: any) {
+function ItTeamDashboard({ categories, series, latestLeadsCount }: any) {
   return (
     <>
       <Row>
-        <Col md={6}>
-          <StackGraph categories={categories} series={series} colors={colors} />
+        <Col md={5}>
+          <StackGraph categories={categories} series={series} />
         </Col>
-        <Col md={6}>
+        <Col md={7}>
           <LeadsTable leadsData={latestLeadsCount} showOffice={true} />
         </Col>
       </Row>

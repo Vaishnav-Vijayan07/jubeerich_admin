@@ -83,7 +83,7 @@ const StatisticsChartWidget = ({
               <Chart
                 options={chartConfig["apxOptions"]}
                 series={chartConfig["apxSeries"]}
-                type={"area"}
+                type={chartConfig["type"]}
                 height={chartConfig["height"]}
                 className="apex-charts mt-0"
               />

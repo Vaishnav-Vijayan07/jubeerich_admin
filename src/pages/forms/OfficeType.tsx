@@ -37,8 +37,6 @@ import {
 } from "../../redux/OfficeType/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
-import { useHistoryModal } from "../../hooks/useHistoryModal";
-const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
   value: string;
@@ -88,7 +86,6 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, sourceData, error, loading, initialLoading } = props;
 
   //fetch token from session storage
@@ -101,7 +98,6 @@ const BasicInputElements = withSwal((props: any) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedSource, setSelectedSource] = useState<OptionType | null>(null);
   const [formData, setFormData] = useState(initialState);
-
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -152,24 +148,13 @@ const BasicInputElements = withSwal((props: any) => {
   const handleDelete = (id: string) => {
     swal
       .fire({
-        title: "Confirm Action",
-        text: `Do you want to delete this office type?`,
-        icon: "question",
-        iconColor: "#8B8BF5", // Purple color for the icon
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
-        cancelButtonText: "Cancel",
-        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-        cancelButtonColor: "#E97777", // Pink/red color for cancel button
-        buttonsStyling: true,
-        customClass: {
-          popup: "rounded-4 shadow-lg",
-          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-          title: "fs-2 fw-normal mb-2",
-        },
-        width: "26em",
-        padding: "2em",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -209,24 +194,13 @@ const BasicInputElements = withSwal((props: any) => {
 
       swal
       .fire({
-        title: "Confirm Action",
-        text: `Do you want to ${isUpdate ? "update" : "create"} this office type?`,
-        icon: "question",
-        iconColor: "#8B8BF5", // Purple color for the icon
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
-        cancelButtonText: "Cancel",
-        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-        cancelButtonColor: "#E97777", // Pink/red color for cancel button
-        buttonsStyling: true,
-        customClass: {
-          popup: "rounded-4 shadow-lg",
-          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-          title: "fs-2 fw-normal mb-2",
-        },
-        width: "26em",
-        padding: "2em",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -258,6 +232,33 @@ const BasicInputElements = withSwal((props: any) => {
           }
         }
       });
+
+      // if (userInfo) {
+      //   const { user_id } = JSON.parse(userInfo);
+      //   if (isUpdate) {
+      //     // Handle update logic
+
+      //     dispatch(
+      //       updateOfficeTypeData(
+      //         formData.id,
+      //         formData.office_type_name,
+      //         formData.office_type_description,
+      //         user_id
+      //       )
+      //     );
+      //     setIsUpdate(false);
+      //   } else {
+      //     // Handle add logic
+
+      //     dispatch(
+      //       addOfficeTypeData(
+      //         formData.office_type_name,
+      //         formData.office_type_description,
+      //         user_id
+      //       )
+      //     );
+      //   }
+      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {
@@ -296,30 +297,30 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "slug",
       sort: false,
     },
-    // {
-    //   Header: "Actions",
-    //   accessor: "",
-    //   sort: false,
-    //   Cell: ({ row }: any) => (
-    //     <div className="d-flex justify-content-center align-items-center gap-2">
+    {
+      Header: "Actions",
+      accessor: "",
+      sort: false,
+      Cell: ({ row }: any) => (
+        <div className="d-flex justify-content-center align-items-center gap-2">
+          {/* Edit Icon */}
+          {/* <Link to="#" className="action-icon" onClick={() => {
+            setIsUpdate(true);
+            handleUpdate(row.original);
+            toggleResponsiveModal();
+          }}>
+            <i className="mdi mdi-square-edit-outline"></i>
+          </Link> */}
 
-    //       <Link to="#" className="action-icon" onClick={() => {
-    //         setIsUpdate(true);
-    //         handleUpdate(row.original);
-    //         toggleResponsiveModal();
-    //       }}>
-    //         <i className="mdi mdi-square-edit-outline"></i>
-    //       </Link>
-
-
-    //       <Link to="#" className="action-icon" onClick={() =>
-    //         handleDelete(row.original.id)
-    //       }>
-    //         <i className="mdi mdi-delete-outline"></i>
-    //       </Link>
-    //     </div>
-    //   ),
-    // },
+          {/* Delete Icon */}
+          {/* <Link to="#" className="action-icon" onClick={() =>
+            handleDelete(row.original.id)
+          }>
+            <i className="mdi mdi-delete-outline"></i>
+          </Link> */}
+        </div>
+      ),
+    },
   ];
 
   //handle cancel update section
@@ -361,8 +362,6 @@ const BasicInputElements = withSwal((props: any) => {
       // Clear validation errors
     }
   }, [loading, error]);
-
-  
 
   return (
     <>
@@ -463,13 +462,6 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
-        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
-          <Modal.Header closeButton></Modal.Header>
-          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
-            <HistoryTable apiUrl={"office_type"} />
-          </Modal.Body>
-        </Modal>
-
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
@@ -478,10 +470,6 @@ const BasicInputElements = withSwal((props: any) => {
                 onClick={toggleResponsiveModal}
               >
                 <i className="mdi mdi-plus-circle"></i> Add Office Type
-              </Button>
-
-              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
-              <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Office Types</h4>
               <Table
@@ -517,15 +505,38 @@ const OfficeType = () => {
     })
   );
 
+  // const Source = useSelector(
+  //   (state: RootState) => state?.Source?.sources?.data
+  // );
+
   useEffect(() => {
     dispatch(getOfficeTypeData());
   }, []);
+
+  // useEffect(() => {
+  //   if (Source) {
+  //     const SourceArray = Source?.map((source: any) => ({
+  //       value: source.id.toString(),
+  //       label: source.source_name, // Replace with the appropriate field from the lead data
+  //     }));
+  //     setSourceData(SourceArray);
+  //   }
+  // }, [Source]);
+
+  // if (initialLoading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "50%", left: "50%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          // { label: "Master", path: "/settings/master/office_type" },
+          { label: "Master", path: "/settings/master/office_type" },
           {
             label: "Office Types ",
             path: "/settings/master/office_type",

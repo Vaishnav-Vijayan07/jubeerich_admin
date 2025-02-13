@@ -89,7 +89,6 @@ const AllRoutes = (props: IRoutesProps) => {
             />
           ))}
         </Route>
-        <Route path="*" element={<Navigate to="/error-404" />} />
       </Routes>
     </React.Fragment>
   );

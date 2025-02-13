@@ -10,13 +10,11 @@ import validateFields from "../../../../../helpers/validateHelper";
 import useSaveWorkInfo from "../../../../../hooks/useSaveWorkInfo";
 import GapRows from ".././gapRow";
 import EmploymentHistory from ".././EmploymentHistory";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import SkeletonComponent from "../StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../../utils/regrexValidation";
 import { showErrorAlert } from "../../../../../constants";
 import { allowedFileTypes } from "../data";
-import { refreshData } from "../../../../../redux/countryReducer";
-import { showConfirmation } from "../../../../../utils/showConfirmation";
 
 const initialStateWork = {
   years: 0,
@@ -42,14 +40,12 @@ const initialGapState = {
 
 const WorkExpereince = withSwal((props: any) => {
   const { swal, studentId } = props;
-  const dispatch = useDispatch();
   const [initialLoading, setInitialLoading] = useState(false);
-  const [hasGap, setHasGap] = useState<boolean>(false);
+  const [hasGap, setHasGap] = useState("no");
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
   const [workExperienceFromApi, setWorkExperienceFromApi] = useState<any>(null);
   const [gap, setGap] = useState<any>(initialGapState);
   const { saveLoading: workSaveLoading, saveWorkDetails } = useSaveWorkInfo(studentId);
-  const [hasWorkExp, setHasWorkExp] = useState<boolean>(false);
 
   const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
 
@@ -57,19 +53,18 @@ const WorkExpereince = withSwal((props: any) => {
     setInitialLoading(true);
     try {
       // Fetch both API calls concurrently
-      const [workResponse, gapResponse] = await Promise.all([axios.get(`studentWorkInfo/${studentId}`), axios.get(`gapReason/${studentId}/work`)]);
+      const [workResponse, gapResponse] = await Promise.all([
+        axios.get(`studentWorkInfo/${studentId}`),
+        axios.get(`gapReason/${studentId}/work`),
+      ]);
 
-      const workData = workResponse.data?.workDataFormatted;
+      const workData = workResponse.data?.data;
       const gapData = gapResponse.data?.data;
-
-      const has_work_gap = workResponse.data?.has_work_gap;
-      const has_work_exp = workResponse.data?.has_work_exp;
 
       // Use helper functions to check the data and set state
       setWorkExperienceFromApi(workData.length > 0 ? workData : [initialStateWork]);
       setGap(gapData.length > 0 ? gapData : [initialGapState]);
-      setHasGap(has_work_gap);
-      setHasWorkExp(has_work_exp);
+      setHasGap(gapData.length > 0 ? "yes" : "no");
     } catch (error) {
       console.error("Error fetching academic info:", error);
     } finally {
@@ -82,40 +77,20 @@ const WorkExpereince = withSwal((props: any) => {
     if (studentId) {
       getAcademicInfo();
     }
-  }, [studentId, refresh]);
+  }, [studentId, refresh, getAcademicInfo]);
 
-  const decisionWiseSave = async () => {
-    if (hasWorkExp) {
-      await saveWorkData();
-    } else {
-      const result = await showConfirmation("Do you want to proceed?");
-      if (!result.isConfirmed) return;
-      saveCheck();
-    }
-  };
-
-  const saveCheck = async () => {
-    try {
-      await axios.patch(`update_info_checks/${studentId}`, { has_work_exp: hasWorkExp });
-      dispatch(refreshData());
-    } catch (error) {
-      console.log(error);
-      showErrorAlert("Something went wrong");
-    }
-  };
-
-  const saveWorkData = async () => {
+  const saveWorkData = useCallback(async () => {
     const validationRules = {
-      years: { required: true, message: "Please enter the number of years" },
-      designation: { required: false, message: "Please enter a designation" },
-      company: { required: true, message: "Please enter a company name" },
-      from: { required: false, message: "Please select a start date" },
-      to: { required: false, message: "Please select an end date" },
-      bank_statement: { required: false, message: "Please upload a bank statement" },
-      job_offer_document: { required: false, message: "Please upload a job offer document" },
-      appointment_document: { required: false, message: "Please upload an appointment document" },
-      payslip_document: { required: false, message: "Please upload a payslip document" },
-      experience_certificate: { required: false, message: "Please upload an experience certificate" },
+      years: { required: true },
+      designation: { required: true },
+      company: { required: true },
+      from: { required: true },
+      to: { required: true },
+      bank_statement: { required: true },
+      job_offer_document: { required: true },
+      appointment_document: { required: true },
+      payslip_document: { required: true },
+      experience_certificate: { required: true },
     };
 
     const { isValid, errors } = validateFields(workExperienceFromApi, validationRules);
@@ -129,12 +104,13 @@ const WorkExpereince = withSwal((props: any) => {
       );
       return;
     }
-    await saveWorkDetails(workExperienceFromApi, hasWorkExp);
-    saveCheck();
-  };
+
+    saveWorkDetails(workExperienceFromApi);
+  }, [workExperienceFromApi]);
 
   const handleWorkExperienceChange = (name: string, value: any, index: number) => {
-    if (typeof value == "object" && !allowedFileTypes.includes(value.type)) {
+
+    if (typeof value == 'object' && !allowedFileTypes.includes(value.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
       return;
     }
@@ -144,25 +120,31 @@ const WorkExpereince = withSwal((props: any) => {
       return; // Stop updating if validation fails
     }
 
-    setWorkExperienceFromApi((prevState: any) => prevState.map((item: any, i: number) => (i === index ? { ...item, [name]: value } : item)));
+    setWorkExperienceFromApi((prevState: any) =>
+      prevState.map((item: any, i: number) => (i === index ? { ...item, [name]: value } : item))
+    );
   };
 
   const addMoreWorkExperience = () => {
     setWorkExperienceFromApi((prevState: any) => [...prevState, { ...initialStateWork }]);
   };
 
-  const removeWorkExperience = async (index: number, itemId: number) => {
+  const removeWorkExperience = (index: number, itemId: number) => {
     if (itemId === 0) {
       setWorkExperienceFromApi((prevState: any) => prevState.filter((_: any, i: number) => i !== index));
     } else {
-      const result = await showConfirmation("Are you sure you want to remove this item?");
-      if (!result.isConfirmed) return;
-       if(workExperienceFromApi.length == 1){
-        setWorkExperienceFromApi([initialStateWork]);
-       }
-      removeFromApi(itemId, "work", studentId);
+      removeFromApi(itemId, "work");
     }
   };
+
+  // if (initialLoading) {
+  //   return (
+  //     <Spinner
+  //       animation="border"
+  //       style={{ position: "absolute", top: "100%", left: "45%" }}
+  //     />
+  //   );
+  // }
 
   return (
     <>
@@ -170,44 +152,16 @@ const WorkExpereince = withSwal((props: any) => {
         <SkeletonComponent />
       ) : (
         <>
-          <Row className={deleteLoading || workSaveLoading ? "opacity-25 pe-0" : "bg-light py-4 mb-3 ps-3"}>
-            <Row className="mt-3">
-              <Col>
-                <Form.Group className="mb-3" controlId="source_id">
-                  <Form.Label>Do you have any work experience?</Form.Label>
-                  <div className="d-flex justify-content-start align-items-center mt-1">
-                    <Form.Check
-                      type="radio"
-                      name="hasExams"
-                      checked={hasWorkExp}
-                      onChange={() => setHasWorkExp(true)}
-                      label={<span className="ps-1 fw-bold">Yes</span>}
-                    />
-                    <Form.Check
-                      type="radio"
-                      name="hasExams"
-                      checked={!hasWorkExp}
-                      onChange={() => setHasWorkExp(false)}
-                      label={<span className="ps-1 fw-bold">No</span>}
-                      className="ms-3"
-                    />
-                  </div>
-                </Form.Group>
-              </Col>
-            </Row>
-            {hasWorkExp && (
-              <>
-                <WorkExpRow
-                  workExperienceData={workExperienceFromApi}
-                  handleWorkExperienceChange={handleWorkExperienceChange}
-                  addMoreWorkExperience={addMoreWorkExperience}
-                  removeWorkExperience={removeWorkExperience}
-                  studentId={studentId}
-                />
-              </>
-            )}
-
-            <Button variant="primary" className="w-auto ms-2" type="submit" onClick={decisionWiseSave} disabled={workSaveLoading}>
+          <Row className={deleteLoading || workSaveLoading ? "opacity-25 pe-0" : ""}>
+            <WorkExpRow
+              workExperienceData={workExperienceFromApi}
+              handleWorkExperienceChange={handleWorkExperienceChange}
+              addMoreWorkExperience={addMoreWorkExperience}
+              removeWorkExperience={removeWorkExperience}
+            />
+          </Row>
+          <Row>
+            <Button variant="primary" className="mt-4" type="submit" onClick={saveWorkData} disabled={workSaveLoading}>
               {workSaveLoading ? (
                 <>
                   <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
@@ -218,24 +172,39 @@ const WorkExpereince = withSwal((props: any) => {
               )}
             </Button>
           </Row>
-          {hasWorkExp && (
-            <Row className="mt-4 bg-light py-4 mb-3 ps-3">
-              <Row className="mb-3">
-                <Col md={12}>
-                  <Form.Label className="mt-3">Has Gap in Work?</Form.Label>
-                </Col>
+          <Row>
+            <Col md={12}>
+              <Form.Label className="mt-3">Has Gap in Work?</Form.Label>
+            </Col>
 
-                <Col className="d-flex gap-2">
-                  <Form.Check type="radio" id="hasGapYes" label="Yes" checked={hasGap} onChange={() => setHasGap(true)} name="hasGap" />
+            <Col className="d-flex gap-2">
+              <Form.Check
+                type="radio"
+                id="hasGapYes"
+                label="Yes"
+                checked={hasGap === "yes"}
+                onChange={() => setHasGap("yes")}
+                name="hasGap"
+              />
 
-                  <Form.Check type="radio" id="hasGapNo" label="No" checked={!hasGap} onChange={() => setHasGap(false)} name="hasGap" />
-                </Col>
+              <Form.Check
+                type="radio"
+                id="hasGapNo"
+                label="No"
+                checked={hasGap === "no"}
+                onChange={() => setHasGap("no")}
+                name="hasGap"
+              />
+            </Col>
+          </Row>
+          {hasGap === "yes" && (
+            <>
+              <Row className="mt-4">
+                <GapRows gapData={gap} studentId={studentId} type="work" />
               </Row>
-              <GapRows gapData={gap} studentId={studentId} type="work" hasGap={hasGap} hasWorkExp={hasWorkExp} />
-            </Row>
+            </>
           )}
-
-          <Row className="bg-light py-4 mb-3 ps-3">
+          <Row>
             <EmploymentHistory studentId={studentId} />
           </Row>
         </>

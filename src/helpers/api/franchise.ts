@@ -8,7 +8,13 @@ function getFranchiseUsersApi() {
   return api.get(`${baseUrl}`, {});
 }
 
-function addFranchiseUsersApi(params: { name: string; email: string; phone: string; address: string; pocName: string }) {
+function addFranchiseUsersApi(params: {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  pocName: string;
+}) {
   return api.create(`${baseUrl}`, params);
 }
 

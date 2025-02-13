@@ -22,9 +22,7 @@ const useDropdownData = (type: string) => {
     franchises: [],
     branchCounsellors: [],
     maritalStatus: [],
-    flags:[],
-    counsellors:[],
-    application_teams:[],
+    flags:[]
   });
 
   useEffect(() => {
