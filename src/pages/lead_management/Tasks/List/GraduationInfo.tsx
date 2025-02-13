@@ -84,24 +84,26 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
       updatedGraduationDetails.splice(index, 1);
       setGraduationDetails(updatedGraduationDetails);
     } else {
-      setGraduationDetails([{
-        qualification: "",
-        university_name: "",
-        college_name: "",
-        start_date: "",
-        end_date: "",
-        percentage: "",
-        conversion_formula: "",
-        certificate: null,
-        admit_card: null,
-        registration_certificate: null,
-        backlog_certificate: null,
-        grading_scale_info: null,
-        transcript: null,
-        individual_marksheet: null,
-        errors: {},
-      },]);
-      removeFromApi(id, "graduation",student_id);
+      setGraduationDetails([
+        {
+          qualification: "",
+          university_name: "",
+          college_name: "",
+          start_date: "",
+          end_date: "",
+          percentage: "",
+          conversion_formula: "",
+          certificate: null,
+          admit_card: null,
+          registration_certificate: null,
+          backlog_certificate: null,
+          grading_scale_info: null,
+          transcript: null,
+          individual_marksheet: null,
+          errors: {},
+        },
+      ]);
+      removeFromApi(id, "graduation", student_id);
     }
   };
 
@@ -193,11 +195,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             <Form.Label>
               <span className="text-danger">*</span> Course Type
             </Form.Label>
-            <Form.Select
-              name="qualification"
-              value={item?.qualification || ""}
-              onChange={(e: any) => handleFieldChange(e, index)}
-            >
+            <Form.Select name="qualification" value={item?.qualification || ""} onChange={(e: any) => handleFieldChange(e, index)}>
               <option value="">Select Course Type</option>
               <option value="UG">UG</option>
               <option value="PG">PG</option>
@@ -283,12 +281,7 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_conversion_formula`}>
             <Form.Label>Conversion Formula</Form.Label>
-            <FormInput
-              type="text"
-              name="conversion_formula"
-              value={item?.conversion_formula}
-              onChange={(e) => handleFieldChange(e, index)}
-            />
+            <FormInput type="text" name="conversion_formula" value={item?.conversion_formula} onChange={(e) => handleFieldChange(e, index)} />
             {item?.errors?.conversion_formula && <Form.Text className="text-danger">{item.errors.conversion_formula}</Form.Text>}
           </Form.Group>
         </Col>
@@ -296,17 +289,13 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center" style={{ width: "100% !important" }}>
           <Form.Group className="mb-3 form-group" controlId={`${title}_admit_card`}>
             <Form.Label>Upload Admit Card</Form.Label>
-            <Form.Control
-              name="admit_card"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="admit_card" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.admit_card && <Form.Text className="text-danger">{item.errors.admit_card}</Form.Text>}
             {typeof item?.admit_card === "string" && (
-              <div className="mt-2">
-                <a href={`${baseUrl}uploads/graduationDocuments/${item?.admit_card}`} target="_blank" rel="noopener noreferrer">
-                  <i className="mdi mdi-download me-1"></i> admit_card
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.admit_card}`} target="_blank" rel="noopener noreferrer">
+                   admit_card
                 </a>
               </div>
             )}
@@ -316,17 +305,13 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_certificate`}>
             <Form.Label>Upload Certificate</Form.Label>
-            <Form.Control
-              name="certificate"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.certificate && <Form.Text className="text-danger">{item.errors.certificate}</Form.Text>}
             {typeof item?.certificate === "string" && (
-              <div className="mt-2">
-                <a href={`${baseUrl}uploads/graduationDocuments/${item?.certificate}`} target="_blank" rel="noopener noreferrer">
-                  <i className="mdi mdi-download me-1"></i> certificate
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.certificate}`} target="_blank" rel="noopener noreferrer">
+                   certificate
                 </a>
               </div>
             )}
@@ -335,23 +320,13 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_registration_certificate `}>
             <Form.Label>Upload Registration Certification</Form.Label>
-            <Form.Control
-              name="registration_certificate"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
-            {item?.errors?.registration_certificate && (
-              <Form.Text className="text-danger">{item.errors.registration_certificate}</Form.Text>
-            )}
+            <Form.Control name="registration_certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
+            {item?.errors?.registration_certificate && <Form.Text className="text-danger">{item.errors.registration_certificate}</Form.Text>}
             {typeof item?.registration_certificate === "string" && (
-              <div className="mt-2">
-                <a
-                  href={`${baseUrl}uploads/graduationDocuments/${item?.registration_certificate}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <i className="mdi mdi-download me-1"></i> registration_certificate
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.registration_certificate}`} target="_blank" rel="noopener noreferrer">
+                   registration_certificate
                 </a>
               </div>
             )}
@@ -360,21 +335,13 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_grading_scale_info`}>
             <Form.Label>Upload Gray Scale Info</Form.Label>
-            <Form.Control
-              name="grading_scale_info"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="grading_scale_info" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.grading_scale_info && <Form.Text className="text-danger">{item.errors.grading_scale_info}</Form.Text>}
             {typeof item?.grading_scale_info === "string" && (
-              <div className="mt-2">
-                <a
-                  href={`${baseUrl}uploads/graduationDocuments/${item?.grading_scale_info}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <i className="mdi mdi-download me-1"></i> grading_scale_info
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.grading_scale_info}`} target="_blank" rel="noopener noreferrer">
+                   grading_scale_info
                 </a>
               </div>
             )}
@@ -383,23 +350,13 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_backlog_certificate`}>
             <Form.Label>Upload Backlog Certificate</Form.Label>
-            <Form.Control
-              name="backlog_certificate"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
-            {item?.errors?.backlog_certificate && (
-              <Form.Text className="text-danger">{item.errors.backlog_certificate}</Form.Text>
-            )}
+            <Form.Control name="backlog_certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
+            {item?.errors?.backlog_certificate && <Form.Text className="text-danger">{item.errors.backlog_certificate}</Form.Text>}
             {typeof item?.backlog_certificate === "string" && (
-              <div className="mt-2">
-                <a
-                  href={`${baseUrl}uploads/graduationDocuments/${item?.backlog_certificate}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <i className="mdi mdi-download me-1"></i> backlog_certificate
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.backlog_certificate}`} target="_blank" rel="noopener noreferrer">
+                   backlog_certificate
                 </a>
               </div>
             )}
@@ -408,23 +365,13 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_individual_marksheet`}>
             <Form.Label>Upload Individual Marksheet</Form.Label>
-            <Form.Control
-              name="individual_marksheet"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
-            {item?.errors?.individual_marksheet && (
-              <Form.Text className="text-danger">{item.errors.individual_marksheet}</Form.Text>
-            )}
+            <Form.Control name="individual_marksheet" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
+            {item?.errors?.individual_marksheet && <Form.Text className="text-danger">{item.errors.individual_marksheet}</Form.Text>}
             {typeof item?.individual_marksheet === "string" && (
-              <div className="mt-2">
-                <a
-                  href={`${baseUrl}uploads/graduationDocuments/${item?.individual_marksheet}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <i className="mdi mdi-download me-1"></i> individual_marksheet
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.individual_marksheet}`} target="_blank" rel="noopener noreferrer">
+                   individual_marksheet
                 </a>
               </div>
             )}
@@ -434,17 +381,13 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
         <Col md={4} className="d-flex justify-content-between align-items-center">
           <Form.Group className="mb-3 form-group" controlId={`${title}_transcript`}>
             <Form.Label>Upload Transcript</Form.Label>
-            <Form.Control
-              name="transcript"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => handleFileChange(e, index)}
-            />
+            <Form.Control name="transcript" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.transcript && <Form.Text className="text-danger">{item.errors.transcript}</Form.Text>}
             {typeof item?.transcript === "string" && (
-              <div className="mt-2">
-                <a href={`${baseUrl}uploads/graduationDocuments/${item?.transcript}`} target="_blank" rel="noopener noreferrer">
-                  <i className="mdi mdi-download me-1"></i> transcript
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.transcript}`} target="_blank" rel="noopener noreferrer">
+                   transcript
                 </a>
               </div>
             )}
