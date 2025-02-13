@@ -25,6 +25,7 @@ const useDropdownData = (type: string) => {
     flags:[],
     counsellors:[],
     application_teams:[],
+    visa_members: []
   });
 
   useEffect(() => {

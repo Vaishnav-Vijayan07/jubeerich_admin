@@ -367,6 +367,17 @@ const MENU_ITEMS: MenuItemTypes[] = [
     icon: "user-tie", // Counsellor-specific creation
     roles: ["Manage Franchise"],
   },
+
+  { key: "visa", label: "Visa", isTitle: true, roles: ["Visa Approval", "Visa Manage"] },
+
+  {
+    key: "visa_approvals",
+    label: "Visa Approval",
+    isTitle: false,
+    icon: "clock",
+    url: "/visa/pendings",
+    roles: ["Visa Approval", "Visa Manage"],
+  },
 ];
 
 // const MENU_ITEMS: MenuItemTypes[] = [

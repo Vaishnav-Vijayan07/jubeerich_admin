@@ -15,6 +15,7 @@ import TasksMaterial from "../pages/forms/Material/Tasks/TasksMaterial";
 import TaskPrefix from "../pages/forms/taskPrefix";
 import Summary from "../pages/forms/Kyc/Summary/Summary";
 import ExistLeads from "../pages/exist_leads/ExistLeads";
+import VisaPendings from "../pages/visa_processed/visaPendings";
 
 // lazy load all the views
 
@@ -251,6 +252,22 @@ const crmAppRoutes = {
       route: PrivateRoute,
     },
   ],
+};
+
+const visaRoutes = {
+  path: "/apps/crm",
+  name: "CRM",
+  route: PrivateRoute,
+  roles: ["Visa Approval", "Visa Manage"],
+  icon: "users",
+  children: [
+    {
+      path: "/visa/pendings",
+      name: "Visa Pendings",
+      element: <VisaPendings />,
+      route: PrivateRoute,
+    },
+  ]
 };
 
 const reportsRoutes = {
@@ -743,7 +760,7 @@ const flattenRoutes = (routes: RoutesProps[]) => {
 };
 
 // All routes
-const authProtectedRoutes = [dashboardRoutes, ...appRoutes, settingsRoutes, UserRoutes, leadRoutes, reportsRoutes];
+const authProtectedRoutes = [dashboardRoutes, ...appRoutes, settingsRoutes, UserRoutes, leadRoutes, reportsRoutes, visaRoutes];
 const publicRoutes = [...authRoutes, ...otherPublicRoutes];
 
 const authProtectedFlattenRoutes = flattenRoutes([...authProtectedRoutes]);
