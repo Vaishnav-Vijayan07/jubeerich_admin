@@ -10,7 +10,10 @@ export interface KYCActionType {
     | KYCActionTypes.ASSIGN_APPLICATION_MEMBER
     | KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER
     | KYCActionTypes.GET_APPLICATION_BY_USER
-    | KYCActionTypes.GET_APPROVED;
+    | KYCActionTypes.GET_APPROVED
+    | KYCActionTypes.OPEN_APPROVAL_MODAL
+    | KYCActionTypes.CLOSE_APPROVAL_MODAL
+    | KYCActionTypes.TOGGLE_APPROVAL_MODAL;
 
   payload: {} | string;
 }
@@ -59,10 +62,18 @@ export const assignToApplicationMember = (application_ids: any, user_id: any, ty
   },
 });
 
-export const autoAssignToApplicationMember = (application_ids: any, type: string): KYCActionType => ({
+export const autoAssignToApplicationMember = (application_ids: any, type: string, users_list?: any): KYCActionType => ({
   type: KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER,
   payload: {
     application_ids,
     type,
+    users_list
+  },
+});
+
+export const toggleApprovalModal = (isOpen: boolean): KYCActionType => ({
+  type: KYCActionTypes.TOGGLE_APPROVAL_MODAL,
+  payload: {
+    openModal: isOpen,
   },
 });

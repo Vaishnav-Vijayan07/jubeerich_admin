@@ -15,23 +15,25 @@ import {
   cre_tl_id,
   it_team_id,
   regional_manager_id,
-  baseUrl,
   cre_id,
   cre_reception_id,
   showWarningAlert,
-  MIN_DATA_ON_TABLE,
 } from "../../constants";
 import FileUploader from "../../components/FileUploader";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import { examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
+import { approvalTypes, examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
 import LeadsModal from "./LeadsModal";
 import LeadsFilters from "./LeadsFilters";
 import { AppDispatch } from "../../redux/store";
 import { Pagination } from "@mui/material";
 import CustomPagination from "../../components/CustomPagination";
 import CustomSearchBox from "../../components/CustomSearchBox";
+import LeadApprovalTable from "./LeadApprovalTable";
+import SortBox from "../../components/SortBox";
+import { formatString } from "../../utils/formatData";
+import UserSelectionModal from "./UserSelectionModal";
 
 const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -72,10 +74,6 @@ const BasicInputElements = withSwal((props: any) => {
     currentLimit,
     handleLimitChange,
     handleSearch,
-    isSearchApplied,
-    onClose,
-    onValueChange,
-    value,
   } = props;
 
   const isDataPresent = state && state.length > 0;
@@ -92,14 +90,33 @@ const BasicInputElements = withSwal((props: any) => {
   const [handleUpdateData, setHandleUpdateData] = useState<any>({});
   const [clearLeadModal, setClearLeadModal] = useState<any>(null);
   const [clearError, setClearError] = useState<any>(null);
-  // const [progress, setProgress] = useState(0);
+  const [clearFiles, setClearFiles] = useState<any>(false);
+  const [openApproveModal, setOpenApproveModal] = useState<boolean>(false);
+  const [responseData, setResponseData] = useState<any>(null);
+  const [approvalOptionsData, setApprovalOptionsData] = useState<any>(null);
+  const [assignedApprovalData, setAssignedApprovalData] = useState<any>(null);
+  const [approvalType, setApprovalType] = useState<string>("");
+  const [creList, setCreList] = useState<any>(null);
+  const [openUserSelectionModal, setOpenUserSelectionModal] = useState<boolean>(false);
+
+  const getSlugOptions = async () => {
+    try {
+      const { data } = await axios.get(`/get_slug_options`);
+      setApprovalOptionsData(data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getSlugOptions();
+  }, []);
 
   useEffect(() => {
     setFilteredItems(state);
   }, [state]);
 
   let records: TableRecords[] = filteredItems;
-  // const records: TableRecords[] = filteredItems;
 
   useEffect(() => {
     records = filteredItems;
@@ -138,24 +155,29 @@ const BasicInputElements = withSwal((props: any) => {
     resolver: yupResolver(validationSchema), // Integrate yup with react-hook-form
     defaultValues: initialState,
   });
-
-  const handleUpdate = (item: any) => {
-    if (item) {
-      setHandleUpdateData({ ...item });
-    }
-  };
-
+  
   //handle delete function
   const handleDelete = (id: string) => {
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to delete this lead?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: `Yes, delete it!`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -184,14 +206,21 @@ const BasicInputElements = withSwal((props: any) => {
       {
         Header: "Email",
         accessor: "email",
-        sort: false,
+        sort: true,
         minWidth: 100,
+        isTruncate: true,
+      },
+      {
+        Header: "Phone",
+        accessor: "phone",
+        sort: true,
+        minWidth: 110,
         isTruncate: true,
       },
       {
         Header: "City",
         accessor: "city",
-        sort: false,
+        sort: true,
         minWidth: 75,
       },
       {
@@ -210,16 +239,23 @@ const BasicInputElements = withSwal((props: any) => {
         ),
       },
       {
+        Header: "Status",
+        accessor: "lead_status",
+        sort: false,
+        isTruncate: true,
+        Cell: ({ row }: any) => <><span>{formatString(row?.original?.lead_status)}</span></>,
+      },
+      {
         Header: "Office",
         accessor: "office_type_name",
-        sort: false,
+        sort: true,
         minWidth: 75,
         isTruncate: true,
       },
       {
         Header: "Source",
         accessor: "source_name",
-        sort: false,
+        sort: true,
         minWidth: 75,
       },
       {
@@ -240,7 +276,7 @@ const BasicInputElements = withSwal((props: any) => {
         Header: "Department",
         accessor: "stage",
         sort: false,
-        minWidth: 50,
+        minWidth: 30,
         isTruncate: true,
       },
       ...(user?.role == cre_tl_id
@@ -344,7 +380,7 @@ const BasicInputElements = withSwal((props: any) => {
               Cell: ({ row }: any) => {
                 const counselors = row?.original.counselors;
                 return (
-                  <ul style={{ listStyle: "none", padding: 0 }}>
+                  <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                     {counselors && counselors.length > 0 ? (
                       counselors.map((item: any) => <li key={item?.counselor_name}>{item?.counselor_name}</li>)
                     ) : (
@@ -361,32 +397,28 @@ const BasicInputElements = withSwal((props: any) => {
       //   accessor: "status",
       //   sort: false,
       //   isTruncate: true,
+      //   Cell: ({ row }: any) => (
+      //     <ul style={{ listStyle: "none", margin: "0" }}>
+      //       {row.original.preferredCountries.map((item: any) => (
+      //         <li>{item?.status_name}</li>
+      //       ))}
+      //     </ul>
+      //   ),
       // },
-      {
-        Header: "Status",
-        accessor: "status",
-        sort: false,
-        isTruncate: true,
-        Cell: ({ row }: any) => (
-          <ul style={{ listStyle: "none", margin: "0" }}>
-            {row.original.preferredCountries.map((item: any) => (
-              <li>{item?.status_name}</li>
-            ))}
-          </ul>
-        ),
-      },
       {
         Header: "Actions",
         accessor: "",
         sort: false,
-        Cell: ({ row }: any) => (
-          <div className="d-flex justify-content-center align-items-center gap-2">
-            {/* Edit Icon */}
-            <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
-              <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
-            </Link>
+        Cell: ({ row }: any) => {
+          const { isDeleteEnabled } = row.original;
+          return (
+            <div className="d-flex gap-2">
+              {/* Edit Icon */}
+              <Link to={`/leads/manage/${row.original.id}`} className="action-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
+                <i className="mdi mdi-eye-outline" style={{ color: "#758dc8" }}></i>
+              </Link>
 
-            {/* <Link
+              {/* <Link
               to="#"
               className="action-icon"
               onClick={() => {
@@ -397,20 +429,23 @@ const BasicInputElements = withSwal((props: any) => {
               <i className="mdi mdi-square-edit-outline"></i>
             </Link> */}
 
-            {/* Delete Icon */}
-            <Link
-              to="#"
-              className="action-icon"
-              onClick={() => handleDelete(row.original.id)}
-              data-bs-toggle="tooltip"
-              data-bs-placement="bottom"
-              title="Delete"
-            >
-              {/* <i className="mdi mdi-delete"></i> */}
-              <i className="mdi mdi-delete-outline"></i>
-            </Link>
-          </div>
-        ),
+              {/* Delete Icon */}
+              {isDeleteEnabled && (
+                <Link
+                  to="#"
+                  className="action-icon"
+                  onClick={() => handleDelete(row.original.id)}
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Delete"
+                >
+                  {/* <i className="mdi mdi-delete"></i> */}
+                  <i className="mdi mdi-delete-outline"></i>
+                </Link>
+              )}
+            </div>
+          );
+        },
       },
     ];
   }, [user?.role, currentPage, currentLimit]);
@@ -431,9 +466,20 @@ const BasicInputElements = withSwal((props: any) => {
 
   const downloadRjectedData = (file: any) => {
     const filePath = file;
+    const apiUrl = process.env.REACT_APP_API_URL;
+
+    // Ensure exactly one '/' between base URL and file path
+    const url =
+      apiUrl?.endsWith("/") && filePath.startsWith("/")
+        ? `${apiUrl}${filePath.substring(1)}`
+        : apiUrl?.endsWith("/") || filePath.startsWith("/")
+        ? `${apiUrl}${filePath}`
+        : `${apiUrl}/${filePath}`;
+
     const link = document.createElement("a");
     link.download = "rejected.xlsx";
-    link.href = process.env.REACT_APP_API_URL + filePath;
+    link.href = url;
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -464,14 +510,7 @@ const BasicInputElements = withSwal((props: any) => {
     setIsLoading(true);
 
     try {
-      const { data } = await axios.post(`/excel_import`, formData, {
-        // onUploadProgress: (progressEvent: ProgressEvent) => {
-        //   console.log('progressEvent',progressEvent.loaded);
-        //   console.log('progressEvent',progressEvent.total);
-
-        //   const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        //   setProgress(percentCompleted)
-        // },
+      const { data } = await axios.post(`/validate_excel_import`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -479,19 +518,27 @@ const BasicInputElements = withSwal((props: any) => {
 
       if (data.status) {
         showSuccessAlert(data.message);
-        dispatch(getLead(currentPage, currentLimit));
         setIsLoading(false);
         setSelectedFile([]);
+        if (data?.invalidFileLink) downloadRjectedData(data.invalidFileLink);
+        setClearFiles(!clearFiles);
         toggleUploadModal();
+        setOpenApproveModal(true);
+        setApprovalType(approvalTypes.import_lead);
+        setResponseData(data);
       } else {
         showWarningAlert(data.message);
-        downloadRjectedData(data.invalidFileLink);
         setIsLoading(false);
+        setSelectedFile([]);
+        setClearFiles(!clearFiles);
         dispatch(getLead(currentPage, currentLimit));
+        toggleApproveModal();
       }
     } catch (err) {
       showErrorAlert(err);
       setIsLoading(false);
+      setSelectedFile([]);
+      setClearFiles(!clearFiles);
     }
   };
 
@@ -513,9 +560,9 @@ const BasicInputElements = withSwal((props: any) => {
 
           if (data.status) {
             if (userRole == cre_tl_id) {
-              dispatch(getLeadsTL(currentPage, currentLimit));
+              dispatch(getLeadsTL(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
             } else {
-              dispatch(getLead(currentPage, currentLimit));
+              dispatch(getLead(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
             }
             showSuccessAlert("Assigned Successfully.");
           }
@@ -590,7 +637,7 @@ const BasicInputElements = withSwal((props: any) => {
     }
   };
 
-  const handleAutoAssign = async () => {
+  const handleAutoAssign = async (cresList: any) => {
     const result = await swal.fire({
       title: "Confirm Auto Assignment!",
       text: "The selected leads will be automatically assigned to the respective CREs.",
@@ -604,16 +651,15 @@ const BasicInputElements = withSwal((props: any) => {
     if (result.isConfirmed) {
       if (selectedValues.length > 0) {
         try {
-          const { data } = await axios.post("/auto_assign", {
+          const { data } = await axios.post("/validate_auto_assign", {
             leads_ids: selectedValues,
+            users_list: cresList,
           });
           if (data.status) {
-            if (userRole == cre_tl_id) {
-              dispatch(getLeadsTL(currentPage, currentLimit));
-            } else {
-              dispatch(getLead(currentPage, currentLimit));
-            }
-            showSuccessAlert("Assigned Successfully.");
+            setCreList(data?.creList);
+            setApprovalType(approvalTypes.assign_cre);
+            setAssignedApprovalData(data?.assignedData);
+            setOpenApproveModal(true);
           }
         } catch (error) {
           showErrorAlert(error);
@@ -673,6 +719,37 @@ const BasicInputElements = withSwal((props: any) => {
     toggle();
   };
 
+  const toggleApproveModal = () => {
+    setOpenApproveModal((prev: any) => !prev);
+  };
+
+  const refetchLead = () => {
+    if (approvalType == approvalTypes.import_lead) {
+      dispatch(getLead(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
+    } else if (approvalType == approvalTypes.assign_cre) {
+      if (userRole == cre_tl_id) {
+        dispatch(getLeadsTL(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
+      } else {
+        dispatch(getLead(currentPage, currentLimit, undefined, "created_at", "asc", undefined, undefined, undefined));
+      }
+    }
+  };
+
+  const selectedUsersList = (users: any) => {
+    handleAutoAssign(users);
+  }
+
+  useEffect(() => {
+    if (openApproveModal || openUserSelectionModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto"; // Clean up on component unmount
+    };
+  }, [openApproveModal, openUserSelectionModal]);
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -704,29 +781,35 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               {/* <h1>Progress Bar = {progress}</h1> */}
               <p className="text-muted mb-1 font-small">*Please upload the Excel file following the example format.</p>
-              <FileUploader onFileUpload={handleOnFileUpload} showPreview={true} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+              <FileUploader
+                onFileUpload={handleOnFileUpload}
+                showPreview={true}
+                selectedFile={selectedFile}
+                setSelectedFile={setSelectedFile}
+                clearFiles={clearFiles}
+              />
               <div className="d-flex gap-2 justify-content-end mt-2">
                 <Button className="btn-sm btn-blue waves-effect waves-light" onClick={handleDownloadClick}>
                   <i className="mdi mdi-download-circle"></i> Download Sample
                 </Button>
-                <Button className="btn-sm btn-success waves-effect waves-light" onClick={handleFileUpload} disabled={isLoading}>
+                {selectedFile?.length == 1 && <Button className="btn-sm btn-success waves-effect waves-light" onClick={handleFileUpload} disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Spinner animation="border" size="sm" /> Uploading...
                     </>
                   ) : (
                     <>
-                      <i className="mdi mdi-upload" /> Upload File
+                      <i className="mdi mdi-upload" /> Approve Lead
                     </>
                   )}
-                </Button>
+                </Button>}
               </div>
             </Modal.Body>
           </Modal>
         )}
 
         <Col lg={12} className="p-0 form__card">
-          {state && (
+          {/* {state && (
             <LeadsFilters
               changeFilteredItemsData={changeFilteredItemsData}
               state={state || []}
@@ -738,7 +821,7 @@ const BasicInputElements = withSwal((props: any) => {
               cres={cres || []}
               branchForManager={branchForManager || []}
             />
-          )}
+          )} */}
 
           <Card className="bg-white py-3">
             <Card.Body>
@@ -773,7 +856,8 @@ const BasicInputElements = withSwal((props: any) => {
                       <Button
                         className="btn-sm btn-blue waves-effect waves-light float-end"
                         disabled={selectedValues?.length > 0 ? false : true}
-                        onClick={handleAutoAssign}
+                        // onClick={handleAutoAssign}
+                        onClick={() => setOpenUserSelectionModal(true)}
                       >
                         <i className="mdi mdi-plus-circle"></i> Auto Assign
                       </Button>
@@ -841,13 +925,7 @@ const BasicInputElements = withSwal((props: any) => {
               </div>
               {userRole == cre_tl_id || userRole == regional_manager_id || userRole == counsellor_tl_id ? (
                 <>
-                  <CustomSearchBox
-                    onSearch={handleSearch}
-                    isSearchApplied={isSearchApplied}
-                    onClose={onClose}
-                    value={value}
-                    onValueChange={onValueChange}
-                  />
+                  <CustomSearchBox onSearch={handleSearch} />
                   <Table
                     columns={columns}
                     data={records ? records : []}
@@ -872,15 +950,10 @@ const BasicInputElements = withSwal((props: any) => {
                 </>
               ) : (
                 <>
-                  {isDataPresent && (
-                    <CustomSearchBox
-                      onSearch={handleSearch}
-                      isSearchApplied={isSearchApplied}
-                      onClose={onClose}
-                      value={value}
-                      onValueChange={onValueChange}
-                    />
-                  )}
+                  <Row>
+                    <CustomSearchBox onSearch={handleSearch} />
+                  </Row>
+
                   <Table
                     columns={columns}
                     data={records ? records : []}
@@ -902,6 +975,40 @@ const BasicInputElements = withSwal((props: any) => {
                     />
                   )}
                 </>
+              )}
+
+              {approvalType == approvalTypes.import_lead && openApproveModal && (
+                <LeadApprovalTable
+                  isOpenModal={openApproveModal}
+                  toggleModal={setOpenApproveModal}
+                  responseData={responseData}
+                  options={approvalOptionsData}
+                  refetchLead={refetchLead}
+                  approvalType={approvalTypes.import_lead}
+                  heading={'Lead Import Management'}
+                />
+              )}
+
+              {approvalType == approvalTypes.assign_cre && openApproveModal && (
+                <LeadApprovalTable
+                  isOpenModal={openApproveModal}
+                  toggleModal={setOpenApproveModal}
+                  responseData={assignedApprovalData}
+                  options={creList}
+                  refetchLead={refetchLead}
+                  approvalType={approvalTypes.assign_cre}
+                  heading={'Auto Assign Management'}
+                />
+              )}
+
+              {openUserSelectionModal && (
+                <UserSelectionModal
+                  onClose={() => setOpenUserSelectionModal(false)}
+                  open={openUserSelectionModal}
+                  heading={"Select CRE's to Auto Assign"}
+                  usersList={cres}
+                  selectedUsersList={selectedUsersList}
+                />
               )}
             </Card.Body>
           </Card>

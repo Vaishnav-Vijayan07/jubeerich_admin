@@ -7,7 +7,7 @@ import { baseUrl, showErrorAlert, showSuccessAlert } from "../../../../constants
 import swal from "sweetalert2";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { allowedFileTypes } from "./data";
-import * as yup from 'yup';
+import * as yup from "yup";
 
 const initialDocumentState = {
   passport_doc: "",
@@ -47,7 +47,6 @@ const AdditionalDocuments = (props: any) => {
     const file = e.target.files?.[0];
     const { name } = e.target;
 
-
     if (file && !allowedFileTypes.includes(file.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
       return;
@@ -71,17 +70,28 @@ const AdditionalDocuments = (props: any) => {
       formData.append("gte_form", documents?.gte_form);
 
       const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to save the additional documents?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: `Yes, Save`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {
-        const res = await axios.post(`${baseUrl}/api/additional_docs/${studentId}`, formData, {
+        const res = await axios.post(`${baseUrl}api/additional_docs/${studentId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -113,7 +123,7 @@ const AdditionalDocuments = (props: any) => {
       });
 
       if (result.isConfirmed) {
-        const res = await axios.delete(`${baseUrl}/api/additional_docs/${studentId}/${fieldName}`);
+        const res = await axios.delete(`${baseUrl}api/additional_docs/${studentId}/${fieldName}`);
         if (res) {
           showSuccessAlert("Document Deleted Succesfully");
           getAdditionalDoc();
@@ -129,7 +139,7 @@ const AdditionalDocuments = (props: any) => {
   const getAdditionalDoc = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get(`${baseUrl}/api/additional_docs/${studentId}`);
+      const res = await axios.get(`${baseUrl}api/additional_docs/${studentId}`);
       if (res?.status) {
         console.log("Data ====>>>>>>>", res?.data?.data);
 
@@ -163,21 +173,17 @@ const AdditionalDocuments = (props: any) => {
                 <Row>
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2" controlId="passport_doc">
-                      <Form.Label>
-                         Upload Passport
-                      </Form.Label>
-                      <FormInput type="file" name="passport_doc" onChange={(e) => handleFileChange(e)} />
+                      <Form.Label>Upload Passport</Form.Label>
+                      <FormInput type="file" accept="image/*,application/pdf" name="passport_doc" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.passport_doc && (
-                        <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.passport_doc}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-                        >
-                          <div className=" p-1">{documentsName?.passport_doc ? "Passport Document" : ""}</div>
-                        </a>
+                        <div className="d-flex align-items-center">
+                          <i className="mdi mdi-eye text-primary me-2"></i>
+                          <a href={`${documentsName?.passport_doc}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+                            Passport
+                          </a>
+                        </div>
                       )}
                       {documentsName?.passport_doc && (
                         <i onClick={() => deleteAdditionalDoc("passport_doc")} className="mdi mdi-delete mt-1 ps-1"></i>
@@ -187,47 +193,40 @@ const AdditionalDocuments = (props: any) => {
 
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2" controlId="updated_cv">
-                      <Form.Label>
-                         Upload Updated CV
-                      </Form.Label>
-                      <FormInput type="file" name="updated_cv" onChange={(e) => handleFileChange(e)} />
+                      <Form.Label>Upload Updated CV</Form.Label>
+                      <FormInput type="file" accept="image/*,application/pdf" name="updated_cv" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.updated_cv && (
-                        <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.updated_cv}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-                        >
-                          <div className=" p-1">{documentsName?.updated_cv ? "Updated CV" : ""}</div>
-                        </a>
+                        <div className="d-flex align-items-center">
+                          <i className="mdi mdi-eye text-primary me-2"></i>
+                          <a href={`${documentsName?.updated_cv}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+                            Updated CV
+                          </a>
+                        </div>
                       )}
-                      {documentsName?.updated_cv && (
-                        <i onClick={() => deleteAdditionalDoc("updated_cv")} className="mdi mdi-delete mt-1 ps-1"></i>
-                      )}
+                      {documentsName?.updated_cv && <i onClick={() => deleteAdditionalDoc("updated_cv")} className="mdi mdi-delete mt-1 ps-1"></i>}
                     </div>
                   </Col>
 
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="profile_assessment_doc">
-                      <Form.Label>
-                         Profile Assessment Document
-                      </Form.Label>
-                      <FormInput type="file" name="profile_assessment_doc" onChange={(e) => handleFileChange(e)} />
+                      <Form.Label>Profile Assessment Document</Form.Label>
+                      <FormInput type="file" accept="image/*,application/pdf" name="profile_assessment_doc" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.profile_assessment_doc && (
-                        <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.profile_assessment_doc}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-                        >
-                          <div className=" p-1">
-                            {documentsName?.profile_assessment_doc ? "Profile Assessment Certificate" : ""}
-                          </div>
-                        </a>
+                        <div className="d-flex align-items-center">
+                          <i className="mdi mdi-eye text-primary me-2"></i>
+                          <a
+                            href={`${documentsName?.profile_assessment_doc}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-decoration-none"
+                          >
+                            Profile Assessment Document
+                          </a>
+                        </div>
                       )}
                       {documentsName?.profile_assessment_doc && (
                         <i onClick={() => deleteAdditionalDoc("profile_assessment_doc")} className="mdi mdi-delete mt-1 ps-1"></i>
@@ -237,73 +236,55 @@ const AdditionalDocuments = (props: any) => {
 
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="lor">
-                      <Form.Label>
-                         Letter of recommendation
-                      </Form.Label>
-                      <FormInput type="file" name="lor" onChange={(e) => handleFileChange(e)} />
+                      <Form.Label>Letter of Recommendation</Form.Label>
+                      <FormInput type="file" accept="image/*,application/pdf" name="lor" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
-                    <div className="d-flex">
+                    <div className="d-flex align-items-center">
                       {documentsName?.lor && (
-                        <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.lor}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-                        >
-                          <div className=" p-1">{documentsName?.lor ? "PTE Account Credentials" : ""}</div>
-                        </a>
+                        <div className="d-flex align-items-center">
+                          <i className="mdi mdi-eye text-primary me-2"></i>
+                          <a href={`${documentsName?.lor}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+                            Letter of recommendation
+                          </a>
+                        </div>
                       )}
-                      {documentsName?.lor && (
-                        <i onClick={() => deleteAdditionalDoc("lor")} className="mdi mdi-delete mt-1 ps-1"></i>
-                      )}
+                      {documentsName?.lor && <i onClick={() => deleteAdditionalDoc("lor")} className="mdi mdi-delete mt-1 ps-1"></i>}
                     </div>
                   </Col>
 
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="sop">
-                      <Form.Label>
-                         Statement of Purpose
-                      </Form.Label>
-                      <FormInput type="file" name="sop" onChange={(e) => handleFileChange(e)} />
+                      <Form.Label>Statement of Purpose</Form.Label>
+                      <FormInput type="file" accept="image/*,application/pdf" name="sop" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.sop && (
-                        <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.sop}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-                        >
-                          <div className=" p-1">{documentsName?.sop ? "PTE Account Credentials" : ""}</div>
-                        </a>
+                        <div className="d-flex align-items-center">
+                          <i className="mdi mdi-eye text-primary me-2"></i>
+                          <a href={`${documentsName?.sop}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+                            SOP
+                          </a>
+                        </div>
                       )}
-                      {documentsName?.sop && (
-                        <i onClick={() => deleteAdditionalDoc("sop")} className="mdi mdi-delete mt-1 ps-1"></i>
-                      )}
+                      {documentsName?.sop && <i onClick={() => deleteAdditionalDoc("sop")} className="mdi mdi-delete mt-1 ps-1"></i>}
                     </div>
                   </Col>
 
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2 mt-3" controlId="gte_form">
-                      <Form.Label>
-                         Application/GTE Form
-                      </Form.Label>
-                      <FormInput type="file" name="gte_form" onChange={(e) => handleFileChange(e)} />
+                      <Form.Label>Application/GTE Form</Form.Label>
+                      <FormInput type="file" accept="image/*,application/pdf" name="gte_form" onChange={(e) => handleFileChange(e)} />
                     </Form.Group>
                     <div className="d-flex">
                       {documentsName?.gte_form && (
-                        <a
-                          href={`${baseUrl}/uploads/studentAdditionalDocs/${documentsName?.gte_form}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-decoration-none border rounded-2 border-1 border-secondary text-truncate"
-                        >
-                          <div className=" p-1">{documentsName?.gte_form ? "PTE Account Credentials" : ""}</div>
-                        </a>
+                        <div className="d-flex align-items-center">
+                          <i className="mdi mdi-eye text-primary me-2"></i>
+                          <a href={`${documentsName?.gte_form}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+                            GTE Form
+                          </a>
+                        </div>
                       )}
-                      {documentsName?.gte_form && (
-                        <i onClick={() => deleteAdditionalDoc("gte_form")} className="mdi mdi-delete mt-1 ps-1"></i>
-                      )}
+                      {documentsName?.gte_form && <i onClick={() => deleteAdditionalDoc("gte_form")} className="mdi mdi-delete mt-1 ps-1"></i>}
                     </div>
                   </Col>
 

@@ -1,38 +1,24 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Dropdown,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
-import {
-  addChannel,
-  deleteChannel,
-  getChannel,
-  updateChannel,
-} from "../../redux/actions";
+import { addChannel, deleteChannel, getChannel, updateChannel } from "../../redux/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
 import { Link } from "react-router-dom";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface OptionType {
   value: string;
@@ -83,6 +69,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const { swal, state, sourceData, error, loading, initialLoading } = props;
 
   //fetch token from session storage
@@ -100,19 +87,13 @@ const BasicInputElements = withSwal((props: any) => {
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    channel_name: yup
-      .string()
-      .required("channel name is required")
-      .min(3, "channel name must be at least 3 characters long"),
-    channel_description: yup
-      .string(),
-      // .required("channel description is required")
-      // .min(3, "channel description must be at least 3 characters long"),
+    channel_name: yup.string().required("channel name is required").min(3, "channel name must be at least 3 characters long"),
+    channel_description: yup.string(),
+    // .required("channel description is required")
+    // .min(3, "channel description must be at least 3 characters long"),
     source_id: yup.string().required("Please choose a source"),
   });
 
@@ -126,9 +107,7 @@ const BasicInputElements = withSwal((props: any) => {
 
   const handleUpdate = (item: any) => {
     //update source dropdown
-    const updatedSource: OptionType[] = sourceData?.filter(
-      (source: any) => source.value == item.source_id
-    );
+    const updatedSource: OptionType[] = sourceData?.filter((source: any) => source.value == item.source_id);
     setSelectedSource(updatedSource[0]);
     setFormData((prev) => ({
       ...prev,
@@ -146,13 +125,24 @@ const BasicInputElements = withSwal((props: any) => {
   const handleDelete = (id: string) => {
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to delete this task prefix?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: `Yes, delete it!`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -191,13 +181,24 @@ const BasicInputElements = withSwal((props: any) => {
 
       swal
         .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
+          title: "Confirm Action",
+          text: `Do you want to ${isUpdate ? "update" : "create"} this lead channel?`,
+          icon: "question",
+          iconColor: "#8B8BF5", // Purple color for the icon
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
           confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+          cancelButtonColor: "#E97777", // Pink/red color for cancel button
+          buttonsStyling: true,
+          customClass: {
+            popup: "rounded-4 shadow-lg",
+            confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+            cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+            title: "fs-2 fw-normal mb-2",
+          },
+          width: "26em",
+          padding: "2em",
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -205,57 +206,15 @@ const BasicInputElements = withSwal((props: any) => {
               const { user_id } = JSON.parse(userInfo);
               if (isUpdate) {
                 // Handle update logic
-                dispatch(
-                  updateChannel(
-                    formData.id,
-                    formData.source_id,
-                    formData.channel_name,
-                    formData.channel_description,
-                    user_id
-                  )
-                );
+                dispatch(updateChannel(formData.id, formData.source_id, formData.channel_name, formData.channel_description, user_id));
                 setIsUpdate(false);
               } else {
                 // Handle add logic
-                dispatch(
-                  addChannel(
-                    formData.source_id,
-                    formData.channel_name,
-                    formData.channel_description,
-                    user_id
-                  )
-                );
+                dispatch(addChannel(formData.source_id, formData.channel_name, formData.channel_description, user_id));
               }
             }
           }
         });
-
-      // if (userInfo) {
-      //   const { user_id } = JSON.parse(userInfo);
-      //   if (isUpdate) {
-      //     // Handle update logic
-      //     dispatch(
-      //       updateChannel(
-      //         formData.id,
-      //         formData.source_id,
-      //         formData.channel_name,
-      //         formData.channel_description,
-      //         user_id
-      //       )
-      //     );
-      //     setIsUpdate(false);
-      //   } else {
-      //     // Handle add logic
-      //     dispatch(
-      //       addChannel(
-      //         formData.source_id,
-      //         formData.channel_name,
-      //         formData.channel_description,
-      //         user_id
-      //       )
-      //     );
-      //   }
-      // }
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {
@@ -292,19 +251,20 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Slug",
       accessor: "slug",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Lead Source",
       accessor: "source_name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Actions",
       accessor: "",
       sort: false,
+      maxWidth: 10,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="">
           {/* Edit Icon */}
           <Link
             to="#"
@@ -319,11 +279,7 @@ const BasicInputElements = withSwal((props: any) => {
           </Link>
 
           {/* Delete Icon */}
-          <Link
-            to="#"
-            className="action-icon"
-            onClick={() => handleDelete(row.original.id)}
-          >
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -372,15 +328,13 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  
+
   return (
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Lead Channel Management</h4>
@@ -388,33 +342,14 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               <Form.Group className="mb-3" controlId="channel_name">
                 <Form.Label>Lead Channel Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="channel_name"
-                  value={formData.channel_name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.channel_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.channel_name}
-                  </Form.Text>
-                )}
+                <Form.Control type="text" name="channel_name" value={formData.channel_name} onChange={handleInputChange} />
+                {validationErrors.channel_name && <Form.Text className="text-danger">{validationErrors.channel_name}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="channel_description">
                 <Form.Label>Lead Channel Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  name="channel_description"
-                  value={formData.channel_description}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.channel_description && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.channel_description}
-                  </Form.Text>
-                )}
+                <Form.Control as="textarea" rows={5} name="channel_description" value={formData.channel_description} onChange={handleInputChange} />
+                {validationErrors.channel_description && <Form.Text className="text-danger">{validationErrors.channel_description}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="source_id">
@@ -429,41 +364,23 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={handleSourceChange}
                 />
 
-                {validationErrors.source_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.source_id}
-                  </Form.Text>
-                )}
+                {validationErrors.source_id && <Form.Text className="text-danger">{validationErrors.source_id}</Form.Text>}
               </Form.Group>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => [handleResetValues()]}
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [handleResetValues()]}>
                 Clear
               </Button>
               <Button
                 variant="danger"
                 id="button-addon2"
                 className="mt-1"
-                onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(), handleResetValues()]
-                }
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-1"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-1">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -471,14 +388,22 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"lead_channel"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Lead Channel
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Lead Channels</h4>
               <Table
@@ -502,17 +427,14 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Channel = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { dropdownData: sourceData, loading: dropDownLoading } =
-    useDropdownData("sources");
+  const { dropdownData: sourceData, loading: dropDownLoading } = useDropdownData("sources");
   //Fetch data from redux store
-  const { state, error, loading, initialloading } = useSelector(
-    (state: RootState) => ({
-      state: state.Channels.channels.data,
-      error: state.Channels.error,
-      loading: state.Channels.loading,
-      initialloading: state.Channels.initialloading,
-    })
-  );
+  const { state, error, loading, initialloading } = useSelector((state: RootState) => ({
+    state: state.Channels.channels.data,
+    error: state.Channels.error,
+    loading: state.Channels.loading,
+    initialloading: state.Channels.initialloading,
+  }));
 
   useEffect(() => {
     dispatch(getChannel());
@@ -529,22 +451,10 @@ const Channel = () => {
 
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Master", path: "/settings/master/channel" },
-          { label: "Lead Channels", path: "/settings/master/channel", active: true },
-        ]}
-        title={"Lead Channels"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Lead Channels", path: "/settings/master/channel", active: true }]} title={"Lead Channels"} />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            sourceData={sourceData.sources || []}
-            error={error}
-            loading={loading}
-            initialLoading={initialloading}
-          />
+          <BasicInputElements state={state} sourceData={sourceData.sources || []} error={error} loading={loading} initialLoading={initialloading} />
         </Col>
       </Row>
     </React.Fragment>

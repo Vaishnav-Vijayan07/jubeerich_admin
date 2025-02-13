@@ -19,6 +19,7 @@ interface StatusData {
   status_description: string,
   color: string,
   updated_by: string,
+  type_id: string
 }
 
 // common success
@@ -53,13 +54,15 @@ export const addStatus = (
   status_description: string,
   color: string,
   updated_by: string,
+  type_id?: string
 ): StatusActionType => ({
   type: StatusActionTypes.ADD_STATUS,
   payload: {
     status_name,
     status_description,
     color,
-    updated_by
+    updated_by,
+    type_id
   },
 });
 
@@ -69,6 +72,7 @@ export const updateStatus = (
   status_description: string,
   color: string,
   updated_by: string,
+  type_id?: string
 ): StatusActionType => ({
   type: StatusActionTypes.UPDATE_STATUS,
   payload: {
@@ -76,7 +80,8 @@ export const updateStatus = (
     status_name,
     status_description,
     color,
-    updated_by
+    updated_by,
+    type_id
   },
 });
 

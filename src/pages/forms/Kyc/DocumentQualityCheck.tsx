@@ -1,38 +1,99 @@
-import React, { useState } from "react";
-import { Card, Col, Form, Row } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { FormInput } from "../../../components";
+import RemarksSection from "../../../components/CheckRemarkTextBox";
+import FormButtons from "./FormButtons";
+import { useRemarks } from "../../../hooks/useChecksData";
+import CheckHeadings from "../../../components/CheckHeadings";
+import CheckQuality from "../../../components/ApplicationChecks/CheckQuality";
 
-type Props = {
-  studentId: any;
-  quality: any;
-  handleFormData: any
-};
-
-function DocumentQualityCheck({ studentId, quality, handleFormData }: Props) {
+function DocumentQualityCheck({ studentId, country_id, current, handleStepChange, application_id, type, eligibility_id }: any) {
+  const { remarks, showRemark, saveRemark, isCheckPassed, localData, qualityForm, setQualityForm,remark, setRemark } = useRemarks({
+    type,
+    application_id,
+    eligibility_id,
+  });
 
   const handleCheckChange = (e: any) => {
-
     const { name, checked } = e.target;
-    handleFormData(name, checked);
 
+    console.log("CHECK",name, checked)
+
+    setQualityForm((prev: any) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
+
+  const onRemarkChange = (value: string)=>{
+    setRemark(value);
   }
+
+  const handleDivClickForCheck = (type: "formatting" | "clarity" | "scanning") => {
+    const cbox = document.getElementById(type) as HTMLInputElement;
+    cbox.checked = !cbox.checked;
+    setQualityForm((prev: any) => ({
+      ...prev,
+      [type]: cbox.checked,
+    }))
+  };
 
   return (
     <>
       <Row>
-        <h4 className="py-1" style={{width:"max-content", color:"#1976d2", fontWeight:"800"}}>Document Quality Check</h4>
+        <CheckHeadings title={"Document Quality Check"} />
       </Row>
       <Row className="mt-2">
-        <Card>
-          <Card.Body>
-            <Row className="d-flex-col mt-2 gap-2 mb-3">
-              <FormInput label="Formatting" name="formatting" type="checkbox" checked={quality?.formatting} onChange={handleCheckChange}/>
-              <FormInput label="Clarity" name="clarity" type="checkbox" checked={quality?.clarity} onChange={handleCheckChange}/>
-              <FormInput label="Scanning" name="scanning" type="checkbox" checked={quality?.scanning} onChange={handleCheckChange}/>
-            </Row>
+        <Card className="basic-card">
+          <Card.Body className="d-flex gap-2 justify-content-center">
+            <Col md={4} className="doc-quantity-item" onClick={() => handleDivClickForCheck("formatting")}>
+              <CheckQuality
+                id={"formatting"}
+                type={"format"}
+                label={"Formatting"}
+                name={"formatting"}
+                onChange={handleCheckChange}
+                checked={qualityForm?.formatting}
+              />
+            </Col>
+            <Col md={4} className="doc-quantity-item" onClick={() => handleDivClickForCheck("clarity")}>
+              <CheckQuality
+                id={"clarity"}
+                type={"clarity"}
+                label={"Clarity"}
+                name={"clarity"}
+                onChange={handleCheckChange}
+                checked={qualityForm?.clarity}
+              />
+            </Col>
+            <Col md={4} className="doc-quantity-item" onClick={() => handleDivClickForCheck("scanning")}>
+              <CheckQuality
+                id={"scanning"}
+                type={"scan"}
+                label={"Scanning"}
+                name={"scanning"}
+                onChange={handleCheckChange}
+                checked={qualityForm?.scanning}
+              />
+            </Col>
           </Card.Body>
         </Card>
       </Row>
+     <RemarksSection remark={remark} onRemarkChange={setRemark} />
+      <FormButtons
+        type={type}
+        current={current}
+        isCheckPassed={isCheckPassed}
+        handleStepChange={handleStepChange}
+        student_id={studentId}
+        country_id={country_id}
+        application_id={application_id}
+        remarks={remarks}
+        qualityForm={qualityForm}
+        localData={localData}
+        remark={remark}
+        eligibility_id={eligibility_id}
+      />
     </>
   );
 }

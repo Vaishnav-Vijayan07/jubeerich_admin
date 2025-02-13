@@ -1,25 +1,24 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { addCategory, addStatus, deleteCategory, getCategory, updateCategory } from "../../redux/actions";
 import { AUTH_SESSION_KEY } from "../../constants";
-import { error } from "console";
 import { Link } from "react-router-dom";
-import classNames from "classnames";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { Slider } from "@mui/material";
 import { addStatusType, deleteStatusType, getStatusType, updateStatusType } from "../../redux/status/statusType/actions";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+import { max } from "moment";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface TableRecords {
   id: number;
@@ -73,6 +72,8 @@ const BasicInputElements = withSwal((props: any) => {
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
+  
 
   const records: TableRecords[] = state;
 
@@ -104,13 +105,24 @@ const BasicInputElements = withSwal((props: any) => {
   const handleDelete = (type_id: number) => {
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to delete this status type?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: `Yes, delete it!`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -148,13 +160,24 @@ const BasicInputElements = withSwal((props: any) => {
 
       swal
         .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
+          title: "Confirm Action",
+          text: `Do you want to ${isUpdate ? "update" : "create"} this status type?`,
+          icon: "question",
+          iconColor: "#8B8BF5", // Purple color for the icon
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
           confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+          cancelButtonColor: "#E97777", // Pink/red color for cancel button
+          buttonsStyling: true,
+          customClass: {
+            popup: "rounded-4 shadow-lg",
+            confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+            cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+            title: "fs-2 fw-normal mb-2",
+          },
+          width: "26em",
+          padding: "2em",
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -202,8 +225,9 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Actions",
       accessor: "",
       sort: false,
+      maxWidth: 10,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="d-flex gap-1">
           <Link
             to="#"
             className="action-icon"
@@ -255,6 +279,8 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+  
+
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -297,7 +323,9 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-3 "
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
+                onClick={() =>
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
+                }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -309,11 +337,24 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <React.Suspense fallback={<Spinner animation="border" variant="primary" />}>
+              <HistoryTable apiUrl={"status_type"} />
+            </React.Suspense>
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
               <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Status Type
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Status Type</h4>
               <Table
@@ -347,34 +388,28 @@ const StatusType = () => {
     initialloading: state.StatusTypes.initialloading,
   }));
 
-
-  console.log("STATE", state);
-
   useEffect(() => {
     dispatch(getStatusType());
   }, []);
-
-  // if (initialloading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Status", path: "/status/status_type" },
+          // { label: "Status", path: "/status/status_type" },
           { label: "Status Type", path: "/status/status_type", active: true },
         ]}
         title={"Status Type"}
       />
       <Row>
         <Col>
-          <BasicInputElements state={state || []} loading={loading} success={success} error={error} initialLoading={initialloading} />
+          <BasicInputElements
+            state={state || []}
+            loading={loading}
+            success={success}
+            error={error}
+            initialLoading={initialloading}
+          />
         </Col>
       </Row>
     </React.Fragment>

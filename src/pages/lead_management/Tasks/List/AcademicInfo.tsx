@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 import { withSwal } from "react-sweetalert2";
@@ -13,6 +13,9 @@ import validateFields from "../../../../helpers/validateHelper";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../utils/regrexValidation";
 import { allowedFileTypes } from "./data";
+import FieldHistoryTable from "../../../../components/FieldHistory";
+import { useHistoryModal } from "../../../../hooks/useHistoryModal";
+import { showConfirmation } from "../../../../utils/showConfirmation";
 
 const initialStateAcademic = {
   qualification: "",
@@ -31,37 +34,37 @@ const initialStateExam = {
   writing_score: "",
   overall_score: "",
   exam_date: "",
+  exam_reamrks: "",
   score_card: null,
   errors: {},
 };
 
 const AcademicInfo = withSwal((props: any) => {
   const { swal, studentId } = props;
+
+  const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const [loading, setLoading] = useState(false);
-  const [hasExams, setHasExams] = useState("no");
+  const [hasExams, setHasExams] = useState(false);
 
   const refresh = useSelector((state: RootState) => state.refreshReducer.refreshing);
 
   const [academicInfoFromApi, setAcademicInfoFromApi] = useState<any[]>([initialStateAcademic]);
   const [examForm, setExamForm] = useState<any[]>([initialStateExam]);
-  const [selectExam, setSelectExam] = useState<boolean>(true);
 
   const fetchAcademicInfo = useCallback(async () => {
     setLoading(true);
     try {
       // Fetch both API calls concurrently
-      const [_, examResponse] = await Promise.all([
-        axios.get(`studentAcademicInfo/${studentId}`),
-        axios.get(`studentExamInfo/${studentId}`),
-      ]);
+      const [_, examResponse] = await Promise.all([axios.get(`studentAcademicInfo/${studentId}`), axios.get(`studentExamInfo/${studentId}`)]);
 
       const examData = examResponse.data?.data;
 
-      console.log(examData);
 
       // Use helper functions to check the data and set state
       setExamForm(examData.length > 0 ? examData : [initialStateExam]);
-      setHasExams(examData.length > 0 ? "yes" : "no");
+      // setHasExams(examData.length > 0 ? "yes" : "no");
+      setHasExams(examData.length > 0 ? true : false);
     } catch (error) {
       console.error("Error fetching academic info:", error);
     } finally {
@@ -69,17 +72,9 @@ const AcademicInfo = withSwal((props: any) => {
     }
   }, [studentId]);
 
-  const {
-    saveStudentAcademicInfo,
-    saveStudentExamInfo,
-    loading: saveLoading,
-  } = useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
-  const { removeFromApi, loading: deleteLoading } = useRemoveFromApi();
+  const { saveStudentAcademicInfo, saveStudentExamInfo, loading: saveLoading } = useSaveStudentAcademicInfo(studentId, fetchAcademicInfo);
 
   // Fetch academic info using useCallback to memoize the function
-
-  console.log(academicInfoFromApi);
-  console.log(examForm);
 
   useEffect(() => {
     if (studentId) {
@@ -87,18 +82,14 @@ const AcademicInfo = withSwal((props: any) => {
     }
   }, [studentId, refresh]);
 
-  const handleInputChange = (
-    setter: React.Dispatch<React.SetStateAction<any[]>>,
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     if (!regrexValidation(name, value)) {
       console.error(`Invalid ${name}: ${value}`);
       return; // Stop updating if validation fails
     }
-    
+
     setter((prevData) => {
       const newData = [...prevData];
       newData[index][name] = value;
@@ -109,12 +100,11 @@ const AcademicInfo = withSwal((props: any) => {
   const handleFileChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-
       if (file && !allowedFileTypes.includes(file.type)) {
         showErrorAlert("Only PDF and image files are allowed.");
         return;
       }
-  
+
       setExamForm((prevData) => {
         const newData = [...prevData];
         newData[index].score_card = file;
@@ -130,56 +120,37 @@ const AcademicInfo = withSwal((props: any) => {
     });
   };
 
-  const removeFormField = (
-    setter: React.Dispatch<React.SetStateAction<any[]>>,
-    index: number,
-    itemId: number | string,
-    type: string
-  ) => {
+  const removeFormField = async (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number, itemId: number | string, type: string) => {
     if (itemId === 0) {
+      if(examForm.length == 1) {
+        return
+      }
       setter((prevData) => prevData.filter((_, i) => i !== index));
     } else {
-      removeFromApi(itemId, type);
+      const result = await showConfirmation("Are you sure you want to remove this item?");
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      if(examForm.length == 1) {
+        setExamForm([initialStateExam])
+      }
+
+      removeFromApi(itemId, type, studentId);
     }
-  };
-
-  const handleSaveAcademicInfo = () => {
-    console.log(academicInfoFromApi);
-
-    const validationRules = {
-      qualification: { required: true },
-      place: { required: true },
-      percentage: { required: true },
-      year_of_passing: { required: true },
-      backlogs: { required: true },
-    };
-
-    const { isValid, errors } = validateFields(academicInfoFromApi, validationRules);
-
-    console.log(errors);
-
-    if (!isValid) {
-      setAcademicInfoFromApi((prevState: any) =>
-        prevState.map((exp: any, index: any) => ({
-          ...exp,
-          errors: errors[index] || {},
-        }))
-      );
-      return;
-    }
-    saveStudentAcademicInfo(academicInfoFromApi);
   };
 
   const handleSaveExamInfo = () => {
     const validationRules = {
-      exam_type: { required: true },
-      listening_score: { required: true },
-      speaking_score: { required: true },
-      reading_score: { required: true },
-      writing_score: { required: true },
-      overall_score: { required: true },
-      exam_date: { required: true },
-      score_card: { required: true },
+      exam_type: { required: true, message: "Please choose an exam type" },
+      listening_score: { required: false, message: "Please enter a listening score" },
+      speaking_score: { required: false, message: "Please enter a speaking score" },
+      reading_score: { required: false, message: "Please enter a reading score" },
+      writing_score: { required: false, message: "Please enter a writing score" },
+      overall_score: { required: false, message: "Please enter an overall score" },
+      exam_date: { required: false, message: "Please select an exam date" },
+      score_card: { required: false, message: "Please upload a score card" },
+      exam_remarks: { required: false, message: "Please choose a exam remarks" },
     };
 
     const { isValid, errors } = validateFields(examForm, validationRules);
@@ -192,12 +163,8 @@ const AcademicInfo = withSwal((props: any) => {
       );
       return;
     }
-    saveStudentExamInfo(examForm);
+    saveStudentExamInfo(examForm, hasExams);
   };
-
-  // if (loading) {
-  //   return <Spinner animation="border" style={{ position: "absolute", top: "100%", left: "45%" }} />;
-  // }
 
   return (
     <>
@@ -206,53 +173,25 @@ const AcademicInfo = withSwal((props: any) => {
       ) : (
         <Row className={deleteLoading || saveLoading ? "opacity-25 pe-0" : ""}>
           <>
-            {/* <AcademicInfoRow
-            academicInfo={academicInfoFromApi}
-            handleAcademicInfoChange={(index, event) =>
-              handleInputChange(setAcademicInfoFromApi, index, event)
-            }
-            addMoreAcademicInfo={() =>
-              addFormField(setAcademicInfoFromApi, {
-                qualification: "",
-                place: "",
-                percentage: "",
-                year_of_passing: "",
-                backlogs: 0,
-                errors: {},
-              })
-            }
-            removeAcademicInfo={(index, item) =>
-              removeFormField(setAcademicInfoFromApi, index, item, "academic")
-            }
-          /> */}
+            <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+              <Modal.Header closeButton></Modal.Header>
+              <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+                <FieldHistoryTable apiUrl={"user_exams"} studentId={studentId} />
+              </Modal.Body>
+            </Modal>
+            <div className="d-flex justify-content-between">
+              <h5 className="mb-2 text-uppercase">
+                <i className="mdi mdi-file-document-outline me-1"></i> Exam Details
+              </h5>
 
-            {/*     <Row>
-            <Button
-              variant="primary"
-              className="mt-4"
-              type="submit"
-              onClick={handleSaveAcademicInfo}
-              disabled={saveLoading || deleteLoading}
-            >
-              {saveLoading || deleteLoading ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                  {" Loading..."} 
-                </>
-              ) : (
-                "Save Academic Info" // Normal button text when not loading
-              )}
-            </Button>
-          </Row> */}
-            <h5 className="mb-2 text-uppercase">
-              <i className="mdi mdi-file-document-outline me-1"></i> Exam Details
-            </h5>
+              <Button
+                className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
+                onClick={toggleHistoryModal}
+                style={{ height: "fit-content" }}
+              >
+                <i className="mdi mdi-history"></i> View History
+              </Button>
+            </div>
 
             <Row className="mt-3">
               <Col>
@@ -262,15 +201,17 @@ const AcademicInfo = withSwal((props: any) => {
                     <Form.Check
                       type="radio"
                       name="hasExams"
-                      checked={hasExams === "yes"}
-                      onChange={() => setHasExams("yes")}
+                      // checked={hasExams === "yes"}
+                      checked={hasExams}
+                      onChange={() => setHasExams(true)}
                       label={<span className="ps-1 fw-bold">Yes</span>}
                     />
                     <Form.Check
                       type="radio"
                       name="hasExams"
-                      checked={hasExams === "no"}
-                      onChange={() => setHasExams("no")}
+                      // checked={hasExams === "no"}
+                      checked={!hasExams}
+                      onChange={() => setHasExams(false)}
                       label={<span className="ps-1 fw-bold">No</span>}
                       className="ms-3"
                     />
@@ -279,7 +220,8 @@ const AcademicInfo = withSwal((props: any) => {
               </Col>
             </Row>
 
-            {hasExams == "yes" && (
+            {/* {hasExams == "yes" && ( */}
+            {hasExams && (
               <>
                 <Row>
                   <ExamData
@@ -293,6 +235,7 @@ const AcademicInfo = withSwal((props: any) => {
                         writing_score: "",
                         overall_score: "",
                         exam_date: "",
+                        exam_remarks: "",
                         score_card: null,
                       })
                     }
@@ -302,13 +245,7 @@ const AcademicInfo = withSwal((props: any) => {
                   />
                 </Row>
                 <Row>
-                  <Button
-                    variant="primary"
-                    className="mt-4"
-                    type="submit"
-                    onClick={handleSaveExamInfo}
-                    disabled={saveLoading || deleteLoading}
-                  >
+                  <Button variant="primary" className="mt-4" type="submit" onClick={handleSaveExamInfo} disabled={saveLoading || deleteLoading}>
                     {saveLoading || deleteLoading ? (
                       <>
                         <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />

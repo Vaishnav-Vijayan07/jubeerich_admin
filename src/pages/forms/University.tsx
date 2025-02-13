@@ -1,26 +1,24 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Dropdown, Modal, Spinner } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
-import FeatherIcons from "feather-icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getSource } from "../../redux/sources/actions";
 import Select from "react-select";
 import { AUTH_SESSION_KEY, customStyles } from "../../constants";
-import { addRegion, deleteRegion, getRegion, updateRegion } from "../../redux/regions/actions";
-import { getCountry } from "../../redux/country/actions";
 import { addUniversity, deleteUniversity, getUniversity, updateUniversity } from "../../redux/University/actions";
 import { Link } from "react-router-dom";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface OptionType {
   value: string;
@@ -86,6 +84,7 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, country, error, loading, initialLoading } = props;
 
   //fetch token from session storage
@@ -106,10 +105,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    university_name: yup
-      .string()
-      .required("University name is required")
-      .min(3, "University name must be at least 3 characters long"),
+    university_name: yup.string().required("University name is required").min(3, "University name must be at least 3 characters long"),
     location: yup.string().required("Location is required").min(3, "Location must be at least 3 characters long"),
     country_id: yup.string().required("Country ID is required"),
     // website_url: yup
@@ -158,13 +154,24 @@ const BasicInputElements = withSwal((props: any) => {
   const handleDelete = (id: string) => {
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to delete this university?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: `Yes, delete it!`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -203,13 +210,24 @@ const BasicInputElements = withSwal((props: any) => {
 
       swal
         .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
+          title: "Confirm Action",
+          text: `Do you want to ${isUpdate ? "update" : "create"} this university?`,
+          icon: "question",
+          iconColor: "#8B8BF5", // Purple color for the icon
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
           confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+          cancelButtonColor: "#E97777", // Pink/red color for cancel button
+          buttonsStyling: true,
+          customClass: {
+            popup: "rounded-4 shadow-lg",
+            confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+            cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+            title: "fs-2 fw-normal mb-2",
+          },
+          width: "26em",
+          padding: "2em",
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -331,12 +349,12 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Country",
       accessor: "country_name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Location",
       accessor: "location",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Description",
@@ -370,7 +388,7 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Username",
       accessor: "username",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Password",
@@ -380,13 +398,10 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Status",
       accessor: "is_active",
-      sort: false,
+      sort: true,
       Cell: ({ row }: any) => (
         <>
-          <span
-            style={{ fontSize: "10px" }}
-            className={`badge rounded-pill ${row.original.is_active ? "bg-success" : "bg-danger"}`}
-          >
+          <span style={{ fontSize: "10px" }} className={`badge rounded-pill ${row.original.is_active ? "bg-success" : "bg-danger"}`}>
             {row.original.is_active ? "Active" : "Disabled"}
           </span>
         </>
@@ -474,15 +489,8 @@ const BasicInputElements = withSwal((props: any) => {
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>University Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="university_name"
-                      value={formData.university_name}
-                      onChange={handleInputChange}
-                    />
-                    {validationErrors.university_name && (
-                      <Form.Text className="text-danger">{validationErrors.university_name}</Form.Text>
-                    )}
+                    <Form.Control type="text" name="university_name" value={formData.university_name} onChange={handleInputChange} />
+                    {validationErrors.university_name && <Form.Text className="text-danger">{validationErrors.university_name}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -515,27 +523,15 @@ const BasicInputElements = withSwal((props: any) => {
                   <Form.Group className="mb-3" controlId="channel_name">
                     <Form.Label>Website URL</Form.Label>
                     <Form.Control type="text" name="website_url" value={formData.website_url} onChange={handleInputChange} />
-                    {validationErrors.website_url && (
-                      <Form.Text className="text-danger">{validationErrors.website_url}</Form.Text>
-                    )}
+                    {validationErrors.website_url && <Form.Text className="text-danger">{validationErrors.website_url}</Form.Text>}
                   </Form.Group>
                 </Col>
-
-                {/* <Col md={6}>
-                  <Form.Group className="mb-3" controlId="channel_name">
-                    <Form.Label>Image URL</Form.Label>
-                    <Form.Control type="text" name="image_url" value={formData.image_url} onChange={handleInputChange} />
-                    {validationErrors.image_url && <Form.Text className="text-danger">{validationErrors.image_url}</Form.Text>}
-                  </Form.Group>
-                </Col> */}
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="portal_link">
                     <Form.Label>Portal Link</Form.Label>
                     <Form.Control type="text" name="portal_link" value={formData.portal_link} onChange={handleInputChange} />
-                    {validationErrors.portal_link && (
-                      <Form.Text className="text-danger">{validationErrors.portal_link}</Form.Text>
-                    )}
+                    {validationErrors.portal_link && <Form.Text className="text-danger">{validationErrors.portal_link}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -560,9 +556,7 @@ const BasicInputElements = withSwal((props: any) => {
                     <Form.Label>Description</Form.Label>
                     <Form.Control as="textarea" name="description" value={formData.description} onChange={handleInputChange} />
 
-                    {validationErrors.description && (
-                      <Form.Text className="text-danger">{validationErrors.description}</Form.Text>
-                    )}
+                    {validationErrors.description && <Form.Text className="text-danger">{validationErrors.description}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -596,9 +590,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 "
-                onClick={() =>
-                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
-                }
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -610,11 +602,22 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"university"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
               <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add University
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage University</h4>
               <Table
@@ -661,20 +664,14 @@ const University = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/university" },
+          // { label: "Master", path: "/settings/master/university" },
           { label: "University", path: "/settings/master/university", active: true },
         ]}
         title={"University"}
       />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            country={country?.countries || []}
-            error={error}
-            loading={loading}
-            initialLoading={initialLoading}
-          />
+          <BasicInputElements state={state} country={country?.countries || []} error={error} loading={loading} initialLoading={initialLoading} />
         </Col>
       </Row>
     </React.Fragment>

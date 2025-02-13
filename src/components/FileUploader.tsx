@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Card, Button, Form } from "react-bootstrap";
 import Dropzone from "react-dropzone";
 import axios from "axios";
 import { showErrorAlert, showSuccessAlert } from "../constants";
+import { set } from "react-hook-form";
 
 interface FileType extends File {
   preview?: string;
@@ -17,32 +18,53 @@ interface FileUploaderProps {
   getAttachedFiles?: () => void;
 }
 
-const FileUploader = (props:any) => {
+const FileUploader = (props: any) => {
   const [selectedFiles, setSelectedFiles] = useState<FileType[]>([]);
   const [fileType, setFileType] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { leadId } = props;
 
+  console.log("selectedFiles ==>", props);
+
   /**
    * Handled the accepted files and shows the preview
    */
+  // const handleAcceptedFiles = (files: FileType[]) => {
+  //   var allFiles = files;
+
+  //   if (props.showPreview) {
+  //     (files || []).map((file) =>
+  //       Object.assign(file, {
+  //         preview: file["type"].split("/")[0] === "image" ? URL.createObjectURL(file) : null,
+  //         formattedSize: formatBytes(file.size),
+  //       })
+  //     );
+  //     allFiles = [...selectedFiles];
+  //     allFiles.push(...files);
+  //     setSelectedFiles(allFiles);
+  //   }
+
+  //   if (props.onFileUpload) props.onFileUpload(allFiles);
+  // };
+
   const handleAcceptedFiles = (files: FileType[]) => {
-    var allFiles = files;
-
+    if (!files || files.length === 0) return; // Ensure files exist
+  
+    const file = files[0]; // Only handle the first file
+  
     if (props.showPreview) {
-      (files || []).map((file) =>
-        Object.assign(file, {
-          preview: file["type"].split("/")[0] === "image" ? URL.createObjectURL(file) : null,
-          formattedSize: formatBytes(file.size),
-        })
-      );
-      allFiles = [...selectedFiles];
-      allFiles.push(...files);
-      setSelectedFiles(allFiles);
+      // Add preview and formatted size to the file
+      Object.assign(file, {
+        preview: file["type"].split("/")[0] === "image" ? URL.createObjectURL(file) : null,
+        formattedSize: formatBytes(file.size),
+      });
+  
+      setSelectedFiles([file]); // Replace the existing file with the new one
     }
-
-    if (props.onFileUpload) props.onFileUpload(allFiles);
+  
+    if (props.onFileUpload) props.onFileUpload([file]); // Pass only the single file to the callback
   };
+  
 
   const handleUpload = async (e: any) => {
     e.preventDefault();
@@ -104,9 +126,13 @@ const FileUploader = (props:any) => {
     if (props.onFileUpload) props.onFileUpload(newFiles);
   };
 
+  useEffect(() => {
+    setSelectedFiles([]);
+  }, [props.clearFiles]);
+
   return (
     <>
-      <Dropzone {...props} onDrop={(acceptedFiles) => handleAcceptedFiles(acceptedFiles)}>
+      <Dropzone {...props} maxFiles={1} multiple={false} onDrop={(acceptedFiles) => handleAcceptedFiles(acceptedFiles)}>
         {({ getRootProps, getInputProps }) => (
           <div className="dropzone px-2 py-0">
             <div className="dz-message needsclick" {...getRootProps()}>
@@ -155,7 +181,6 @@ const FileUploader = (props:any) => {
               </Card>
             );
           })}
-
         </form>
       )}
     </>

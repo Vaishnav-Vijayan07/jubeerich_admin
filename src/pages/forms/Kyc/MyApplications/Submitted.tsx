@@ -237,7 +237,7 @@ const Submitted = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "" },
+          // { label: "Master", path: "" },
           { label: "Application(Submitted)", path: "", active: true },
         ]}
         title={"Application(Submitted)"}
@@ -276,7 +276,7 @@ const Submitted = () => {
                 />
               </Row>
               <Row>
-                <FormInput label="Offer Letter" type="file" name="offer-Letter" onChange={(e) => handleFileUpload(e)} />
+                <FormInput label="Offer Letter" type="file" accept="image/*,application/pdf" name="offer-Letter" onChange={(e) => handleFileUpload(e)} />
               </Row>
             </Row>
           </Modal.Body>

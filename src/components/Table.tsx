@@ -106,7 +106,14 @@ const Table = (props: TableProps) => {
   const isCustomPaginationNeeded = props["isCustomPaginationNeeded"] || false;
   const dashBoardClass = "table table-centered table-nowrap table-striped mb-0";
 
-  const {initialLoading} = props
+  const [pageSize, setPageSize] = useState(20)
+
+  useEffect(() => {
+    setPageSize(props["pageSize"])
+  }, [props["pageSize"]])
+  
+
+  const { initialLoading } = props;
 
   let otherProps: any = {};
 
@@ -126,11 +133,14 @@ const Table = (props: TableProps) => {
     otherProps["useRowSelect"] = useRowSelect;
   }
 
+
+  console.log("all data",props["data"])
+
   const dataTable = useTable(
     {
       columns: props["columns"],
       data: props["data"],
-      initialState: { pageSize: props["pageSize"] || 500 },
+      initialState: { pageSize: pageSize },
       globalFilter: (rows, columnIds, filterValue) => {
         return rows.filter((row) => {
           return columnIds?.some((id) => {
@@ -192,7 +202,7 @@ const Table = (props: TableProps) => {
     }
   );
 
-  console.log("TABLEPAGINATION",dataTable)
+  // console.log("TABLEPAGINATION",dataTable)
 
   let rows = pagination ? dataTable.page : dataTable.rows;
 
@@ -246,7 +256,7 @@ const Table = (props: TableProps) => {
                       ...(column.minWidth && { minWidth: column.minWidth }),
                       ...(column.maxWidth && { maxWidth: column.maxWidth }),
                     }}
-                    className={classNames("text-secondary", {
+                    className={classNames("text-secondary cursor-pointer", {
                       sorting_desc: column.isSortedDesc === true,
                       sorting_asc: column.isSortedDesc === false,
                       sortable: column.sort === true,
@@ -258,12 +268,12 @@ const Table = (props: TableProps) => {
                         <span className="d-flex align-items-center">
                           {column.isSorted ? (
                             column.isSortedDesc ? (
-                              <span style={{ fontSize: "8px" }}> ▼</span> // Descending
+                              <span style={{ fontSize: "8px", cursor: "pointer" }}> ▼</span> // Descending
                             ) : (
-                              <span style={{ fontSize: "8px" }}> ▲</span> // Ascending
+                              <span style={{ fontSize: "8px", cursor: "pointer" }}> ▲</span> // Ascending
                             )
                           ) : (
-                            <span style={{ fontSize: "16px" }}> ↕</span> // Default unsorted state
+                            <span style={{ fontSize: "16px", cursor: "pointer" }}> ↕</span> // Default unsorted state
                           )}
                         </span>
                       )}
@@ -299,7 +309,7 @@ const Table = (props: TableProps) => {
                       <td
                         {...cell.getCellProps([
                           {
-                            className: `${cell.column.className} cursor-pointer`,
+                            className: `${cell.column.className}`,
                           },
                         ])}
                         style={{
@@ -321,12 +331,10 @@ const Table = (props: TableProps) => {
         </table>
       </div>
       {!initialLoading && (
-        <>
-          {(pagination && !isCustomPaginationNeeded) && <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />}
-        </>
+        <>{pagination && !isCustomPaginationNeeded && <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />}</>
       )}
     </>
   );
 };
 
-export default memo(Table);
+export default Table;

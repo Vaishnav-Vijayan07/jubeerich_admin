@@ -60,7 +60,7 @@ const Advanced = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Tables", path: "/features/tables/advanced" },
+          // { label: "Tables", path: "/features/tables/advanced" },
           {
             label: "Advanced Tables",
             path: "/features/tables/advanced",

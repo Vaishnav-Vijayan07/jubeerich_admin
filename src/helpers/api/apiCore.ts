@@ -6,7 +6,7 @@ import { baseUrl } from "../../constants";
 
 // content type
 axios.defaults.headers.post["Content-Type"] = "application/json";
-axios.defaults.baseURL = `${baseUrl}/api/`;
+axios.defaults.baseURL = `${baseUrl}api/`;
 
 axios.interceptors.response.use(
   (response) => {
@@ -27,7 +27,7 @@ axios.interceptors.response.use(
     } else {
       switch (error?.response?.status) {
         case 401:
-          message = "Invalid credentials";
+          message = error?.response?.data?.error || error?.response?.data?.message;
           break;
 
         case 400:

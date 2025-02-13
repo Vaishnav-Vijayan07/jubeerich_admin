@@ -2,12 +2,11 @@ import React from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import Filters from "./Filters";
-import CustomFilter from "../../../components/CustomFilter";
 
 type Props = {
   categories: string[];
   series: SeriesItems[];
+  colors?: string[] | null;
 };
 
 type SeriesItems = {
@@ -15,52 +14,64 @@ type SeriesItems = {
   data: number[];
 };
 
-function StackGraph({ categories, series }: Props) {
+function StackGraph({ categories, series, colors }: Props) {
   const isDataPresent = series.length > 0;
 
   const options: ApexOptions = {
     chart: {
       type: "bar",
+      height: 350,
       stacked: true,
       toolbar: {
-        show: false, // Ensure the toolbar is displayed
+        show: true,
+        offsetX: 0,
+        offsetY: 0,
         tools: {
-          download: true, // Download option
-          selection: true, // Enable selection tool
-          zoom: true, // Enable zoom tool
-          zoomin: true, // Enable zoom in
-          zoomout: true, // Enable zoom out
-          pan: true, // Enable pan tool
-          reset: true, // Add reset zoom button
+          reset: `
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+      <path
+        fill="currentColor"
+        d="M2 12c0 5.523 4.477 10 10 10s10-4.477 10-10S17.523 2 12 2v2a8 8 0 1 1-4.5 1.385V8h2V2h-6v2H6a9.99 9.99 0 0 0-4 8"
+      ></path>
+    </svg>
+          `,
+          download: false,
         },
-        autoSelected: "zoom", // Default selected tool
+      },
+    },
+    xaxis: {
+      type: "category",
+      categories: categories,
+      tickPlacement: "on",
+    },
+    legend: {
+      position: "top",
+      offsetY: 20,
+      labels: {
+        useSeriesColors: true,
       },
     },
     plotOptions: {
       bar: {
-        horizontal: false,
         columnWidth: "20%",
       },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    xaxis: {
-      categories, // Pass your categories dynamically
-      // tickPlacement: "on",
-    },
-    legend: {
-      position: "top",
-      horizontalAlign: "center",
     },
     fill: {
       opacity: 1,
     },
-    colors: ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
+    dataLabels: {
+      enabled: false,
+    },
+    colors: colors
+      ? colors
+      : ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
   };
 
+  console.log("Series data:", series);
+  console.log("Colors:", options.colors);
+
   return (
-    <Card style={{ minHeight: "500px" }}>
+    <Card className="h-100">
       <Card.Body>
         {isDataPresent ? (
           <Chart options={options} series={series} type="bar" height={350} />

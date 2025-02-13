@@ -1,7 +1,7 @@
 import * as yup from "yup";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal, Spinner, ButtonGroup, ToggleButton } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Spinner, ButtonGroup, ToggleButton, Dropdown } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
@@ -13,8 +13,8 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getRoles } from "../../redux/users/roles/actions";
-import { addAdminUsers, deleteAdminUsers, getAdminUsers, getBranches, updateAdminUsers } from "../../redux/actions";
-import Select, { ActionMeta, OptionsType } from "react-select";
+import { addAdminUsers, getAdminUsers, getBranches, updateAdminUsers } from "../../redux/actions";
+import Select, { OptionsType } from "react-select";
 import {
   AUTH_SESSION_KEY,
   baseUrl,
@@ -22,9 +22,12 @@ import {
   counsellor_id,
   counsellor_tl_id,
   country_manager_id,
+  cre_id,
   franchise_counsellor_id,
   franchise_manager_id,
   regional_manager_id,
+  showErrorAlert,
+  showSuccessAlert,
 } from "../../constants";
 import { MyInitialState, OptionType, TableRecords, initialState, initialValidationState, sizePerPageList } from "./data";
 import { APICore } from "../../helpers/api/apiCore";
@@ -34,20 +37,42 @@ import { getRegion } from "../../redux/regions/actions";
 import { getFranchise } from "../../redux/franchise/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
 import makeAnimated from "react-select/animated";
+import axios from "axios";
+import { approvalTypes, assignTypes } from "../forms/data";
+import LeadAssignTable from "./LeadAssignTable";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
+
+const filterOptions = [
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Disabled" },
+];
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { swal, state, BranchesData, franchiseData, CountriesData, RolesData, regionData, error, loading, initialLoading } =
-    props;
+  const {
+    swal,
+    state,
+    BranchesData,
+    franchiseData,
+    CountriesData,
+    RolesData,
+    regionData,
+    error,
+    loading,
+    initialLoading, refetchUsers,
+    handleFilterChange,
+    selectedStatus,
+  } = props;
 
   const [modal, setModal] = useState<boolean>(false);
   const [className, setClassName] = useState<string>("");
-
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const api = new APICore();
   const loggedInUser = api.getLoggedInUser();
 
   //Table data
-  const records: TableRecords[] = state;
+  const records: TableRecords[] = state.filter((item: any) => item.role_id !== 1);
   const [isUpdate, setIsUpdate] = useState(false);
   //Input data
   const [formData, setFormData] = useState<MyInitialState>(initialState);
@@ -58,9 +83,13 @@ const BasicInputElements = withSwal((props: any) => {
   const animatedComponents = makeAnimated();
   const [radioValue, setRadioValue] = useState<boolean>(true);
   const radios = [
-    { name: 'Active', value: 'true' },
-    { name: 'Disable', value: 'false' },
+    { name: "Active", value: "true" },
+    { name: "Disable", value: "false" },
   ];
+  const [openAssignTable, setOpenAssignTable] = useState<boolean>(false);
+  const [approvalType, setApprovalType] = useState<any>('');
+  const [leadsData, setLeadsData] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -143,11 +172,11 @@ const BasicInputElements = withSwal((props: any) => {
 
     // const countryArray = item?.countries?.map((country: any) => country?.id);
     const countryArray = item?.countries?.map((country: any) => country?.value);
-    const updatedRole  = RolesData?.filter((role: any) => role?.value == item?.role_id);
+    const updatedRole = RolesData?.filter((role: any) => role?.value == item?.role_id);
     setSelectedRole(updatedRole[0]);
 
     setSelectedBranch(selectedPowerIds);
-    setRadioValue(item?.status)
+    setRadioValue(item?.status);
 
     setFormData((prev) => ({
       ...prev,
@@ -167,7 +196,7 @@ const BasicInputElements = withSwal((props: any) => {
       country_ids: countryArray,
       profile_image_path: item?.profile_image_path,
       franchise_id: item?.franchise_id,
-      status: item?.status
+      status: item?.status,
     }));
 
     setSelectedCountry(item?.countries);
@@ -196,11 +225,86 @@ const BasicInputElements = withSwal((props: any) => {
     }));
   };
 
+  const dispatchUpdateLead = () => {
+    if (userInfo) {
+      const { user_id } = JSON.parse(userInfo);
+
+      dispatch(
+        updateAdminUsers(
+          formData.id,
+          formData.employee_id,
+          formData.name,
+          formData.email,
+          formData.phone,
+          formData.address,
+          formData.username,
+          formData.password,
+          // formData.updated_by,
+          user_id,
+          formData.role_id,
+          selectedImage,
+          formData.branch_ids,
+          formData?.country_ids,
+          formData.role_id == regional_manager_id ? formData.region_id : null,
+          formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id ? formData.branch_id : null,
+          formData?.franchise_id || null,
+          radioValue
+        )
+      );
+    }
+  };
+
+  const reAssignLeads = async(selectedItems: any, assignType: any) => {
+    try {
+      const { data } = await axios.post('/reassign_leads', { id: formData?.id, type: assignType, assigned_data: selectedItems });
+      if(data){
+        showSuccessAlert('Leads Successfully Re-Assigned');
+        setOpenAssignTable(false);
+        dispatchUpdateLead();
+      }
+    } catch (error) {
+      console.log("error", error);
+      showErrorAlert(error);
+      refetchUsers();
+      setOpenAssignTable(false);
+    }
+  };
+
+  const checkUserHasLeads = async(user_id: any, checkType: any) => {
+    try {
+      let params = '';
+
+      if(checkType == approvalTypes.delete_cre){
+        params = `?check_type=${assignTypes.CRE}`
+      } 
+      else {
+        params = `?check_type=${assignTypes.Counsellor}`
+      }
+
+      const { data } = await axios.get(`/check_user_leads/${user_id}${params}`);
+
+      if(data?.leadCount){
+        setModal(!modal);
+        setOpenAssignTable(true);
+        setApprovalType(checkType);
+        setLeadsData(data?.leadsData);
+        setUserData(data?.userData);
+      } else {
+        dispatchUpdateLead();
+      }
+    } catch (error) {
+      console.log("error", error);
+      showErrorAlert(error);
+    }
+  }
+
+  const updateSelectedUser = (selectedItems: any, assignType: any) => {
+    reAssignLeads(selectedItems, assignType);
+  }
+
   //handle form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(radioValue);
-
     // Validate the form using yup
     try {
       await validationSchema.validate(formData, { abortEarly: false });
@@ -208,13 +312,24 @@ const BasicInputElements = withSwal((props: any) => {
 
       swal
         .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
+          title: "Confirm Action",
+          text: `Do you want to ${isUpdate ? "update" : "create"} this user?`,
+          icon: "question",
+          iconColor: "#8B8BF5", // Purple color for the icon
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
           confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+          cancelButtonColor: "#E97777", // Pink/red color for cancel button
+          buttonsStyling: true,
+          customClass: {
+            popup: "rounded-4 shadow-lg",
+            confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+            cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+            title: "fs-2 fw-normal mb-2",
+          },
+          width: "26em",
+          padding: "2em",
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -223,30 +338,16 @@ const BasicInputElements = withSwal((props: any) => {
               if (userInfo) {
                 const { user_id } = JSON.parse(userInfo);
                 try {
-                  dispatch(
-                    updateAdminUsers(
-                      formData.id,
-                      formData.employee_id,
-                      formData.name,
-                      formData.email,
-                      formData.phone,
-                      formData.address,
-                      formData.username,
-                      formData.password,
-                      // formData.updated_by,
-                      user_id,
-                      formData.role_id,
-                      selectedImage,
-                      formData.branch_ids,
-                      formData?.country_ids,
-                      formData.role_id == regional_manager_id ? formData.region_id : null,
-                      formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
-                        ? formData.branch_id
-                        : null,
-                      formData?.franchise_id || null,
-                      radioValue
-                    )
-                  );
+
+                  if(formData.role_id == cre_id && !radioValue){
+                    checkUserHasLeads(formData?.id, approvalTypes.delete_cre);
+                  } 
+                  else if(formData?.role_id == counsellor_id && !radioValue){
+                    checkUserHasLeads(formData?.id, approvalTypes.delete_counselor);
+                  } 
+                  else {
+                    dispatchUpdateLead();
+                  }
                 } catch (err) {
                   console.error("error updating", err);
                 }
@@ -273,9 +374,7 @@ const BasicInputElements = withSwal((props: any) => {
                       formData.branch_ids,
                       formData?.country_ids,
                       formData.role_id == regional_manager_id ? formData.region_id : null,
-                      formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id
-                        ? formData.branch_id
-                        : null,
+                      formData.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id ? formData.branch_id : null,
                       formData?.franchise_id || null,
                       radioValue
                     )
@@ -321,11 +420,7 @@ const BasicInputElements = withSwal((props: any) => {
         return (
           <>
             <div className="table-user">
-              <img
-                src={isImage ? `${baseUrl}/${row.original.profile_image_path}` : profilePic}
-                alt=""
-                className="me-2 rounded-circle"
-              />
+              <img src={isImage ? `${baseUrl}${row.original.profile_image_path}` : profilePic} alt="" className="me-2 rounded-circle" />
               <Link to="#" className="text-body fw-semibold">
                 {row.original.employee_id}
               </Link>
@@ -337,17 +432,17 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Name",
       accessor: "name",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Email",
       accessor: "email",
-      sort: false,
+      sort: true,
     },
     {
       Header: "User Name",
       accessor: "username",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Phone",
@@ -357,11 +452,11 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Role",
       accessor: "role",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Country",
-      accessor: "country.country_name",
+      accessor: "countries",
       sort: false,
       Cell: ({ row }: any) => (
         <ul style={{ listStyle: "none" }}>
@@ -369,6 +464,18 @@ const BasicInputElements = withSwal((props: any) => {
             <li>{item?.label}</li>
           ))}
         </ul>
+      ),
+    },
+    {
+      Header: "Status",
+      accessor: "status",
+      sort: false,
+      Cell: ({ row }: any) => (
+        <>
+          <span style={{ fontSize: "10px" }} className={`badge rounded-pill ${row.original.status ? "bg-success" : "bg-danger"}`}>
+            {row.original.status ? "Active" : "Disabled"}
+          </span>
+        </>
       ),
     },
     {
@@ -441,8 +548,8 @@ const BasicInputElements = withSwal((props: any) => {
       setValidationErrors(initialValidationState);
       setFormData(initialState);
       setSelectedBranch([]);
-      setSelectedRole(null)
-      setSelectedCountry([])
+      setSelectedRole(null);
+      setSelectedCountry([]);
       setSelectedImage(null);
     }
   }, [loading, error]);
@@ -461,17 +568,30 @@ const BasicInputElements = withSwal((props: any) => {
   const handleRoleChanges = (selected: any) => {
     setSelectedCountry([]);
     setSelectedBranch([]);
-    
+
     setSelectedRole(selected);
     setFormData((prev) => ({
       ...prev,
       role_id: selected.value,
       country_ids: [],
-      branch_id: '',
-      region_id: '',
-      franchise_id: ''
+      branch_id: "",
+      region_id: "",
+      franchise_id: "",
     }));
   };
+
+  
+
+  useEffect(() => {
+    if (openAssignTable) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto"; // Clean up on component unmount
+    };
+  }, [openAssignTable]);
 
   return (
     <>
@@ -480,17 +600,41 @@ const BasicInputElements = withSwal((props: any) => {
           <h6 className="fw-medium px-3 m-0 py-2 font-13 text-uppercase bg-light">
             <span className="d-block py-1">User Management</span>
           </h6>
-          <Modal.Body style={{overflowY: 'auto'}}>
+          <Modal.Body style={{ overflowY: "auto" }}>
             <div className="alert alert-warning" role="alert">
               <strong>Hi {loggedInUser?.name}, </strong> Enter user details.
+            </div>
+            <div className="w-100 d-flex justify-content-end px-4">
+              <div className="float-end" style={{ width: "20%" }}>
+                <Row>
+                  <ButtonGroup className="mb-2">
+                    {radios.map((radio, idx) => (
+                      <ToggleButton
+                        key={idx}
+                        id={`radio-${idx}`}
+                        type="radio"
+                        variant={radioValue ? "outline-success" : "outline-danger"}
+                        name="status"
+                        value={radio.value}
+                        checked={radioValue.toString() == radio.value.toString()}
+                        onChange={() => setRadioValue((prev) => !prev)}
+                      >
+                        {radio.name}
+                      </ToggleButton>
+                    ))}
+                  </ButtonGroup>
+                </Row>
+              </div>
             </div>
             <Row>
               <Col className="bg-white">
                 <Form onSubmit={onSubmit}>
                   <Row>
-                    <Col md={4}>
+                    <Col md={6}>
                       <Form.Group className="mb-3" controlId="employee_id">
-                        <Form.Label><span className="text-danger fs-4">* </span> Employee ID</Form.Label>
+                        <Form.Label>
+                          <span className="text-danger fs-4">* </span> Employee ID
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           name="employee_id"
@@ -498,70 +642,36 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.employee_id}
                           onChange={handleInputChange}
                         />
-                        {validationErrors.employee_id && (
-                          <Form.Text className="text-danger">{validationErrors.employee_id}</Form.Text>
-                        )}
+                        {validationErrors.employee_id && <Form.Text className="text-danger">{validationErrors.employee_id}</Form.Text>}
                       </Form.Group>
                     </Col>
-                    <Col md={4}>
+                    <Col md={6}>
                       <Form.Group className="mb-3" controlId="name">
-                        <Form.Label><span className="text-danger fs-4">* </span> Name</Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="Enter name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                        />
+                        <Form.Label>
+                          <span className="text-danger fs-4">* </span> Name
+                        </Form.Label>
+                        <Form.Control type="text" placeholder="Enter name" name="name" value={formData.name} onChange={handleInputChange} />
                         {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>}
                       </Form.Group>
-                    </Col>
-                    <Col md={4}>
-                    <Row>
-                      <ButtonGroup className="mt-4">
-                        {radios.map((radio, idx) => (
-                          <ToggleButton
-                            key={idx}
-                            id={`radio-${idx}`}
-                            type="radio"
-                            variant={radioValue ? 'outline-success' : 'outline-danger'}
-                            name="status"
-                            value={radio.value}
-                            checked={radioValue.toString() == radio.value.toString()}
-                            onChange={() => setRadioValue((prev) => !prev)}
-                          >
-                            {radio.name}
-                          </ToggleButton>
-                        ))}
-                      </ButtonGroup>
-                    </Row>
                     </Col>
                   </Row>
 
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="email">
-                        <Form.Label><span className="text-danger fs-4">* </span> Email</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="email"
-                          placeholder="Enter email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                        />
+                        <Form.Label>
+                          <span className="text-danger fs-4">* </span> Email
+                        </Form.Label>
+                        <Form.Control type="text" name="email" placeholder="Enter email" value={formData.email} onChange={handleInputChange} />
                         {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                       </Form.Group>
                     </Col>
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="phone">
-                        <Form.Label><span className="text-danger fs-4">* </span> Phone</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="phone"
-                          placeholder="Enter phone number"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                        />
+                        <Form.Label>
+                          <span className="text-danger fs-4">* </span> Phone
+                        </Form.Label>
+                        <Form.Control type="text" name="phone" placeholder="Enter phone number" value={formData.phone} onChange={handleInputChange} />
                         {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                       </Form.Group>
                     </Col>
@@ -571,7 +681,9 @@ const BasicInputElements = withSwal((props: any) => {
                     <Col md={6}>
                       <Row>
                         <Form.Group className="mb-3" controlId="username">
-                          <Form.Label><span className="text-danger fs-4">* </span> Username</Form.Label>
+                          <Form.Label>
+                            <span className="text-danger fs-4">* </span> Username
+                          </Form.Label>
                           <Form.Control
                             type="text"
                             name="username"
@@ -579,15 +691,15 @@ const BasicInputElements = withSwal((props: any) => {
                             value={formData.username}
                             onChange={handleInputChange}
                           />
-                          {validationErrors.username && (
-                            <Form.Text className="text-danger">{validationErrors.username}</Form.Text>
-                          )}
+                          {validationErrors.username && <Form.Text className="text-danger">{validationErrors.username}</Form.Text>}
                         </Form.Group>
                       </Row>
 
                       <Row>
                         <Form.Group className="mb-3" controlId="password">
-                          <Form.Label><span className="text-danger fs-4">* </span> Password</Form.Label>
+                          <Form.Label>
+                            <span className="text-danger fs-4">* </span> Password
+                          </Form.Label>
                           <Form.Control
                             type="text"
                             name="password"
@@ -595,16 +707,16 @@ const BasicInputElements = withSwal((props: any) => {
                             value={formData?.password ?? ""}
                             onChange={handleInputChange}
                           />
-                          {validationErrors.password && (
-                            <Form.Text className="text-danger">{validationErrors.password}</Form.Text>
-                          )}
+                          {validationErrors.password && <Form.Text className="text-danger">{validationErrors.password}</Form.Text>}
                         </Form.Group>
                       </Row>
                     </Col>
 
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="address">
-                        <Form.Label><span className="text-danger fs-4">* </span> Address</Form.Label>
+                        <Form.Label>
+                          <span className="text-danger fs-4">* </span> Address
+                        </Form.Label>
                         <Form.Control
                           as="textarea"
                           rows={5}
@@ -622,7 +734,9 @@ const BasicInputElements = withSwal((props: any) => {
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3" controlId="role_id">
-                        <Form.Label><span className="text-danger fs-4">* </span> Role</Form.Label>
+                        <Form.Label>
+                          <span className="text-danger fs-4">* </span> Role
+                        </Form.Label>
                         <Select
                           className="react-select react-select-container"
                           classNamePrefix="react-select"
@@ -635,11 +749,12 @@ const BasicInputElements = withSwal((props: any) => {
                         {validationErrors.role_id && <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>}
                       </Form.Group>
                     </Col>
-                    {(formData?.role_id == counsellor_id ||
-                      formData.role_id == country_manager_id) && (
+                    {(formData?.role_id == counsellor_id || formData.role_id == country_manager_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="role_id">
-                          <Form.Label><span className="text-danger fs-4">* </span> Country</Form.Label>
+                          <Form.Label>
+                            <span className="text-danger fs-4">* </span> Country
+                          </Form.Label>
                           <Select
                             className="react-select react-select-container"
                             classNamePrefix="react-select"
@@ -658,13 +773,10 @@ const BasicInputElements = withSwal((props: any) => {
                     {formData?.role_id == regional_manager_id && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="region_id">
-                          <Form.Label><span className="text-danger fs-4">* </span> Region</Form.Label>
-                          <Form.Select
-                            aria-label="Default select example"
-                            name="region_id"
-                            value={formData.region_id}
-                            onChange={handleInputChange}
-                          >
+                          <Form.Label>
+                            <span className="text-danger fs-4">* </span> Region
+                          </Form.Label>
+                          <Form.Select aria-label="Default select example" name="region_id" value={formData.region_id} onChange={handleInputChange}>
                             <option value="" disabled selected>
                               Choose..
                             </option>
@@ -683,7 +795,9 @@ const BasicInputElements = withSwal((props: any) => {
                     {(formData?.role_id == franchise_manager_id || formData?.role_id == franchise_counsellor_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="franchise_id">
-                          <Form.Label><span className="text-danger fs-4">* </span> Franchise</Form.Label>
+                          <Form.Label>
+                            <span className="text-danger fs-4">* </span> Franchise
+                          </Form.Label>
                           <Form.Select
                             aria-label="Default select example"
                             name="franchise_id"
@@ -700,9 +814,7 @@ const BasicInputElements = withSwal((props: any) => {
                             ))}
                           </Form.Select>
 
-                          {validationErrors.franchise_id && (
-                            <Form.Text className="text-danger">{validationErrors.franchise_id}</Form.Text>
-                          )}
+                          {validationErrors.franchise_id && <Form.Text className="text-danger">{validationErrors.franchise_id}</Form.Text>}
                         </Form.Group>
                       </Col>
                     )}
@@ -710,13 +822,10 @@ const BasicInputElements = withSwal((props: any) => {
                     {(formData?.role_id == counsellor_tl_id || formData.role_id == branch_counsellor_id) && (
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="region_id">
-                          <Form.Label><span className="text-danger fs-4">* </span> Branch</Form.Label>
-                          <Form.Select
-                            aria-label="Default select example"
-                            name="branch_id"
-                            value={formData.branch_id}
-                            onChange={handleInputChange}
-                          >
+                          <Form.Label>
+                            <span className="text-danger fs-4">* </span> Branch
+                          </Form.Label>
+                          <Form.Select aria-label="Default select example" name="branch_id" value={formData.branch_id} onChange={handleInputChange}>
                             <option value="" disabled selected>
                               Choose..
                             </option>
@@ -727,9 +836,7 @@ const BasicInputElements = withSwal((props: any) => {
                             ))}
                           </Form.Select>
 
-                          {validationErrors.branch_id && (
-                            <Form.Text className="text-danger">{validationErrors.branch_id}</Form.Text>
-                          )}
+                          {validationErrors.branch_id && <Form.Text className="text-danger">{validationErrors.branch_id}</Form.Text>}
                         </Form.Group>
                       </Col>
                     )}
@@ -757,13 +864,7 @@ const BasicInputElements = withSwal((props: any) => {
                       {!isUpdate ? "Close" : "Cancel"}
                     </Button>
 
-                    <Button
-                      type="submit"
-                      variant="success"
-                      id="button-addon2"
-                      className="waves-effect waves-light mt-1"
-                      disabled={loading}
-                    >
+                    <Button type="submit" variant="success" id="button-addon2" className="waves-effect waves-light mt-1" disabled={loading}>
                       {isUpdate ? "Update" : "Submit"}
                     </Button>
                   </div>
@@ -774,19 +875,62 @@ const BasicInputElements = withSwal((props: any) => {
           </Modal.Body>
         </Modal>
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"admin_user"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={() => openModalWithClass("modal-right")}
-              >
-                <i className="mdi mdi-plus-circle"></i> Add Users
-              </Button>
-              <h4 className="header-title mb-4">Manage Users</h4>
+              <div className="d-flex justify-content-between">
+                <h4 className="header-title">Manage Users</h4>
+                <div className="d-flex align-items-end justify-content-end mb-3">
+                  {/* Dropdown Styled Like Buttons */}
+                  <Form.Group className="me-2">
+                    <Form.Label className="text-muted fw-semibold small mb-0">Status</Form.Label>
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        variant="outline-secondary"
+                        id="country-dropdown"
+                        className="btn-sm btn-outline-secondary text-truncate"
+                        style={{
+                          minWidth: "150px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        {filterOptions.find((option) => option.value === selectedStatus)?.label || "All"}
+                      </Dropdown.Toggle>
+
+                      <Dropdown.Menu>
+                        {[{ value: "all", label: "All" }, ...filterOptions].map((option) => (
+                          <Dropdown.Item key={option.value} onClick={() => handleFilterChange(option.value)}>
+                            {option.label}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </Form.Group>
+
+                  {/* Buttons */}
+                  <Button className="btn-sm btn-secondary waves-effect waves-light me-2" onClick={toggleHistoryModal}>
+                    <i className="mdi mdi-history"></i> View History
+                  </Button>
+
+                  <Button className="btn-sm btn-blue waves-effect waves-light" onClick={() => openModalWithClass("modal-right")}>
+                    <i className="mdi mdi-plus-circle"></i> Add Users
+                  </Button>
+                </div>
+              </div>
+
+              {/* Table Component */}
               <Table
                 columns={columns}
-                data={records ? records : []}
+                data={records || []}
                 pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
@@ -799,6 +943,32 @@ const BasicInputElements = withSwal((props: any) => {
           </Card>
         </Col>
       </Row>
+
+      {approvalType == approvalTypes.delete_cre && openAssignTable && (
+        <LeadAssignTable
+          isOpenModal={openAssignTable}
+          toggleModal={setOpenAssignTable}
+          responseData={leadsData}
+          options={userData}
+          refetchUsers={refetchUsers}
+          updateSelectedUser={updateSelectedUser}
+          approvalType={approvalTypes.delete_cre}
+          heading={'Assign Leads Management'}
+        />
+      )}
+
+      {approvalType == approvalTypes.delete_counselor && openAssignTable && (
+        <LeadAssignTable
+          isOpenModal={openAssignTable}
+          toggleModal={setOpenAssignTable}
+          responseData={leadsData}
+          options={userData}
+          refetchUsers={refetchUsers}
+          updateSelectedUser={updateSelectedUser}
+          approvalType={approvalTypes.delete_counselor}
+          heading={'Assign Leads Management'}
+        />
+      )}
     </>
   );
 });
@@ -810,18 +980,9 @@ const AdminUsers = () => {
   const [countryData, setCountryData] = useState([]);
   const [regionData, setRegionData] = useState([]);
   const [roleData, setRoleData] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
-  const {
-    state,
-    error,
-    loading,
-    initialLoading,
-    Branch,
-    Franchises,
-    Countries,
-    Regions,
-    RolesData,
-  } = useSelector((state: RootState) => ({
+  const { state, error, loading, initialLoading, Branch, Franchises, Countries, Regions, RolesData } = useSelector((state: RootState) => ({
     state: state.Users.adminUsers,
     error: state.Users.error,
     loading: state.Users.loading,
@@ -831,10 +992,22 @@ const AdminUsers = () => {
     Countries: state?.Country.countries,
     Regions: state.Region.regions,
     RolesData: state.Roles.roles,
-  }));  
+  }));
+
+  const formatData = (data: any, valueKey: string, labelKey: string) => {
+    return data?.map((item: any) => ({
+      value: item[valueKey]?.toString(),
+      label: item[labelKey],
+    }));
+  };
+
+  const handleFilterChange = useCallback((value: string) => {
+    setSelectedStatus(value);
+    dispatch(getAdminUsers(value));
+  }, [dispatch, getAdminUsers]);
 
   useEffect(() => {
-    dispatch(getAdminUsers());
+    dispatch(getAdminUsers(selectedStatus));
     dispatch(getBranches());
     dispatch(getCountry());
     dispatch(getRoles());
@@ -843,12 +1016,6 @@ const AdminUsers = () => {
   }, []);
 
   // Helper function to format data
-  const formatData = (data: any, valueKey: string, labelKey: string) => {
-    return data?.map((item: any) => ({
-      value: item[valueKey]?.toString(),
-      label: item[labelKey],
-    }));
-  };
 
   // Set state based on formatted data
   useEffect(() => {
@@ -875,7 +1042,7 @@ const AdminUsers = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "User Management", path: "/user_management/user_creation" },
+          // { label: "User Management", path: "/user_management/user_creation" },
           {
             label: "Admin Users",
             path: "/user_management/user_creation",
@@ -896,6 +1063,9 @@ const AdminUsers = () => {
             regionData={regionData}
             franchiseData={franchiseData}
             initialLoading={initialLoading}
+            refetchUsers={() => dispatch(getAdminUsers('all'))}
+            handleFilterChange={handleFilterChange}
+            selectedStatus={selectedStatus}
           />
         </Col>
       </Row>

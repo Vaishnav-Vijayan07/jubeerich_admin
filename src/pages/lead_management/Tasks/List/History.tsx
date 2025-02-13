@@ -102,7 +102,7 @@ const History = ({ studentId }: any) => {
           </Row>
 
           <Row>
-            <div className="history-tl-container">
+            {/* <div className="history-tl-container">
               <ul className="tl">
                 <li className="tl-item">History</li>
                 {userHistory.length > 0 ? (
@@ -114,6 +114,26 @@ const History = ({ studentId }: any) => {
                         <div className="timestamp">{new Date(item.updated_on).toLocaleString()}</div>
                       </li>
                     </>
+                  ))
+                ) : (
+                  <p>No lead history available for this filter.</p>
+                )}
+              </ul>
+            </div> */}
+
+            <div className="history-tl-container">
+              <ul className="tl">
+                <li className="tl-item">
+                  <div className="item-title">History</div>
+                  <div className="timestamp"></div>
+                </li>
+                {userHistory.length > 0 ? (
+                  userHistory?.map((item: any) => (
+                    <li key={item.id} className="tl-item">
+                      <div className="item-title">{item.action}</div>
+                      <div className="timestamp">{new Date(item.updated_on).toLocaleString()}</div>
+                      <Badge>{item?.country ? item.country.country_name : ""}</Badge>
+                    </li>
                   ))
                 ) : (
                   <p>No lead history available for this filter.</p>

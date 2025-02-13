@@ -29,6 +29,9 @@ import {
 } from "../../redux/marital_status/actions";
 import { Link } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+import { max, min } from "moment";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface OptionType {
   value: string;
@@ -78,7 +81,9 @@ const initialValidationState = {
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal, state, sourceData, error, loading, initialLoading } = props;
+
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -140,13 +145,24 @@ const BasicInputElements = withSwal((props: any) => {
   const handleDelete = (id: string) => {
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to delete this marital status?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: `Yes, delete it`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -186,13 +202,24 @@ const BasicInputElements = withSwal((props: any) => {
 
       swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to ${isUpdate ? "update" : "create"} this marital status?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
+        confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -289,8 +316,9 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Actions",
       accessor: "",
       sort: false,
+      maxWidth: 5,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="">
           {/* Edit Icon */}
           <Link to="#" className="action-icon" onClick={() => {
             handleUpdate(row.original);
@@ -350,6 +378,8 @@ const BasicInputElements = withSwal((props: any) => {
       // Clear validation errors
     }
   }, [loading, error]);
+
+  
   
 
   return (
@@ -433,6 +463,13 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"marital_status"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
@@ -441,6 +478,9 @@ const BasicInputElements = withSwal((props: any) => {
                 onClick={toggleResponsiveModal}
               >
                 <i className="mdi mdi-plus-circle"></i> Add Status
+              </Button>
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+              <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Marital Status</h4>
               <Table
@@ -507,7 +547,7 @@ const MaritalStatus = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/marital_status" },
+          // { label: "Master", path: "/settings/master/marital_status" },
           {
             label: "Marital Status",
             path: "/settings/master/marital_status",

@@ -73,7 +73,7 @@ export const initialState = {
   updated_by: null,
   remarks: "",
   lead_received_date: new Date().toISOString().split("T")[0],
-  ielts: true,
+  ielts: false,
   exam: "",
   zipcode: "",
   region_id: "",
@@ -117,4 +117,17 @@ export interface TableRecords {
   channel_description: string;
   updated_by: string;
   status: string;
+}
+
+export const approvalTypes = {
+  import_lead: 'import_lead',
+  assign_cre: 'assign_cre',
+  assign_applications: 'assign_applications',
+  delete_cre: 'delete_cre',
+  delete_counselor: 'delete_counselor'
+}
+
+export const assignTypes = {
+  CRE: 'CRE',
+  Counsellor: 'Counsellor'
 }

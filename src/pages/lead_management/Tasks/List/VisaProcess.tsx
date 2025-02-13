@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
-import { Spinner } from "react-bootstrap";
 import { withSwal } from "react-sweetalert2";
 import { baseUrl, showErrorAlert, showSuccessAlert } from "../../../../constants";
 import VisaProcessRow from "./VisaProcessRow";
@@ -12,10 +11,16 @@ import { allowedFileTypes, travel_history, visa_approve, visa_decline } from "./
 import { getCountry } from "../../../../redux/country/actions";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import validateFields from "../../../../helpers/validateHelper";
-import { count } from "console";
+
+const visaTypes = {
+  visa_decline: "visa_decline",
+  visa_approve: "visa_approve",
+  travel_history: "travel_history",
+};
 
 const VisaProcess = withSwal((props: any) => {
   const { swal, studentId } = props;
+
   let userInfo = sessionStorage.getItem("jb_user");
   let loggedUser: any;
   if (userInfo) {
@@ -25,7 +30,7 @@ const VisaProcess = withSwal((props: any) => {
   const initialVisaDeclineForm = {
     id: "0",
     student_id: studentId,
-    country_id: "",
+    country_name: "",
     visa_type: "",
     course_applied: "",
     university_applied: "",
@@ -37,7 +42,7 @@ const VisaProcess = withSwal((props: any) => {
   const initialVisaApproveForm = {
     id: "0",
     student_id: studentId,
-    country_id: "",
+    country_name: "",
     visa_type: "",
     course_applied: "",
     university_applied: "",
@@ -48,7 +53,7 @@ const VisaProcess = withSwal((props: any) => {
   const initialTravelHistoryForm = {
     id: "0",
     student_id: studentId,
-    country_id: "",
+    country_name: "",
     start_date: "",
     end_date: "",
     purpose_of_travel: "",
@@ -61,6 +66,7 @@ const VisaProcess = withSwal((props: any) => {
   const [travelHistoryFormData, setTravelHistoryFormData] = useState<any>([initialTravelHistoryForm]);
   const [visaApproveDocs, setVisaApproveDocs] = useState<any[]>([]);
   const [visaDeclinedDocs, setVisaDeclinedDocs] = useState<any[]>([]);
+  const [decisions, setDecisions] = useState<any>(null);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -101,14 +107,14 @@ const VisaProcess = withSwal((props: any) => {
     setLoading(true);
 
     try {
-      const response = await axios.get(`${baseUrl}/api/visa_process/${studentId}`);
-      console.log("response", response);
+      const response = await axios.get(`${baseUrl}api/visa_process/${studentId}`);
 
       if (response && response.data) {
         const data = response.data.data;
         setVisaApproveFormData(data?.previousVisaApprove);
         setVisaDeclineFormData(data?.previousVisaDeclineData);
         setTravelHistoryFormData(data?.travelHistory);
+        setDecisions(data?.decisions);
 
         if (Array.isArray(data?.previousVisaApprove)) {
           for (let i = 0; i < data?.previousVisaApprove.length; i++) {
@@ -197,23 +203,38 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  const removeVisaItem = async (id: any, formName: any) => {
+  const removeVisaItem = async (id: any, formName: any, student_id: any) => {
     try {
       const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to remove this visa item?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Delete",
+        confirmButtonText: `Yes, Remove`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {
         setLoading(true);
 
         try {
-          let result = await axios.delete(`${baseUrl}/api/delete_visa_item/${formName}/${id}`);
+          // let result = await axios.delete(`${baseUrl}api/delete_visa_item/${formName}/${id}/${studentId}`);
+
+          let result = await axios.delete(`${baseUrl}api/delete_visa_item`, {
+            params: { formName, id, student_id: studentId },
+          });
           showSuccessAlert(result.data.message);
           setVisaApproveDocs([]);
           setVisaDeclinedDocs([]);
@@ -240,7 +261,7 @@ const VisaProcess = withSwal((props: any) => {
           newVisaApproveFormData.splice(index, 1);
           setVisaApproveFormData(newVisaApproveFormData);
         } else {
-          removeVisaItem(itemId, visa_approve);
+          removeVisaItem(itemId, visa_approve, studentId);
         }
         break;
       case visa_decline:
@@ -249,7 +270,7 @@ const VisaProcess = withSwal((props: any) => {
           newVisaDeclineFormData.splice(index, 1);
           setVisaDeclineFormData(newVisaDeclineFormData);
         } else {
-          removeVisaItem(itemId, visa_decline);
+          removeVisaItem(itemId, visa_decline, studentId);
         }
         break;
       case travel_history:
@@ -258,7 +279,7 @@ const VisaProcess = withSwal((props: any) => {
           newVisaTravelFormData.splice(index, 1);
           setTravelHistoryFormData(newVisaTravelFormData);
         } else {
-          removeVisaItem(itemId, travel_history);
+          removeVisaItem(itemId, travel_history, studentId);
         }
         break;
       default:
@@ -266,29 +287,106 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  const saveVisaFormData = (submitName: string) => {
+  const saveVisaFormData = async(submitName: string, decision: boolean) => {
     switch (submitName) {
       case visa_decline:
-        submitDeclinedVisa();
+        if (decision) {
+          submitDeclinedVisa(decision);
+        } else {
+          const confirm = await confirmationModal();
+          if(confirm) changeVisaDecision(decision, visaTypes.visa_decline, "decline");
+        }
+
         break;
       case visa_approve:
-        submitApprovedVisa();
+        if (decision) {
+          submitApprovedVisa(decision);
+        } else {
+          const confirm = await confirmationModal();
+          if(confirm) changeVisaDecision(decision, visaTypes.visa_approve, "approve");
+        }
+
         break;
       case travel_history:
-        submitTravelHistory();
+        if (decision) {
+          submitTravelHistory(decision);
+        } else {
+          const confirm = await confirmationModal();
+          if(confirm) changeVisaDecision(decision, visaTypes.travel_history, "history");
+        }
+
         break;
       default:
         break;
     }
   };
 
-  const submitDeclinedVisa = async () => {
+  const confirmationModal = async() => {
+    const confirmationResult = await swal.fire({
+      title: "Confirm Action",
+      text: `Do you want to proceed?`,
+      icon: "question",
+      iconColor: "#8B8BF5", // Purple color for the icon
+      showCancelButton: true,
+      confirmButtonText: `Yes, Proceed`,
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+      cancelButtonColor: "#E97777", // Pink/red color for cancel button
+      buttonsStyling: true,
+      customClass: {
+        popup: "rounded-4 shadow-lg",
+        confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+        cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+        title: "fs-2 fw-normal mb-2",
+      },
+      width: "26em",
+      padding: "2em",
+    });
+
+    if(confirmationResult.isConfirmed){
+      return true;
+    } else {
+      return false
+    }
+
+  }
+
+  const changeVisaDecision = async (decision: boolean, type: string, type_of_data: string) => {
+    try {
+      let payload: any = {};
+
+      switch (type_of_data) {
+        case "decline":
+          payload.is_visa_declined = decision;
+          break;
+
+        case "approve":
+          payload.is_visa_approved = decision;
+          break;
+
+        case "history":
+          payload.has_travel_history = decision;
+          break;
+        default:
+          break;
+      }
+
+      await axios.patch(`update_info_checks/${studentId}`, payload);
+      getVisaProcess();
+
+    } catch (error) {
+      console.log(error);
+      showErrorAlert("Something went wrong");
+    }
+  };
+
+  const submitDeclinedVisa = async (decision: boolean) => {
     const validationRules = {
-      course_applied: { required: true },
-      country_id: { required: true },
-      rejection_reason: { required: true }, // Assuming it's optional
-      university_applied: { required: true },
-      visa_type: { required: true },
+      course_applied: { required: true, message: "Please enter a course applied" },
+      country_name: { required: true, message: "Please select a country" },
+      rejection_reason: { required: false, message: "Please enter a rejection reason" },
+      university_applied: { required: true, message: "Please enter a university applied" },
+      visa_type: { required: false, message: "Please enter a visa type" },
     };
 
     const { isValid, errors } = validateFields(visaDeclineFormData, validationRules);
@@ -323,28 +421,38 @@ const VisaProcess = withSwal((props: any) => {
 
     try {
       const confirmationResult = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to save the visa declined details?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: `Yes, Save`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (confirmationResult.isConfirmed) {
         setLoading(true);
         try {
-          const response = await axios.post(`${baseUrl}/api/visa_decline_process/`, newFormData, {
+          const response = await axios.post(`${baseUrl}api/visa_decline_process/`, newFormData, {
             headers: {
               "content-type": "multipart/form-data",
             },
           });
-          // const response = await axios.post(`${baseUrl}/api/visa_decline_process/`, body);
           console.log("response", response);
           showSuccessAlert(response.data.message);
+          changeVisaDecision(decision, visaTypes.visa_decline, "decline");
           setVisaDeclinedDocs([]);
-          getVisaProcess();
         } catch (error) {
           console.error("Error during API call:", error);
           showErrorAlert("Error occurred");
@@ -359,12 +467,12 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  const submitApprovedVisa = async () => {
+  const submitApprovedVisa = async (decision: boolean) => {
     const validationRules = {
-      course_applied: { required: true },
-      country_id: { required: true },
-      university_applied: { required: true },
-      visa_type: { required: true },
+      course_applied: { required: true, message: "Please enter a course applied" },
+      country_name: { required: true, message: "Please select a country" },
+      university_applied: { required: true, message: "Please enter a university applied" },
+      visa_type: { required: false, message: "Please enter a visa type" },
     };
 
     const { isValid, errors } = validateFields(visaApproveFormData, validationRules);
@@ -399,29 +507,39 @@ const VisaProcess = withSwal((props: any) => {
 
     try {
       const confirmationResult = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to save the visa approved details?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: `Yes, Save`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (confirmationResult.isConfirmed) {
         setLoading(true);
 
         try {
-          const response = await axios.post(`${baseUrl}/api/visa_approve_process/`, newFormData, {
+          const response = await axios.post(`${baseUrl}api/visa_approve_process/`, newFormData, {
             headers: {
               "content-type": "multipart/form-data",
             },
           });
-          // const response = await axios.post(`${baseUrl}/api/visa_approve_process/`, body);
           console.log("response", response);
           showSuccessAlert(response.data.message);
+          changeVisaDecision(decision, visaTypes.visa_approve, "approve");
           setVisaApproveDocs([]);
-          getVisaProcess();
         } catch (error) {
           console.error("Error during API call:", error);
           showErrorAlert("Error occurred");
@@ -436,12 +554,12 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  const submitTravelHistory = async () => {
+  const submitTravelHistory = async (decision: boolean) => {
     const validationRules = {
-      country_id: { required: true },
-      start_date: { required: true },
-      end_date: { required: true },
-      purpose_of_travel: { required: true },
+      country_name: { required: true, message: "Please select a country" },
+      start_date: { required: false, message: "Please select a start date" },
+      end_date: { required: false, message: "Please select an end date" },
+      purpose_of_travel: { required: false, message: "Please enter a purpose of travel" },
     };
 
     const { isValid, errors } = validateFields(travelHistoryFormData, validationRules);
@@ -463,23 +581,34 @@ const VisaProcess = withSwal((props: any) => {
 
     try {
       const confirmationResult = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to save the travel history details?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: `Yes, Save`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (confirmationResult.isConfirmed) {
         setLoading(true);
 
         try {
-          const response = await axios.post(`${baseUrl}/api/travel_history/`, body);
+          const response = await axios.post(`${baseUrl}api/travel_history/`, body);
           console.log("response", response);
+          changeVisaDecision(decision, visaTypes.travel_history, "history");
           showSuccessAlert(response.data.message);
-          getVisaProcess();
         } catch (error) {
           console.error("Error during API call:", error);
           showErrorAlert("Error occurred");
@@ -496,7 +625,7 @@ const VisaProcess = withSwal((props: any) => {
     const file = e.target.files?.[0];
     const { name } = e.target;
 
-    if (file&& !allowedFileTypes.includes(file.type)) {
+    if (file && !allowedFileTypes.includes(file.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
       return;
     }
@@ -514,15 +643,6 @@ const VisaProcess = withSwal((props: any) => {
         break;
     }
   };
-
-  // if (loading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "100%", left: "45%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <>
@@ -542,6 +662,8 @@ const VisaProcess = withSwal((props: any) => {
           addMoreVisaForm={addMoreVisaForm}
           removeVisaForm={removeVisaForm}
           handleFileChange={handleFileChange}
+          studentId={studentId}
+          decisions={decisions}
         />
       )}
     </>

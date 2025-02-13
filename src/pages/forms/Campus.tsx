@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Row, Col, Card, Form, Button, Modal, Spinner } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Table from "../../components/Table";
 
 import { withSwal } from "react-sweetalert2";
@@ -17,9 +17,9 @@ import { getUniversity } from "../../redux/University/actions";
 import { Link, useNavigate } from "react-router-dom";
 import { addCampus, deleteCampus, getCampus, updateCampus } from "../../redux/actions";
 import { getCourse } from "../../redux/course/actions";
-import useDropdownData from "../../hooks/useDropdownDatas";
-import { access } from "fs";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface OptionType {
   value: string;
@@ -68,6 +68,7 @@ const initialValidationState = {
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const { swal, state, university, error, loading, courseData, initialLoading } = props;
 
   //fetch token from session storage
@@ -88,10 +89,7 @@ const BasicInputElements = withSwal((props: any) => {
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
-    campus_name: yup
-      .string()
-      .min(3, "Campus name name must be at least 3 characters long")
-      .required("Campus name name is required"),
+    campus_name: yup.string().min(3, "Campus name name must be at least 3 characters long").required("Campus name name is required"),
     location: yup.string().required("Location is required"),
     university_id: yup.string().required("University is required"),
   });
@@ -125,13 +123,24 @@ const BasicInputElements = withSwal((props: any) => {
   const handleDelete = (id: string) => {
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to delete this campus?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: `Yes, delete it!`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -172,13 +181,24 @@ const BasicInputElements = withSwal((props: any) => {
 
       swal
         .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
+          title: "Confirm Action",
+          text: `Do you want to ${isUpdate ? "update" : "create"} this campus?`,
+          icon: "question",
+          iconColor: "#8B8BF5", // Purple color for the icon
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
           confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+          cancelButtonColor: "#E97777", // Pink/red color for cancel button
+          buttonsStyling: true,
+          customClass: {
+            popup: "rounded-4 shadow-lg",
+            confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+            cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+            title: "fs-2 fw-normal mb-2",
+          },
+          width: "26em",
+          padding: "2em",
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -228,26 +248,22 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Location",
       accessor: "location",
-      sort: false,
+      sort: true,
     },
     {
       Header: "University",
       accessor: "university",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Country",
       accessor: "country",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Course Configuration",
       accessor: "",
       Cell: ({ row }: any) => (
-        // <a href={`/settings/master/configure_courses/${row.original.id}`} className="">
-        //   <i className="mdi mdi-cog"></i> Course Configuration
-        // </a>
-
         <a onClick={() => navigate(`/settings/master/configure_courses/${row.original.id}`)} className="">
           <i className="mdi mdi-cog"></i> Course Configuration
         </a>
@@ -258,7 +274,7 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="d-flex gap-1">
           {/* Edit Icon */}
           <Link
             to="#"
@@ -322,8 +338,6 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
-  console.log("formData ==>", formData);
-
   return (
     <>
       <Row className="justify-content-between px-2">
@@ -340,9 +354,7 @@ const BasicInputElements = withSwal((props: any) => {
                   <Form.Group className="mb-3" controlId="campus_name">
                     <Form.Label>Campus Name</Form.Label>
                     <Form.Control type="text" name="campus_name" value={formData.campus_name} onChange={handleInputChange} />
-                    {validationErrors.campus_name && (
-                      <Form.Text className="text-danger">{validationErrors.campus_name}</Form.Text>
-                    )}
+                    {validationErrors.campus_name && <Form.Text className="text-danger">{validationErrors.campus_name}</Form.Text>}
                   </Form.Group>
                 </Col>
 
@@ -359,9 +371,7 @@ const BasicInputElements = withSwal((props: any) => {
                       value={selectedUniversity}
                       onChange={handleUniversityChange}
                     />
-                    {validationErrors.university_id && (
-                      <Form.Text className="text-danger">{validationErrors.university_id}</Form.Text>
-                    )}
+                    {validationErrors.university_id && <Form.Text className="text-danger">{validationErrors.university_id}</Form.Text>}
                   </Form.Group>
                 </Col>
               </Row>
@@ -386,9 +396,7 @@ const BasicInputElements = withSwal((props: any) => {
                 variant="danger"
                 id="button-addon2"
                 className="mt-1"
-                onClick={() =>
-                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
-                }
+                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()])}
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -399,6 +407,13 @@ const BasicInputElements = withSwal((props: any) => {
           </Form>
         </Modal>
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"campus"} />
+          </Modal.Body>
+        </Modal>
+
         {/* </Col> */}
 
         <Col className="p-0 form__card">
@@ -407,6 +422,11 @@ const BasicInputElements = withSwal((props: any) => {
               <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Campus
               </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
+              </Button>
+
               <h4 className="header-title mb-4">Manage Campus</h4>
               <Table
                 columns={columns}
@@ -429,7 +449,7 @@ const BasicInputElements = withSwal((props: any) => {
 
 const Campus = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [university, setUniversity] = useState([])
+  const [university, setUniversity] = useState([]);
 
   //Fetch data from redux store
   const { state, error, loading, initialLoading, courseData, universityData } = useSelector((state: RootState) => ({
@@ -438,13 +458,13 @@ const Campus = () => {
     loading: state.Campus.loading,
     initialLoading: state.Campus.initialloading,
     courseData: state.Course.course.data,
-    universityData: state.University?.universities?.data
+    universityData: state.University?.universities?.data,
   }));
 
   useEffect(() => {
     dispatch(getCampus());
     dispatch(getCourse());
-    dispatch(getUniversity())
+    dispatch(getUniversity());
   }, []);
 
   useEffect(() => {
@@ -464,13 +484,7 @@ const Campus = () => {
 
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Master", path: "/settings/master/campus" },
-          { label: "Campus", path: "/settings/master/campus", active: true },
-        ]}
-        title={"Campus"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Campus", path: "/settings/master/campus", active: true }]} title={"Campus"} />
       <Row>
         <Col>
           <BasicInputElements

@@ -191,7 +191,7 @@ const Comments = ({ studentId }: any) => {
                       className="form-control border-0 resize-none"
                       placeholder="Your comment..."
                       value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
+                      onChange={(e) => setCommentText(e.target.value.trimStart())}
                       required
                     ></textarea>
                     <div className="p-2 bg-light d-flex justify-content-between align-items-center">

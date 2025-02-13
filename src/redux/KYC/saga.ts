@@ -1,7 +1,7 @@
 import { all, fork, put, takeEvery, call } from "redux-saga/effects";
 import { SagaIterator } from "@redux-saga/core";
 import { KYCActionTypes } from "./constants";
-import { KYCApiResponseError, KYCApiResponseSuccess } from "./actions";
+import { KYCApiResponseError, KYCApiResponseSuccess, toggleApprovalModal } from "./actions";
 import {
   getPendingKycsApi,
   getRejectedKycsApi,
@@ -55,17 +55,19 @@ function* assignToApplicationMember({ payload: { application_ids, user_id, type 
   }
 }
 
-function* autoAssignToApplicationMember({ payload: { application_ids, type } }: any): SagaIterator {
+function* autoAssignToApplicationMember({ payload: { application_ids, type, users_list } }: any): SagaIterator {
   try {
-    const response = yield call(autoAssignToApplicationMemberApi, application_ids);
-    console.log(response.data);
+    const response = yield call(autoAssignToApplicationMemberApi, application_ids, users_list);
 
-    const data = response.data.message;
+    // const data = response.data.message;
+    const data = response.data;
 
     // NOTE - You can change this according to response format from your api
+    // yield put(KYCApiResponseSuccess(KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER, { data }));
     yield put(KYCApiResponseSuccess(KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER, { data }));
-    yield put({ type: KYCActionTypes.GET_PENDING, payload: { type } });
+    // yield put({ type: KYCActionTypes.GET_PENDING, payload: { type } });
     yield put({ type: "GET_ADMIN_USERS" });
+    yield put(toggleApprovalModal(true));
   } catch (error: any) {
     yield put(KYCApiResponseError(KYCActionTypes.AUTO_ASSIGN_APPLICATION_MEMBER, error));
   }

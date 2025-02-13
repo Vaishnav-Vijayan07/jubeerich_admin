@@ -84,11 +84,11 @@ const Notifications: NotificationItem[] = [
 
 // get the profilemenu
 const ProfileMenus = [
-  {
-    label: "My Account",
-    icon: "fe-user",
-    redirectTo: "#",
-  },
+  // {
+  //   label: "My Account",
+  //   icon: "fe-user",
+  //   redirectTo: "#",
+  // },
   {
     label: "Logout",
     icon: "fe-log-out",
@@ -276,7 +276,7 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
             <button className="button-toggle-menu" onClick={handleLeftMenuCallBack}>
               <i className="mdi mdi-menu" />
             </button>
-            <span>{role_name}</span>
+            <span style={{ fontWeight: 'bold', color: 'white' }}>{role_name}</span>
 
             {/* <div className="dropdown d-none d-xl-block">
               <CreateNew otherOptions={otherOptions} />
@@ -290,23 +290,23 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
             {/* <li className="app-search dropdown d-none d-sm-block">
               <TopbarSearch items={SearchResults} />
             </li> */}
-            <li className="dropdown notification-list">
+            {/* <li className="dropdown notification-list">
               <NotificationDropdown notifications={Notifications} />
-            </li>
+            </li> */}
             <li className="dropdown">
               <ProfileDropdown profilePic={profilePic} menuItems={ProfileMenus} username={name} userTitle={name} />
             </li>
             {/* <li className="dropdown d-none d-sm-block">
               <BranchDropDown profilePic={avatar} menuItems={branchData} branchname={branchName} userTitle={"branch"} />
             </li> */}
-            <li>
+            {/* <li>
               <button
                 className="nav-link dropdown-toggle right-bar-toggle waves-effect waves-light btn btn-link shadow-none my-dropdown-toggle font-weight-light"
                 onClick={handleRightSideBar}
               >
                 <i className="fe-settings noti-icon font-20 font-weight-light"></i>
               </button>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

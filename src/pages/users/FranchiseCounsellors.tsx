@@ -1,16 +1,7 @@
 import * as yup from "yup";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Modal,
-  Image,
-  Spinner,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Modal, Image, Spinner } from "react-bootstrap";
 import Table from "../../components/Table";
 import { withSwal } from "react-sweetalert2";
 import FeatherIcons from "feather-icons-react";
@@ -34,30 +25,14 @@ import {
 } from "../../redux/actions";
 import Select, { ActionMeta, OptionsType } from "react-select";
 import { AUTH_SESSION_KEY, baseUrl, franchise_counsellor_id } from "../../constants";
-import {
-  MyInitialState,
-  OptionType,
-  TableRecords,
-  initialState,
-  initialValidationState,
-  sizePerPageList,
-} from "./data";
+import { MyInitialState, OptionType, TableRecords, initialState, initialValidationState, sizePerPageList } from "./data";
 import { APICore } from "../../helpers/api/apiCore";
 import { Link } from "react-router-dom";
 import { getCountry } from "../../redux/country/actions";
 
 const BasicInputElements = withSwal((props: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    swal,
-    state,
-    BranchesData,
-    CountriesData,
-    RolesData,
-    error,
-    loading,
-    user
-  } = props;
+  const { swal, state, BranchesData, CountriesData, RolesData, error, loading, user } = props;
 
   console.log("user ==>", user.franchise_id);
 
@@ -79,33 +54,19 @@ const BasicInputElements = withSwal((props: any) => {
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
 
   //validation errors
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   const validationSchema = yup.object().shape({
     employee_id: yup.string().required("Employee id is required"),
-    name: yup
-      .string()
-      .required("Name is required")
-      .min(2, "Name must be at least 3 characters long"),
-    email: yup
-      .string()
-      .required("Email is required")
-      .email("Invalid email format"),
+    name: yup.string().required("Name is required").min(2, "Name must be at least 3 characters long"),
+    email: yup.string().required("Email is required").email("Invalid email format"),
     phone: yup
       .string()
       .required("Phone number is required")
       .matches(/^\d{10}$/, "Phone number must be a valid 10-digit number"),
     address: yup.string().required("Address is required"),
-    username: yup
-      .string()
-      .required("Username is required")
-      .min(4, "Username must be at least 4 characters long"),
-    password: yup
-      .string()
-      .required("Password is required")
-      .min(8, "Password must be at least 8 characters long"),
+    username: yup.string().required("Username is required").min(4, "Username must be at least 4 characters long"),
+    password: yup.string().required("Password is required").min(8, "Password must be at least 8 characters long"),
     // branch_ids: yup.string().nullable().required("Branch is required").min(1, "At least one branch must be selected"),
   });
 
@@ -192,9 +153,7 @@ const BasicInputElements = withSwal((props: any) => {
   ) => {
     if (Array.isArray(selectedOptions)) {
       setSelectedBranch(selectedOptions);
-      const selectedIdsString = selectedOptions
-        ?.map((option) => option.value)
-        .join(", ");
+      const selectedIdsString = selectedOptions?.map((option) => option.value).join(", ");
       setFormData((prev) => ({
         ...prev,
         branch_ids: selectedIdsString,
@@ -221,7 +180,7 @@ const BasicInputElements = withSwal((props: any) => {
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: `Yes, ${isUpdate ? 'Update' : 'Create'}`,
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -283,9 +242,10 @@ const BasicInputElements = withSwal((props: any) => {
               }
             }
           }
-        }).catch((err: any) => {
-          console.log(err);
         })
+        .catch((err: any) => {
+          console.log(err);
+        });
 
       // if (isUpdate) {
       //   // Handle update logic
@@ -372,11 +332,7 @@ const BasicInputElements = withSwal((props: any) => {
           <>
             <div className="table-user">
               <img
-                src={
-                  isImage
-                    ? `${baseUrl}/${row.original.profile_image_path}`
-                    : profilePic
-                }
+                src={isImage ? `${baseUrl}${row.original.profile_image_path}` : profilePic}
                 alt=""
                 className="me-2 rounded-circle"
               />
@@ -437,7 +393,7 @@ const BasicInputElements = withSwal((props: any) => {
     //     <div className="d-flex justify-content-center align-items-center gap-2">
     //       {row.original.profile_image_path ? (
     //         <img
-    //           src={`${baseUrl}/${row.original.profile_image_path}`}
+    //           src={`${baseUrl}${row.original.profile_image_path}`}
     //           alt="Profile Image"
     //           width={100}
     //           height={100}
@@ -533,7 +489,7 @@ const BasicInputElements = withSwal((props: any) => {
     setValidationErrors(initialValidationState);
     setSelectedBranch([]);
     setSelectedImage(null);
-  }
+  };
 
   useEffect(() => {
     // Check for errors and clear the form
@@ -575,9 +531,7 @@ const BasicInputElements = withSwal((props: any) => {
                           onChange={handleInputChange}
                         />
                         {validationErrors.employee_id && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.employee_id}
-                          </Form.Text>
+                          <Form.Text className="text-danger">{validationErrors.employee_id}</Form.Text>
                         )}
                       </Form.Group>
                     </Col>
@@ -591,11 +545,7 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.name}
                           onChange={handleInputChange}
                         />
-                        {validationErrors.name && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.name}
-                          </Form.Text>
-                        )}
+                        {validationErrors.name && <Form.Text className="text-danger">{validationErrors.name}</Form.Text>}
                       </Form.Group>
                     </Col>
                   </Row>
@@ -611,11 +561,7 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.email}
                           onChange={handleInputChange}
                         />
-                        {validationErrors.email && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.email}
-                          </Form.Text>
-                        )}
+                        {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                       </Form.Group>
                     </Col>
                     <Col md={6}>
@@ -628,11 +574,7 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.phone}
                           onChange={handleInputChange}
                         />
-                        {validationErrors.phone && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.phone}
-                          </Form.Text>
-                        )}
+                        {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                       </Form.Group>
                     </Col>
                   </Row>
@@ -650,9 +592,7 @@ const BasicInputElements = withSwal((props: any) => {
                             onChange={handleInputChange}
                           />
                           {validationErrors.username && (
-                            <Form.Text className="text-danger">
-                              {validationErrors.username}
-                            </Form.Text>
+                            <Form.Text className="text-danger">{validationErrors.username}</Form.Text>
                           )}
                         </Form.Group>
                       </Row>
@@ -664,13 +604,11 @@ const BasicInputElements = withSwal((props: any) => {
                             type="text"
                             name="password"
                             placeholder="Enter password"
-                            value={formData.password ?? ''}
+                            value={formData.password ?? ""}
                             onChange={handleInputChange}
                           />
                           {validationErrors.password && (
-                            <Form.Text className="text-danger">
-                              {validationErrors.password}
-                            </Form.Text>
+                            <Form.Text className="text-danger">{validationErrors.password}</Form.Text>
                           )}
                         </Form.Group>
                       </Row>
@@ -688,11 +626,7 @@ const BasicInputElements = withSwal((props: any) => {
                           value={formData.address}
                           onChange={handleInputChange}
                         />
-                        {validationErrors.address && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.address}
-                          </Form.Text>
-                        )}
+                        {validationErrors.address && <Form.Text className="text-danger">{validationErrors.address}</Form.Text>}
                       </Form.Group>
                     </Col>
                   </Row>
@@ -732,11 +666,7 @@ const BasicInputElements = withSwal((props: any) => {
                           ))}
                         </Form.Select>
 
-                        {validationErrors.role_id && (
-                          <Form.Text className="text-danger">
-                            {validationErrors.role_id}
-                          </Form.Text>
-                        )}
+                        {validationErrors.role_id && <Form.Text className="text-danger">{validationErrors.role_id}</Form.Text>}
                       </Form.Group>
                     </Col>
                   </Row>
@@ -753,20 +683,14 @@ const BasicInputElements = withSwal((props: any) => {
                         )}
                         {!selectedImage && isUpdate && (
                           <div className="mt-3">
-                            <img src={`${baseUrl}/${formData.profile_image_path}`} alt="Selected" style={{ maxWidth: "100px" }} />
+                            <img src={`${baseUrl}${formData.profile_image_path}`} alt="Selected" style={{ maxWidth: "100px" }} />
                           </div>
                         )}
                       </Form.Group>
                     </Col>
                   </Row> */}
                   <div className="text-end">
-                    <Button
-                      variant="primary"
-                      id="button-addon2"
-                      className="mt-1 ms-2 me-2"
-                      onClick={() => [handleResetValues()]
-                      }
-                    >
+                    <Button variant="primary" id="button-addon2" className="mt-1 ms-2 me-2" onClick={() => [handleResetValues()]}>
                       Clear
                     </Button>
                     <Button
@@ -838,19 +762,15 @@ const FranchiseCounsellors = () => {
   const [countryData, setCountryData] = useState([]);
 
   //Fetch data from redux store
-  const { state, error, loading, initialLoading, user } = useSelector(
-    (state: RootState) => ({
-      state: state.FranchiseUsers.adminUsers,
-      user: state.Auth.user,
-      error: state.FranchiseUsers.error,
-      loading: state.FranchiseUsers.loading,
-      initialLoading: state.FranchiseUsers.initialLoading,
-    })
-  );
+  const { state, error, loading, initialLoading, user } = useSelector((state: RootState) => ({
+    state: state.FranchiseUsers.adminUsers,
+    user: state.Auth.user,
+    error: state.FranchiseUsers.error,
+    loading: state.FranchiseUsers.loading,
+    initialLoading: state.FranchiseUsers.initialLoading,
+  }));
 
-  const Branch = useSelector(
-    (state: RootState) => state?.Branches?.branches?.data
-  );
+  const Branch = useSelector((state: RootState) => state?.Branches?.branches?.data);
 
   const Countries = useSelector((state: RootState) => state?.Country.countries);
 
@@ -898,7 +818,7 @@ const FranchiseCounsellors = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Counsellor Management", path: "/user_management/counsellor_creation" },
+          // { label: "Counsellor Management", path: "/user_management/counsellor_creation" },
           {
             label: "Counsellors",
             path: "/user_management/counsellor_creation",

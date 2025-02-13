@@ -32,6 +32,8 @@ import refreshReducer from "./countryReducer";
 import DropDownReducer from "./dropDown/reducers";
 import KYC from "./KYC/reducers";
 import StatusTypes from "./status/statusType/reducers";
+import VisaChecklists from "./visa_checklists/reducers";
+import DashboardCountries from "./dashboard/countries_reducer";
 
 export default combineReducers({
   Auth,
@@ -56,6 +58,7 @@ export default combineReducers({
   SubStatus,
   History,
   Dashboard,
+  DashboardCountries,
   FranchiseUsers,
   Franchise,
   Campus,
@@ -65,5 +68,6 @@ export default combineReducers({
   DropDownReducer,
   KYC,
   refreshReducer,
-  StatusTypes
+  StatusTypes,
+  VisaChecklists
 });

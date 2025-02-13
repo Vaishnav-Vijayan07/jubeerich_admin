@@ -12,17 +12,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import {
-  addCategory,
-  deleteCategory,
-  getCategory,
-  updateCategory,
-} from "../../redux/actions";
+import { addCategory, deleteCategory, getCategory, updateCategory } from "../../redux/actions";
 import { AUTH_SESSION_KEY } from "../../constants";
 import { error } from "console";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import('../../components/HistoryTable'));
 
 interface TableRecords {
   id: number;
@@ -53,7 +50,7 @@ const sizePerPageList = [
 const initialFormData = {
   id: "",
   category_name: "",
-  category_description: ""
+  category_description: "",
 };
 
 const initialValidationState = {
@@ -64,6 +61,7 @@ const initialValidationState = {
 const BasicInputElements = withSwal((props: any) => {
   const { swal, state, loading, error, initialLoading } = props;
   const dispatch = useDispatch();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
 
   //fetch token from session storage
   let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
@@ -73,9 +71,7 @@ const BasicInputElements = withSwal((props: any) => {
   //Input data
   const [formData, setFormData] = useState(initialFormData);
 
-  const [validationErrors, setValidationErrors] = useState(
-    initialValidationState
-  );
+  const [validationErrors, setValidationErrors] = useState(initialValidationState);
 
   // Modal states
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
@@ -83,11 +79,8 @@ const BasicInputElements = withSwal((props: any) => {
   const records: TableRecords[] = state;
 
   const validationSchema = yup.object().shape({
-    category_name: yup
-      .string()
-      .required("Category name is required"),
-    category_description: yup
-      .string()
+    category_name: yup.string().required("Category name is required"),
+    category_description: yup.string(),
   });
 
   /*
@@ -106,7 +99,7 @@ const BasicInputElements = withSwal((props: any) => {
     setFormData({
       id: item?.id,
       category_name: item?.name,
-      category_description: item?.description
+      category_description: item?.description,
     });
     setIsUpdate(true);
   };
@@ -114,13 +107,24 @@ const BasicInputElements = withSwal((props: any) => {
   const handleDelete = (category_id: number) => {
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to delete this category?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: `Yes, delete it!`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -156,40 +160,39 @@ const BasicInputElements = withSwal((props: any) => {
       await validationSchema.validate(formData, { abortEarly: false });
 
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          if (userInfo) {
-            const { user_id } = JSON.parse(userInfo);
-            // Validation passed, handle form submission
-            if (isUpdate) {
-              dispatch(
-                updateCategory(
-                  formData.id,
-                  formData.category_name,
-                  formData.category_description,
-                )
-              );
-            } else {
-              dispatch(
-                addCategory(
-                  formData.category_name,
-                  formData.category_description,
-                )
-              );
+        .fire({
+          title: "Confirm Action",
+          text: `Do you want to ${isUpdate ? "update" : "create"} this category?`,
+          icon: "question",
+          iconColor: "#8B8BF5", // Purple color for the icon
+          showCancelButton: true,
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+          cancelButtonColor: "#E97777", // Pink/red color for cancel button
+          buttonsStyling: true,
+          customClass: {
+            popup: "rounded-4 shadow-lg",
+            confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+            cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+            title: "fs-2 fw-normal mb-2",
+          },
+          width: "26em",
+          padding: "2em",
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            if (userInfo) {
+              const { user_id } = JSON.parse(userInfo);
+              // Validation passed, handle form submission
+              if (isUpdate) {
+                dispatch(updateCategory(formData.id, formData.category_name, formData.category_description));
+              } else {
+                dispatch(addCategory(formData.category_name, formData.category_description));
+              }
             }
           }
-        }
-      });
-      
+        });
     } catch (validationError) {
       if (validationError instanceof yup.ValidationError) {
         const errors: any = {};
@@ -237,28 +240,28 @@ const BasicInputElements = withSwal((props: any) => {
     //     </React.Fragment>
     //   ),
     // },
-    {
-      Header: "Actions",
-      accessor: "",
-      sort: false,
-      Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
-          {/* <Link to="#" className="action-icon" onClick={() => {
-            setIsUpdate(true);
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
-            <i className="mdi mdi-square-edit-outline"></i>
-          </Link>
+    // {
+    //   Header: "Actions",
+    //   accessor: "",
+    //   sort: false,
+    //   Cell: ({ row }: any) => (
+    //     <div className="d-flex justify-content-center align-items-center gap-2">
+    //       <Link to="#" className="action-icon" onClick={() => {
+    //         setIsUpdate(true);
+    //         handleUpdate(row.original);
+    //         toggleResponsiveModal();
+    //       }}>
+    //         <i className="mdi mdi-square-edit-outline"></i>
+    //       </Link>
 
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
-            <i className="mdi mdi-delete-outline"></i>
-          </Link> */}
-        </div>
-      ),
-    },
+    //       <Link to="#" className="action-icon" onClick={() =>
+    //         handleDelete(row.original.id)
+    //       }>
+    //         <i className="mdi mdi-delete-outline"></i>
+    //       </Link>
+    //     </div>
+    //   ),
+    // },
   ];
 
   const handleCancelUpdate = () => {
@@ -292,15 +295,13 @@ const BasicInputElements = withSwal((props: any) => {
     }
   }, [loading, error]);
 
+ 
+
   return (
     <>
       <Row className="justify-content-between px-2">
         {/* <Col lg={5} className="bg-white p-3"> */}
-        <Modal
-          show={responsiveModal}
-          onHide={toggleResponsiveModal}
-          dialogClassName="modal-dialog-centered"
-        >
+        <Modal show={responsiveModal} onHide={toggleResponsiveModal} dialogClassName="modal-dialog-centered">
           <Form onSubmit={onSubmit}>
             <Modal.Header closeButton>
               <h4 className="modal-title">Lead Type Management</h4>
@@ -308,16 +309,9 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               <Form.Group className="mb-3" controlId="validationCustom01">
                 <Form.Label>Lead Type Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="category_name"
-                  value={formData.category_name}
-                  onChange={handleInputChange}
-                />
+                <Form.Control type="text" name="category_name" value={formData.category_name} onChange={handleInputChange} />
                 {validationErrors.category_name && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.category_name}
-                  </Form.Text>
+                  <Form.Text className="text-danger">{validationErrors.category_name}</Form.Text>
                 )}
               </Form.Group>
 
@@ -331,20 +325,12 @@ const BasicInputElements = withSwal((props: any) => {
                   onChange={handleInputChange}
                 />
                 {validationErrors.category_description && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.category_description}
-                  </Form.Text>
+                  <Form.Text className="text-danger">{validationErrors.category_description}</Form.Text>
                 )}
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-            <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-3 ms-2"
-                onClick={() =>[setFormData(initialFormData)]
-                }
-              >
+              <Button variant="primary" id="button-addon2" className="mt-3 ms-2" onClick={() => [setFormData(initialFormData)]}>
                 Clear
               </Button>
               <Button
@@ -352,19 +338,12 @@ const BasicInputElements = withSwal((props: any) => {
                 id="button-addon2"
                 className="mt-3 "
                 onClick={() =>
-                  isUpdate
-                    ? [handleCancelUpdate(), toggleResponsiveModal()]
-                    : [toggleResponsiveModal(), handleResetValues()]
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal()] : [toggleResponsiveModal(), handleResetValues()]
                 }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
-              <Button
-                type="submit"
-                variant="success"
-                id="button-addon2"
-                className="mt-3"
-              >
+              <Button type="submit" variant="success" id="button-addon2" className="mt-3">
                 {isUpdate ? "Update" : "Submit"}
               </Button>
             </Modal.Footer>
@@ -372,14 +351,22 @@ const BasicInputElements = withSwal((props: any) => {
         </Modal>
         {/* </Col> */}
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"lead_type"} />
+          </Modal.Body>
+        </Modal>
+
         <Col className="p-0 form__card">
           <Card className="bg-white">
             <Card.Body>
-              <Button
-                className="btn-sm btn-blue waves-effect waves-light float-end"
-                onClick={toggleResponsiveModal}
-              >
+              <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Lead Type
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Lead Type</h4>
               <Table
@@ -405,47 +392,24 @@ const BasicInputElements = withSwal((props: any) => {
 const Category = () => {
   const dispatch = useDispatch<AppDispatch>();
   //Fetch data from redux store
-  const { state, loading, success, error, initialloading } = useSelector(
-    (state: RootState) => ({
-      state: state.Category.category.data,
-      loading: state.Category.loading,
-      success: state.Category.success,
-      error: state.Category.error,
-      initialloading: state.Category.initialloading,
-    })
-  );
+  const { state, loading, success, error, initialloading } = useSelector((state: RootState) => ({
+    state: state.Category.category.data,
+    loading: state.Category.loading,
+    success: state.Category.success,
+    error: state.Category.error,
+    initialloading: state.Category.initialloading,
+  }));
 
   useEffect(() => {
     dispatch(getCategory());
   }, []);
 
-  // if (initialloading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
-
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Master", path: "/settings/master/type" },
-          { label: "Lead Type", path: "/settings/master/type", active: true },
-        ]}
-        title={"Lead Type"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Lead Type", path: "/settings/master/type", active: true }]} title={"Lead Type"} />
       <Row>
         <Col>
-          <BasicInputElements
-            state={state}
-            loading={loading}
-            success={success}
-            error={error}
-            initialLoading={initialloading}
-          />
+          <BasicInputElements state={state} loading={loading} success={success} error={error} initialLoading={initialloading} />
         </Col>
       </Row>
     </React.Fragment>

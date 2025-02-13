@@ -53,7 +53,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const currentDate = new Date();
   const navigate = useNavigate();
 
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const dispatch = useDispatch();
   const { Countries, user, refresh } = useSelector((state: RootState) => ({
@@ -74,6 +73,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
   const formattedStatus = useMemo(() => {
     if (!status) return [];
+
+    console.log(status);
 
     // const currentStatus = basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name;
 
@@ -113,20 +114,32 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   }, [flags, basicData?.flags]);
 
   const handleStatusChange = async (status_id: number) => {
-    let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
+    // let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
+    let country_id = taskDetails?.assigned_country;
 
     if (status_id == follow_up_id || status_id == future_leads_id || status_id == not_responding_id) {
       // toggleStandard();
       setShowRemarkModal(true);
     } else {
       const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to update this lead status?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: `Yes, Update`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {
@@ -145,9 +158,9 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   };
 
   const handleFollowUpDate = (value: any) => {
-    console.log(value);
+    let country_id = taskDetails?.assigned_country;
 
-    let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
+    // let country_id = taskDetails?.student_name?.preferredCountries?.[0]?.id;
 
     setIsFollowupLoading(true);
     axios
@@ -207,13 +220,24 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const updateFlagStatus = async (flag_id: string) => {
     try {
       const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to add new flag?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: `Yes, Add`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {
@@ -260,7 +284,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
     const currentCountries = basicData?.country_names;
 
-    return Countries.filter((item: any) => !basicData?.country_ids?.includes(item?.id))
+    return Countries.filter((item: any) => !basicData?.all_country_ids?.includes(item?.id))
       .filter((item: any) => !currentCountries?.includes(item?.country_name))
       .map((item: any) => ({
         value: item?.id.toString(),
@@ -271,13 +295,24 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const handleFinishTask = async () => {
     try {
       const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to proceed?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes",
+        confirmButtonText: `Yes`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {
@@ -286,10 +321,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
           id: taskId,
         });
 
-        console.log("res ==>", res.data);
-
         getTaskDetails();
-        getTaskList();
+        getTaskList(null, true);
 
         // Show success alert
         showSuccessAlert(res.data.message);
@@ -302,13 +335,24 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const handleCompleteTask = async () => {
     try {
       const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to complete this task?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes",
+        confirmButtonText: `Yes, Complete`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {
@@ -327,31 +371,48 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   };
 
   const addNewCountry = async (newCountryId: number) => {
+    const result = await swal.fire({
+      title: "Confirm Action",
+      text: `Do you want to assign new country?`,
+      icon: "question",
+      iconColor: "#8B8BF5", // Purple color for the icon
+      showCancelButton: true,
+      confirmButtonText: `Yes, Assign`,
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+      cancelButtonColor: "#E97777", // Pink/red color for cancel button
+      buttonsStyling: true,
+      customClass: {
+        popup: "rounded-4 shadow-lg",
+        confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+        cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+        title: "fs-2 fw-normal mb-2",
+      },
+      width: "26em",
+      padding: "2em",
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
     try {
-      const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+      setLoading(true);
+      const response = await axios.put("assign_new_country", {
+        id: taskId,
+        newCountryId: newCountryId,
       });
 
-      if (result.isConfirmed) {
-        setLoading(true);
-        const response = await axios.put("assign_new_country", {
-          id: taskId,
-          newCountryId: newCountryId,
-        });
+      showSuccessAlert(response?.data?.message); // Display success message
 
-        showSuccessAlert(response?.data?.message); // Display success message
-        getTaskDetails(); // Refresh task details
-        getTaskList();
-        dispatch(refreshData());
-      }
+
+      getTaskDetails(); // Refresh task details
+      getTaskList();
+      dispatch(refreshData());
     } catch (error: any) {
       console.error("Error:", error);
+
+      const message = typeof error === "string" ? error : "Network error or server is unreachable.";
 
       // Display the error message from the backend
       if (error.response) {
@@ -365,7 +426,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       } else {
         await swal.fire({
           title: "Error",
-          text: "Network error or server is unreachable.",
+          text: message,
           icon: "error",
           confirmButtonText: "OK",
         });
@@ -393,16 +454,28 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         student_id: studentId,
         task_id: taskId,
         assigned_country: taskDetails?.assigned_country,
+        study_pref_id: taskDetails.is_rejected ? taskDetails?.study_preference_detail_id : null,
       };
 
       const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to proceed kyc?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Proceed to KYC",
+        confirmButtonText: `Yes, Proceed to KYC`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {
@@ -410,7 +483,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         if (res) {
           showSuccessAlert("Proceeded KYC Successfully");
           getTaskDetails();
-          getTaskList();
+          getTaskList(null, true);
         }
       }
     } catch (error) {
@@ -423,13 +496,24 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const removeFlag = async (flagId: any) => {
     try {
       const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to remove this flag?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: `Yes, Remove`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {
@@ -593,10 +677,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                 </Row>
               </div>
 
-              <div
-                className="p-0"
-                style={{ background: "#E0DEF8", borderBottomRightRadius: "10px", borderBottomLeftRadius: "10px" }}
-              >
+              <div className="p-0" style={{ background: "#E0DEF8", borderBottomRightRadius: "10px", borderBottomLeftRadius: "10px" }}>
                 <div className="" style={{ padding: "15px 30px" }}>
                   <div className="" style={{ paddingRight: "0px" }}>
                     <div>
@@ -668,7 +749,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       </div>
                     </div>
 
-                    <div className="action-icon d-flex justify-content-end align-items-center">
+                    <div className="action-icon d-flex justify-content-end align-items-center" style={{ width: "105px" }}>
                       <Tooltip title="View All Details">
                         <MatButton
                           onClick={() => navigate(`/leads/manage/${studentId}`)}
@@ -708,8 +789,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         disableClearable
                         options={formattedStatus || []}
                         value={
-                          basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
-                            ? basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name
+                          taskDetails?.student_name?.preferredCountries[0]?.country_status[0]?.status_name
+                            ? taskDetails?.student_name?.preferredCountries[0]?.country_status[0]?.status_name
                             : "Change status"
                         }
                         sx={{ width: "100%", paddingTop: "1.2rem" }}
@@ -769,38 +850,37 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           <div style={{ border: `1px solid ${data?.color}` }} className="rounded-2 me-2 mt-1">
                             <div className="font-11" style={{ padding: "2px 7px" }}>
                               {data?.flag_name}
-                              <i
-                                className="mdi mdi-close"
-                                style={{ paddingLeft: "3px", cursor: "pointer" }}
-                                onClick={() => removeFlag(data?.id)}
-                              ></i>
+                              <i className="mdi mdi-close" style={{ paddingLeft: "3px", cursor: "pointer" }} onClick={() => removeFlag(data?.id)}></i>
                             </div>
                           </div>
                         ))}
                     </div>
                   </div>
-                  {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && 
-                  <div className="mx-2">
-                    <h4 className="m-0 label_heading">Add New Country</h4>
+                  {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                    <div className="mx-2">
+                      <h4 className="m-0 label_heading">Add New Country</h4>
 
-                    <div className="d-flex justify-content-between align-items-center">
-                      <Autocomplete
-                        disablePortal
-                        disableClearable
-                        options={countryData || []}
-                        value={
-                          basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Add Country"
-                        }
-                        sx={{ width: "100%", paddingTop: "1.2rem" }}
-                        renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} placeholder="Add New Country" />}
-                        onChange={(event, newValue) => {
-                          if (newValue) {
-                            addNewCountry(newValue?.value);
+                      <div className="d-flex justify-content-between align-items-center">
+                        <Autocomplete
+                          disablePortal
+                          disableClearable
+                          options={countryData || []}
+                          value={
+                            taskDetails?.student_name?.preferredCountries[0]?.country_name
+                              ? taskDetails?.student_name?.preferredCountries[0]?.country_name
+                              : "Add New Country"
                           }
-                        }}
-                      />
+                          sx={{ width: "100%", paddingTop: "1.2rem" }}
+                          renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} placeholder="Add New Country" />}
+                          onChange={(event, newValue) => {
+                            if (newValue) {
+                              addNewCountry(newValue?.value);
+                            }
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>}
+                  )}
                 </div>
                 {taskDetails?.is_rejected && (
                   <div className="mx-2">

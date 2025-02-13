@@ -37,6 +37,9 @@ function* addStatusType({ payload: { type_name, priority } }: StatusData): SagaI
     });
     const data = response.data;
 
+    console.log("data ===> ", data);
+    
+
     yield put(StatusTypeApiResponseSuccess(StatusTypeActionTypes.ADD_STATUS_TYPE, data.message));
 
     yield put(getStatusType());

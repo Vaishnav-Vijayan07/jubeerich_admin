@@ -12,6 +12,13 @@ import { getAllChecklists, getChecklistById, addChecklist, updateChecklist, dele
 import { addSubStatus, deleteSubStatus, getAllSubStatus, updateSubStatus } from "./subStatus";
 import { addUniversitysApi, deleteUniversitysApi, getUniversitysApi, updateUniversitysApi } from "./university";
 import {
+  addVisaChecklistApi,
+  deleteVisaChecklistApi,
+  getVisaChecklistApi,
+  updateVisaChecklistApi,
+  getVisaConfigApi,
+} from "./visa_checklist";
+import {
   addCampusApi,
   deleteCampusApi,
   getCampusApi,
@@ -106,4 +113,9 @@ export {
   updateCourseTypeApi,
   courseConfigurationApi,
   deleteCourseConfigApi,
+  addVisaChecklistApi,
+  deleteVisaChecklistApi,
+  getVisaChecklistApi,
+  updateVisaChecklistApi,
+  getVisaConfigApi,
 };

@@ -37,6 +37,8 @@ const Task = ({
   taskPrefix: any;
   title: string;
 }) => {
+  console.log(task?.student_name?.preferredCountries);
+
   const statusColor = task?.student_name?.preferredCountries[0]?.country_status[0]?.color || "primary";
   const statusName = task?.student_name?.preferredCountries[0]?.country_status[0]?.status_name;
   const currentDate = new Date();
@@ -49,6 +51,7 @@ const Task = ({
         style={{
           display: "grid",
           gridTemplateColumns: "9.5fr 2.5fr",
+          cursor: "pointer",
         }}
       >
         <div
@@ -60,7 +63,7 @@ const Task = ({
           }}
           className="p-2"
         >
-          <label className="form-check-label truncate-text fs-6" htmlFor={`task-${task.id}`}>
+          <label className="form-check-label truncate-text fs-6" htmlFor={`task-${task.id}`} style={{cursor:"pointer"}}>
             <span
               className={classNames(title === "Past" ? "text-danger" : "text-primary")}
               style={{ fontSize: "12px", fontWeight: "700" }}

@@ -66,7 +66,7 @@ const FundPlan = ({ student_id }: Props) => {
       newFundPlan.splice(index, 1);
       setFundPlan(newFundPlan);
     } else {
-      removeFromApi(id, "fund");
+      removeFromApi(id, "fund",student_id);
     }
   };
 
@@ -74,17 +74,16 @@ const FundPlan = ({ student_id }: Props) => {
     console.log(fundPlan);
 
     const validationRules = {
-      type: { required: true },
-      fund_origin: { required: true },
-      has_min_6_months_backup: { required: true },
-      source_of_funds: { required: true },
-      sponsor_name: { required: true },
-      approx_annual_income: { required: true },
-      itr_status: { required: true },
-      supporting_document: { required: true },
-      relation_with_sponsor: { required: true },
-      sponsorship_amount: { required: true },
-      name_of_bank: { required: true },
+      type: { required: true, message: "Please select a fund type" },
+      fund_origin: { required: false, message: "Please select a fund origin" },
+      has_min_6_months_backup: { required: false, message: "Please select an option" },
+      sponsor_name: { required: false, message: "Please enter sponsor name" },
+      approx_annual_income: { required: false, message: "Please enter sponsor annual income" },
+      itr_status: { required: true, message: "Please select an option" },
+      supporting_document: { required: false, message: "Please upload supporting document" },
+      relation_with_sponsor: { required: false, message: "Please enter relation with sponsor" },
+      sponsorship_amount: { required: false, message: "Please enter sponsorship amount" },
+      name_of_bank: { required: false, message: "Please enter name of bank" },
     };
     const { isValid, errors } = validateFields(fundPlan, validationRules);
 
@@ -102,8 +101,7 @@ const FundPlan = ({ student_id }: Props) => {
   };
 
   const handleFundPlanInputChange = (index: number, name: string, value: string | number | File) => {
-
-    if (typeof value == 'object' && !allowedFileTypes.includes(value.type)) {
+    if (typeof value == "object" && !allowedFileTypes.includes(value.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
       return;
     }
@@ -164,6 +162,7 @@ const FundPlan = ({ student_id }: Props) => {
               handleFundPlanInputChange={handleFundPlanInputChange}
               removeFundPlan={removeFundPlan}
               handleAddMoreFundPlan={handleAddMoreFundPlan}
+              studentId={student_id}
             />
           </Row>
           <Row>

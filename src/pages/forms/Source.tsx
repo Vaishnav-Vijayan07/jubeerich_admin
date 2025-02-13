@@ -18,6 +18,8 @@ import { AUTH_SESSION_KEY } from "../../constants";
 import { Link } from "react-router-dom";
 import { getCategory } from "../../redux/actions";
 import { regrexValidation } from "../../utils/regrexValidation";
+import { useHistoryModal } from "../../hooks/useHistoryModal";
+const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface TableRecords {
   id: number;
@@ -50,22 +52,23 @@ const initialState = {
   source_name: "",
   source_description: "",
   updated_by: "",
-  lead_type_id: ""
+  lead_type_id: "",
 };
 
 const initialValidationState = {
   source_name: "",
   source_description: "",
-  lead_type_id: ""
+  lead_type_id: "",
 };
 
 const BasicInputElements = withSwal((props: any) => {
   const [selectedLeadType, setSelectedLeadType] = useState<any>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const {historyModal,toggleHistoryModal} = useHistoryModal();
   const { swal } = props;
   const { state, loading, error, leadType, initialLoading } = props;
 
-  console.log('leadType 2',leadType);
+  console.log("leadType 2", leadType);
 
   //Table data
   const records: TableRecords[] = state;
@@ -85,17 +88,11 @@ const BasicInputElements = withSwal((props: any) => {
   const [responsiveModal, setResponsiveModal] = useState<boolean>(false);
 
   const validationSchema = yup.object().shape({
-    source_name: yup
-      .string()
-      .required("source name is required")
-      .min(3, "source name must be at least 3 characters long"),
-    lead_type_id: yup
-      .string()
-      .required("lead type is required"),
-    source_description: yup
-      .string()
-      // .required("source description is required")
-      // .min(3, "source description must be at least 3 characters long"),
+    source_name: yup.string().required("source name is required").min(3, "source name must be at least 3 characters long"),
+    lead_type_id: yup.string().required("lead type is required"),
+    source_description: yup.string(),
+    // .required("source description is required")
+    // .min(3, "source description must be at least 3 characters long"),
   });
 
   /*
@@ -112,15 +109,14 @@ const BasicInputElements = withSwal((props: any) => {
       source_name: item?.source_name,
       source_description: item?.source_description,
       updated_by: item?.updated_by,
-      lead_type_id: item?.lead_type_id
+      lead_type_id: item?.lead_type_id,
     });
 
-    console.log('leadTypeData',leadType);
-    
-    
-    if(item?.lead_type_id){
-      let filtered = leadType.filter((data: any) => data.value == item?.lead_type_id );
-      console.log('filtered',filtered);
+    console.log("leadTypeData", leadType);
+
+    if (item?.lead_type_id) {
+      let filtered = leadType.filter((data: any) => data.value == item?.lead_type_id);
+      console.log("filtered", filtered);
       setSelectedLeadType(filtered[0]);
     }
 
@@ -131,13 +127,24 @@ const BasicInputElements = withSwal((props: any) => {
   const handleDelete = (id: string) => {
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to delete this lead source?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: `Yes, delete it!`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -159,10 +166,9 @@ const BasicInputElements = withSwal((props: any) => {
     switch (name) {
       case "lead_type_id":
         setSelectedLeadType(selected);
-      break;
+        break;
     }
   };
-
 
   //handle onchange function
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -188,53 +194,50 @@ const BasicInputElements = withSwal((props: any) => {
       // Validation passed, handle form submission
       await validationSchema.validate(formData, { abortEarly: false });
 
-      console.log('selectedLeadType',selectedLeadType.value);
-      
+      console.log("selectedLeadType", selectedLeadType.value);
 
       swal
-      .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${isUpdate ? 'Update': 'Create'}`,
-      })
-      .then((result: any) => {
-        if (result.isConfirmed) {
-          if (userInfo) {
-            const { user_id } = JSON.parse(userInfo);
-    
-            if (isUpdate) {
-              // Handle update logic
-              dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id, formData.lead_type_id));
-              setIsUpdate(false);
-              handleCancelUpdate();
-              toggleResponsiveModal();
-              handleResetValues()
-            } else {
-              // Handle add logic
-              dispatch(addSource(formData.source_name, formData.source_description, user_id, formData.lead_type_id));
-              toggleResponsiveModal()
-              handleResetValues()
+        .fire({
+          title: "Confirm Action",
+          text: `Do you want to ${isUpdate ? "update" : "create"} this lead source?`,
+          icon: "question",
+          iconColor: "#8B8BF5", // Purple color for the icon
+          showCancelButton: true,
+          confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+          cancelButtonColor: "#E97777", // Pink/red color for cancel button
+          buttonsStyling: true,
+          customClass: {
+            popup: "rounded-4 shadow-lg",
+            confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+            cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+            title: "fs-2 fw-normal mb-2",
+          },
+          width: "26em",
+          padding: "2em",
+        })
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            if (userInfo) {
+              const { user_id } = JSON.parse(userInfo);
+
+              if (isUpdate) {
+                // Handle update logic
+                dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id, formData.lead_type_id));
+                setIsUpdate(false);
+                handleCancelUpdate();
+                toggleResponsiveModal();
+                handleResetValues();
+              } else {
+                // Handle add logic
+                dispatch(addSource(formData.source_name, formData.source_description, user_id, formData.lead_type_id));
+                toggleResponsiveModal();
+                handleResetValues();
+              }
             }
           }
-        }
-      });
-
-      // if (userInfo) {
-      //   const { user_id } = JSON.parse(userInfo);
-
-      //   if (isUpdate) {
-      //     // Handle update logic
-      //     dispatch(updateSource(formData.id, formData.source_name, formData.source_description, user_id, formData.lead_type_id));
-      //     setIsUpdate(false);
-      //   } else {
-      //     // Handle add logic
-      //     dispatch(addSource(formData.source_name, formData.source_description, user_id, formData.lead_type_id));
-      //   }
-      // }
+        });
 
       // ... Rest of the form submission logic ...
     } catch (validationError) {
@@ -271,32 +274,35 @@ const BasicInputElements = withSwal((props: any) => {
     {
       Header: "Lead Type ",
       accessor: "leadType",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Slug",
       accessor: "slug",
-      sort: false,
+      sort: true,
     },
     {
       Header: "Actions",
       accessor: "",
       sort: false,
+      maxWidth: 10,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="">
           {/* Edit Icon */}
-          <Link to="#" className="action-icon" onClick={() => {
-            setIsUpdate(true);
-            handleUpdate(row.original);
-            toggleResponsiveModal();
-          }}>
+          <Link
+            to="#"
+            className="action-icon"
+            onClick={() => {
+              setIsUpdate(true);
+              handleUpdate(row.original);
+              toggleResponsiveModal();
+            }}
+          >
             <i className="mdi mdi-square-edit-outline"></i>
           </Link>
 
           {/* Delete Icon */}
-          <Link to="#" className="action-icon" onClick={() =>
-            handleDelete(row.original.id)
-          }>
+          <Link to="#" className="action-icon" onClick={() => handleDelete(row.original.id)}>
             {/* <i className="mdi mdi-delete"></i> */}
             <i className="mdi mdi-delete-outline"></i>
           </Link>
@@ -322,7 +328,7 @@ const BasicInputElements = withSwal((props: any) => {
   const handleResetValues = () => {
     setValidationErrors(initialValidationState); // Clear validation errors
     setFormData(initialState); //clear form data
-    setSelectedLeadType(null)
+    setSelectedLeadType(null);
   };
 
   useEffect(() => {
@@ -348,15 +354,8 @@ const BasicInputElements = withSwal((props: any) => {
             <Modal.Body>
               <Form.Group className="mb-3" controlId="source_name">
                 <Form.Label>Lead Source Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="source_name"
-                  value={formData.source_name}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.source_name && (
-                  <Form.Text className="text-danger">{validationErrors.source_name}</Form.Text>
-                )}
+                <Form.Control type="text" name="source_name" value={formData.source_name} onChange={handleInputChange} />
+                {validationErrors.source_name && <Form.Text className="text-danger">{validationErrors.source_name}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="channel_name">
@@ -369,42 +368,27 @@ const BasicInputElements = withSwal((props: any) => {
                   value={selectedLeadType}
                   onChange={handleDropDowns}
                 />
-                {validationErrors.lead_type_id && (
-                  <Form.Text className="text-danger">
-                    {validationErrors.lead_type_id}
-                  </Form.Text>
-                )}
+                {validationErrors.lead_type_id && <Form.Text className="text-danger">{validationErrors.lead_type_id}</Form.Text>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="source_description">
                 <Form.Label>Lead Source Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  name="source_description"
-                  value={formData.source_description}
-                  onChange={handleInputChange}
-                />
-                {validationErrors.source_description && (
-                  <Form.Text className="text-danger">{validationErrors.source_description}</Form.Text>
-                )}
+                <Form.Control as="textarea" rows={5} name="source_description" value={formData.source_description} onChange={handleInputChange} />
+                {validationErrors.source_description && <Form.Text className="text-danger">{validationErrors.source_description}</Form.Text>}
               </Form.Group>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                variant="primary"
-                id="button-addon2"
-                className="mt-1 ms-2"
-                onClick={() => ([setFormData(initialState)])}
-              >
+              <Button variant="primary" id="button-addon2" className="mt-1 ms-2" onClick={() => [setFormData(initialState)]}>
                 Clear
               </Button>
               <Button
                 variant="danger"
                 id="button-addon2"
                 className="mt-1 "
-                onClick={() => (isUpdate ? [handleCancelUpdate(), toggleResponsiveModal(), handleResetValues()] : [toggleResponsiveModal(), handleResetValues()])}
+                onClick={() =>
+                  isUpdate ? [handleCancelUpdate(), toggleResponsiveModal(), handleResetValues()] : [toggleResponsiveModal(), handleResetValues()]
+                }
               >
                 {isUpdate ? "Cancel" : "Close"}
               </Button>
@@ -415,6 +399,13 @@ const BasicInputElements = withSwal((props: any) => {
           </Form>
         </Modal>
 
+        <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+            <HistoryTable apiUrl={"lead_source"} />
+          </Modal.Body>
+        </Modal>
+
         {/* </Col> */}
 
         <Col className="p-0 form__card">
@@ -422,6 +413,10 @@ const BasicInputElements = withSwal((props: any) => {
             <Card.Body>
               <Button className="btn-sm btn-blue waves-effect waves-light float-end" onClick={toggleResponsiveModal}>
                 <i className="mdi mdi-plus-circle"></i> Add Lead Source
+              </Button>
+
+              <Button className="btn-sm btn-secondary waves-effect waves-light float-end me-2" onClick={toggleHistoryModal}>
+                <i className="mdi mdi-history"></i> View History
               </Button>
               <h4 className="header-title mb-4">Manage Lead Source</h4>
               <Table
@@ -434,7 +429,6 @@ const BasicInputElements = withSwal((props: any) => {
                 isSearchable={true}
                 initialLoading={initialLoading}
                 tableClass="table-striped dt-responsive nowrap w-100"
-
               />
             </Card.Body>
           </Card>
@@ -466,23 +460,14 @@ const Sources = () => {
 
   useEffect(() => {
     dispatch(getSource());
-    dispatch(getCategory())
+    dispatch(getCategory());
   }, []);
-
-  // if (initialloading) {
-  //   return (
-  //     <Spinner
-  //       animation="border"
-  //       style={{ position: "absolute", top: "50%", left: "50%" }}
-  //     />
-  //   );
-  // }
 
   return (
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "Master", path: "/settings/master/source" },
+          // { label: "Master", path: "/settings/master/source" },
           { label: "Lead Sources", path: "/settings/master/source", active: true },
         ]}
         title={"Lead Sources"}

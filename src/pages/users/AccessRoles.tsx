@@ -291,8 +291,9 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Actions",
       accessor: "",
       sort: false,
+      maxWidth: 10,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="d-flex gap-2">
           {/* Edit Icon */}
           <FeatherIcons
             stroke="#28a745"
@@ -516,7 +517,7 @@ const AccessRoles = () => {
     <React.Fragment>
       <PageTitle
         breadCrumbItems={[
-          { label: "User Management", path: "/user_management/access_roles" },
+          // { label: "User Management", path: "/user_management/access_roles" },
           {
             label: "Access Roles",
             path: "/user_management/access_roles",

@@ -34,7 +34,7 @@ const Attachments = () => {
 
           <h5 className="card-title font-16 mb-3">Attachments</h5>
 
-          <FileUploader />
+          {/* <FileUploader /> */}
 
           {/* Files */}
           <Card className="my-1 shadow-none border">

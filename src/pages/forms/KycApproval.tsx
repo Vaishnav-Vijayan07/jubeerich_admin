@@ -118,23 +118,21 @@ const KycApproval = () => {
       ),
       minWidth: 150,
     },
-    {
-      Header: "Assigned Type",
-      accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.assign_type", // Corrected accessor for assigned counselor
-      sort: false,
-      minWidth: 150,
-    },
+    // {
+    //   Header: "Assigned Type",
+    //   accessor: "studyPreferenceDetails.studyPreference.userPrimaryInfo.assign_type", // Corrected accessor for assigned counselor
+    //   sort: false,
+    //   minWidth: 150,
+    // },
     {
       Header: "Assigned Counselor",
       accessor: "", // You can fill in this accessor if needed for sorting, etc.
       sort: false,
       Cell: ({ row }: any) => {
         // Safely access the properties and find the assigned counselor
-        const assignedCounselor = row?.original?.studyPreferenceDetails?.studyPreference?.userPrimaryInfo?.counselors?.find(
-          (counselor: any) => counselor?.country_id === row?.original?.studyPreferenceDetails?.studyPreference?.countryId
-        );
+        const assignedCounselor = row?.original?.studyPreferenceDetails?.studyPreference?.userPrimaryInfo?.counselors[0]?.name
 
-        return <span>{assignedCounselor ? assignedCounselor.name : "No counselor assigned"}</span>;
+        return <span>{assignedCounselor ? assignedCounselor : "No counselor assigned"}</span>;
       },
       minWidth: 150,
     },

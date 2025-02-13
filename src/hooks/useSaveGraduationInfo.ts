@@ -10,9 +10,10 @@ const useSaveGraduationInfo = (studentId: number | string) => {
   const dispatch = useDispatch();
 
   const saveStudentGraduationDetails = useCallback(
-    async (graduationDetails: any[]) => {
+    async (graduationDetails: any[], is_graduated: any) => {
       const newFormData = new FormData();
       newFormData.append(`student_id`, studentId.toString());
+      newFormData.append(`is_graduated`, is_graduated.toString());
 
       graduationDetails.forEach((detail: any, index: any) => {
         const itemId = detail.id ?? 0;
@@ -20,9 +21,9 @@ const useSaveGraduationInfo = (studentId: number | string) => {
 
         newFormData.append(
           `graduation[${index}][start_date]`,
-          detail.start_date
+          detail.start_date ? detail.start_date : null
         );
-        newFormData.append(`graduation[${index}][end_date]`, detail.end_date);
+        newFormData.append(`graduation[${index}][end_date]`, detail.end_date ? detail.end_date : null);
         newFormData.append(
           `graduation[${index}][percentage]`,
           detail.percentage
@@ -96,13 +97,24 @@ const useSaveGraduationInfo = (studentId: number | string) => {
       });
 
       const result = await swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to save the changes?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: `Yes, Save`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       });
 
       if (result.isConfirmed) {

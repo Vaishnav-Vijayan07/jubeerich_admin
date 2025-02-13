@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
 import { FormInput } from "../../../../components";
 import axios from "axios";
 import moment from "moment";
@@ -7,6 +7,7 @@ import {
   baseUrl,
   customStyles,
   franchise_id_from_office,
+  region_id_from_office,
   region_id as regionId, // Aliasing region_id to regionId
   showErrorAlert,
   showSuccessAlert,
@@ -23,6 +24,8 @@ import { refreshData } from "../../../../redux/countryReducer";
 import SkeletonComponent from "./StudyPreference/LoadingSkeleton";
 import { regrexValidation } from "../../../../utils/regrexValidation";
 import { allowedFileTypes } from "./data";
+import FieldHistoryTable from "../../../../components/FieldHistory";
+import { useHistoryModal } from "../../../../hooks/useHistoryModal";
 
 const validationErrorsInitialState = {
   full_name: "",
@@ -55,7 +58,7 @@ const genderData: any = [
 
 const BasicInfo = withSwal((props: any) => {
   const { swal, studentId, role, officeTypes, regions, franchises, maritalStatus } = props;
-
+  const { historyModal, toggleHistoryModal } = useHistoryModal();
   const [basicInfo, setBasicInfo] = useState<any>({
     passport_no: null,
     dob: null, // You might want to use a date type or string based on your needs
@@ -104,7 +107,7 @@ const BasicInfo = withSwal((props: any) => {
     { value: "Brother", label: "Brother" },
     { value: "Sister", label: "Sister" },
     { value: "Spouse", label: "Spouse" },
-  ];  
+  ];
 
   const [loading, setLoading] = useState(false);
   const [selectedOfficeType, setSelectedOfficeType] = useState<any>(null);
@@ -120,6 +123,7 @@ const BasicInfo = withSwal((props: any) => {
   const [allStates, setAllStates] = useState<any>([]);
   const [selectedState, setSelectedState] = useState<any>(null);
   const [selectedNationality, setSelectedNationality] = useState<any>(null);
+  const [policeCountry, setPoliceCountry] = useState<any>([]);
 
   const dispatch = useDispatch();
   const { refresh } = useSelector((state: RootState) => ({
@@ -130,14 +134,14 @@ const BasicInfo = withSwal((props: any) => {
     setLoading(true);
     try {
       const { data } = await axios.get(`/basicStudentInfo/${studentId}`);
-      const { primaryInfo, basicInfo: basicInfoFromApi } = data.data;
+      const { primaryInfo, basicInfo: basicInfoFromApi, policeCountries, policeClearanceDocs } = data.data;
 
-      console.log("primaryInfo =>", primaryInfo);
-      console.log("basicInfo =>", basicInfoFromApi);
       const { preferredCountries, ...rest } = primaryInfo;
+      const policeDocs = policeClearanceDocs.length > 0 ? policeClearanceDocs : policeClearenceDocs;
 
       setBasicInfo(basicInfoFromApi ? basicInfoFromApi : basicInfo);
-      setPoliceClearenceDocs(basicInfoFromApi ? basicInfoFromApi.police_clearance_docs : policeClearenceDocs);
+      setPoliceClearenceDocs(policeDocs);
+
       setPrimaryInfo(rest);
 
       const countries = primaryInfo?.preferredCountries?.map((item: any) => {
@@ -148,10 +152,12 @@ const BasicInfo = withSwal((props: any) => {
       });
       setSelectedCountry(countries);
 
-      setSelectedNation({ label: basicInfoFromApi?.country, value: basicInfoFromApi?.country });
+      setSelectedNation(
+        basicInfoFromApi?.country ? { label: basicInfoFromApi?.country || null, value: basicInfoFromApi?.country || null } : null
+      );
+      setPoliceCountry(policeCountries?.length == 0 ? [] : policeCountries);
 
-      setSelectedState({ label: basicInfoFromApi?.state, value: basicInfoFromApi?.state });
-      setSelectedState({ label: basicInfoFromApi?.state, value: basicInfoFromApi?.state });
+      setSelectedState(basicInfoFromApi?.state ? { label: basicInfoFromApi?.state, value: basicInfoFromApi?.state } : null);
 
       setSelectedNationality(basicInfoFromApi?.nationality);
 
@@ -162,7 +168,9 @@ const BasicInfo = withSwal((props: any) => {
       const updatedGender = genderData?.filter((gender: any) => gender.value == basicInfoFromApi?.gender);
       setSelectedGender(updatedGender[0]);
 
-      const updatedMaritialStatus = maritalStatus?.filter((maritalStatus: any) => maritalStatus.value == basicInfoFromApi?.marital_status);
+      const updatedMaritialStatus = maritalStatus?.filter(
+        (maritalStatus: any) => maritalStatus.value == basicInfoFromApi?.marital_status
+      );
 
       setSelectedMaritialStatus(updatedMaritialStatus[0]);
 
@@ -188,23 +196,6 @@ const BasicInfo = withSwal((props: any) => {
     }
   }, [studentId, refresh]);
 
-  // handling input data
-  // const handleInputChange = (e: any, field: any, type: any) => {
-  //   const { value } = e.target;
-
-  //   if (type === "basic") {
-  //     setBasicInfo((prev: any) => ({
-  //       ...prev,
-  //       [field]: value,
-  //     }));
-  //   } else if (type === "primary") {
-  //     setPrimaryInfo((prev: any) => ({
-  //       ...prev,
-  //       [field]: value,
-  //     }));
-  //   }
-  // };
-
   const handleInputChange = (e: any, field: string, type: string) => {
     const { value } = e.target;
 
@@ -228,12 +219,10 @@ const BasicInfo = withSwal((props: any) => {
   };
 
   const handlePoliceClearenceDocs = (e: any) => {
-    const { value, name } = e.target;
+    const { name } = e.target;
 
-    const file = e.target.files ? e.target.files[0] : null;
+    const file = e.target.files[0];
     const [itemName, itemIndex] = name.split(".");
-
-    console.log("itemName, itemIndex", itemName, itemIndex);
 
     if (file && !allowedFileTypes.includes(file.type)) {
       showErrorAlert("Only PDF and image files are allowed.");
@@ -243,45 +232,58 @@ const BasicInfo = withSwal((props: any) => {
     const newPoliceClearenceDocs = [...policeClearenceDocs];
     newPoliceClearenceDocs[itemIndex] = {
       ...newPoliceClearenceDocs[itemIndex],
-      [itemName]: file ? file : value.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ' -]/g, ""),
+      [itemName]: file,
     };
 
     setPoliceClearenceDocs(newPoliceClearenceDocs);
   };
 
+  const handlePoliceCountries = (name: any, fieldValue?: any) => {
+    const { value } = fieldValue;
+    const [itemName, itemIndex] = name.split(".");
+
+    const newPoliceCountries = [...policeCountry];
+    newPoliceCountries[itemIndex] = {
+      value: fieldValue?.value,
+      label: fieldValue?.label,
+    };
+
+    const newPoliceClearenceDocs = [...policeClearenceDocs];
+    newPoliceClearenceDocs[itemIndex] = {
+      ...newPoliceClearenceDocs[itemIndex],
+      [itemName]: value,
+    };
+
+    setPoliceCountry(newPoliceCountries);
+    setPoliceClearenceDocs(newPoliceClearenceDocs);
+  };
+
   // save details api
   const saveStudentBasicInfo = async () => {
-    console.log(primaryInfo);
-    console.log(basicInfo);
-
     const basicValidationRules = {
       passport_no: { required: false },
       dob: { required: false },
-      gender: { required: true },
+      gender: { required: false, message: "Please choose gender" },
       marital_status: { required: false },
-      nationality: { required: true },
       secondary_number: { required: false },
-      state: { required: true },
-      country: { required: true },
+      state: { required: false, message: "Please choose state" },
+      country: { required: false, message: "Please choose country" },
       address: { required: false },
     };
 
     const primaryValidationRules = {
-      full_name: { required: true },
-      email: { required: true },
-      phone: { required: true },
+      full_name: { required: true, message: "Please enter full name" },
+      email: { required: false, message: "Please enter email" },
+      phone: { required: true, message: "Please enter phone" },
       city: { required: false },
       office_type: { required: false },
       remarks: { required: false },
-      franchise_id: { required: primaryInfo?.office_type == 5 },
-      region_id: { required: primaryInfo?.office_type == 4 },
+      franchise_id: { required: primaryInfo?.office_type == franchise_id_from_office, message: "Please select franchise" },
+      region_id: { required: primaryInfo?.office_type == region_id_from_office, message: "Please select region" },
     };
 
     const { isValid: primaryValid, errors: primaryErrors } = validateFields([primaryInfo], primaryValidationRules);
     const { isValid: basicValid, errors: basicErrors } = validateFields([basicInfo], basicValidationRules);
-
-    console.log(basicErrors);
-    console.log(primaryErrors);
 
     if (!basicValid) {
       setBasicInfo((prevState: any) => ({
@@ -305,8 +307,6 @@ const BasicInfo = withSwal((props: any) => {
 
     const { errors: errorsBasicInfo, ...withOutErrorsBasicInfo } = basicInfo;
     const { errors: errorsPrimaryInfo, ...withOutErrorsPrimaryInfo } = primaryInfo;
-
-    console.log(policeClearenceDocs);
 
     policeClearenceDocs.forEach((doc: { certificate: any; country_name: any; id?: any }, index: number) => {
       // Start the index at 1
@@ -345,13 +345,24 @@ const BasicInfo = withSwal((props: any) => {
 
     swal
       .fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
+        title: "Confirm Action",
+        text: `Do you want to save the changes?`,
+        icon: "question",
+        iconColor: "#8B8BF5", // Purple color for the icon
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Save",
+        confirmButtonText: `Yes, Save`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+        cancelButtonColor: "#E97777", // Pink/red color for cancel button
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
       })
       .then((result: any) => {
         if (result.isConfirmed) {
@@ -363,7 +374,6 @@ const BasicInfo = withSwal((props: any) => {
               },
             })
             .then((res) => {
-              console.log("res: =>", res);
               setLoading(false);
               showSuccessAlert(res.data.message);
               dispatch(refreshData());
@@ -382,8 +392,6 @@ const BasicInfo = withSwal((props: any) => {
   };
 
   const handleDropDowns = (selected: any, { name }: any, type: "basic" | "primary") => {
-    console.log(selected, name, type);
-
     if (type === "primary") {
       setPrimaryInfo((prev: any) => {
         let updatedPrimary = { ...prev };
@@ -472,6 +480,10 @@ const BasicInfo = withSwal((props: any) => {
     });
 
     if (result.isConfirmed) {
+      // if (policeClearenceDocs?.length == 1) {
+      //   setPoliceClearenceDocs(policeClearenceDocs);
+      // }
+
       setLoading(true);
 
       try {
@@ -497,6 +509,9 @@ const BasicInfo = withSwal((props: any) => {
 
   const handleRemoveItem = (index: number, id: number) => {
     if (id == 0) {
+      if (policeClearenceDocs?.length == 1) {
+        return;
+      }
       setPoliceClearenceDocs((prev: any) => prev.filter((_: any, i: any) => i !== index));
     } else {
       deleteFromApi(id);
@@ -555,9 +570,25 @@ const BasicInfo = withSwal((props: any) => {
         <SkeletonComponent />
       ) : (
         <>
-          <h5 className="mb-4 text-uppercase">
-            <i className="mdi mdi-account-circle me-1"></i> Primary Info
-          </h5>
+          <Modal show={historyModal} onHide={toggleHistoryModal} centered dialogClassName={"modal-full-width"} scrollable>
+            <Modal.Header closeButton></Modal.Header>
+            <Modal.Body style={{ margin: "0 !important", padding: "0 !important" }}>
+              <FieldHistoryTable apiUrl={"user_basic_info"} studentId={studentId} />
+            </Modal.Body>
+          </Modal>
+          <div className="d-flex justify-content-between">
+            <h5 className="mb-4 text-uppercase">
+              <i className="mdi mdi-account-circle me-1"></i> Primary Info
+            </h5>
+
+            <Button
+              className="btn-sm btn-secondary waves-effect waves-light float-end me-2"
+              onClick={toggleHistoryModal}
+              style={{ height: "fit-content" }}
+            >
+              <i className="mdi mdi-history"></i> View History
+            </Button>
+          </div>
           <Row className="pe-1">
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="full_name">
@@ -572,15 +603,15 @@ const BasicInfo = withSwal((props: any) => {
                   value={primaryInfo?.full_name} // Change to primaryInfo
                   onChange={(e) => handleInputChange(e, "full_name", "primary")}
                 />
-                {primaryInfo?.errors?.full_name && <Form.Text className="text-danger">{primaryInfo?.errors?.full_name}</Form.Text>}
+                {primaryInfo?.errors?.full_name && (
+                  <Form.Text className="text-danger">{primaryInfo?.errors?.full_name}</Form.Text>
+                )}
               </Form.Group>
             </Col>
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="email">
-                <Form.Label>
-                  <span className="text-danger">* </span>Email Id
-                </Form.Label>
+                <Form.Label>Email Id</Form.Label>
                 <FormInput
                   type="email"
                   name="email"
@@ -599,8 +630,9 @@ const BasicInfo = withSwal((props: any) => {
                   <span className="text-danger">* </span>Phone Number
                 </Form.Label>
                 <FormInput
-                  type="tel"
-                  maxLength={10}
+                  // type="tel"
+                  type="text"
+                  // maxLength={10}
                   name="phone"
                   placeholder="Enter phone number"
                   key="phone"
@@ -637,6 +669,7 @@ const BasicInfo = withSwal((props: any) => {
                   value={selectedCountry}
                   isMulti={true}
                   isDisabled={true}
+                  placeholder={"Select preferred country"}
                 />
               </Form.Group>
             </Col>
@@ -654,15 +687,15 @@ const BasicInfo = withSwal((props: any) => {
                   onChange={(selected) => handleDropDowns(selected, { name: "office_type" }, "primary")}
                   isDisabled={true}
                 />
-                {primaryInfo?.errors?.office_type && <Form.Text className="text-danger">{primaryInfo?.errors?.office_type}</Form.Text>}
+                {primaryInfo?.errors?.office_type && (
+                  <Form.Text className="text-danger">{primaryInfo?.errors?.office_type}</Form.Text>
+                )}
               </Form.Group>
             </Col>
             {primaryInfo?.office_type == Number(regionId) && (
               <Col md={6} xl={3} xxl={2}>
                 <Form.Group className="mb-3" controlId="region_id">
-                  <Form.Label>
-                    <span className="text-danger fs-4">* </span>Region
-                  </Form.Label>
+                  <Form.Label>Region</Form.Label>
                   <Select
                     styles={customStyles}
                     className="react-select react-select-container"
@@ -672,7 +705,9 @@ const BasicInfo = withSwal((props: any) => {
                     value={selectedRegion}
                     onChange={(selected) => handleDropDowns(selected, { name: "region_id" }, "primary")}
                   />
-                  {primaryInfo?.errors?.region_id && <Form.Text className="text-danger">{primaryInfo?.errors?.region_id}</Form.Text>}
+                  {primaryInfo?.errors?.region_id && (
+                    <Form.Text className="text-danger">{primaryInfo?.errors?.region_id}</Form.Text>
+                  )}
                 </Form.Group>
               </Col>
             )}
@@ -680,9 +715,7 @@ const BasicInfo = withSwal((props: any) => {
             {primaryInfo?.office_type == franchise_id_from_office && (
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="franchise_id">
-                  <Form.Label>
-                    <span className="text-danger fs-4">* </span>Franchisee
-                  </Form.Label>
+                  <Form.Label>Franchisee</Form.Label>
                   <Select
                     styles={customStyles}
                     className="react-select react-select-container"
@@ -692,33 +725,16 @@ const BasicInfo = withSwal((props: any) => {
                     value={selectedFranchise}
                     onChange={(selected) => handleDropDowns(selected, { name: "franchise_id" }, "primary")}
                   />
-                  {primaryInfo?.errors?.franchise_id && <Form.Text className="text-danger">{primaryInfo?.errors?.franchise_id}</Form.Text>}
+                  {primaryInfo?.errors?.franchise_id && (
+                    <Form.Text className="text-danger">{primaryInfo?.errors?.franchise_id}</Form.Text>
+                  )}
                 </Form.Group>
               </Col>
             )}
-            
-            {/* <Col md={6} xl={3} xxl={2}>
-              <Form.Group className="mb-3" controlId="passport_no">
-                <Form.Label>Passport No</Form.Label>
-                <FormInput
-                  type="text"
-                  name="passport_no"
-                  placeholder="Enter passport number"
-                  key="passport_no"
-                  value={basicInfo?.passport_no} // Change to basicInfo
-                  onChange={(e) => handleInputChange(e, "passport_no", "basic")}
-                />
-                {basicInfo?.errors?.passport_no && (
-                  <Form.Text className="text-danger">{basicInfo?.errors?.passport_no}</Form.Text>
-                )}
-              </Form.Group>
-            </Col> */}
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="gender">
-                <Form.Label>
-                  <span className="text-danger">*</span> Gender
-                </Form.Label>
+                <Form.Label>Gender</Form.Label>
                 <Select
                   styles={customStyles}
                   className="react-select react-select-container"
@@ -744,7 +760,9 @@ const BasicInfo = withSwal((props: any) => {
                   value={selectedMaritialStatus}
                   onChange={(selected) => handleDropDowns(selected, { name: "marital_status" }, "basic")}
                 />
-                {basicInfo?.errors?.marital_status && <Form.Text className="text-danger">{basicInfo?.errors?.marital_status}</Form.Text>}
+                {basicInfo?.errors?.marital_status && (
+                  <Form.Text className="text-danger">{basicInfo?.errors?.marital_status}</Form.Text>
+                )}
               </Form.Group>
             </Col>
 
@@ -766,7 +784,7 @@ const BasicInfo = withSwal((props: any) => {
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="country">
-                <Form.Label><span className="text-danger">*</span> Country</Form.Label>
+                <Form.Label>Country</Form.Label>
                 <Select
                   className="react-select react-select-container"
                   name="country"
@@ -779,41 +797,33 @@ const BasicInfo = withSwal((props: any) => {
                   })}
                   value={selectedNation}
                   onChange={(selected) => handleDropDowns(selected, { name: "country" }, "basic")}
+                  placeholder="Select a country"
                 />
-
-                  {/* <FormInput
-                    type="text"
-                    name="country"
-                    placeholder="Enter country"
-                    key="country"
-                    value={basicInfo?.country} // Change to basicInfo
-                    onChange={(e) => handleInputChange(e, "country", "basic")}
-                    // disabled={true}
-                  /> */}
                 {basicInfo?.errors?.country && <Form.Text className="text-danger">{basicInfo?.errors?.country}</Form.Text>}
               </Form.Group>
             </Col>
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="nationality">
-                <Form.Label><span className="text-danger">*</span> Nationality</Form.Label>
+                <Form.Label>Nationality</Form.Label>
                 <FormInput
                   type="text"
                   name="nationality"
                   placeholder="Enter nationality"
                   key="nationality"
                   value={selectedNationality} // Change to basicInfo
-                  // value={basicInfo?.nationality} // Change to basicInfo
                   onChange={(e) => handleInputChange(e, "nationality", "basic")}
                   disabled={true}
                 />
-                {basicInfo?.errors?.nationality && <Form.Text className="text-danger">{basicInfo?.errors?.nationality}</Form.Text>}
+                {basicInfo?.errors?.nationality && (
+                  <Form.Text className="text-danger">{basicInfo?.errors?.nationality}</Form.Text>
+                )}
               </Form.Group>
             </Col>
 
             <Col md={6} xl={3} xxl={2}>
               <Form.Group className="mb-3" controlId="state">
-                <Form.Label><span className="text-danger">*</span> State</Form.Label>
+                <Form.Label>State</Form.Label>
                 <Select
                   className="react-select react-select-container"
                   name="state"
@@ -827,16 +837,6 @@ const BasicInfo = withSwal((props: any) => {
                   onChange={(selected) => handleDropDowns(selected, { name: "state" }, "basic")}
                   isDisabled={!selectedNation?.value}
                 />
-
-                  {/* <FormInput
-                    type="text"
-                    name="state"
-                    placeholder="Enter state"
-                    key="state"
-                    value={basicInfo?.state} // Change to basicInfo
-                    onChange={(e) => handleInputChange(e, "state", "basic")}
-                    // disabled={true}
-                  /> */}
                 {basicInfo?.errors?.state && <Form.Text className="text-danger">{basicInfo?.errors?.state}</Form.Text>}
               </Form.Group>
             </Col>
@@ -845,15 +845,18 @@ const BasicInfo = withSwal((props: any) => {
               <Form.Group className="mb-3" controlId="secondary_number">
                 <Form.Label>Secondary number</Form.Label>
                 <FormInput
-                  type="tel"
-                  maxLength={10}
+                  // type="tel"
+                  type="text"
+                  // maxLength={10}
                   name="secondary_number"
                   placeholder="Enter secondary number"
                   key="secondary_number"
                   value={basicInfo?.secondary_number} // Change to basicInfo
                   onChange={(e) => handleInputChange(e, "secondary_number", "basic")}
                 />
-                {basicInfo?.errors?.secondary_number && <Form.Text className="text-danger">{basicInfo?.errors?.secondary_number}</Form.Text>}
+                {basicInfo?.errors?.secondary_number && (
+                  <Form.Text className="text-danger">{basicInfo?.errors?.secondary_number}</Form.Text>
+                )}
               </Form.Group>
             </Col>
 
@@ -949,7 +952,9 @@ const BasicInfo = withSwal((props: any) => {
                   onChange={(e) => handleInputChange(e, "emergency_contact_relationship", "basic")}
                   value={basicInfo?.emergency_contact_relationship}
                 >
-                  <option value="">Select Primary Contact Relationship</option>
+                  <option value="" disabled>
+                    Select Primary Contact Relationship
+                  </option>
                   {primaryContactRelationships.map((type) => (
                     <option value={type.value} key={type.value}>
                       {type.label}
@@ -1005,8 +1010,8 @@ const BasicInfo = withSwal((props: any) => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>
-                    Are there any medical conditions or health concerns that we should be aware of? This information is necessary for regulatory
-                    compliance and will be treated with the utmost confidentiality
+                    Are there any medical conditions or health concerns that we should be aware of? This information is necessary
+                    for regulatory compliance and will be treated with the utmost confidentiality
                   </Form.Label>
                   <div>
                     <Form.Check
@@ -1067,8 +1072,8 @@ const BasicInfo = withSwal((props: any) => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>
-                    Have you ever been convicted of a criminal offense? This information is necessary for regulatory compliance and will be treated
-                    with the utmost confidentiality
+                    Have you ever been convicted of a criminal offense? This information is necessary for regulatory compliance
+                    and will be treated with the utmost confidentiality
                   </Form.Label>
                   <div>
                     <Form.Check
@@ -1124,8 +1129,8 @@ const BasicInfo = withSwal((props: any) => {
           <Row className="mt-2">
             <Row>
               <Form.Label className="mb-2 ">
-                Can you provide Police Clearance Certificate from all those countries (including GCC, Middle East countries) where you lived more than
-                6 months in the past 10 years, if applicable?
+                Can you provide Police Clearance Certificate from all those countries (including GCC, Middle East countries) where
+                you lived more than 6 months in the past 10 years, if applicable?
               </Form.Label>
             </Row>
 
@@ -1134,35 +1139,50 @@ const BasicInfo = withSwal((props: any) => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Country Name</Form.Label>
-                    <Form.Control
-                      type="text"
+                    <Select
+                      className="react-select react-select-container"
                       name={`country_name.${index}`}
-                      placeholder="Enter Country Name"
-                      value={certificate.country_name || ""}
-                      onChange={handlePoliceClearenceDocs}
+                      options={allCountries?.map((item: any) => {
+                        return {
+                          label: item.name,
+                          value: item?.name,
+                          iso: item?.Iso3,
+                        };
+                      })}
+                      value={policeCountry && policeCountry[index]}
+                      onChange={(selectedOption: any) => handlePoliceCountries(`country_name.${index}`, selectedOption)}
                     />
                   </Form.Group>
                 </Col>
+
                 <Col md={6}>
                   <Form.Group className="">
                     <Form.Label>Upload Certificate</Form.Label>
-                    <Form.Control type="file" name={`certificate.${index}`} onChange={handlePoliceClearenceDocs} />
+                    <Form.Control
+                      type="file"
+                      accept="image/*,application/pdf"
+                      name={`certificate.${index}`}
+                      onChange={handlePoliceClearenceDocs}
+                    />
 
-                    {certificate.certificate && certificate.certificate !== "null" && typeof certificate.certificate === "string" && (
-                      <div className="d-flex align-items-center">
-                        <i className="mdi mdi-eye text-primary me-2"></i>
-                        <a
-                          href={`${baseUrl}/uploads/policeClearenceDocuments/${certificate.certificate}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-decoration-none"
-                        >
-                          Download Document
-                        </a>
-                      </div>
-                    )}
+                    {certificate.certificate &&
+                      certificate.certificate !== "null" &&
+                      typeof certificate.certificate === "string" && (
+                        <div className="d-flex align-items-center">
+                          <i className="mdi mdi-eye text-primary me-2"></i>
+                          <a
+                            href={certificate.certificate}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-decoration-none"
+                          >
+                            View Document
+                          </a>
+                        </div>
+                      )}
                   </Form.Group>
                 </Col>
+
                 <ActionButton
                   label="Remove"
                   onClick={() => handleRemoveItem(index, certificate?.id ?? 0)}

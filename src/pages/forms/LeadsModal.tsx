@@ -1,17 +1,18 @@
 import * as yup from "yup";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import Select, { ActionMeta, OptionsType } from "react-select";
+import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
 import { withSwal } from "react-sweetalert2";
-import { AppDispatch } from "../../redux/store";
-import { addLeads, deleteLeads, getLead, getLeadAssigned, getLeadAssignedByCounsellorTL, updateLeads } from "../../redux/actions";
+import { AppDispatch, RootState } from "../../redux/store";
+import { addLeads, updateLeads } from "../../redux/actions";
 import {
-  baseUrl,
+  AUTH_SESSION_KEY,
   branch_counsellor_id,
   corporate_id_from_office,
   counsellor_id,
   counsellor_tl_id,
+  country_manager_id,
   cre_id,
   cre_tl_id,
   customStyles,
@@ -22,15 +23,12 @@ import {
   region_id,
   region_id_from_office,
   regional_manager_id,
-  showErrorAlert,
-  showSuccessAlert,
 } from "../../constants";
-import { examtypes, initialState, initialValidationState, OptionType, sizePerPageList, TableRecords } from "./data";
-import axios from "axios";
+import { initialState, initialValidationState, OptionType } from "./data";
 import moment from "moment";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { APICore } from "../../helpers/api/apiCore";
 
@@ -63,11 +61,10 @@ const LeadsModal = withSwal((props: any) => {
 
   const [sourceData, setSourceData] = useState<any>(source);
   const [channelData, setChannelData] = useState<any>(channels);
-  const [selectedCountry, setSelectedCountry] = useState<OptionType[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<OptionType[]>();
   const [selectedSource, setSelectedSource] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
-  // const [selectedFlag, setSelectedFlag] = useState<any>(null);
   const [selectedFlag, setSelectedFlag] = useState<any>(null);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<any>([]);
@@ -78,21 +75,35 @@ const LeadsModal = withSwal((props: any) => {
   const [selectedFranchisee, setSelectedFranchisee] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
   const [validationErrors, setValidationErrors] = useState(initialValidationState);
-  const [className, setClassName] = useState<string>("");
   const [scroll, setScroll] = useState<boolean>(false);
   const [selectExam, setSelectExam] = useState<boolean>(false);
-  const fileInputRef = useRef<any>(null);
   const [languageForm, setLanguageForm] = useState<any[]>([{ id: "", exam_type: "", marks: "" }]);
   const [formData, setFormData] = useState(initialState);
   const languageFormInitialState = [{ id: "", exam_type: "", marks: "", exam_date: "" }];
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [isOfficeDisable, setIsOfficeDisable] = useState<any>(false);
+  
+  const { existLeadId } = useSelector(
+    (state: RootState) => ({
+      existLeadId: state.Leads.existLeadId,
+    })
+  );
+
+  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+  
+  let loggedUserCountries: any;
+  let role_id: any;
+  if (userInfo) {
+    let { countries, role } = JSON.parse(userInfo);
+    loggedUserCountries = countries;
+    role_id = role;
+  }
 
   const validationSchema = yup.object().shape({
     full_name: yup.string().min(3, 'Min 3 characters').max(100, 'Max 100 characters').required("Name is required"),
     preferred_country: yup.array().min(1, "At least one country must be selected").nullable(),
-    email: yup.string().required("Email is required").email("Invalid email"),
+    email: yup.string().email("Invalid email"),
     phone: yup
       .string()
       .matches(/^[0-9]{10}$/, "Phone number must be a 10-digit number")
@@ -101,11 +112,10 @@ const LeadsModal = withSwal((props: any) => {
     source_id: yup.string().required("Source is required").nullable(),
     channel_id: yup.string().required("Channel is required").nullable(),
     office_type: yup.string().required("Office type is required").nullable(),
-    lead_received_date: yup.date().required("Date is required"),
+    lead_received_date: yup.date().nullable(),
     zipcode: yup
       .string()
-      .matches(/^[0-9]*$/, "Zipcode must be numbers only")
-      .required("Zipcode is required"),
+      .matches(/^[0-9]*$/, "Zipcode must be numbers only").nullable(),
     franchise_id: yup
       .string()
       .nullable()
@@ -124,11 +134,6 @@ const LeadsModal = withSwal((props: any) => {
         }
         return schema.nullable();
       }),
-  });
-
-  const methods = useForm({
-    resolver: yupResolver(validationSchema), // Integrate yup with react-hook-form
-    defaultValues: initialState,
   });
 
   useEffect(() => {
@@ -195,6 +200,15 @@ const LeadsModal = withSwal((props: any) => {
       office_type: data?.value,
     }));
   };
+  
+  const formattedCountries = useMemo(() => {
+    if ([counsellor_id, country_manager_id].includes(role_id?.toString())) {
+      return country?.filter((data: any) => 
+        loggedUserCountries.includes(data?.value?.toString())
+      ) || [];
+    }
+    return country || [];
+  }, [country]);
 
   const handleUpdate = (item: any) => {
     //update source dropdown
@@ -301,7 +315,7 @@ const LeadsModal = withSwal((props: any) => {
     let countries: any;
 
     if (isUpdate) {
-      countries = selectedCountry.map((data: any) => data?.value);
+      countries = selectedCountry?.map((data: any) => data?.value);
     }
 
     let selectedFlagIds = selectedFlag?.map((data: any) => data?.value) || [];
@@ -313,13 +327,24 @@ const LeadsModal = withSwal((props: any) => {
       await validationSchema.validate(formData, { abortEarly: false });
       swal
         .fire({
-          title: "Are you sure?",
-          text: "This action cannot be undone.",
-          icon: "warning",
+          title: "Confirm Action",
+          text: `Do you want to ${isUpdate ? "update" : "create"} this lead?`,
+          icon: "question",
+          iconColor: "#8B8BF5", // Purple color for the icon
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
           confirmButtonText: `Yes, ${isUpdate ? "Update" : "Create"}`,
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+          cancelButtonColor: "#E97777", // Pink/red color for cancel button
+          buttonsStyling: true,
+          customClass: {
+            popup: "rounded-4 shadow-lg",
+            confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+            cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+            title: "fs-2 fw-normal mb-2",
+          },
+          width: "26em",
+          padding: "2em",
         })
         .then((result: any) => {
           if (result.isConfirmed) {
@@ -645,11 +670,9 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="channel_name">
-                  <Form.Label>
-                    <span className="text-danger fs-4">* </span>Email
-                  </Form.Label>
-                  <Form.Control type="text" name="email" value={formData.email} onChange={handleInputChange} />
+                <Form.Group className="mb-3 mt-1" controlId="channel_name">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control type="text" name="email" maxLength={100} value={formData.email} onChange={handleInputChange} />
                   {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                 </Form.Group>
               </Col>
@@ -659,7 +682,7 @@ const LeadsModal = withSwal((props: any) => {
                   <Form.Label>
                     <span className="text-danger fs-4">* </span>Phone
                   </Form.Label>
-                  <Form.Control type="number" name="phone" value={formData.phone} onChange={handleInputChange} />
+                  <Form.Control type="text" name="phone" value={formData.phone} onChange={handleInputChange} />
                   {validationErrors.phone && <Form.Text className="text-danger">{validationErrors.phone}</Form.Text>}
                 </Form.Group>
               </Col>
@@ -728,7 +751,8 @@ const LeadsModal = withSwal((props: any) => {
                     className="react-select react-select-container"
                     classNamePrefix="react-select"
                     name="preferred_country"
-                    options={country}
+                    // options={country}
+                    options={formattedCountries}
                     value={selectedCountry}
                     isMulti={isUpdate ? true : false} // Enable multi-select
                     onChange={handleDropDowns}
@@ -738,7 +762,7 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Group className="mb-3 mt-1" controlId="channel_name">
                   <Form.Label>Remarks</Form.Label>
                   <Form.Control type="text" name="remarks" value={formData.remarks} onChange={handleInputChange} />
                   {validationErrors.remarks && <Form.Text className="text-danger">{validationErrors.remarks}</Form.Text>}
@@ -746,7 +770,7 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Group className="mb-3 mt-1" controlId="channel_name">
                   <Form.Label>City</Form.Label>
                   <Form.Control type="text" name="city" value={formData.city} onChange={handleInputChange} />
                   {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
@@ -754,7 +778,7 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="lead_received_date">
+                <Form.Group className="mb-3 mt-1" controlId="lead_received_date">
                   <Form.Label>Lead Received Date</Form.Label>
                   <Form.Control type="date" name="lead_received_date" value={formData?.lead_received_date} onChange={handleInputChange} />
                   {validationErrors.lead_received_date && <Form.Text className="text-danger">{validationErrors.lead_received_date}</Form.Text>}
@@ -762,17 +786,17 @@ const LeadsModal = withSwal((props: any) => {
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="channel_name">
+                <Form.Group className="mb-3 mt-1" controlId="channel_name">
                   <Form.Label>
-                    <span className="text-danger fs-4">*</span> Zipcode
+                    Zipcode
                   </Form.Label>
-                  <Form.Control type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
+                  <Form.Control maxLength={6} type="text" name="zipcode" value={formData.zipcode} onChange={handleInputChange} />
                   {validationErrors.zipcode && <Form.Text className="text-danger">{validationErrors.zipcode}</Form.Text>}
                 </Form.Group>
               </Col>
 
               <Col md={4} lg={4}>
-                <Form.Group className="mb-3" controlId="flag">
+                <Form.Group className="mb-3 mt-1" controlId="flag">
                   <Form.Label>
                     {/* <span className="text-danger fs-4">* </span> Flag */}
                     Flag
@@ -850,176 +874,17 @@ const LeadsModal = withSwal((props: any) => {
                 </Col>
               )}
 
-              {/* <Col md={4} lg={4} className="mt-2">
-                <Form.Group className="mb-3" controlId="source_id">
-                  <Form.Label>Have you ever participated in any language exams ?</Form.Label>
-                  <div className="d-flex justify-content-start align-items-center mt-1">
-                    <div className="d-flex justify-content-start align-items-start me-2">
-                      <Form.Check
-                        type="radio"
-                        id="active-switch"
-                        name="ielts"
-                        onClick={() => setSelectExam(true)}
-                        checked={selectExam}
-                      />
-                      <span className="ps-1 fw-bold">Yes</span>
-                    </div>
-                    <div className="d-flex justify-content-start align-items-start">
-                      <Form.Check
-                        type="radio"
-                        id="active-switch"
-                        name="ielts"
-                        onClick={() => setSelectExam(false)}
-                        checked={!selectExam}
-                      />
-                      <span className="ps-1 fw-bold">No</span>
-                    </div>
-                  </div>
-                </Form.Group>
-              </Col> */}
             </Row>
-
-            <Row>
-              {/* {selectExam &&
-                languageForm.map((data, index) => (
-                  <Row key={index}>
-                    <Row>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="exam_type">
-                          <Form.Label>Exam Type</Form.Label>
-                          <Form.Select
-                            aria-label="Default select example"
-                            name="exam_type"
-                            value={data.exam_type}
-                            onChange={(e) => handleLanguageInputChange(index, e)}
-                          >
-                            <option value="">Choose..</option>
-                            {examtypes?.map((item: any) => (
-                              <option
-                                value={item?.name}
-                                key={item?.name}
-                                onClick={(e) => handleLanguageInputChange(index, e)}
-                                defaultValue={item.name === formData.exam ? item.name : undefined}
-                              >
-                                {item.name}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="listening_score">
-                          <Form.Label>Listening Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="listening_score"
-                            value={data.listening_score}
-                            onChange={(e) => {
-                              handleLanguageMarkInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="speaking_score">
-                          <Form.Label>Speaking Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="speaking_score"
-                            value={data.speaking_score}
-                            onChange={(e) => {
-                              handleLanguageMarkInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="reading_score">
-                          <Form.Label>Reading Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="reading_score"
-                            value={data.reading_score}
-                            onChange={(e) => {
-                              handleLanguageMarkInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="writing_score">
-                          <Form.Label>Writing Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="writing_score"
-                            value={data.writing_score}
-                            onChange={(e) => {
-                              handleLanguageMarkInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="marks">
-                          <Form.Label>Overall Score</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="overall_score"
-                            value={data.overall_score}
-                            onChange={(e) => {
-                              handleLanguageMarkInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col className="d-flex justify-content-between">
-                        <Form name="exam_documents" encType="multipart/form-data">
-                          <Form.Group className="mb-3" controlId="profileImage">
-                            <Form.Label>Upload Score Card</Form.Label>
-                            <Form.Control
-                              name="exam_documents"
-                              type="file"
-                              onChange={(event) => {
-                                handleFileChange(index, event);
-                              }}
-                              ref={fileInputRef}
-                            />
-                            {selectedFileName[index]?.exam_documents && (
-                              <a href={`${baseUrl}/uploads/${selectedFileName[index].exam_documents}`}>
-                                {selectedFileName[index].exam_documents}
-                              </a>
-                            )}
-                          </Form.Group>
-                        </Form>
-                      </Col>
-                      <Col md={4} lg={4}>
-                        <Form.Group className="mb-3" controlId="exam_date">
-                          <Form.Label>Exam Date</Form.Label>
-                          <Form.Control
-                            type="date"
-                            name="exam_date"
-                            value={data?.exam_date ? moment(data?.exam_date).format("YYYY-MM-DD") : ""}
-                            onChange={(e) => {
-                              handleLanguageInputChange(index, e);
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={4} lg={4} className="mt-3">
-                        <i
-                          className="mdi mdi-delete-outline mt-3 pt-1 fs-3 ps-1"
-                          onClick={(e) => handleRemoveLanguageForm(index, e, data.exam_type)}
-                        ></i>
-                        {selectExam && (
-                          <i className="mdi mdi-plus-circle-outline mt-3 pt-1 fs-3 ps-1" onClick={handleAddLanguageForm}></i>
-                        )}
-                      </Col>
-                    </Row>
-                  </Row>
-                ))} */}
-            </Row>
+            {existLeadId && error &&
+              <Row >
+                <Col md={12}>
+                  <h5>
+                    Lead with same email or phone already exist, check
+                    <Link to={`/leads/manage/${existLeadId}`}> <span className="fs-4">Here</span></Link>
+                  </h5>
+                </Col>
+              </Row>
+            }
           </Modal.Body>
 
           <Modal.Footer>

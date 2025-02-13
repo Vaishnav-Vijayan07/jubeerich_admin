@@ -1,5 +1,5 @@
 import React from "react";
-import { Card,Row,Col } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import Filters from "./Filters";
@@ -25,16 +25,37 @@ function PieData({ labels, pieSeries }: Props) {
       type: "gradient",
     },
     labels,
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              showAlways: true,
+              formatter: function (w) {
+                return w.globals.seriesTotals.reduce((a: any, b: any) => a + b, 0);
+              },
+            },
+            value: {
+              formatter: function (value) {
+                return value.toString();
+              },
+            },
+          },
+        },
+      },
+    },
+    dataLabels: {
+      formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+        return w.config.series[seriesIndex];
+      },
+    },
   };
 
   return (
-    <Card>
+    <Card className="h-100">
       <Card.Body>
-      <Row className="mb-3">
-          <Col>
-            <Filters />
-          </Col>
-        </Row>
         <Chart options={options} series={pieSeries} type="donut" height={350} />
       </Card.Body>
     </Card>

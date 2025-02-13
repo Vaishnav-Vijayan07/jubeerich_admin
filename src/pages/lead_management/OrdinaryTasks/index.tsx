@@ -154,7 +154,7 @@ const TaskList = withSwal(({ swal }: any) => {
             showSuccessAlert("Todo Created Successfully");
           }
         } else {
-          result = await axios.put(`${baseUrl}/${taskFormData?.id}`, formattedData);
+          result = await axios.put(`${baseUrl}${taskFormData?.id}`, formattedData);
           if (result?.status) {
             showSuccessAlert("Todo Updated Successfully");
             setIsUpdate(false);
@@ -205,7 +205,7 @@ const TaskList = withSwal(({ swal }: any) => {
   const deleteTask = async (id: any) => {
     try {
       setIsTaskLoading(true);
-      const result = await axios.delete(`${baseUrl}/${id}`);
+      const result = await axios.delete(`${baseUrl}${id}`);
       if (result?.status) {
         showSuccessAlert("Todo Deleted Succesfully");
         handleResetValues();
@@ -275,7 +275,7 @@ const TaskList = withSwal(({ swal }: any) => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: "Todo", path: "/apps/tasks/list" },
+          // { label: "Todo", path: "/apps/tasks/list" },
           { label: "Todo List", path: "/apps/tasks/list", active: true },
         ]}
         title={"Tasks List"}

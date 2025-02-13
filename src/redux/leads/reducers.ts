@@ -59,6 +59,7 @@ export interface LeadsActionType {
     actionType?: string;
     data?: any;
     error?: string;
+    exist_lead_id?: any
   };
 }
 
@@ -83,7 +84,6 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
-            hasLoadedInitially: true,
           };
         }
 
@@ -91,6 +91,9 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
           return {
             ...state,
             leads: action.payload.data.data.formattedUserPrimaryInfos,
+            totalPages: action.payload.data.data.totalPages,
+            limit: action.payload.data.data.limit,
+            totalCount: action.payload.data.data.count,
             allCres: action.payload.data.data.allCres,
             loading: false,
             initialloading: false,
@@ -246,6 +249,7 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
             error: action.payload.error,
             loading: false,
             initialloading: false,
+            existLeadId: action.payload.exist_lead_id
           };
         }
         case LeadsActionTypes.UPDATE_LEADS: {
@@ -271,7 +275,7 @@ const Leads = (state: any = INIT_STATE, action: LeadsActionType): any => {
       }
 
     case LeadsActionTypes.GET_LEADS:
-      return { ...state, loading: true, initialloading: !state.hasLoadedInitially, error: null };
+      return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.GET_LEADS_REGIONAL_MANAGER:
       return { ...state, loading: true, initialloading: true, error: null };
     case LeadsActionTypes.GET_LEADS_TL:
