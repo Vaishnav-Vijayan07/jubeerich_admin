@@ -490,11 +490,20 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
     }
 
     const hasInvalidItem = selectedItems.some((item) => {
-      return !item.source || !item.channel || !item.office_type || !item.email || !item.phone || !item.full_name || item.errors;
+      return !item.source || !item.channel || !item.office_type || !item.email || !item.phone || !item.full_name;
     });
-
+    
     if (hasInvalidItem && approvalType == approvalTypes.import_lead) {
       showErrorAlert("Some selected leads are missing required fields: Source, Channels, OfficeType, Email, or Phone.");
+      return;
+    }
+
+    const hasErrors = selectedItems.some((item) => {
+      return item.error;
+    });
+
+    if (hasErrors && approvalType == approvalTypes.import_lead) {
+      showErrorAlert("Some selected leads have some errors");
       return;
     }
 

@@ -11,6 +11,7 @@ import { FormInput } from "../../components";
 import Table from "../../components/Table";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { withSwal } from "react-sweetalert2";
+import VisaCheckListModal from "./visaCheckListModal";
 
 const sizePerPageList = [
     {
@@ -38,6 +39,8 @@ const VisaPendings = withSwal((props: any) => {
     const [selected, setSelected] = useState([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { loading: dropDownLoading, dropdownData } = useDropdownData("visa_members");
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [checkListData, setCheckListData] = useState<any>(null);
 
     const columns = [
         {
@@ -98,11 +101,7 @@ const VisaPendings = withSwal((props: any) => {
                     {/* Eye Icon */}
                     <span
                         className="action-icon"
-                        onClick={() =>
-                            navigate(
-                                `/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`
-                            )
-                        }
+                        onClick={() => handleViewCheckList(row.original.studyPreferenceDetails.studyPreference.countryId) }
                     >
                         <i className="fs-3 mdi mdi-eye-outline"></i>
                     </span>
@@ -224,6 +223,23 @@ const VisaPendings = withSwal((props: any) => {
         }
     }
 
+    const toggle = () =>{
+        setIsOpen(!isOpen);
+    }
+
+    const handleViewCheckList = async(id: any) => {
+        try {
+            const { data } = await axios.get(`/get_visa_checks_by_country/${id}`)
+            if(data?.status) {
+                setCheckListData(data?.data);
+                setIsOpen(true);
+            }
+
+        } catch (error) {
+            showErrorAlert(error);
+        }
+    }
+
     useEffect(() => {
         fetchPendingVisa();
     }, [])
@@ -276,6 +292,8 @@ const VisaPendings = withSwal((props: any) => {
                     />
                 </Card.Body>
             </Card>
+
+            <VisaCheckListModal isOpen={isOpen} toggleModal={toggle} checkLists={checkListData || []} />
         </>
     );
 });
