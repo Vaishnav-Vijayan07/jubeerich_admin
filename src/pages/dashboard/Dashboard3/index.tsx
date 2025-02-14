@@ -20,7 +20,6 @@ import CounselorDashboard from "../Counselor/CounselorDashboard";
 import CountryManagerDashboard from "../Country Manager/CountryManagerDashboard";
 import ManagerDashboard from "../Application/Manager";
 import ApplicationTeamDashboard from "../Application/Team";
-import ApplicationsManagerTable from "../../../pages/dashboard/Components/ApplicationManagerTable";
 import { application_manager_id, application_team_id, counsellor_id, country_manager_id, cre_id, cre_tl_id, it_team_id } from "../../../constants";
 
 const Dashboard3 = () => {
@@ -41,9 +40,8 @@ const Dashboard3 = () => {
       case country_manager_id:
         return <CountryManagerDashboard userRole={userInfo?.role_name} />;
       case application_manager_id:
-        return <ManagerDashboard userRole={userInfo?.role_name} >
-          <ApplicationsManagerTable />
-        </ManagerDashboard>;
+        return <ManagerDashboard userRole={userInfo?.role_name} />
+        
       case application_team_id:
         return <ApplicationTeamDashboard userRole={userInfo?.role_name} />;
       default:

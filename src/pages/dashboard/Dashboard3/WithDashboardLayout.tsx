@@ -17,6 +17,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     const dispatch = useDispatch();
     const { userRole } = props;
     const isApplicationSide = userRole === "Application Manager";
+    const showDataTables = userRole === "Application Manager" || userRole === "Application Team";
 
     const [currentCountry, setCurrentCountry] = useState(10);
     const [filterType, setFilterType] = useState<FilterType>("");
@@ -135,7 +136,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
           countries={countries || []}
           colors={colors}
         />
-        {isApplicationSide && <ApplicationsManagerTable />}
+        {showDataTables && <ApplicationsManagerTable />}
       </>
     );
   };
