@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { defaultTheme } from "../../AgGridSetup";
 import { AgGridReact } from "ag-grid-react";
-import { AppBar, Dialog, IconButton, Slide, Toolbar } from "@mui/material";
+import { AppBar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Slide, Toolbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import { GridApi, GridReadyEvent, IRowNode, RowNode } from "ag-grid-community";
@@ -10,6 +10,7 @@ import { withSwal } from "react-sweetalert2";
 import { approvalTypes } from "./data";
 import moment from "moment";
 import SearchableSelectEditor from "./SearchableSelectEditor";
+import MaterialErrorAlert from "../../components/MaterialErrorAlert";
 
 const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchLead, approvalType, heading }: any) => {  
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
@@ -17,6 +18,13 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const pageSizes = [10, 20, 50, 100];
   const [columnDefs, setColumnDefs] = useState<any[]>([]);
+  const [open, setOpen] = React.useState(false);
+  const [modalBody, setModalBody] = useState<string>('');
+  const [modelTitle, setModelTitle] = useState<string>('');
+
+  const toggleAlertModal = () => {
+    setOpen(!open);
+  };
 
   const formattedData = useMemo(() => {
     if (approvalType == approvalTypes.import_lead) {
@@ -485,7 +493,9 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
 
   const handleApproved = async () => {
     if (!selectedItems || selectedItems.length == 0) {
-      showErrorAlert("No leads selected. Please select leads to approve.");
+      setModelTitle("Error");
+      setModalBody("No leads selected. Please select leads to approve.")
+      toggleAlertModal()
       return;
     }
 
@@ -494,7 +504,9 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
     });
     
     if (hasInvalidItem && approvalType == approvalTypes.import_lead) {
-      showErrorAlert("Some selected leads are missing required fields: Source, Channels, OfficeType, Email, or Phone.");
+      setModelTitle("Error");
+      setModalBody("Some selected leads are missing required fields: Source, Channels, OfficeType, Email, or Phone.")
+      toggleAlertModal()
       return;
     }
 
@@ -503,7 +515,9 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
     });
 
     if (hasErrors && approvalType == approvalTypes.import_lead) {
-      showErrorAlert("Some selected leads have some errors");
+      setModelTitle("Error");
+      setModalBody("Some selected leads have some errors")
+      toggleAlertModal()
       return;
     }
 
@@ -689,6 +703,8 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
           </div>
         </div>
       </Dialog>
+
+      <MaterialErrorAlert body={modalBody} title={modelTitle} toggleAlertModal={toggleAlertModal} open={open} />
     </>
   );
 });
