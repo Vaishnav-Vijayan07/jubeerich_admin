@@ -137,7 +137,7 @@ const dashboardRoutes: RoutesProps = {
       // element: <Dashboard4 />,
       element: (
         <PrivateRoute
-          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications", "Allocate Applications", "Data Entry"]}
+          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications", "Allocate Applications", "Data Entry", "Visa Manage", "Visa Approval"]}
           component={Dashboard4}
         />
       ),

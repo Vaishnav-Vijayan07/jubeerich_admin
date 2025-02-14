@@ -28,7 +28,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
     isTitle: false,
     icon: "grid", // Dashboard grid view
     url: "/dashboard-4",
-    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications", "Allocate Applications", "Data Entry"],
+    roles: ["Monitor", "Add Lead", "View Task", "Manage Franchise", "Manage Applications", "Allocate Applications", "Data Entry", "Visa Manage", "Visa Approval"],
   },
 
   { key: "leads", label: "Leads", isTitle: true, roles: ["Add Lead", "View Task", "Data Entry"] },
