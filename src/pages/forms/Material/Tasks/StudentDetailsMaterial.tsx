@@ -74,17 +74,18 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const formattedStatus = useMemo(() => {
     if (!status) return [];
 
-    console.log(status);
-
-    // const currentStatus = basicData?.preferredCountries?.[0]?.country_status?.[0]?.status_name;
-
     return (
       status
         // .filter((item: any) => item.status_name !== currentStatus) // Filter out the current status
         .map((item: any) => ({
           value: item.id.toString(),
           label: item.status_name,
-        }))
+        })).filter((data: any) => {
+          if (taskDetails?.is_rejected) {
+            return data?.value == follow_up_id
+          }
+          return true
+        })
     );
   }, [status, basicData]); // Ensure basicData is included in dependencies if it's part of the logic
 

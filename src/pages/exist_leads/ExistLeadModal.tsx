@@ -99,8 +99,6 @@ const ExistLeadModal = withSwal((props: any) => {
     }, [country]);
 
     const handleUpdate = (item: any) => {
-        console.log('item', item.preferredCountries?.[0]?.followup_date);
-
         const updatedSource = source?.filter((source: any) => source.value == item?.source_id);
         const updatedCounsellor = counsellors?.find((counselor: any) => counselor.value == item?.counselors?.[0]?.id);
 
@@ -197,8 +195,9 @@ const ExistLeadModal = withSwal((props: any) => {
                 setFormData(initialState);
                 setValidationErrors(initialValidationState);
             } else {
-                setExistingLeadId(data?.existingLeadId)
-                showErrorAlert(data?.message);
+                let errorArray = data?.errors.map((error: any) => error.msg).join(", ");
+                showErrorAlert(errorArray);
+                setValidationErrors(initialValidationState);
             }
         } catch (error) {
             if (error instanceof yup.ValidationError) {
