@@ -257,7 +257,7 @@ const Submitted = () => {
           />
         </Card.Body>
 
-        <Modal show={showLetterModal} onHide={toggleLetterModal} size="lg" dialogClassName="modal-dialog-centered">
+        <Modal show={showLetterModal} onHide={toggleLetterModal} dialogClassName="modal-dialog-centered">
           <Modal.Header closeButton>
             <h3>Offer Letter</h3>
           </Modal.Header>
@@ -292,7 +292,7 @@ const Submitted = () => {
               disabled={selectedFile == null || selectedOfferType == null}
               onClick={handleOfferSubmit}
             >
-              Submit
+              Submit and Proceed to Visa
             </Button>
           </Modal.Footer>
         </Modal>

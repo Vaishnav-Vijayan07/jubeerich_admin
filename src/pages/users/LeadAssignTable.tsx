@@ -8,7 +8,8 @@ import { showErrorAlert } from "../../constants";
 import { withSwal } from "react-sweetalert2";
 import moment from "moment";
 import { approvalTypes, assignTypes } from "../forms/data";
-import SearchableSelectEditor from "../forms/SearchableSelectEditor";
+import SearchableSelectEditorAdmin from "./SearchableSelectEditorAdmin";
+import MaterialErrorAlert from "../../components/MaterialErrorAlert";
 
 const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData, options, refetchUsers, approvalType, heading, updateSelectedUser }: any) => {
     const [gridApi, setGridApi] = useState<GridApi | null>(null);
@@ -16,7 +17,13 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
     const [selectedItems, setSelectedItems] = useState<any[]>([]);
     const pageSizes = [10, 20, 50, 100];
     const [columnDefs, setColumnDefs] = useState<any[]>([]);
+    const [open, setOpen] = React.useState(false);
+    const [modalBody, setModalBody] = useState<string>('');
+    const [modelTitle, setModelTitle] = useState<string>('');
 
+    const toggleAlertModal = () => {
+        setOpen(!open);
+    };    
 
     const formattedData = useMemo(() => {
         if (approvalType == approvalTypes.delete_cre) {
@@ -117,7 +124,7 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
                     filter: true,
                     editable: true,
                     // cellEditor: "agSelectCellEditor",
-                    cellEditor: SearchableSelectEditor,
+                    cellEditor: SearchableSelectEditorAdmin,
                     cellEditorParams: {
                         values: formattedData?.userDataCres?.map((user: any) => user.name), // Only showing names in dropdown
                         formatValue: (value: any) => {
@@ -226,7 +233,7 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
                     filter: true,
                     editable: true,
                     // cellEditor: "agSelectCellEditor",
-                    cellEditor: SearchableSelectEditor,
+                    cellEditor: SearchableSelectEditorAdmin,
                     cellEditorParams: {
                         values: formattedData?.userDataCres?.map((user: any) => user.name), // Only showing names in dropdown
                         formatValue: (value: any) => {
@@ -271,30 +278,47 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
     };
 
     const handleAssign = async () => {
-        if (!selectedItems || selectedItems.length == 0) {
-            showErrorAlert("No leads selected. Please select leads to Assign.");
+        if (!gridApi) {
+            showErrorAlert("Grid is not ready yet.");
             return;
         }
 
-        const hasInvalidItem = selectedItems.some((item) => {
-            return !item.assigned_cre?.id;
+        gridApi.stopEditing()
+        
+        let allItems: any[] = [];
+        
+        gridApi.forEachNode((node) => {
+            if (node.data) {
+                allItems.push({
+                    id: Number(node.data.id),
+                    assigned_user: Number(node.data.assigned_cre?.id),
+                    role_id: Number(node.data.assigned_cre?.role_id),
+                });
+            }
+        });
+
+        if (allItems.length === 0) {
+            setModelTitle("Error");
+            setModalBody("No leads available to assign.")
+            toggleAlertModal()
+            return;
+        }
+
+        const hasInvalidItem = allItems.some((item) => {
+            return !item.assigned_user;
         });
 
         if (hasInvalidItem) {
-            showErrorAlert("Some selected leads are missing required fields: Assign To.");
+            setModelTitle("Error");
+            setModalBody("Some selected leads are missing required fields: Assign To.")
+            toggleAlertModal()
             return;
         }
-
-        let formattedItems = selectedItems.map((item: any) => ({
-            id: Number(item?.id),
-            assigned_user: Number(item?.assigned_cre?.id),
-            role_id: Number(item?.assigned_cre?.role_id)
-        }));
-
+            
         try {
             const result = await swal.fire({
                 title: "Confirm Action",
-                text: `Non selected lead will be discarded, Do you want to approve the selected leads? `,
+                text: `Do you want to approve all leads in the table?`,
                 icon: "question",
                 iconColor: "#8B8BF5",
                 showCancelButton: true,
@@ -313,12 +337,12 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
                 width: "26em",
                 padding: "2em",
             });
-
+    
             if (result.isConfirmed) {
-                if (approvalType == approvalTypes.delete_cre) {
-                    updateSelectedUser(formattedItems, assignTypes.CRE);
+                if (approvalType === approvalTypes.delete_cre) {
+                    updateSelectedUser(allItems, assignTypes.CRE);
                 } else {
-                    updateSelectedUser(formattedItems, assignTypes.Counsellor);
+                    updateSelectedUser(allItems, assignTypes.Counsellor);
                 }
             }
         } catch (error) {
@@ -406,10 +430,6 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
                             onSelectionChanged={onSelectionChanged}
                             loadThemeGoogleFonts={true}
                             suppressAutoSize={true}
-                            rowSelection={{
-                                enableClickSelection: false,
-                                mode: "multiRow",
-                            }}
                             paginationPageSizeSelector={pageSizes}
                             onGridReady={onGridReady}
                             onCellDoubleClicked={handleCellDoubleClick}
@@ -426,6 +446,8 @@ const LeadAssignTable = withSwal(({ swal, isOpenModal, toggleModal, responseData
                     </div>
                 </div>
             </Dialog>
+
+            <MaterialErrorAlert body={modalBody} title={modelTitle} toggleAlertModal={toggleAlertModal} open={open} />
         </>
     );
 });
