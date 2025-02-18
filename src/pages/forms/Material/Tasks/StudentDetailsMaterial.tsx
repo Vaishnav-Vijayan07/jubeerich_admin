@@ -101,11 +101,12 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         .map((item: any) => ({
           value: item.id.toString(),
           label: item.status_name,
-        })).filter((data: any) => {
+        }))
+        .filter((data: any) => {
           if (taskDetails?.is_rejected) {
-            return data?.value == follow_up_id
+            return data?.value == follow_up_id;
           }
-          return true
+          return true;
         })
     );
   }, [status, basicData]); // Ensure basicData is included in dependencies if it's part of the logic
@@ -330,10 +331,9 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   //   }
   // };
 
-
-  const handleFinishTask = ()=>{
-    handleOpen()
-  }
+  const handleFinishTask = () => {
+    handleOpen();
+  };
 
   const handleCompleteTask = async () => {
     try {
@@ -573,7 +573,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     dispatch(getCountry());
   }, []);
 
-  const acceptTask = async() => {
+  const acceptTask = async () => {
     try {
       const result = await swal.fire({
         title: "Confirm Action",
@@ -596,20 +596,19 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         padding: "2em",
       });
 
-      if(result?.isConfirmed) {
+      if (result?.isConfirmed) {
         const { data } = await axios.post("/accept_task", { taskId: taskDetails?.id });
-        
-        if(data?.success) {
+
+        if (data?.success) {
           showSuccessAlert("Task Accepted Successfully");
           getTaskDetails();
           getTaskList(null, true);
         }
       }
-
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <>
@@ -625,7 +624,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
                       <span>{taskPrefix + "/" + currentDate.getFullYear() + "/" + (taskDetails?.id || "000")}</span>
                     </div>
-                    {console.log('taskDetails',taskDetails)}
+                    {console.log("taskDetails", taskDetails)}
 
                     {!taskDetails?.is_accepted && (
                       <Col className="d-flex gap-2 float-end">
@@ -634,6 +633,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           onClick={acceptTask}
                           style={{ fontSize: "12px", background: "#EEFFF3", border: ".5px dashed #009A29" }}
                         >
+                          <span className="mdi mdi-check me-1" style={{ color: "green", fontSize: "12px" }}></span>
                           Accept Task
                         </Button>
                       </Col>
@@ -738,7 +738,10 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                 </Row>
               </div>
 
-              <div className="p-0" style={{ background: "#E0DEF8", borderBottomRightRadius: "10px", borderBottomLeftRadius: "10px" }}>
+              <div
+                className="p-0"
+                style={{ background: "#E0DEF8", borderBottomRightRadius: "10px", borderBottomLeftRadius: "10px" }}
+              >
                 <div className="" style={{ padding: "15px 30px" }}>
                   <div className="" style={{ paddingRight: "0px" }}>
                     <div>
@@ -911,7 +914,11 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           <div style={{ border: `1px solid ${data?.color}` }} className="rounded-2 me-2 mt-1">
                             <div className="font-11" style={{ padding: "2px 7px" }}>
                               {data?.flag_name}
-                              <i className="mdi mdi-close" style={{ paddingLeft: "3px", cursor: "pointer" }} onClick={() => removeFlag(data?.id)}></i>
+                              <i
+                                className="mdi mdi-close"
+                                style={{ paddingLeft: "3px", cursor: "pointer" }}
+                                onClick={() => removeFlag(data?.id)}
+                              ></i>
                             </div>
                           </div>
                         ))}
@@ -971,7 +978,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
               callGetRemark={callGetRemark}
               submitFollowupDate={handleFollowUpDate}
             />
-            <OfficeAssignModal show={showAssignModal} handleClose={handleClose} lead_id={studentId}/>
+            <OfficeAssignModal show={showAssignModal} handleClose={handleClose} lead_id={studentId} />
           </>
         )}
       </div>
