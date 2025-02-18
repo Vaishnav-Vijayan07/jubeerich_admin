@@ -30,6 +30,7 @@ import MatButton from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import FollowupModal from "./FollowupModal";
 import OfficeAssignModal from "./OfficeAssignModal";
+import { showConfirmation } from "../../../../utils/showConfirmation";
 
 const History = lazy(() => import("./History"));
 
@@ -49,7 +50,7 @@ const inputStyle = {
   },
 };
 
-const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading }: any) => {
+const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading, office_type,region }: any) => {
   const { userRole } = useSelector((state: RootState) => ({
     userRole: state?.Auth.user.role,
   }));
@@ -101,11 +102,12 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         .map((item: any) => ({
           value: item.id.toString(),
           label: item.status_name,
-        })).filter((data: any) => {
+        }))
+        .filter((data: any) => {
           if (taskDetails?.is_rejected) {
-            return data?.value == follow_up_id
+            return data?.value == follow_up_id;
           }
-          return true
+          return true;
         })
     );
   }, [status, basicData]); // Ensure basicData is included in dependencies if it's part of the logic
@@ -330,10 +332,34 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   //   }
   // };
 
+  const handleSubmit = async (type: string, office_id: number, counselor_id: number, region_id: number, branch_id: number) => {
+    try {
+      const payload: any = {
+        type,
+        lead_id: studentId,
+        office_id,
+        counselor_id: counselor_id == 0 ? undefined : counselor_id,
+        task_id: taskId,
+        region_id: region_id == 0 ? undefined : region_id,
+        branch_id: branch_id == 0 ? undefined : branch_id,
+      };
+      console.log(payload);
+      const { data } = await axios.post("assign_office", payload);
+      if (data.status) {
+        handleClose();
+        getTaskDetails();
+        getTaskList(null, true);
+        showSuccessAlert(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      showErrorAlert(error);
+    }
+  };
 
-  const handleFinishTask = ()=>{
-    handleOpen()
-  }
+  const handleFinishTask = async () => {
+    handleOpen();
+  };
 
   const handleCompleteTask = async () => {
     try {
@@ -920,7 +946,16 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
               callGetRemark={callGetRemark}
               submitFollowupDate={handleFollowUpDate}
             />
-            <OfficeAssignModal show={showAssignModal} handleClose={handleClose} lead_id={studentId}/>
+            {showAssignModal && (
+              <OfficeAssignModal
+                office_type={office_type ? office_type : ""}
+                region={region ? region : ""}
+                show={showAssignModal}
+                handleClose={handleClose}
+                lead_id={studentId}
+                handleSubmit={handleSubmit}
+              />
+            )}
           </>
         )}
       </div>

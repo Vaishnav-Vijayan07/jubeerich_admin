@@ -99,9 +99,10 @@ const TasksMaterial = () => {
         setCollapseState(pendingTasks.length === 0);
 
         // Resolve the selected task
-        const selectedTask = (selectedTaskId && !resetSelectedId)
-          ? [...pendingTasks, ...pastTasks].find((task: any) => task.id === selectedTaskId)
-          : pendingTasks[0] || pastTasks[0];
+        const selectedTask =
+          selectedTaskId && !resetSelectedId
+            ? [...pendingTasks, ...pastTasks].find((task: any) => task.id === selectedTaskId)
+            : pendingTasks[0] || pastTasks[0];
 
         setSelectedTask(selectedTask || null);
       })
@@ -216,10 +217,15 @@ const TasksMaterial = () => {
           </Row>
         </Col>
 
+        {console.log(selectedTask)}
+
         <Col xl={8} className="task_section">
           {selectedTask && (
             <StudentDetailsMaterial
               studentId={selectedTask?.studentId}
+              office_type={selectedTask?.student_name?.office_type}
+              // region={selectedTask?.student_name?.region_name ? selectedTask?.student_name?.region_name?.id : ""}
+              region={selectedTask?.student_name?.region_id}
               taskId={selectedTask?.id}
               getTaskList={getTaskList}
               setPendingTasks={setPendingTasks}
