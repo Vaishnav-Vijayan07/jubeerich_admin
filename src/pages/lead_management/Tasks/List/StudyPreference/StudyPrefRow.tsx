@@ -11,7 +11,15 @@ import StatusBadge from "./StatusBadge";
 import { formatString } from "../../../../../utils/formatData";
 import axios from "axios";
 
-const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownData, studyPreferenceId, isEditable, initialFetch, setInitialFetch,studentId }: any) => {
+const windowTabTypes = {
+  university: 'university',
+  campus: 'campus',
+  courseType: 'courseType',
+  stream: 'stream',
+  course: 'course',
+}
+
+const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownData, studyPreferenceId, isEditable, initialFetch, setInitialFetch,studentId, refetchDropdownData }: any) => {
   const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
   const { saveLoading, saveStudyPreferenceData } = useSaveStudyPreferenceData();
   const [universities, setUniversities] = useState<any>([]);
@@ -105,6 +113,28 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
         ]
   );
 
+  const openNewWindow = (type: any) => {
+    switch (type) {
+      case windowTabTypes.university:
+        window.open(`/settings/master/university`, "_blank");
+        break;
+      case windowTabTypes.courseType:
+        window.open(`/settings/master/course_type`, "_blank");
+        break;
+      case windowTabTypes.course:
+        window.open(`/settings/master/course`, "_blank");
+        break;
+      case windowTabTypes.stream:
+        window.open(`/settings/master/stream`, "_blank");
+        break;
+      case windowTabTypes.campus:
+        window.open(`/settings/master/campus`, "_blank");
+        break;
+      default:
+        break;
+    }
+  };
+
   const renderStudyprefRows = (item: any, index: any, readOnly: boolean) => (
     <Row key={index} className="mb-3 border-bottom pe-0">
       {item?.applications?.length > 0 && (
@@ -125,21 +155,19 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
       <Row className="pe-0">
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="universityId">
-            <Form.Label><span className="text-danger">*</span> University</Form.Label>
+            <div className="d-flex justify-content-between">
+              <div>
+                <Form.Label><span className="text-danger">*</span> University</Form.Label>
+              </div>
+              <div>
+                <i className="mdi mdi-refresh fs-18" onClick={() => fetchUniversitiesByCountry()}></i>
+                <i className="mdi mdi-plus-circle fs-18 ps-2" onClick={() => openNewWindow(windowTabTypes.university)}></i>
+              </div>
+            </div>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              // isDisabled={!readOnly}
-              // options={dropdownData?.universities}
               options={formattedUniversities}
-              // value={
-              //   item?.universityId
-              //     ? {
-              //         label: dropdownData.universities.find((u: any) => u.value === item.universityId)?.label,
-              //         value: item.universityId,
-              //       }
-              //     : null
-              // }
               value={
                 item?.universityId
                   ? {
@@ -157,22 +185,20 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
         </Col>
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="campusId">
-            <Form.Label><span className="text-danger">*</span> Campus</Form.Label>
+            <div className="d-flex justify-content-between">
+              <div>
+                <Form.Label><span className="text-danger">*</span> Campus</Form.Label>
+              </div>
+              <div>
+                <i className="mdi mdi-refresh fs-18" onClick={() => fetchCampusByUniversity(index)}></i>
+                <i className="mdi mdi-plus-circle fs-18 ps-2" onClick={() => openNewWindow(windowTabTypes.campus)}></i>
+              </div>
+            </div>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              // isDisabled={!readOnly}
               isDisabled={selectedFormDataMap?.get(index)?.universityId ? false : true}
-              // options={dropdownData?.campuses}
               options={campusesMap?.get(index)}
-              // value={
-              //   item?.campusId
-              //     ? {
-              //         label: dropdownData.campuses.find((c: any) => c.value === item.campusId)?.label,
-              //         value: item.campusId,
-              //       }
-              //     : null
-              // }
               value={
                 item?.campusId
                   ? {
@@ -191,11 +217,18 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="courseTypeId">
-            <Form.Label><span className="text-danger">*</span> Course Type</Form.Label>
+            <div className="d-flex justify-content-between">
+              <div>
+                <Form.Label><span className="text-danger">*</span> Course Type</Form.Label>
+              </div>
+              <div>
+                <i className="mdi mdi-refresh fs-18" onClick={() => refetchDropdownData()}></i>
+                <i className="mdi mdi-plus-circle fs-18 ps-2" onClick={() => openNewWindow(windowTabTypes.courseType)}></i>
+              </div>
+            </div>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              // isDisabled={!readOnly}
               isDisabled={selectedFormDataMap?.get(index)?.campusId ? false : true}
               options={dropdownData?.courseTypes}
               value={
@@ -216,11 +249,18 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="streamId">
-            <Form.Label><span className="text-danger">*</span> Stream</Form.Label>
+            <div className="d-flex justify-content-between">
+              <div>
+                <Form.Label><span className="text-danger">*</span> Stream</Form.Label>
+              </div>
+              <div>
+                <i className="mdi mdi-refresh fs-18" onClick={() => refetchDropdownData()}></i>
+                <i className="mdi mdi-plus-circle fs-18 ps-2" onClick={() => openNewWindow(windowTabTypes.stream)}></i>
+              </div>
+            </div>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              // isDisabled={!readOnly}
               isDisabled={selectedFormDataMap?.get(index)?.courseTypeId ? false : true}
               options={dropdownData?.streams}
               value={
@@ -241,13 +281,19 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="courseId">
-            <Form.Label><span className="text-danger">*</span> Course</Form.Label>
+            <div className="d-flex justify-content-between">
+              <div>
+                <Form.Label><span className="text-danger">*</span> Course</Form.Label>
+              </div>
+              <div>
+                <i className="mdi mdi-refresh fs-18" onClick={() => fetchCourseList(index)}></i>
+                <i className="mdi mdi-plus-circle fs-18 ps-2" onClick={() => openNewWindow(windowTabTypes.course)}></i>
+              </div>
+            </div>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              // isDisabled={!readOnly}
               isDisabled={selectedFormDataMap?.get(index)?.streamId ? false : true}
-              // options={dropdownData?.courses}
               options={courseMap?.get(index)}
               value={
                 item?.courseId
@@ -271,7 +317,6 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              // isDisabled={!readOnly}
               options={intakeYearList}
               value={
                 item.intakeYear
@@ -295,7 +340,6 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
-              // isDisabled={!readOnly}
               options={intakeMonthOptions}
               value={
                 item?.intakeMonth
@@ -321,7 +365,6 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
               name="estimatedBudget"
               placeholder="Enter estimated budget"
               key="estimatedBudget"
-              // readOnly={!readOnly}
               value={item?.estimatedBudget || ""}
               onChange={(e: any) => handleStudyPreferenceChange(index, "estimatedBudget", e.target.value)}
               min={0}

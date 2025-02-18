@@ -62,7 +62,7 @@ const fieldTypeOptions = [
   { value: "text", label: "Text" },
   { value: "number", label: "Number" },
   { value: "date", label: "Date" },
-  // { value: "checkbox", label: "Checkbox" },
+  { value: "checkbox", label: "Checkbox" },
   { value: "textarea", label: "Textarea" },
   { value: "radio", label: "Radio" },
   // { value: "select", label: "Dropdown" },
