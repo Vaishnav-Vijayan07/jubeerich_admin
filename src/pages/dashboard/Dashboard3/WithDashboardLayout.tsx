@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import PageTitle from "../../../components/PageTitle";
 import StatCards from "../Components/StatCards";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +7,7 @@ import { RootState } from "../../../redux/store";
 import { Spinner } from "react-bootstrap";
 import CustomFilter from "../../../components/Dashboard/CustomFilter";
 import CountryFilter from "../../../components/Dashboard/CountryFilter";
+import ApplicationsManagerTable from "../Components/ApplicationManagerTable";
 
 type FilterType = "today" | "weekly" | "monthly" | "custom" | "";
 
@@ -16,6 +17,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
     const dispatch = useDispatch();
     const { userRole } = props;
     const isApplicationSide = userRole === "Application Manager";
+    const showDataTables = userRole === "Application Manager" || userRole === "Application Team";
 
     const [currentCountry, setCurrentCountry] = useState(10);
     const [filterType, setFilterType] = useState<FilterType>("");
@@ -43,45 +45,42 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
       handleFilter(filterType, id);
     };
 
-    const handleFilter = (filterType: any, country_id?: any) => {
-      if (isApplicationSide) {
-        switch (filterType) {
-          case "monthly":
-            dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, country_id }));
-            break;
-
-          case "weekly":
-            dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, fromDate: selectedDate, country_id }));
-            break;
-
-          case "custom":
-            dispatch(getDashboard({ filterType, fromDate: customStartDate, toDate: customEndDate, country_id }));
-            break;
-
-          default:
-            dispatch(getDashboard({ country_id: country_id }));
-            break;
+    const handleFilter = useCallback(
+      (filterType: any, country_id?: any) => {
+        if (isApplicationSide) {
+          switch (filterType) {
+            case "monthly":
+              dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, country_id }));
+              break;
+            case "weekly":
+              dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, fromDate: selectedDate, country_id }));
+              break;
+            case "custom":
+              dispatch(getDashboard({ filterType, fromDate: customStartDate, toDate: customEndDate, country_id }));
+              break;
+            default:
+              dispatch(getDashboard({ country_id: country_id }));
+              break;
+          }
+        } else {
+          switch (filterType) {
+            case "monthly":
+              dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth }));
+              break;
+            case "weekly":
+              dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, fromDate: selectedDate }));
+              break;
+            case "custom":
+              dispatch(getDashboard({ filterType, fromDate: customStartDate, toDate: customEndDate }));
+              break;
+            default:
+              dispatch(getDashboard({}));
+              break;
+          }
         }
-      } else {
-        switch (filterType) {
-          case "monthly":
-            dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth }));
-            break;
-
-          case "weekly":
-            dispatch(getDashboard({ filterType, year: selectedYear, month: selectedMonth, fromDate: selectedDate }));
-            break;
-
-          case "custom":
-            dispatch(getDashboard({ filterType, fromDate: customStartDate, toDate: customEndDate }));
-            break;
-
-          default:
-            dispatch(getDashboard({}));
-            break;
-        }
-      }
-    };
+      },
+      [dispatch, isApplicationSide, selectedYear, selectedMonth, selectedDate, customStartDate, customEndDate]
+    );
 
     useEffect(() => {
       dispatch(isApplicationSide ? getDashboard({ country_id: currentCountry }) : getDashboard());
@@ -137,6 +136,7 @@ const WithDashboardLayout = (Component: React.ComponentType<any>) => {
           countries={countries || []}
           colors={colors}
         />
+        {showDataTables && <ApplicationsManagerTable />}
       </>
     );
   };

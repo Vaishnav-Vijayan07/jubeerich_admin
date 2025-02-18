@@ -3,8 +3,9 @@ import { Row, Col, Form } from "react-bootstrap";
 import StackGraph from "../Components/StackGraph";
 import PieData from "../Components/PieData";
 import ApplicationsTable from "../Components/ApplicationsTable";
+import ApplicationsManagerTable from "../Components/ApplicationManagerTable";
 
-function ManagerDashboard({ categories, series, latestLeadsCount, pieData, colors }: any) {
+function ManagerDashboard({ categories, series, pieData, colors }: any) {
   const labels = pieData?.pieCategories;
   const pieSeries = pieData?.pieSeries;
 
@@ -23,12 +24,6 @@ function ManagerDashboard({ categories, series, latestLeadsCount, pieData, color
       <Row className="mt-3">
         <Col md={12}>
           <h4 className="text-primary">My Applications</h4>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col md={12}>
-          <ApplicationsTable leadsData={latestLeadsCount} />
         </Col>
       </Row>
     </>

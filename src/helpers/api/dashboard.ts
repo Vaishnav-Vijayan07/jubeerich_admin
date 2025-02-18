@@ -52,9 +52,19 @@ function getDashboard(
   return api.get(baseUrl, params);
 }
 
+function getApplicationManagerTableDataApi(status?: string) {
+  const params: any = {};
+  if (status) {
+    params.status = status;
+  }
+
+  const baseUrl = "/application_manager_table_data";
+  return api.get(baseUrl, params);
+}
+
 function getCountriesApi() {
   const baseUrl = "/countries_by_admin";
   return api.get(baseUrl, {});
 }
 
-export { getDashboard, getCountriesApi };
+export { getDashboard, getCountriesApi, getApplicationManagerTableDataApi };

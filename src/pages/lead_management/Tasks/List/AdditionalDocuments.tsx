@@ -163,13 +163,12 @@ const AdditionalDocuments = (props: any) => {
       {isLoading ? (
         <SkeletonComponent />
       ) : (
-        <Row>
+        <Row className="bg-light py-4 mb-3 ps-3">
           <h5 className="mb-4 text-uppercase">
             <i className="mdi mdi-account-circle me-1"></i>Additional Documents
           </h5>
           {!isLoading && (
             <Row>
-              <Card>
                 <Row>
                   <Col md={6} lg={6} xl={6} xxl={4}>
                     <Form.Group className="mb-2" controlId="passport_doc">
@@ -288,11 +287,10 @@ const AdditionalDocuments = (props: any) => {
                     </div>
                   </Col>
 
-                  <Button className="mt-3" onClick={handleSubmit}>
+                  <Button className="w-auto ms-2" onClick={handleSubmit}>
                     Save
                   </Button>
                 </Row>
-              </Card>
             </Row>
           )}
         </Row>

@@ -44,7 +44,6 @@ const LeadDetailsMaterial = (props: Props) => {
     navigate(`?tab=${newValue}`);
   };
 
-  const dispatch = useDispatch();
   const { user, refresh } = useSelector((state: RootState) => ({
     user: state.Auth.user,
     refresh: state.refreshReducer.refreshing,

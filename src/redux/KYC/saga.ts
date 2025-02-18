@@ -10,6 +10,7 @@ import {
   autoAssignToApplicationMemberApi,
   getApplicationByUserApi,
 } from "../../helpers/api/kyc";
+import { getTableDataForApplicationManager } from "../actions";
 
 function* getPendingKYCs({ payload: { type } }: any): SagaIterator {
   try {
@@ -28,7 +29,6 @@ function* getPendingKYCs({ payload: { type } }: any): SagaIterator {
 function* getApplicationsByUser({ payload: { status } }: any): SagaIterator {
   try {
     const response = yield call(getApplicationByUserApi, status);
-    console.log(response.data);
 
     const data = response.data.data;
 

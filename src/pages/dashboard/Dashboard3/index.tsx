@@ -40,7 +40,8 @@ const Dashboard3 = () => {
       case country_manager_id:
         return <CountryManagerDashboard userRole={userInfo?.role_name} />;
       case application_manager_id:
-        return <ManagerDashboard userRole={userInfo?.role_name} />;
+        return <ManagerDashboard userRole={userInfo?.role_name} />
+        
       case application_team_id:
         return <ApplicationTeamDashboard userRole={userInfo?.role_name} />;
       default:

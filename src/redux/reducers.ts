@@ -34,6 +34,7 @@ import KYC from "./KYC/reducers";
 import StatusTypes from "./status/statusType/reducers";
 import VisaChecklists from "./visa_checklists/reducers";
 import DashboardCountries from "./dashboard/countries_reducer";
+import ApplicationManagerData from "./dashboard/table_data_reducer";
 
 export default combineReducers({
   Auth,
@@ -59,6 +60,7 @@ export default combineReducers({
   History,
   Dashboard,
   DashboardCountries,
+  ApplicationManagerData,
   FranchiseUsers,
   Franchise,
   Campus,
