@@ -630,12 +630,10 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     {!taskDetails?.is_accepted && (
                       <Col className="d-flex gap-2 float-end">
                         <Button
-                          className="d-flex align-items-center btn-light"
+                          className="d-flex align-items-center btn-light ms-2"
                           onClick={acceptTask}
                           style={{ fontSize: "12px", background: "#EEFFF3", border: ".5px dashed #009A29" }}
                         >
-                          <div className="round-circle" />
-
                           Accept Task
                         </Button>
                       </Col>
