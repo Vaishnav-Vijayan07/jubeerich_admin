@@ -6,16 +6,12 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios'
 
 const ManageVisaCheck = (props: any) => {
-    const { id: countryId } = useParams();
+    const { id: countryId, app_id } = useParams();
     const [checkListData, setCheckListData] = useState<any>(null);
     const [applicationId, setApplicationId] = useState<any>(null)
 
-    const onSubmit = () => {
-
-    }
-
     const fetchList = async () => {
-        const { data } = await axios.get(`/get_visa_checks_by_country/${countryId}`)
+        const { data } = await axios.get(`/get_visa_checks_by_country/`, { params: { id: countryId, application_id: app_id } });
         if (data?.status) {
             setCheckListData(data?.data);
             setApplicationId(data?.data?.[0]?.fields?.[0]?.values?.[0]?.application_id);
@@ -83,7 +79,7 @@ const ManageVisaCheck = (props: any) => {
                     <h4 className="modal-title">Visa Checklist</h4>
                 </Card.Header>
                 <Card.Body>
-                    <Form onSubmit={onSubmit}>
+                    <Form>
                         <Row>
                             {checkListData?.map((item: any, index: any) => (
                                 <div key={index}>

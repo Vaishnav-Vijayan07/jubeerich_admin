@@ -98,7 +98,7 @@ const VisaPendings = withSwal((props: any) => {
                     {/* Eye Icon */}
                     <span
                         className="action-icon"
-                        onClick={() => handleViewCheckList(row.original.studyPreferenceDetails.studyPreference.countryId) }
+                        onClick={() => handleViewCheckList(row.original.studyPreferenceDetails.studyPreference.countryId, row.original.id) }
                     >
                         <i className="fs-3 mdi mdi-eye-outline"></i>
                     </span>
@@ -220,8 +220,8 @@ const VisaPendings = withSwal((props: any) => {
         }
     }
 
-    const handleViewCheckList = async(id: any) => {
-        navigate(`/visa/manage_checks/${id}`);
+    const handleViewCheckList = async(id: any, app_id: any) => {
+        navigate(`/visa/manage_checks/${id}/${app_id}`);
     }
 
     useEffect(() => {

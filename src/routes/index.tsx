@@ -269,7 +269,7 @@ const visaRoutes = {
       route: PrivateRoute,
     },
     {
-      path: "/visa/manage_checks/:id",
+      path: "/visa/manage_checks/:id/:app_id",
       name: "Manage Visa Checks",
       element: <ManageVisaCheck />,
       route: PrivateRoute,
