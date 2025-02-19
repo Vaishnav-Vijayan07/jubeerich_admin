@@ -21,6 +21,7 @@ import GroupIcon from '@mui/icons-material/Group';
 
 interface Props {
   studentId: string | number;
+  getPercentage?: () => void;
 }
 
 // const initialFamilyDetailsState = {
@@ -341,7 +342,7 @@ export const modeOfPayment = [
   { label: "Bank", value: "bank" },
 ];
 
-const FamilyDetails = ({ studentId }: Props) => {
+const FamilyDetails = ({ studentId, getPercentage }: Props) => {
   const [initialLoading, setInitialLoading] = useState(false);
 
   const [familyDetails, dispatch] = useReducer(familyDetailsReducer, initialFamilyDetailsState);
@@ -360,6 +361,7 @@ const FamilyDetails = ({ studentId }: Props) => {
       console.log(error);
     } finally {
       setInitialLoading(false);
+      getPercentage && getPercentage()
     }
   };
 

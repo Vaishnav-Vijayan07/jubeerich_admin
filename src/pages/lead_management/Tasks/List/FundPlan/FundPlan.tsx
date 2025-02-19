@@ -14,6 +14,7 @@ import { allowedFileTypes } from "../data";
 
 interface Props {
   student_id: string | number;
+  getPercentage?: () => void;
 }
 
 const initialFundPlanState = {
@@ -31,7 +32,7 @@ const initialFundPlanState = {
   errors: {},
 };
 
-const FundPlan = ({ student_id }: Props) => {
+const FundPlan = ({ student_id, getPercentage }: Props) => {
   const [fundPlan, setFundPlan] = useState<any>([initialFundPlanState]);
   const [initialLoading, setInitialLoading] = useState(false);
 
@@ -132,6 +133,7 @@ const FundPlan = ({ student_id }: Props) => {
       showErrorAlert("Failed to fetch fund plan");
     } finally {
       setInitialLoading(false);
+      getPercentage && getPercentage()
     }
   };
 

@@ -74,6 +74,7 @@ const AcademicInfo = withSwal((props: any) => {
       console.error("Error fetching academic info:", error);
     } finally {
       setLoading(false);
+      props.getPercentage()
     }
   };
 

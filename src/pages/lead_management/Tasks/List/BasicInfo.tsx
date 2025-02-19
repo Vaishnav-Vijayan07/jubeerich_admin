@@ -187,6 +187,7 @@ const BasicInfo = withSwal((props: any) => {
       console.error(err);
     } finally {
       setLoading(false);
+      props.getPercentage()
     }
   };
 
