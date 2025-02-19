@@ -6,7 +6,15 @@ import PageTitle from "../../components/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getBranchCounsellors, getLead, getLeadsByCounsellorTL, getLeadsTL } from "../../redux/actions";
-import { AUTH_SESSION_KEY, counsellor_id, counsellor_tl_id, country_manager_id, cre_tl_id, regional_manager_id, showSuccessAlert } from "../../constants";
+import {
+  AUTH_SESSION_KEY,
+  counsellor_id,
+  counsellor_tl_id,
+  country_manager_id,
+  cre_tl_id,
+  regional_manager_id,
+  showSuccessAlert,
+} from "../../constants";
 import BasicInputElements from "./BasicInputElements";
 import axios from "axios";
 import useDropdownData from "../../hooks/useDropdownDatas";
@@ -57,29 +65,12 @@ const Leads = () => {
     })
   );
 
-  const handlePageChange = useCallback((value: any) => {
-    console.log(value);
-    console.log(currentLimit);
-
-
-    setCurrentPage(value);
-    if (userRole == cre_tl_id) {
-      dispatch(
-        getLeadsTL(
-          value,
-          currentLimit,
-          searchValue == "" ? undefined : searchValue,
-          sortBy,
-          sortOrder,
-          selectedCountry == "all" ? undefined : selectedCountry,
-          selectedOffice == "all" ? undefined : selectedOffice,
-          selectedSource == "all" ? undefined : selectedSource
-        )
-      );
-    } else {
-      if (userRole) {
+  const handlePageChange = useCallback(
+    (value: any) => {
+      setCurrentPage(value);
+      if (userRole == cre_tl_id) {
         dispatch(
-          getLead(
+          getLeadsTL(
             value,
             currentLimit,
             searchValue == "" ? undefined : searchValue,
@@ -90,9 +81,25 @@ const Leads = () => {
             selectedSource == "all" ? undefined : selectedSource
           )
         );
+      } else {
+        if (userRole) {
+          dispatch(
+            getLead(
+              value,
+              currentLimit,
+              searchValue == "" ? undefined : searchValue,
+              sortBy,
+              sortOrder,
+              selectedCountry == "all" ? undefined : selectedCountry,
+              selectedOffice == "all" ? undefined : selectedOffice,
+              selectedSource == "all" ? undefined : selectedSource
+            )
+          );
+        }
       }
-    }
-  }, [ userRole, currentLimit, searchValue, sortBy, sortOrder, selectedCountry, selectedOffice, selectedSource ]);
+    },
+    [userRole, currentLimit, searchValue, sortBy, sortOrder, selectedCountry, selectedOffice, selectedSource]
+  );
 
   const handleFilterChange = (name: string, value: string) => {
     switch (name) {
@@ -120,9 +127,6 @@ const Leads = () => {
   };
 
   const handleSortChange = (type: string, value: string) => {
-    console.log(type);
-    console.log(value);
-
     if (type == "order") {
       setSortBy(value);
     } else {
@@ -183,11 +187,8 @@ const Leads = () => {
     resetSort();
   };
 
-  console.log(currentPage, currentLimit);
-
   const handleLimitChange = useCallback(
     (value: number) => {
-      console.log(value);
       setCurrentLimit(value);
       setCurrentPage(1);
       if (userRole == cre_tl_id) {
@@ -354,21 +355,21 @@ const Leads = () => {
     }
   }, []);
 
-  const handleExportLead = async(date_range: any) => {
+  const handleExportLead = async (date_range: any) => {
     let payload = {
-      start_date: date_range?.start_date ? moment.utc(date_range?.start_date).startOf('day').format("YYYY-MM-DD HH:mm:ssZ") : null, 
-      end_date: date_range?.end_date ? moment.utc(date_range?.end_date).startOf('day').format("YYYY-MM-DD HH:mm:ssZ") : null,
+      start_date: date_range?.start_date ? moment.utc(date_range?.start_date).startOf("day").format("YYYY-MM-DD HH:mm:ssZ") : null,
+      end_date: date_range?.end_date ? moment.utc(date_range?.end_date).startOf("day").format("YYYY-MM-DD HH:mm:ssZ") : null,
       country: selectedCountry == "all" ? undefined : selectedCountry,
       office: selectedOffice == "all" ? undefined : selectedOffice,
       source: selectedSource == "all" ? undefined : selectedSource,
-    }
-    
+    };
+
     const { data } = await axios.post(`/export_leads`, payload);
-    if(data?.status && data?.exported_lead) {
+    if (data?.status && data?.exported_lead) {
       downloadExportedLeads(data?.exported_lead);
-      showSuccessAlert("Lead Exported Succesfully")
+      showSuccessAlert("Lead Exported Succesfully");
     }
-  }
+  };
 
   const downloadExportedLeads = (file: any) => {
     const filePath = file;
@@ -384,12 +385,7 @@ const Leads = () => {
 
   return (
     <React.Fragment>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Leads", path: "/leads/manage", active: true },
-        ]}
-        title={"Leads"}
-      />
+      <PageTitle breadCrumbItems={[{ label: "Leads", path: "/leads/manage", active: true }]} title={"Leads"} />
 
       <Row>
         <Col>

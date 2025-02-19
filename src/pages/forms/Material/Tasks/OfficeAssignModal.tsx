@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button, Form, Dropdown, Col } from "react-bootstrap";
 import axios from "axios";
 import { franchise_id_from_office, corporate_id_from_office, region_id_from_office } from "../../../../constants";
+import { showConfirmation } from "../../../../utils/showConfirmation";
+import useDropdownData from "../../../../hooks/useDropdownDatas";
 
 interface DropDownItem {
   value: string;
@@ -12,70 +14,140 @@ interface Props {
   show: boolean;
   handleClose: () => void;
   lead_id: number;
+  office_type: number | null;
+  region: number | null;
+  handleSubmit: (type: string, office_id: number, counselor_id: number, region_id: number, branch_id: number) => void;
 }
 
-const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id }) => {
-  const [offices, setOffices] = useState<DropDownItem[]>([]);
+const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id, handleSubmit, office_type, region }) => {
+  const { dropdownData }: any = useDropdownData("officeType");
   const [counselors, setCounselors] = useState<DropDownItem[]>([]);
-  const [franchsiees, setFranchises] = useState<DropDownItem[]>([]);
   const [regions, setRegions] = useState<DropDownItem[]>([]);
-  const [selectedOffice, setSelectedOffice] = useState<string>("");
-  const [selectedFranchise, setSelectedFranchise] = useState<string>("");
+  const [branches, setBranches] = useState<DropDownItem[]>([]);
+  const [selectedOffice, setSelectedOffice] = useState<any>(office_type);
   const [selectedCounselor, setSelectedCounselor] = useState<string>("");
-  const [selectedRegion, setSelectedRegion] = useState<string>("");
+  const [selectedRegion, setSelectedRegion] = useState<any>(region);
+  const [selectedBranch, setSelectedBranch] = useState<any>("");
 
   // Fetch offices when modal opens
   useEffect(() => {
-    if (show) {
-      fetchOffices();
+    fetchOffices();
+  }, [selectedOffice]);
+
+  useEffect(() => {
+    if (region) {
+      fetchRegionsWiseBranches(region);
     }
-  }, [show]);
+  }, []);
 
   // API Call to Fetch Offices
   const fetchOffices = async () => {
+    let type = "";
+
+    if (selectedOffice?.toString() == corporate_id_from_office) {
+      type = "corporate";
+    } else if (selectedOffice?.toString() == franchise_id_from_office) {
+      type = "franchise";
+    } else if (selectedOffice?.toString() == region_id_from_office) {
+      type = "region";
+    }
     try {
-      const { data } = await axios.get(`/assign_office/${lead_id}`); // Replace with your API endpoint
-      setOffices(data.offices);
+      const { data } = await axios.get(`/assign_office`, {
+        params: {
+          type: selectedOffice !== "" ? type : "corporate",
+          lead_id,
+        },
+      });
       setCounselors(data.counselors);
-      setFranchises(data.franchisees);
       setRegions(data.regions);
-
-      if (data?.office) {
-        setSelectedOffice(data.office);
-
-        if (data?.office.toString() === corporate_id_from_office && data.counselors.length > 0) {
-          setSelectedCounselor(data.counselors[0].value);
-        } else if (data?.office.toString() === region_id_from_office && data.regions.length > 0) {
-          setSelectedRegion(data.regions[0].value);
-        } else if (data?.office.toString() === franchise_id_from_office && data.franchisees.length > 0) {
-          setSelectedFranchise(data.franchisees[0].value);
-        }
-      }
     } catch (error) {
       console.error("Error fetching offices", error);
     }
   };
 
-  const handleOfficeChange = (office: any) => {
-    setSelectedOffice(office);
-
-    if (office.toString() === corporate_id_from_office && counselors.length > 0) {
-      setSelectedCounselor(counselors[0].value);
-    } else {
+  const fetchRegionsWiseBranches = async (region_id: number | string) => {
+    try {
+      const { data } = await axios.get(`region_wise_branches/${region_id}`);
+      setBranches(data.branches);
+      setSelectedBranch("");
       setSelectedCounselor("");
+    } catch (error) {
+      console.error("Error fetching offices", error);
     }
+  };
 
-    if (office.toString() === region_id_from_office && regions.length > 0) {
-      setSelectedRegion(regions[0].value);
-    } else {
+  const handleRegionChange = (region_id: string) => {
+    setSelectedRegion(region_id);
+    fetchRegionsWiseBranches(region_id);
+  };
+
+  const handleOfficeChange = (office: any) => {
+    if (office.toString() !== region_id_from_office) {
+      setSelectedCounselor("");
       setSelectedRegion("");
     }
+    setSelectedOffice(office);
+  };
 
-    if (office.toString() === franchise_id_from_office && franchsiees.length > 0) {
-      setSelectedFranchise(franchsiees[0].value);
-    } else {
-      setSelectedFranchise("");
+  const officeSwitch = () => {
+    let type = "";
+    switch (selectedOffice.toString()) {
+      case corporate_id_from_office:
+        type = "corporate";
+        break;
+      case region_id_from_office:
+        type = "region";
+        break;
+      case franchise_id_from_office:
+        type = "franchise";
+        break;
+      default:
+        type = "corporate";
+        break;
     }
+    return type;
+  };
+
+  const counselorSwitch = () => {
+    let counselor_id = "";
+    switch (selectedOffice.toString()) {
+      case corporate_id_from_office:
+        counselor_id = selectedCounselor;
+        break;
+      case region_id_from_office:
+        counselor_id = selectedRegion;
+        break;
+      case franchise_id_from_office:
+        counselor_id = selectedCounselor;
+        break;
+      default:
+        counselor_id = "";
+        break;
+    }
+    return counselor_id == "" ? 0 : parseInt(counselor_id);
+  };
+
+  const handleSave = async () => {
+    const result = await showConfirmation("Do you want to proceed?", "Yes");
+    if (!result.isConfirmed) return;
+    const type = officeSwitch();
+    const office_id = parseInt(selectedOffice);
+    const counselor_id = type == "region" ? 0 : counselorSwitch();
+    const region_id = type == "region" ? parseInt(selectedRegion) : 0;
+    const branch_id = type == "region" ? parseInt(selectedBranch) : 0;
+    handleSubmit(type, office_id, counselor_id, region_id, branch_id);
+  };
+
+  console.log(regions);
+  console.log(selectedRegion);
+  console.log(regions?.find((option: DropDownItem) => option.value === selectedRegion)?.label);
+  console.log(region);
+
+  const disableButton = () => {
+    if (selectedOffice?.toString() == region_id_from_office) {
+      return selectedRegion == "" || selectedBranch == "";
+    }
+    return selectedCounselor == "";
   };
 
   return (
@@ -100,22 +172,23 @@ const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id }) => {
                     justifyContent: "space-between",
                   }}
                 >
-                  {offices?.find((option: DropDownItem) => option.value === selectedOffice)?.label || "Select Office"}
+                  {(dropdownData?.officeTypes && dropdownData?.officeTypes?.find((option: DropDownItem) => option.value === selectedOffice)?.label) ||
+                    "Select Office"}
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="w-100">
-                  {offices?.map((option: DropDownItem) => (
-                    <Dropdown.Item key={option.value} onClick={() => handleOfficeChange(option.value)}>
-                      {option.label}
-                    </Dropdown.Item>
-                  ))}
+                  {dropdownData?.officeTypes &&
+                    dropdownData?.officeTypes?.map((option: DropDownItem) => (
+                      <Dropdown.Item key={option.value} onClick={() => handleOfficeChange(option.value)}>
+                        {option.label}
+                      </Dropdown.Item>
+                    ))}
                 </Dropdown.Menu>
               </Dropdown>
             </Form.Group>
           </Col>
-
-          <Col>
-            {selectedOffice.toString() == corporate_id_from_office && (
+          {selectedOffice?.toString() !== region_id_from_office && (
+            <Col>
               <Form.Group className="mb-3">
                 <Form.Label>Select Counselor</Form.Label>
                 <Dropdown className="w-100">
@@ -133,21 +206,27 @@ const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id }) => {
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu className="w-100">
-                    {counselors?.map((option: DropDownItem) => (
-                      <Dropdown.Item key={option.value} onClick={() => setSelectedCounselor(option.value)}>
-                        {option.label}
+                    {counselors?.length > 0 ? (
+                      counselors?.map((option: DropDownItem) => (
+                        <Dropdown.Item key={option.value} onClick={() => setSelectedCounselor(option.value)}>
+                          {option.label}
+                        </Dropdown.Item>
+                      ))
+                    ) : (
+                      <Dropdown.Item disabled className="text-muted">
+                        No data available
                       </Dropdown.Item>
-                    ))}
+                    )}
                   </Dropdown.Menu>
                 </Dropdown>
               </Form.Group>
-            )}
-          </Col>
+            </Col>
+          )}
 
           <Col>
             {selectedOffice.toString() == region_id_from_office && (
               <Form.Group className="mb-3">
-                <Form.Label>Select Reegion</Form.Label>
+                <Form.Label>Select Region</Form.Label>
                 <Dropdown className="w-100">
                   <Dropdown.Toggle
                     variant="outline-secondary"
@@ -164,7 +243,7 @@ const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id }) => {
 
                   <Dropdown.Menu className="w-100">
                     {regions?.map((option: DropDownItem) => (
-                      <Dropdown.Item key={option.value} onClick={() => setSelectedRegion(option.value)}>
+                      <Dropdown.Item key={option.value} onClick={() => handleRegionChange(option.value)}>
                         {option.label}
                       </Dropdown.Item>
                     ))}
@@ -175,9 +254,9 @@ const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id }) => {
           </Col>
 
           <Col>
-            {selectedOffice.toString() == franchise_id_from_office && (
+            {selectedOffice?.toString() == region_id_from_office && (
               <Form.Group className="mb-3">
-                <Form.Label>Select Franchise</Form.Label>
+                <Form.Label>Select Branch</Form.Label>
                 <Dropdown className="w-100">
                   <Dropdown.Toggle
                     variant="outline-secondary"
@@ -189,15 +268,21 @@ const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id }) => {
                       justifyContent: "space-between",
                     }}
                   >
-                    {franchsiees?.find((option: DropDownItem) => option.value === selectedFranchise)?.label || "Select Franchise"}
+                    {branches?.find((option: DropDownItem) => option.value === selectedBranch)?.label || "Select Branch"}
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu className="w-100">
-                    {franchsiees?.map((option: DropDownItem) => (
-                      <Dropdown.Item key={option.value} onClick={() => setSelectedFranchise(option.value)}>
-                        {option.label}
+                    {branches?.length > 0 ? (
+                      branches?.map((option: DropDownItem) => (
+                        <Dropdown.Item key={option.value} onClick={() => setSelectedBranch(option.value)}>
+                          {option.label}
+                        </Dropdown.Item>
+                      ))
+                    ) : (
+                      <Dropdown.Item disabled className="text-muted">
+                        No data available
                       </Dropdown.Item>
-                    ))}
+                    )}
                   </Dropdown.Menu>
                 </Dropdown>
               </Form.Group>
@@ -210,7 +295,9 @@ const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id }) => {
         <Button variant="secondary" onClick={handleClose}>
           Cancel
         </Button>
-        <Button variant="primary">Submit</Button>
+        <Button variant="primary" disabled={disableButton()} onClick={handleSave}>
+          Submit
+        </Button>
       </Modal.Footer>
     </Modal>
   );

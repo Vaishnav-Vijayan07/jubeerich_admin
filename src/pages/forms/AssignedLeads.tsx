@@ -136,9 +136,6 @@ const BasicInputElements = withSwal((props: any) => {
     channels,
     error,
     loading,
-    status,
-    userData,
-    counsellors,
     region,
     franchisees,
     branchCounsellors,
@@ -154,16 +151,11 @@ const BasicInputElements = withSwal((props: any) => {
     onClose,
     value,
     onValueChange,
+    userRole,
+    userBranchId,
   } = props;
 
-  let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
   let records: TableRecords[] = state;
-  let userRole: any;
-  let userBranchId: any;
-  if (userInfo) {
-    userRole = JSON.parse(userInfo)?.role;
-    userBranchId = JSON.parse(userInfo)?.branch_id;
-  }
 
   const [tableData, setTableData] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -851,7 +843,6 @@ const AssignedLeads = () => {
       branchCounsellor: state.Users?.branchCounsellor,
       flag: state?.Flag?.flags,
     }));
-
   let userRole: any;
   let userBranchId: any;
   if (userInfo) {
@@ -869,8 +860,6 @@ const AssignedLeads = () => {
   }, [sortBy, sortOrder, setSearchParams]);
 
   useEffect(() => {
-    console.log("HERE");
-
     dispatch(getFlag());
     if (userRole == cre_tl_id) {
       dispatch(
@@ -939,8 +928,10 @@ const AssignedLeads = () => {
           <CustomLeadFilters
             countries={dropdownData?.countries}
             source={dropdownData?.sources}
+            offices={dropdownData?.officeTypes}
             cres={dropdownData?.cres}
             selectedCountry={selectedCountry}
+            selectedOffice={selectedOffice}
             selectedSource={selectedSource}
             selectedCre={selectedCre}
             onFilterChange={handleFilterChange}
@@ -948,6 +939,7 @@ const AssignedLeads = () => {
             selectedSortOrder={sortOrder}
             onApplySort={applySort}
             onClear={resetFilters}
+            userRole={userRole}
           />
         </Col>
       </Row>
