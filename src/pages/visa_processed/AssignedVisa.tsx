@@ -27,7 +27,7 @@ const sizePerPageList = [
     },
 ];
 
-const VisaPendings = withSwal((props: any) => {
+const AssignedVisa = withSwal((props: any) => {
     const { swal } = props;
     const navigate = useNavigate();
     const [tableData, setTableData] = useState<any>([]);
@@ -96,7 +96,14 @@ const VisaPendings = withSwal((props: any) => {
             accessor: "",
             sort: false,
             Cell: ({ row }: any) => (
-                <div className="d-flex justify-content-start align-items-center gap-2">
+                <div className="d-flex justify-content-center align-items-center gap-2">
+                    <span
+                        className="action-icon"
+                        onClick={() => handleViewCheckList(row.original.studyPreferenceDetails.studyPreference.countryId, row.original.id)}
+                    >
+                        <i className="fs-3 mdi mdi-arrow-right-drop-circle-outline"></i>
+                    </span>
+
                     <span
                         className="action-icon"
                         onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`)}
@@ -105,13 +112,24 @@ const VisaPendings = withSwal((props: any) => {
                     </span>
                 </div>
             ),
-            minWidth: 80,
+            minWidth: 150,
         },
     ];
 
-    const handleSelectedValues = (selectedItems: any) => {
-        setSelected(selectedItems);
-    };
+    const fetchPendingVisa = async () => {
+        setIsLoading(true);
+        try {
+            const { data } = await axios.get('/visa_assigned');
+            if (data?.status) {
+                setTableData(data?.data)
+            }
+        } catch (error) {
+            showErrorAlert(error);
+        }
+        finally {
+            setIsLoading(false);
+        }
+    }
 
     const handleAssignVisaMember = async (selected: any, id: any) => {
         try {
@@ -153,68 +171,13 @@ const VisaPendings = withSwal((props: any) => {
         }
     }
 
-    const handleAutoAssignVisaMembers = async (selected: any) => {
-        try {
-            const confirmation = await swal.fire({
-                title: "Confirm Action",
-                text: `Do you want to auto assign this visa to this member?`,
-                icon: "question",
-                iconColor: "#8B8BF5",
-                showCancelButton: true,
-                confirmButtonText: `Yes, Assign`,
-                cancelButtonText: "Cancel",
-                confirmButtonColor: "#8B8BF5",
-                cancelButtonColor: "#E97777",
-                buttonsStyling: true,
-                customClass: {
-                    popup: "rounded-4 shadow-lg",
-                    confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-                    cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-                    title: "fs-2 fw-normal mb-2",
-                },
-                width: "26em",
-                padding: "2em",
-            })
-
-            if (confirmation.isConfirmed) {
-                let payload = {
-                    application_ids: selected,
-                }
-                const { data } = await axios.post("/auto_assign_visa_application", payload);
-                if (data?.status) {
-                    showSuccessAlert(data?.message);
-                }
-            }
-        } catch (error) {
-            showErrorAlert(error);
-        } finally {
-            fetchPendingVisa();
-        }
-
+    const handleViewCheckList = async (id: any, app_id: any) => {
+        navigate(`/visa/manage_checks/${id}/${app_id}`);
     }
 
-    const fetchPendingVisa = async () => {
-        setIsLoading(true);
-        try {
-            const { data } = await axios.get('/visa_pendings');
-            if (data?.status) {
-                setTableData(data?.data)
-            }
-        } catch (error) {
-            showErrorAlert(error)
-        }
-        finally {
-            setIsLoading(false);
-        }
-    }
-
-    let roleId: any;
-    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-    
-    if (userInfo) {
-      let { role } = JSON.parse(userInfo);
-      roleId = role;
-    }
+    const handleSelectedValues = (selectedItems: any) => {
+        setSelected(selectedItems);
+    };
 
     useEffect(() => {
         fetchPendingVisa();
@@ -224,42 +187,31 @@ const VisaPendings = withSwal((props: any) => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: "Manage Visa", path: "", active: true },
+                    { label: "Assigned Visa", path: "", active: true },
                 ]}
-                title={"Manage Visa"}
+                title={"Assigned Visa"}
             />
             <Card className="bg-white">
                 <Card.Body>
-                    { roleId == visa_manager_id &&
-                        <div className="d-flex flex-wrap gap-2 justify-content-end">
-                            <Dropdown className="btn-group">
-                                <Dropdown.Toggle disabled={selected?.length > 0 ? false : true} variant="light" className="table-action-btn btn-sm btn-blue">
-                                    <i className="mdi mdi-account-plus"></i> {"Assign Visa Member"}
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
-                                    {dropdownData?.visa_members?.map((item: any) => (
-                                        <Dropdown.Item key={item?.value} onClick={() => handleAssignVisaMember(selected, item?.value)}>
-                                            {item.label}
-                                        </Dropdown.Item>
-                                    ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                            <Button
-                                disabled={selected?.length > 0 ? false : true}
-                                variant="light"
-                                className="table-action-btn btn-sm btn-blue"
-                                onClick={() => handleAutoAssignVisaMembers(selected)}
-                            >
-                                <i className="mdi mdi-account-plus"></i> {"Auto Assign Visa Member"}
-                            </Button>
-                        </div>
-                    }
-
+                    <div className="d-flex flex-wrap gap-2 justify-content-end">
+                        <Dropdown className="btn-group">
+                            <Dropdown.Toggle disabled={selected?.length > 0 ? false : true} variant="light" className="table-action-btn btn-sm btn-blue">
+                                <i className="mdi mdi-account-plus"></i> {"Re-Assign Visa Member"}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
+                                {dropdownData?.visa_members?.map((item: any) => (
+                                    <Dropdown.Item key={item?.value} onClick={() => handleAssignVisaMember(selected, item?.value)}>
+                                        {item.label}
+                                    </Dropdown.Item>
+                                ))}
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
                     <Table
                         columns={columns}
                         data={tableData || []}
-                        pageSize={10}
                         onSelect={handleSelectedValues}
+                        pageSize={10}
                         sizePerPageList={sizePerPageList}
                         isSortable={true}
                         pagination={true}
@@ -274,4 +226,4 @@ const VisaPendings = withSwal((props: any) => {
     );
 });
 
-export default VisaPendings;
+export default AssignedVisa;
