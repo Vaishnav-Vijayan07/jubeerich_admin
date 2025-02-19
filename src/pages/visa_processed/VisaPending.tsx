@@ -95,25 +95,18 @@ const VisaPendings = withSwal((props: any) => {
             sort: false,
             Cell: ({ row }: any) => (
                 <div className="d-flex justify-content-center align-items-center gap-2">
-                    {/* Eye Icon */}
                     <span
                         className="action-icon"
                         onClick={() => handleViewCheckList(row.original.studyPreferenceDetails.studyPreference.countryId, row.original.id) }
                     >
-                        <i className="fs-3 mdi mdi-eye-outline"></i>
+                        <i className="fs-3 mdi mdi-arrow-right-drop-circle-outline"></i>
                     </span>
 
-                    {/* Cloud Icon */}
                     <span
                         className="action-icon"
-                        onClick={() => [
-                            setSelectedApplication(row.original.id),
-                            setShowLetterModal(true),
-                            setSelectedFile(null),
-                            setSelectedOfferType(null),
-                        ]}
+                        onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`)}
                     >
-                        <i className="fs-3 mdi mdi-cloud-upload-outline"></i>
+                        <i className="fs-3 mdi mdi-eye-outline"></i>
                     </span>
                 </div>
             ),
