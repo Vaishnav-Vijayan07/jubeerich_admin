@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Form } from "react-bootstrap";
 import Select from "react-select";
 import axios from "axios";
-import { customStyles, showErrorAlert, showSuccessAlert } from "../../constants";
+import { AUTH_SESSION_KEY, customStyles, showErrorAlert, showSuccessAlert, visa_manager_id } from "../../constants";
 import PageTitle from "../../components/PageTitle";
 import { FormInput } from "../../components";
 import Table from "../../components/Table";
@@ -201,7 +201,8 @@ const VisaPendings = withSwal((props: any) => {
     const fetchPendingVisa = async () => {
         setIsLoading(true);
         try {
-            const { data } = await axios.get('/visa_pendings');
+            let url = roleId == visa_manager_id ? '/visa_pendings' : 'visa_members_pendings' 
+            const { data } = await axios.get(url);
             if (data?.status) {
                 setTableData(data?.data)
             }
@@ -215,6 +216,14 @@ const VisaPendings = withSwal((props: any) => {
 
     const handleViewCheckList = async(id: any, app_id: any) => {
         navigate(`/visa/manage_checks/${id}/${app_id}`);
+    }
+
+    let roleId: any;
+    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+    
+    if (userInfo) {
+      let { role } = JSON.parse(userInfo);
+      roleId = role;
     }
 
     useEffect(() => {
@@ -231,28 +240,30 @@ const VisaPendings = withSwal((props: any) => {
             />
             <Card className="bg-white">
                 <Card.Body>
-                    <div className="d-flex flex-wrap gap-2 justify-content-end">
-                        <Dropdown className="btn-group">
-                            <Dropdown.Toggle disabled={selected?.length > 0 ? false : true} variant="light" className="table-action-btn btn-sm btn-blue">
-                                <i className="mdi mdi-account-plus"></i> {"Assign Visa Member"}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
-                                {dropdownData?.visa_members?.map((item: any) => (
-                                    <Dropdown.Item key={item?.value} onClick={() => handleAssignVisaMember(selected, item?.value)}>
-                                        {item.label}
-                                    </Dropdown.Item>
-                                ))}
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <Button
-                            disabled={selected?.length > 0 ? false : true}
-                            variant="light"
-                            className="table-action-btn btn-sm btn-blue"
-                            onClick={() => handleAutoAssignVisaMembers(selected)}
-                        >
-                            <i className="mdi mdi-account-plus"></i> {"Auto Assign Visa Member"}
-                        </Button>
-                    </div>
+                    { roleId == visa_manager_id &&
+                        <div className="d-flex flex-wrap gap-2 justify-content-end">
+                            <Dropdown className="btn-group">
+                                <Dropdown.Toggle disabled={selected?.length > 0 ? false : true} variant="light" className="table-action-btn btn-sm btn-blue">
+                                    <i className="mdi mdi-account-plus"></i> {"Assign Visa Member"}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={{ maxHeight: "150px", overflow: "auto" }}>
+                                    {dropdownData?.visa_members?.map((item: any) => (
+                                        <Dropdown.Item key={item?.value} onClick={() => handleAssignVisaMember(selected, item?.value)}>
+                                            {item.label}
+                                        </Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <Button
+                                disabled={selected?.length > 0 ? false : true}
+                                variant="light"
+                                className="table-action-btn btn-sm btn-blue"
+                                onClick={() => handleAutoAssignVisaMembers(selected)}
+                            >
+                                <i className="mdi mdi-account-plus"></i> {"Auto Assign Visa Member"}
+                            </Button>
+                        </div>
+                    }
 
                     <Table
                         columns={columns}

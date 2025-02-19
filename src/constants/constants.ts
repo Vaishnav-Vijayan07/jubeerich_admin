@@ -31,6 +31,8 @@ export const branch_counsellor_id = "14";
 export const country_manager_id = "15";
 export const application_manager_id = "16";
 export const application_team_id = "17";
+export const visa_manager_id = '19';
+export const visa_member_id =  '20';
 
 //session user
 export const AUTH_SESSION_KEY = "jb_user";
