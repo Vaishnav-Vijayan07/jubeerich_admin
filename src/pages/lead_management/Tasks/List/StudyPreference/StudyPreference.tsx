@@ -14,7 +14,7 @@ const StudyPreference = withSwal((props: any) => {
   const { swal, studentId } = props;
 
   //create state for item
-  const { dropdownData } = useDropdownData("universities,courses,streams,campuses,courseTypes");
+  const { dropdownData, refetch } = useDropdownData("universities,courses,streams,campuses,courseTypes");
   const {historyModal,toggleHistoryModal} = useHistoryModal();
   const [item, setItem] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,8 +46,6 @@ const StudyPreference = withSwal((props: any) => {
       getStudyPrefData();
     }
   }, [dropdownData.universities.length, dropdownData.campuses.length, refresh, studentId]);
-
-  
 
   return (
     <>
@@ -85,6 +83,7 @@ const StudyPreference = withSwal((props: any) => {
                 initialFetch={initialFetch}
                 setInitialFetch={setInitialFetch}
                 studentId={studentId}
+                refetchDropdownData={refetch}
               />
             ))}
         </Row>

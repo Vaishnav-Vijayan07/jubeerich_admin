@@ -64,6 +64,7 @@ const Submitted = () => {
   const [selectedOfferType, setSelectedOfferType] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [selectedApplication, setSelectedApplication] = useState<any>("");
+  const [applicationCountryId, setApplicationCountryId] = useState<any>(null);
 
   const { records, initialloading } = useSelector((state: RootState) => ({
     records: state.KYC.KYCSPending.data,
@@ -187,6 +188,7 @@ const Submitted = () => {
               setShowLetterModal(true),
               setSelectedFile(null),
               setSelectedOfferType(null),
+              setApplicationCountryId(row?.original?.studyPreferenceDetails?.studyPreference?.countryId)
             ]}
           >
             <i className="fs-3 mdi mdi-cloud-upload-outline"></i>
@@ -206,6 +208,7 @@ const Submitted = () => {
       const formData = new FormData();
       formData.append("offer_letter", selectedFile[0]);
       formData.append("offer_letter_type", selectedOfferType?.value);
+      formData.append("application_country_id", applicationCountryId);
 
       const res = await axios.put(`/provide_offer/${selectedApplication}`, formData, {
         headers: {
@@ -237,7 +240,6 @@ const Submitted = () => {
     <>
       <PageTitle
         breadCrumbItems={[
-          // { label: "Master", path: "" },
           { label: "Application(Submitted)", path: "", active: true },
         ]}
         title={"Application(Submitted)"}

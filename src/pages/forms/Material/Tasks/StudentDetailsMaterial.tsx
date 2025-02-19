@@ -599,6 +599,44 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     dispatch(getCountry());
   }, []);
 
+  const acceptTask = async() => {
+    try {
+      const result = await swal.fire({
+        title: "Confirm Action",
+        text: `Do you want to accept this task?`,
+        icon: "question",
+        iconColor: "#8B8BF5",
+        showCancelButton: true,
+        confirmButtonText: `Yes, Accept`,
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#8B8BF5",
+        cancelButtonColor: "#E97777",
+        buttonsStyling: true,
+        customClass: {
+          popup: "rounded-4 shadow-lg",
+          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+          title: "fs-2 fw-normal mb-2",
+        },
+        width: "26em",
+        padding: "2em",
+      });
+
+      if(result?.isConfirmed) {
+        const { data } = await axios.post("/accept_task", { taskId: taskDetails?.id });
+        
+        if(data?.success) {
+          showSuccessAlert("Task Accepted Successfully");
+          getTaskDetails();
+          getTaskList(null, true);
+        }
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <div className="task__details">
@@ -613,6 +651,21 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
                       <span>{taskPrefix + "/" + currentDate.getFullYear() + "/" + (taskDetails?.id || "000")}</span>
                     </div>
+                    {console.log('taskDetails',taskDetails)}
+
+                    {!taskDetails?.is_accepted && (
+                      <Col className="d-flex gap-2 float-end">
+                        <Button
+                          className="d-flex align-items-center btn-light"
+                          onClick={acceptTask}
+                          style={{ fontSize: "12px", background: "#EEFFF3", border: ".5px dashed #009A29" }}
+                        >
+                          <div className="round-circle" />
+
+                          Accept Task
+                        </Button>
+                      </Col>
+                    )}
 
                     {(userRole == cre_id || userRole == cre_tl_id) && (
                       <Col className="d-flex gap-2 float-end">
