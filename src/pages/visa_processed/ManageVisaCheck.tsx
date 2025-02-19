@@ -87,6 +87,13 @@ const ManageVisaCheck = (props: any) => {
                                     <Row className='mt-2'>
                                         {item.fields.map((field: any, fieldIndex: any) => (
                                             <Col md={6} className='mt-2'>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Group controlId="source_id">
+                                                            <Form.Label>{field?.question}</Form.Label>
+                                                        </Form.Group>
+                                                    </Col>
+                                                </Row>
                                                 {(() => {
                                                     switch (field?.field_type) {
                                                         case 'text':
@@ -99,24 +106,25 @@ const ManageVisaCheck = (props: any) => {
                                                             let checkNameOne = field?.field_name?.split("/")[0]?.trim();
                                                             let checkNameTwo = field?.field_name?.split("/")[1]?.trim();
                                                             return (
-                                                                <span className="d-flex mt-4 mb-2">
-                                                                    <Form.Check
-                                                                        type="checkbox"
-                                                                        label={checkNameOne}
-                                                                        name={checkNameOne}
-                                                                        checked={field?.values?.[0]?.field_value == checkNameOne?.toLowerCase()}
-                                                                        className="me-3"
-                                                                        onChange={(e: any) => handleFormInputChange(index, fieldIndex, e.target.checked ? checkNameOne?.toLowerCase() : "")}
-                                                                    />
-                                                                    <Form.Check
-                                                                        type="checkbox"
-                                                                        label={checkNameTwo}
-                                                                        name={checkNameTwo}
-                                                                        checked={field?.values?.[0]?.field_value == checkNameTwo?.toLowerCase()}
-                                                                        onChange={(e: any) => handleFormInputChange(index, fieldIndex, e.target.checked ? checkNameTwo?.toLowerCase() : "")}
-                                                                    />
-                                                                </span>
-
+                                                                <>
+                                                                    <span className="d-flex mt-4 mb-2">
+                                                                        <Form.Check
+                                                                            type="checkbox"
+                                                                            label={checkNameOne}
+                                                                            name={checkNameOne}
+                                                                            checked={field?.values?.[0]?.field_value == checkNameOne?.toLowerCase()}
+                                                                            className="me-3"
+                                                                            onChange={(e: any) => handleFormInputChange(index, fieldIndex, e.target.checked ? checkNameOne?.toLowerCase() : "")}
+                                                                        />
+                                                                        <Form.Check
+                                                                            type="checkbox"
+                                                                            label={checkNameTwo}
+                                                                            name={checkNameTwo}
+                                                                            checked={field?.values?.[0]?.field_value == checkNameTwo?.toLowerCase()}
+                                                                            onChange={(e: any) => handleFormInputChange(index, fieldIndex, e.target.checked ? checkNameTwo?.toLowerCase() : "")}
+                                                                        />
+                                                                    </span>
+                                                                </>
                                                             )
                                                         case 'textarea':
                                                             return <FormInput key={fieldIndex} label={field?.field_name} type="textarea" name={field?.field_name} value={field?.values?.[0]?.field_value} onChange={(e: any) => handleFormInputChange(index, fieldIndex, e.target.value)} />

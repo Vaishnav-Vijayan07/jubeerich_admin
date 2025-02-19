@@ -34,6 +34,7 @@ interface ValidationErrors {
   fields?: Array<{
     field_name?: string;
     field_type?: string;
+    question?: string;
   }>;
 }
 
@@ -49,7 +50,7 @@ const initialState = {
   id: "",
   step_name: "",
   description: "",
-  fields: [{ field_name: "", field_type: "" }],
+  fields: [{ field_name: "", field_type: "", question: "" }],
 };
 
 const initialValidationState: ValidationErrors = {
@@ -64,7 +65,7 @@ const fieldTypeOptions = [
   { value: "date", label: "Date" },
   { value: "checkbox", label: "Checkbox" },
   { value: "textarea", label: "Textarea" },
-  { value: "radio", label: "Radio" },
+  // { value: "radio", label: "Radio" },
   // { value: "select", label: "Dropdown" },
 ];
 
@@ -366,7 +367,7 @@ const BasicInputElements = withSwal((props: any) => {
   const handleAddField = () => {
     setFormData((prev) => ({
       ...prev,
-      fields: [...prev.fields, { field_name: "", field_type: "" }],
+      fields: [...prev.fields, { field_name: "", field_type: "", question: "" }],
     }));
   };
 
@@ -497,6 +498,23 @@ const BasicInputElements = withSwal((props: any) => {
                           {validationErrors.fields?.[index]?.field_type && (
                             <div className="text-danger mt-1 small">{validationErrors.fields[index].field_type}</div>
                           )}
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md={6}>
+                        <Form.Group className="mb-2">
+                          <Form.Label>Question</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={field.question}
+                            onChange={(e) => handleFieldChange(index, "question", e.target.value)}
+                            placeholder="Enter a question"
+                            isInvalid={!!validationErrors.fields?.[index]?.question}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {validationErrors.fields?.[index]?.question}
+                          </Form.Control.Feedback>
                         </Form.Group>
                       </Col>
                     </Row>

@@ -371,11 +371,27 @@ const MENU_ITEMS: MenuItemTypes[] = [
   { key: "visa", label: "Visa", isTitle: true, roles: ["Visa Approval", "Visa Manage"] },
 
   {
-    key: "visa_approvals",
-    label: "Visa Approval",
+    key: "visa_pendings",
+    label: "Visa Pendings",
     isTitle: false,
     icon: "clock",
     url: "/visa/pendings",
+    roles: [ "Visa Manage"],
+  },
+  {
+    key: "assigned_visa",
+    label: "Assigned Visa",
+    isTitle: false,
+    icon: "user-check",
+    url: "/visa/assigned_visa",
+    roles: ["Visa Manage"],
+  },
+  {
+    key: "my_visa_approvals",
+    label: "My Visa Approvals",
+    isTitle: false,
+    icon: "file-text",
+    url: "/visa/approvals",
     roles: ["Visa Approval", "Visa Manage"],
   },
 ];

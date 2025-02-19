@@ -17,6 +17,8 @@ import Summary from "../pages/forms/Kyc/Summary/Summary";
 import ExistLeads from "../pages/exist_leads/ExistLeads";
 import VisaPendings from "../pages/visa_processed/VisaPending";
 import ManageVisaCheck from "../pages/visa_processed/ManageVisaCheck";
+import VisaApprovals from "../pages/visa_processed/VisaApprovals";
+import AssignedVisa from "../pages/visa_processed/AssignedVisa";
 
 // lazy load all the views
 
@@ -266,6 +268,18 @@ const visaRoutes = {
       path: "/visa/pendings",
       name: "Visa Pendings",
       element: <VisaPendings />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/visa/approvals",
+      name: "Visa Approvals",
+      element: <VisaApprovals />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/visa/assigned_visa",
+      name: "Visa Assigned",
+      element: <AssignedVisa />,
       route: PrivateRoute,
     },
     {
