@@ -7,12 +7,12 @@ function ApplicationTeamDashboard({ categories, series, latestLeadsCount,colors 
   return (
     <>
       <Row className="d-flex align-items-stretch mb-2">
-        <Col md={6}>
+        <Col md={12}>
           <StackGraph categories={categories} series={series} colors={colors} />
         </Col>
-        <Col md={6}>
+        {/* <Col md={6}>
           <ApplicationsTable leadsData={latestLeadsCount} />
-        </Col>
+        </Col> */}
       </Row>
     </>
   );

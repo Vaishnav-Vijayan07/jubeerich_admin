@@ -32,7 +32,7 @@ function ReferenceDetails({ reference_id, comments, applicationId }: Props) {
         comment: application_comment,
       });
       if (data?.status) {
-        navigate("/kyc_details/applications/submitted");
+        navigate("/");
         showSuccessAlert("Application submitted succesfully");
       }
     } catch (error) {
@@ -40,7 +40,6 @@ function ReferenceDetails({ reference_id, comments, applicationId }: Props) {
     }
   };
   const handleProceed = () => {
-    console.log(application_reference_id, application_comment);
     proceedSave(application_reference_id, application_comment);
   };
 

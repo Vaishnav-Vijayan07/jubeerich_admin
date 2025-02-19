@@ -29,10 +29,28 @@ import { Autocomplete, Box, Menu, MenuItem, Tabs, TextField, Tooltip, Typography
 import MatButton from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import FollowupModal from "./FollowupModal";
+import OfficeAssignModal from "./OfficeAssignModal";
+import { showConfirmation } from "../../../../utils/showConfirmation";
 
 const History = lazy(() => import("./History"));
 
-const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading }: any) => {
+const inputStyle = {
+  "& .MuiInputBase-root": {
+    padding: "4px 12px",
+  },
+  "& .MuiInputBase-input": {
+    height: "1.1rem",
+    paddingTop: "6px",
+    paddingBottom: "6px",
+    //   marginBottom: '6px',
+    lineHeight: "1.2rem",
+  },
+  "& .MuiInputLabel-root": {
+    lineHeight: "normal",
+  },
+};
+
+const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading, office_type,region }: any) => {
   const { userRole } = useSelector((state: RootState) => ({
     userRole: state?.Auth.user.role,
   }));
@@ -46,6 +64,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [taskDetails, setTaskDetails] = useState<any>({});
   const [ShowRemarkModal, setShowRemarkModal] = useState<boolean>(false);
+  const [showAssignModal, setShowAssignModal] = useState<boolean>(false);
   const [remarkData, setRemarkData] = useState<any>(null);
   const [viewOnly, setViewOnly] = useState<boolean>(false);
   const [isFollowupLoading, setIsFollowupLoading] = useState<boolean>(false);
@@ -64,6 +83,9 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   const { dropdownData } = useDropdownData("marital,officeType,franchise,region,flags");
   const { flags } = dropdownData;
 
+  const handleOpen = () => setShowAssignModal(true);
+  const handleClose = () => setShowAssignModal(false);
+
   const getRoleBasedStatus = async (user_role: string) => {
     const { data } = await axios.get(`/lead_status`, {
       params: { user_role },
@@ -80,11 +102,12 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         .map((item: any) => ({
           value: item.id.toString(),
           label: item.status_name,
-        })).filter((data: any) => {
+        }))
+        .filter((data: any) => {
           if (taskDetails?.is_rejected) {
-            return data?.value == follow_up_id
+            return data?.value == follow_up_id;
           }
-          return true
+          return true;
         })
     );
   }, [status, basicData]); // Ensure basicData is included in dependencies if it's part of the logic
@@ -198,26 +221,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       });
   };
 
-  useEffect(() => {
-    getTaskDetails();
-  }, [taskId]);
-
-  useEffect(() => {
-    if (user) {
-      getRoleBasedStatus(user.role);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (studentId) {
-      getBasicInfo();
-    }
-  }, [studentId, refresh]);
-
-  useEffect(() => {
-    getRemarks();
-  }, [studentId, taskId]);
-
   const updateFlagStatus = async (flag_id: string) => {
     try {
       const result = await swal.fire({
@@ -276,10 +279,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
     setStatusId(null);
   };
 
-  useEffect(() => {
-    dispatch(getCountry());
-  }, []);
-
   const countryData = useMemo(() => {
     if (!Countries) return [];
 
@@ -293,44 +292,73 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       }));
   }, [Countries, basicData]);
 
-  const handleFinishTask = async () => {
+  // const handleFinishTask = async () => {
+  //   try {
+  //     const result = await swal.fire({
+  //       title: "Confirm Action",
+  //       text: `Do you want to proceed?`,
+  //       icon: "question",
+  //       iconColor: "#8B8BF5", // Purple color for the icon
+  //       showCancelButton: true,
+  //       confirmButtonText: `Yes`,
+  //       cancelButtonText: "Cancel",
+  //       confirmButtonColor: "#8B8BF5", // Purple color for confirm button
+  //       cancelButtonColor: "#E97777", // Pink/red color for cancel button
+  //       buttonsStyling: true,
+  //       customClass: {
+  //         popup: "rounded-4 shadow-lg",
+  //         confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
+  //         cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
+  //         title: "fs-2 fw-normal mb-2",
+  //       },
+  //       width: "26em",
+  //       padding: "2em",
+  //     });
+
+  //     if (result.isConfirmed) {
+  //       const res = await axios.put("finish_task", {
+  //         isCompleted: true,
+  //         id: taskId,
+  //       });
+
+  //       getTaskDetails();
+  //       getTaskList(null, true);
+
+  //       // Show success alert
+  //       showSuccessAlert(res.data.message);
+  //     }
+  //   } catch (err) {
+  //     console.log("Error during task completion:", err);
+  //   }
+  // };
+
+  const handleSubmit = async (type: string, office_id: number, counselor_id: number, region_id: number, branch_id: number) => {
     try {
-      const result = await swal.fire({
-        title: "Confirm Action",
-        text: `Do you want to proceed?`,
-        icon: "question",
-        iconColor: "#8B8BF5", // Purple color for the icon
-        showCancelButton: true,
-        confirmButtonText: `Yes`,
-        cancelButtonText: "Cancel",
-        confirmButtonColor: "#8B8BF5", // Purple color for confirm button
-        cancelButtonColor: "#E97777", // Pink/red color for cancel button
-        buttonsStyling: true,
-        customClass: {
-          popup: "rounded-4 shadow-lg",
-          confirmButton: "btn btn-lg px-4 rounded-3 order-2 hover-custom",
-          cancelButton: "btn btn-lg px-4 rounded-3 order-1 hover-custom",
-          title: "fs-2 fw-normal mb-2",
-        },
-        width: "26em",
-        padding: "2em",
-      });
-
-      if (result.isConfirmed) {
-        const res = await axios.put("finish_task", {
-          isCompleted: true,
-          id: taskId,
-        });
-
+      const payload: any = {
+        type,
+        lead_id: studentId,
+        office_id,
+        counselor_id: counselor_id == 0 ? undefined : counselor_id,
+        task_id: taskId,
+        region_id: region_id == 0 ? undefined : region_id,
+        branch_id: branch_id == 0 ? undefined : branch_id,
+      };
+      console.log(payload);
+      const { data } = await axios.post("assign_office", payload);
+      if (data.status) {
+        handleClose();
         getTaskDetails();
         getTaskList(null, true);
-
-        // Show success alert
-        showSuccessAlert(res.data.message);
+        showSuccessAlert(data.message);
       }
-    } catch (err) {
-      console.log("Error during task completion:", err);
+    } catch (error) {
+      console.log(error);
+      showErrorAlert(error);
     }
+  };
+
+  const handleFinishTask = async () => {
+    handleOpen();
   };
 
   const handleCompleteTask = async () => {
@@ -405,7 +433,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
       });
 
       showSuccessAlert(response?.data?.message); // Display success message
-
 
       getTaskDetails(); // Refresh task details
       getTaskList();
@@ -545,24 +572,32 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   };
 
   useEffect(() => {
+    getTaskDetails();
+  }, [taskId]);
+
+  useEffect(() => {
+    if (user) {
+      getRoleBasedStatus(user.role);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (studentId) {
+      getBasicInfo();
+    }
+  }, [studentId, refresh]);
+
+  useEffect(() => {
+    getRemarks();
+  }, [studentId, taskId]);
+
+  useEffect(() => {
     getTaskPrefix();
   }, []);
 
-  const inputStyle = {
-    "& .MuiInputBase-root": {
-      padding: "4px 12px",
-    },
-    "& .MuiInputBase-input": {
-      height: "1.1rem",
-      paddingTop: "6px",
-      paddingBottom: "6px",
-      //   marginBottom: '6px',
-      lineHeight: "1.2rem",
-    },
-    "& .MuiInputLabel-root": {
-      lineHeight: "normal",
-    },
-  };
+  useEffect(() => {
+    dispatch(getCountry());
+  }, []);
 
   const acceptTask = async() => {
     try {
@@ -964,6 +999,16 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
               callGetRemark={callGetRemark}
               submitFollowupDate={handleFollowUpDate}
             />
+            {showAssignModal && (
+              <OfficeAssignModal
+                office_type={office_type ? office_type : ""}
+                region={region ? region : ""}
+                show={showAssignModal}
+                handleClose={handleClose}
+                lead_id={studentId}
+                handleSubmit={handleSubmit}
+              />
+            )}
           </>
         )}
       </div>

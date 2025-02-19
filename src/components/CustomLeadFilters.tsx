@@ -81,9 +81,16 @@ function CustomLeadFilters({
   const [open, setOpen] = useState<boolean>(false);
   const [dateRange, setDateRange] = useState<any>(initialDateState);
 
-  const showOffices = userRole == it_team_id;
+  
+
+  const showOffices = userRole == it_team_id || userRole == cre_tl_id;
   const showCounsellors = userRole == cre_id || userRole == counsellor_tl_id;
   const showBranches = userRole == regional_manager_id;
+
+  console.log(userRole == cre_tl_id)
+  console.log(userRole)
+  console.log(offices)
+  console.log(showOffices)
 
   const handleFieldChange = (name: string, value: string) => {
     onFilterChange?.(name, value);

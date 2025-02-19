@@ -49,7 +49,7 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
       const result = await showConfirmation("Are you sure you want to remove this item?");
       if (!result.isConfirmed) return;
 
-      removeFromApi(itemId, "gap", studentId, gapDetails.length == 1);
+      removeFromApi(itemId, type, studentId, gapDetails.length == 1);
     }
   };
 
@@ -91,7 +91,10 @@ const GapRows = ({ gapData, studentId, type, hasGap }: any) => {
 
   const saveCheck = async () => {
     try {
-      await axios.patch(`update_info_checks/${studentId}`, { has_work_gap: hasGap });
+      await axios.patch(`update_info_checks/${studentId}`, {
+        [type === "work" ? "has_work_gap" : "has_education_gap"]: hasGap
+      });
+      
       dispatch(refreshData());
     } catch (error) {
       console.log(error);

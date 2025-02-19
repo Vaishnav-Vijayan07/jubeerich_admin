@@ -111,29 +111,29 @@ const LeadsModal = withSwal((props: any) => {
     lead_type_id: yup.string().required("Lead type is required").nullable(),
     source_id: yup.string().required("Source is required").nullable(),
     channel_id: yup.string().required("Channel is required").nullable(),
-    office_type: yup.string().required("Office type is required").nullable(),
+    // office_type: yup.string().required("Office type is required").nullable(),
     lead_received_date: yup.date().nullable(),
     zipcode: yup
       .string()
       .matches(/^[0-9]*$/, "Zipcode must be numbers only").nullable(),
-    franchise_id: yup
-      .string()
-      .nullable()
-      .when("office_type", (officeType, schema) => {
-        if (officeType === franchise_id_from_office) {
-          return schema.required("Franchise is required").nullable();
-        }
-        return schema.nullable();
-      }),
-    region_id: yup
-      .string()
-      .nullable()
-      .when("office_type", (officeType, schema) => {
-        if (officeType === region_id_from_office) {
-          return schema.required("Region is required").nullable();
-        }
-        return schema.nullable();
-      }),
+    // franchise_id: yup
+    //   .string()
+    //   .nullable()
+    //   .when("office_type", (officeType, schema) => {
+    //     if (officeType === franchise_id_from_office) {
+    //       return schema.required("Franchise is required").nullable();
+    //     }
+    //     return schema.nullable();
+    //   }),
+    // region_id: yup
+    //   .string()
+    //   .nullable()
+    //   .when("office_type", (officeType, schema) => {
+    //     if (officeType === region_id_from_office) {
+    //       return schema.required("Region is required").nullable();
+    //     }
+    //     return schema.nullable();
+    //   }),
   });
 
   useEffect(() => {
