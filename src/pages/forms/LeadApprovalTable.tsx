@@ -500,7 +500,7 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
     }
 
     const hasInvalidItem = selectedItems.some((item) => {
-      return !item.source || !item.channel || !item.office_type || !item.email || !item.phone || !item.full_name;
+      return !item.source || !item.channel ||  !item.email || !item.phone || !item.full_name;
     });
     
     if (hasInvalidItem && approvalType == approvalTypes.import_lead) {
