@@ -253,7 +253,7 @@ const LeadDetailsMaterial = (props: Props) => {
                 label="Visa Process"
                 sx={{ ...individualTabStyle, backgroundColor: getBackgroundColor(completionStatus?.previousVisaApproval) }}
               />
-              <Tab value="add_docs" label="Additional Documents" sx={{ ...individualTabStyle }} />
+              <Tab value="add_docs" label="Additional Documents" sx={{ ...individualTabStyle, backgroundColor: getBackgroundColor(completionStatus?.studentAdditionalDocs) }} />
               <Tab value="docs_overview" label="Documents Overview" sx={{ ...individualTabStyle }} />
               <Tab value="comments" label="Comments" sx={{ ...individualTabStyle }} />
               <Tab value="history" label="History" sx={{ ...individualTabStyle }} />

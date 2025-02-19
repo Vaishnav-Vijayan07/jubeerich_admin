@@ -107,6 +107,8 @@ const AdditionalDocuments = (props: any) => {
       console.log(error);
       showErrorAlert("Internal Server Error");
       setIsLoading(false);
+    } finally {
+      props.getPercentage();
     }
   };
 
@@ -169,128 +171,181 @@ const AdditionalDocuments = (props: any) => {
           </h5>
           {!isLoading && (
             <Row>
-                <Row>
-                  <Col md={6} lg={6} xl={6} xxl={4}>
-                    <Form.Group className="mb-2" controlId="passport_doc">
-                      <Form.Label>Upload Passport</Form.Label>
-                      <FormInput type="file" accept="image/*,application/pdf" name="passport_doc" onChange={(e) => handleFileChange(e)} />
-                    </Form.Group>
-                    <div className="d-flex">
-                      {documentsName?.passport_doc && (
-                        <div className="d-flex align-items-center">
-                          <i className="mdi mdi-eye text-primary me-2"></i>
-                          <a href={`${documentsName?.passport_doc}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
-                            Passport
-                          </a>
-                        </div>
-                      )}
-                      {documentsName?.passport_doc && (
-                        <i onClick={() => deleteAdditionalDoc("passport_doc")} className="mdi mdi-delete mt-1 ps-1"></i>
-                      )}
-                    </div>
-                  </Col>
+              <Row>
+                <Col md={6} lg={6} xl={6} xxl={4}>
+                  <Form.Group className="mb-2" controlId="passport_doc">
+                    <Form.Label>Upload Passport</Form.Label>
+                    <FormInput
+                      type="file"
+                      accept="image/*,application/pdf"
+                      name="passport_doc"
+                      onChange={(e) => handleFileChange(e)}
+                    />
+                  </Form.Group>
+                  <div className="d-flex">
+                    {documentsName?.passport_doc && (
+                      <div className="d-flex align-items-center">
+                        <i className="mdi mdi-eye text-primary me-2"></i>
+                        <a
+                          href={`${documentsName?.passport_doc}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-decoration-none"
+                        >
+                          Passport
+                        </a>
+                      </div>
+                    )}
+                    {documentsName?.passport_doc && (
+                      <i onClick={() => deleteAdditionalDoc("passport_doc")} className="mdi mdi-delete mt-1 ps-1"></i>
+                    )}
+                  </div>
+                </Col>
 
-                  <Col md={6} lg={6} xl={6} xxl={4}>
-                    <Form.Group className="mb-2" controlId="updated_cv">
-                      <Form.Label>Upload Updated CV</Form.Label>
-                      <FormInput type="file" accept="image/*,application/pdf" name="updated_cv" onChange={(e) => handleFileChange(e)} />
-                    </Form.Group>
-                    <div className="d-flex">
-                      {documentsName?.updated_cv && (
-                        <div className="d-flex align-items-center">
-                          <i className="mdi mdi-eye text-primary me-2"></i>
-                          <a href={`${documentsName?.updated_cv}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
-                            Updated CV
-                          </a>
-                        </div>
-                      )}
-                      {documentsName?.updated_cv && <i onClick={() => deleteAdditionalDoc("updated_cv")} className="mdi mdi-delete mt-1 ps-1"></i>}
-                    </div>
-                  </Col>
+                <Col md={6} lg={6} xl={6} xxl={4}>
+                  <Form.Group className="mb-2" controlId="updated_cv">
+                    <Form.Label>Upload Updated CV</Form.Label>
+                    <FormInput
+                      type="file"
+                      accept="image/*,application/pdf"
+                      name="updated_cv"
+                      onChange={(e) => handleFileChange(e)}
+                    />
+                  </Form.Group>
+                  <div className="d-flex">
+                    {documentsName?.updated_cv && (
+                      <div className="d-flex align-items-center">
+                        <i className="mdi mdi-eye text-primary me-2"></i>
+                        <a
+                          href={`${documentsName?.updated_cv}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-decoration-none"
+                        >
+                          Updated CV
+                        </a>
+                      </div>
+                    )}
+                    {documentsName?.updated_cv && (
+                      <i onClick={() => deleteAdditionalDoc("updated_cv")} className="mdi mdi-delete mt-1 ps-1"></i>
+                    )}
+                  </div>
+                </Col>
 
-                  <Col md={6} lg={6} xl={6} xxl={4}>
-                    <Form.Group className="mb-2 mt-3" controlId="profile_assessment_doc">
-                      <Form.Label>Profile Assessment Document</Form.Label>
-                      <FormInput type="file" accept="image/*,application/pdf" name="profile_assessment_doc" onChange={(e) => handleFileChange(e)} />
-                    </Form.Group>
-                    <div className="d-flex">
-                      {documentsName?.profile_assessment_doc && (
-                        <div className="d-flex align-items-center">
-                          <i className="mdi mdi-eye text-primary me-2"></i>
-                          <a
-                            href={`${documentsName?.profile_assessment_doc}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-decoration-none"
-                          >
-                            Profile Assessment Document
-                          </a>
-                        </div>
-                      )}
-                      {documentsName?.profile_assessment_doc && (
-                        <i onClick={() => deleteAdditionalDoc("profile_assessment_doc")} className="mdi mdi-delete mt-1 ps-1"></i>
-                      )}
-                    </div>
-                  </Col>
+                <Col md={6} lg={6} xl={6} xxl={4}>
+                  <Form.Group className="mb-2 mt-3" controlId="profile_assessment_doc">
+                    <Form.Label>Profile Assessment Document</Form.Label>
+                    <FormInput
+                      type="file"
+                      accept="image/*,application/pdf"
+                      name="profile_assessment_doc"
+                      onChange={(e) => handleFileChange(e)}
+                    />
+                  </Form.Group>
+                  <div className="d-flex">
+                    {documentsName?.profile_assessment_doc && (
+                      <div className="d-flex align-items-center">
+                        <i className="mdi mdi-eye text-primary me-2"></i>
+                        <a
+                          href={`${documentsName?.profile_assessment_doc}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-decoration-none"
+                        >
+                          Profile Assessment Document
+                        </a>
+                      </div>
+                    )}
+                    {documentsName?.profile_assessment_doc && (
+                      <i onClick={() => deleteAdditionalDoc("profile_assessment_doc")} className="mdi mdi-delete mt-1 ps-1"></i>
+                    )}
+                  </div>
+                </Col>
 
-                  <Col md={6} lg={6} xl={6} xxl={4}>
-                    <Form.Group className="mb-2 mt-3" controlId="lor">
-                      <Form.Label>Letter of Recommendation</Form.Label>
-                      <FormInput type="file" accept="image/*,application/pdf" name="lor" onChange={(e) => handleFileChange(e)} />
-                    </Form.Group>
-                    <div className="d-flex align-items-center">
-                      {documentsName?.lor && (
-                        <div className="d-flex align-items-center">
-                          <i className="mdi mdi-eye text-primary me-2"></i>
-                          <a href={`${documentsName?.lor}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
-                            Letter of recommendation
-                          </a>
-                        </div>
-                      )}
-                      {documentsName?.lor && <i onClick={() => deleteAdditionalDoc("lor")} className="mdi mdi-delete mt-1 ps-1"></i>}
-                    </div>
-                  </Col>
+                <Col md={6} lg={6} xl={6} xxl={4}>
+                  <Form.Group className="mb-2 mt-3" controlId="lor">
+                    <Form.Label>Letter of Recommendation</Form.Label>
+                    <FormInput type="file" accept="image/*,application/pdf" name="lor" onChange={(e) => handleFileChange(e)} />
+                  </Form.Group>
+                  <div className="d-flex align-items-center">
+                    {documentsName?.lor && (
+                      <div className="d-flex align-items-center">
+                        <i className="mdi mdi-eye text-primary me-2"></i>
+                        <a
+                          href={`${documentsName?.lor}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-decoration-none"
+                        >
+                          Letter of recommendation
+                        </a>
+                      </div>
+                    )}
+                    {documentsName?.lor && (
+                      <i onClick={() => deleteAdditionalDoc("lor")} className="mdi mdi-delete mt-1 ps-1"></i>
+                    )}
+                  </div>
+                </Col>
 
-                  <Col md={6} lg={6} xl={6} xxl={4}>
-                    <Form.Group className="mb-2 mt-3" controlId="sop">
-                      <Form.Label>Statement of Purpose</Form.Label>
-                      <FormInput type="file" accept="image/*,application/pdf" name="sop" onChange={(e) => handleFileChange(e)} />
-                    </Form.Group>
-                    <div className="d-flex">
-                      {documentsName?.sop && (
-                        <div className="d-flex align-items-center">
-                          <i className="mdi mdi-eye text-primary me-2"></i>
-                          <a href={`${documentsName?.sop}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
-                            SOP
-                          </a>
-                        </div>
-                      )}
-                      {documentsName?.sop && <i onClick={() => deleteAdditionalDoc("sop")} className="mdi mdi-delete mt-1 ps-1"></i>}
-                    </div>
-                  </Col>
+                <Col md={6} lg={6} xl={6} xxl={4}>
+                  <Form.Group className="mb-2 mt-3" controlId="sop">
+                    <Form.Label>Statement of Purpose</Form.Label>
+                    <FormInput type="file" accept="image/*,application/pdf" name="sop" onChange={(e) => handleFileChange(e)} />
+                  </Form.Group>
+                  <div className="d-flex">
+                    {documentsName?.sop && (
+                      <div className="d-flex align-items-center">
+                        <i className="mdi mdi-eye text-primary me-2"></i>
+                        <a
+                          href={`${documentsName?.sop}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-decoration-none"
+                        >
+                          SOP
+                        </a>
+                      </div>
+                    )}
+                    {documentsName?.sop && (
+                      <i onClick={() => deleteAdditionalDoc("sop")} className="mdi mdi-delete mt-1 ps-1"></i>
+                    )}
+                  </div>
+                </Col>
 
-                  <Col md={6} lg={6} xl={6} xxl={4}>
-                    <Form.Group className="mb-2 mt-3" controlId="gte_form">
-                      <Form.Label>Application/GTE Form</Form.Label>
-                      <FormInput type="file" accept="image/*,application/pdf" name="gte_form" onChange={(e) => handleFileChange(e)} />
-                    </Form.Group>
-                    <div className="d-flex">
-                      {documentsName?.gte_form && (
-                        <div className="d-flex align-items-center">
-                          <i className="mdi mdi-eye text-primary me-2"></i>
-                          <a href={`${documentsName?.gte_form}`} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
-                            GTE Form
-                          </a>
-                        </div>
-                      )}
-                      {documentsName?.gte_form && <i onClick={() => deleteAdditionalDoc("gte_form")} className="mdi mdi-delete mt-1 ps-1"></i>}
-                    </div>
-                  </Col>
+                <Col md={6} lg={6} xl={6} xxl={4}>
+                  <Form.Group className="mb-2 mt-3" controlId="gte_form">
+                    <Form.Label>Application/GTE Form</Form.Label>
+                    <FormInput
+                      type="file"
+                      accept="image/*,application/pdf"
+                      name="gte_form"
+                      onChange={(e) => handleFileChange(e)}
+                    />
+                  </Form.Group>
+                  <div className="d-flex">
+                    {documentsName?.gte_form && (
+                      <div className="d-flex align-items-center">
+                        <i className="mdi mdi-eye text-primary me-2"></i>
+                        <a
+                          href={`${documentsName?.gte_form}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-decoration-none"
+                        >
+                          GTE Form
+                        </a>
+                      </div>
+                    )}
+                    {documentsName?.gte_form && (
+                      <i onClick={() => deleteAdditionalDoc("gte_form")} className="mdi mdi-delete mt-1 ps-1"></i>
+                    )}
+                  </div>
+                </Col>
 
-                  <Button className="w-auto ms-2" onClick={handleSubmit}>
-                    Save
-                  </Button>
-                </Row>
+                <Button className="w-auto ms-2" onClick={handleSubmit}>
+                  Save
+                </Button>
+              </Row>
             </Row>
           )}
         </Row>
