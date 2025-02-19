@@ -15,7 +15,8 @@ import TasksMaterial from "../pages/forms/Material/Tasks/TasksMaterial";
 import TaskPrefix from "../pages/forms/taskPrefix";
 import Summary from "../pages/forms/Kyc/Summary/Summary";
 import ExistLeads from "../pages/exist_leads/ExistLeads";
-import VisaPendings from "../pages/visa_processed/visaPendings";
+import VisaPendings from "../pages/visa_processed/VisaPending";
+import ManageVisaCheck from "../pages/visa_processed/ManageVisaCheck";
 
 // lazy load all the views
 
@@ -265,6 +266,12 @@ const visaRoutes = {
       path: "/visa/pendings",
       name: "Visa Pendings",
       element: <VisaPendings />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/visa/manage_checks/:id/:app_id",
+      name: "Manage Visa Checks",
+      element: <ManageVisaCheck />,
       route: PrivateRoute,
     },
   ]

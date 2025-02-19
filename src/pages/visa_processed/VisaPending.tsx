@@ -11,7 +11,6 @@ import { FormInput } from "../../components";
 import Table from "../../components/Table";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { withSwal } from "react-sweetalert2";
-import VisaCheckListModal from "./visaCheckListModal";
 
 const sizePerPageList = [
     {
@@ -39,8 +38,6 @@ const VisaPendings = withSwal((props: any) => {
     const [selected, setSelected] = useState([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { loading: dropDownLoading, dropdownData } = useDropdownData("visa_members");
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [checkListData, setCheckListData] = useState<any>(null);
 
     const columns = [
         {
@@ -57,19 +54,19 @@ const VisaPendings = withSwal((props: any) => {
         },
         {
             Header: "Country",
-            accessor: "studyPreferenceDetails.studyPreference.country.country_name", // Corrected for nested structure
+            accessor: "studyPreferenceDetails.studyPreference.country.country_name",
             sort: false,
             minWidth: 150,
         },
         {
             Header: "University",
-            accessor: "studyPreferenceDetails.preferred_university.university_name", // Corrected accessor
+            accessor: "studyPreferenceDetails.preferred_university.university_name",
             sort: false,
             minWidth: 150,
         },
         {
             Header: "Course",
-            accessor: "studyPreferenceDetails.preferred_courses.course_name", // Corrected accessor
+            accessor: "studyPreferenceDetails.preferred_courses.course_name",
             sort: false,
             minWidth: 150,
         },
@@ -98,25 +95,18 @@ const VisaPendings = withSwal((props: any) => {
             sort: false,
             Cell: ({ row }: any) => (
                 <div className="d-flex justify-content-center align-items-center gap-2">
-                    {/* Eye Icon */}
                     <span
                         className="action-icon"
-                        onClick={() => handleViewCheckList(row.original.studyPreferenceDetails.studyPreference.countryId) }
+                        onClick={() => handleViewCheckList(row.original.studyPreferenceDetails.studyPreference.countryId, row.original.id) }
                     >
-                        <i className="fs-3 mdi mdi-eye-outline"></i>
+                        <i className="fs-3 mdi mdi-arrow-right-drop-circle-outline"></i>
                     </span>
 
-                    {/* Cloud Icon */}
                     <span
                         className="action-icon"
-                        onClick={() => [
-                            setSelectedApplication(row.original.id),
-                            setShowLetterModal(true),
-                            setSelectedFile(null),
-                            setSelectedOfferType(null),
-                        ]}
+                        onClick={() => navigate(`/kyc_details/${row.original.studyPreferenceDetails?.studyPreference?.userPrimaryInfoId}/${row.original.id}`)}
                     >
-                        <i className="fs-3 mdi mdi-cloud-upload-outline"></i>
+                        <i className="fs-3 mdi mdi-eye-outline"></i>
                     </span>
                 </div>
             ),
@@ -223,21 +213,8 @@ const VisaPendings = withSwal((props: any) => {
         }
     }
 
-    const toggle = () =>{
-        setIsOpen(!isOpen);
-    }
-
-    const handleViewCheckList = async(id: any) => {
-        try {
-            const { data } = await axios.get(`/get_visa_checks_by_country/${id}`)
-            if(data?.status) {
-                setCheckListData(data?.data);
-                setIsOpen(true);
-            }
-
-        } catch (error) {
-            showErrorAlert(error);
-        }
+    const handleViewCheckList = async(id: any, app_id: any) => {
+        navigate(`/visa/manage_checks/${id}/${app_id}`);
     }
 
     useEffect(() => {
@@ -292,8 +269,6 @@ const VisaPendings = withSwal((props: any) => {
                     />
                 </Card.Body>
             </Card>
-
-            <VisaCheckListModal isOpen={isOpen} toggleModal={toggle} checkLists={checkListData || []} />
         </>
     );
 });
