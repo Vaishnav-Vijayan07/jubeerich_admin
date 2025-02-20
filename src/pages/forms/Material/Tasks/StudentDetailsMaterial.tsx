@@ -681,7 +681,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     )}
 
                     <Row className="g-1 float-end">
-                      {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
+                      {/* {(userRole == counsellor_id || userRole == franchise_counsellor_id || userRole == branch_counsellor_id) && (
                         <Col className="d-flex gap-2">
                           <Button
                             className="d-flex align-items-center btn-light"
@@ -692,7 +692,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                             Complete Task
                           </Button>
                         </Col>
-                      )}
+                      )} */}
 
                       {(userRole == counsellor_id ||
                         userRole == franchise_counsellor_id ||
