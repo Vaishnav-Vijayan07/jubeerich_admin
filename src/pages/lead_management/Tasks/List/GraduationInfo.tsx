@@ -299,9 +299,10 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             <Form.Control name="admit_card" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.admit_card && <Form.Text className="text-danger">{item.errors.admit_card}</Form.Text>}
             {typeof item?.admit_card === "string" && (
-              <div className="mt-2">
-                <a href={`${baseUrl}uploads/graduationDocuments/${item?.admit_card}`} target="_blank" rel="noopener noreferrer">
-                  <i className="mdi mdi-download me-1"></i> admit_card
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.admit_card}`} target="_blank" rel="noopener noreferrer">
+                   admit_card
                 </a>
               </div>
             )}
@@ -314,9 +315,10 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             <Form.Control name="certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.certificate && <Form.Text className="text-danger">{item.errors.certificate}</Form.Text>}
             {typeof item?.certificate === "string" && (
-              <div className="mt-2">
-                <a href={`${baseUrl}uploads/graduationDocuments/${item?.certificate}`} target="_blank" rel="noopener noreferrer">
-                  <i className="mdi mdi-download me-1"></i> certificate
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.certificate}`} target="_blank" rel="noopener noreferrer">
+                   certificate
                 </a>
               </div>
             )}
@@ -328,9 +330,10 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             <Form.Control name="registration_certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.registration_certificate && <Form.Text className="text-danger">{item.errors.registration_certificate}</Form.Text>}
             {typeof item?.registration_certificate === "string" && (
-              <div className="mt-2">
-                <a href={`${baseUrl}uploads/graduationDocuments/${item?.registration_certificate}`} target="_blank" rel="noopener noreferrer">
-                  <i className="mdi mdi-download me-1"></i> registration_certificate
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.registration_certificate}`} target="_blank" rel="noopener noreferrer">
+                   registration_certificate
                 </a>
               </div>
             )}
@@ -342,9 +345,10 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             <Form.Control name="grading_scale_info" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.grading_scale_info && <Form.Text className="text-danger">{item.errors.grading_scale_info}</Form.Text>}
             {typeof item?.grading_scale_info === "string" && (
-              <div className="mt-2">
-                <a href={`${baseUrl}uploads/graduationDocuments/${item?.grading_scale_info}`} target="_blank" rel="noopener noreferrer">
-                  <i className="mdi mdi-download me-1"></i> grading_scale_info
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.grading_scale_info}`} target="_blank" rel="noopener noreferrer">
+                   grading_scale_info
                 </a>
               </div>
             )}
@@ -356,9 +360,10 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             <Form.Control name="backlog_certificate" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.backlog_certificate && <Form.Text className="text-danger">{item.errors.backlog_certificate}</Form.Text>}
             {typeof item?.backlog_certificate === "string" && (
-              <div className="mt-2">
-                <a href={`${baseUrl}uploads/graduationDocuments/${item?.backlog_certificate}`} target="_blank" rel="noopener noreferrer">
-                  <i className="mdi mdi-download me-1"></i> backlog_certificate
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.backlog_certificate}`} target="_blank" rel="noopener noreferrer">
+                   backlog_certificate
                 </a>
               </div>
             )}
@@ -370,9 +375,10 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             <Form.Control name="individual_marksheet" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.individual_marksheet && <Form.Text className="text-danger">{item.errors.individual_marksheet}</Form.Text>}
             {typeof item?.individual_marksheet === "string" && (
-              <div className="mt-2">
-                <a href={`${baseUrl}uploads/graduationDocuments/${item?.individual_marksheet}`} target="_blank" rel="noopener noreferrer">
-                  <i className="mdi mdi-download me-1"></i> individual_marksheet
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.individual_marksheet}`} target="_blank" rel="noopener noreferrer">
+                   individual_marksheet
                 </a>
               </div>
             )}
@@ -385,9 +391,10 @@ const GraduationInfo: React.FC<GraduationDetailsProps> = ({ title, details, stud
             <Form.Control name="transcript" type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, index)} />
             {item?.errors?.transcript && <Form.Text className="text-danger">{item.errors.transcript}</Form.Text>}
             {typeof item?.transcript === "string" && (
-              <div className="mt-2">
-                <a href={`${baseUrl}uploads/graduationDocuments/${item?.transcript}`} target="_blank" rel="noopener noreferrer">
-                  <i className="mdi mdi-download me-1"></i> transcript
+              <div className="d-flex align-items-center">
+                   <i className="mdi mdi-eye text-primary me-2"></i> 
+                <a href={`${item?.transcript}`} target="_blank" rel="noopener noreferrer">
+                   transcript
                 </a>
               </div>
             )}

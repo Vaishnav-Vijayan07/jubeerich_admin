@@ -138,6 +138,8 @@ const VisaProcess = withSwal((props: any) => {
       console.error("Error fetching visa process data:", error);
       showErrorAlert("Error fetching visa process data");
       setLoading(false);
+    } finally {
+      props.getPercentage();
     }
   };
 
@@ -287,14 +289,14 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  const saveVisaFormData = async(submitName: string, decision: boolean) => {
+  const saveVisaFormData = async (submitName: string, decision: boolean) => {
     switch (submitName) {
       case visa_decline:
         if (decision) {
           submitDeclinedVisa(decision);
         } else {
           const confirm = await confirmationModal();
-          if(confirm) changeVisaDecision(decision, visaTypes.visa_decline, "decline");
+          if (confirm) changeVisaDecision(decision, visaTypes.visa_decline, "decline");
         }
 
         break;
@@ -303,7 +305,7 @@ const VisaProcess = withSwal((props: any) => {
           submitApprovedVisa(decision);
         } else {
           const confirm = await confirmationModal();
-          if(confirm) changeVisaDecision(decision, visaTypes.visa_approve, "approve");
+          if (confirm) changeVisaDecision(decision, visaTypes.visa_approve, "approve");
         }
 
         break;
@@ -312,7 +314,7 @@ const VisaProcess = withSwal((props: any) => {
           submitTravelHistory(decision);
         } else {
           const confirm = await confirmationModal();
-          if(confirm) changeVisaDecision(decision, visaTypes.travel_history, "history");
+          if (confirm) changeVisaDecision(decision, visaTypes.travel_history, "history");
         }
 
         break;
@@ -321,7 +323,7 @@ const VisaProcess = withSwal((props: any) => {
     }
   };
 
-  const confirmationModal = async() => {
+  const confirmationModal = async () => {
     const confirmationResult = await swal.fire({
       title: "Confirm Action",
       text: `Do you want to proceed?`,
@@ -343,13 +345,12 @@ const VisaProcess = withSwal((props: any) => {
       padding: "2em",
     });
 
-    if(confirmationResult.isConfirmed){
+    if (confirmationResult.isConfirmed) {
       return true;
     } else {
-      return false
+      return false;
     }
-
-  }
+  };
 
   const changeVisaDecision = async (decision: boolean, type: string, type_of_data: string) => {
     try {
@@ -373,7 +374,6 @@ const VisaProcess = withSwal((props: any) => {
 
       await axios.patch(`update_info_checks/${studentId}`, payload);
       getVisaProcess();
-
     } catch (error) {
       console.log(error);
       showErrorAlert("Something went wrong");

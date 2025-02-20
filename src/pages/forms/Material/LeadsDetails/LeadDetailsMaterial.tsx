@@ -11,14 +11,12 @@ import StudyPreference from "../../../lead_management/Tasks/List/StudyPreference
 import FundPlan from "../../../lead_management/Tasks/List/FundPlan/FundPlan";
 import EducationDetails from "../../../lead_management/Tasks/List/EducationDetails";
 import Comments from "../../../lead_management/Tasks/List/Comments";
-import Attachments from "../../../lead_management/Tasks/List/Attachments";
 import AdditionalDocuments from "../../../lead_management/Tasks/List/AdditionalDocuments";
 import PassportDetails from "../../../lead_management/Tasks/List/PassportDetails";
 import FamilyDetails from "../../../lead_management/Tasks/List/FamilyDetails/FamilyDetails";
 import WorkExpereince from "../../../lead_management/Tasks/List/WorkExpereince/WorkExpereince";
 import axios from "axios";
 import { icons } from "../../../../assets/images/icons";
-import moment from "moment";
 import DocumentsOverview from "../../../lead_management/Tasks/List/DocumentsOverview/DocumentsOverview";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Tab, Tabs, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -26,16 +24,11 @@ import History from "../Tasks/History";
 
 interface Props {}
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
 const LeadDetailsMaterial = (props: Props) => {
   const { id: studentId } = useParams();
   const [basicInfo, setBasicInfo] = useState<any>({});
   const [tabValue, setTabValue] = React.useState("basic_info");
+  const [completionStatus, setCompletionPercentage] = React.useState<any>({});
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -67,8 +60,20 @@ const LeadDetailsMaterial = (props: Props) => {
     if (tab) setTabValue(tab);
   }, [location.search]);
 
+  const getPercentage = async () => {
+    try {
+      const { data } = await axios.get(`/get_completion_percentage/${studentId}`);
+      setCompletionPercentage(data.completionPercentages);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  console.log("completionStatus ===>", completionStatus);
+
   useEffect(() => {
     getBasicInfo();
+    getPercentage();
   }, []);
 
   if (loading) {
@@ -91,6 +96,12 @@ const LeadDetailsMaterial = (props: Props) => {
     marginBottom: "0.6rem",
     fontFamily: "'Nunito', sans-serif",
     fontWeight: 700,
+  };
+
+  const getBackgroundColor = (percentage: number) => {
+    if (percentage > 75) return "rgba(38, 188, 163, 0.09)"; // Green
+    if (percentage > 40) return "rgba(0, 123, 255, 0.13)"; // Blue
+    return "rgba(255, 166, 0, 0.09)"; // Orange
   };
 
   return (
@@ -186,16 +197,63 @@ const LeadDetailsMaterial = (props: Props) => {
               aria-label="secondary tabs example"
               sx={{ ...tabsStyle }}
             >
-              <Tab value="basic_info" label="Basic Info" sx={{ ...individualTabStyle }} />
-              <Tab value="exam_details" label="Exam Details" sx={{ ...individualTabStyle }} />
-              <Tab value="work_exp" label="Work Experience" sx={{ ...individualTabStyle }} />
-              <Tab value="study_pref" label="Study Preference" sx={{ ...individualTabStyle }} />
-              <Tab value="education" label="Education Details" sx={{ ...individualTabStyle }} />
-              <Tab value="fund_plan" label="Fund Plan" sx={{ ...individualTabStyle }} />
-              <Tab value="passport" label="Passport Details" sx={{ ...individualTabStyle }} />
-              <Tab value="family" label="Family Details" sx={{ ...individualTabStyle }} />
-              <Tab value="visa" label="Visa Process" sx={{ ...individualTabStyle }} />
-              <Tab value="add_docs" label="Additional Documents" sx={{ ...individualTabStyle }} />
+              <Tab
+                value="basic_info"
+                label="Basic Info"
+                sx={{
+                  ...individualTabStyle,
+                  backgroundColor: getBackgroundColor(completionStatus?.userBasicInfo),
+                }}
+              />
+              <Tab
+                value="exam_details"
+                label="Exam Details"
+                sx={{
+                  ...individualTabStyle,
+                  backgroundColor: getBackgroundColor(completionStatus?.userExams),
+                }}
+              />
+              <Tab
+                value="work_exp"
+                label="Work Experience"
+                sx={{ ...individualTabStyle, backgroundColor: getBackgroundColor(completionStatus?.workInfo) }}
+              />
+              <Tab
+                value="study_pref"
+                label="Study Preference"
+                sx={{ ...individualTabStyle, backgroundColor: getBackgroundColor(completionStatus?.studyPreference) }}
+              />
+              <Tab
+                value="education"
+                label="Education Details"
+                sx={{
+                  ...individualTabStyle,
+                  backgroundColor: getBackgroundColor(
+                    (completionStatus?.educationDetails + completionStatus?.graduationDetails) / 2
+                  ),
+                }}
+              />
+              <Tab
+                value="fund_plan"
+                label="Fund Plan"
+                sx={{ ...individualTabStyle, backgroundColor: getBackgroundColor(completionStatus?.fundPlan) }}
+              />
+              <Tab
+                value="passport"
+                label="Passport Details"
+                sx={{ ...individualTabStyle, backgroundColor: getBackgroundColor(completionStatus?.passportDetails) }}
+              />
+              <Tab
+                value="family"
+                label="Family Details"
+                sx={{ ...individualTabStyle, backgroundColor: getBackgroundColor(completionStatus?.familyInformation) }}
+              />
+              <Tab
+                value="visa"
+                label="Visa Process"
+                sx={{ ...individualTabStyle, backgroundColor: getBackgroundColor(completionStatus?.previousVisaApproval) }}
+              />
+              <Tab value="add_docs" label="Additional Documents" sx={{ ...individualTabStyle, backgroundColor: getBackgroundColor(completionStatus?.studentAdditionalDocs) }} />
               <Tab value="docs_overview" label="Documents Overview" sx={{ ...individualTabStyle }} />
               <Tab value="comments" label="Comments" sx={{ ...individualTabStyle }} />
               <Tab value="history" label="History" sx={{ ...individualTabStyle }} />
@@ -207,6 +265,7 @@ const LeadDetailsMaterial = (props: Props) => {
                 <Suspense fallback={null}>
                   <BasicInfo
                     studentId={studentId}
+                    getPercentage={getPercentage}
                     role={user.role}
                     officeTypes={officeTypes}
                     regions={regions}
@@ -218,37 +277,37 @@ const LeadDetailsMaterial = (props: Props) => {
 
               {tabValue === "exam_details" && studentId && (
                 <Suspense fallback={null}>
-                  <AcademicInfo studentId={studentId} />
+                  <AcademicInfo studentId={studentId} getPercentage={getPercentage} />
                 </Suspense>
               )}
 
               {tabValue === "work_exp" && studentId && (
                 <Suspense fallback={null}>
-                  <WorkExpereince studentId={studentId} />
+                  <WorkExpereince studentId={studentId} getPercentage={getPercentage} />
                 </Suspense>
               )}
 
               {tabValue === "study_pref" && studentId && (
                 <Suspense fallback={null}>
-                  <StudyPreference studentId={studentId} />
+                  <StudyPreference studentId={studentId} getPercentage={getPercentage} />
                 </Suspense>
               )}
 
               {tabValue === "education" && studentId && (
                 <Suspense fallback={null}>
-                  <EducationDetails studentId={studentId} />
+                  <EducationDetails studentId={studentId} getPercentage={getPercentage} />
                 </Suspense>
               )}
 
               {tabValue === "fund_plan" && studentId && (
                 <Suspense fallback={null}>
-                  <FundPlan student_id={studentId} />
+                  <FundPlan student_id={studentId} getPercentage={getPercentage}  />
                 </Suspense>
               )}
 
               {tabValue === "comments" && studentId && (
                 <Suspense fallback={null}>
-                  <Comments studentId={studentId} />
+                  <Comments studentId={studentId}  />
                 </Suspense>
               )}
 
@@ -260,25 +319,25 @@ const LeadDetailsMaterial = (props: Props) => {
 
               {tabValue === "passport" && studentId && (
                 <Suspense fallback={null}>
-                  <PassportDetails studentId={studentId} />
+                  <PassportDetails studentId={studentId} getPercentage={getPercentage} />
                 </Suspense>
               )}
 
               {tabValue === "family" && studentId && (
                 <Suspense fallback={null}>
-                  <FamilyDetails studentId={studentId} />
+                  <FamilyDetails studentId={studentId} getPercentage={getPercentage} />
                 </Suspense>
               )}
 
               {tabValue === "visa" && studentId && (
                 <Suspense fallback={null}>
-                  <VisaProcess studentId={studentId} />
+                  <VisaProcess studentId={studentId} getPercentage={getPercentage} />
                 </Suspense>
               )}
 
               {tabValue === "add_docs" && studentId && (
                 <Suspense fallback={null}>
-                  <AdditionalDocuments studentId={studentId} />
+                  <AdditionalDocuments studentId={studentId} getPercentage={getPercentage} />
                 </Suspense>
               )}
 

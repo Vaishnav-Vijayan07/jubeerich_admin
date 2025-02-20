@@ -37,6 +37,7 @@ const StudyPreference = withSwal((props: any) => {
       console.error(err);
     } finally {
       setLoading(false);
+      props.getPercentage()
     }
   };
 

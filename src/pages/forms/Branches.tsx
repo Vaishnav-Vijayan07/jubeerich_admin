@@ -241,8 +241,9 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Actions",
       accessor: "",
       sort: false,
+      maxWidth: 5,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="d-flex gap-1">
           {/* View Icon */}
           <Link to={`/settings/master/branch_detials/${row.original?.id}`} className="action-icon">
             <i className="mdi mdi-eye-outline"></i>

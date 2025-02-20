@@ -143,6 +143,7 @@ const EducationDetails = withSwal((props: any) => {
       showErrorAlert("Failed to fetch education details");
     } finally {
       setInitialLoading(false);
+      props.getPercentage()
     }
   };
 

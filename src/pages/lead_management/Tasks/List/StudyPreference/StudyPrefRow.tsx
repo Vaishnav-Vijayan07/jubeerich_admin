@@ -12,14 +12,25 @@ import { formatString } from "../../../../../utils/formatData";
 import axios from "axios";
 
 const windowTabTypes = {
-  university: 'university',
-  campus: 'campus',
-  courseType: 'courseType',
-  stream: 'stream',
-  course: 'course',
-}
+  university: "university",
+  campus: "campus",
+  courseType: "courseType",
+  stream: "stream",
+  course: "course",
+};
 
-const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownData, studyPreferenceId, isEditable, initialFetch, setInitialFetch,studentId, refetchDropdownData }: any) => {
+const StudyPreferenceRow = ({
+  studyPreference,
+  countryName,
+  countryId,
+  dropdownData,
+  studyPreferenceId,
+  isEditable,
+  initialFetch,
+  setInitialFetch,
+  studentId,
+  refetchDropdownData,
+}: any) => {
   const { loading: deleteLoading, removeFromApi } = useRemoveFromApi();
   const { saveLoading, saveStudyPreferenceData } = useSaveStudyPreferenceData();
   const [universities, setUniversities] = useState<any>([]);
@@ -27,39 +38,41 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
   const [campusesMap, setCampusesMap] = useState<any>(new Map());
   const [courseMap, setCourseMap] = useState<any>(new Map());
 
-  const fetchUniversitiesByCountry = async() => {
+  const fetchUniversitiesByCountry = async () => {
     const res = await axios.get(`/university_by_country/${countryId}`);
     setUniversities(res?.data?.data);
-  }
-  
-  const fetchCampusByUniversity = async(index: any) => {
+  };
+
+  const fetchCampusByUniversity = async (index: any) => {
     const res = await axios.get(`/campuses_by_university/${selectedFormDataMap.get(index)?.universityId}`);
-    if(res){
+    if (res) {
       setCampusesMap((prev: any) => {
         const newMap = new Map(prev);
         newMap.set(index, res?.data?.data);
         return newMap;
       });
     }
-  }
+  };
 
-  const fetchCourseList = async(index: any) => {
-    const res = await axios.get(`/courses_by_type_stream`, { params: { type_id: selectedFormDataMap.get(index)?.courseTypeId, stream_id: selectedFormDataMap.get(index)?.streamId } });
-    if(res){
+  const fetchCourseList = async (index: any) => {
+    const res = await axios.get(`/courses_by_type_stream`, {
+      params: { type_id: selectedFormDataMap.get(index)?.courseTypeId, stream_id: selectedFormDataMap.get(index)?.streamId },
+    });
+    if (res) {
       setCourseMap((prev: any) => {
         const newMap = new Map(prev);
         newMap.set(index, res?.data?.data);
         return newMap;
       });
     }
-  }
+  };
 
   useEffect(() => {
-    fetchUniversitiesByCountry()
-  }, [countryId])
+    fetchUniversitiesByCountry();
+  }, [countryId]);
 
   useEffect(() => {
-    if(initialFetch){
+    if (initialFetch) {
       if (studyPreference?.[0]?.id) {
         studyPreference.forEach((item: any, index: number) => {
           setSelectedFormDataMap((prevMap: any) => {
@@ -71,9 +84,9 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
       }
     }
   }, [studyPreference, initialFetch]);
-  
+
   useEffect(() => {
-    if(initialFetch){
+    if (initialFetch) {
       selectedFormDataMap.forEach((item: any, index: any) => {
         if (item && item.universityId) {
           fetchCampusByUniversity(index);
@@ -81,8 +94,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
         }
       });
     }
-  }, [selectedFormDataMap, initialFetch]);  
-  
+  }, [selectedFormDataMap, initialFetch]);
 
   const formattedUniversities = useMemo(() => {
     if (!universities || universities.length == 0) return [];
@@ -157,11 +169,19 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
           <Form.Group className="mb-3" controlId="universityId">
             <div className="d-flex justify-content-between">
               <div>
-                <Form.Label><span className="text-danger">*</span> University</Form.Label>
+                <Form.Label>
+                  <span className="text-danger">*</span> University
+                </Form.Label>
               </div>
               <div>
-                <i className="mdi mdi-refresh fs-18" onClick={() => fetchUniversitiesByCountry()}></i>
-                <i className="mdi mdi-plus-circle fs-18 ps-2" onClick={() => openNewWindow(windowTabTypes.university)}></i>
+                <i
+                  className="mdi mdi-refresh fs-18 cursor-pointer cursor-pointer"
+                  onClick={() => fetchUniversitiesByCountry()}
+                ></i>
+                <i
+                  className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer cursor-pointer"
+                  onClick={() => openNewWindow(windowTabTypes.university)}
+                ></i>
               </div>
             </div>
             <Select
@@ -187,11 +207,19 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
           <Form.Group className="mb-3" controlId="campusId">
             <div className="d-flex justify-content-between">
               <div>
-                <Form.Label><span className="text-danger">*</span> Campus</Form.Label>
+                <Form.Label>
+                  <span className="text-danger">*</span> Campus
+                </Form.Label>
               </div>
               <div>
-                <i className="mdi mdi-refresh fs-18" onClick={() => fetchCampusByUniversity(index)}></i>
-                <i className="mdi mdi-plus-circle fs-18 ps-2" onClick={() => openNewWindow(windowTabTypes.campus)}></i>
+                {selectedFormDataMap?.get(index)?.universityId && (
+                  <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => fetchCampusByUniversity(index)}></i>
+                )}
+
+                <i
+                  className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
+                  onClick={() => openNewWindow(windowTabTypes.campus)}
+                ></i>
               </div>
             </div>
             <Select
@@ -219,11 +247,18 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
           <Form.Group className="mb-3" controlId="courseTypeId">
             <div className="d-flex justify-content-between">
               <div>
-                <Form.Label><span className="text-danger">*</span> Course Type</Form.Label>
+                <Form.Label>
+                  <span className="text-danger">*</span> Course Type
+                </Form.Label>
               </div>
               <div>
-                <i className="mdi mdi-refresh fs-18" onClick={() => refetchDropdownData()}></i>
-                <i className="mdi mdi-plus-circle fs-18 ps-2" onClick={() => openNewWindow(windowTabTypes.courseType)}></i>
+                {selectedFormDataMap?.get(index)?.campusId && (
+                  <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => refetchDropdownData()}></i>
+                )}
+                <i
+                  className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
+                  onClick={() => openNewWindow(windowTabTypes.courseType)}
+                ></i>
               </div>
             </div>
             <Select
@@ -251,11 +286,18 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
           <Form.Group className="mb-3" controlId="streamId">
             <div className="d-flex justify-content-between">
               <div>
-                <Form.Label><span className="text-danger">*</span> Stream</Form.Label>
+                <Form.Label>
+                  <span className="text-danger">*</span> Stream
+                </Form.Label>
               </div>
               <div>
-                <i className="mdi mdi-refresh fs-18" onClick={() => refetchDropdownData()}></i>
-                <i className="mdi mdi-plus-circle fs-18 ps-2" onClick={() => openNewWindow(windowTabTypes.stream)}></i>
+                {selectedFormDataMap?.get(index)?.courseTypeId && (
+                  <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => refetchDropdownData()}></i>
+                )}
+                <i
+                  className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
+                  onClick={() => openNewWindow(windowTabTypes.stream)}
+                ></i>
               </div>
             </div>
             <Select
@@ -283,11 +325,18 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
           <Form.Group className="mb-3" controlId="courseId">
             <div className="d-flex justify-content-between">
               <div>
-                <Form.Label><span className="text-danger">*</span> Course</Form.Label>
+                <Form.Label>
+                  <span className="text-danger">*</span> Course
+                </Form.Label>
               </div>
               <div>
-                <i className="mdi mdi-refresh fs-18" onClick={() => fetchCourseList(index)}></i>
-                <i className="mdi mdi-plus-circle fs-18 ps-2" onClick={() => openNewWindow(windowTabTypes.course)}></i>
+                {selectedFormDataMap?.get(index)?.streamId && (
+                  <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => fetchCourseList(index)}></i>
+                )}
+                <i
+                  className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
+                  onClick={() => openNewWindow(windowTabTypes.course)}
+                ></i>
               </div>
             </div>
             <Select
@@ -313,7 +362,9 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="intakeYear">
-            <Form.Label><span className="text-danger">*</span> Intake Year</Form.Label>
+            <Form.Label>
+              <span className="text-danger">*</span> Intake Year
+            </Form.Label>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
@@ -336,7 +387,9 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="intakeMonth">
-            <Form.Label><span className="text-danger">*</span> Intake Month</Form.Label>
+            <Form.Label>
+              <span className="text-danger">*</span> Intake Month
+            </Form.Label>
             <Select
               className="react-select react-select-container"
               classNamePrefix="react-select"
@@ -359,7 +412,9 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
 
         <Col md={6} xl={4} xxl={3}>
           <Form.Group className="mb-3" controlId="estimatedBudget">
-            <Form.Label><span className="text-danger">*</span> Estimated Budget</Form.Label>
+            <Form.Label>
+              <span className="text-danger">*</span> Estimated Budget
+            </Form.Label>
             <FormInput
               type="number"
               name="estimatedBudget"
@@ -412,7 +467,7 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
       const updatedPrefs = studyPreferenceData.filter((_: any, i: any) => i !== index);
       setStudyPreferenceData(updatedPrefs);
     } else {
-      removeFromApi(itemId, "studyPreference",studentId);
+      removeFromApi(itemId, "studyPreference", studentId);
     }
   };
 
@@ -420,48 +475,48 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
     setInitialFetch(false);
     const updatedPrefs = [...studyPreferenceData];
     updatedPrefs[index][field] = value;
-    
+
     setSelectedFormDataMap((prevMap: any) => {
       prevMap.set(index, updatedPrefs[index]);
       return new Map(prevMap);
     });
-    
+
     setStudyPreferenceData(updatedPrefs);
 
     switch (field) {
-      case 'universityId':
-        updatedPrefs[index]['campusId'] = '';
-        updatedPrefs[index]['courseTypeId'] = '';
-        updatedPrefs[index]['streamId'] = '';
-        updatedPrefs[index]['courseId'] = '';
-        
+      case "universityId":
+        updatedPrefs[index]["campusId"] = "";
+        updatedPrefs[index]["courseTypeId"] = "";
+        updatedPrefs[index]["streamId"] = "";
+        updatedPrefs[index]["courseId"] = "";
+
         setSelectedFormDataMap((prevMap: any) => {
           prevMap.set(index, updatedPrefs[index]);
           return new Map(prevMap);
         });
         fetchCampusByUniversity(index);
         break;
-      case 'campusId':
-        updatedPrefs[index]['courseTypeId'] = '';
-        updatedPrefs[index]['streamId'] = '';
-        updatedPrefs[index]['courseId'] = '';
-        
-        setSelectedFormDataMap((prevMap: any) => {
-          prevMap.set(index, updatedPrefs[index]);
-          return new Map(prevMap);
-        });
-        break;
-      case 'courseTypeId':
-        updatedPrefs[index]['streamId'] = '';
-        updatedPrefs[index]['courseId'] = '';
+      case "campusId":
+        updatedPrefs[index]["courseTypeId"] = "";
+        updatedPrefs[index]["streamId"] = "";
+        updatedPrefs[index]["courseId"] = "";
 
         setSelectedFormDataMap((prevMap: any) => {
           prevMap.set(index, updatedPrefs[index]);
           return new Map(prevMap);
         });
-        break
-      case 'streamId':
-        updatedPrefs[index]['courseId'] = '';
+        break;
+      case "courseTypeId":
+        updatedPrefs[index]["streamId"] = "";
+        updatedPrefs[index]["courseId"] = "";
+
+        setSelectedFormDataMap((prevMap: any) => {
+          prevMap.set(index, updatedPrefs[index]);
+          return new Map(prevMap);
+        });
+        break;
+      case "streamId":
+        updatedPrefs[index]["courseId"] = "";
 
         setSelectedFormDataMap((prevMap: any) => {
           prevMap.set(index, updatedPrefs[index]);
@@ -476,14 +531,14 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
 
   const handleSave = async () => {
     const validationRules = {
-      universityId: { required: true,message : "Please select university" },
-      campusId: { required: true,message : "Please select campus" },
-      courseTypeId: { required: true ,message : "Please select course type" },
-      streamId: { required: true ,message : "Please select stream" },
-      courseId: { required: true ,message : "Please select course" },
-      intakeYear: { required: true ,message : "Please select intake year" },
-      intakeMonth: { required: true ,message : "Please select intake month" },
-      estimatedBudget: { required: true,message : "Please enter estimated budget" },
+      universityId: { required: true, message: "Please select university" },
+      campusId: { required: true, message: "Please select campus" },
+      courseTypeId: { required: true, message: "Please select course type" },
+      streamId: { required: true, message: "Please select stream" },
+      courseId: { required: true, message: "Please select course" },
+      intakeYear: { required: true, message: "Please select intake year" },
+      intakeMonth: { required: true, message: "Please select intake month" },
+      estimatedBudget: { required: true, message: "Please enter estimated budget" },
     };
 
     const { isValid, errors } = validateFields(studyPreferenceData, validationRules);
@@ -513,11 +568,11 @@ const StudyPreferenceRow = ({ studyPreference, countryName, countryId, dropdownD
             return renderStudyprefRows(item, index, isEditable);
           })}
           {/* {isEditable && ( */}
-            <Row className="pe-0">
-              <Row className="mb-2 pe-0">
-                <ActionButton label="Add More" iconClass="mdi mdi-plus" onClick={addMoreStudyPreference} />
-              </Row>
+          <Row className="pe-0">
+            <Row className="mb-2 pe-0">
+              <ActionButton label="Add More" iconClass="mdi mdi-plus" onClick={addMoreStudyPreference} />
             </Row>
+          </Row>
           {/* )} */}
         </Row>
 

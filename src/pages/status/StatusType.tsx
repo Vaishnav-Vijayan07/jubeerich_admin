@@ -17,6 +17,7 @@ import { regrexValidation } from "../../utils/regrexValidation";
 import { Slider } from "@mui/material";
 import { addStatusType, deleteStatusType, getStatusType, updateStatusType } from "../../redux/status/statusType/actions";
 import { useHistoryModal } from "../../hooks/useHistoryModal";
+import { max } from "moment";
 const HistoryTable = React.lazy(() => import("../../components/HistoryTable"));
 
 interface TableRecords {
@@ -224,8 +225,9 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Actions",
       accessor: "",
       sort: false,
+      maxWidth: 10,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="d-flex gap-1">
           <Link
             to="#"
             className="action-icon"

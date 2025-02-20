@@ -164,7 +164,7 @@ const ExamData: React.FC<ExamDataProps> = ({
             <div className="d-flex align-items-center">
               <i className="mdi mdi-eye text-primary me-2"></i>
               <a
-                href={`${baseUrl}uploads/examDocuments/${item?.score_card}`}
+                href={`${item?.score_card}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-decoration-none"

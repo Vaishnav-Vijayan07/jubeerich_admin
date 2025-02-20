@@ -57,7 +57,10 @@ const WorkExpereince = withSwal((props: any) => {
     setInitialLoading(true);
     try {
       // Fetch both API calls concurrently
-      const [workResponse, gapResponse] = await Promise.all([axios.get(`studentWorkInfo/${studentId}`), axios.get(`gapReason/${studentId}/work`)]);
+      const [workResponse, gapResponse] = await Promise.all([
+        axios.get(`studentWorkInfo/${studentId}`),
+        axios.get(`gapReason/${studentId}/work`),
+      ]);
 
       const workData = workResponse.data?.workDataFormatted;
       const gapData = gapResponse.data?.data;
@@ -101,6 +104,8 @@ const WorkExpereince = withSwal((props: any) => {
     } catch (error) {
       console.log(error);
       showErrorAlert("Something went wrong");
+    } finally {
+      props.getPercentage();
     }
   };
 
@@ -144,7 +149,9 @@ const WorkExpereince = withSwal((props: any) => {
       return; // Stop updating if validation fails
     }
 
-    setWorkExperienceFromApi((prevState: any) => prevState.map((item: any, i: number) => (i === index ? { ...item, [name]: value } : item)));
+    setWorkExperienceFromApi((prevState: any) =>
+      prevState.map((item: any, i: number) => (i === index ? { ...item, [name]: value } : item))
+    );
   };
 
   const addMoreWorkExperience = () => {
@@ -227,9 +234,23 @@ const WorkExpereince = withSwal((props: any) => {
                 </Col>
 
                 <Col className="d-flex gap-2">
-                  <Form.Check type="radio" id="hasGapYes" label="Yes" checked={hasGap} onChange={() => setHasGap(true)} name="hasGap" />
+                  <Form.Check
+                    type="radio"
+                    id="hasGapYes"
+                    label="Yes"
+                    checked={hasGap}
+                    onChange={() => setHasGap(true)}
+                    name="hasGap"
+                  />
 
-                  <Form.Check type="radio" id="hasGapNo" label="No" checked={!hasGap} onChange={() => setHasGap(false)} name="hasGap" />
+                  <Form.Check
+                    type="radio"
+                    id="hasGapNo"
+                    label="No"
+                    checked={!hasGap}
+                    onChange={() => setHasGap(false)}
+                    name="hasGap"
+                  />
                 </Col>
               </Row>
               <GapRows gapData={gap} studentId={studentId} type="work" hasGap={hasGap} hasWorkExp={hasWorkExp} />

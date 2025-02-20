@@ -925,12 +925,12 @@ const BasicInputElements = withSwal((props: any) => {
               </div>
               {userRole == cre_tl_id || userRole == regional_manager_id || userRole == counsellor_tl_id ? (
                 <>
-                  <CustomSearchBox onSearch={handleSearch} />
+                  <CustomSearchBox onSearch={handleSearch} />                  
                   <Table
                     columns={columns}
                     data={records ? records : []}
                     pageSize={totalCount}
-                    // sizePerPageList={sizePerPageList}
+                    sizePerPageList={sizePerPageList}
                     isSortable={true}
                     pagination={true}
                     isCustomPaginationNeeded={true}

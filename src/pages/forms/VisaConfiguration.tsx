@@ -164,8 +164,9 @@ const BasicInputElements = withSwal((props: any) => {
       Header: "Actions",
       accessor: "actions",
       sort: false,
+      maxWidth: 10,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="d-flex">
           <FeatherIcons
             stroke="#28a745"
             icon="edit"

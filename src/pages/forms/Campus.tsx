@@ -274,7 +274,7 @@ const BasicInputElements = withSwal((props: any) => {
       accessor: "",
       sort: false,
       Cell: ({ row }: any) => (
-        <div className="d-flex justify-content-center align-items-center gap-2">
+        <div className="d-flex gap-1">
           {/* Edit Icon */}
           <Link
             to="#"

@@ -15,6 +15,7 @@ import FieldHistoryTable from "../../../../components/FieldHistory";
 
 interface Props {
   studentId: string | number;
+  getPercentage?: () => void;
 }
 
 const initialPassportState = {
@@ -33,7 +34,7 @@ const initialPassportState = {
   visa_immigration_history: true,
 };
 
-const PassportDetails = ({ studentId }: Props) => {
+const PassportDetails = ({ studentId, getPercentage }: Props) => {
   const { historyModal, toggleHistoryModal } = useHistoryModal();
   const [initialLoading, setInitialLoading] = React.useState(false);
   const [passportDetails, setPassportDetails] = React.useState<any>(initialPassportState);
@@ -48,6 +49,7 @@ const PassportDetails = ({ studentId }: Props) => {
       console.error("Error fetching passport details:", error);
     } finally {
       setInitialLoading(false);
+      getPercentage && getPercentage();
     }
   };
 
