@@ -48,6 +48,7 @@ const ApplicationsManagerTable = React.memo(() => {
   const [selectedOfferType, setSelectedOfferType] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [selectedApplication, setSelectedApplication] = useState<any>("");
+  const [applicationCountryId, setApplicationCountryId] = useState<any>(null);
 
   const { applications, error, loading } = useSelector((state: RootState) => ({
     applications: state.ApplicationManagerData?.applications.data,
@@ -64,6 +65,7 @@ const ApplicationsManagerTable = React.memo(() => {
       const formData = new FormData();
       formData.append("offer_letter", selectedFile[0]);
       formData.append("offer_letter_type", selectedOfferType?.value);
+      formData.append("application_country_id", applicationCountryId);
 
       const res = await axios.put(`/provide_offer/${selectedApplication}`, formData, {
         headers: {
@@ -241,6 +243,7 @@ const ApplicationsManagerTable = React.memo(() => {
                     setShowLetterModal(true),
                     setSelectedFile(null),
                     setSelectedOfferType(null),
+                    setApplicationCountryId(row?.original?.studyPreferenceDetails?.studyPreference?.countryId),
                   ]}
                 >
                   <i className="fs-3 mdi mdi-cloud-upload-outline"></i>
