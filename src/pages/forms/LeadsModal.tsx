@@ -54,7 +54,8 @@ const LeadsModal = withSwal((props: any) => {
     setModal,
     isAssignedLeads = false,
     initialLoading,
-    clearError
+    clearError,
+    refetchChannel
   } = props;
   const api = new APICore();
   const loggedInUser = api.getLoggedInUser();
@@ -83,6 +84,10 @@ const LeadsModal = withSwal((props: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [isOfficeDisable, setIsOfficeDisable] = useState<any>(false);
+
+  const windowTabTypes = {
+    channel: "channel",
+  };
   
   const { existLeadId } = useSelector(
     (state: RootState) => ({
@@ -640,6 +645,21 @@ const LeadsModal = withSwal((props: any) => {
     }
   };
 
+  const openNewWindow = (type: any) => {
+    switch (type) {
+      case windowTabTypes.channel:
+        window.open(`/settings/master/channel`, "_blank");
+        break;
+      default:
+        break;
+    }
+  };
+
+  const refetchChannelData = () => {
+    setSelectedSource(null);
+    refetchChannel()
+  }
+
   useEffect(() => {
     if (!loading && !error) {
       setModal(false);
@@ -726,9 +746,23 @@ const LeadsModal = withSwal((props: any) => {
 
               <Col md={4} lg={4}>
                 <Form.Group className="mb-3" controlId="channel_name">
-                  <Form.Label>
-                    <span className="text-danger fs-4">* </span>Channel
-                  </Form.Label>
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <Form.Label>
+                        <span className="text-danger fs-4">* </span>Channel
+                      </Form.Label>
+                    </div>
+                    <div>
+                      <i
+                        className="mdi mdi-refresh fs-18 cursor-pointer cursor-pointer"
+                        onClick={refetchChannelData}
+                      ></i>
+                      <i
+                        className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer cursor-pointer"
+                        onClick={() => openNewWindow(windowTabTypes.channel)}
+                      ></i>
+                    </div>
+                  </div>
                   <Select
                     styles={customStyles}
                     className="react-select react-select-container"

@@ -74,6 +74,7 @@ const BasicInputElements = withSwal((props: any) => {
     currentLimit,
     handleLimitChange,
     handleSearch,
+    refetchChannel
   } = props;
 
   const isDataPresent = state && state.length > 0;
@@ -773,6 +774,7 @@ const BasicInputElements = withSwal((props: any) => {
           toggle={toggle}
           handleUpdateData={handleUpdateData}
           initialLoading={initialLoading}
+          refetchChannel={refetchChannel}
         />
 
         {user?.role == it_team_id && (

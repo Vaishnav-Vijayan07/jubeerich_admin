@@ -35,7 +35,7 @@ const Leads = () => {
   }
   const dispatch = useDispatch<AppDispatch>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loading: dropDownLoading, dropdownData } = useDropdownData("");
+  const { loading: dropDownLoading, dropdownData, refetch } = useDropdownData("");
   const { currentPage, setCurrentPage, currentLimit, setCurrentLimit } = usePagination();
 
   const [sortBy, setSortBy] = useState<string>(searchParams.get("sort_by") || "created_at");
@@ -447,6 +447,7 @@ const Leads = () => {
             selectedCountry={selectedCountry}
             selectedSource={selectedSource}
             selectedOffice={selectedOffice}
+            refetchChannel={() => { console.log('FUNCTION CALLED'); refetch() }}
           />
         </Col>
       </Row>
