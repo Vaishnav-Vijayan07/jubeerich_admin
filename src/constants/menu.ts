@@ -130,34 +130,34 @@ const MENU_ITEMS: MenuItemTypes[] = [
     roles: ["Allocate Applications"],
   },
 
-  // { key: "my_applications", label: "My Applications", isTitle: true, roles: ["Manage Applications", "Allocate Applications"] },
+  { key: "my_applications", label: "My Applications", isTitle: true, roles: ["Manage Applications", "Allocate Applications"] },
 
-  // {
-  //   key: "pending",
-  //   label: "Pending",
-  //   isTitle: false,
-  //   icon: "clock", // Icon for applications awaiting review
-  //   url: "/kyc_details/applications/pending",
-  //   roles: ["Manage Applications", "Allocate Applications"],
-  // },
+  {
+    key: "pending_application",
+    label: "Pending",
+    isTitle: false,
+    icon: "clock", // Icon for applications awaiting review
+    url: "/kyc_details/applications/pending",
+    roles: ["Manage Applications", "Allocate Applications"],
+  },
 
-  // {
-  //   key: "submitted",
-  //   label: "Submitted",
-  //   isTitle: false,
-  //   icon: "send", // Icon representing submission, as an action taken
-  //   url: "/kyc_details/applications/submitted",
-  //   roles: ["Manage Applications", "Allocate Applications"],
-  // },
+  {
+    key: "submitted",
+    label: "Submitted",
+    isTitle: false,
+    icon: "send", // Icon representing submission, as an action taken
+    url: "/kyc_details/applications/submitted",
+    roles: ["Manage Applications", "Allocate Applications"],
+  },
 
-  // {
-  //   key: "offer_accepted",
-  //   label: "Offer Accepted",
-  //   isTitle: false,
-  //   icon: "thumbs-up", // Icon indicating offer acceptance or a positive status
-  //   url: "/kyc_details/applications/offer_accepted",
-  //   roles: ["Manage Applications", "Allocate Applications"],
-  // },
+  {
+    key: "offer_accepted",
+    label: "Offer Accepted",
+    isTitle: false,
+    icon: "thumbs-up", // Icon indicating offer acceptance or a positive status
+    url: "/kyc_details/applications/offer_accepted",
+    roles: ["Manage Applications", "Allocate Applications"],
+  },
 
   { key: "settings", label: "Settings", isTitle: true, roles: ["Monitor"] },
 

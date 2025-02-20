@@ -137,19 +137,19 @@ const OfferSubmitted = () => {
       sort: false,
       minWidth: 150,
     },
-    {
-      Header: "Assigned Counselor",
-      accessor: "",
-      sort: false,
-      Cell: ({ row }: any) => {
-        const assignedCounselor = row?.original?.studyPreferenceDetails?.studyPreference?.userPrimaryInfo?.counselors?.find(
-          (counselor: any) => counselor?.country_id === row?.original?.studyPreferenceDetails?.studyPreference?.countryId
-        );
+    // {
+    //   Header: "Assigned Counselor",
+    //   accessor: "",
+    //   sort: false,
+    //   Cell: ({ row }: any) => {
+    //     const assignedCounselor = row?.original?.studyPreferenceDetails?.studyPreference?.userPrimaryInfo?.counselors?.find(
+    //       (counselor: any) => counselor?.country_id === row?.original?.studyPreferenceDetails?.studyPreference?.countryId
+    //     );
 
-        return <span>{assignedCounselor ? assignedCounselor.name : "No counselor assigned"}</span>;
-      },
-      minWidth: 150,
-    },
+    //     return <span>{assignedCounselor ? assignedCounselor.name : "No counselor assigned"}</span>;
+    //   },
+    //   minWidth: 150,
+    // },
     {
       Header: "KYC Status",
       accessor: "kyc_status", // Corrected accessor for status
