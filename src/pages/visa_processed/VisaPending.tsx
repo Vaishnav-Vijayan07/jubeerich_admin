@@ -11,6 +11,8 @@ import { FormInput } from "../../components";
 import Table from "../../components/Table";
 import useDropdownData from "../../hooks/useDropdownDatas";
 import { withSwal } from "react-sweetalert2";
+import UserSelectionModal from "../forms/UserSelectionModal";
+import VisaAssignTable from "./VisaAssignTable";
 
 const sizePerPageList = [
     {
@@ -34,6 +36,18 @@ const VisaPendings = withSwal((props: any) => {
     const [selected, setSelected] = useState([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { loading: dropDownLoading, dropdownData } = useDropdownData("visa_members");
+    const [openUserModal, setOpenUserModal] = useState<boolean>(false);
+    const [openAssignVisaModal, setOpenAssignVisaModal] = useState<boolean>(false);
+    const [validatedData, setValidatedData] = useState<any>(null);
+    const [visaMembers, setVisaMembers] = useState<boolean>(false);
+    
+    let roleId: any;
+    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
+    
+    if (userInfo) {
+      let { role } = JSON.parse(userInfo);
+      roleId = role;
+    }
 
     const columns = [
         {
@@ -208,12 +222,33 @@ const VisaPendings = withSwal((props: any) => {
         }
     }
 
-    let roleId: any;
-    let userInfo = sessionStorage.getItem(AUTH_SESSION_KEY);
-    
-    if (userInfo) {
-      let { role } = JSON.parse(userInfo);
-      roleId = role;
+    const handleValidateAutoAssignVisa = async (selectedUsers: any) => {
+        try {
+            let payload = {
+                visa_ids: selected,
+                visa_members_list: selectedUsers
+            }
+
+            const { data } = await axios.post("/auto_assign_visa_validation", payload);
+            
+            if(data?.status){
+                showSuccessAlert(data?.message);
+                setVisaMembers(data?.visaMembers);
+                setValidatedData(data?.assignedData);
+                toggleAssignVisaModal()
+            }
+
+        } catch (error) {
+            showErrorAlert(error);
+        }
+    }
+
+    const toggleAssignVisaModal = () => {
+        setOpenAssignVisaModal(!openAssignVisaModal)
+    }
+
+    const refetchVisaApplications = () => {
+        fetchPendingVisa();
     }
 
     useEffect(() => {
@@ -248,7 +283,7 @@ const VisaPendings = withSwal((props: any) => {
                                 disabled={selected?.length > 0 ? false : true}
                                 variant="light"
                                 className="table-action-btn btn-sm btn-blue"
-                                onClick={() => handleAutoAssignVisaMembers(selected)}
+                                onClick={() => setOpenUserModal(true)}
                             >
                                 <i className="mdi mdi-account-plus"></i> {"Auto Assign Visa Member"}
                             </Button>
@@ -270,6 +305,14 @@ const VisaPendings = withSwal((props: any) => {
                     />
                 </Card.Body>
             </Card>
+
+            {
+                openAssignVisaModal && (
+                    <VisaAssignTable isOpenModal={openAssignVisaModal} toggleModal={toggleAssignVisaModal} responseData={validatedData} options={visaMembers || []} refetchLead={refetchVisaApplications} heading={"Auto Assign Management"} />
+                )
+            }
+
+            <UserSelectionModal open={openUserModal} onClose={() => setOpenUserModal(false)} selectedUsersList={handleValidateAutoAssignVisa} heading="Select Visa Members to auto assign" usersList={dropdownData.visa_members} />
         </>
     );
 });
