@@ -31,6 +31,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Link, useNavigate } from "react-router-dom";
 import { regrexValidation } from "../../utils/regrexValidation";
 import { APICore } from "../../helpers/api/apiCore";
+import { Tooltip } from "@mui/material";
 
 const LeadsModal = withSwal((props: any) => {
   const {
@@ -753,14 +754,18 @@ const LeadsModal = withSwal((props: any) => {
                       </Form.Label>
                     </div>
                     <div>
+                    <Tooltip title="Refresh" arrow>
                       <i
                         className="mdi mdi-refresh fs-18 cursor-pointer cursor-pointer"
                         onClick={refetchChannelData}
                       ></i>
+                    </Tooltip>
+                    <Tooltip title="Add" arrow>
                       <i
                         className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer cursor-pointer"
                         onClick={() => openNewWindow(windowTabTypes.channel)}
                       ></i>
+                    </Tooltip>
                     </div>
                   </div>
                   <Select

@@ -10,6 +10,7 @@ import validateFields from "../../../../../helpers/validateHelper";
 import StatusBadge from "./StatusBadge";
 import { formatString } from "../../../../../utils/formatData";
 import axios from "axios";
+import { Tooltip } from "@mui/material";
 
 const windowTabTypes = {
   university: "university",
@@ -110,19 +111,19 @@ const StudyPreferenceRow = ({
     studyPreference.length > 0
       ? studyPreference
       : [
-          {
-            id: null,
-            universityId: "",
-            campusId: "",
-            courseTypeId: "",
-            streamId: "",
-            courseId: "",
-            intakeYear: "",
-            intakeMonth: "",
-            estimatedBudget: "",
-            errors: {},
-          },
-        ]
+        {
+          id: null,
+          universityId: "",
+          campusId: "",
+          courseTypeId: "",
+          streamId: "",
+          courseId: "",
+          intakeYear: "",
+          intakeMonth: "",
+          estimatedBudget: "",
+          errors: {},
+        },
+      ]
   );
 
   const openNewWindow = (type: any) => {
@@ -174,14 +175,18 @@ const StudyPreferenceRow = ({
                 </Form.Label>
               </div>
               <div>
-                <i
-                  className="mdi mdi-refresh fs-18 cursor-pointer cursor-pointer"
-                  onClick={() => fetchUniversitiesByCountry()}
-                ></i>
-                <i
-                  className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer cursor-pointer"
-                  onClick={() => openNewWindow(windowTabTypes.university)}
-                ></i>
+                <Tooltip title="Refresh" arrow>
+                  <i
+                    className="mdi mdi-refresh fs-18 cursor-pointer cursor-pointer"
+                    onClick={() => fetchUniversitiesByCountry()}
+                  ></i>
+                </Tooltip>
+                <Tooltip title="Add" arrow>
+                  <i
+                    className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer cursor-pointer"
+                    onClick={() => openNewWindow(windowTabTypes.university)}
+                  ></i>
+                </Tooltip>
               </div>
             </div>
             <Select
@@ -191,9 +196,9 @@ const StudyPreferenceRow = ({
               value={
                 item?.universityId
                   ? {
-                      label: formattedUniversities.find((u: any) => u.value == item.universityId)?.label,
-                      value: item.universityId,
-                    }
+                    label: formattedUniversities.find((u: any) => u.value == item.universityId)?.label,
+                    value: item.universityId,
+                  }
                   : null
               }
               placeholder="Select University"
@@ -213,13 +218,17 @@ const StudyPreferenceRow = ({
               </div>
               <div>
                 {selectedFormDataMap?.get(index)?.universityId && (
-                  <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => fetchCampusByUniversity(index)}></i>
+                  <Tooltip title="Refresh" arrow>
+                    <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => fetchCampusByUniversity(index)}></i>
+                  </Tooltip>
                 )}
 
-                <i
-                  className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
-                  onClick={() => openNewWindow(windowTabTypes.campus)}
-                ></i>
+                <Tooltip title="Add" arrow>
+                  <i
+                    className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
+                    onClick={() => openNewWindow(windowTabTypes.campus)}
+                  ></i>
+                </Tooltip>
               </div>
             </div>
             <Select
@@ -230,9 +239,9 @@ const StudyPreferenceRow = ({
               value={
                 item?.campusId
                   ? {
-                      label: campusesMap?.get(index)?.find((c: any) => c.value == item.campusId)?.label,
-                      value: item.campusId,
-                    }
+                    label: campusesMap?.get(index)?.find((c: any) => c.value == item.campusId)?.label,
+                    value: item.campusId,
+                  }
                   : null
               }
               placeholder="Select Campus"
@@ -253,12 +262,16 @@ const StudyPreferenceRow = ({
               </div>
               <div>
                 {selectedFormDataMap?.get(index)?.campusId && (
-                  <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => refetchDropdownData()}></i>
+                  <Tooltip title="Refresh" arrow>
+                    <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => refetchDropdownData()}></i>
+                  </Tooltip>
                 )}
-                <i
-                  className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
-                  onClick={() => openNewWindow(windowTabTypes.courseType)}
-                ></i>
+                <Tooltip title="Refresh" arrow>
+                  <i
+                    className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
+                    onClick={() => openNewWindow(windowTabTypes.courseType)}
+                  ></i>
+                </Tooltip>
               </div>
             </div>
             <Select
@@ -269,9 +282,9 @@ const StudyPreferenceRow = ({
               value={
                 item?.courseTypeId
                   ? {
-                      label: dropdownData.courseTypes.find((c: any) => c.value === item.courseTypeId)?.label,
-                      value: item.courseTypeId,
-                    }
+                    label: dropdownData.courseTypes.find((c: any) => c.value === item.courseTypeId)?.label,
+                    value: item.courseTypeId,
+                  }
                   : null
               }
               placeholder="Select Course Type"
@@ -292,12 +305,16 @@ const StudyPreferenceRow = ({
               </div>
               <div>
                 {selectedFormDataMap?.get(index)?.courseTypeId && (
-                  <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => refetchDropdownData()}></i>
+                  <Tooltip title="Refresh" arrow>
+                    <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => refetchDropdownData()}></i>
+                  </Tooltip>
                 )}
-                <i
-                  className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
-                  onClick={() => openNewWindow(windowTabTypes.stream)}
-                ></i>
+                <Tooltip title="Add" arrow>
+                  <i
+                    className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
+                    onClick={() => openNewWindow(windowTabTypes.stream)}
+                  ></i>
+                </Tooltip>
               </div>
             </div>
             <Select
@@ -308,9 +325,9 @@ const StudyPreferenceRow = ({
               value={
                 item?.streamId
                   ? {
-                      label: dropdownData.streams.find((s: any) => s.value === item.streamId)?.label,
-                      value: item.streamId,
-                    }
+                    label: dropdownData.streams.find((s: any) => s.value === item.streamId)?.label,
+                    value: item.streamId,
+                  }
                   : null
               }
               placeholder="Select Stream"
@@ -331,12 +348,16 @@ const StudyPreferenceRow = ({
               </div>
               <div>
                 {selectedFormDataMap?.get(index)?.streamId && (
-                  <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => fetchCourseList(index)}></i>
+                  <Tooltip title="Refresh" arrow>
+                    <i className="mdi mdi-refresh fs-18 cursor-pointer" onClick={() => fetchCourseList(index)}></i>
+                  </Tooltip>
                 )}
-                <i
-                  className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
-                  onClick={() => openNewWindow(windowTabTypes.course)}
-                ></i>
+                <Tooltip title="Add" arrow>
+                  <i
+                    className="mdi mdi-plus-circle fs-18 ms-2 cursor-pointer"
+                    onClick={() => openNewWindow(windowTabTypes.course)}
+                  ></i>
+                </Tooltip>
               </div>
             </div>
             <Select
@@ -347,9 +368,9 @@ const StudyPreferenceRow = ({
               value={
                 item?.courseId
                   ? {
-                      label: courseMap?.get(index)?.find((c: any) => c.value == item.courseId)?.label,
-                      value: item.courseId,
-                    }
+                    label: courseMap?.get(index)?.find((c: any) => c.value == item.courseId)?.label,
+                    value: item.courseId,
+                  }
                   : null
               }
               placeholder="Select Course"
@@ -372,9 +393,9 @@ const StudyPreferenceRow = ({
               value={
                 item.intakeYear
                   ? {
-                      label: intakeYearList.find((m: any) => m.value === item.intakeYear)?.label,
-                      value: item.intakeYear,
-                    }
+                    label: intakeYearList.find((m: any) => m.value === item.intakeYear)?.label,
+                    value: item.intakeYear,
+                  }
                   : null
               }
               placeholder="Select Intake Year"
@@ -397,9 +418,9 @@ const StudyPreferenceRow = ({
               value={
                 item?.intakeMonth
                   ? {
-                      label: intakeMonthOptions.find((m: any) => m.value === item.intakeMonth)?.label,
-                      value: item.intakeMonth,
-                    }
+                    label: intakeMonthOptions.find((m: any) => m.value === item.intakeMonth)?.label,
+                    value: item.intakeMonth,
+                  }
                   : null
               }
               placeholder="Select Intake Month"
@@ -582,7 +603,7 @@ const StudyPreferenceRow = ({
             className=""
             type="submit"
             onClick={handleSave}
-            // disabled={saveLoading || !isEditable} // Disable button while loading
+          // disabled={saveLoading || !isEditable} // Disable button while loading
           >
             Save Details
           </Button>
