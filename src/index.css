@@ -758,6 +758,7 @@ select::-ms-expand {
 .react-datepicker__week {
   display: flex;
   justify-content: space-around;
+  height: 25px;
 }
 
 .react-datepicker__day-names {
@@ -1106,4 +1107,8 @@ textarea::placeholder {
   color: rgb(138, 135, 135) !important; /* Change placeholder text color */
   opacity: 0.8; /* Adjust transparency */
   font-weight: 400 !important;
+}
+
+.custom-date-picker {
+  height: 10px !important;
 }

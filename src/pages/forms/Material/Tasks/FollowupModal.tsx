@@ -10,6 +10,8 @@ import { showErrorAlert, showSuccessAlert } from "../../../../constants";
 import { refreshData } from "../../../../redux/countryReducer";
 import DatePicker from "react-datepicker";
 import { FormInput } from "../../../../components";
+import { Autocomplete, TextField } from "@mui/material";
+import { inputStyle } from "react-select/src/components/Input";
 
 const initialFormState = {
   id: "",
@@ -28,8 +30,9 @@ const FollowupModal = withSwal((props: any) => {
     callGetRemark,
     setViewOnly,
     viewOnly = false,
-    setIsCancelModal,
     submitFollowupDate,
+    formattedFlagData,
+    basicData
   } = props;
   const [remarkId, setRemarkId] = useState<any>("");
 
@@ -50,6 +53,21 @@ const FollowupModal = withSwal((props: any) => {
         behavior: "smooth",
       });
     }
+  };
+
+  const inputStyle = {
+    "& .MuiInputBase-root": {
+      padding: "4px 12px",
+    },
+    "& .MuiInputBase-input": {
+      height: "1.1rem",
+      paddingTop: "6px",
+      paddingBottom: "6px",
+      lineHeight: "1.2rem",
+    },
+    "& .MuiInputLabel-root": {
+      lineHeight: "normal",
+    },
   };
 
   const handleSubmit = async () => {
@@ -122,11 +140,36 @@ const FollowupModal = withSwal((props: any) => {
     }));
   };
 
-  // const handleCancelUpdate = () => {
-  //     setRemarkForm(initialFormState);
-  //     setIsUpdate(false);
-  //     // setIsCancelModal();
-  // };
+  const updateFlagStatus = async (flag_id: string) => {
+    try {
+      const res = await axios.put(`/update_flag_status/${studentId}`, {
+        flag_id: flag_id,
+      });
+      if (res) {
+        showSuccessAlert("Flag Changed Successfully");
+        // getRemarks();
+        dispatch(refreshData());
+        // getTaskList();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeFlag = async (flagId: any) => {
+    try {
+      const res = await axios.put(`/remove_flag_status/${studentId}`, { flag_id: flagId });
+      if (res) {
+        showSuccessAlert("Flag Updated Successfully");
+        // getRemarks();
+        dispatch(refreshData());
+        // getTaskList();
+      }
+    } catch (error) {
+      console.log(error);
+      showErrorAlert(error);
+    }
+  };
 
   const handleDateChange = (date: any) => {
     // setSelectedDate(date);
@@ -146,8 +189,43 @@ const FollowupModal = withSwal((props: any) => {
             onChange={handleDateChange}
             inline
             placeholderText="Choose a date"
-            className="w-100"
+            className="w-100 custom-date-picker"
           />
+
+          <div className="mt-2 mb-2">
+            <h4 className="m-0 label_heading">Flag</h4>
+            <div className="d-flex justify-content-between align-items-center">
+              <Autocomplete
+                disablePortal
+                disableClearable
+                options={formattedFlagData || []}
+                value={basicData?.user_primary_flags?.flag_name ? basicData?.user_primary_flags?.flag_name : "Add Flag"}
+                sx={{ width: "100%", paddingTop: "1.2rem" }}
+                renderInput={(params) => <TextField {...params} sx={{ ...inputStyle }} placeholder="Add Flag" />}
+                onChange={(event, newValue) => {
+                  if (newValue) {
+                    updateFlagStatus(newValue.value);
+                  }
+                }}
+              />
+            </div>
+
+            <div className="mt-1" style={{ display: "flex", flexWrap: "wrap", gap: "1px" }}>
+              {basicData?.flags?.length > 0 &&
+                basicData?.flags.map((data: any) => (
+                  <div style={{ border: `1px solid ${data?.color}` }} className="rounded-2 me-2 mt-1">
+                    <div className="font-11" style={{ padding: "2px 7px" }}>
+                      {data?.flag_name}
+                      <i
+                        className="mdi mdi-close"
+                        style={{ paddingLeft: "3px", cursor: "pointer" }}
+                        onClick={() => removeFlag(data?.id)}
+                      ></i>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
 
           <div className="row">
             {viewOnly && (

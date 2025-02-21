@@ -332,7 +332,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
   //   }
   // };
 
-  const handleSubmit = async (type: string, office_id: number, counselor_id: number, region_id: number, branch_id: number) => {
+  const handleSubmit = async (type: string, office_id: number, counselor_id: number, region_id: number, branch_id: number, remark: string) => {
     try {
       const payload: any = {
         type,
@@ -342,6 +342,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
         task_id: taskId,
         region_id: region_id == 0 ? undefined : region_id,
         branch_id: branch_id == 0 ? undefined : branch_id,
+        assigned_remark: remark
       };
       console.log(payload);
       const { data } = await axios.post("assign_office", payload);
@@ -650,7 +651,6 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                     <div className="ribbon ribbon-primary float-start px-4 max-content mt-1 mb-0">
                       <span>{taskPrefix + "/" + currentDate.getFullYear() + "/" + (taskDetails?.id || "000")}</span>
                     </div>
-                    {console.log("taskDetails", taskDetails)}
 
                     {!taskDetails?.is_accepted && (
                       <Col className="d-flex gap-2 float-end">
@@ -669,7 +669,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                       <Col className="d-flex gap-2 float-end">
                         <Button
                           className="d-flex align-items-center btn-light"
-                          disabled={taskDetails?.isCompleted ? true : false}
+                          disabled={taskDetails?.isCompleted || !taskDetails?.is_accepted ? true : false}
                           onClick={handleFinishTask}
                           style={{ fontSize: "12px", background: "#EEFFF3", border: ".5px dashed #009A29" }}
                         >
@@ -685,7 +685,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         <Col className="d-flex gap-2">
                           <Button
                             className="d-flex align-items-center btn-light"
-                            disabled={taskDetails?.isCompleted ? true : false}
+                            disabled={taskDetails?.isCompleted || !taskDetails?.is_accepted ? true : false}
                             onClick={handleCompleteTask}
                           >
                             <div className="round-circle" />
@@ -701,7 +701,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                         <Col className="d-flex gap-2 float-end">
                           <Button
                             style={{ minWidth: "150px" }}
-                            disabled={taskDetails?.is_proceed_to_kyc}
+                            disabled={taskDetails?.is_proceed_to_kyc || !taskDetails?.is_accepted}
                             className="d-flex align-items-center"
                             onClick={handleProccedToKyc}
                           >
@@ -846,7 +846,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
                           startIcon={<VisibilityIcon />}
                           size="small"
                           variant="contained"
-                          style={{ backgroundColor: "#6658DD", boxShadow: "none" }}
+                          style={{ backgroundColor: "#6658DD", boxShadow: "none", color: "#fff", opacity: taskDetails?.is_accepted ? 1 : 0.5 }}
+                          disabled={!taskDetails?.is_accepted}
                         >
                           <Typography
                             sx={{
@@ -875,6 +876,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
                     <div className="d-flex justify-content-between align-items-center">
                       <Autocomplete
+                        disabled={!taskDetails?.is_accepted}
                         disablePortal
                         disableClearable
                         options={formattedStatus || []}
@@ -919,6 +921,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
                     <div className="d-flex justify-content-between align-items-center">
                       <Autocomplete
+                        disabled={!taskDetails?.is_accepted}
                         disablePortal
                         disableClearable
                         options={formattedFlagData || []}
@@ -956,6 +959,7 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
 
                       <div className="d-flex justify-content-between align-items-center">
                         <Autocomplete
+                          disabled={!taskDetails?.is_accepted}
                           disablePortal
                           disableClearable
                           options={countryData || []}
@@ -1003,6 +1007,8 @@ const StudentDetailsMaterial = ({ studentId, taskId, getTaskList, initialLoading
               remarkData={remarkData}
               callGetRemark={callGetRemark}
               submitFollowupDate={handleFollowUpDate}
+              formattedFlagData={formattedFlagData}
+              basicData={basicData}
             />
             {showAssignModal && (
               <OfficeAssignModal

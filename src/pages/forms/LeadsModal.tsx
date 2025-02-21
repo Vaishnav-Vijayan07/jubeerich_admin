@@ -159,7 +159,7 @@ const LeadsModal = withSwal((props: any) => {
   const filteredOffice = useMemo(() => {
     if (!loggedInUser || !office?.length) return null;
 
-    if ([cre_tl_id, cre_id, counsellor_id].includes(loggedInUser?.role.toString())) {
+    if ([cre_tl_id, cre_id, counsellor_id, it_team_id].includes(loggedInUser?.role.toString())) {
       return office?.find((data: any) => data?.value == corporate_id_from_office);
     } else if ([regional_manager_id, counsellor_tl_id, branch_counsellor_id].includes(loggedInUser?.role.toString())) {
       return office?.find((data: any) => data?.value == region_id_from_office);
@@ -185,6 +185,7 @@ const LeadsModal = withSwal((props: any) => {
       branch_counsellor_id,
       franchise_manager_id,
       franchise_counsellor_id,
+      it_team_id
     ];
 
     if (rolesWithOfficeDisable.includes(loggedInUser?.role.toString())) {

@@ -67,9 +67,9 @@ const MENU_ITEMS: MenuItemTypes[] = [
   },
   {
     key: "tasks",
-    label: "Tasks",
+    label: "Inbox",
     isTitle: false,
-    icon: "list", // Tasks list
+    icon: "inbox", // Tasks list
     url: "/leads/tasks",
     roles: ["View Task"],
   },

@@ -4,6 +4,7 @@ import axios from "axios";
 import { franchise_id_from_office, corporate_id_from_office, region_id_from_office } from "../../../../constants";
 import { showConfirmation } from "../../../../utils/showConfirmation";
 import useDropdownData from "../../../../hooks/useDropdownDatas";
+import { FormInput } from "../../../../components";
 
 interface DropDownItem {
   value: string;
@@ -16,7 +17,7 @@ interface Props {
   lead_id: number;
   office_type: number | null;
   region: number | null;
-  handleSubmit: (type: string, office_id: number, counselor_id: number, region_id: number, branch_id: number) => void;
+  handleSubmit: (type: string, office_id: number, counselor_id: number, region_id: number, branch_id: number, remark: string) => void;
 }
 
 const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id, handleSubmit, office_type, region }) => {
@@ -28,6 +29,7 @@ const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id, handle
   const [selectedCounselor, setSelectedCounselor] = useState<string>("");
   const [selectedRegion, setSelectedRegion] = useState<any>(region);
   const [selectedBranch, setSelectedBranch] = useState<any>("");
+  const [remark, setRemark] = useState<string>('');
 
   // Fetch offices when modal opens
   useEffect(() => {
@@ -127,7 +129,7 @@ const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id, handle
     return counselor_id == "" ? 0 : parseInt(counselor_id);
   };
 
-  const handleSave = async () => {
+  const handleSave = async () => {    
     const result = await showConfirmation("Do you want to proceed?", "Yes");
     if (!result.isConfirmed) return;
     const type = officeSwitch();
@@ -135,7 +137,7 @@ const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id, handle
     const counselor_id = type == "region" ? 0 : counselorSwitch();
     const region_id = type == "region" ? parseInt(selectedRegion) : 0;
     const branch_id = type == "region" ? parseInt(selectedBranch) : 0;
-    handleSubmit(type, office_id, counselor_id, region_id, branch_id);
+    handleSubmit(type, office_id, counselor_id, region_id, branch_id, remark);
   };
 
   console.log(regions);
@@ -287,6 +289,10 @@ const OfficeAssignModal: React.FC<Props> = ({ show, handleClose, lead_id, handle
                 </Dropdown>
               </Form.Group>
             )}
+          </Col>
+
+          <Col>
+            <FormInput label="Remark" type="textarea" name="remark" value={remark} onChange={(e) => setRemark(e.target.value)} />
           </Col>
         </Form>
       </Modal.Body>
