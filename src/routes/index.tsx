@@ -19,6 +19,7 @@ import VisaPendings from "../pages/visa_processed/VisaPending";
 import ManageVisaCheck from "../pages/visa_processed/ManageVisaCheck";
 import VisaApprovals from "../pages/visa_processed/VisaApprovals";
 import AssignedVisa from "../pages/visa_processed/AssignedVisa";
+import Profile from "../pages/apps/Contacts/profile";
 
 // lazy load all the views
 
@@ -140,7 +141,17 @@ const dashboardRoutes: RoutesProps = {
       // element: <Dashboard4 />,
       element: (
         <PrivateRoute
-          roles={["Add Lead", "View Task", "Monitor", "Manage Franchise", "Manage Applications", "Allocate Applications", "Data Entry", "Visa Manage", "Visa Approval"]}
+          roles={[
+            "Add Lead",
+            "View Task",
+            "Monitor",
+            "Manage Franchise",
+            "Manage Applications",
+            "Allocate Applications",
+            "Data Entry",
+            "Visa Manage",
+            "Visa Approval",
+          ]}
           component={Dashboard4}
         />
       ),
@@ -153,7 +164,7 @@ const crmAppRoutes = {
   path: "/apps/crm",
   name: "CRM",
   route: PrivateRoute,
-  roles: ["Add Lead", "View Task", "KYC Approval","Data Entry"],
+  roles: ["Add Lead", "View Task", "KYC Approval", "Data Entry"],
   icon: "users",
   children: [
     {
@@ -288,7 +299,7 @@ const visaRoutes = {
       element: <ManageVisaCheck />,
       route: PrivateRoute,
     },
-  ]
+  ],
 };
 
 const reportsRoutes = {
@@ -400,7 +411,21 @@ const leadRoutes = {
 const appRoutes = [crmAppRoutes];
 
 // pages
-
+const contactsRoutes = {
+  path: "/profile",
+  name: "Profile",
+  route: PrivateRoute,
+  roles: ["Monitor"],
+  icon: "book",
+  children: [
+    {
+      path: "/profile/manage",
+      name: "Profile",
+      element: <Profile />,
+      route: PrivateRoute,
+    },
+  ],
+};
 // ui
 const settingsRoutes = {
   path: "/settings",
@@ -540,7 +565,7 @@ const settingsRoutes = {
           name: "Visa Checklists",
           element: <PrivateRoute roles={["Monitor"]} component={VisaCheckLists} />,
           route: PrivateRoute,
-        }, 
+        },
         {
           path: "/settings/master/visa_configuration",
           name: "Visa Configuration",
@@ -781,7 +806,7 @@ const flattenRoutes = (routes: RoutesProps[]) => {
 };
 
 // All routes
-const authProtectedRoutes = [dashboardRoutes, ...appRoutes, settingsRoutes, UserRoutes, leadRoutes, reportsRoutes, visaRoutes];
+const authProtectedRoutes = [dashboardRoutes, ...appRoutes, settingsRoutes, UserRoutes, leadRoutes, reportsRoutes, visaRoutes, contactsRoutes];
 const publicRoutes = [...authRoutes, ...otherPublicRoutes];
 
 const authProtectedFlattenRoutes = flattenRoutes([...authProtectedRoutes]);

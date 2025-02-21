@@ -514,12 +514,12 @@ const LeadApprovalTable = withSwal(({ swal, isOpenModal, toggleModal, responseDa
       return item.error;
     });
 
-    if (hasErrors && approvalType == approvalTypes.import_lead) {
-      setModelTitle("Error");
-      setModalBody("Some selected leads have some errors")
-      toggleAlertModal()
-      return;
-    }
+    // if (hasErrors && approvalType == approvalTypes.import_lead) {
+    //   setModelTitle("Error");
+    //   setModalBody("Some selected leads have some errors")
+    //   toggleAlertModal()
+    //   return;
+    // }
 
     try {
       const result = await swal.fire({

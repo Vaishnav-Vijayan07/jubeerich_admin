@@ -84,11 +84,11 @@ const Notifications: NotificationItem[] = [
 
 // get the profilemenu
 const ProfileMenus = [
-  // {
-  //   label: "My Account",
-  //   icon: "fe-user",
-  //   redirectTo: "#",
-  // },
+  {
+    label: "My Account",
+    icon: "fe-user",
+    redirectTo: "/profile/manage",
+  },
   {
     label: "Logout",
     icon: "fe-log-out",
